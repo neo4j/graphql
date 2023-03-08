@@ -10,7 +10,7 @@ const CompressionPlugin = require("compression-webpack-plugin");
 const WebpackNotifierPlugin = require("webpack-notifier");
 const { DefinePlugin } = require("webpack");
 const packageJson = require("./package.json");
-const Dotenv = require('dotenv-webpack');
+const Dotenv = require("dotenv-webpack");
 
 module.exports = {
     mode: "none",
@@ -20,14 +20,17 @@ module.exports = {
     resolve: {
         plugins: [new TsconfigPathsPlugin()],
         extensions: [".ts", ".tsx", ".mjs", ".json", ".js"], // IMPORTANT: .mjs has to be BEFORE .js
+        fallback: {
+            fs: false,
+        },
     },
     ...(process.env.NODE_ENV === "production"
         ? {
-            optimization: {
-                minimize: true,
-                minimizer: [new TerserPlugin()],
-            },
-        }
+              optimization: {
+                  minimize: true,
+                  minimizer: [new TerserPlugin()],
+              },
+          }
         : {}),
     module: {
         rules: [
@@ -39,14 +42,7 @@ module.exports = {
             },
             {
                 test: /\.(png|jpg|gif|svg)$/i,
-                use: [
-                    {
-                        loader: "url-loader",
-                        options: {
-                            limit: 8192,
-                        },
-                    },
-                ],
+                type: "asset/resource",
             },
             {
                 test: /\.(css|scss)$/,
@@ -81,20 +77,20 @@ module.exports = {
         new NodePolyfillPlugin(),
         ...(process.env.NODE_ENV === "test"
             ? [
-                new HtmlInlineScriptPlugin({
-                    htmlMatchPattern: [/index.html$/],
-                }),
-            ]
+                  new HtmlInlineScriptPlugin({
+                      htmlMatchPattern: [/index.html$/],
+                  }),
+              ]
             : []),
         ...(process.env.NODE_ENV === "production" ? [new CompressionPlugin()] : []),
         ...(process.env.NODE_ENV === "development"
             ? [
-                new WebpackNotifierPlugin({
-                    title: (params) => {
-                        return `Build status is ${params.status} with message ${params.message}`;
-                    },
-                }),
-            ]
+                  new WebpackNotifierPlugin({
+                      title: (params) => {
+                          return `Build status is ${params.status} with message ${params.message}`;
+                      },
+                  }),
+              ]
             : []),
     ],
     devServer: {

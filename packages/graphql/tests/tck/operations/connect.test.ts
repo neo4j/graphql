@@ -156,7 +156,7 @@ describe("Cypher Connect", () => {
             	WITH this0_colors_connect0_node_photos0_node
             	MATCH (this0_colors_connect0_node_photos0_node)-[this0_colors_connect0_node_photos0_node_color_Color_unique:OF_COLOR]->(:Color)
             	WITH count(this0_colors_connect0_node_photos0_node_color_Color_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
             	RETURN c AS this0_colors_connect0_node_photos0_node_color_Color_unique_ignored
             }
             WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
@@ -181,7 +181,7 @@ describe("Cypher Connect", () => {
             	WITH this0_colors_connect0_node_photos0_node
             	MATCH (this0_colors_connect0_node_photos0_node)-[this0_colors_connect0_node_photos0_node_color_Color_unique:OF_COLOR]->(:Color)
             	WITH count(this0_colors_connect0_node_photos0_node_color_Color_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
             	RETURN c AS this0_colors_connect0_node_photos0_node_color_Color_unique_ignored
             }
             WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, this0_colors_connect0_node_photos0_node_color0_node
@@ -230,7 +230,7 @@ describe("Cypher Connect", () => {
             	WITH this0_photos_connect0_node
             	MATCH (this0_photos_connect0_node)-[this0_photos_connect0_node_color_Color_unique:OF_COLOR]->(:Color)
             	WITH count(this0_photos_connect0_node_color_Color_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
             	RETURN c AS this0_photos_connect0_node_color_Color_unique_ignored
             }
             WITH this0, this0_photos_connect0_node, this0_photos_connect0_node_color0_node
@@ -277,7 +277,7 @@ describe("Cypher Connect", () => {
             	WITH this0_photos_connect1_node
             	MATCH (this0_photos_connect1_node)-[this0_photos_connect1_node_color_Color_unique:OF_COLOR]->(:Color)
             	WITH count(this0_photos_connect1_node_color_Color_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
             	RETURN c AS this0_photos_connect1_node_color_Color_unique_ignored
             }
             WITH this0, this0_photos_connect1_node, this0_photos_connect1_node_color0_node
@@ -287,8 +287,7 @@ describe("Cypher Connect", () => {
             }
             RETURN this0
             }
-            RETURN [
-            this0 { .id }] AS data"
+            RETURN [ this0 { .id } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

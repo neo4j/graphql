@@ -55,6 +55,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     scalarFields: CustomScalarField[];
     enumFields: CustomEnumField[];
     otherDirectives: DirectiveNode[];
+    propagatedDirectives: DirectiveNode[];
     unionFields: UnionField[];
     interfaceFields: InterfaceField[];
     interfaces: NamedTypeNode[];
@@ -71,6 +72,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     isGlobalNode?: boolean;
     globalIdField?: string;
     globalIdFieldIsInt?: boolean;
+    federationResolvable: boolean;
 }
 
 type MutableField =
@@ -105,8 +107,8 @@ export type RootTypeFieldNames = {
         created: string;
         updated: string;
         deleted: string;
-        connected: string;
-        disconnected: string;
+        relationship_created: string;
+        relationship_deleted: string;
     };
 };
 
@@ -130,8 +132,8 @@ export type SubscriptionEvents = {
     create: string;
     update: string;
     delete: string;
-    // connect: string;
-    // disconnect: string;
+    create_relationship: string;
+    delete_relationship: string;
 };
 
 class Node extends GraphElement {
@@ -139,6 +141,7 @@ class Node extends GraphElement {
     public connectionFields: ConnectionField[];
     public cypherFields: CypherField[];
     public otherDirectives: DirectiveNode[];
+    public propagatedDirectives: DirectiveNode[];
     public unionFields: UnionField[];
     public interfaceFields: InterfaceField[];
     public interfaces: NamedTypeNode[];
@@ -152,6 +155,7 @@ class Node extends GraphElement {
     public singular: string;
     public plural: string;
     public isGlobalNode: boolean | undefined;
+    public federationResolvable: boolean;
     private _idField: string | undefined;
     private _idFieldIsInt?: boolean;
 
@@ -161,6 +165,7 @@ class Node extends GraphElement {
         this.connectionFields = input.connectionFields;
         this.cypherFields = input.cypherFields;
         this.otherDirectives = input.otherDirectives;
+        this.propagatedDirectives = input.propagatedDirectives;
         this.unionFields = input.unionFields;
         this.interfaceFields = input.interfaceFields;
         this.interfaces = input.interfaces;
@@ -175,6 +180,7 @@ class Node extends GraphElement {
         this._idFieldIsInt = input.globalIdFieldIsInt;
         this.singular = this.generateSingular();
         this.plural = this.generatePlural(input.plural);
+        this.federationResolvable = input.federationResolvable;
     }
 
     // Fields you can set in a create or update mutation
@@ -241,8 +247,8 @@ class Node extends GraphElement {
                 created: `${this.singular}Created`,
                 updated: `${this.singular}Updated`,
                 deleted: `${this.singular}Deleted`,
-                connected: `${this.singular}Connected`,
-                disconnected: `${this.singular}Disconnected`,
+                relationship_created: `${this.singular}RelationshipCreated`,
+                relationship_deleted: `${this.singular}RelationshipDeleted`,
             },
         };
     }
@@ -278,8 +284,8 @@ class Node extends GraphElement {
             create: `${pascalCaseSingular}CreatedEvent`,
             update: `${pascalCaseSingular}UpdatedEvent`,
             delete: `${pascalCaseSingular}DeletedEvent`,
-            // connect: `${pascalCaseSingular}ConnectedEvent`,
-            // disconnect: `${pascalCaseSingular}DisconnectedEvent`,
+            create_relationship: `${pascalCaseSingular}RelationshipCreatedEvent`,
+            delete_relationship: `${pascalCaseSingular}RelationshipDeletedEvent`,
         };
     }
 
@@ -290,8 +296,8 @@ class Node extends GraphElement {
             create: `created${pascalCaseSingular}`,
             update: `updated${pascalCaseSingular}`,
             delete: `deleted${pascalCaseSingular}`,
-            // connect: `connected${pascalCaseSingular}`,
-            // disconnect: `disconnected${pascalCaseSingular}`,
+            create_relationship: `${this.singular}`,
+            delete_relationship: `${this.singular}`,
         };
     }
 
@@ -304,7 +310,18 @@ class Node extends GraphElement {
     }
 
     public getMainLabel(): string {
-        return this.nodeDirective?.label || this.name;
+        return this.nodeDirective?.labels?.[0] || this.nodeDirective?.label || this.name;
+    }
+    public getAllLabels(): string[] {
+        if (!this.nodeDirective) {
+            return [this.name];
+        }
+        if (this.nodeDirective.labels.length) {
+            return this.nodeDirective.labels;
+        }
+        return [this.nodeDirective.label || this.name, ...(this.nodeDirective.additionalLabels || [])];
+        // TODO: use when removing label & additionalLabels
+        // return this.nodeDirective?.labels || [this.name];
     }
 
     public getGlobalIdField(): string {

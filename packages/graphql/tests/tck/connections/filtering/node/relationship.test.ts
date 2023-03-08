@@ -78,22 +78,22 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
                 WHERE EXISTS {
-                    MATCH (this_Actor)-[:ACTED_IN]->(this_connection_actorsConnectionthis1:\`Movie\`)
-                    WHERE this_connection_actorsConnectionthis1.title = $this_connection_actorsConnectionparam0
+                    MATCH (this1)-[:ACTED_IN]->(this2:\`Movie\`)
+                    WHERE this2.title = $param0
                 }
-                WITH { node: { name: this_Actor.name } } AS edge
+                WITH { node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });

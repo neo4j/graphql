@@ -54,10 +54,10 @@ MATCH(this:Post)
 CALL {
     WITH this
     MATCH(this)<-[:LIKES]-(u:User)
-    RETURN count(u) as thisLikesAggregateCount
+    RETURN count(u) = 10 as thisLikesAggregateCount
 }
 WITH *
-WHERE thisLikesAggregateCount = 10
+WHERE thisLikesAggregateCount = true
 RETURN this { .content } AS this
 ```
 

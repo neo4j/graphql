@@ -26,6 +26,18 @@ query AggregationWithWhere {
     }
 }
 
+query AggregationWhereWithinNestedRelationships {
+    people(where: { movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 1 } } } }) {
+        name
+    }
+}
+
+query AggregationWhereWithinNestedConnections {
+    people(where: { moviesConnection_SOME: { node: { actorsConnection_ALL: { node: { moviesAggregate: { count_GT: 1 } } } } } }) {
+        name
+    }
+}
+
 query NestedCountFromMovieToActors {
     movies {
         actorsAggregate {

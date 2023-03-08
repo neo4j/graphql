@@ -68,21 +68,26 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`SomeNode\`)
-CALL {
-    WITH this
-    MATCH (this)-[this0:HAS_OTHER_NODES]->(this_other:\`OtherNode\`)
-    WITH *
-    CALL {
-        WITH this_other
-        MATCH (this_other)-[this1:HAS_INTERFACE_NODES]->(this_other_MyImplementation:\`MyImplementation\`)
-        RETURN { __resolveType: \\"MyImplementation\\", id: this_other_MyImplementation.id } AS this_other_interfaceField
-    }
-    WITH this_other { interfaceField: this_other_interfaceField } AS this_other
-    RETURN head(collect(this_other)) AS this_other
-}
-RETURN this { .id, other: this_other } AS this"
-`);
+            "MATCH (this:\`SomeNode\`)
+            CALL {
+                WITH this
+                MATCH (this)-[this0:HAS_OTHER_NODES]->(this1:\`OtherNode\`)
+                CALL {
+                    WITH this1
+                    CALL {
+                        WITH *
+                        MATCH (this1)-[this2:HAS_INTERFACE_NODES]->(this3:\`MyImplementation\`)
+                        WITH this3 { __resolveType: \\"MyImplementation\\", __id: id(this1), .id } AS this3
+                        RETURN this3 AS var4
+                    }
+                    WITH var4
+                    RETURN head(collect(var4)) AS var4
+                }
+                WITH this1 { interfaceField: var4 } AS this1
+                RETURN head(collect(this1)) AS var5
+            }
+            RETURN this { .id, other: var5 } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

@@ -22,8 +22,7 @@ import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../../../src";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import Neo4j from "../../neo4j";
 
@@ -45,8 +44,8 @@ describe("Subscriptions update", () => {
     beforeEach(async () => {
         session = await neo4j.getSession();
 
-        typeActor = generateUniqueType("Actor");
-        typeMovie = generateUniqueType("Movie");
+        typeActor = new UniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
 
         plugin = new TestSubscriptionsPlugin();
         const typeDefs = gql`
@@ -461,7 +460,7 @@ describe("Subscriptions update", () => {
         });
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),

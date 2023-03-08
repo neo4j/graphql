@@ -20,7 +20,7 @@
 import type { Driver } from "neo4j-driver";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
@@ -42,10 +42,10 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
     let typeDefs: string;
 
     beforeEach(async () => {
-        typeActor = generateUniqueType("Actor");
-        typeMovie = generateUniqueType("Movie");
-        typePerson = generateUniqueType("Person");
-        typeInfluencer = generateUniqueType("Influencer");
+        typeActor = new UniqueType("Actor");
+        typeMovie = new UniqueType("Movie");
+        typePerson = new UniqueType("Person");
+        typeInfluencer = new UniqueType("Influencer");
 
         typeDefs = `
             type ${typeMovie} {
@@ -53,12 +53,10 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
                 reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
-                imdbId: Int @unique
             }
             
             type ${typeActor} {
                 name: String!
-                id: Int @unique
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
             
@@ -77,22 +75,18 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             type ${typePerson} implements Reviewer {
                 name: String!
                 reputation: Int!
-                id: Int @unique
-                reviewerId: Int @unique
                 movies: [${typeMovie}!]! @relationship(type: "REVIEWED", direction: OUT, properties: "Review")
             }
             
             type ${typeInfluencer} implements Reviewer {
                 reputation: Int!
                 url: String!
-                reviewerId: Int
             }
             
             union Director = ${typePerson} | ${typeActor}
             
             interface Reviewer {
                 reputation: Int!
-                reviewerId: Int
 
             }
         `;
@@ -219,6 +213,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -357,6 +352,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -649,27 +645,27 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
 
         // 2. subscribe both ways
         await wsClient2.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.deleted} {
-                ${typeMovie.operations.subscribe.payload.deleted} {
-                    title
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted} {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            title
+                        }
+                        event
+                        timestamp
+                    }
                 }
-                event
-                timestamp
-            }
-        }
-    `);
+            `);
         await wsClient.subscribe(`
-    subscription {
-        ${typePerson.operations.subscribe.deleted} {
-            ${typePerson.operations.subscribe.payload.deleted} {
-                name
+            subscription {
+                ${typePerson.operations.subscribe.deleted} {
+                    ${typePerson.operations.subscribe.payload.deleted} {
+                        name
+                    }
+                    event
+                    timestamp
+                }
             }
-            event
-            timestamp
-        }
-    }
-`);
+        `);
 
         // 3. perform update on created node
         await supertest(server.path)
@@ -878,6 +874,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1192,6 +1189,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1630,6 +1628,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1646,8 +1645,6 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             },
         ]);
     });
-
-    // ============= combinations ==============
 
     test("disconnect via delete nested - with relationships -  union type + interface type, by common type", async () => {
         // 1. create
@@ -2126,6 +2123,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -3031,8 +3029,6 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
         ]);
     });
 
-    // ================ chained combos =========================
-
     test("disconnect via delete nested - with relationships: union to interface type", async () => {
         // 1. create
         await supertest(server.path)
@@ -3294,7 +3290,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(3);
+        await delay(4);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -3736,9 +3732,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        // console.log("HERE", r.error);
-
-        await delay(3);
+        await delay(4);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 

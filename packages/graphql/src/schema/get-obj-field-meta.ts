@@ -36,7 +36,7 @@ import type {
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
-import getCypherMeta from "./get-cypher-meta";
+import { getCypherMeta } from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCustomResolverMeta from "./get-custom-resolver-meta";
 import getRelationshipMeta from "./get-relationship-meta";
@@ -95,6 +95,7 @@ function getObjFieldMeta({
     enums,
     callbacks,
     customResolvers,
+    validateResolvers,
 }: {
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -102,6 +103,7 @@ function getObjFieldMeta({
     unions: UnionTypeDefinitionNode[];
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
+    validateResolvers: boolean;
     callbacks?: Neo4jGraphQLCallbacks;
     customResolvers?: IResolvers | Array<IResolvers>;
 }) {
@@ -130,7 +132,13 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const customResolverMeta = getCustomResolverMeta(field, obj, customResolvers, interfaceField);
+            const customResolverMeta = getCustomResolverMeta(
+                field,
+                obj,
+                validateResolvers,
+                customResolvers,
+                interfaceField
+            );
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
@@ -343,22 +351,50 @@ function getObjFieldMeta({
                 if (defaultDirective) {
                     const defaultValue = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                    if (!defaultValue || !isEnumValue(defaultValue)) {
-                        throw new Error("@default value on enum fields must be an enum value");
-                    }
+                    if (enumField.typeMeta.array) {
+                        if (!defaultValue || !isListValue(defaultValue)) {
+                            throw new Error("@default value on enum list fields must be a list of enums");
+                        }
 
-                    enumField.defaultValue = defaultValue.value;
+                        enumField.defaultValue = defaultValue.values.map((v) => {
+                            if (!v || !isEnumValue(v)) {
+                                throw new Error("@default value on enum list fields must be a list of enums");
+                            }
+
+                            return v.value;
+                        });
+                    } else {
+                        if (!defaultValue || !isEnumValue(defaultValue)) {
+                            throw new Error("@default value on enum fields must be an enum value");
+                        }
+
+                        enumField.defaultValue = defaultValue.value;
+                    }
                 }
 
                 if (coalesceDirective) {
                     const coalesceValue = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                    if (!coalesceValue || !isEnumValue(coalesceValue)) {
-                        throw new Error("@coalesce value on enum fields must be an enum value");
-                    }
+                    if (enumField.typeMeta.array) {
+                        if (!coalesceValue || !isListValue(coalesceValue)) {
+                            throw new Error("@coalesce value on enum list fields must be a list of enums");
+                        }
 
-                    // TODO: avoid duplication with primitives
-                    enumField.coalesceValue = `"${coalesceValue.value}"`;
+                        enumField.coalesceValue = coalesceValue.values.map((v) => {
+                            if (!v || !isEnumValue(v)) {
+                                throw new Error("@coalesce value on enum list fields must be a list of enums");
+                            }
+
+                            return v.value;
+                        });
+                    } else {
+                        if (!coalesceValue || !isEnumValue(coalesceValue)) {
+                            throw new Error("@coalesce value on enum fields must be an enum value");
+                        }
+
+                        // TODO: avoid duplication with primitives
+                        enumField.coalesceValue = `"${coalesceValue.value}"`;
+                    }
                 }
 
                 res.enumFields.push(enumField);
@@ -590,6 +626,10 @@ function getObjFieldMeta({
 
 function isEnumValue(value: ValueNode): value is EnumValueNode {
     return value.kind === Kind.ENUM;
+}
+
+function isListValue(value: ValueNode): value is ListValueNode {
+    return value.kind === Kind.LIST;
 }
 
 export default getObjFieldMeta;

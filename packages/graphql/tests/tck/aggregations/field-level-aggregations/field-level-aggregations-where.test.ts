@@ -68,12 +68,18 @@ describe("Field Level Aggregations Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Person\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) WHERE this_actorsAggregate_this0.age > $this_actorsAggregate_param0 | this_actorsAggregate_this0]) } } AS this"
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                WHERE this1.age > $param0
+                RETURN count(this1) AS var2
+            }
+            RETURN this { .title, actorsAggregate: { count: var2 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsAggregate_param0\\": {
+                \\"param0\\": {
                     \\"low\\": 40,
                     \\"high\\": 0
                 }
@@ -103,13 +109,25 @@ describe("Field Level Aggregations Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Person\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) WHERE this_actorsAggregate_this0.name CONTAINS $this_actorsAggregate_param0 | this_actorsAggregate_this0]) }, directorsAggregate: { count: size([(this_directorsAggregate_this0:\`Person\`)-[this_directorsAggregate_this1:DIRECTED]->(this) WHERE this_directorsAggregate_this0.name CONTAINS $this_directorsAggregate_param0 | this_directorsAggregate_this0]) } } AS this"
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                WHERE this1.name CONTAINS $param0
+                RETURN count(this1) AS var2
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this3:DIRECTED]-(this4:\`Person\`)
+                WHERE this4.name CONTAINS $param1
+                RETURN count(this4) AS var5
+            }
+            RETURN this { .title, actorsAggregate: { count: var2 }, directorsAggregate: { count: var5 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsAggregate_param0\\": \\"abc\\",
-                \\"this_directorsAggregate_param0\\": \\"abcdefg\\"
+                \\"param0\\": \\"abc\\",
+                \\"param1\\": \\"abcdefg\\"
             }"
         `);
     });

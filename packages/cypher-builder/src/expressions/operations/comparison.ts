@@ -36,6 +36,9 @@ type ComparisonOperator =
     | "ENDS WITH"
     | "=~";
 
+/**
+ *  @group Internal
+ */
 export class ComparisonOp extends CypherASTNode {
     private operator: ComparisonOperator;
     private leftExpr: Expr | undefined;
@@ -48,6 +51,9 @@ export class ComparisonOp extends CypherASTNode {
         this.rightExpr = right;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const leftStr = this.leftExpr ? `${this.leftExpr.getCypher(env)} ` : "";
         const rightStr = this.rightExpr ? ` ${this.rightExpr.getCypher(env)}` : "";
@@ -60,49 +66,110 @@ function createOp(op: ComparisonOperator, leftExpr: Expr | undefined, rightExpr?
     return new ComparisonOp(op, leftExpr, rightExpr);
 }
 
+/** Generates an equal (=) operator between the 2 expressions
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
 export function eq(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("=", leftExpr, rightExpr);
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
 export function gt(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp(">", leftExpr, rightExpr);
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
 export function gte(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp(">=", leftExpr, rightExpr);
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
 export function lt(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("<", leftExpr, rightExpr);
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
 export function lte(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("<=", leftExpr, rightExpr);
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
 export function isNull(childExpr: Expr): ComparisonOp {
     return createOp("IS NULL", childExpr);
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
 export function isNotNull(childExpr: Expr): ComparisonOp {
     return createOp("IS NOT NULL", childExpr);
 }
 
-/* Below are operators that are not technically comparison, but can be treated as such */
-
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
 export function inOp(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("IN", leftExpr, rightExpr);
 }
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
 export function contains(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("CONTAINS", leftExpr, rightExpr);
 }
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
 export function startsWith(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("STARTS WITH", leftExpr, rightExpr);
 }
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
 export function endsWith(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("ENDS WITH", leftExpr, rightExpr);
 }
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
 export function matches(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("=~", leftExpr, rightExpr);
 }

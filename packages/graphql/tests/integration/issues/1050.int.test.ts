@@ -23,14 +23,14 @@ import type { Driver, Session } from "neo4j-driver";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/1050", () => {
-    const testUser = generateUniqueType("User");
-    const testInbox = generateUniqueType("Inbox");
-    const testMessage = generateUniqueType("Message");
-    const testAttachment = generateUniqueType("Attachment");
+    const testUser = new UniqueType("User");
+    const testInbox = new UniqueType("Inbox");
+    const testMessage = new UniqueType("Message");
+    const testAttachment = new UniqueType("Attachment");
 
     let schema: GraphQLSchema;
     let driver: Driver;

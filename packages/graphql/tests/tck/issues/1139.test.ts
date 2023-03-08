@@ -90,16 +90,16 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
                 UNWIND allUpdates as update
                 RETURN update
                 ORDER BY update.date_added DESC
-                LIMIT 5\\", { this: this, auth: $auth }) AS this_updates
+                LIMIT 5\\", { this: this, auth: $auth }) AS this0
                 WITH *
-                WHERE (this_updates:\`Post\` OR this_updates:\`Movie\` OR this_updates:\`User\`)
+                WHERE (this0:\`Post\` OR this0:\`Movie\` OR this0:\`User\`)
                 RETURN collect(CASE
-                    WHEN this_updates:\`Post\` THEN this_updates { __resolveType: \\"Post\\" }
-                    WHEN this_updates:\`Movie\` THEN this_updates { __resolveType: \\"Movie\\" }
-                    WHEN this_updates:\`User\` THEN this_updates { __resolveType: \\"User\\" }
-                END) AS this_updates
+                    WHEN this0:\`Post\` THEN this0 { __resolveType: \\"Post\\" }
+                    WHEN this0:\`Movie\` THEN this0 { __resolveType: \\"Movie\\" }
+                    WHEN this0:\`User\` THEN this0 { __resolveType: \\"User\\" }
+                END) AS this0
             }
-            RETURN this { updates: this_updates } AS this"
+            RETURN this { updates: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

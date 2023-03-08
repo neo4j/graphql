@@ -1,8 +1,6 @@
 [[update]]
 = Update Subscriptions
 
-WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
-
 Subscription to `UPDATE` events will listen to node properties changes. A new event will be triggered for each mutation that modifies the node top-level properties.
 
 NOTE: Update events will only be triggered if any of the properties have changed. An update that doesn't modify the properties will be ignored.

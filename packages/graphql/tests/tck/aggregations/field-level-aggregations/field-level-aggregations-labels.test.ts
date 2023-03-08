@@ -29,12 +29,12 @@ describe("Field Level Aggregations Alias", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie @node(label: "Film") {
+            type Movie @node(labels: ["Film"]) {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Actor @node(label: "Person") {
+            type Actor @node(labels: ["Person"]) {
                 name: String
                 age: Int
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -73,11 +73,15 @@ describe("Field Level Aggregations Alias", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            RETURN this { actorsAggregate: { node: { name: head(apoc.cypher.runFirstColumnMany(\\"MATCH (this)<-[r:ACTED_IN]-(n:\`Person\`)
-                    WITH n as n
-                    ORDER BY size(n.name) DESC
-                    WITH collect(n.name) as list
-                    RETURN {longest: head(list), shortest: last(list)}\\", { this: this })) } } } AS this"
+            CALL {
+                WITH this
+                MATCH (this)<-[this1:ACTED_IN]-(this0:\`Person\`)
+                WITH this0
+                ORDER BY size(this0.name) DESC
+                WITH collect(this0.name) AS list
+                RETURN { longest: head(list), shortest: last(list) } AS var2
+            }
+            RETURN this { actorsAggregate: { node: { name: var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

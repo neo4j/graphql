@@ -81,27 +81,30 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`ProgrammeItem\`)
-WITH *
-CALL {
-WITH *
-CALL {
-    WITH this
-    MATCH (this)-[this0:RELATES_TO]-(this_Series:\`Series\`)
-    RETURN { __resolveType: \\"Series\\", productTitle: this_Series.productTitle } AS this_releatsTo
-    UNION
-    WITH this
-    MATCH (this)-[this1:RELATES_TO]-(this_Season:\`Season\`)
-    RETURN { __resolveType: \\"Season\\", productTitle: this_Season.productTitle } AS this_releatsTo
-    UNION
-    WITH this
-    MATCH (this)-[this2:RELATES_TO]-(this_ProgrammeItem:\`ProgrammeItem\`)
-    RETURN { __resolveType: \\"ProgrammeItem\\", productTitle: this_ProgrammeItem.productTitle } AS this_releatsTo
-}
-RETURN collect(this_releatsTo) AS this_releatsTo
-}
-RETURN this { .productTitle, .episodeNumber, releatsTo: this_releatsTo } AS this"
-`);
+            "MATCH (this:\`ProgrammeItem\`)
+            CALL {
+                WITH this
+                CALL {
+                    WITH *
+                    MATCH (this)-[this0:RELATES_TO]-(this1:\`Series\`)
+                    WITH this1 { __resolveType: \\"Series\\", __id: id(this), .productTitle } AS this1
+                    RETURN this1 AS var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this3:RELATES_TO]-(this4:\`Season\`)
+                    WITH this4 { __resolveType: \\"Season\\", __id: id(this), .productTitle } AS this4
+                    RETURN this4 AS var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this5:RELATES_TO]-(this6:\`ProgrammeItem\`)
+                    WITH this6 { __resolveType: \\"ProgrammeItem\\", __id: id(this), .productTitle } AS this6
+                    RETURN this6 AS var2
+                }
+                WITH var2
+                RETURN collect(var2) AS var2
+            }
+            RETURN this { .productTitle, .episodeNumber, releatsTo: var2 } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -139,25 +142,25 @@ RETURN this { .productTitle, .episodeNumber, releatsTo: this_releatsTo } AS this
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this_connection_releatsToConnectionthis0:RELATES_TO]-(this_Series:\`Series\`)
-                    WITH { node: { __resolveType: \\"Series\\", productTitle: this_Series.productTitle } } AS edge
+                    MATCH (this)-[this0:RELATES_TO]-(this1:\`Series\`)
+                    WITH { node: { __resolveType: \\"Series\\", __id: id(this1), productTitle: this1.productTitle } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this_connection_releatsToConnectionthis1:RELATES_TO]-(this_Season:\`Season\`)
-                    WITH { node: { __resolveType: \\"Season\\", productTitle: this_Season.productTitle } } AS edge
+                    MATCH (this)-[this2:RELATES_TO]-(this3:\`Season\`)
+                    WITH { node: { __resolveType: \\"Season\\", __id: id(this3), productTitle: this3.productTitle } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this_connection_releatsToConnectionthis2:RELATES_TO]-(this_ProgrammeItem:\`ProgrammeItem\`)
-                    WITH { node: { __resolveType: \\"ProgrammeItem\\", productTitle: this_ProgrammeItem.productTitle } } AS edge
+                    MATCH (this)-[this4:RELATES_TO]-(this5:\`ProgrammeItem\`)
+                    WITH { node: { __resolveType: \\"ProgrammeItem\\", __id: id(this5), productTitle: this5.productTitle } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_releatsToConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var6
             }
-            RETURN this { .productTitle, .episodeNumber, releatsToConnection: this_releatsToConnection } AS this"
+            RETURN this { .productTitle, .episodeNumber, releatsToConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

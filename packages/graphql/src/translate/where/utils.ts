@@ -53,13 +53,23 @@ export type WhereRegexGroups = {
     prefix?: string;
 };
 
-export type ListPredicate = "all" | "none" | "single" | "any";
+export type aggregationOperators = "AVERAGE" | "SHORTEST" | "LONGEST" | "MIN" | "MAX" | "SUM";
+export const aggregationFieldRegEx =
+    /(?<fieldName>[_A-Za-z]\w*?)(?:_(?<aggregationOperator>AVERAGE|MAX|MIN|SUM|SHORTEST|LONGEST))?(?:_LENGTH)?(?:_(?<logicalOperator>EQUAL|GT|GTE|LT|LTE))?$/;
+export type AggregationFieldRegexGroups = {
+    fieldName: string;
+    aggregationOperator?: aggregationOperators;
+    logicalOperator?: string;
+};
+
+export type ListPredicate = "all" | "none" | "single" | "any" | "not";
 
 export const getListPredicate = (operator?: WhereOperator): ListPredicate => {
     switch (operator) {
         case "ALL":
             return "all";
         case "NOT":
+            return "not";
         case "NONE":
             return "none";
         case "SINGLE":

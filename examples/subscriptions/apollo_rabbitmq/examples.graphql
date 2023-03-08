@@ -1,0 +1,67 @@
+subscription SubscribeToNewMovies {
+  movieCreated {
+    createdMovie {
+      title
+      released
+    }
+  }
+}
+
+
+mutation CreateNewMovies {
+  createMovies(input: [{title: "Story of Toys", released: 1994}, {title: "Story of Toys 2", released: 2001}]) {
+    movies {
+      title
+    }
+  }
+}
+
+
+# Filter
+
+subscription SubscribeToMoviesFrom2001 {
+  movieCreated(where: {released: 2001}) {
+    createdMovie {
+      title
+      released
+    }
+  }
+}
+
+
+## Update
+subscription SubscribeToUpdatedMovies {
+  movieUpdated {
+    previousState {
+      title
+    }
+    updatedMovie {
+      title
+    }
+  }
+}
+
+mutation UpdateMovie {
+  updateMovies(where: {title: "The Matrix"}, update:{title:  "La Matriz"}) {
+    movies {
+      title
+    }
+  }
+}
+
+## Delete
+subscription SubscribeToDeletedMovies {
+  movieDeleted {
+    deletedMovie {
+      title
+      tagline
+      released
+    }
+  }
+}
+
+mutation DeleteAllMovies {
+  deleteMovies {
+    nodesDeleted
+  }
+}

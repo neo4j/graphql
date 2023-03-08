@@ -17,12 +17,10 @@
  * limitations under the License.
  */
 
-import type { Integer } from "neo4j-driver";
-import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
-import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
-import type { GraphQLOptionsArg, GraphQLSortArg, Context } from "../types";
+import createProjectionAndParams from "./create-projection-and-params";
+import type { GraphQLOptionsArg, Context, GraphQLWhereArg, CypherFieldReferenceMap } from "../types";
 import { createAuthPredicates } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createMatchClause } from "./translate-top-level-match";
@@ -45,27 +43,39 @@ export function translateRead(
     const { resolveTree } = context;
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
 
+    const cypherFieldAliasMap: CypherFieldReferenceMap = {};
+
+    const where = resolveTree.args.where as GraphQLWhereArg | undefined;
+
     let projAuth: Cypher.Clause | undefined;
 
-    const topLevelMatch = createMatchClause({
+    const {
+        matchClause: topLevelMatch,
+        preComputedWhereFieldSubqueries,
+        whereClause: topLevelWhereClause,
+    } = createMatchClause({
         matchNode,
         node,
         context,
         operation: "READ",
+        where,
     });
 
     const projection = createProjectionAndParams({
         node,
         context,
         resolveTree,
-        varName,
+        varName: new Cypher.NamedNode(varName),
+        cypherFieldAliasMap,
     });
 
-    if (projection.meta?.authValidateStrs?.length) {
-        projAuth = new Cypher.RawCypher(
-            `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
-                " AND "
-            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+    if (projection.meta?.authValidatePredicates?.length) {
+        projAuth = new Cypher.CallProcedure(
+            new Cypher.apoc.Validate(
+                Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                AUTH_FORBIDDEN_ERROR,
+                new Cypher.Literal([0])
+            )
         );
     }
 
@@ -80,7 +90,7 @@ export function translateRead(
     });
 
     if (authPredicates) {
-        topLevelMatch.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR));
+        topLevelWhereClause.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR));
     }
 
     const projectionSubqueries = Cypher.concat(...projection.subqueries);
@@ -111,12 +121,12 @@ export function translateRead(
             nodeField: node.singular,
             fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
             cypherFields: node.cypherFields,
-            varName,
+            cypherFieldAliasMap,
         });
     }
 
-    const projectionExpression = new Cypher.RawCypher(() => {
-        return [`${varName} ${projection.projection}`, projection.params];
+    const projectionExpression = new Cypher.RawCypher((env) => {
+        return [`${varName} ${projection.projection.getCypher(env)}`, projection.params];
     });
 
     let returnClause = new Cypher.Return([projectionExpression, varName]);
@@ -128,20 +138,30 @@ export function translateRead(
         );
     }
 
-    if (!projectionSubqueries.empty && hasOrdering) {
-        addSortAndLimitOptionsToClause({
-            optionsInput,
-            target: matchNode,
-            projectionClause: returnClause,
-            nodeField: node.singular,
-            fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
-        });
-    }
-
     let projectionClause: Cypher.Clause = returnClause; // TODO avoid reassign
     let connectionPreClauses: Cypher.Clause | undefined;
 
     if (isRootConnectionField) {
+        const hasConnectionOrdering = resolveTree.args.first || resolveTree.args.after || resolveTree.args.sort;
+        if (hasConnectionOrdering) {
+            const afterInput = resolveTree.args.after as string | undefined;
+            const offset = afterInput ? cursorToOffset(afterInput) + 1 : undefined;
+            orderClause = new Cypher.With("*");
+            addSortAndLimitOptionsToClause({
+                optionsInput: {
+                    sort: resolveTree.args.sort as any,
+                    limit: resolveTree.args.first as any,
+                    offset,
+                },
+                target: matchNode,
+                projectionClause: orderClause as Cypher.With,
+                nodeField: node.singular,
+                fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
+                cypherFields: node.cypherFields,
+                cypherFieldAliasMap,
+            });
+        }
+
         // TODO: unify with createConnectionClause
         const edgesVar = new Cypher.NamedVariable("edges");
         const edgeVar = new Cypher.NamedVariable("edge");
@@ -160,7 +180,6 @@ export function translateRead(
         });
 
         const withTotalCount = new Cypher.With([connectionEdge, edgeVar], totalCountVar, matchNode);
-        const connectionClause = getConnectionSortClause({ context, projection, varName });
         const returnClause = new Cypher.With([Cypher.collect(edgeVar), edgesVar], totalCountVar).return([
             new Cypher.Map({
                 edges: edgesVar,
@@ -169,21 +188,17 @@ export function translateRead(
             matchNode,
         ]);
 
-        if (!projectionSubqueries.empty && hasOrdering) {
-            addSortAndLimitOptionsToClause({
-                optionsInput,
-                target: matchNode,
-                projectionClause: returnClause,
-                nodeField: node.singular,
-                fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
-            });
-        }
-
-        projectionClause = Cypher.concat(withTotalCount, connectionClause, returnClause);
+        projectionClause = Cypher.concat(withTotalCount, returnClause);
     }
+
+    const preComputedWhereFields =
+        preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty
+            ? Cypher.concat(preComputedWhereFieldSubqueries, topLevelWhereClause)
+            : undefined;
 
     const readQuery = Cypher.concat(
         topLevelMatch,
+        preComputedWhereFields,
         projAuth,
         connectionPreClauses,
         projectionSubqueriesBeforeSort,
@@ -191,65 +206,5 @@ export function translateRead(
         projectionSubqueries,
         projectionClause
     );
-
     return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
-}
-
-function getConnectionSortClause({
-    context,
-    projection,
-    varName,
-}: {
-    context: Context;
-    projection: ProjectionResult;
-    varName: string;
-}): Cypher.Clause {
-    const { resolveTree } = context;
-
-    const afterInput = resolveTree.args.after as string | undefined;
-    const firstInput = resolveTree.args.first as Integer | number | undefined;
-    const sortInput = resolveTree.args.sort as GraphQLSortArg[];
-
-    const cypherParams = {} as Record<string, any>;
-
-    const hasAfter = Boolean(afterInput);
-    const hasFirst = Boolean(firstInput);
-    const hasSort = Boolean(sortInput && sortInput.length);
-
-    const sortCypherFields = projection.meta?.cypherSortFields ?? [];
-
-    let sortStr = "";
-    if (hasSort) {
-        const sortArr = sortInput.reduce((res: string[], sort: GraphQLSortArg) => {
-            return [
-                ...res,
-                ...Object.entries(sort).map(([field, direction]) => {
-                    // if the sort arg is a cypher field, substitaute "edges" for varName
-                    const varOrEdgeName = sortCypherFields.find((x) => x === field) ? "edge.node" : varName;
-                    return `${varOrEdgeName}.${field} ${direction}`;
-                }),
-            ];
-        }, []);
-
-        sortStr = `ORDER BY ${sortArr.join(", ")}`;
-    }
-
-    let offsetStr = "";
-    if (hasAfter && typeof afterInput === "string") {
-        const offset = cursorToOffset(afterInput) + 1;
-        if (offset && offset !== 0) {
-            offsetStr = `SKIP $${varName}_offset`;
-            cypherParams[`${varName}_offset`] = int(offset);
-        }
-    }
-
-    let limitStr = "";
-    if (hasFirst) {
-        limitStr = `LIMIT $${varName}_limit`;
-        cypherParams[`${varName}_limit`] = firstInput;
-    }
-
-    return new Cypher.RawCypher(() => {
-        return [[sortStr, offsetStr, limitStr].join("\n"), cypherParams];
-    });
 }

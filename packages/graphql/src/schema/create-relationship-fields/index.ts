@@ -17,11 +17,14 @@
  * limitations under the License.
  */
 
-import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { Directive, InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
-import pluralize from "pluralize";
 import { Node } from "../../classes";
-import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGGREGATION_TYPES } from "../../constants";
+import {
+    WHERE_AGGREGATION_AVERAGE_TYPES,
+    AGGREGATION_COMPARISON_OPERATORS,
+    WHERE_AGGREGATION_TYPES,
+} from "../../constants";
 import type { BaseField, RelationField } from "../../types";
 import type { ObjectFields } from "../get-obj-field-meta";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
@@ -29,6 +32,14 @@ import { FieldAggregationComposer } from "../aggregations/field-aggregation-comp
 import { upperFirst } from "../../utils/upper-first";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
+import type { Subgraph } from "../../classes/Subgraph";
+import { overwrite } from "./fields/overwrite";
+import {
+    DEPRECATE_NOT,
+    DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS,
+    DEPRECATE_INVALID_AGGREGATION_FILTERS,
+} from "../constants";
+import { addRelationshipArrayFilters } from "../augment/add-relationship-array-filters";
 
 function createRelationshipFields({
     relationshipFields,
@@ -38,6 +49,7 @@ function createRelationshipFields({
     sourceName,
     nodes,
     relationshipPropertyFields,
+    subgraph,
 }: {
     relationshipFields: RelationField[];
     schemaComposer: SchemaComposer;
@@ -45,6 +57,7 @@ function createRelationshipFields({
     sourceName: string;
     nodes: Node[];
     relationshipPropertyFields: Map<string, ObjectFields>;
+    subgraph?: Subgraph;
 }): void {
     const whereInput = schemaComposer.getITC(`${sourceName}Where`);
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
@@ -437,13 +450,20 @@ function createRelationshipFields({
                     name: whereName,
                     fields: {
                         node: `${n.name}Where`,
-                        node_NOT: `${n.name}Where`,
+                        node_NOT: {
+                            type: `${n.name}Where`,
+                            directives: [DEPRECATE_NOT],
+                        },
                         AND: `[${whereName}!]`,
                         OR: `[${whereName}!]`,
+                        NOT: whereName,
                         ...(rel.properties
                             ? {
                                   edge: `${rel.properties}Where`,
-                                  edge_NOT: `${rel.properties}Where`,
+                                  edge_NOT: {
+                                      type: `${rel.properties}Where`,
+                                      directives: [DEPRECATE_NOT],
+                                  },
                               }
                             : {}),
                     },
@@ -581,13 +601,17 @@ function createRelationshipFields({
                 fields: {
                     AND: `[${name}!]`,
                     OR: `[${name}!]`,
+                    NOT: name,
                 },
             });
 
             fields.forEach((field) => {
                 if (field.typeMeta.name === "ID") {
                     aggregationInput.addFields({
-                        [`${field.fieldName}_EQUAL`]: "ID",
+                        [`${field.fieldName}_EQUAL`]: {
+                            type: `ID`,
+                            directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                        },
                     });
 
                     return;
@@ -595,13 +619,28 @@ function createRelationshipFields({
 
                 if (field.typeMeta.name === "String") {
                     aggregationInput.addFields(
-                        WHERE_AGGREGATION_OPERATORS.reduce((res, operator) => {
+                        AGGREGATION_COMPARISON_OPERATORS.reduce((res, operator) => {
                             return {
                                 ...res,
-                                [`${field.fieldName}_${operator}`]: `${operator === "EQUAL" ? "String" : "Int"}`,
-                                [`${field.fieldName}_AVERAGE_${operator}`]: "Float",
-                                [`${field.fieldName}_LONGEST_${operator}`]: "Int",
-                                [`${field.fieldName}_SHORTEST_${operator}`]: "Int",
+                                [`${field.fieldName}_${operator}`]: {
+                                    type: `${operator === "EQUAL" ? "String" : "Int"}`,
+                                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                                },
+                                [`${field.fieldName}_AVERAGE_${operator}`]: {
+                                    type: "Float",
+                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
+                                },
+                                [`${field.fieldName}_LONGEST_${operator}`]: {
+                                    type: "Int",
+                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
+                                },
+                                [`${field.fieldName}_SHORTEST_${operator}`]: {
+                                    type: "Int",
+                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
+                                },
+                                [`${field.fieldName}_AVERAGE_LENGTH_${operator}`]: "Float",
+                                [`${field.fieldName}_LONGEST_LENGTH_${operator}`]: "Int",
+                                [`${field.fieldName}_SHORTEST_LENGTH_${operator}`]: "Int",
                             };
                         }, {})
                     );
@@ -611,7 +650,7 @@ function createRelationshipFields({
 
                 if (WHERE_AGGREGATION_AVERAGE_TYPES.includes(field.typeMeta.name)) {
                     aggregationInput.addFields(
-                        WHERE_AGGREGATION_OPERATORS.reduce((res, operator) => {
+                        AGGREGATION_COMPARISON_OPERATORS.reduce((res, operator) => {
                             let averageType = "Float";
 
                             if (field.typeMeta.name === "BigInt") {
@@ -624,7 +663,10 @@ function createRelationshipFields({
 
                             return {
                                 ...res,
-                                [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                                [`${field.fieldName}_${operator}`]: {
+                                    type: field.typeMeta.name,
+                                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                                },
                                 [`${field.fieldName}_AVERAGE_${operator}`]: averageType,
                                 [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
                                 [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
@@ -639,10 +681,13 @@ function createRelationshipFields({
                 }
 
                 aggregationInput.addFields(
-                    WHERE_AGGREGATION_OPERATORS.reduce(
+                    AGGREGATION_COMPARISON_OPERATORS.reduce(
                         (res, operator) => ({
                             ...res,
-                            [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                            [`${field.fieldName}_${operator}`]: {
+                                type: field.typeMeta.name,
+                                directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                            },
                             [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
                             [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
                         }),
@@ -664,6 +709,7 @@ function createRelationshipFields({
                 count_GTE: "Int",
                 AND: `[${relationshipWhereTypeInputName}!]`,
                 OR: `[${relationshipWhereTypeInputName}!]`,
+                NOT: relationshipWhereTypeInputName,
                 ...(nodeWhereAggregationInput ? { node: nodeWhereAggregationInput } : {}),
                 ...(edgeWhereAggregationInput ? { edge: edgeWhereAggregationInput } : {}),
             },
@@ -673,11 +719,9 @@ function createRelationshipFields({
             ...{
                 [rel.fieldName]: {
                     type: `${n.name}Where`,
-                    directives: deprecatedDirectives,
                 },
                 [`${rel.fieldName}_NOT`]: {
                     type: `${n.name}Where`,
-                    directives: deprecatedDirectives,
                 },
                 [`${rel.fieldName}Aggregate`]: {
                     type: whereAggregateInput,
@@ -688,41 +732,14 @@ function createRelationshipFields({
 
         // n..m Relationships
         if (rel.typeMeta.array) {
-            // Add filters for each list predicate
-            whereInput.addFields(
-                (["ALL", "NONE", "SINGLE", "SOME"] as const).reduce(
-                    (acc, filter) => ({
-                        ...acc,
-                        [`${rel.fieldName}_${filter}`]: {
-                            type: `${n.name}Where`,
-                            // e.g. "Return Movies where all of the related Actors match this filter"
-                            description: `Return ${pluralize(sourceName)} where ${
-                                filter !== "SINGLE" ? filter.toLowerCase() : "one"
-                            } of the related ${pluralize(rel.typeMeta.name)} match this filter`,
-                            directives: deprecatedDirectives,
-                        },
-                    }),
-                    {}
-                )
-            );
-
-            // Deprecate existing filters
-            whereInput.setFieldDirectives(rel.fieldName, [
-                {
-                    name: "deprecated",
-                    args: {
-                        reason: `Use \`${rel.fieldName}_SOME\` instead.`,
-                    },
-                },
-            ]);
-            whereInput.setFieldDirectives(`${rel.fieldName}_NOT`, [
-                {
-                    name: "deprecated",
-                    args: {
-                        reason: `Use \`${rel.fieldName}_NONE\` instead.`,
-                    },
-                },
-            ]);
+            addRelationshipArrayFilters({
+                whereInput,
+                fieldName: rel.fieldName,
+                sourceName,
+                relatedType: rel.typeMeta.name,
+                whereType: `${n.name}Where`,
+                directives: deprecatedDirectives,
+            });
         }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;
@@ -754,29 +771,43 @@ function createRelationshipFields({
                 ...(hasNonGeneratedProperties
                     ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
                     : {}),
+                overwrite,
             });
+            tc.makeFieldNonNull("overwrite");
         });
 
         if (!rel.writeonly) {
-            const nodeFieldsBaseArgs = {
-                where: `${rel.typeMeta.name}Where`,
-                options: `${rel.typeMeta.name}Options`,
+            const relationshipField: { type: string; description?: string; directives: Directive[]; args?: any } = {
+                type: rel.typeMeta.pretty,
+                description: rel.description,
+                directives: graphqlDirectivesToCompose(rel.otherDirectives),
             };
 
-            const nodeFieldsArgs = addDirectedArgument(nodeFieldsBaseArgs, rel);
+            let generateRelFieldArgs = true;
+
+            // Subgraph schemas do not support arguments on relationship fields (singular)
+            if (subgraph) {
+                if (!rel.typeMeta.array) {
+                    generateRelFieldArgs = false;
+                }
+            }
+
+            if (generateRelFieldArgs) {
+                const nodeFieldsBaseArgs = {
+                    where: `${rel.typeMeta.name}Where`,
+                    options: `${rel.typeMeta.name}Options`,
+                };
+                const nodeFieldsArgs = addDirectedArgument(nodeFieldsBaseArgs, rel);
+                relationshipField.args = nodeFieldsArgs;
+            }
 
             composeNode.addFields({
-                [rel.fieldName]: {
-                    type: rel.typeMeta.pretty,
-                    args: nodeFieldsArgs,
-                    description: rel.description,
-                    directives: graphqlDirectivesToCompose(rel.otherDirectives),
-                },
+                [rel.fieldName]: relationshipField,
             });
 
             if (composeNode instanceof ObjectTypeComposer) {
                 const baseTypeName = `${sourceName}${n.name}${upperFirst(rel.fieldName)}`;
-                const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer);
+                const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, subgraph);
 
                 const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
                     baseTypeName,

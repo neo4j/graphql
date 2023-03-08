@@ -20,33 +20,49 @@
 import jsonwebtoken from "jsonwebtoken";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
+import type { RequestLike } from "./types";
+import { AUTH_JWT_PLUGIN_NULL_SECRET_EXCEPTION } from "./exceptions";
 
 const debug = Debug(DEBUG_PREFIX);
 
 export interface JWTPluginInput {
-    secret: jsonwebtoken.Secret;
+    secret: jsonwebtoken.Secret | ((req: RequestLike) => jsonwebtoken.Secret);
     noVerify?: boolean;
     globalAuthentication?: boolean;
     rolesPath?: string;
+    bindPredicate?: "all" | "any";
 }
 
 class Neo4jGraphQLAuthJWTPlugin {
-    private secret: jsonwebtoken.Secret;
+    private secret: jsonwebtoken.Secret | null = null;
     private noVerify?: boolean;
     rolesPath?: string;
     isGlobalAuthenticationEnabled?: boolean;
+    input: JWTPluginInput;
+    bindPredicate: "all" | "any";
 
     constructor(input: JWTPluginInput) {
-        this.secret = input.secret;
+        this.input = input;
+
+        this.secret = typeof input.secret === "function" ? null : input.secret;
         this.noVerify = input.noVerify;
         this.rolesPath = input.rolesPath;
         this.isGlobalAuthenticationEnabled = input.globalAuthentication || false;
+        this.bindPredicate = input.bindPredicate || "all";
 
         if (this.noVerify && this.isGlobalAuthenticationEnabled) {
             throw new Error(
                 "Neo4jGraphQLAuthJWTPlugin, noVerify and globalAuthentication can not both be enabled simultaneously."
             );
         }
+    }
+
+    tryToResolveKeys(req: RequestLike): void {
+        if (typeof this.input.secret !== "function") return;
+
+        this.secret = this.input.secret(req);
+
+        return;
     }
 
     /* eslint-disable @typescript-eslint/require-await */
@@ -59,16 +75,21 @@ class Neo4jGraphQLAuthJWTPlugin {
 
                 result = jsonwebtoken.decode(token, { json: true }) as unknown as T;
             }
-
             if (this.secret) {
                 debug("Verifying JWT using secret");
 
                 result = jsonwebtoken.verify(token, this.secret, {
                     algorithms: ["HS256", "RS256"],
                 }) as unknown as T;
+            } else if (typeof this.input.secret === "function" && !this.secret) {
+                debug("'secret' should not be null, make sure the 'tryToResolveKeys' is ran before the decode method.");
+                throw AUTH_JWT_PLUGIN_NULL_SECRET_EXCEPTION;
             }
         } catch (error) {
             debug("%s", error);
+            if (error === AUTH_JWT_PLUGIN_NULL_SECRET_EXCEPTION) {
+                throw error;
+            }
         }
 
         return result;

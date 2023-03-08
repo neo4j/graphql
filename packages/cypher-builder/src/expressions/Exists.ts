@@ -20,8 +20,12 @@
 import type { CypherEnvironment } from "../Environment";
 import type { Clause } from "../clauses/Clause";
 import { CypherASTNode } from "../CypherASTNode";
-import { padBlock } from "../utils/utils";
+import { padBlock } from "../utils/pad-block";
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/expressions/#existential-subqueries)
+ * @group Expressions
+ */
 export class Exists extends CypherASTNode {
     private subQuery: CypherASTNode;
 
@@ -32,6 +36,9 @@ export class Exists extends CypherASTNode {
         this.subQuery = rootQuery;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const subQueryStr = this.subQuery.getCypher(env);
         const paddedSubQuery = padBlock(subQueryStr);

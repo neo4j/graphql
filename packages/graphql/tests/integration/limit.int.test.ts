@@ -22,11 +22,11 @@ import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src";
-import { generateUniqueType } from "../utils/graphql-types";
+import { UniqueType } from "../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/1628", () => {
-    const workType = generateUniqueType("Work");
-    const titleType = generateUniqueType("Title");
+    const workType = new UniqueType("Work");
+    const titleType = new UniqueType("Title");
 
     let schema: GraphQLSchema;
     let neo4j: Neo4j;
@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
         driver = await neo4j.getDriver();
 
         const typeDefs = `
-            type ${workType} @node(additionalLabels: ["Resource"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+            type ${workType} @node(labels: ["${workType}", "Resource"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 """
                 IRI
                 """
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
                 title: [${titleType}!]! @relationship(type: "title", direction: OUT)
             }
 
-            type ${titleType} @node(additionalLabels: ["property"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+            type ${titleType} @node(labels: ["${titleType}", "property"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 value: String
             }
         `;

@@ -21,7 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/2267", () => {
@@ -40,9 +40,9 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
     });
 
     beforeEach(async () => {
-        Place = generateUniqueType("Place");
-        Post = generateUniqueType("Post");
-        Story = generateUniqueType("Story");
+        Place = new UniqueType("Place");
+        Post = new UniqueType("Post");
+        Story = new UniqueType("Story");
 
         session = await neo4j.getSession();
 
@@ -69,11 +69,11 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
         `;
 
         await session.run(`
-        CREATE(:${Place} {displayName: "786 aa"})
+        CREATE(:${Place} {displayName: "786 aa"})<-[:ACTIVITY]-(:${Post} {name: "A post"})
         CREATE(:${Place} {displayName: "8 à Huita"})
         CREATE(:${Place} {displayName: "9ème Sauvagea"})<-[:ACTIVITY]-(:${Story} {name: "A story"})
         CREATE(:${Place} {displayName: "A One Shopa"})
-        CREATE(:${Place} {displayName: "zaza"})
+        CREATE(:${Place} {displayName: "zaza"})<-[:ACTIVITY]-(:${Post} {name: "Another post"})
         `);
 
         neoSchema = new Neo4jGraphQL({
@@ -151,7 +151,11 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
             [Place.plural]: [
                 {
                     displayName: "786 aa",
-                    activity: [],
+                    activity: [
+                        {
+                            name: "A post",
+                        },
+                    ],
                 },
                 {
                     displayName: "8 à Huita",
@@ -171,7 +175,11 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
                 },
                 {
                     displayName: "zaza",
-                    activity: [],
+                    activity: [
+                        {
+                            name: "Another post",
+                        },
+                    ],
                 },
             ],
         });

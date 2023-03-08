@@ -58,8 +58,12 @@ class Neo4j {
         const driver = neo4j.driver(NEO_URL, auth);
 
         try {
-            await driver.verifyConnectivity({ database: INT_TEST_DB_NAME });
-            this.hasIntegrationTestDb = true;
+            if (process.env.USE_DEFAULT_DB) {
+                await this.checkConnectivityToDefaultDatabase(driver, NEO_URL);
+            } else {
+                await driver.verifyConnectivity({ database: INT_TEST_DB_NAME });
+                this.hasIntegrationTestDb = true;
+            }
         } catch (error: any) {
             if (
                 error.message.includes("Could not perform discovery. No routing servers available.") ||

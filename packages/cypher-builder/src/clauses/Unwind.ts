@@ -27,6 +27,10 @@ import { mixin } from "./utils/mixin";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Unwind extends WithWith {}
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/unwind/)
+ * @group Clauses
+ */
 @mixin(WithWith)
 export class Unwind extends Clause {
     private projection: Projection;
@@ -40,6 +44,9 @@ export class Unwind extends Clause {
         this.projection.addColumns(columns);
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
         const withCypher = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });

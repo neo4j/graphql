@@ -21,8 +21,8 @@ import type { CypherEnvironment } from "../Environment";
 import { Projection } from "./sub-clauses/Projection";
 import type { Expr } from "../types";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
-import type { Literal } from "../variables/Literal";
-import type { Variable } from "../variables/Variable";
+import type { Literal } from "../references/Literal";
+import type { Variable } from "../references/Variable";
 import { Clause } from "./Clause";
 import { DeleteClause, DeleteInput } from "./sub-clauses/Delete";
 import { WithOrder } from "./mixins/WithOrder";
@@ -35,6 +35,10 @@ export type WithProjection = Variable | [Expr, string | Variable | Literal];
 
 export interface With extends WithOrder, WithReturn, WithWhere {}
 
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/with/)
+ * @group Clauses
+ */
 @mixin(WithOrder, WithReturn, WithWhere)
 export class With extends Clause {
     private projection: Projection;
@@ -57,6 +61,9 @@ export class With extends Clause {
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
         const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });

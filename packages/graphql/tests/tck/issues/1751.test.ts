@@ -84,10 +84,18 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
 WHERE this.title = $param0
 WITH this
 OPTIONAL MATCH (this)-[this_admins0_relationship:HAS_ADMINISTRATOR]->(this_admins0:Admin)
-WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this_admins0)<-[aggr_edge:HAS_ADMINISTRATOR]-(aggr_node:Organization)
-RETURN count(aggr_node) = $aggr_count
-\\", { this_admins0: this_admins0, aggr_count: $aggr_count })
-WITH this, collect(DISTINCT this_admins0) as this_admins0_to_delete
+CALL {
+    WITH this_admins0
+    MATCH (this_admins0)<-[this_deleteOrganizations_args_delete_admins0_where_this_admins0this1:HAS_ADMINISTRATOR]-(this_deleteOrganizations_args_delete_admins0_where_this_admins0this2:\`Organization\`)
+    RETURN count(this_deleteOrganizations_args_delete_admins0_where_this_admins0this2) = $this_deleteOrganizations_args_delete_admins0_where_this_admins0param0 AS this_deleteOrganizations_args_delete_admins0_where_this_admins0var0
+}
+WITH *, CASE this_deleteOrganizations_args_delete_admins0_where_this_admins0var0 = true
+    WHEN true THEN [ this_admins0_relationship, this_admins0 ]
+    ELSE [ NULL, NULL ]
+END AS aggregateWhereFiltervar0
+WITH *, aggregateWhereFiltervar0[0] AS this_admins0_relationship, aggregateWhereFiltervar0[1] AS this_admins0
+WITH this, collect(DISTINCT this_admins0) AS this_admins0_to_delete
+ORDER BY this_admins0_to_delete DESC
 CALL {
 	WITH this_admins0_to_delete
 	UNWIND this_admins0_to_delete AS x
@@ -100,7 +108,27 @@ DETACH DELETE this"
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Google\\",
-                \\"aggr_count\\": {
+                \\"this_deleteOrganizations\\": {
+                    \\"args\\": {
+                        \\"delete\\": {
+                            \\"admins\\": [
+                                {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"organizationsAggregate\\": {
+                                                \\"count\\": {
+                                                    \\"low\\": 1,
+                                                    \\"high\\": 0
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                \\"this_deleteOrganizations_args_delete_admins0_where_this_admins0param0\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 }

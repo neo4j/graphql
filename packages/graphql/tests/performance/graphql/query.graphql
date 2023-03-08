@@ -46,6 +46,34 @@ query DeeplyNested_skip {
     }
 }
 
+query Nested {
+    movies {
+        actors {
+            name
+            movies {
+                title
+                actors {
+                    name
+                }
+            }
+        }
+    }
+}
+
+query NestedWithFilter {
+    movies {
+        actors(where: { born_GT: 1000 }) {
+            name
+            movies(where: { title_CONTAINS: "Shark" }) {
+                title
+                actors {
+                    name
+                }
+            }
+        }
+    }
+}
+
 query OrFilterOnRelationships {
     movies(
         where: {
@@ -146,7 +174,24 @@ query DeeplyNestedWithRelationshipFilters {
     }
 }
 
-query DeeplyNestedWithRelationshipSingleFilters {
+query NestedWithRelationshipSingleFilters {
+    people(
+        where: {
+            name_STARTS_WITH: "T"
+            movies_SINGLE: {
+                title_CONTAINS: "i"
+                actors_SINGLE: {
+                    name_CONTAINS: "i"
+                }
+            }
+        }
+    ) {
+        name
+    }
+}
+
+# Skipped due to cypher bug causing poor performance of deeply nested SINGLE filters on Neo4j 5
+query DeeplyNestedWithRelationshipSingleFilters_skip {
     people(
         where: {
             name_STARTS_WITH: "T"

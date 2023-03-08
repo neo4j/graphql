@@ -121,35 +121,35 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (this.current = $param0 AND size([(this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`) WHERE (this0.current = $param1 AND size([(this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`) WHERE (this2.current = $param2 AND this3.fullName = $param3) | 1]) = 1) | 1]) = 1 AND size([(this)-[this4:HAS_NAME]->(this5:\`NameDetails\`) WHERE (this4.current = $param4 AND this5.fullName CONTAINS $param5) | 1]) = 1)
+            WHERE (this.current = $param0 AND single(this3 IN [(this)-[this0:ARCHITECTURE]->(this3:\`MasterData\`) WHERE (this0.current = $param1 AND single(this2 IN [(this3)-[this1:HAS_NAME]->(this2:\`NameDetails\`) WHERE (this1.current = $param2 AND this2.fullName = $param3) | 1] WHERE true)) | 1] WHERE true) AND single(this5 IN [(this)-[this4:HAS_NAME]->(this5:\`NameDetails\`) WHERE (this4.current = $param4 AND this5.fullName CONTAINS $param5) | 1] WHERE true))
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_NameDetails:\`NameDetails\`)
-                WHERE this_connection_nameDetailsConnectionthis0.current = $this_connection_nameDetailsConnectionparam0
-                WITH { node: { fullName: this_NameDetails.fullName } } AS edge
+                MATCH (this)-[this6:HAS_NAME]->(this7:\`NameDetails\`)
+                WHERE this6.current = $param6
+                WITH { node: { fullName: this7.fullName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_nameDetailsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var8
             }
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_architectureConnectionthis0:ARCHITECTURE]->(this_MasterData:\`MasterData\`)
-                WHERE this_connection_architectureConnectionthis0.current = $this_connection_architectureConnectionparam0
+                MATCH (this)-[this9:ARCHITECTURE]->(this10:\`MasterData\`)
+                WHERE this9.current = $param7
                 CALL {
-                    WITH this_MasterData
-                    MATCH (this_MasterData)-[this_MasterData_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_MasterData_NameDetails:\`NameDetails\`)
-                    WHERE this_MasterData_connection_nameDetailsConnectionthis0.current = $this_MasterData_connection_nameDetailsConnectionparam0
-                    WITH { node: { fullName: this_MasterData_NameDetails.fullName } } AS edge
+                    WITH this10
+                    MATCH (this10:\`MasterData\`)-[this11:HAS_NAME]->(this12:\`NameDetails\`)
+                    WHERE this11.current = $param8
+                    WITH { node: { fullName: this12.fullName } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_MasterData_nameDetailsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS var13
                 }
-                WITH { node: { nameDetailsConnection: this_MasterData_nameDetailsConnection } } AS edge
+                WITH { node: { nameDetailsConnection: var13 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_architectureConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var14
             }
-            RETURN this { .id, nameDetailsConnection: this_nameDetailsConnection, architectureConnection: this_architectureConnection } AS this"
+            RETURN this { .id, nameDetailsConnection: var8, architectureConnection: var14 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -160,9 +160,9 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 \\"param3\\": \\"MHA\\",
                 \\"param4\\": true,
                 \\"param5\\": \\"1\\",
-                \\"this_connection_nameDetailsConnectionparam0\\": true,
-                \\"this_connection_architectureConnectionparam0\\": true,
-                \\"this_MasterData_connection_nameDetailsConnectionparam0\\": true
+                \\"param6\\": true,
+                \\"param7\\": true,
+                \\"param8\\": true
             }"
         `);
     });

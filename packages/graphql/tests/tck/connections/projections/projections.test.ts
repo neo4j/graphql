@@ -82,13 +82,13 @@ describe("Relay Cursor Connection projections", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WITH { node: { __resolveType: \\"Actor\\", __id: id(this1) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -125,13 +125,13 @@ describe("Relay Cursor Connection projections", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WITH { node: { __resolveType: \\"Actor\\", __id: id(this1) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -163,18 +163,30 @@ describe("Relay Cursor Connection projections", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WITH { node: { __resolveType: \\"Actor\\", __id: id(this1) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge
+                    LIMIT $param1
+                    RETURN collect(edge) AS var2
+                }
+                WITH var2 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"param1\\": {
+                    \\"low\\": 5,
+                    \\"high\\": 0
+                }
             }"
         `);
     });
@@ -203,20 +215,20 @@ describe("Relay Cursor Connection projections", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this_connection_productionsConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                    WITH { node: { __resolveType: \\"Movie\\" } } AS edge
+                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this_connection_productionsConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                    WITH { node: { __resolveType: \\"Series\\" } } AS edge
+                    MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                    WITH { node: { __resolveType: \\"Series\\", __id: id(this3) } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_productionsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { .name, productionsConnection: this_productionsConnection } AS this"
+            RETURN this { .name, productionsConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -255,20 +267,20 @@ describe("Relay Cursor Connection projections", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this_connection_productionsConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                    WITH { node: { __resolveType: \\"Movie\\" } } AS edge
+                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this_connection_productionsConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                    WITH { node: { __resolveType: \\"Series\\" } } AS edge
+                    MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                    WITH { node: { __resolveType: \\"Series\\", __id: id(this3) } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_productionsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { .name, productionsConnection: this_productionsConnection } AS this"
+            RETURN this { .name, productionsConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -305,13 +317,13 @@ describe("Relay Cursor Connection projections", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WITH { node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WITH { node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -348,18 +360,30 @@ describe("Relay Cursor Connection projections", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WITH { node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WITH { node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge
+                    LIMIT $param1
+                    RETURN collect(edge) AS var2
+                }
+                WITH var2 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"param1\\": {
+                    \\"low\\": 5,
+                    \\"high\\": 0
+                }
             }"
         `);
     });

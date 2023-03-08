@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { IResolvers, TypeSource } from "@graphql-tools/utils";
+import type { IResolvers } from "@graphql-tools/utils";
 import type {
     DefinitionNode,
     DocumentNode,
@@ -30,7 +30,6 @@ import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
 import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
-import { validateDocument } from "./validation";
 import type { BaseField, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings } from "../types";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { numericalResolver } from "./resolvers/field/numerical";
@@ -62,7 +61,6 @@ import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
 import { upperFirst } from "../utils/upper-first";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
-import { getDocument } from "./get-document";
 import { getDefinitionNodes } from "./get-definition-nodes";
 import { isRootType } from "../utils/is-root-type";
 
@@ -86,58 +84,62 @@ import { addGlobalNodeFields } from "./create-global-nodes";
 import { addMathOperatorsToITC } from "./math";
 import { addArrayMethodsToITC } from "./array-methods";
 import { FloatWhere } from "../graphql/input-objects/FloatWhere";
-import { ConcreteEntity } from "../schema-model/ConcreteEntity";
-import type { Entity } from "../schema-model/Entity";
-import { CompositeEntity } from "../schema-model/CompositeEntity";
+import type { Subgraph } from "../classes/Subgraph";
 
 function makeAugmentedSchema(
-    typeDefs: TypeSource,
+    document: DocumentNode,
     {
         features,
         enableRegex,
-        skipValidateTypeDefs,
+        validateResolvers,
         generateSubscriptions,
         callbacks,
         userCustomResolvers,
+        subgraph,
     }: {
         features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
-        skipValidateTypeDefs?: boolean;
+        validateResolvers: boolean;
         generateSubscriptions?: boolean;
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
-    } = {}
+        subgraph?: Subgraph;
+    } = { validateResolvers: true }
 ): {
     nodes: Node[];
     relationships: Relationship[];
-    entities: Map<string, Entity>;
     typeDefs: DocumentNode;
     resolvers: IResolvers;
 } {
-    const document = getDocument(typeDefs);
-
-    if (!skipValidateTypeDefs) {
-        validateDocument(document);
-    }
-
     const composer = new SchemaComposer();
 
     let relationships: Relationship[] = [];
 
-    composer.createObjectTC(CreateInfo);
-    composer.createObjectTC(DeleteInfo);
-    composer.createObjectTC(UpdateInfo);
-    composer.createObjectTC(PageInfo);
+    const createInfo = composer.createObjectTC(CreateInfo);
+    const deleteInfo = composer.createObjectTC(DeleteInfo);
+    const updateInfo = composer.createObjectTC(UpdateInfo);
+    const pageInfo = composer.createObjectTC(PageInfo);
+
+    if (subgraph) {
+        const shareable = subgraph.getFullyQualifiedDirectiveName("shareable");
+
+        createInfo.setDirectiveByName(shareable);
+        deleteInfo.setDirectiveByName(shareable);
+        updateInfo.setDirectiveByName(shareable);
+        pageInfo.setDirectiveByName(shareable);
+    }
+
     composer.createInputTC(QueryOptions);
     const sortDirection = composer.createEnumTC(SortDirection);
 
-    const aggregationTypesMapper = new AggregationTypesMapper(composer);
+    const aggregationTypesMapper = new AggregationTypesMapper(composer, subgraph);
 
     const customResolvers = getCustomResolvers(document);
 
     const definitionNodes = getDefinitionNodes(document);
 
-    const { scalarTypes, objectTypes, enumTypes, inputObjectTypes, directives, unionTypes } = definitionNodes;
+    const { scalarTypes, objectTypes, enumTypes, inputObjectTypes, directives, unionTypes, schemaExtensions } =
+        definitionNodes;
 
     let { interfaceTypes } = definitionNodes;
 
@@ -160,7 +162,7 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
+    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers, validateResolvers });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } =
         getNodesResult;
@@ -212,6 +214,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             obj: relationship,
             callbacks,
+            validateResolvers,
         });
 
         if (!pointInTypeDefs) {
@@ -300,6 +303,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             obj: interfaceRelationship,
             callbacks,
+            validateResolvers,
         });
 
         if (!pointInTypeDefs) {
@@ -420,6 +424,7 @@ function makeAugmentedSchema(
             sourceName: interfaceRelationship.name.value,
             nodes,
             relationshipPropertyFields: relationshipFields,
+            subgraph,
         });
 
         relationships = [
@@ -428,6 +433,7 @@ function makeAugmentedSchema(
                 connectionFields: interfaceFields.connectionFields,
                 schemaComposer: composer,
                 composeNode: composeInterface,
+                sourceName: interfaceRelationship.name.value,
                 nodes,
                 relationshipPropertyFields: relationshipFields,
             }),
@@ -536,15 +542,7 @@ function makeAugmentedSchema(
         composer.createInputTC(FloatWhere);
     }
 
-    const concreteEntities: Map<string, ConcreteEntity> = new Map();
-
     nodes.forEach((node) => {
-        const concreteEntity = new ConcreteEntity({ name: node.name });
-        if (concreteEntities.has(node.name)) {
-            throw new Error(`Duplicate node ${node.name}`);
-        }
-        concreteEntities.set(node.name, concreteEntity);
-
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
             ...node.cypherFields,
@@ -562,7 +560,7 @@ function makeAugmentedSchema(
             name: node.name,
             fields: nodeFields,
             description: node.description,
-            directives: graphqlDirectivesToCompose(node.otherDirectives),
+            directives: graphqlDirectivesToCompose([...node.otherDirectives, ...node.propagatedDirectives]),
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
@@ -641,27 +639,30 @@ function makeAugmentedSchema(
             args: {},
         };
 
-        composer.createObjectTC({
-            name: node.aggregateTypeNames.selection,
-            fields: {
-                count: countField,
-                ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
-                    if (field.typeMeta.array) {
+        if (node.federationResolvable) {
+            composer.createObjectTC({
+                name: node.aggregateTypeNames.selection,
+                fields: {
+                    count: countField,
+                    ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
+                        if (field.typeMeta.array) {
+                            return res;
+                        }
+                        const objectTypeComposer = aggregationTypesMapper.getAggregationType({
+                            fieldName: field.typeMeta.name,
+                            nullable: !field.typeMeta.required,
+                        });
+
+                        if (!objectTypeComposer) return res;
+
+                        res[field.fieldName] = objectTypeComposer.NonNull;
+
                         return res;
-                    }
-                    const objectTypeComposer = aggregationTypesMapper.getAggregationType({
-                        fieldName: field.typeMeta.name,
-                        nullable: !field.typeMeta.required,
-                    });
-
-                    if (!objectTypeComposer) return res;
-
-                    res[field.fieldName] = objectTypeComposer.NonNull;
-
-                    return res;
-                }, {}),
-            },
-        });
+                    }, {}),
+                },
+                directives: graphqlDirectivesToCompose(node.propagatedDirectives),
+            });
+        }
 
         const nodeWhereTypeName = `${node.name}Where`;
         composer.createInputTC({
@@ -706,21 +707,25 @@ function makeAugmentedSchema(
 
         const mutationResponseTypeNames = node.mutationResponseTypeNames;
 
-        composer.createObjectTC({
-            name: mutationResponseTypeNames.create,
-            fields: {
-                info: `CreateInfo!`,
-                [node.plural]: `[${node.name}!]!`,
-            },
-        });
+        if (node.federationResolvable) {
+            composer.createObjectTC({
+                name: mutationResponseTypeNames.create,
+                fields: {
+                    info: `CreateInfo!`,
+                    [node.plural]: `[${node.name}!]!`,
+                },
+                directives: graphqlDirectivesToCompose(node.propagatedDirectives),
+            });
 
-        composer.createObjectTC({
-            name: mutationResponseTypeNames.update,
-            fields: {
-                info: `UpdateInfo!`,
-                [node.plural]: `[${node.name}!]!`,
-            },
-        });
+            composer.createObjectTC({
+                name: mutationResponseTypeNames.update,
+                fields: {
+                    info: `UpdateInfo!`,
+                    [node.plural]: `[${node.name}!]!`,
+                },
+                directives: graphqlDirectivesToCompose(node.propagatedDirectives),
+            });
+        }
 
         createRelationshipFields({
             relationshipFields: node.relationFields,
@@ -729,6 +734,7 @@ function makeAugmentedSchema(
             sourceName: node.name,
             nodes,
             relationshipPropertyFields: relationshipFields,
+            subgraph,
         });
 
         relationships = [
@@ -737,6 +743,7 @@ function makeAugmentedSchema(
                 connectionFields: node.connectionFields,
                 schemaComposer: composer,
                 composeNode,
+                sourceName: node.name,
                 nodes,
                 relationshipPropertyFields: relationshipFields,
             }),
@@ -745,59 +752,76 @@ function makeAugmentedSchema(
         ensureNonEmptyInput(composer, `${node.name}UpdateInput`);
         ensureNonEmptyInput(composer, `${node.name}CreateInput`);
 
-        const rootTypeFieldNames = node.rootTypeFieldNames;
+        if (node.federationResolvable) {
+            const rootTypeFieldNames = node.rootTypeFieldNames;
 
-        if (!node.exclude?.operations.includes("read")) {
-            composer.Query.addFields({
-                [rootTypeFieldNames.read]: findResolver({ node }),
-            });
+            if (!node.exclude?.operations.includes("read")) {
+                composer.Query.addFields({
+                    [rootTypeFieldNames.read]: findResolver({ node }),
+                });
+                composer.Query.setFieldDirectives(
+                    rootTypeFieldNames.read,
+                    graphqlDirectivesToCompose(node.propagatedDirectives)
+                );
 
-            composer.Query.addFields({
-                [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
-            });
+                composer.Query.addFields({
+                    [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
+                });
+                composer.Query.setFieldDirectives(
+                    rootTypeFieldNames.aggregate,
+                    graphqlDirectivesToCompose(node.propagatedDirectives)
+                );
 
-            composer.Query.addFields({
-                [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
-            });
-        }
+                composer.Query.addFields({
+                    [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
+                });
+                composer.Query.setFieldDirectives(
+                    `${node.plural}Connection`,
+                    graphqlDirectivesToCompose(node.propagatedDirectives)
+                );
+            }
 
-        if (!node.exclude?.operations.includes("create")) {
-            composer.Mutation.addFields({
-                [rootTypeFieldNames.create]: createResolver({ node }),
-            });
-        }
+            if (!node.exclude?.operations.includes("create")) {
+                composer.Mutation.addFields({
+                    [rootTypeFieldNames.create]: createResolver({ node }),
+                });
+                composer.Mutation.setFieldDirectives(
+                    rootTypeFieldNames.create,
+                    graphqlDirectivesToCompose(node.propagatedDirectives)
+                );
+            }
 
-        if (!node.exclude?.operations.includes("delete")) {
-            composer.Mutation.addFields({
-                [rootTypeFieldNames.delete]: deleteResolver({ node }),
-            });
-        }
+            if (!node.exclude?.operations.includes("delete")) {
+                composer.Mutation.addFields({
+                    [rootTypeFieldNames.delete]: deleteResolver({ node }),
+                });
+                composer.Mutation.setFieldDirectives(
+                    rootTypeFieldNames.delete,
+                    graphqlDirectivesToCompose(node.propagatedDirectives)
+                );
+            }
 
-        if (!node.exclude?.operations.includes("update")) {
-            composer.Mutation.addFields({
-                [rootTypeFieldNames.update]: updateResolver({
-                    node,
-                    schemaComposer: composer,
-                }),
-            });
+            if (!node.exclude?.operations.includes("update")) {
+                composer.Mutation.addFields({
+                    [rootTypeFieldNames.update]: updateResolver({
+                        node,
+                        schemaComposer: composer,
+                    }),
+                });
+                composer.Mutation.setFieldDirectives(
+                    rootTypeFieldNames.update,
+                    graphqlDirectivesToCompose(node.propagatedDirectives)
+                );
+            }
         }
     });
-
-    const compositeEntities: Map<string, CompositeEntity> = new Map();
 
     unionTypes.forEach((union) => {
         if (!union.types) {
             throw new Error(`Union ${union.name.value} has no types`);
         }
 
-        const compositeConcreteEntities: ConcreteEntity[] = [];
-
         const fields = union.types.reduce((f, type) => {
-            const concreteEntity = concreteEntities.get(type.name.value);
-            if (!concreteEntity) {
-                throw new Error(`Could not find concrete entity with name ${type.name.value}`);
-            }
-            compositeConcreteEntities.push(concreteEntity);
             return { ...f, [type.name.value]: `${type.name.value}Where` };
         }, {});
 
@@ -805,16 +829,6 @@ function makeAugmentedSchema(
             name: `${union.name.value}Where`,
             fields,
         });
-
-        if (!compositeConcreteEntities.length) {
-            throw new Error(`Composite entity ${union.name.value} has no concrete entities`);
-        }
-        const compositeEntity = new CompositeEntity({
-            name: union.name.value,
-            concreteEntities: compositeConcreteEntities,
-        });
-
-        compositeEntities.set(union.name.value, compositeEntity);
     });
 
     if (generateSubscriptions) {
@@ -834,6 +848,7 @@ function makeAugmentedSchema(
                 unions: unionTypes,
                 objects: objectTypes,
                 callbacks,
+                validateResolvers,
             });
 
             const objectComposeFields = objectFieldsToComposeFields([
@@ -872,6 +887,7 @@ function makeAugmentedSchema(
             unions: unionTypes,
             objects: objectTypes,
             callbacks,
+            validateResolvers,
         });
 
         const baseFields: BaseField[][] = Object.values(objectFields);
@@ -950,29 +966,36 @@ function makeAugmentedSchema(
     const seen = {};
     parsedDoc = {
         ...parsedDoc,
-        definitions: parsedDoc.definitions.filter((definition) => {
-            if (!("name" in definition)) {
+        definitions: [
+            ...parsedDoc.definitions.filter((definition) => {
+                // Filter out default scalars, they are not needed and can cause issues
+                if (definition.kind === Kind.SCALAR_TYPE_DEFINITION) {
+                    if (["Boolean", "Float", "ID", "Int", "String"].includes(definition.name.value)) {
+                        return false;
+                    }
+                }
+
+                if (!("name" in definition)) {
+                    return true;
+                }
+
+                const n = definition.name?.value as string;
+
+                if (seen[n]) {
+                    return false;
+                }
+
+                seen[n] = n;
+
                 return true;
-            }
-
-            const n = definition.name?.value as string;
-
-            if (seen[n]) {
-                return false;
-            }
-
-            seen[n] = n;
-
-            return true;
-        }),
+            }),
+            ...schemaExtensions,
+        ],
     };
-
-    const entities: Map<string, Entity> = new Map([...concreteEntities, ...compositeEntities]);
 
     return {
         nodes,
         relationships,
-        entities,
         typeDefs: parsedDoc,
         resolvers: generatedResolvers,
     };

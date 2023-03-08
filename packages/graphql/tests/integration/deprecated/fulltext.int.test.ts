@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { delay } from "../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
 
@@ -84,7 +84,7 @@ describe("@fulltext directive", () => {
 
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
@@ -180,7 +180,7 @@ describe("@fulltext directive", () => {
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName1 = generate({ readable: true, charset: "alphabetic" });
         const indexName2 = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }, { name: "${indexName2}", fields: ["description"] }]) {
@@ -230,10 +230,11 @@ describe("@fulltext directive", () => {
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const label = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
+            #type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                 title: String!
             }
         `;
@@ -326,10 +327,11 @@ describe("@fulltext directive", () => {
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const label = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
+            #type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                 title: String! @alias(property: "newTitle")
             }
         `;
@@ -420,7 +422,7 @@ describe("@fulltext directive", () => {
         }
 
         const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
@@ -447,7 +449,7 @@ describe("@fulltext directive", () => {
         }
 
         const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
@@ -488,7 +490,7 @@ describe("@fulltext directive", () => {
 
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const alias = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
@@ -533,7 +535,7 @@ describe("@fulltext directive", () => {
 
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
@@ -613,7 +615,7 @@ describe("@fulltext directive", () => {
         }
 
         const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
@@ -657,7 +659,7 @@ describe("@fulltext directive", () => {
 
         const id = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["id"] }]) {

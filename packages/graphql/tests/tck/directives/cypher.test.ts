@@ -135,10 +135,10 @@ describe("Cypher directive", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                RETURN a\\", { this: this, auth: $auth }) AS this_topActor
-                RETURN head(collect(this_topActor { .name })) AS this_topActor
+                RETURN a\\", { this: this, auth: $auth }) AS this0
+                RETURN head(collect(this0 { .name })) AS this0
             }
-            RETURN this { .title, topActor: this_topActor } AS this"
+            RETURN this { .title, topActor: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -169,10 +169,10 @@ describe("Cypher directive", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this_randomNumber
-                RETURN head(collect(this_randomNumber)) AS this_randomNumber
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this0
+                RETURN head(collect(this0)) AS this0
             }
-            RETURN this { randomNumber: this_randomNumber } AS this"
+            RETURN this { randomNumber: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -205,20 +205,15 @@ describe("Cypher directive", () => {
             LIMIT $param0
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this_randomNumber
-                RETURN head(collect(this_randomNumber)) AS this_randomNumber
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this0
+                RETURN head(collect(this0)) AS this0
             }
-            RETURN this { randomNumber: this_randomNumber } AS this
-            LIMIT $param2"
+            RETURN this { randomNumber: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 10,
-                    \\"high\\": 0
-                },
-                \\"param2\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
@@ -248,13 +243,13 @@ describe("Cypher directive", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this_randomNumber
-                RETURN head(collect(this_randomNumber)) AS this_randomNumber
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this0
+                RETURN head(collect(this0)) AS this0
             }
             WITH *
-            ORDER BY this_randomNumber ASC
+            ORDER BY this0 ASC
             LIMIT $param1
-            RETURN this { randomNumber: this_randomNumber } AS this"
+            RETURN this { randomNumber: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -296,16 +291,16 @@ describe("Cypher directive", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                RETURN a\\", { this: this, auth: $auth }) AS this_topActor
+                RETURN a\\", { this: this, auth: $auth }) AS this0
                 CALL {
-                    WITH this_topActor
+                    WITH this0
                     UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-                    RETURN m\\", { title: $param1, this: this_topActor, auth: $auth }) AS this_topActor_movies
-                    RETURN collect(this_topActor_movies { .title }) AS this_topActor_movies
+                    RETURN m\\", { title: $param1, this: this0, auth: $auth }) AS this1
+                    RETURN collect(this1 { .title }) AS this1
                 }
-                RETURN head(collect(this_topActor { .name, movies: this_topActor_movies })) AS this_topActor
+                RETURN head(collect(this0 { .name, movies: this1 })) AS this0
             }
-            RETURN this { .title, topActor: this_topActor } AS this"
+            RETURN this { .title, topActor: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -350,28 +345,28 @@ describe("Cypher directive", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                RETURN a\\", { this: this, auth: $auth }) AS this_topActor
+                RETURN a\\", { this: this, auth: $auth }) AS this0
                 CALL {
-                    WITH this_topActor
+                    WITH this0
                     UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-                    RETURN m\\", { title: $param1, this: this_topActor, auth: $auth }) AS this_topActor_movies
+                    RETURN m\\", { title: $param1, this: this0, auth: $auth }) AS this1
                     CALL {
-                        WITH this_topActor_movies
+                        WITH this1
                         UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                        RETURN a\\", { this: this_topActor_movies, auth: $auth }) AS this_topActor_movies_topActor
+                        RETURN a\\", { this: this1, auth: $auth }) AS this2
                         CALL {
-                            WITH this_topActor_movies_topActor
+                            WITH this2
                             UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-                            RETURN m\\", { title: $param4, this: this_topActor_movies_topActor, auth: $auth }) AS this_topActor_movies_topActor_movies
-                            RETURN collect(this_topActor_movies_topActor_movies { .title }) AS this_topActor_movies_topActor_movies
+                            RETURN m\\", { title: $param4, this: this2, auth: $auth }) AS this3
+                            RETURN collect(this3 { .title }) AS this3
                         }
-                        RETURN head(collect(this_topActor_movies_topActor { .name, movies: this_topActor_movies_topActor_movies })) AS this_topActor_movies_topActor
+                        RETURN head(collect(this2 { .name, movies: this3 })) AS this2
                     }
-                    RETURN collect(this_topActor_movies { .title, topActor: this_topActor_movies_topActor }) AS this_topActor_movies
+                    RETURN collect(this1 { .title, topActor: this2 }) AS this1
                 }
-                RETURN head(collect(this_topActor { .name, movies: this_topActor_movies })) AS this_topActor
+                RETURN head(collect(this0 { .name, movies: this1 })) AS this0
             }
-            RETURN this { .title, topActor: this_topActor } AS this"
+            RETURN this { .title, topActor: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -411,16 +406,16 @@ describe("Cypher directive", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                RETURN a\\", { this: this, auth: $auth }) AS this_topActor
+                RETURN a\\", { this: this, auth: $auth }) AS this0
                 CALL {
-                    WITH this_topActor
+                    WITH this0
                     UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-                    RETURN m\\", { title: $param1, this: this_topActor, auth: $auth }) AS this_topActor_movies
-                    RETURN collect(this_topActor_movies { .title }) AS this_topActor_movies
+                    RETURN m\\", { title: $param1, this: this0, auth: $auth }) AS this1
+                    RETURN collect(this1 { .title }) AS this1
                 }
-                RETURN head(collect(this_topActor { .name, movies: this_topActor_movies })) AS this_topActor
+                RETURN head(collect(this0 { .name, movies: this1 })) AS this0
             }
-            RETURN this { .title, topActor: this_topActor } AS this"
+            RETURN this { .title, topActor: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -473,35 +468,35 @@ describe("Cypher directive", () => {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
-                RETURN n\\", { title: $param0, this: this, auth: $auth }) AS this_movieOrTVShow
+                RETURN n\\", { title: $param0, this: this, auth: $auth }) AS this0
                 WITH *
-                WHERE (this_movieOrTVShow:\`Movie\` OR this_movieOrTVShow:\`TVShow\`)
-                WITH *, this_movieOrTVShow AS this_movieOrTVShow_0
+                WHERE (this0:\`Movie\` OR this0:\`TVShow\`)
+                WITH *, this0 AS this1
                 CALL {
-                    WITH this_movieOrTVShow_0
+                    WITH this1
                     UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                    RETURN a\\", { this: this_movieOrTVShow_0, auth: $auth }) AS this_movieOrTVShow_0_topActor
-                    RETURN head(collect(this_movieOrTVShow_0_topActor { .name, .year })) AS this_movieOrTVShow_0_topActor
+                    RETURN a\\", { this: this1, auth: $auth }) AS this2
+                    RETURN head(collect(this2 { .name, .year })) AS this2
                 }
                 CALL {
-                    WITH this_movieOrTVShow_0
+                    WITH this1
                     UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (a:Actor)
-                    RETURN a\\", { this: this_movieOrTVShow_0, auth: $auth }) AS this_movieOrTVShow_0_actors
-                    RETURN collect(this_movieOrTVShow_0_actors { .name }) AS this_movieOrTVShow_0_actors
+                    RETURN a\\", { this: this1, auth: $auth }) AS this3
+                    RETURN collect(this3 { .name }) AS this3
                 }
-                WITH *, this_movieOrTVShow AS this_movieOrTVShow_1
+                WITH *, this0 AS this4
                 CALL {
-                    WITH this_movieOrTVShow_1
+                    WITH this4
                     UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                    RETURN a\\", { this: this_movieOrTVShow_1, auth: $auth }) AS this_movieOrTVShow_1_topActor
-                    RETURN head(collect(this_movieOrTVShow_1_topActor { .name })) AS this_movieOrTVShow_1_topActor
+                    RETURN a\\", { this: this4, auth: $auth }) AS this5
+                    RETURN head(collect(this5 { .name })) AS this5
                 }
                 RETURN collect(CASE
-                    WHEN this_movieOrTVShow:\`Movie\` THEN this_movieOrTVShow { __resolveType: \\"Movie\\",  .id, .title, topActor: this_movieOrTVShow_0_topActor, actors: this_movieOrTVShow_0_actors }
-                    WHEN this_movieOrTVShow:\`TVShow\` THEN this_movieOrTVShow { __resolveType: \\"TVShow\\",  .id, .title, topActor: this_movieOrTVShow_1_topActor }
-                END) AS this_movieOrTVShow
+                    WHEN this0:\`Movie\` THEN this0 { __resolveType: \\"Movie\\",  .id, .title, topActor: this2, actors: this3 }
+                    WHEN this0:\`TVShow\` THEN this0 { __resolveType: \\"TVShow\\",  .id, .title, topActor: this5 }
+                END) AS this0
             }
-            RETURN this { movieOrTVShow: this_movieOrTVShow } AS this"
+            RETURN this { movieOrTVShow: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -537,15 +532,15 @@ describe("Cypher directive", () => {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
-                RETURN n\\", { title: $param0, this: this, auth: $auth }) AS this_movieOrTVShow
+                RETURN n\\", { title: $param0, this: this, auth: $auth }) AS this0
                 WITH *
-                WHERE (this_movieOrTVShow:\`Movie\` OR this_movieOrTVShow:\`TVShow\`)
+                WHERE (this0:\`Movie\` OR this0:\`TVShow\`)
                 RETURN collect(CASE
-                    WHEN this_movieOrTVShow:\`Movie\` THEN this_movieOrTVShow { __resolveType: \\"Movie\\" }
-                    WHEN this_movieOrTVShow:\`TVShow\` THEN this_movieOrTVShow { __resolveType: \\"TVShow\\" }
-                END) AS this_movieOrTVShow
+                    WHEN this0:\`Movie\` THEN this0 { __resolveType: \\"Movie\\" }
+                    WHEN this0:\`TVShow\` THEN this0 { __resolveType: \\"TVShow\\" }
+                END) AS this0
             }
-            RETURN this { movieOrTVShow: this_movieOrTVShow } AS this"
+            RETURN this { movieOrTVShow: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -557,5 +552,211 @@ describe("Cypher directive", () => {
                 }
             }"
         `);
+    });
+
+    describe("Top level cypher", () => {
+        test("should query custom query and return relationship data", async () => {
+            const typeDefs = `
+                type Movie {
+                    title: String!
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+
+                type Actor {
+                    name: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type Query {
+                    customMovies(title: String!): [Movie]
+                        @cypher(
+                            statement: """
+                            MATCH (m:Movie {title: $title})
+                            RETURN m
+                            """
+                        )
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const query = gql`
+                query {
+                    customMovies(title: "The Matrix") {
+                        title
+                        actors {
+                            name
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "WITH apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
+                RETURN m\\", {auth: $auth, title: $title}) as x
+                UNWIND x as this
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                    WITH this1 { .name } AS this1
+                    RETURN collect(this1) AS var2
+                }
+                RETURN this { .title, actors: var2 } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"title\\": \\"The Matrix\\",
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": false,
+                        \\"roles\\": []
+                    }
+                }"
+            `);
+        });
+
+        test("should query custom query and return relationship data with given columnName", async () => {
+            const typeDefs = `
+                type Movie {
+                    title: String!
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+
+                type Actor {
+                    name: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type Query {
+                    customMovies(title: String!): [Movie]
+                        @cypher(
+                            statement: """
+                            MATCH (m:Movie {title: $title})
+                            RETURN m
+                            """,
+                            columnName: "m"
+                        )
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const query = gql`
+                query {
+                    customMovies(title: "The Matrix") {
+                        title
+                        actors {
+                            name
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CALL {
+                MATCH (m:Movie {title: $title})
+                RETURN m
+                }
+                WITH m as this
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                    WITH this1 { .name } AS this1
+                    RETURN collect(this1) AS var2
+                }
+                RETURN this { .title, actors: var2 } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"title\\": \\"The Matrix\\",
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": false,
+                        \\"roles\\": []
+                    }
+                }"
+            `);
+        });
+
+        test("should query field custom query and return relationship data with given columnName", async () => {
+            const typeDefs = `
+                type Movie {
+                    title: String!
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                    custom(title: String!): [Movie]
+                        @cypher(
+                            statement: """
+                            MATCH (m:Movie {title: $title})
+                            RETURN m
+                            """,
+                            columnName: "m"
+                        )
+                }
+
+                type Actor {
+                    name: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const query = gql`
+                query {
+                    movies {
+                        custom(title: "The Matrix") {
+                            title
+                            actors {
+                                name
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Movie\`)
+                CALL {
+                    WITH this
+                    CALL {
+                        WITH this
+                        WITH this AS this
+                        MATCH (m:Movie {title: $param0})
+                        RETURN m
+                    }
+                    WITH m AS this0
+                    CALL {
+                        WITH this0
+                        MATCH (this0)<-[this1:ACTED_IN]-(this2:\`Actor\`)
+                        WITH this2 { .name } AS this2
+                        RETURN collect(this2) AS var3
+                    }
+                    RETURN collect(this0 { .title, actors: var3 }) AS this0
+                }
+                RETURN this { custom: this0 } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"param0\\": \\"The Matrix\\"
+                }"
+            `);
+        });
     });
 });

@@ -17,8 +17,14 @@
  * limitations under the License.
  */
 
-import { Button, HeroIcon, IconButton, Label } from "@neo4j-ndl/react";
-import { Fragment, useContext } from "react";
+import { Button, IconButton, Label } from "@neo4j-ndl/react";
+import {
+    QuestionMarkCircleIconOutline,
+    SparklesIconOutline,
+    Cog8ToothIconOutline,
+    ArrowRightOnRectangleIconOutline,
+} from "@neo4j-ndl/react/icons";
+import { Fragment, useContext, useEffect } from "react";
 import { DEFAULT_BOLT_URL } from "../../constants";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../../assets/neo4j-logo-color.svg";
@@ -27,6 +33,7 @@ import { AuthContext } from "../../contexts/auth";
 import { Screen, ScreenContext } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
 import { tracking } from "../../analytics/tracking";
+import { cannySettings } from "../../common/canny";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
@@ -34,6 +41,17 @@ export const TopBar = () => {
     const screen = useContext(ScreenContext);
     const greenDot = <span className="ml-1 mr-1 h-2 w-2 bg-green-400 rounded-full inline-block" />;
     const redDot = <span className="ml-1 mr-1 h-2 w-2 bg-red-400 rounded-full inline-block" />;
+
+    useEffect(() => {
+        if (window.Canny && window.CannyIsLoaded) {
+            window.Canny("initChangelog", cannySettings);
+        }
+        return () => {
+            if (window.Canny && window.CannyIsLoaded) {
+                window.Canny("closeChangelog");
+            }
+        };
+    }, []);
 
     const handleHelpClick = () => {
         settings.setIsShowHelpDrawer(!settings.isShowHelpDrawer);
@@ -109,7 +127,7 @@ export const TopBar = () => {
                         fill="outlined"
                         onClick={handleSendFeedbackClick}
                     >
-                        <HeroIcon className="w-full h-full" iconName="SparklesIcon" type="outline" />
+                        <SparklesIconOutline />
                         <span className="whitespace-nowrap">Send feedback</span>
                     </Button>
                     {!auth.isNeo4jDesktop ? (
@@ -121,29 +139,33 @@ export const TopBar = () => {
                                 fill="text"
                                 onClick={() => auth?.logout()}
                             >
-                                <HeroIcon className="w-full h-full" iconName="LogoutIcon" type="outline" />
+                                <ArrowRightOnRectangleIconOutline className="w-full h-full" />
                                 <span>Disconnect</span>
                             </Button>
                         </div>
                     ) : null}
                     <div className="flex items-center mr-6">
+                        <div className="canny-indication-wrapper pb-8 pl-10 pointer-events-none absolute">
+                            {/* This element is not clickable as we do not want to show the changelog here */}
+                            <span data-canny-changelog></span>
+                        </div>
                         <IconButton
                             data-test-topbar-help-button
                             aria-label="Help and learn drawer"
                             onClick={handleHelpClick}
-                            buttonSize="large"
+                            size="large"
                             clean
                         >
-                            <HeroIcon iconName="QuestionMarkCircleIcon" type="outline" />
+                            <QuestionMarkCircleIconOutline />
                         </IconButton>
                         <IconButton
                             clean
                             data-test-topbar-settings-button
                             aria-label="Application settings"
                             onClick={handleSettingsClick}
-                            buttonSize="large"
+                            size="large"
                         >
-                            <HeroIcon iconName="CogIcon" type="outline" />
+                            <Cog8ToothIconOutline />
                         </IconButton>
                     </div>
                 </div>

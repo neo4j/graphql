@@ -17,14 +17,6 @@
  * limitations under the License.
  */
 
-/** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */
-export function padLeft(str: string | undefined): string {
-    if (!str) return "";
-    return ` ${str}`;
-}
+// Note: This file exists for exported utils to the user
 
-export function padBlock(block: string, spaces = 4): string {
-    const paddingStr = " ".repeat(spaces);
-    const paddedNewLines = block.replace(/\n/g, `\n${paddingStr}`);
-    return `${paddingStr}${paddedNewLines}`;
-}
+export { escapeLabel } from "./escape-label";

@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("@coalesce directive", () => {
     let driver: Driver;
@@ -88,7 +88,7 @@ describe("@coalesce directive", () => {
     });
 
     test("allows querying with null properties without affecting the returned result", async () => {
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = `
             type ${type.name} {
@@ -139,7 +139,7 @@ describe("@coalesce directive", () => {
     });
 
     test("with enum values", async () => {
-        const type = generateUniqueType("Movie");
+        const type = new UniqueType("Movie");
 
         const typeDefs = `
             enum Status {
@@ -187,6 +187,62 @@ describe("@coalesce directive", () => {
             expect((gqlResult.data as any)[type.plural][0]).toEqual({
                 id,
                 status: null,
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("with enum list values", async () => {
+        const type = new UniqueType("Movie");
+
+        const typeDefs = `
+            enum Status {
+                ACTIVE
+                INACTIVE
+            }
+
+            type ${type.name} {
+                id: ID
+                statuses: [Status!] @coalesce(value: [ACTIVE, INACTIVE])
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const query = `
+            query {
+                ${type.plural}(where: {statuses: [ACTIVE, INACTIVE]}){
+                    id
+                    statuses
+                }
+            }
+        `;
+
+        const session = await neo4j.getSession();
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        try {
+            await session.run(`
+                CREATE (:${type.name} {id: "${id}"})
+            `);
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect((gqlResult.data as any)[type.plural][0]).toEqual({
+                id,
+                statuses: null,
             });
         } finally {
             await session.close();

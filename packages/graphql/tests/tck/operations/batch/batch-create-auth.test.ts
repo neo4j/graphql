@@ -82,45 +82,37 @@ describe("Batch Create, Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.id = $this0_id
-            WITH this0
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this0
+            "UNWIND $create_param0 AS create_var0
             CALL {
-            	WITH this0
-            	MATCH (this0)-[this0_website_Website_unique:HAS_WEBSITE]->(:Website)
-            	WITH count(this0_website_Website_unique) as c
-            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
-            	RETURN c AS this0_website_Website_unique_ignored
+                WITH create_var0
+                CREATE (create_this1:\`Movie\`)
+                SET
+                    create_this1.id = create_var0.id
+                WITH *
+                CALL apoc.util.validate(NOT (any(create_var3 IN [\\"admin\\"] WHERE any(create_var2 IN $auth.roles WHERE create_var2 = create_var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH create_this1
+                CALL {
+                	WITH create_this1
+                	MATCH (create_this1)-[create_this1_website_Website_unique:HAS_WEBSITE]->(:Website)
+                	WITH count(create_this1_website_Website_unique) as c
+                	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
+                	RETURN c AS create_this1_website_Website_unique_ignored
+                }
+                RETURN create_this1
             }
-            RETURN this0
-            }
-            CALL {
-            CREATE (this1:Movie)
-            SET this1.id = $this1_id
-            WITH this1
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this1
-            CALL {
-            	WITH this1
-            	MATCH (this1)-[this1_website_Website_unique:HAS_WEBSITE]->(:Website)
-            	WITH count(this1_website_Website_unique) as c
-            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
-            	RETURN c AS this1_website_Website_unique_ignored
-            }
-            RETURN this1
-            }
-            RETURN [
-            this0 { .id },
-            this1 { .id }] AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\",
-                \\"this1_id\\": \\"2\\",
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\"
+                    },
+                    {
+                        \\"id\\": \\"2\\"
+                    }
+                ],
                 \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
@@ -159,98 +151,97 @@ describe("Batch Create, Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.id = $this0_id
-            WITH this0
-            CREATE (this0_actors0_node:Actor)
-            SET this0_actors0_node.id = randomUUID()
-            SET this0_actors0_node.name = $this0_actors0_node_name
-            MERGE (this0)<-[this0_actors0_relationship:ACTED_IN]-(this0_actors0_node)
-            SET this0_actors0_relationship.year = $this0_actors0_relationship_year
-            WITH this0, this0_actors0_node
+            "UNWIND $create_param1 AS create_var4
             CALL {
-            	WITH this0_actors0_node
-            	MATCH (this0_actors0_node)-[this0_actors0_node_website_Website_unique:HAS_WEBSITE]->(:Website)
-            	WITH count(this0_actors0_node_website_Website_unique) as c
-            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one', [0])
-            	RETURN c AS this0_actors0_node_website_Website_unique_ignored
-            }
-            WITH this0
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this0
-            CALL {
-            	WITH this0
-            	MATCH (this0)-[this0_website_Website_unique:HAS_WEBSITE]->(:Website)
-            	WITH count(this0_website_Website_unique) as c
-            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
-            	RETURN c AS this0_website_Website_unique_ignored
-            }
-            RETURN this0
-            }
-            CALL {
-            CREATE (this1:Movie)
-            SET this1.id = $this1_id
-            WITH this1
-            CREATE (this1_actors0_node:Actor)
-            SET this1_actors0_node.id = randomUUID()
-            SET this1_actors0_node.name = $this1_actors0_node_name
-            MERGE (this1)<-[this1_actors0_relationship:ACTED_IN]-(this1_actors0_node)
-            SET this1_actors0_relationship.year = $this1_actors0_relationship_year
-            WITH this1, this1_actors0_node
-            CALL {
-            	WITH this1_actors0_node
-            	MATCH (this1_actors0_node)-[this1_actors0_node_website_Website_unique:HAS_WEBSITE]->(:Website)
-            	WITH count(this1_actors0_node_website_Website_unique) as c
-            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one', [0])
-            	RETURN c AS this1_actors0_node_website_Website_unique_ignored
-            }
-            WITH this1
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this1
-            CALL {
-            	WITH this1
-            	MATCH (this1)-[this1_website_Website_unique:HAS_WEBSITE]->(:Website)
-            	WITH count(this1_website_Website_unique) as c
-            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
-            	RETURN c AS this1_website_Website_unique_ignored
-            }
-            RETURN this1
+                WITH create_var4
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.id = create_var4.id
+                WITH create_this0, create_var4
+                CALL {
+                    WITH create_this0, create_var4
+                    UNWIND create_var4.actors.create AS create_var5
+                    WITH create_var5.node AS create_var6, create_var5.edge AS create_var7, create_this0
+                    CREATE (create_this8:\`Actor\`)
+                    SET
+                        create_this8.name = create_var6.name,
+                        create_this8.id = randomUUID()
+                    MERGE (create_this0)<-[create_this9:ACTED_IN]-(create_this8)
+                    SET
+                        create_this9.year = create_var7.year
+                    WITH create_this8
+                    CALL {
+                    	WITH create_this8
+                    	MATCH (create_this8)-[create_this8_website_Website_unique:HAS_WEBSITE]->(:Website)
+                    	WITH count(create_this8_website_Website_unique) as c
+                    	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one', [0])
+                    	RETURN c AS create_this8_website_Website_unique_ignored
+                    }
+                    RETURN collect(NULL) AS create_var10
+                }
+                WITH *
+                CALL apoc.util.validate(NOT (any(create_var12 IN [\\"admin\\"] WHERE any(create_var11 IN $auth.roles WHERE create_var11 = create_var12))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH create_this0
+                CALL {
+                	WITH create_this0
+                	MATCH (create_this0)-[create_this0_website_Website_unique:HAS_WEBSITE]->(:Website)
+                	WITH count(create_this0_website_Website_unique) as c
+                	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
+                	RETURN c AS create_this0_website_Website_unique_ignored
+                }
+                RETURN create_this0
             }
             CALL {
-                WITH this0
-                MATCH (this0_actors:\`Actor\`)-[create_this0:ACTED_IN]->(this0)
-                WHERE apoc.util.validatePredicate(NOT ((this0_actors.id IS NOT NULL AND this0_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this0_actors { .name } AS this0_actors
-                RETURN collect(this0_actors) AS this0_actors
+                WITH create_this0
+                MATCH (create_this0)<-[create_this1:ACTED_IN]-(create_this2:\`Actor\`)
+                WHERE apoc.util.validatePredicate(NOT ((create_this2.id IS NOT NULL AND create_this2.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH create_this2 { .name } AS create_this2
+                RETURN collect(create_this2) AS create_var3
             }
-            CALL {
-                WITH this1
-                MATCH (this1_actors:\`Actor\`)-[create_this0:ACTED_IN]->(this1)
-                WHERE apoc.util.validatePredicate(NOT ((this1_actors.id IS NOT NULL AND this1_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this1_actors { .name } AS this1_actors
-                RETURN collect(this1_actors) AS this1_actors
-            }
-            RETURN [
-            this0 { .id, actors: this0_actors },
-            this1 { .id, actors: this1_actors }] AS data"
+            RETURN collect(create_this0 { .id, actors: create_var3 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"create_param0\\": \\"1\\",
-                \\"this0_id\\": \\"1\\",
-                \\"this0_actors0_node_name\\": \\"actor 1\\",
-                \\"this0_actors0_relationship_year\\": {
-                    \\"low\\": 2022,
-                    \\"high\\": 0
-                },
-                \\"this1_id\\": \\"2\\",
-                \\"this1_actors0_node_name\\": \\"actor 2\\",
-                \\"this1_actors0_relationship_year\\": {
-                    \\"low\\": 2022,
-                    \\"high\\": 0
-                },
+                \\"create_param1\\": [
+                    {
+                        \\"id\\": \\"1\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\"
+                                    },
+                                    \\"edge\\": {
+                                        \\"year\\": {
+                                            \\"low\\": 2022,
+                                            \\"high\\": 0
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        \\"id\\": \\"2\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 2\\"
+                                    },
+                                    \\"edge\\": {
+                                        \\"year\\": {
+                                            \\"low\\": 2022,
+                                            \\"high\\": 0
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
                 \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
@@ -426,7 +417,7 @@ describe("Batch Create, Auth", () => {
                 MERGE (this4_actors_connectOrCreate0:\`Actor\` { id: $this4_actors_connectOrCreate_param0 })
                 ON CREATE SET
                     this4_actors_connectOrCreate0.name = $this4_actors_connectOrCreate_param1
-                MERGE (this4_actors_connectOrCreate0)-[this4_actors_connectOrCreate_this0:ACTED_IN]->(this4)
+                MERGE (this4)<-[this4_actors_connectOrCreate_this0:ACTED_IN]-(this4_actors_connectOrCreate0)
                 WITH *
                 CALL apoc.util.validate(NOT ((this4_actors_connectOrCreate0.id IS NOT NULL AND this4_actors_connectOrCreate0.id = $this4_actors_connectOrCreate0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN COUNT(*) AS _
@@ -445,80 +436,79 @@ describe("Batch Create, Auth", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)-[create_this0:HAS_WEBSITE]->(this0_website:\`Website\`)
-                WITH this0_website { .address } AS this0_website
-                RETURN head(collect(this0_website)) AS this0_website
+                MATCH (this0)-[create_this0:HAS_WEBSITE]->(create_this1:\`Website\`)
+                WITH create_this1 { .address } AS create_this1
+                RETURN head(collect(create_this1)) AS create_var2
             }
             CALL {
                 WITH this0
-                MATCH (this0_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this0)
-                WHERE apoc.util.validatePredicate(NOT ((this0_actors.id IS NOT NULL AND this0_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this0_actors { .name } AS this0_actors
-                RETURN collect(this0_actors) AS this0_actors
+                MATCH (this0)<-[create_this3:ACTED_IN]-(create_this4:\`Actor\`)
+                WHERE apoc.util.validatePredicate(NOT ((create_this4.id IS NOT NULL AND create_this4.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH create_this4 { .name } AS create_this4
+                RETURN collect(create_this4) AS create_var5
             }
             CALL {
                 WITH this1
-                MATCH (this1)-[create_this0:HAS_WEBSITE]->(this1_website:\`Website\`)
-                WITH this1_website { .address } AS this1_website
-                RETURN head(collect(this1_website)) AS this1_website
+                MATCH (this1)-[create_this6:HAS_WEBSITE]->(create_this7:\`Website\`)
+                WITH create_this7 { .address } AS create_this7
+                RETURN head(collect(create_this7)) AS create_var8
             }
             CALL {
                 WITH this1
-                MATCH (this1_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this1)
-                WHERE apoc.util.validatePredicate(NOT ((this1_actors.id IS NOT NULL AND this1_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this1_actors { .name } AS this1_actors
-                RETURN collect(this1_actors) AS this1_actors
+                MATCH (this1)<-[create_this9:ACTED_IN]-(create_this10:\`Actor\`)
+                WHERE apoc.util.validatePredicate(NOT ((create_this10.id IS NOT NULL AND create_this10.id = $create_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH create_this10 { .name } AS create_this10
+                RETURN collect(create_this10) AS create_var11
             }
             CALL {
                 WITH this2
-                MATCH (this2)-[create_this0:HAS_WEBSITE]->(this2_website:\`Website\`)
-                WITH this2_website { .address } AS this2_website
-                RETURN head(collect(this2_website)) AS this2_website
+                MATCH (this2)-[create_this12:HAS_WEBSITE]->(create_this13:\`Website\`)
+                WITH create_this13 { .address } AS create_this13
+                RETURN head(collect(create_this13)) AS create_var14
             }
             CALL {
                 WITH this2
-                MATCH (this2_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this2)
-                WHERE apoc.util.validatePredicate(NOT ((this2_actors.id IS NOT NULL AND this2_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this2_actors { .name } AS this2_actors
-                RETURN collect(this2_actors) AS this2_actors
+                MATCH (this2)<-[create_this15:ACTED_IN]-(create_this16:\`Actor\`)
+                WHERE apoc.util.validatePredicate(NOT ((create_this16.id IS NOT NULL AND create_this16.id = $create_param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH create_this16 { .name } AS create_this16
+                RETURN collect(create_this16) AS create_var17
             }
             CALL {
                 WITH this3
-                MATCH (this3)-[create_this0:HAS_WEBSITE]->(this3_website:\`Website\`)
-                WITH this3_website { .address } AS this3_website
-                RETURN head(collect(this3_website)) AS this3_website
+                MATCH (this3)-[create_this18:HAS_WEBSITE]->(create_this19:\`Website\`)
+                WITH create_this19 { .address } AS create_this19
+                RETURN head(collect(create_this19)) AS create_var20
             }
             CALL {
                 WITH this3
-                MATCH (this3_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this3)
-                WHERE apoc.util.validatePredicate(NOT ((this3_actors.id IS NOT NULL AND this3_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this3_actors { .name } AS this3_actors
-                RETURN collect(this3_actors) AS this3_actors
+                MATCH (this3)<-[create_this21:ACTED_IN]-(create_this22:\`Actor\`)
+                WHERE apoc.util.validatePredicate(NOT ((create_this22.id IS NOT NULL AND create_this22.id = $create_param3)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH create_this22 { .name } AS create_this22
+                RETURN collect(create_this22) AS create_var23
             }
             CALL {
                 WITH this4
-                MATCH (this4)-[create_this0:HAS_WEBSITE]->(this4_website:\`Website\`)
-                WITH this4_website { .address } AS this4_website
-                RETURN head(collect(this4_website)) AS this4_website
+                MATCH (this4)-[create_this24:HAS_WEBSITE]->(create_this25:\`Website\`)
+                WITH create_this25 { .address } AS create_this25
+                RETURN head(collect(create_this25)) AS create_var26
             }
             CALL {
                 WITH this4
-                MATCH (this4_actors:\`Actor\`)-[create_this1:ACTED_IN]->(this4)
-                WHERE apoc.util.validatePredicate(NOT ((this4_actors.id IS NOT NULL AND this4_actors.id = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this4_actors { .name } AS this4_actors
-                RETURN collect(this4_actors) AS this4_actors
+                MATCH (this4)<-[create_this27:ACTED_IN]-(create_this28:\`Actor\`)
+                WHERE apoc.util.validatePredicate(NOT ((create_this28.id IS NOT NULL AND create_this28.id = $create_param4)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH create_this28 { .name } AS create_this28
+                RETURN collect(create_this28) AS create_var29
             }
-            RETURN [
-            this0 { .id, website: this0_website, actors: this0_actors },
-            this1 { .id, website: this1_website, actors: this1_actors },
-            this2 { .id, website: this2_website, actors: this2_actors },
-            this3 { .id, website: this3_website, actors: this3_actors },
-            this4 { .id, website: this4_website, actors: this4_actors }] AS data"
+            RETURN [ this0 { .id, website: create_var2, actors: create_var5 }, this1 { .id, website: create_var8, actors: create_var11 }, this2 { .id, website: create_var14, actors: create_var17 }, this3 { .id, website: create_var20, actors: create_var23 }, this4 { .id, website: create_var26, actors: create_var29 } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"create_param0\\": \\"1\\",
+                \\"create_param1\\": \\"1\\",
+                \\"create_param2\\": \\"1\\",
+                \\"create_param3\\": \\"1\\",
+                \\"create_param4\\": \\"1\\",
                 \\"this0_id\\": \\"1\\",
                 \\"this0_actors0_node_name\\": \\"actor 1\\",
                 \\"this0_actors0_relationship_year\\": {

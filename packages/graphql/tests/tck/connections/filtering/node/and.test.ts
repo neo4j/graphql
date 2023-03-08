@@ -85,20 +85,64 @@ describe("Cypher -> Connections -> Filtering -> Node -> AND", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE (this_Actor.firstName = $this_connection_actorsConnectionparam0 AND this_Actor.lastName = $this_connection_actorsConnectionparam1)
-                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { firstName: this_Actor.firstName, lastName: this_Actor.lastName } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE (this1.firstName = $param0 AND this1.lastName = $param1)
+                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": \\"Tom\\",
-                \\"this_connection_actorsConnectionparam1\\": \\"Hanks\\"
+                \\"param0\\": \\"Tom\\",
+                \\"param1\\": \\"Hanks\\"
+            }"
+        `);
+    });
+
+    test("NOT", async () => {
+        const query = gql`
+            query {
+                movies {
+                    title
+                    actorsConnection(where: { node: { NOT: { firstName: "Tom" } } }) {
+                        edges {
+                            screenTime
+                            node {
+                                firstName
+                                lastName
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Movie\`)
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE NOT (this1.firstName = $param0)
+                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var2
+            }
+            RETURN this { .title, actorsConnection: var2 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Tom\\"
             }"
         `);
     });

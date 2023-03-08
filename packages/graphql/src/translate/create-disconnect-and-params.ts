@@ -22,6 +22,10 @@ import type { RelationField, Context } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
+import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import Cypher from "@neo4j/cypher-builder";
+import { caseWhere } from "../utils/case-where";
 
 interface Res {
     disconnects: string[];
@@ -40,6 +44,7 @@ function createDisconnectAndParams({
     parentNode,
     insideDoWhen,
     parameterPrefix,
+    isFirstLevel = true,
 }: {
     withVars: string[];
     value: any;
@@ -52,6 +57,7 @@ function createDisconnectAndParams({
     parentNode: Node;
     insideDoWhen?: boolean;
     parameterPrefix: string;
+    isFirstLevel?: boolean;
 }): [string, any] {
     function createSubqueryContents(
         relatedNode: Node,
@@ -63,7 +69,6 @@ function createDisconnectAndParams({
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relVarName = `${variableName}_rel`;
         const relTypeStr = `[${relVarName}:${relationField.type}]`;
-
         const subquery: string[] = [];
         let params;
         const labels = relatedNode.getLabelString(context);
@@ -71,27 +76,36 @@ function createDisconnectAndParams({
 
         subquery.push(`WITH ${withVars.join(", ")}`);
         subquery.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${label})`);
-
         const relationship = context.relationships.find(
             (x) => x.properties === relationField.properties
         ) as unknown as Relationship;
 
         const whereStrs: string[] = [];
-
+        let aggregationWhere = false;
         if (disconnect.where) {
             try {
-                const whereAndParams = createConnectionWhereAndParams({
+                const {
+                    cypher: whereCypher,
+                    subquery: preComputedSubqueries,
+                    params: whereParams,
+                } = createConnectionWhereAndParams({
                     nodeVariable: variableName,
                     whereInput: disconnect.where,
                     node: relatedNode,
                     context,
                     relationshipVariable: relVarName,
                     relationship,
-                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
+                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where.${
+                        relatedNode.name
+                    }`,
                 });
-                if (whereAndParams[0]) {
-                    whereStrs.push(whereAndParams[0]);
-                    params = { ...params, ...whereAndParams[1] };
+                if (whereCypher) {
+                    whereStrs.push(whereCypher);
+                    params = { ...params, ...whereParams };
+                    if (preComputedSubqueries) {
+                        subquery.push(preComputedSubqueries);
+                        aggregationWhere = true;
+                    }
                 }
             } catch {
                 return { subquery: "", params: {} };
@@ -112,7 +126,15 @@ function createDisconnectAndParams({
         }
 
         if (whereStrs.length) {
-            subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
+            const predicate = `${whereStrs.join(" AND ")}`;
+            if (aggregationWhere) {
+                const columns = [new Cypher.NamedVariable(relVarName), new Cypher.NamedVariable(variableName)];
+                const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
+                const { cypher } = caseWhereClause.build("aggregateWhereFilter");
+                subquery.push(cypher);
+            } else {
+                subquery.push(`WHERE ${predicate}`);
+            }
         }
 
         const nodeMatrix: { node: Node; name: string }[] = [
@@ -121,7 +143,7 @@ function createDisconnectAndParams({
         ];
 
         const preAuth = nodeMatrix.reduce(
-            (result: Res, { node, name }, i) => {
+            (result: Res, { node, name }) => {
                 if (!node.auth) {
                     return result;
                 }
@@ -131,7 +153,7 @@ function createDisconnectAndParams({
                     operations: "DISCONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: name, chainStr: `${name}${node.name}${i}_allow` },
+                    allow: { parentNode: node, varName: name },
                 });
 
                 if (!str) {
@@ -159,12 +181,40 @@ function createDisconnectAndParams({
 
         subquery.push("CALL {");
         // Trick to avoid execution on null values
-        subquery.push(`\tWITH ${variableName}, ${variableName}_rel`);
-        subquery.push(`\tWITH collect(${variableName}) as ${variableName}, ${variableName}_rel`);
+        subquery.push(`\tWITH ${variableName}, ${relVarName}, ${parentVar}`);
+        subquery.push(`\tWITH collect(${variableName}) as ${variableName}, ${relVarName}, ${parentVar}`);
         subquery.push(`\tUNWIND ${variableName} as x`);
-        subquery.push(`\tDELETE ${variableName}_rel`);
-        subquery.push(`\tRETURN count(*) AS _`); // Avoids CANNOT END WITH DETACH DELETE ERROR
+
+        if (context.subscriptionsEnabled) {
+            const [fromVariable, toVariable] = relationField.direction === "IN" ? ["x", parentVar] : [parentVar, "x"];
+            const [fromTypename, toTypename] =
+                relationField.direction === "IN"
+                    ? [relatedNode.name, parentNode.name]
+                    : [parentNode.name, relatedNode.name];
+            const eventWithMetaStr = createConnectionEventMetaObject({
+                event: "delete_relationship",
+                relVariable: relVarName,
+                fromVariable,
+                toVariable,
+                typename: relationField.type,
+                fromTypename,
+                toTypename,
+            });
+            subquery.push(`\tWITH ${eventWithMetaStr} as meta, ${relVarName}`);
+            subquery.push(`\tDELETE ${relVarName}`);
+            subquery.push(`\tRETURN collect(meta) as update_meta`);
+        } else {
+            subquery.push(`\tDELETE ${relVarName}`);
+            subquery.push(`\tRETURN count(*) AS _`); // Avoids CANNOT END WITH DETACH DELETE ERROR
+        }
+
         subquery.push(`}`);
+
+        if (context.subscriptionsEnabled) {
+            subquery.push(
+                `WITH ${filterMetaVariable(withVars).join(", ")}, ${variableName}, meta + update_meta as meta`
+            );
+        }
 
         // TODO - relationship validation - Blocking, if this were to be enforced it would stop someone from 'reconnecting'
 
@@ -173,7 +223,7 @@ function createDisconnectAndParams({
                 ? disconnect.disconnect
                 : [disconnect.disconnect];
 
-            disconnects.forEach((c, i) => {
+            disconnects.forEach((c) => {
                 const reduced = Object.entries(c)
                     .filter(([k]) => {
                         if (k === "_on") {
@@ -202,11 +252,15 @@ function createDisconnectAndParams({
                                 Object.keys(v).forEach((modelName) => {
                                     newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
                                 });
+                            } else if (relField.interface) {
+                                (relField.interface.implementations as string[]).forEach((modelName) => {
+                                    newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
+                                });
                             } else {
                                 newRefNodes.push(context.nodes.find((x) => x.name === relField.typeMeta.name) as Node);
                             }
 
-                            newRefNodes.forEach((newRefNode) => {
+                            newRefNodes.forEach((newRefNode, i) => {
                                 const recurse = createDisconnectAndParams({
                                     withVars: [...withVars, variableName],
                                     value: relField.union ? v[newRefNode.name] : v,
@@ -220,6 +274,7 @@ function createDisconnectAndParams({
                                         relField.typeMeta.array ? `[${i}]` : ""
                                     }.disconnect.${k}${relField.union ? `.${newRefNode.name}` : ""}`,
                                     labelOverride: relField.union ? newRefNode.name : "",
+                                    isFirstLevel: false,
                                 });
                                 r.disconnects.push(recurse[0]);
                                 r.params = { ...r.params, ...recurse[1] };
@@ -256,7 +311,7 @@ function createDisconnectAndParams({
                                     );
                                 }
 
-                                newRefNodes.forEach((newRefNode) => {
+                                newRefNodes.forEach((newRefNode, i) => {
                                     const recurse = createDisconnectAndParams({
                                         withVars: [...withVars, variableName],
                                         value: relField.union ? v[newRefNode.name] : v,
@@ -272,6 +327,7 @@ function createDisconnectAndParams({
                                             relField.typeMeta.array ? `[${onDisconnectIndex}]` : ""
                                         }.${k}${relField.union ? `.${newRefNode.name}` : ""}`,
                                         labelOverride: relField.union ? newRefNode.name : "",
+                                        isFirstLevel: false,
                                     });
                                     r.disconnects.push(recurse[0]);
                                     r.params = { ...r.params, ...recurse[1] };
@@ -290,7 +346,7 @@ function createDisconnectAndParams({
         }
 
         const postAuth = [parentNode, relatedNode].reduce(
-            (result: Res, node, i) => {
+            (result: Res, node) => {
                 if (!node.auth) {
                     return result;
                 }
@@ -302,7 +358,7 @@ function createDisconnectAndParams({
                     escapeQuotes: Boolean(insideDoWhen),
                     skipRoles: true,
                     skipIsAuthenticated: true,
-                    bind: { parentNode: node, varName: variableName, chainStr: `${variableName}${node.name}${i}_bind` },
+                    bind: { parentNode: node, varName: variableName },
                 });
 
                 if (!str) {
@@ -328,7 +384,12 @@ function createDisconnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push(`RETURN count(*) AS disconnect_${varName}_${relatedNode.name}`);
+        if (context.subscriptionsEnabled) {
+            subquery.push(`WITH collect(meta) AS disconnect_meta`);
+            subquery.push(`RETURN REDUCE(m=[],m1 IN disconnect_meta | m+m1 ) as disconnect_meta`);
+        } else {
+            subquery.push(`RETURN count(*) AS disconnect_${varName}_${relatedNode.name}`);
+        }
 
         return { subquery: subquery.join("\n"), params };
     }
@@ -348,9 +409,11 @@ function createDisconnectAndParams({
             }
         }
 
-        res.disconnects.push(`WITH ${withVars.join(", ")}`);
-        res.disconnects.push("CALL {");
+        if (isFirstLevel) {
+            res.disconnects.push(`WITH ${withVars.join(", ")}`);
+        }
 
+        const inner: string[] = [];
         if (relationField.interface) {
             const subqueries: string[] = [];
             refNodes.forEach((refNode) => {
@@ -360,14 +423,31 @@ function createDisconnectAndParams({
                     res.params = { ...res.params, ...subquery.params };
                 }
             });
-            res.disconnects.push(subqueries.join("\n}\nCALL {\n\t"));
+            if (subqueries.length > 0) {
+                if (context.subscriptionsEnabled) {
+                    const withStatement = `WITH ${filterMetaVariable(withVars).join(
+                        ", "
+                    )}, disconnect_meta + meta AS meta`;
+                    inner.push(subqueries.join(`\n}\n${withStatement}\nCALL {\n\t`));
+                } else {
+                    inner.push(subqueries.join("\n}\nCALL {\n\t"));
+                }
+            }
         } else {
             const subquery = createSubqueryContents(refNodes[0], disconnect, index);
-            res.disconnects.push(subquery.subquery);
+            inner.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
         }
 
-        res.disconnects.push("}");
+        if (inner.length > 0) {
+            res.disconnects.push("CALL {");
+            res.disconnects.push(...inner);
+            res.disconnects.push("}");
+
+            if (context.subscriptionsEnabled) {
+                res.disconnects.push(`WITH ${filterMetaVariable(withVars).join(", ")}, disconnect_meta + meta as meta`);
+            }
+        }
 
         return res;
     }

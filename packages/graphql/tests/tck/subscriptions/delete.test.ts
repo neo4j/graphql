@@ -71,10 +71,22 @@ describe("Subscriptions metadata on delete", () => {
             MATCH (this:\`Movie\`)
             WHERE this.id = $param0
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this)-[r]-()
+            	WITH this, collect(DISTINCT r) AS relationships_to_delete
+            	UNWIND relationships_to_delete AS x
+            	WITH CASE
+            		WHEN id(this)=id(startNode(x)) THEN { event: \\"delete_relationship\\", timestamp: timestamp(), id_from: id(this), id_to: id(endNode(x)), id: id(x), relationshipName: type(x), fromLabels: labels(this), toLabels: labels(endNode(x)), properties: { from: properties(this), to: properties(endNode(x)), relationship: x { .* } } }
+            		WHEN id(this)=id(endNode(x)) THEN { event: \\"delete_relationship\\", timestamp: timestamp(), id_from: id(startNode(x)), id_to: id(this), id: id(x), relationshipName: type(x), fromLabels: labels(startNode(x)), toLabels: labels(this), properties: { from: properties(startNode(x)), to: properties(this), relationship: x { .* } } }
+            	END AS meta
+            	RETURN collect(DISTINCT meta) AS relationship_meta
+            }
+            WITH REDUCE(m=meta, r IN relationship_meta | m + r) AS meta, this
             DETACH DELETE this
-            WITH meta
-            UNWIND meta AS m
-            RETURN collect(DISTINCT m) AS meta"
+            WITH collect(meta) AS meta
+            WITH REDUCE(m=[], n IN meta | m + n) AS meta
+            RETURN meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -146,7 +158,7 @@ describe("Subscriptions metadata on delete", () => {
                         }
                     }
                 },
-                \\"this_deleteMovies_args_delete_actors0_where_Actorparam0\\": \\"1\\"
+                \\"this_deleteMovies_args_delete_actors0_where_this_actors0param0\\": \\"1\\"
             }"
         `);
     });
@@ -279,9 +291,9 @@ describe("Subscriptions metadata on delete", () => {
                         }
                     }
                 },
-                \\"this_deleteMovies_args_delete_actors0_where_Actorparam0\\": \\"Actor to delete\\",
-                \\"this_deleteMovies_args_delete_actors0_delete_movies0_where_Movieparam0\\": \\"321\\",
-                \\"this_deleteMovies_args_delete_actors0_delete_movies0_delete_actors0_where_Actorparam0\\": \\"Another actor to delete\\"
+                \\"this_deleteMovies_args_delete_actors0_where_this_actors0param0\\": \\"Actor to delete\\",
+                \\"this_deleteMovies_args_delete_actors0_delete_movies0_where_this_actors0_movies0param0\\": \\"321\\",
+                \\"this_deleteMovies_args_delete_actors0_delete_movies0_delete_actors0_where_this_actors0_movies0_actors0param0\\": \\"Another actor to delete\\"
             }"
         `);
     });

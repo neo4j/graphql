@@ -173,13 +173,12 @@ describe("tck/rfcs/query-limits", () => {
                 LIMIT $param0
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
-                    WITH this_actors { .id } AS this_actors
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                    WITH this1 { .id } AS this1
                     LIMIT $param1
-                    RETURN collect(this_actors) AS this_actors
+                    RETURN collect(this1) AS var2
                 }
-                RETURN this { .id, actors: this_actors } AS this
-                LIMIT $param2"
+                RETURN this { .id, actors: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -190,10 +189,6 @@ describe("tck/rfcs/query-limits", () => {
                     },
                     \\"param1\\": {
                         \\"low\\": 2,
-                        \\"high\\": 0
-                    },
-                    \\"param2\\": {
-                        \\"low\\": 3,
                         \\"high\\": 0
                     }
                 }"
@@ -227,22 +222,21 @@ describe("tck/rfcs/query-limits", () => {
                 LIMIT $param0
                 CALL {
                     WITH this
-                    MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Person:\`Person\`)
-                    WITH { node: { id: this_Person.id } } AS edge
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                    WITH { node: { id: this1.id } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge
-                        LIMIT $this_connection_actorsConnectionparam0
-                        RETURN collect(edge) AS this_connection_actorsConnectionvar1
+                        LIMIT $param1
+                        RETURN collect(edge) AS var2
                     }
-                    WITH this_connection_actorsConnectionvar1 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                    WITH var2 AS edges, totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS var3
                 }
-                RETURN this { .id, actorsConnection: this_actorsConnection } AS this
-                LIMIT $param2"
+                RETURN this { .id, actorsConnection: var3 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -251,12 +245,8 @@ describe("tck/rfcs/query-limits", () => {
                         \\"low\\": 3,
                         \\"high\\": 0
                     },
-                    \\"this_connection_actorsConnectionparam0\\": {
+                    \\"param1\\": {
                         \\"low\\": 2,
-                        \\"high\\": 0
-                    },
-                    \\"param2\\": {
-                        \\"low\\": 3,
                         \\"high\\": 0
                     }
                 }"
@@ -290,22 +280,21 @@ describe("tck/rfcs/query-limits", () => {
                 LIMIT $param0
                 CALL {
                     WITH this
-                    MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Person:\`Person\`)
-                    WITH { node: { id: this_Person.id } } AS edge
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                    WITH { node: { id: this1.id } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge
-                        LIMIT $this_connection_actorsConnectionparam0
-                        RETURN collect(edge) AS this_connection_actorsConnectionvar1
+                        LIMIT $param1
+                        RETURN collect(edge) AS var2
                     }
-                    WITH this_connection_actorsConnectionvar1 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                    WITH var2 AS edges, totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS var3
                 }
-                RETURN this { .id, actorsConnection: this_actorsConnection } AS this
-                LIMIT $param2"
+                RETURN this { .id, actorsConnection: var3 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -314,12 +303,8 @@ describe("tck/rfcs/query-limits", () => {
                         \\"low\\": 3,
                         \\"high\\": 0
                     },
-                    \\"this_connection_actorsConnectionparam0\\": {
+                    \\"param1\\": {
                         \\"low\\": 4,
-                        \\"high\\": 0
-                    },
-                    \\"param2\\": {
-                        \\"low\\": 3,
                         \\"high\\": 0
                     }
                 }"
@@ -351,26 +336,26 @@ describe("tck/rfcs/query-limits", () => {
                 "MATCH (this:\`Festival\`)
                 CALL {
                     WITH this
-                    MATCH (this)<-[this_connection_showsConnectionthis0:PART_OF]-(this_Show:\`Show\`)
-                    WITH { node: { id: this_Show.id } } AS edge
+                    MATCH (this)<-[this0:PART_OF]-(this1:\`Show\`)
+                    WITH { node: { id: this1.id } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge
-                        LIMIT $this_connection_showsConnectionparam0
-                        RETURN collect(edge) AS this_connection_showsConnectionvar1
+                        LIMIT $param0
+                        RETURN collect(edge) AS var2
                     }
-                    WITH this_connection_showsConnectionvar1 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_showsConnection
+                    WITH var2 AS edges, totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS var3
                 }
-                RETURN this { .name, showsConnection: this_showsConnection } AS this"
+                RETURN this { .name, showsConnection: var3 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"this_connection_showsConnectionparam0\\": {
+                    \\"param0\\": {
                         \\"low\\": 2,
                         \\"high\\": 0
                     }
@@ -401,13 +386,12 @@ describe("tck/rfcs/query-limits", () => {
                 LIMIT $param0
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
-                    WITH this_actors { .id } AS this_actors
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                    WITH this1 { .id } AS this1
                     LIMIT $param1
-                    RETURN collect(this_actors) AS this_actors
+                    RETURN collect(this1) AS var2
                 }
-                RETURN this { .id, actors: this_actors } AS this
-                LIMIT $param2"
+                RETURN this { .id, actors: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -418,10 +402,6 @@ describe("tck/rfcs/query-limits", () => {
                     },
                     \\"param1\\": {
                         \\"low\\": 2,
-                        \\"high\\": 0
-                    },
-                    \\"param2\\": {
-                        \\"low\\": 3,
                         \\"high\\": 0
                     }
                 }"

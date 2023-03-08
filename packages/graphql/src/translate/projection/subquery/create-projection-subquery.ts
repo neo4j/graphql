@@ -21,7 +21,7 @@ import type { Node } from "../../../classes";
 import type { Context, GraphQLOptionsArg, GraphQLWhereArg, RelationField } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../../where/create-where-predicate";
-import type { RelationshipDirection } from "../../../utils/get-relationship-direction";
+import type { CypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { createAuthPredicates } from "../../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
@@ -31,13 +31,14 @@ export function createProjectionSubquery({
     whereInput,
     node,
     context,
-    alias,
+    subqueryReturnAlias,
     nestedProjection,
     nestedSubqueries,
+    targetNode,
     relationField,
     relationshipDirection,
     optionsInput,
-    authValidateStrs,
+    authValidatePredicates,
     addSkipAndLimit = true,
     collect = true,
 }: {
@@ -45,48 +46,47 @@ export function createProjectionSubquery({
     whereInput?: GraphQLWhereArg;
     node: Node;
     context: Context;
-    alias: string; // TODO: this should be output variable instead
-    nestedProjection: string;
+    nestedProjection: Cypher.Expr;
     nestedSubqueries: Cypher.Clause[];
+    targetNode: Cypher.Node;
+    subqueryReturnAlias: Cypher.Variable;
     relationField: RelationField;
-    relationshipDirection: RelationshipDirection;
+    relationshipDirection: CypherRelationshipDirection;
     optionsInput: GraphQLOptionsArg;
-    authValidateStrs: string[] | undefined;
+    authValidatePredicates: Cypher.Predicate[] | undefined;
     addSkipAndLimit?: boolean;
     collect?: boolean;
 }): Cypher.Clause {
     const isArray = relationField.typeMeta.array;
-    const targetNode = new Cypher.NamedNode(alias, {
-        labels: node.getLabels(context),
-    });
 
     const relationship = new Cypher.Relationship({
-        source: parentNode,
-        target: targetNode,
         type: relationField.type,
     });
-    if (relationshipDirection === "IN") {
-        relationship.reverse();
-    }
-
-    const isUndirected = relationshipDirection === "undirected";
-    const pattern = relationship.pattern({ directed: !isUndirected });
+    const pattern = new Cypher.Pattern(parentNode)
+        .withoutLabels()
+        .related(relationship)
+        .withDirection(relationshipDirection)
+        .to(targetNode);
 
     const subqueryMatch = new Cypher.Match(pattern);
+    const predicates: Cypher.Predicate[] = [];
 
     const projection = new Cypher.RawCypher((env) => {
         // TODO: use MapProjection
-        return `${targetNode.getCypher(env)} ${nestedProjection}`;
+        return `${targetNode.getCypher(env)} ${nestedProjection.getCypher(env)}`;
     });
 
+    let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
+
     if (whereInput) {
-        const wherePredicate = createWherePredicate({
+        const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicate({
             element: node,
             context,
             whereInput,
             targetElement: targetNode,
         });
-        if (wherePredicate) subqueryMatch.where(wherePredicate);
+        if (wherePredicate) predicates.push(wherePredicate);
+        preComputedWhereFieldSubqueries = preComputedSubqueries;
     }
 
     const whereAuth = createAuthPredicates({
@@ -94,13 +94,13 @@ export function createProjectionSubquery({
         operations: "READ",
         context,
         where: {
-            varName: alias,
+            varName: targetNode,
             node,
         },
     });
 
     if (whereAuth) {
-        subqueryMatch.and(whereAuth);
+        predicates.push(whereAuth);
     }
 
     const preAuth = createAuthPredicates({
@@ -109,33 +109,31 @@ export function createProjectionSubquery({
         context,
         allow: {
             parentNode: node,
-            varName: alias,
+            varName: targetNode,
         },
     });
 
     if (preAuth) {
         const allowAuth = new Cypher.apoc.ValidatePredicate(Cypher.not(preAuth), AUTH_FORBIDDEN_ERROR);
-        subqueryMatch.and(allowAuth);
+        predicates.push(allowAuth);
     }
 
-    if (authValidateStrs?.length) {
-        const authValidateStatements = authValidateStrs.map((str) => new Cypher.RawCypher(str));
-        const authValidatePredicate = Cypher.and(...authValidateStatements);
+    if (authValidatePredicates?.length) {
+        const authValidatePredicate = Cypher.and(...authValidatePredicates);
 
         const authStatement = new Cypher.apoc.ValidatePredicate(
             Cypher.not(authValidatePredicate),
             AUTH_FORBIDDEN_ERROR
         );
 
-        subqueryMatch.and(authStatement);
+        predicates.push(authStatement);
     }
 
-    const returnVariable = new Cypher.NamedVariable(alias);
-    const withStatement: Cypher.With = new Cypher.With([projection, returnVariable]); // This only works if nestedProjection is a map
+    const withStatement: Cypher.With = new Cypher.With([projection, targetNode]); // This only works if nestedProjection is a map
     if (addSkipAndLimit) {
         addSortAndLimitOptionsToClause({
             optionsInput,
-            target: returnVariable,
+            target: targetNode,
             projectionClause: withStatement,
         });
     }
@@ -148,9 +146,22 @@ export function createProjectionSubquery({
         }
     }
 
-    const returnStatement = new Cypher.Return([returnProjection, returnVariable]);
+    const returnStatement = new Cypher.Return([returnProjection, subqueryReturnAlias]);
 
-    const subquery = Cypher.concat(subqueryMatch, ...nestedSubqueries, withStatement, returnStatement);
+    if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
+        const preComputedSubqueryWith = new Cypher.With("*");
+        preComputedSubqueryWith.where(Cypher.and(...predicates));
+        return Cypher.concat(
+            subqueryMatch,
+            preComputedWhereFieldSubqueries,
+            preComputedSubqueryWith,
+            ...nestedSubqueries,
+            withStatement,
+            returnStatement
+        );
+    }
 
-    return subquery;
+    subqueryMatch.where(Cypher.and(...predicates));
+
+    return Cypher.concat(subqueryMatch, ...nestedSubqueries, withStatement, returnStatement);
 }

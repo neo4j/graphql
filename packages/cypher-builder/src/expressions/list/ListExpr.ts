@@ -19,9 +19,20 @@
 
 import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
+import { ListIndex } from "./ListIndex";
 
-
-/** Represents a List */
+/** Represents a List
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/lists/)
+ * @group Expressions
+ * @example
+ * ```ts
+ * new Cypher.List([new Cypher.Literal("1"), new Cypher.Literal("2"), new Cypher.Literal("3")])
+ * ```
+ * Translates to
+ * ```cypher
+ * [ "1", "2", "3" ]
+ * ```
+ */
 export class ListExpr implements CypherCompilable {
     private value: Expr[];
 
@@ -30,15 +41,23 @@ export class ListExpr implements CypherCompilable {
     }
 
     private serializeList(env: CypherEnvironment, obj: Expr[]): string {
-        const valuesList = obj.map(expr => {
+        const valuesList = obj.map((expr) => {
             return expr.getCypher(env);
         });
-    
-        const serializedContent = valuesList.join(", ");    
+
+        const serializedContent = valuesList.join(", ");
         return `[ ${serializedContent} ]`;
     }
-    
+
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         return this.serializeList(env, this.value);
+    }
+
+    /** Access individual elements in the list via the ListIndex class*/
+    public index(index: number): ListIndex {
+        return new ListIndex(this, index);
     }
 }

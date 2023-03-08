@@ -125,15 +125,14 @@ describe("Cypher Auth Allow", () => {
             	WITH this0_contentPost0_node
             	MATCH (this0_contentPost0_node)<-[this0_contentPost0_node_creator_User_unique:HAS_CONTENT]-(:User)
             	WITH count(this0_contentPost0_node_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this0_contentPost0_node_creator_User_unique_ignored
             }
             WITH this0
             CALL apoc.util.validate(NOT ((this0.id IS NOT NULL AND this0.id = $this0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            RETURN [
-            this0 { .id }] AS data"
+            RETURN [ this0 { .id } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -181,57 +180,57 @@ describe("Cypher Auth Allow", () => {
             CALL {
             	 WITH this
             WITH this
-            OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
-            WHERE this_content0.id = $updateUsers_args_update_content0_where_Commentparam0
-            CALL apoc.do.when(this_content0 IS NOT NULL, \\"
-            WITH this, this_content0
-            OPTIONAL MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
-            CALL apoc.do.when(this_content0_creator0 IS NOT NULL, \\\\\\"
-            SET this_content0_creator0.id = $this_update_content0_creator0_id
-            WITH this, this_content0, this_content0_creator0
-            CALL apoc.util.validate(NOT ((this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0auth_param0)), \\\\\\\\\\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\\\\\\\\\", [0])
-            RETURN count(*) AS _
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_content0:this_content0, updateUsers: $updateUsers, this_content0_creator0:this_content0_creator0, auth:$auth,this_update_content0_creator0_id:$this_update_content0_creator0_id,this_content0_creator0auth_param0:$this_content0_creator0auth_param0})
-            YIELD value AS _
-            WITH this, this_content0
             CALL {
-            	WITH this_content0
-            	MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
-            	WITH count(this_content0_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required', [0])
-            	RETURN c AS this_content0_creator_User_unique_ignored
+            	WITH this
+            	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
+            	WHERE this_content0.id = $updateUsers_args_update_content0_where_this_content0param0
+            	WITH this, this_content0
+            	CALL {
+            		WITH this, this_content0
+            		MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
+            		SET this_content0_creator0.id = $this_update_content0_creator0_id
+            		WITH this, this_content0, this_content0_creator0
+            		CALL apoc.util.validate(NOT ((this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            		RETURN count(*) AS update_this_content0_creator0
+            	}
+            	WITH this, this_content0
+            	CALL {
+            		WITH this_content0
+            		MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
+            		WITH count(this_content0_creator_User_unique) as c
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required exactly once', [0])
+            		RETURN c AS this_content0_creator_User_unique_ignored
+            	}
+            	RETURN count(*) AS update_this_content0
             }
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_creator0_id:$this_update_content0_creator0_id,this_content0_creator0auth_param0:$this_content0_creator0auth_param0})
-            YIELD value AS _
             RETURN count(*) AS update_this_Comment
             }
             CALL {
             	 WITH this
             	WITH this
-            OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
-            WHERE this_content0.id = $updateUsers_args_update_content0_where_Postparam0
-            CALL apoc.do.when(this_content0 IS NOT NULL, \\"
-            WITH this, this_content0
-            OPTIONAL MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
-            CALL apoc.do.when(this_content0_creator0 IS NOT NULL, \\\\\\"
-            SET this_content0_creator0.id = $this_update_content0_creator0_id
-            WITH this, this_content0, this_content0_creator0
-            CALL apoc.util.validate(NOT ((this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0auth_param0)), \\\\\\\\\\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\\\\\\\\\", [0])
-            RETURN count(*) AS _
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_content0:this_content0, updateUsers: $updateUsers, this_content0_creator0:this_content0_creator0, auth:$auth,this_update_content0_creator0_id:$this_update_content0_creator0_id,this_content0_creator0auth_param0:$this_content0_creator0auth_param0})
-            YIELD value AS _
-            WITH this, this_content0
             CALL {
-            	WITH this_content0
-            	MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
-            	WITH count(this_content0_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
-            	RETURN c AS this_content0_creator_User_unique_ignored
+            	WITH this
+            	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
+            	WHERE this_content0.id = $updateUsers_args_update_content0_where_this_content0param0
+            	WITH this, this_content0
+            	CALL {
+            		WITH this, this_content0
+            		MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
+            		SET this_content0_creator0.id = $this_update_content0_creator0_id
+            		WITH this, this_content0, this_content0_creator0
+            		CALL apoc.util.validate(NOT ((this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            		RETURN count(*) AS update_this_content0_creator0
+            	}
+            	WITH this, this_content0
+            	CALL {
+            		WITH this_content0
+            		MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
+            		WITH count(this_content0_creator_User_unique) as c
+            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
+            		RETURN c AS this_content0_creator_User_unique_ignored
+            	}
+            	RETURN count(*) AS update_this_content0
             }
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_creator0_id:$this_update_content0_creator0_id,this_content0_creator0auth_param0:$this_content0_creator0auth_param0})
-            YIELD value AS _
             RETURN count(*) AS update_this_Post
             }
             WITH this
@@ -242,22 +241,9 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"id-01\\",
-                \\"updateUsers_args_update_content0_where_Commentparam0\\": \\"post-id\\",
+                \\"updateUsers_args_update_content0_where_this_content0param0\\": \\"post-id\\",
                 \\"this_update_content0_creator0_id\\": \\"not bound\\",
                 \\"this_content0_creator0auth_param0\\": \\"id-01\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"id-01\\"
-                    }
-                },
-                \\"updateUsers_args_update_content0_where_Postparam0\\": \\"post-id\\",
                 \\"thisauth_param0\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
@@ -394,10 +380,10 @@ describe("Cypher Auth Allow", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Commentparam0
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Comment_this_disconnect_content0param0
             CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
             	RETURN count(*) AS _
@@ -409,10 +395,10 @@ describe("Cypher Auth Allow", () => {
             CALL {
             	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Postparam0
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0
             CALL {
-            	WITH this_disconnect_content0, this_disconnect_content0_rel
-            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	WITH this_disconnect_content0, this_disconnect_content0_rel, this
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
             	RETURN count(*) AS _
@@ -428,9 +414,9 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
-                \\"updateUsers_args_disconnect_content0_where_Commentparam0\\": \\"content-id\\",
+                \\"updateUsers_args_disconnect_content0_where_Comment_this_disconnect_content0param0\\": \\"content-id\\",
                 \\"this_disconnect_content0auth_param0\\": \\"id-01\\",
-                \\"updateUsers_args_disconnect_content0_where_Postparam0\\": \\"content-id\\",
+                \\"updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0\\": \\"content-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"disconnect\\": {

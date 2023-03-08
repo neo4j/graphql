@@ -28,6 +28,18 @@ import Cypher from "@neo4j/cypher-builder";
 import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
 
+type ProjectionAndParamsResult = {
+    projection: Cypher.Expr;
+    projectionSubqueries: Cypher.Clause;
+    projectionAuth?: Cypher.Clause;
+};
+
+type CompositeProjectionAndParamsResult = {
+    projectionSubqueriesClause: Cypher.Clause | undefined;
+    projectionList: Cypher.Expr[];
+    authCalls: Cypher.Clause | undefined;
+};
+
 export default async function translateCreate({
     context,
     node,
@@ -46,22 +58,21 @@ export default async function translateCreate({
     const { resolveTree } = context;
     const mutationInputs = resolveTree.args.input as any[];
 
-    const connectionStrs: string[] = [];
-    const interfaceStrs: string[] = [];
     const projectionWith: string[] = [];
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
-
-    let connectionParams: any;
-    let interfaceParams: any;
 
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
 
+    // TODO: after the createCreateAndParams refactor, remove varNameStrs and only use Cypher Variables
+    const varNameStrs = mutationInputs.map((_, i) => `this${i}`);
+    const varNameVariables = varNameStrs.map((varName) => new Cypher.NamedNode(varName));
+
     const { createStrs, params } = mutationInputs.reduce(
         (res, input, index) => {
-            const varName = `this${index}`;
+            const varName = varNameStrs[index];
             const create = [`CALL {`];
             const withVars = [varName];
             projectionWith.push(varName);
@@ -82,7 +93,7 @@ export default async function translateCreate({
                 callbackBucket,
             });
             create.push(`${createAndParams[0]}`);
-    
+
             if (context.subscriptionsEnabled) {
                 const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
                 create.push(`RETURN ${varName}, ${META_CYPHER_VARIABLE} AS ${metaVariable}`);
@@ -90,7 +101,7 @@ export default async function translateCreate({
             } else {
                 create.push(`RETURN ${varName}`);
             }
-    
+
             create.push(`}`);
             res.createStrs.push(create.join("\n"));
             res.params = { ...res.params, ...createAndParams[1] };
@@ -102,116 +113,73 @@ export default async function translateCreate({
         params: any;
     };
 
-    let replacedProjectionParams: Record<string, unknown> = {};
-    let projectionStr: string | undefined;
-    let authCalls: string | undefined;
-
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
     }
 
-    let projectionSubquery: Cypher.Clause | undefined;
+    let parsedProjection: CompositeProjectionAndParamsResult | undefined;
     if (nodeProjection) {
-        let projAuth = "";
-        const projection = createProjectionAndParams({
-            node,
-            context,
-            resolveTree: nodeProjection,
-            varName: "REPLACE_ME",
+        const projectionFromInput: ProjectionAndParamsResult[] = varNameVariables.map((varName) => {
+            const projection = createProjectionAndParams({
+                node,
+                context,
+                resolveTree: nodeProjection,
+                varName,
+                cypherFieldAliasMap: {},
+            });
+
+            const projectionExpr = new Cypher.RawCypher(
+                (env) => `${varName.getCypher(env)} ${projection.projection.getCypher(env)}`
+            );
+            const projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
+
+            if (projection.meta?.authValidatePredicates?.length) {
+                const projAuth = new Cypher.CallProcedure(
+                    new Cypher.apoc.Validate(
+                        Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                        AUTH_FORBIDDEN_ERROR,
+                        new Cypher.Literal([0])
+                    )
+                );
+                return {
+                    projection: projectionExpr,
+                    projectionSubqueries: projectionSubquery,
+                    projectionAuth: projAuth,
+                };
+            }
+            return { projection: projectionExpr, projectionSubqueries: projectionSubquery };
         });
 
-        projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
-        if (projection.meta?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
-                " AND "
-            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-        }
-    
-        replacedProjectionParams = Object.entries(projection.params).reduce((res, [key, value]) => {
-            return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
-        }, {});
-    
-        projectionStr = createStrs
-            .map(
-                (_, i) =>
-                    `\nthis${i} ${projection.projection
-                        // First look to see if projection param is being reassigned
-                        // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
-                        .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                        .replace(/\$REPLACE_ME/g, "$projection")
-                        .replace(/REPLACE_ME/g, `this${i}`)}`
-            )
-            .join(", ");
-
-        authCalls = createStrs
-            .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
-            .join("\n");
+        parsedProjection = projectionFromInput.reduce(
+            (acc: CompositeProjectionAndParamsResult, { projection, projectionSubqueries, projectionAuth }) => {
+                return {
+                    authCalls: Cypher.concat(acc.authCalls, projectionAuth),
+                    projectionSubqueriesClause: Cypher.concat(acc.projectionSubqueriesClause, projectionSubqueries),
+                    projectionList: acc.projectionList.concat(projection),
+                };
+            },
+            {
+                projectionSubqueriesClause: undefined,
+                projectionList: [],
+                authCalls: undefined,
+            }
+        );
     }
 
-    const replacedConnectionStrs = connectionStrs.length
-        ? createStrs.map((_, i) => {
-              return connectionStrs
-                  .map((connectionStr) => {
-                      return connectionStr.replace(/REPLACE_ME/g, `this${i}`);
-                  })
-                  .join("\n");
-          })
-        : [];
-
-    const replacedInterfaceStrs = interfaceStrs.length
-        ? createStrs.map((_, i) => {
-              return interfaceStrs
-                  .map((interfaceStr) => {
-                      return interfaceStr.replace(/REPLACE_ME/g, `this${i}`);
-                  })
-                  .join("\n");
-          })
-        : [];
-
-    const replacedConnectionParams = connectionParams
-        ? createStrs.reduce((res1, _, i) => {
-              return {
-                  ...res1,
-                  ...Object.entries(connectionParams).reduce((res2, [key, value]) => {
-                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
-                  }, {}),
-              };
-          }, {})
-        : {};
-
-    const replacedInterfaceParams = interfaceParams
-        ? createStrs.reduce((res1, _, i) => {
-              return {
-                  ...res1,
-                  ...Object.entries(interfaceParams).reduce((res2, [key, value]) => {
-                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
-                  }, {}),
-              };
-          }, {})
-        : {};
-
-    const returnStatement = generateCreateReturnStatement(projectionStr, context.subscriptionsEnabled);
-    const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
+    const projectionList = parsedProjection?.projectionList.length
+        ? new Cypher.List(parsedProjection.projectionList)
+        : undefined;
+    const returnStatement = generateCreateReturnStatement(projectionList, context.subscriptionsEnabled);
 
     const createQuery = new Cypher.RawCypher((env) => {
-        const projectionSubqueryStr = projectionSubquery ? `\n${projectionSubquery.getCypher(env)}` : "";
-        // TODO: avoid REPLACE_ME
-        const replacedProjectionSubqueryStrs = createStrs.length
-            ? createStrs.map((_, i) => {
-                  return projectionSubqueryStr
-                      .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                      .replace(/\$REPLACE_ME/g, "$projection")
-                      .replace(/REPLACE_ME/g, `this${i}`);
-              })
-            : [];
+        const projectionSubqueriesStr = parsedProjection?.projectionSubqueriesClause?.getCypher(env);
+
         const cypher = filterTruthy([
             `${createStrs.join("\n")}`,
-            projectionWithStr,
-            authCalls,
-            ...replacedConnectionStrs,
-            ...replacedInterfaceStrs,
-            ...replacedProjectionSubqueryStrs,
-            returnStatement,
+            context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "",
+            parsedProjection?.authCalls?.getCypher(env),
+            projectionSubqueriesStr ? `\n${projectionSubqueriesStr}` : "",
+            returnStatement.getCypher(env),
         ])
             .filter(Boolean)
             .join("\n");
@@ -219,9 +187,6 @@ export default async function translateCreate({
             cypher,
             {
                 ...params,
-                ...replacedProjectionParams,
-                ...replacedConnectionParams,
-                ...replacedInterfaceParams,
             },
         ];
     });
@@ -239,20 +204,25 @@ export default async function translateCreate({
         },
     };
 }
-function generateCreateReturnStatement(projectionStr: string | undefined, subscriptionsEnabled: boolean): string {
-    const statements: string[] = [];
+function generateCreateReturnStatement(
+    projectionExpr: Cypher.Expr | undefined,
+    subscriptionsEnabled: boolean
+): Cypher.Clause {
+    const statements = new Cypher.RawCypher((env) => {
+        let statStr;
+        if (projectionExpr) {
+            statStr = `${projectionExpr.getCypher(env)} AS data`;
+        }
 
-    if (projectionStr) {
-        statements.push(`[${projectionStr}] AS data`);
-    }
+        if (subscriptionsEnabled) {
+            statStr = statStr ? `${statStr}, ${META_CYPHER_VARIABLE}` : META_CYPHER_VARIABLE;
+        }
 
-    if (subscriptionsEnabled) {
-        statements.push(META_CYPHER_VARIABLE);
-    }
+        if (!statStr) {
+            statStr = "'Query cannot conclude with CALL'";
+        }
+        return statStr;
+    });
 
-    if (statements.length === 0) {
-        statements.push("'Query cannot conclude with CALL'");
-    }
-
-    return `RETURN ${statements.join(", ")}`;
+    return new Cypher.Return(statements);
 }

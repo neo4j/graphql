@@ -25,7 +25,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
-import { CompositeEntity } from "../schema-model/CompositeEntity";
+import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
 
 export function translateTopLevelCypher({
     context,
@@ -53,37 +53,41 @@ export function translateTopLevelCypher({
         cypherStrs.push(`CALL apoc.util.validate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
     }
 
-    let projectionStr = "";
-    const projectionAuthStrs: string[] = [];
+    let projectionStr;
+    const projectionAuthStrs: Cypher.Predicate[] = [];
     const projectionSubqueries: Cypher.Clause[] = [];
-    const connectionProjectionStrs: string[] = [];
 
     const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
 
     if (referenceNode) {
-        const recurse = createProjectionAndParams({
+        const {
+            projection: str,
+            params: p,
+            meta,
+            subqueries,
+            subqueriesBeforeSort,
+        } = createProjectionAndParams({
             resolveTree,
             node: referenceNode,
             context,
-            varName: `this`,
+            varName: new Cypher.NamedNode(`this`),
+            cypherFieldAliasMap: {},
         });
-
-        const { projection: str, params: p, meta, subqueries, subqueriesBeforeSort } = recurse;
         projectionStr = str;
         projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
         params = { ...params, ...p };
 
-        if (meta.authValidateStrs?.length) {
-            projectionAuthStrs.push(...projectionAuthStrs, meta.authValidateStrs.join(" AND "));
+        if (meta.authValidatePredicates?.length) {
+            projectionAuthStrs.push(...projectionAuthStrs, Cypher.and(...meta.authValidatePredicates));
         }
     }
 
     const unionWhere: string[] = [];
 
-    const entity = context.entities.get(field.typeMeta.name);
+    const entity = context.schemaModel.entities.get(field.typeMeta.name);
 
     if (entity instanceof CompositeEntity) {
-        const headStrs: string[] = [];
+        const headStrs: Cypher.Clause[] = [];
         const referencedNodes =
             entity.concreteEntities
                 ?.map((u) => context.nodes.find((n) => n.name === u.name))
@@ -95,9 +99,13 @@ export function translateTopLevelCypher({
                 const labelsStatements = node.getLabels(context).map((label) => `"${label}" IN labels(this)`);
                 unionWhere.push(`(${labelsStatements.join("AND")})`);
 
-                const innerHeadStr: string[] = [`[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`];
-
-                if (resolveTree.fieldsByTypeName[node.name]) {
+                // TODO Migrate to CypherBuilder
+                const innerNodePartialProjection = `[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`;
+                if (!resolveTree.fieldsByTypeName[node.name]) {
+                    headStrs.push(
+                        new Cypher.RawCypher(`${innerNodePartialProjection}| this { __resolveType: "${node.name}" }]`)
+                    );
+                } else {
                     const {
                         projection: str,
                         params: p,
@@ -107,30 +115,29 @@ export function translateTopLevelCypher({
                         resolveTree,
                         node,
                         context,
-                        varName: "this",
+                        varName: new Cypher.NamedNode("this"),
+                        cypherFieldAliasMap: {},
                     });
-
                     projectionSubqueries.push(...subqueries);
-
-                    innerHeadStr.push(
-                        [`| this { __resolveType: "${node.name}", `, ...str.replace("{", "").split("")].join("")
-                    );
                     params = { ...params, ...p };
-
-                    if (meta.authValidateStrs?.length) {
-                        projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
+                    if (meta.authValidatePredicates?.length) {
+                        projectionAuthStrs.push(Cypher.and(...meta.authValidatePredicates));
                     }
-                } else {
-                    innerHeadStr.push(`| this { __resolveType: "${node.name}" } `);
+                    headStrs.push(
+                        new Cypher.RawCypher((env) => {
+                            return innerNodePartialProjection
+                                .concat(`| this { __resolveType: "${node.name}", `)
+                                .concat(str.getCypher(env).replace("{", ""))
+                                .concat("]");
+                        })
+                    );
                 }
-
-                innerHeadStr.push(`]`);
-
-                headStrs.push(innerHeadStr.join(" "));
             }
         });
 
-        projectionStr = `${headStrs.join(" + ")}`;
+        projectionStr = new Cypher.RawCypher(
+            (env) => `${headStrs.map((headStr) => headStr.getCypher(env)).join(" + ")}`
+        );
     }
 
     const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
@@ -158,16 +165,18 @@ export function translateTopLevelCypher({
     const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
     if (type === "Query") {
-        const isArray = field.typeMeta.array;
-        const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
-
-        if (expectMultipleValues) {
-            cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${statement}", ${apocParamsStr}) as x`);
+        if (field.columnName) {
+            const experimentalCypherStatement = createCypherDirectiveSubquery({
+                field,
+            });
+            cypherStrs.push(...experimentalCypherStatement);
         } else {
-            cypherStrs.push(`WITH apoc.cypher.runFirstColumnSingle("${statement}", ${apocParamsStr}) as x`);
+            const legacyCypherStatement = createCypherDirectiveApocProcedure({
+                field,
+                apocParams: apocParamsStr,
+            });
+            cypherStrs.push(...legacyCypherStatement);
         }
-
-        cypherStrs.push("UNWIND x as this\nWITH this");
     } else {
         cypherStrs.push(`
             CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value
@@ -179,28 +188,62 @@ export function translateTopLevelCypher({
         cypherStrs.push(`WHERE ${unionWhere.join(" OR ")}`);
     }
 
-    if (projectionAuthStrs.length) {
-        cypherStrs.push(
-            `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(
-                " AND "
-            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-        );
-    }
-
-    cypherStrs.push(connectionProjectionStrs.join("\n"));
     const projectionSubquery = Cypher.concat(...projectionSubqueries);
 
     return new Cypher.RawCypher((env) => {
+        if (projectionAuthStrs.length) {
+            const validatePred = new Cypher.apoc.ValidatePredicate(
+                Cypher.not(Cypher.and(...projectionAuthStrs)),
+                AUTH_FORBIDDEN_ERROR
+            );
+            cypherStrs.push(`WHERE ${validatePred.getCypher(env)}`);
+        }
+
         const subqueriesStr = projectionSubquery ? `\n${projectionSubquery.getCypher(env)}` : "";
         if (subqueriesStr) cypherStrs.push(subqueriesStr);
 
         if (field.isScalar || field.isEnum) {
             cypherStrs.push(`RETURN this`);
         } else if (entity instanceof CompositeEntity) {
-            cypherStrs.push(`RETURN head( ${projectionStr} ) AS this`);
+            cypherStrs.push(`RETURN head( ${projectionStr.getCypher(env)} ) AS this`);
         } else {
-            cypherStrs.push(`RETURN this ${projectionStr} AS this`);
+            cypherStrs.push(`RETURN this ${projectionStr.getCypher(env)} AS this`);
         }
         return [cypherStrs.join("\n"), params];
     }).build();
+}
+
+function createCypherDirectiveApocProcedure({
+    field,
+    apocParams,
+}: {
+    field: CypherField;
+    apocParams: string;
+}): string[] {
+    const isArray = field.typeMeta.array;
+    const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
+    const cypherStrs: string[] = [];
+
+    if (expectMultipleValues) {
+        cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${field.statement}", ${apocParams}) as x`);
+    } else {
+        cypherStrs.push(`WITH apoc.cypher.runFirstColumnSingle("${field.statement}", ${apocParams}) as x`);
+    }
+
+    cypherStrs.push("UNWIND x as this\nWITH this");
+    return cypherStrs;
+}
+
+function createCypherDirectiveSubquery({ field }: { field: CypherField }): string[] {
+    const cypherStrs: string[] = [];
+    cypherStrs.push("CALL {", field.statement, "}");
+
+    if (field.columnName) {
+        if (field.isScalar || field.isEnum) {
+            cypherStrs.push(`UNWIND ${field.columnName} as this`);
+        } else {
+            cypherStrs.push(`WITH ${field.columnName} as this`);
+        }
+    }
+    return cypherStrs;
 }

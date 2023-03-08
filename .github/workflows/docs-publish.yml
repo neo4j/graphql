@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: "Download built documentation"
-        uses: actions/github-script@v6.3.3
+        uses: actions/github-script@v6.4.0
         with:
           script: |
             var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
@@ -47,9 +47,10 @@ jobs:
           npm install -g surge
           surge ./site neo4j-graphql-docs-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
       - name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@adca94abcaf73c10466a71cc83ae561fd66d1a56 # tag=v2.3.0
+        uses: marocchino/sticky-pull-request-comment@3d60a5b2dae89d44e0c6ddc69dd7536aec2071cd # v2.5.0
         with:
           number: ${{ steps.get-pr-number.outputs.pr-number }}
+          header: docs
           message: |
             Looks like you've updated the documentation!
 

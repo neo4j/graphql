@@ -24,9 +24,9 @@ import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 import { createJwtRequest } from "../../utils/create-jwt-request";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("Update -> ConnectOrCreate", () => {
     let driver: Driver;
@@ -36,8 +36,8 @@ describe("Update -> ConnectOrCreate", () => {
     let queryUpdate: DocumentNode;
     let queryCreate: DocumentNode;
 
-    const typeMovie = generateUniqueType("Movie");
-    const typeGenre = generateUniqueType("Genre");
+    const typeMovie = new UniqueType("Movie");
+    const typeGenre = new UniqueType("Genre");
     const secret = "secret";
     let neoSchema: Neo4jGraphQL;
 

@@ -21,19 +21,24 @@ import { WithWhere } from "../../clauses/mixins/WithWhere";
 import { mixin } from "../../clauses/utils/mixin";
 import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
-import { MatchableElement, Pattern } from "../../Pattern";
+import { Pattern } from "../../pattern/Pattern";
+import type { NodeRef } from "../../references/NodeRef";
 import type { Expr } from "../../types";
 import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PatternComprehension extends WithWhere {}
 
+/** Represents a Pattern comprehension
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/lists/#cypher-pattern-comprehension)
+ * @group Expressions
+ */
 @mixin(WithWhere)
 export class PatternComprehension extends CypherASTNode {
     private pattern: Pattern;
     private mapExpr: Expr | undefined;
 
-    constructor(pattern: Pattern | MatchableElement, mapExpr?: Expr) {
+    constructor(pattern: Pattern | NodeRef, mapExpr?: Expr) {
         super();
         if (pattern instanceof Pattern) {
             this.pattern = pattern;
