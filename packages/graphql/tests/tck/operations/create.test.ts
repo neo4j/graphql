@@ -355,9 +355,7 @@ describe("Cypher Create", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
             			MERGE (this0)<-[:\`ACTED_IN\`]-(this0_actors_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_actors_connect0_node
             	RETURN count(*) AS connect_this0_actors_connect_Actor
@@ -419,9 +417,7 @@ describe("Cypher Create", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_movies_connect0_node
             			MERGE (this0)-[:\`ACTED_IN\`]->(this0_movies_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_movies_connect0_node
             	RETURN count(*) AS connect_this0_movies_connect_Movie

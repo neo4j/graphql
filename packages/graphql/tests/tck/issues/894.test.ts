@@ -80,7 +80,6 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             	WITH collect(this_disconnect_activeOrganization0) as this_disconnect_activeOrganization0, this_disconnect_activeOrganization0_rel, this
             	UNWIND this_disconnect_activeOrganization0 as x
             	DELETE this_disconnect_activeOrganization0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_activeOrganization_Organization
             }
@@ -97,9 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_activeOrganization0_node
             			MERGE (this)-[:\`ACTIVELY_MANAGING\`]->(this_connect_activeOrganization0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_activeOrganization0_node
             	RETURN count(*) AS connect_this_connect_activeOrganization_Organization

@@ -100,7 +100,6 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
             	WITH this_admins0_to_delete
             	UNWIND this_admins0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             DETACH DELETE this"
         `);

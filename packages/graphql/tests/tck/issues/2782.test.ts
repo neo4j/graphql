@@ -109,7 +109,6 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             	WITH collect(this_colors0_disconnect0) as this_colors0_disconnect0, this_colors0_disconnect0_rel, this
             	UNWIND this_colors0_disconnect0 as x
             	DELETE this_colors0_disconnect0_rel
-            	RETURN count(*) AS _
             }
             CALL {
             WITH this, this_colors0_disconnect0
@@ -120,7 +119,6 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             	WITH collect(this_colors0_disconnect0_photos0) as this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel, this_colors0_disconnect0
             	UNWIND this_colors0_disconnect0_photos0 as x
             	DELETE this_colors0_disconnect0_photos0_rel
-            	RETURN count(*) AS _
             }
             CALL {
             WITH this, this_colors0_disconnect0, this_colors0_disconnect0_photos0
@@ -131,7 +129,6 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             	WITH collect(this_colors0_disconnect0_photos0_color0) as this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel, this_colors0_disconnect0_photos0
             	UNWIND this_colors0_disconnect0_photos0_color0 as x
             	DELETE this_colors0_disconnect0_photos0_color0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_colors0_disconnect0_photos0_color_Color
             }
@@ -149,7 +146,6 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             	WITH collect(this_photos0_disconnect0) as this_photos0_disconnect0, this_photos0_disconnect0_rel, this
             	UNWIND this_photos0_disconnect0 as x
             	DELETE this_photos0_disconnect0_rel
-            	RETURN count(*) AS _
             }
             CALL {
             WITH this, this_photos0_disconnect0
@@ -160,7 +156,6 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             	WITH collect(this_photos0_disconnect0_color0) as this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel, this_photos0_disconnect0
             	UNWIND this_photos0_disconnect0_color0 as x
             	DELETE this_photos0_disconnect0_color0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_photos0_disconnect0_color_Color
             }
@@ -176,7 +171,6 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             	WITH collect(this_photos0_disconnect1) as this_photos0_disconnect1, this_photos0_disconnect1_rel, this
             	UNWIND this_photos0_disconnect1 as x
             	DELETE this_photos0_disconnect1_rel
-            	RETURN count(*) AS _
             }
             CALL {
             WITH this, this_photos0_disconnect1
@@ -187,7 +181,6 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             	WITH collect(this_photos0_disconnect1_color0) as this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel, this_photos0_disconnect1
             	UNWIND this_photos0_disconnect1_color0 as x
             	DELETE this_photos0_disconnect1_color0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_photos0_disconnect1_color_Color
             }

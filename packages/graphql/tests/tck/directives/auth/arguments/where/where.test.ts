@@ -651,7 +651,6 @@ describe("Cypher Auth Where", () => {
             	WITH this_posts0_to_delete
             	UNWIND this_posts0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             DETACH DELETE this"
         `);
@@ -703,9 +702,7 @@ describe("Cypher Auth Where", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_posts_connect0_node
             			MERGE (this0)-[:\`HAS_POST\`]->(this0_posts_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_posts_connect0_node
             	RETURN count(*) AS connect_this0_posts_connect_Post
@@ -770,9 +767,7 @@ describe("Cypher Auth Where", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_posts_connect0_node
             			MERGE (this0)-[:\`HAS_POST\`]->(this0_posts_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_posts_connect0_node
             	RETURN count(*) AS connect_this0_posts_connect_Post
@@ -828,9 +823,7 @@ describe("Cypher Auth Where", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_posts0_connect0_node
             			MERGE (this)-[:\`HAS_POST\`]->(this_posts0_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_posts0_connect0_node
             	RETURN count(*) AS connect_this_posts0_connect_Post
@@ -882,9 +875,7 @@ describe("Cypher Auth Where", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_posts0_connect0_node
             			MERGE (this)-[:\`HAS_POST\`]->(this_posts0_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_posts0_connect0_node
             	RETURN count(*) AS connect_this_posts0_connect_Post
@@ -937,9 +928,7 @@ describe("Cypher Auth Where", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_posts0_node
             			MERGE (this)-[:\`HAS_POST\`]->(this_connect_posts0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_posts0_node
             	RETURN count(*) AS connect_this_connect_posts_Post
@@ -992,9 +981,7 @@ describe("Cypher Auth Where", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_posts0_node
             			MERGE (this)-[:\`HAS_POST\`]->(this_connect_posts0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_posts0_node
             	RETURN count(*) AS connect_this_connect_posts_Post
@@ -1045,7 +1032,6 @@ describe("Cypher Auth Where", () => {
             	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel, this
             	UNWIND this_posts0_disconnect0 as x
             	DELETE this_posts0_disconnect0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_posts0_disconnect_Post
             }
@@ -1093,7 +1079,6 @@ describe("Cypher Auth Where", () => {
             	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel, this
             	UNWIND this_posts0_disconnect0 as x
             	DELETE this_posts0_disconnect0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_posts0_disconnect_Post
             }
@@ -1161,7 +1146,6 @@ describe("Cypher Auth Where", () => {
             	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
@@ -1221,7 +1205,6 @@ describe("Cypher Auth Where", () => {
             	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }

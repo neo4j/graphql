@@ -74,9 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_targets0_node
             			MERGE (this)-[:\`HAS_TARGET\`]->(this_connect_targets0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_targets0_node
             	RETURN count(*) AS connect_this_connect_targets_Target
@@ -141,7 +139,6 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             	WITH collect(this_disconnect_targets0) as this_disconnect_targets0, this_disconnect_targets0_rel, this
             	UNWIND this_disconnect_targets0 as x
             	DELETE this_disconnect_targets0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_targets_Target
             }

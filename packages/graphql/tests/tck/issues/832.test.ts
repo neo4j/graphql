@@ -102,9 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
             			MERGE (this0)<-[:\`ACTED_IN\`]-(this0_subjects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_subjects_connect0_node
             	RETURN count(*) AS connect_this0_subjects_connect_Person
@@ -121,9 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
             			MERGE (this0)<-[:\`ACTED_IN\`]-(this0_subjects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_subjects_connect1_node
             	RETURN count(*) AS connect_this0_subjects_connect_Place
@@ -141,9 +137,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect0_node
             			MERGE (this0)-[:\`ACTED_IN\`]->(this0_objects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_objects_connect0_node
             	RETURN count(*) AS connect_this0_objects_connect_Person
@@ -160,9 +154,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect1_node
             			MERGE (this0)-[:\`ACTED_IN\`]->(this0_objects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_objects_connect1_node
             	RETURN count(*) AS connect_this0_objects_connect_Place
@@ -186,9 +178,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_subjects_connect0_node
             			MERGE (this1)<-[:\`ACTED_IN\`]-(this1_subjects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this1, this1_subjects_connect0_node
             	RETURN count(*) AS connect_this1_subjects_connect_Person
@@ -205,9 +195,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_subjects_connect1_node
             			MERGE (this1)<-[:\`ACTED_IN\`]-(this1_subjects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this1, this1_subjects_connect1_node
             	RETURN count(*) AS connect_this1_subjects_connect_Place
@@ -225,9 +213,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_objects_connect0_node
             			MERGE (this1)-[:\`ACTED_IN\`]->(this1_objects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this1, this1_objects_connect0_node
             	RETURN count(*) AS connect_this1_objects_connect_Person
@@ -244,9 +230,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_objects_connect1_node
             			MERGE (this1)-[:\`ACTED_IN\`]->(this1_objects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this1, this1_objects_connect1_node
             	RETURN count(*) AS connect_this1_objects_connect_Place
@@ -335,9 +319,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
             			MERGE (this0)<-[:\`ACTED_IN\`]-(this0_subjects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_subjects_connect0_node
             	RETURN count(*) AS connect_this0_subjects_connect_Person
@@ -354,9 +336,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
             			MERGE (this0)<-[:\`ACTED_IN\`]-(this0_subjects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_subjects_connect1_node
             	RETURN count(*) AS connect_this0_subjects_connect_Place
@@ -374,9 +354,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect0_node
             			MERGE (this0)-[:\`ACTED_IN\`]->(this0_objects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_objects_connect0_node
             	RETURN count(*) AS connect_this0_objects_connect_Person
@@ -393,9 +371,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect1_node
             			MERGE (this0)-[:\`ACTED_IN\`]->(this0_objects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_objects_connect1_node
             	RETURN count(*) AS connect_this0_objects_connect_Place
@@ -469,9 +445,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
             			MERGE (this0)<-[:\`ACTED_IN\`]-(this0_subjects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_subjects_connect0_node
             	RETURN count(*) AS connect_this0_subjects_connect_Person
@@ -488,9 +462,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
             			MERGE (this0)<-[:\`ACTED_IN\`]-(this0_subjects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_subjects_connect1_node
             	RETURN count(*) AS connect_this0_subjects_connect_Place
@@ -508,9 +480,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect0_node
             			MERGE (this0)-[:\`ACTED_IN\`]->(this0_objects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_objects_connect0_node
             	RETURN count(*) AS connect_this0_objects_connect_Person
@@ -527,9 +497,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect1_node
             			MERGE (this0)-[:\`ACTED_IN\`]->(this0_objects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_objects_connect1_node
             	RETURN count(*) AS connect_this0_objects_connect_Place
@@ -614,9 +582,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
             			MERGE (this0)<-[:\`ACTED_IN\`]-(this0_subjects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_subjects_connect0_node
             	RETURN count(*) AS connect_this0_subjects_connect_Person
@@ -633,9 +599,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
             			MERGE (this0)<-[:\`ACTED_IN\`]-(this0_subjects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_subjects_connect1_node
             	RETURN count(*) AS connect_this0_subjects_connect_Place
@@ -653,9 +617,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect0_node
             			MERGE (this0)-[:\`ACTED_IN\`]->(this0_objects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_objects_connect0_node
             	RETURN count(*) AS connect_this0_objects_connect_Person
@@ -672,9 +634,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect1_node
             			MERGE (this0)-[:\`ACTED_IN\`]->(this0_objects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_objects_connect1_node
             	RETURN count(*) AS connect_this0_objects_connect_Place
@@ -698,9 +658,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_subjects_connect0_node
             			MERGE (this1)<-[:\`ACTED_IN\`]-(this1_subjects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this1, this1_subjects_connect0_node
             	RETURN count(*) AS connect_this1_subjects_connect_Person
@@ -717,9 +675,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_subjects_connect1_node
             			MERGE (this1)<-[:\`ACTED_IN\`]-(this1_subjects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this1, this1_subjects_connect1_node
             	RETURN count(*) AS connect_this1_subjects_connect_Place
@@ -737,9 +693,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_objects_connect0_node
             			MERGE (this1)-[:\`ACTED_IN\`]->(this1_objects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this1, this1_objects_connect0_node
             	RETURN count(*) AS connect_this1_objects_connect_Person
@@ -756,9 +710,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_objects_connect1_node
             			MERGE (this1)-[:\`ACTED_IN\`]->(this1_objects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this1, this1_objects_connect1_node
             	RETURN count(*) AS connect_this1_objects_connect_Place
@@ -908,9 +860,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
             			MERGE (this0)<-[:\`ACTED_IN\`]-(this0_subjects_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_subjects_connect0_node
             	RETURN count(*) AS connect_this0_subjects_connect_Person
@@ -927,9 +877,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
             			MERGE (this0)<-[:\`ACTED_IN\`]-(this0_subjects_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_subjects_connect1_node
             	RETURN count(*) AS connect_this0_subjects_connect_Place
