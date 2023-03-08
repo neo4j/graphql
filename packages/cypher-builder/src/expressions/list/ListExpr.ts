@@ -49,9 +49,7 @@ export class ListExpr implements CypherCompilable {
         return `[ ${serializedContent} ]`;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         return this.serializeList(env, this.value);
     }

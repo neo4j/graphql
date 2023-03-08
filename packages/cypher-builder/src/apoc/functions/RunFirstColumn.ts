@@ -39,6 +39,7 @@ export class RunFirstColumn extends CypherASTNode {
         this.variables = variables;
     }
 
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         let clauseStr: string;
         let paramsStr: string;
