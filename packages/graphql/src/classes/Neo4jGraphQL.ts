@@ -22,7 +22,7 @@ import type { DocumentNode, GraphQLSchema } from "graphql";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
-import { forEachField, TypeSource } from "@graphql-tools/utils";
+import { forEachField, getResolversFromSchema, TypeSource } from "@graphql-tools/utils";
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
@@ -47,7 +47,6 @@ import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
 import { Executor, ExecutorConstructorParam } from "./Executor";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
-import { forEachField, getResolversFromSchema, TypeSource } from "@graphql-tools/utils";
 import { validateDocument } from "../schema/validation";
 
 export interface Neo4jGraphQLConfig {
