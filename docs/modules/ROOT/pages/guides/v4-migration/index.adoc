@@ -503,25 +503,6 @@ interface ActedIn {
 }
 ----
 
-Instead, they would need to be updated as below:
-
-[source, graphql, indent=0]
-----
-type Person {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-}
-
-type Movie {
-  title: String!
-  actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-}
-
-interface ActedIn @relationshipProperties {
-  screenTime: Int!
-}
-----
-
 == Miscellaneous changes
 
 [[startup-validation]]
