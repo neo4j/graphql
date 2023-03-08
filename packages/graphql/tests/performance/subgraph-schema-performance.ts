@@ -80,7 +80,7 @@ export async function subgraphSchemaPerformance() {
     const neoSchema = new Neo4jGraphQL({
         typeDefs,
     });
-    console.time("Schema Generation");
+    console.time("Subgraph Schema Generation");
     await neoSchema.getSubgraphSchema();
-    console.timeEnd("Schema Generation");
+    console.timeEnd("Subgraph Schema Generation");
 }

@@ -62,6 +62,16 @@ jobs:
           NEO_PASSWORD: password
           NEO_URL: bolt://localhost:7687
 
+      - name: Target Branch - Run @neo4j/graphql Subgraph Schema performance tests
+        run: |
+          yarn performance --subgraph-schema # Warmup
+          VAR1=$(yarn performance --subgraph-schema) && echo "Old $VAR1" > ./performance/schemaPerformance
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
       - name: PR Branch - Check out
         uses: actions/checkout@v3
         with:
