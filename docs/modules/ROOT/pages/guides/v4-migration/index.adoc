@@ -495,7 +495,7 @@ As a result, in version 4.0.0, the following type definitions are invalid:
 
 === Relationship types are now automatically escaped
 
-Relationship types are now automatically escaped. If you users have previously escaped their relationship types, you should now remove the escape strings as this is covered by the library.
+Relationship types are now automatically escaped. If you have previously escaped your relationship types, you should now remove the escape strings as this is covered by the library.
 
 [source, graphql, indent=0]
 ----
@@ -514,22 +514,15 @@ interface ActedIn {
 }
 ----
 
-Instead, they would need to be updated as below:
+=== Properties in the alias directive are now automatically escaped
+
+Properties in the alias directive automatically escaped using backticks. If you were using backticks in the `property` argument of your `@alias` directives, you should now remove the escape strings as this is covered by the library.
 
 [source, graphql, indent=0]
 ----
-type Person {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-}
-
-type Movie {
-  title: String!
-  actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-}
-
-interface ActedIn @relationshipProperties {
-  screenTime: Int!
+type User {
+    id: ID! @id
+    username: String! @alias(property: "dbUserName")
 }
 ----
 
