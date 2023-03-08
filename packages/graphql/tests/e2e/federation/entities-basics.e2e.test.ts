@@ -42,7 +42,7 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
         Review = new UniqueType("Review");
 
         const products = `
-            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
             type ${Product} @key(fields: "id") {
                 id: ID!
@@ -52,11 +52,11 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
         `;
 
         const reviews = `
-            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
             type ${Product} @key(fields: "id", resolvable: false) {
                 id: ID!
-              }
+            }
 
             type ${Review} {
                 score: Int!

@@ -17,7 +17,13 @@
  * limitations under the License.
  */
 
-import { Button, HeroIcon, IconButton, Label } from "@neo4j-ndl/react";
+import { Button, IconButton, Label } from "@neo4j-ndl/react";
+import {
+    QuestionMarkCircleIconOutline,
+    SparklesIconOutline,
+    Cog8ToothIconOutline,
+    ArrowRightOnRectangleIconOutline,
+} from "@neo4j-ndl/react/icons";
 import { Fragment, useContext, useEffect } from "react";
 import { DEFAULT_BOLT_URL } from "../../constants";
 // @ts-ignore - SVG Import
@@ -121,7 +127,7 @@ export const TopBar = () => {
                         fill="outlined"
                         onClick={handleSendFeedbackClick}
                     >
-                        <HeroIcon className="w-full h-full" iconName="SparklesIcon" type="outline" />
+                        <SparklesIconOutline />
                         <span className="whitespace-nowrap">Send feedback</span>
                     </Button>
                     {!auth.isNeo4jDesktop ? (
@@ -133,7 +139,7 @@ export const TopBar = () => {
                                 fill="text"
                                 onClick={() => auth?.logout()}
                             >
-                                <HeroIcon className="w-full h-full" iconName="LogoutIcon" type="outline" />
+                                <ArrowRightOnRectangleIconOutline className="w-full h-full" />
                                 <span>Disconnect</span>
                             </Button>
                         </div>
@@ -147,19 +153,19 @@ export const TopBar = () => {
                             data-test-topbar-help-button
                             aria-label="Help and learn drawer"
                             onClick={handleHelpClick}
-                            buttonSize="large"
+                            size="large"
                             clean
                         >
-                            <HeroIcon iconName="QuestionMarkCircleIcon" type="outline" />
+                            <QuestionMarkCircleIconOutline />
                         </IconButton>
                         <IconButton
                             clean
                             data-test-topbar-settings-button
                             aria-label="Application settings"
                             onClick={handleSettingsClick}
-                            buttonSize="large"
+                            size="large"
                         >
-                            <HeroIcon iconName="CogIcon" type="outline" />
+                            <Cog8ToothIconOutline />
                         </IconButton>
                     </div>
                 </div>

@@ -433,10 +433,7 @@ function createRelationshipPredicate({
             authPredicate
         );
     } else {
-        if (!context.plugins?.auth) {
-            throw new Error("Auth plugin is undefined");
-        }
-        predicateFunction = Cypher[context.plugins?.auth?.bindPredicate](
+        predicateFunction = Cypher[context.auth?.bindPredicate ?? context.plugins?.auth?.bindPredicate ?? 'all'](
             targetNodeRef,
             new Cypher.PatternComprehension(innerPattern, targetNodeRef),
             authPredicate

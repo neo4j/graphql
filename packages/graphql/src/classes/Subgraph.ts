@@ -19,10 +19,9 @@
 
 import { buildSubgraphSchema } from "@apollo/subgraph";
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { IResolvers, makeDirectiveNode, TypeSource } from "@graphql-tools/utils";
+import type { IResolvers, TypeSource } from "@graphql-tools/utils";
 import {
     ConstDirectiveNode,
-    DefinitionNode,
     DocumentNode,
     GraphQLDirective,
     GraphQLNamedType,
@@ -39,6 +38,7 @@ import { execute } from "../utils";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import { Executor } from "./Executor";
 
+// TODO fetch the directive names from the spec
 const federationDirectiveNames = [
     "key",
     "extends",
@@ -49,6 +49,8 @@ const federationDirectiveNames = [
     "provides",
     "requires",
     "tag",
+    "composeDirective",
+    "interfaceObject",
 ] as const;
 
 type FederationDirectiveName = (typeof federationDirectiveNames)[number];
@@ -78,6 +80,8 @@ export class Subgraph {
             ["provides", "federation__provides"],
             ["requires", "federation__requires"],
             ["tag", "federation__tag"],
+            ["composeDirective", "federation__composeDirective"],
+            ["interfaceObject", "federation__interfaceObject"],
         ]);
 
         const linkMeta = this.findFederationLinkMeta(typeDefs);
@@ -94,46 +98,6 @@ export class Subgraph {
     public getFullyQualifiedDirectiveName(name: FederationDirectiveName): string {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.importArgument.get(name)!;
-    }
-
-    // TODO: Remove this function, parse `@shareable` directives and add them only on related generated types and fields
-    public augmentGeneratedSchemaDefinition(typeDefs: DocumentNode): DocumentNode {
-        const definitions: DefinitionNode[] = [];
-
-        const shareable = makeDirectiveNode(this.importArgument.get("shareable") as string, {}) as ConstDirectiveNode;
-
-        // This is a really filthy hack to apply @shareable
-        for (const definition of typeDefs.definitions) {
-            if (definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
-                if (
-                    ["Query", "Mutation"].includes(definition.name.value) ||
-                    definition.name.value.endsWith("Connection") ||
-                    definition.name.value.endsWith("AggregateSelection") ||
-                    definition.name.value.endsWith("Edge")
-                ) {
-                    if (definition.directives) {
-                        definitions.push({
-                            ...definition,
-                            directives: [...definition.directives, shareable],
-                        });
-                    } else {
-                        definitions.push({
-                            ...definition,
-                            directives: [shareable],
-                        });
-                    }
-                } else {
-                    definitions.push(definition);
-                }
-            } else {
-                definitions.push(definition);
-            }
-        }
-
-        return {
-            ...typeDefs,
-            definitions,
-        };
     }
 
     public buildSchema({ typeDefs, resolvers }: { typeDefs: DocumentNode; resolvers: Record<string, any> }) {
@@ -229,7 +193,8 @@ export class Subgraph {
                     if (directive.name.value === "link" && directive.arguments) {
                         for (const argument of directive.arguments) {
                             if (argument.name.value === "url" && argument.value.kind === Kind.STRING) {
-                                if (argument.value.value === "https://specs.apollo.dev/federation/v2.0") {
+                                const url = argument.value.value;
+                                if (url.startsWith("https://specs.apollo.dev/federation/v2")) {
                                     return { extension: definition, directive };
                                 }
                             }
