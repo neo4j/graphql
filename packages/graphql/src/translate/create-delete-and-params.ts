@@ -95,11 +95,29 @@ function createDeleteAndParams({
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                     const withRelationshipStr = context.subscriptionsEnabled ? `, ${relationshipVariable}` : "";
 
-                    if (withVars) {
-                        res.strs.push(`WITH ${withVars.join(", ")}`);
-                    }
+                    // if (withVars) {
+                    //     res.strs.push(`WITH ${withVars.join(", ")}`);
+                    // }
 
                     const labels = refNode.getLabelString(context);
+                    // res.strs.push(
+                    //     `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
+                    // );
+
+                    const varsWithoutMeta = filterMetaVariable(withVars).join(", ");
+                    res.strs.push("WITH *");
+                    res.strs.push("CALL {");
+
+                    if (withVars) {
+                        //TODO
+                        if (context.subscriptionsEnabled) {
+                            res.strs.push(`WITH ${varsWithoutMeta}`);
+                            res.strs.push(`WITH ${varsWithoutMeta}, []  AS meta`);
+                        } else {
+                            res.strs.push(`WITH ${withVars.join(", ")}`);
+                        }
+                    }
+
                     res.strs.push(
                         `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
                     );
@@ -124,36 +142,21 @@ function createDeleteAndParams({
                                 }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
                             });
                             if (whereCypher) {
+                                console.log("where cypher");
                                 whereStrs.push(whereCypher);
                                 res.params = { ...res.params, ...whereParams };
                                 if (preComputedSubqueries) {
+                                    console.log("preComputedSubqueries", preComputedSubqueries);
                                     res.strs.push(preComputedSubqueries);
                                     aggregationWhere = true;
                                 }
                             }
-                        } catch {
+                        } catch (err) {
+                            // console.error("errorrr!", err);
+                            res.strs.push("RETURN count(*) as _ \n}"); // hack, why is this erroring?
                             return;
                         }
                     }
-
-                    const varsWithoutMeta = filterMetaVariable(withVars).join(", ");
-                    res.strs.push("WITH *");
-                    res.strs.push("CALL {");
-
-                    if (withVars) {
-                        //TODO
-                        if (context.subscriptionsEnabled) {
-                            res.strs.push(`WITH ${varsWithoutMeta}`);
-                            res.strs.push(`WITH ${varsWithoutMeta}, []  AS meta`);
-                        } else {
-                            res.strs.push(`WITH ${withVars.join(", ")}`);
-                        }
-                    }
-
-                    const labels = refNode.getLabelString(context);
-                    res.strs.push(
-                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
-                    );
 
                     const whereAuth = createAuthAndParams({
                         operations: "DELETE",
@@ -198,7 +201,9 @@ function createDeleteAndParams({
                         const quote = insideDoWhen ? `\\"` : `"`;
                         res.strs.push(
                             // `WITH ${[...filterMetaVariable(withVars), variableName, relationshipVariable].join(", ")}${withRelationshipStr}`
-                            `WITH ${varsWithoutMeta}, ${variableName}, ${relationshipVariable}`
+                            `WITH ${varsWithoutMeta}${
+                                context.subscriptionsEnabled ? ", meta" : ""
+                            }, ${variableName}, ${relationshipVariable}`
                         );
                         res.strs.push(
                             `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
@@ -207,9 +212,12 @@ function createDeleteAndParams({
 
                         authStatements = new Cypher.RawCypher(() => {
                             return [
-                                `WITH ${[...filterMetaVariable(withVars), variableName, relationshipVariable].join(
-                                    ", "
-                                )}`,
+                                `WITH ${[
+                                    ...filterMetaVariable(withVars),
+                                    "meta",
+                                    variableName,
+                                    relationshipVariable,
+                                ].join(", ")}`,
                                 `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`,
                             ].join("/n");
                         });
@@ -281,33 +289,26 @@ function createDeleteAndParams({
 
                     const nodeToDelete = `${variableName}_to_delete`;
 
-                    res.strs.push(
-                        `WITH ${[...withVars, `collect(DISTINCT ${variableName}) AS ${nodeToDelete}`].join(
-                            ", "
-                        )}${withRelationshipStr}`
-                    );
+                    // res.strs.push(
+                    //     `WITH ${[...withVars, `collect(DISTINCT ${variableName}) AS ${nodeToDelete}`].join(
+                    //         ", "
+                    //     )}${withRelationshipStr}`
+                    // );
 
                     /**
                      * This ORDER BY is required to prevent hitting the "Node with id 2 has been deleted in this transaction"
                      * bug. TODO - remove once the bug has bee fixed.
                      */
-                    if (aggregationWhere) res.strs.push(`ORDER BY ${nodeToDelete} DESC`);
+                    // if (aggregationWhere) res.strs.push(`ORDER BY ${nodeToDelete} DESC`);
 
                     if (context.subscriptionsEnabled) {
                         const metaObjectStr = createEventMetaObject({
                             event: "delete",
                             nodeVariable: "x",
                             typename: refNode.name,
-                            });
-                            return `${metaObjectStr} AS node_meta, x, ${relationshipVariable}, ${varsWithoutMeta}`;
                         });
-
-                        // --------------------------------------
-                        const withVarsWithoutMetaStatement = filterMetaVariable(withVars).map(
-                            (v) => new Cypher.NamedVariable(v))
-
                         const [fromVariable, toVariable] =
-                            relationField.direction === "IN" ? ["n", parentVar] : [parentVar, "n"];
+                            relationField.direction === "IN" ? ["x", parentVar] : [parentVar, "x"];
                         const [fromTypename, toTypename] =
                             relationField.direction === "IN" ? [refNode.name, node.name] : [node.name, refNode.name];
                         const eventWithMetaStr = createConnectionEventMetaObject({
@@ -319,20 +320,17 @@ function createDeleteAndParams({
                             fromTypename,
                             toTypename,
                         });
-
+                        const reduceStr = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${metaObjectStr} + ${eventWithMetaStr}) AS ${META_CYPHER_VARIABLE}`;
                         const eventMetaWithClause = new Cypher.RawCypher((env: Cypher.Environment) => {
-                            const metaObjectStr = createEventMetaObject({
-                                event: "delete",
-                                nodeVariable: "x",
-                                typename: refNode.name,
-                            });
-                            return `${metaObjectStr} AS node_meta, x, ${relationshipVariable}, ${varsWithoutMeta}`;
+                            // return `${metaObjectStr} AS node_meta, x, ${relationshipVariable}, ${varsWithoutMeta}`;
+                            return `${[...filterMetaVariable(withVars), nodeToDelete].join(", ")}, ${reduceStr}`;
                         });
 
                         // --------------------------------------
                         const withVarsWithoutMetaStatement = filterMetaVariable(withVars).map(
                             (v) => new Cypher.NamedVariable(v)
                         );
+                        /*
                         const metaVar = new Cypher.NamedVariable("meta");
                         const listAsMeta = [new Cypher.Literal([]), metaVar];
 
@@ -352,11 +350,9 @@ function createDeleteAndParams({
                         });
                         const node2 = new Cypher.NamedNode(parentVar);
                         const optionalMatchSt = new Cypher.OptionalMatch(
-                            new Cypher.Relationship({
-                                source: relationField.direction === "IN" ? node1 : node2,
-                                target: relationField.direction === "IN" ? node2 : node1,
-                                type: relationField.type,
-                            })
+                            new Cypher.Pattern(node1)
+                                .related(new Cypher.Relationship({ type: relationField.type }))
+                                .to(node2)
                         );
 
                         const innerSubqueryEnabled = new Cypher.Call(
@@ -377,37 +373,33 @@ function createDeleteAndParams({
                                 .addColumns([Cypher.collect(node1), nodeToDeleteVar]), //distinct!!
                             innerSubqueryEnabled,
                             new Cypher.With([Cypher.collect(deleteMetaVar), deleteMetaVar], metaVar), // `WITH collect(delete_meta) AS delete_meta, meta`,
-                            new Cypher.Return([, deleteMetaVar]) // `RETURN REDUCE(m=meta, n IN delete_meta | m + n) AS delete_meta`,
+                            new Cypher.Return(deleteMetaVar) // `RETURN REDUCE(m=meta, n IN delete_meta | m + n) AS delete_meta`,
                         );
-
-                        // const outerSubqueryDisabled = Cypher.concat(
-                        //     new Cypher.With(...withVarsWithoutMetaStatement).addColumns(metaVar),
-                        //     optionalMatchSt
-                        // );
                         const startStatements = Cypher.concat(
                             new Cypher.With("*"),
                             new Cypher.Call(outerSubqueryEnabled).innerWith(...withVarsWithoutMetaStatement),
                             new Cypher.With(), //   `WITH ${varsWithoutMeta}, meta, collect(delete_meta) AS delete_meta`,
                             new Cypher.With() //    `WITH ${varsWithoutMeta}, REDUCE(m=meta, n IN delete_meta | m + n) AS meta`,
                         );
-                        console.log("start", startStatements);
-                        const {} = startStatements.build();
+                        // console.log("start", startStatements);
+                        */
                         // --------------------------------------
 
                         //  need relationshipVariable for disconnect meta
                         const statements = [
                             `WITH ${varsWithoutMeta}, meta, ${relationshipVariable}, collect(DISTINCT ${variableName}) AS ${nodeToDelete}`,
+                            `${aggregationWhere ? `ORDER BY ${nodeToDelete} DESC` : ""}`,
                             "CALL {",
                             `\tWITH ${relationshipVariable}, ${nodeToDelete}, ${varsWithoutMeta}`,
                             `\tUNWIND ${nodeToDelete} AS x`,
-                            `\tWITH ${metaObjectStr} AS node_meta, x, ${relationshipVariable}, ${varsWithoutMeta}`,
+                            `\tWITH [] + ${metaObjectStr} + ${eventWithMetaStr} AS meta, x, ${relationshipVariable}, ${varsWithoutMeta}`,
                             `\tDETACH DELETE x`,
-                            `\tRETURN collect(node_meta) AS delete_meta`,
+                            `\tRETURN collect(meta) AS delete_meta`,
                             `}`,
-                            `WITH collect(delete_meta) AS delete_meta, meta`,
+                            `WITH delete_meta, meta`,
                             `RETURN REDUCE(m=meta, n IN delete_meta | m + n) AS delete_meta`,
                             `}`,
-                            `WITH ${varsWithoutMeta}, meta, collect(delete_meta) AS delete_meta`,
+                            `WITH ${varsWithoutMeta}, meta, collect(delete_meta) as delete_meta`,
                             `WITH ${varsWithoutMeta}, REDUCE(m=meta, n IN delete_meta | m + n) AS meta`,
                         ];
 
@@ -415,6 +407,7 @@ function createDeleteAndParams({
                     } else {
                         const statements = [
                             `WITH ${relationshipVariable}, collect(DISTINCT ${variableName}) AS ${nodeToDelete}`,
+                            `ORDER BY ${nodeToDelete} DESC`,
                             "CALL {",
                             `\tWITH ${nodeToDelete}`,
                             `\tUNWIND ${nodeToDelete} AS x`,
