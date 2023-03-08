@@ -47,7 +47,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@apollo/gateway": "2.3.2",
+        "@apollo/gateway": "2.3.3",
         "@apollo/server": "4.4.1",
         "@faker-js/faker": "7.6.0",
         "@neo4j/graphql-plugin-auth": "^2.1.0",
