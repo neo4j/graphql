@@ -41,7 +41,7 @@ type Colour {
 }
 ----
 
-The `@node` directive is used to change the database label mapping in this next example, so a unique constraint will be asserted for the first label in the list, ie `Color`, and the property `hexadecimal`:
+The `@node` directive is used to change the database label mapping in this next example, so a unique constraint will be asserted for the first label in the list, `Color`, and the property `hexadecimal`:
 
 [source, graphql, indent=0]
 ----
