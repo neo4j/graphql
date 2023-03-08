@@ -199,6 +199,7 @@ function getObjFieldMeta({
                 const aliasMeta = getAliasMeta(aliasDirective);
                 if (aliasMeta) {
                     baseField.dbPropertyName = aliasMeta.property;
+                    baseField.dbPropertyNameUnescaped = aliasMeta.propertyUnescaped;
                 }
             }
 
