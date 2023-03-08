@@ -157,7 +157,7 @@ MATCH (this:Dog:K9)
 RETURN this { .name } as this
 ----
 
-Please note that defining `labels` means you take control of the database labels of the node. Because indexes and constraints in the Neo4j database can only be assigned one label, for the moment the first label in the `labels` list will be used.
+Please note that defining `labels` means you take control of the database labels of the node. Indexes and constraints in Neo4j only support a single label, for which the first element of the `labels` argument will be used.
 
 The following example results in a unique constraint be asserted for the label `K9` and the property `name`:
 
