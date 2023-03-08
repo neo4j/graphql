@@ -18,6 +18,7 @@
  */
 
 import { mergeSchemas } from "@graphql-tools/schema";
+import type { Maybe } from "@graphql-tools/utils";
 import {
     buildASTSchema,
     buildSchema,
@@ -29,6 +30,7 @@ import {
     GraphQLBoolean,
     GraphQLDirective,
     GraphQLEnumType,
+    GraphQLError,
     GraphQLInputObjectType,
     GraphQLList,
     GraphQLNamedType,
@@ -37,12 +39,17 @@ import {
     GraphQLString,
     InputObjectTypeDefinitionNode,
     Kind,
+    ObjectTypeDefinitionNode,
     parse,
     printSchema,
     typeFromAST,
     validate,
     validateSchema,
+    visit,
+    visitInParallel,
 } from "graphql";
+import { specifiedRules, specifiedSDLRules } from "graphql/validation/specifiedRules";
+import { SDLValidationContext, SDLValidationRule, ValidationContext, ValidationRule } from "graphql/validation/ValidationContext";
 
 const directives: GraphQLDirective[] = [];
 const types: GraphQLNamedType[] = [];
@@ -59,7 +66,7 @@ export function makeValidationSchema(userDocument: DocumentNode, augmentedDocume
     // );
     const augmentendSchema = buildASTSchema(augmentedDocument, { assumeValid: true });
     const userSchema = buildASTSchema(userDocument, { assumeValid: true });
-
+    const authedTypeNames: string[] = [];
     const enhancedDefinitions = augmentedDocument.definitions.reduce((acc, definition) => {
         switch (definition.kind) {
             case Kind.OBJECT_TYPE_DEFINITION: {
@@ -70,9 +77,9 @@ export function makeValidationSchema(userDocument: DocumentNode, augmentedDocume
                     acc.push(definition);
                     return acc;
                 }
-                makeAuthorizationTypesForTypename(typeName, augmentendSchema);
-
-                acc.push({
+                //makeAuthorizationTypesForTypename(typeName, augmentendSchema);
+                authedTypeNames.push(typeName);
+                /*       acc.push({
                     ...definition,
                     directives: [
                         // TODO: augmentedSchema does not remove the @authorization
@@ -81,7 +88,8 @@ export function makeValidationSchema(userDocument: DocumentNode, augmentedDocume
                             name: { value: `${typeName}Authorization`, kind: authDirective.name.kind },
                         },
                     ],
-                });
+                }); */
+                acc.push(definition);
                 return acc;
             }
             // TODO: implement these as well
@@ -92,23 +100,58 @@ export function makeValidationSchema(userDocument: DocumentNode, augmentedDocume
                 return acc;
         }
     }, [] as DefinitionNode[]);
+
+    authedTypeNames.forEach((typeName) => makeAuthorizationTypesForTypename(typeName, augmentendSchema));
     const enhancedAugmentedDocument: DocumentNode = { ...augmentedDocument, definitions: enhancedDefinitions };
     const enhancedAugmentedSchema = buildASTSchema(enhancedAugmentedDocument, { assumeValid: true });
-
     const schemaToExtend = new GraphQLSchema({
         directives,
         types,
     });
     const validatationSchema = mergeSchemas({
         schemas: [enhancedAugmentedSchema, schemaToExtend],
+        assumeValidSDL: true,
     });
     // console.log(">type?validation>", validatationSchema.getType("Post"));
 
-    console.log("validate start", printSchema(validatationSchema));
+    // console.log("validate start", printSchema(validatationSchema));
     // const errors = validate(validatationSchema, userDocument);
-    const errors = validate(validatationSchema, parse(`{ posts { author { name } } }`));
-    // const errors = validateSchema(validatationSchema);
-    console.log("validate end", errors);
+    //const errors = validate(validatationSchema, parse(`{ posts { author { name } } }`));
+    const newDocument = parse(printSchema(validatationSchema));
+    const authedDefinitions = authedTypeNames.map((type) => {
+        const authType = newDocument.definitions.find(
+            (definition) => definition.kind === Kind.OBJECT_TYPE_DEFINITION && definition.name.value === type
+        ) as ObjectTypeDefinitionNode;
+        const authDirective = newDocument.definitions.find(
+            (definition) =>
+                definition.kind === Kind.DIRECTIVE_DEFINITION && definition.name.value === `${type}Authorization`
+        );
+        const authUsage = {
+            ...authDirective,
+            kind: Kind.DIRECTIVE,
+        }
+        const directives = authType.directives ? [...authType.directives, authUsage] : [authUsage];
+        return {
+            ...authType,
+            directives,
+        };
+    });
+    const definitionsWithoutAuthedNodes = newDocument.definitions.filter(
+        (definition) =>
+            definition.kind !== Kind.OBJECT_TYPE_DEFINITION ||
+            (definition.kind === Kind.OBJECT_TYPE_DEFINITION && !authedTypeNames.includes(definition.name.value))
+    );
+
+    const finalDocument = {
+        ...newDocument,
+        definitions: [...definitionsWithoutAuthedNodes, ...authedDefinitions],
+    } as DocumentNode;
+    
+    const errors2 = validateSDL(finalDocument);
+
+    const errors = validateSchema(validatationSchema);
+    //console.log("validate end", errors);
+    console.log(`New error: ${errors2}`);
 }
 
 function makeAuthorizationTypesForTypename(typename: string, augmentendSchema: GraphQLSchema) {
@@ -133,50 +176,6 @@ function makeAuthorizationTypesForTypename(typename: string, augmentendSchema: G
             };
         },
     });
-    types.push(authorizationWhere);
-    /*
-WE HAVE:
-export interface InputObjectTypeDefinitionNode {
-  readonly kind: Kind.INPUT_OBJECT_TYPE_DEFINITION;
-  readonly loc?: Location;
-  readonly description?: StringValueNode;
-  readonly name: NameNode;
-  readonly directives?: ReadonlyArray<ConstDirectiveNode>;
-  readonly fields?: ReadonlyArray<InputValueDefinitionNode>;
-}
-
-WE WANT: 
-export declare class GraphQLInputObjectType {
-  name: string;
-  description: Maybe<string>;
-  extensions: Readonly<GraphQLInputObjectTypeExtensions>;
-  astNode: Maybe<InputObjectTypeDefinitionNode>;
-  extensionASTNodes: ReadonlyArray<InputObjectTypeExtensionNode>;
-  private _fields;
-  constructor(config: Readonly<GraphQLInputObjectTypeConfig>);
-  get [Symbol.toStringTag](): string;
-  getFields(): GraphQLInputFieldMap;
-  toConfig(): GraphQLInputObjectTypeNormalizedConfig;
-  toString(): string;
-  toJSON(): string;
-}
-export interface GraphQLInputObjectTypeConfig {
-  name: string;
-  description?: Maybe<string>;
-  fields: ThunkObjMap<GraphQLInputFieldConfig>;
-  extensions?: Maybe<Readonly<GraphQLInputObjectTypeExtensions>>;
-  astNode?: Maybe<InputObjectTypeDefinitionNode>;
-  extensionASTNodes?: Maybe<ReadonlyArray<InputObjectTypeExtensionNode>>;
-}
-export interface GraphQLInputFieldConfig {
-  description?: Maybe<string>;
-  type: GraphQLInputType;
-  defaultValue?: unknown;
-  deprecationReason?: Maybe<string>;
-  extensions?: Maybe<Readonly<GraphQLInputFieldExtensions>>;
-  astNode?: Maybe<InputValueDefinitionNode>;
-}
-*/
 
     const authorizationFilterRule = new GraphQLInputObjectType({
         name: `${typename}AuthorizationFilterRule`,
@@ -195,7 +194,6 @@ export interface GraphQLInputFieldConfig {
             };
         },
     });
-    types.push(authorizationFilterRule);
 
     const authorizationValidateRule = new GraphQLInputObjectType({
         name: `${typename}AuthorizationValidateRule`,
@@ -217,15 +215,13 @@ export interface GraphQLInputFieldConfig {
             };
         },
     });
-    types.push(authorizationValidateRule);
-
     const authorizationDirective = new GraphQLDirective({
         name: `${typename}Authorization`,
         locations: [DirectiveLocation.FIELD_DEFINITION, DirectiveLocation.OBJECT, DirectiveLocation.INTERFACE],
         args: {
             filter: {
                 description: "The name of the Neo4j property",
-                type: new GraphQLList(authorizationFilterRule),
+                type: new GraphQLNonNull(new GraphQLList(authorizationFilterRule)),
             },
             validate: {
                 description: "validate",
@@ -233,5 +229,30 @@ export interface GraphQLInputFieldConfig {
             },
         },
     });
+    types.push(authorizationWhere);
+    types.push(authorizationFilterRule);
+    types.push(authorizationValidateRule);
     directives.push(authorizationDirective);
+    /*    const definitions = [
+        authorizationDirective,
+        authorizationWhere,
+        authorizationFilterRule,
+        authorizationValidateRule,
+    ];
+    return definitions.map((definition) => definition.astNode); */
+}
+
+function validateSDL(
+    documentAST: DocumentNode,
+    schemaToExtend?: Maybe<GraphQLSchema>,
+    rules: ReadonlyArray<SDLValidationRule> = specifiedSDLRules
+): ReadonlyArray<GraphQLError> {
+    const errors: Array<GraphQLError> = [];
+    const context = new SDLValidationContext(documentAST, schemaToExtend, (error) => {
+        errors.push(error);
+    });
+
+    const visitors = rules.map((rule) => rule(context));
+    visit(documentAST, visitInParallel(visitors));
+    return errors;
 }
