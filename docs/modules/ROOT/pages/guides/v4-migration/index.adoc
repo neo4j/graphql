@@ -484,7 +484,7 @@ As a result, in version 4.0.0, the following type definitions are invalid:
 
 === Relationship types are now automatically escaped
 
-Relationship types are now automatically escaped. If you users have previously escaped their relationship types, you should now remove the escape strings as this is covered by the library.
+Relationship types are now automatically escaped. If you have previously escaped your relationship types, you should now remove the escape strings as this is covered by the library.
 
 [source, graphql, indent=0]
 ----
