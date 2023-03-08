@@ -51,9 +51,7 @@ export class Return extends Clause {
         return this;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
         const orderStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });

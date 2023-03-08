@@ -1,5 +1,6 @@
 {
     "name": "apollo-federation-subgraph-compatibility",
+    "version": "1.0.0",
     "packageManager": "yarn@3.4.1",
     "scripts": {
         "build": "webpack --config webpack.config.js",
@@ -9,7 +10,7 @@
     "dependencies": {
         "@apollo/server": "^4.4.0",
         "@graphql-tools/wrap": "^9.3.6",
-        "@neo4j/graphql": "^3.16.1",
+        "@neo4j/graphql": "^3.17.1",
         "graphql": "16.6.0",
         "graphql-tag": "^2.12.6",
         "neo4j-driver": "^5.5.0"

@@ -60,9 +60,7 @@ export class NamedParam extends Param<any> {
         this.id = name;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         env.addNamedParamReference(this.id, this);
         return super.getCypher(env);

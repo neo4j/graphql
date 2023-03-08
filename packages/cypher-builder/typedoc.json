@@ -3,9 +3,11 @@
     "excludePrivate": true,
     "excludeProtected": true,
     "includeVersion": false,
+    "excludeInternal": true,
     "excludeTags": [],
     "hideGenerator": true,
     "name": "Cypher Builder",
     "visibilityFilters": {},
-    "sidebarLinks": {}
+    "sidebarLinks": {},
+    "gitRemote": "upstream"
 }

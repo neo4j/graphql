@@ -31,12 +31,10 @@ import {
     print,
     SchemaExtensionNode,
 } from "graphql";
-import type * as neo4j from "neo4j-driver";
 import { translateResolveReference } from "../translate/translate-resolve-reference";
 import type { Context, Node } from "../types";
 import { execute } from "../utils";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
-import { Executor } from "./Executor";
 
 // TODO fetch the directive names from the spec
 const federationDirectiveNames = [
@@ -107,7 +105,7 @@ export class Subgraph {
         });
     }
 
-    public getReferenceResolvers(nodes: Node[], driver: neo4j.Driver): IResolvers {
+    public getReferenceResolvers(nodes: Node[]): IResolvers {
         const resolverMap: IResolvers = {};
 
         const document = mergeTypeDefs(this.typeDefs);
@@ -115,7 +113,7 @@ export class Subgraph {
         document.definitions.forEach((def) => {
             if (def.kind === Kind.OBJECT_TYPE_DEFINITION) {
                 resolverMap[def.name.value] = {
-                    __resolveReference: this.getReferenceResolver(nodes, driver),
+                    __resolveReference: this.getReferenceResolver(nodes),
                 };
             }
         });
@@ -123,7 +121,7 @@ export class Subgraph {
         return resolverMap;
     }
 
-    private getReferenceResolver(nodes: Node[], driver: neo4j.Driver): (reference, context, info) => Promise<unknown> {
+    private getReferenceResolver(nodes: Node[]): (reference, context, info) => Promise<unknown> {
         const __resolveReference = async (reference, _context, info: GraphQLResolveInfo): Promise<unknown> => {
             const { __typename } = reference;
 
@@ -133,12 +131,8 @@ export class Subgraph {
                 throw new Error("Unable to find matching node");
             }
 
-            const executor = new Executor({ executionContext: driver });
-
             const context = _context as Context;
             context.resolveTree = getNeo4jResolveTree(info);
-            context.executor = executor;
-            context.nodes = nodes;
 
             const { cypher, params } = translateResolveReference({ context, node, reference });
 
