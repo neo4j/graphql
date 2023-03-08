@@ -39,6 +39,7 @@ export class SetClause extends CypherASTNode {
         this.params.push(...params);
     }
 
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         if (this.params.length === 0) return "";
         const paramsStr = this.params

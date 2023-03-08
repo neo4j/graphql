@@ -37,6 +37,7 @@ export class Where extends CypherASTNode {
         this.addChildren(this.wherePredicate);
     }
 
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const opStr = this.wherePredicate.getCypher(env);
         if (!opStr) return "";

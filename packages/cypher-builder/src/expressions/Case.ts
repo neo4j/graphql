@@ -48,9 +48,7 @@ export class Case<C extends Expr | undefined = undefined> extends CypherASTNode 
         return this;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const comparatorStr = compileCypherIfExists(this.comparator, env, { prefix: " " });
         const whenStr = this.whenClauses.map((c) => c.getCypher(env)).join("\n");
@@ -78,9 +76,7 @@ class When<T extends Expr | undefined> extends CypherASTNode {
         return this.parent;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const predicateStr = this.predicate.getCypher(env);
         if (!this.result) throw new Error("Cannot generate CASE ... WHEN statement without THEN");
