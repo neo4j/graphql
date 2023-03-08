@@ -20,7 +20,7 @@ jobs:
         run: |
           yarn build
         working-directory: packages/apollo-federation-subgraph-compatibility
-      - uses: apollographql/federation-subgraph-compatibility@50f2758adcc00793f06bc6b46b81af5e6cda92be # v1.3.2
+      - uses: apollographql/federation-subgraph-compatibility@92c7fd74e55ae414025b4717d714a8e8426b1bea # v1.3.3
         with:
           # [Required] Docker Compose file to start up the subgraph
           compose: "packages/apollo-federation-subgraph-compatibility/docker-compose-gha.yml"
