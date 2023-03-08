@@ -393,9 +393,7 @@ describe("Batch Create, Interface", () => {
             			UNWIND parentNodes as this3
             			UNWIND connectedNodes as this3_workers_connect0_node
             			MERGE (this3)<-[this3_workers_connect0_relationship:\`EMPLOYED\`]-(this3_workers_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this3, this3_workers_connect0_node
             	RETURN count(*) AS connect_this3_workers_connect_Actor
@@ -412,9 +410,7 @@ describe("Batch Create, Interface", () => {
             			UNWIND parentNodes as this3
             			UNWIND connectedNodes as this3_workers_connect1_node
             			MERGE (this3)<-[this3_workers_connect1_relationship:\`EMPLOYED\`]-(this3_workers_connect1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this3, this3_workers_connect1_node
             	RETURN count(*) AS connect_this3_workers_connect_Modeler

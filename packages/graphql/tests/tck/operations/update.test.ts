@@ -284,9 +284,7 @@ describe("Cypher Update", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_actors0_node
             			MERGE (this)<-[this_connect_actors0_relationship:\`ACTED_IN\`]-(this_connect_actors0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actors0_node
             	RETURN count(*) AS connect_this_connect_actors_Actor
@@ -341,9 +339,7 @@ describe("Cypher Update", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_actors0_node
             			MERGE (this)<-[this_connect_actors0_relationship:\`ACTED_IN\`]-(this_connect_actors0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actors0_node
             	RETURN count(*) AS connect_this_connect_actors_Actor
@@ -361,9 +357,7 @@ describe("Cypher Update", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_actors1_node
             			MERGE (this)<-[this_connect_actors1_relationship:\`ACTED_IN\`]-(this_connect_actors1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actors1_node
             	RETURN count(*) AS connect_this_connect_actors_Actor
@@ -411,7 +405,6 @@ describe("Cypher Update", () => {
             	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel, this
             	UNWIND this_disconnect_actors0 as x
             	DELETE this_disconnect_actors0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
@@ -477,7 +470,6 @@ describe("Cypher Update", () => {
             	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel, this
             	UNWIND this_disconnect_actors0 as x
             	DELETE this_disconnect_actors0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
@@ -491,7 +483,6 @@ describe("Cypher Update", () => {
             	WITH collect(this_disconnect_actors1) as this_disconnect_actors1, this_disconnect_actors1_rel, this
             	UNWIND this_disconnect_actors1 as x
             	DELETE this_disconnect_actors1_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
@@ -723,7 +714,6 @@ describe("Cypher Update", () => {
             	WITH this_delete_actors0_to_delete
             	UNWIND this_delete_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -792,14 +782,6 @@ describe("Cypher Update", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
             WITH this
-            CALL {
-            	WITH this
-            	MATCH (this)<-[this_acted_in0_relationship:\`ACTED_IN\`]-(this_actors0:Actor)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
-            	SET this_actors0.name = $this_update_actors0_name
-            	RETURN count(*) AS update_this_actors0
-            }
-            WITH this
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:\`ACTED_IN\`]-(this_delete_actors0:Actor)
             WHERE this_delete_actors0.name = $updateMovies_args_delete_actors0_where_this_delete_actors0param0
             WITH this, collect(DISTINCT this_delete_actors0) AS this_delete_actors0_to_delete
@@ -807,7 +789,14 @@ describe("Cypher Update", () => {
             	WITH this_delete_actors0_to_delete
             	UNWIND this_delete_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
+            }
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:\`ACTED_IN\`]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
+            	SET this_actors0.name = $this_update_actors0_name
+            	RETURN count(*) AS update_this_actors0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -816,11 +805,22 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param0\\": \\"Actor to delete\\",
                 \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"Actor to update\\",
                 \\"this_update_actors0_name\\": \\"Updated name\\",
-                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param0\\": \\"Actor to delete\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
+                        \\"delete\\": {
+                            \\"actors\\": [
+                                {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"name\\": \\"Actor to delete\\"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
                         \\"update\\": {
                             \\"actors\\": [
                                 {
@@ -832,17 +832,6 @@ describe("Cypher Update", () => {
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"name\\": \\"Updated name\\"
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        \\"delete\\": {
-                            \\"actors\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name\\": \\"Actor to delete\\"
                                         }
                                     }
                                 }
@@ -885,7 +874,6 @@ describe("Cypher Update", () => {
             	WITH this_actors0_delete0_to_delete
             	UNWIND this_actors0_delete0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -958,14 +946,12 @@ describe("Cypher Update", () => {
             	WITH this_actors0_delete0_movies0_to_delete
             	UNWIND this_actors0_delete0_movies0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             WITH this, collect(DISTINCT this_actors0_delete0) AS this_actors0_delete0_to_delete
             CALL {
             	WITH this_actors0_delete0_to_delete
             	UNWIND this_actors0_delete0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);

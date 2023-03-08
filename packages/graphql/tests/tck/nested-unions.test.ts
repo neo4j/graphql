@@ -118,9 +118,7 @@ describe("Nested Unions", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_actors_LeadActor0_node
             			MERGE (this)<-[:\`ACTED_IN\`]-(this_connect_actors_LeadActor0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actors_LeadActor0_node
             CALL {
@@ -135,9 +133,7 @@ describe("Nested Unions", () => {
             			UNWIND parentNodes as this_connect_actors_LeadActor0_node
             			UNWIND connectedNodes as this_connect_actors_LeadActor0_node_actedIn_Series0_node
             			MERGE (this_connect_actors_LeadActor0_node)-[:\`ACTED_IN\`]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor0_node_actedIn_Series0_node
             	RETURN count(*) AS connect_this_connect_actors_LeadActor0_node_actedIn_Series_Series
@@ -239,7 +235,6 @@ describe("Nested Unions", () => {
             	WITH collect(this_disconnect_actors_LeadActor0) as this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, this
             	UNWIND this_disconnect_actors_LeadActor0 as x
             	DELETE this_disconnect_actors_LeadActor0_rel
-            	RETURN count(*) AS _
             }
             CALL {
             WITH this, this_disconnect_actors_LeadActor0
@@ -250,7 +245,6 @@ describe("Nested Unions", () => {
             	WITH collect(this_disconnect_actors_LeadActor0_actedIn_Series0) as this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel, this_disconnect_actors_LeadActor0
             	UNWIND this_disconnect_actors_LeadActor0_actedIn_Series0 as x
             	DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actors_LeadActor0_actedIn_Series_Series
             }

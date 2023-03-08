@@ -124,7 +124,6 @@ describe("Subscriptions metadata on delete", () => {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             WITH this, collect(distinct meta) AS update_meta
             WITH this, REDUCE(m=[], n IN update_meta | m + n) AS meta
@@ -203,7 +202,6 @@ describe("Subscriptions metadata on delete", () => {
             	WITH this_actors0_movies0_actors0_to_delete
             	UNWIND this_actors0_movies0_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, collect(distinct meta) AS update_meta
             WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, REDUCE(m=[], n IN update_meta | m + n) AS meta
@@ -213,7 +211,6 @@ describe("Subscriptions metadata on delete", () => {
             	WITH this_actors0_movies0_to_delete
             	UNWIND this_actors0_movies0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             WITH this, this_actors0, this_actors0_relationship, collect(distinct meta) AS update_meta
             WITH this, this_actors0, this_actors0_relationship, REDUCE(m=[], n IN update_meta | m + n) AS meta
@@ -223,7 +220,6 @@ describe("Subscriptions metadata on delete", () => {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
             WITH this, collect(distinct meta) AS update_meta
             WITH this, REDUCE(m=[], n IN update_meta | m + n) AS meta

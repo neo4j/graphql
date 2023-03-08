@@ -308,9 +308,7 @@ describe("Cypher Auth Allow", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content0_node
             			MERGE (this)-[:\`HAS_CONTENT\`]->(this_connect_content0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_content0_node
             	WITH this, this_connect_content0_node
@@ -329,9 +327,7 @@ describe("Cypher Auth Allow", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content1_node
             			MERGE (this)-[:\`HAS_CONTENT\`]->(this_connect_content1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_content1_node
             	WITH this, this_connect_content1_node
@@ -386,7 +382,6 @@ describe("Cypher Auth Allow", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
-            	RETURN count(*) AS _
             }
             WITH this, this_disconnect_content0
             CALL apoc.util.validate(NOT ((this_disconnect_content0.id IS NOT NULL AND this_disconnect_content0.id = $this_disconnect_content0auth_param0) AND (exists((this_disconnect_content0)<-[:\`HAS_CONTENT\`]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_content0)<-[:\`HAS_CONTENT\`]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -401,7 +396,6 @@ describe("Cypher Auth Allow", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
-            	RETURN count(*) AS _
             }
             WITH this, this_disconnect_content0
             CALL apoc.util.validate(NOT ((this_disconnect_content0.id IS NOT NULL AND this_disconnect_content0.id = $this_disconnect_content0auth_param0) AND (exists((this_disconnect_content0)<-[:\`HAS_CONTENT\`]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_content0)<-[:\`HAS_CONTENT\`]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
