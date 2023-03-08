@@ -1,5 +1,21 @@
 # @neo4j/graphql
 
+## 3.17.1
+
+### Patch Changes
+
+-   [#2983](https://github.com/neo4j/graphql/pull/2983) [`56d126238`](https://github.com/neo4j/graphql/commit/56d1262389ff38522d7b9c3964e878415994b1fa) Thanks [@happenslol](https://github.com/happenslol)! - Fix count aggregate field translation resulting in a syntax error when used inside inline fragments
+
+-   [#2988](https://github.com/neo4j/graphql/pull/2988) [`cfe96e713`](https://github.com/neo4j/graphql/commit/cfe96e713ea54e6c670d7fe0dc535e7065b81d9c) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix: context is now fully populated when using Apollo Federation, therefore, driver is no longer mandatory on construction and can be injected into the context like usual
+
+-   [#2942](https://github.com/neo4j/graphql/pull/2942) [`8e41a724a`](https://github.com/neo4j/graphql/commit/8e41a724a3abae1fa63fb5cd4cc1cf7a08e124d1) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix `@coalesce` and `@default` for Enum List values
+
+-   [#2994](https://github.com/neo4j/graphql/pull/2994) [`eaf16062c`](https://github.com/neo4j/graphql/commit/eaf16062c9a27eacdea53de87423b726bef7bed6) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix order of operations for nested update (delete->disconnect->update->connect->create)
+
+-   [#2743](https://github.com/neo4j/graphql/pull/2743) [`514bb64b6`](https://github.com/neo4j/graphql/commit/514bb64b6c22e886b3d8c06fc48b968af86bd421) Thanks [@dvanmali](https://github.com/dvanmali)! - fix: remove dependency of bindPredicate property from auth plugin into context
+
+-   [#2930](https://github.com/neo4j/graphql/pull/2930) [`99985018e`](https://github.com/neo4j/graphql/commit/99985018e6894d827efbfe1fa5fad6cc177594eb) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Federation: `@shareable` directives defined on an `OBJECT` are now propagated effectively through the schema. `resolvable` argument of the `@key` directive now stops type generation of the relevant types.
+
 ## 3.17.0
 
 ### Minor Changes
