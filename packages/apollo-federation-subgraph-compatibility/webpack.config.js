@@ -31,23 +31,23 @@ module.exports = {
                 test: /\.tsx?$/,
                 loader: "ts-loader",
                 exclude: /node_modules/,
-                options: { projectReferences: true, transpileOnly: true }
-            }
-        ]
+                options: { projectReferences: true, transpileOnly: true },
+            },
+        ],
     },
     resolve: {
         plugins: [new TsconfigPathsPlugin()],
-        extensions: [".ts", ".mjs", ".js"]
+        extensions: [".ts", ".mjs", ".js"],
     },
     plugins: [
         new ForkTsCheckerWebpackPlugin({
             typescript: {
-                build: true
-            }
-        })
+                build: true,
+            },
+        }),
     ],
     output: {
         filename: "bundle.js",
-        path: path.resolve(__dirname, "dist")
-    }
+        path: path.resolve(__dirname, "dist"),
+    },
 };

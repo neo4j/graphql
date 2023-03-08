@@ -34,6 +34,7 @@ export class NodeBuilder extends Builder<Node, NodeConstructor> {
             scalarFields: [],
             enumFields: [],
             otherDirectives: [],
+            propagatedDirectives: [],
             unionFields: [],
             interfaceFields: [],
             interfaces: [],
@@ -41,6 +42,7 @@ export class NodeBuilder extends Builder<Node, NodeConstructor> {
             temporalFields: [],
             pointFields: [],
             customResolverFields: [],
+            federationResolvable: true,
             ...newOptions,
         });
     }

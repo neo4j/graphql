@@ -80,28 +80,28 @@ describe("Mixed nesting", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE this_Actor.name = $this_connection_actorsConnectionparam0
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE this1.name = $param1
                 CALL {
-                    WITH this_Actor
-                    MATCH (this_Actor)-[this_connection_actorsConnectionthis1:ACTED_IN]->(this_Actor_movies:\`Movie\`)
-                    WHERE NOT (this_Actor_movies.title = $this_connection_actorsConnectionparam1)
-                    WITH this_Actor_movies { .title } AS this_Actor_movies
-                    RETURN collect(this_Actor_movies) AS this_Actor_movies
+                    WITH this1
+                    MATCH (this1)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    WHERE NOT (this3.title = $param2)
+                    WITH this3 { .title } AS this3
+                    RETURN collect(this3) AS var4
                 }
-                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, movies: this_Actor_movies } } AS edge
+                WITH { screenTime: this0.screenTime, node: { name: this1.name, movies: var4 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var5
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"this_connection_actorsConnectionparam0\\": \\"Tom Hanks\\",
-                \\"this_connection_actorsConnectionparam1\\": \\"Forrest Gump\\"
+                \\"param1\\": \\"Tom Hanks\\",
+                \\"param2\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -143,38 +143,38 @@ describe("Mixed nesting", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE this_Actor.name = $this_connection_actorsConnectionparam0
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE this1.name = $param1
                 CALL {
-                    WITH this_Actor
-                    MATCH (this_Actor)-[this_Actor_connection_moviesConnectionthis0:ACTED_IN]->(this_Actor_Movie:\`Movie\`)
-                    WHERE NOT (this_Actor_Movie.title = $this_Actor_connection_moviesConnectionparam0)
+                    WITH this1
+                    MATCH (this1:\`Actor\`)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    WHERE NOT (this3.title = $param2)
                     CALL {
-                        WITH this_Actor_Movie
-                        MATCH (this_Actor_Movie)<-[this_Actor_connection_moviesConnectionthis1:ACTED_IN]-(this_Actor_Movie_actors:\`Actor\`)
-                        WHERE NOT (this_Actor_Movie_actors.name = $this_Actor_connection_moviesConnectionparam1)
-                        WITH this_Actor_Movie_actors { .name } AS this_Actor_Movie_actors
-                        RETURN collect(this_Actor_Movie_actors) AS this_Actor_Movie_actors
+                        WITH this3
+                        MATCH (this3)<-[this4:ACTED_IN]-(this5:\`Actor\`)
+                        WHERE NOT (this5.name = $param3)
+                        WITH this5 { .name } AS this5
+                        RETURN collect(this5) AS var6
                     }
-                    WITH { node: { title: this_Actor_Movie.title, actors: this_Actor_Movie_actors } } AS edge
+                    WITH { node: { title: this3.title, actors: var6 } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_Actor_moviesConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS var7
                 }
-                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, moviesConnection: this_Actor_moviesConnection } } AS edge
+                WITH { screenTime: this0.screenTime, node: { name: this1.name, moviesConnection: var7 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var8
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var8 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"this_connection_actorsConnectionparam0\\": \\"Tom Hanks\\",
-                \\"this_Actor_connection_moviesConnectionparam0\\": \\"Forrest Gump\\",
-                \\"this_Actor_connection_moviesConnectionparam1\\": \\"Tom Hanks\\"
+                \\"param1\\": \\"Tom Hanks\\",
+                \\"param2\\": \\"Forrest Gump\\",
+                \\"param3\\": \\"Tom Hanks\\"
             }"
         `);
     });
@@ -209,28 +209,28 @@ describe("Mixed nesting", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Actor\`)
-                WHERE this_actors.name = $param1
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE this1.name = $param1
                 CALL {
-                    WITH this_actors
-                    MATCH (this_actors)-[this_actors_connection_moviesConnectionthis0:ACTED_IN]->(this_actors_Movie:\`Movie\`)
-                    WHERE NOT (this_actors_Movie.title = $this_actors_connection_moviesConnectionparam0)
-                    WITH { screenTime: this_actors_connection_moviesConnectionthis0.screenTime, node: { title: this_actors_Movie.title } } AS edge
+                    WITH this1
+                    MATCH (this1:\`Actor\`)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    WHERE NOT (this3.title = $param2)
+                    WITH { screenTime: this2.screenTime, node: { title: this3.title } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_actors_moviesConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS var4
                 }
-                WITH this_actors { .name, moviesConnection: this_actors_moviesConnection } AS this_actors
-                RETURN collect(this_actors) AS this_actors
+                WITH this1 { .name, moviesConnection: var4 } AS this1
+                RETURN collect(this1) AS var5
             }
-            RETURN this { .title, actors: this_actors } AS this"
+            RETURN this { .title, actors: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
                 \\"param1\\": \\"Tom Hanks\\",
-                \\"this_actors_connection_moviesConnectionparam0\\": \\"Forrest Gump\\"
+                \\"param2\\": \\"Forrest Gump\\"
             }"
         `);
     });

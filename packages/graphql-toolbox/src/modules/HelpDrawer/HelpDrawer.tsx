@@ -19,7 +19,11 @@
 
 import { Dispatch, Fragment, SetStateAction, useContext, useState } from "react";
 import { GraphQLSchema } from "graphql";
-import { HeroIcon } from "@neo4j-ndl/react";
+import {
+    ChatBubbleOvalLeftEllipsisIconOutline,
+    ComputerDesktopIconOutline,
+    SwatchIconOutline,
+} from "@neo4j-ndl/react/icons";
 import { Screen, ScreenContext } from "../../contexts/screen";
 import { Resources } from "./Resources";
 import { Keybindings } from "./Keybindings";
@@ -46,7 +50,7 @@ const CannyFeedbackButton = ({ screen }: { screen: Screen }): JSX.Element => {
             rel="noreferrer"
             onClick={() => tracking.trackHelpLearnFeatureLinks({ screen, actionLabel: "Send Feedback" })}
         >
-            <HeroIcon className="h-6 w-6 mr-2" type="outline" iconName="ChatIcon" />
+            <ChatBubbleOvalLeftEllipsisIconOutline className="h-6 w-6 mr-2" />
             <p className="p-0 m-0">Send feedback</p>
         </a>
     );
@@ -69,7 +73,7 @@ const EditorScreenTiles = ({
                 role="button"
                 tabIndex={0}
             >
-                <HeroIcon className="h-6 w-6 mr-2 flex-1" type="outline" iconName="ColorSwatchIcon" />
+                <SwatchIconOutline className="h-6 w-6 mr-2 flex-1" />
                 <span className="flex-1">Current schema documentation</span>
             </div>
 
@@ -81,7 +85,7 @@ const EditorScreenTiles = ({
                 role="button"
                 tabIndex={0}
             >
-                <HeroIcon className="h-6 w-6 mr-2" type="outline" iconName="DesktopComputerIcon" />
+                <ComputerDesktopIconOutline className="h-6 w-6 mr-2" />
                 <span>List of keybindings</span>
             </div>
         </div>
@@ -111,7 +115,7 @@ const SchemaScreenDrawer = ({
                         role="button"
                         tabIndex={0}
                     >
-                        <HeroIcon className="h-6 w-6 mr-2" type="outline" iconName="DesktopComputerIcon" />
+                        <ComputerDesktopIconOutline className="h-6 w-6 mr-2" />
                         <span>List of keybindings</span>
                     </div>
                     <Resources showSchemaView={true} />

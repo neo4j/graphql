@@ -113,7 +113,7 @@ function isScalarOrEnum(fieldName: string, graphElement: GraphElement) {
         graphElement.temporalFields,
         graphElement.pointFields,
         graphElement.scalarFields,
-        graphElement.enumFields
+        graphElement.enumFields,
     ];
     return scalarOrEnumFields.flat().some(scalarOrEnumPredicate);
 }
