@@ -18,19 +18,19 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { ConnectionField, ConnectionWhereArg, Context } from "../../types";
+import type { ConnectionField, ConnectionWhereArg, Context, CypherFieldReferenceMap } from "../../types";
 import type { Node } from "../../classes";
 import type Relationship from "../../classes/Relationship";
 import { createAuthPredicates } from "../create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionWherePropertyOperation } from "../where/property-operations/create-connection-operation";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
-import { getPattern } from "../utils/get-pattern";
 
 import { createEdgeProjection } from "./connection-projection";
 import { getEdgeSortFieldKeys } from "./get-sort-fields";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
+import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
 
 /** Create the match, filtering and projection of the edge and the nested node */
 export function createEdgeSubquery({
@@ -43,34 +43,33 @@ export function createEdgeSubquery({
     whereInput,
     resolveType = false,
     ignoreSort = false,
+    cypherFieldAliasMap,
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
     context: Context;
-    parentNode: string;
+    parentNode: Cypher.Node;
     relatedNode: Node;
     returnVariable: Cypher.Variable;
     whereInput: ConnectionWhereArg;
     resolveType?: boolean;
     ignoreSort?: boolean;
+    cypherFieldAliasMap: CypherFieldReferenceMap;
 }): Cypher.Clause | undefined {
     const parentNodeRef = getOrCreateCypherNode(parentNode);
 
-    const relatedNodeRef = new Cypher.NamedNode(`${parentNode}_${relatedNode.name}`, {
+    const relatedNodeRef = new Cypher.Node({
         labels: relatedNode.getLabels(context),
     });
 
     const relationshipRef = new Cypher.Relationship({
-        source: parentNodeRef,
-        target: relatedNodeRef,
         type: field.relationship.type,
     });
-
-    const relPattern = getPattern({
-        relationship: relationshipRef,
-        field: field.relationship,
-        resolveTree,
-    });
+    const direction = getCypherRelationshipDirection(field.relationship, resolveTree.args);
+    const relPattern = new Cypher.Pattern(parentNodeRef)
+        .related(relationshipRef)
+        .withDirection(direction)
+        .to(relatedNodeRef);
 
     const matchClause = new Cypher.Match(relPattern);
     const predicates: Cypher.Predicate[] = [];
@@ -97,7 +96,6 @@ export function createEdgeSubquery({
         where: { varName: relatedNodeRef, node: relatedNode },
     });
     if (authPredicate) predicates.push(authPredicate);
-
     const authAllowPredicate = createAuthPredicates({
         operations: "READ",
         entity: relatedNode,
@@ -116,10 +114,11 @@ export function createEdgeSubquery({
         field,
         relationshipRef,
         relatedNode,
-        relatedNodeVariableName: relatedNodeRef.name,
+        relatedNodeVariableName: relatedNodeRef,
         context,
         resolveType,
         extraFields: getEdgeSortFieldKeys(resolveTree),
+        cypherFieldAliasMap,
     });
 
     const withReturn = new Cypher.With([projection.projection, returnVariable]);

@@ -560,7 +560,6 @@ describe("Disconnect UNIONs using aggregate where", () => {
         expect(storedValue.records).toHaveLength(2);
     });
 
-
     test("should disconnect when filtering using aggregate count, edge and node", async () => {
         const query = `
             mutation {

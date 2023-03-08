@@ -26,10 +26,12 @@ describe("CypherBuilder Create", () => {
             labels: ["Movie"],
         });
 
-        const createQuery = new Cypher.Create(movieNode, {
-            test: new Cypher.Param("test-value"),
-            id: idParam,
-        })
+        const createQuery = new Cypher.Create(
+            new Cypher.Pattern(movieNode).withProperties({
+                test: new Cypher.Param("test-value"),
+                id: idParam,
+            })
+        )
             .set(
                 [movieNode.property("title"), new Cypher.Param("The Matrix")],
                 [movieNode.property("runtime"), new Cypher.Param(120)]
@@ -64,9 +66,11 @@ describe("CypherBuilder Create", () => {
             labels: ["Movie"],
         });
 
-        const createQuery = new Cypher.Create(movieNode, {
+        const properties = {
             id: idParam,
-        })
+        };
+
+        const createQuery = new Cypher.Create(new Cypher.Pattern(movieNode).withProperties(properties))
             .set([movieNode.property("test"), testParam], [movieNode.property("nullStr"), nullStringParam])
             .return(movieNode);
 

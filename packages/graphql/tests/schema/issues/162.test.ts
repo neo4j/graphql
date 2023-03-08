@@ -464,11 +464,11 @@ describe("162", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              tiger: TigerWhere @deprecated(reason: \\"Use \`tiger_SOME\` instead.\\")
+              tiger: TigerWhere
               tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
               tigerConnection: TigerJawLevel2Part1TigerConnectionWhere
-              tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Use \`tigerConnection_NONE\` instead.\\")
-              tiger_NOT: TigerWhere @deprecated(reason: \\"Use \`tiger_NONE\` instead.\\")
+              tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere
+              tiger_NOT: TigerWhere
             }
 
             type TigerJawLevel2Part1sConnection {
@@ -516,11 +516,11 @@ describe("162", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
-              part1: TigerJawLevel2Part1Where @deprecated(reason: \\"Use \`part1_SOME\` instead.\\")
+              part1: TigerJawLevel2Part1Where
               part1Aggregate: TigerJawLevel2Part1AggregateInput
               part1Connection: TigerJawLevel2Part1ConnectionWhere
-              part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Use \`part1Connection_NONE\` instead.\\")
-              part1_NOT: TigerJawLevel2Part1Where @deprecated(reason: \\"Use \`part1_NONE\` instead.\\")
+              part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere
+              part1_NOT: TigerJawLevel2Part1Where
             }
 
             type TigerJawLevel2sConnection {

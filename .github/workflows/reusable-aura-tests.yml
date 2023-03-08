@@ -75,6 +75,7 @@ jobs:
           yarn test:int
         working-directory: packages/${{ matrix.package }}
         env:
+          USE_DEFAULT_DB: true
           NEO_USER: neo4j
           NEO_PASSWORD: ${{ secrets.PASSWORD }}
           NEO_URL: ${{ secrets.URI }}

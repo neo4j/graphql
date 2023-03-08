@@ -77,18 +77,18 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`User\`)
+                WITH create_var0
+                CREATE (create_this1:\`User\`)
                 SET
-                    create_this0.id = create_var1.id,
-                    create_this0.name = create_var1.name
+                    create_this1.id = create_var0.id,
+                    create_this1.name = create_var0.name
                 WITH *
-                CALL apoc.util.validate(NOT ((create_this0.id IS NOT NULL AND create_this0.id = $create_this0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN create_this0
+                CALL apoc.util.validate(NOT ((create_this1.id IS NOT NULL AND create_this1.id = $create_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id }) AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -99,7 +99,7 @@ describe("Cypher Auth Allow", () => {
                         \\"name\\": \\"bob\\"
                     }
                 ],
-                \\"create_this0auth_param0\\": \\"id-01\\",
+                \\"create_param1\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -134,22 +134,22 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`User\`)
+                WITH create_var0
+                CREATE (create_this1:\`User\`)
                 SET
-                    create_this0.id = create_var1.id,
-                    create_this0.name = create_var1.name
-                WITH create_this0, create_var1
+                    create_this1.id = create_var0.id,
+                    create_this1.name = create_var0.name
+                WITH create_this1, create_var0
                 CALL {
-                    WITH create_this0, create_var1
-                    UNWIND create_var1.posts.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                    WITH create_this1, create_var0
+                    UNWIND create_var0.posts.create AS create_var2
+                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
                     CREATE (create_this5:\`Post\`)
                     SET
                         create_this5.id = create_var3.id
-                    MERGE (create_this0)-[create_this6:HAS_POST]->(create_this5)
+                    MERGE (create_this1)-[create_this6:HAS_POST]->(create_this5)
                     WITH create_this5, create_var3
                     CALL {
                         WITH create_this5, create_var3
@@ -158,13 +158,13 @@ describe("Cypher Auth Allow", () => {
                         CREATE (create_this10:\`User\`)
                         SET
                             create_this10.id = create_var8.id
-                        MERGE (create_this10)-[create_this11:HAS_POST]->(create_this5)
+                        MERGE (create_this5)<-[create_this11:HAS_POST]-(create_this10)
                         WITH *
-                        CALL apoc.util.validate(NOT ((create_this10.id IS NOT NULL AND create_this10.id = $create_this10auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                        CALL apoc.util.validate(NOT ((create_this10.id IS NOT NULL AND create_this10.id = $create_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         RETURN collect(NULL) AS create_var12
                     }
                     WITH *
-                    CALL apoc.util.validate(NOT ((exists((create_this5)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(create_this5)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $create_this5auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CALL apoc.util.validate(NOT ((exists((create_this5)<-[:HAS_POST]-(:\`User\`)) AND all(create_this13 IN [(create_this5)<-[:HAS_POST]-(create_this13:\`User\`) | create_this13] WHERE (create_this13.id IS NOT NULL AND create_this13.id = $create_param2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH create_this5
                     CALL {
                     	WITH create_this5
@@ -173,13 +173,13 @@ describe("Cypher Auth Allow", () => {
                     	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
                     	RETURN c AS create_this5_creator_User_unique_ignored
                     }
-                    RETURN collect(NULL) AS create_var13
+                    RETURN collect(NULL) AS create_var14
                 }
                 WITH *
-                CALL apoc.util.validate(NOT ((create_this0.id IS NOT NULL AND create_this0.id = $create_this0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN create_this0
+                CALL apoc.util.validate(NOT ((create_this1.id IS NOT NULL AND create_this1.id = $create_param3)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id }) AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -206,9 +206,9 @@ describe("Cypher Auth Allow", () => {
                         }
                     }
                 ],
-                \\"create_this10auth_param0\\": \\"id-01\\",
-                \\"create_this5auth_param0\\": \\"id-01\\",
-                \\"create_this0auth_param0\\": \\"id-01\\",
+                \\"create_param1\\": \\"id-01\\",
+                \\"create_param2\\": \\"id-01\\",
+                \\"create_param3\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -429,7 +429,7 @@ describe("Cypher Auth Allow", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
-            WHERE this_disconnect_creator0.id = $updatePosts_args_disconnect_creator_where_this_disconnect_creator0param0
+            WHERE this_disconnect_creator0.id = $updatePosts_args_disconnect_creator_where_User_this_disconnect_creator0param0
             CALL {
             	WITH this_disconnect_creator0, this_disconnect_creator0_rel, this
             	WITH collect(this_disconnect_creator0) as this_disconnect_creator0, this_disconnect_creator0_rel, this
@@ -456,7 +456,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"post-id\\",
-                \\"updatePosts_args_disconnect_creator_where_this_disconnect_creator0param0\\": \\"user-id\\",
+                \\"updatePosts_args_disconnect_creator_where_User_this_disconnect_creator0param0\\": \\"user-id\\",
                 \\"this_disconnect_creator0auth_param0\\": \\"id-01\\",
                 \\"updatePosts\\": {
                     \\"args\\": {

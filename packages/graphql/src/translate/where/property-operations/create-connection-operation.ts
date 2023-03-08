@@ -27,6 +27,7 @@ import { createWherePredicate } from "../create-where-predicate";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { getCypherLogicalOperator, isLogicalOperator } from "../../utils/logical-operators";
 import { createRelationPredicate } from "./create-relationship-operation";
+import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 
 export function createConnectionOperation({
     connectionField,
@@ -69,17 +70,14 @@ export function createConnectionOperation({
 
         const childNode = new Cypher.Node();
 
-        const relationship = new Cypher.Relationship({
-            source: relationField.direction === "IN" ? childNode : parentNode,
-            target: relationField.direction === "IN" ? parentNode : childNode,
-            type: relationField.type,
-        });
+        const relationship = new Cypher.Relationship({ type: relationField.type });
 
-        const matchPattern = relationship.pattern({
-            source: relationField.direction === "IN" ? { variable: true } : { labels: false },
-            target: relationField.direction === "IN" ? { labels: false } : { variable: true },
-            relationship: { variable: true },
-        });
+        const direction = getCypherRelationshipDirection(relationField);
+        const matchPattern = new Cypher.Pattern(parentNode)
+            .withoutLabels()
+            .related(relationship)
+            .withDirection(direction)
+            .to(childNode);
 
         const contextRelationship = context.relationships.find(
             (x) => x.name === connectionField.relationshipTypeName

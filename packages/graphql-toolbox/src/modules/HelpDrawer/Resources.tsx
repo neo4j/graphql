@@ -1,5 +1,14 @@
-import { Fragment, useContext, useEffect } from "react";
-import { HeroIcon } from "@neo4j-ndl/react";
+import { Fragment, ReactNode, useContext, useEffect } from "react";
+import {
+    AcademicCapIconOutline,
+    ArrowSmallUpIconOutline,
+    AtSymbolIconOutline,
+    ChatBubbleOvalLeftEllipsisIconOutline,
+    DocumentTextIconOutline,
+    FunnelIconOutline,
+    SpeakerWaveIconOutline,
+    VariableIconOutline,
+} from "@neo4j-ndl/react/icons";
 import { tracking } from "../../analytics/tracking";
 import { Screen, ScreenContext } from "../../contexts/screen";
 import { cannySettings } from "../../common/canny";
@@ -16,7 +25,7 @@ interface ResourceLinksBlockProps {
 
 interface Links {
     href: string;
-    iconName: string;
+    icon: ReactNode;
     label: string;
     options?: {
         isCannyChangelog?: boolean;
@@ -26,12 +35,12 @@ interface Links {
 const linksResources: Links[] = [
     {
         href: "https://neo4j.com/docs/graphql-manual/current/",
-        iconName: "DocumentTextIcon",
+        icon: <DocumentTextIconOutline className="h-6 w-6 mr-2 stroke-1" />,
         label: "Documentation",
     },
     {
         href: "empty",
-        iconName: "SpeakerphoneIcon",
+        icon: <SpeakerWaveIconOutline className="h-6 w-6 mr-2 stroke-1" />,
         label: "What's new",
         options: {
             isCannyChangelog: true,
@@ -39,12 +48,12 @@ const linksResources: Links[] = [
     },
     {
         href: "https://neo4j.com/graphacademy/training-graphql-apis/enrollment/",
-        iconName: "AcademicCapIcon",
+        icon: <AcademicCapIconOutline className="h-6 w-6 mr-2 stroke-1" />,
         label: "Neo4j Graph Academy",
     },
     {
         href: "https://discord.com/channels/787399249741479977/818578492723036210",
-        iconName: "ChatAlt2Icon",
+        icon: <ChatBubbleOvalLeftEllipsisIconOutline className="h-6 w-6 mr-2 stroke-1" />,
         label: "Community",
     },
 ];
@@ -52,12 +61,12 @@ const linksResources: Links[] = [
 const linksGithub: Links[] = [
     {
         href: "https://github.com/neo4j/graphql",
-        iconName: "DocumentTextIcon",
+        icon: <DocumentTextIconOutline className="h-6 w-6 mr-2 stroke-1" />,
         label: "Github repository",
     },
     {
         href: "https://github.com/neo4j/graphql/issues",
-        iconName: "SpeakerphoneIcon",
+        icon: <SpeakerWaveIconOutline className="h-6 w-6 mr-2 stroke-1" />,
         label: "Issue tracker",
     },
 ];
@@ -65,22 +74,22 @@ const linksGithub: Links[] = [
 const linksDocumentation: Links[] = [
     {
         href: "https://neo4j.com/docs/graphql-manual/current/type-definitions/",
-        iconName: "DocumentTextIcon",
+        icon: <DocumentTextIconOutline className="h-6 w-6 mr-2 stroke-1" />,
         label: "Type definitions",
     },
     {
         href: "https://neo4j.com/docs/graphql-manual/current/queries/",
-        iconName: "VariableIcon",
+        icon: <VariableIconOutline className="h-6 w-6 mr-2 stroke-1" />,
         label: "Example queries",
     },
     {
         href: "https://neo4j.com/docs/graphql-manual/current/directives/",
-        iconName: "AtSymbolIcon",
+        icon: <AtSymbolIconOutline className="h-6 w-6 mr-2 stroke-1" />,
         label: "Directives",
     },
     {
         href: "https://neo4j.com/docs/graphql-manual/current/filtering/",
-        iconName: "FilterIcon",
+        icon: <FunnelIconOutline className="h-6 w-6 mr-2 stroke-1" />,
         label: "Filtering",
     },
 ];
@@ -101,7 +110,7 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
         <Fragment>
             <div className="flex items-center">
                 <span className="h6">{listBlockTitle}</span>
-                <HeroIcon className="h-4 w-4 ml-1 rotate-45" type="outline" iconName="ArrowSmUpIcon" />
+                <ArrowSmallUpIconOutline className="h-4 w-4 ml-1 rotate-45" />
             </div>
             <ul className="mb-6">
                 {links.map((link) => {
@@ -116,11 +125,7 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
                                     role="link"
                                     tabIndex={0}
                                 >
-                                    <HeroIcon
-                                        className="h-6 w-6 mr-2 stroke-1"
-                                        type="outline"
-                                        iconName={link.iconName as any}
-                                    />
+                                    {link.icon}
                                     <p className="p-0 m-0">{link.label}</p>
                                 </div>
                             ) : (
@@ -131,11 +136,7 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
                                     rel="noreferrer"
                                     onClick={() => handleTrackHelpLearnFeatureLinks(link.label)}
                                 >
-                                    <HeroIcon
-                                        className="h-6 w-6 mr-2 stroke-1"
-                                        type="outline"
-                                        iconName={link.iconName as any}
-                                    />
+                                    {link.icon}
                                     <p className="p-0 m-0">{link.label}</p>
                                 </a>
                             )}

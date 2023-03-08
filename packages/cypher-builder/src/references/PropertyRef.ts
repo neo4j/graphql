@@ -39,7 +39,7 @@ export class PropertyRef implements CypherCompilable {
         return this._variable;
     }
 
-    /** Access individual property via the PropertyRef class, using the dot notation */
+    /** Access individual property via the PropertyRef class, using dot notation or square brackets notation if an expression is provided */
     public property(prop: string | Expr): PropertyRef {
         return new PropertyRef(this._variable, ...this.propertyPath, prop);
     }

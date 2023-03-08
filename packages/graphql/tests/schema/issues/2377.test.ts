@@ -448,10 +448,22 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               containedBy: ResourceWhere @deprecated(reason: \\"Use \`containedBy_SOME\` instead.\\")
               containedByAggregate: ResourceContainedByAggregateInput
               containedByConnection: ResourceContainedByConnectionWhere @deprecated(reason: \\"Use \`containedByConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Resources where all of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
               containedByConnection_ALL: ResourceContainedByConnectionWhere
+              \\"\\"\\"
+              Return Resources where none of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
               containedByConnection_NONE: ResourceContainedByConnectionWhere
               containedByConnection_NOT: ResourceContainedByConnectionWhere @deprecated(reason: \\"Use \`containedByConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Resources where one of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
               containedByConnection_SINGLE: ResourceContainedByConnectionWhere
+              \\"\\"\\"
+              Return Resources where some of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
               containedByConnection_SOME: ResourceContainedByConnectionWhere
               \\"\\"\\"Return Resources where all of the related Resources match this filter\\"\\"\\"
               containedBy_ALL: ResourceWhere

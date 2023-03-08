@@ -61,7 +61,7 @@ export function createPropertyWhere({
 
     const coalesceValue = [...element.primitiveFields, ...element.temporalFields, ...element.enumFields].find(
         (f) => fieldName === f.fieldName
-    )?.coalesceValue as string | undefined;
+    )?.coalesceValue;
 
     let dbFieldName = mapToDbProperty(element, fieldName);
     if (prefix) {
@@ -84,20 +84,26 @@ export function createPropertyWhere({
         }
 
         if (coalesceValue) {
-            propertyRef = Cypher.coalesce(
-                propertyRef,
-                new Cypher.RawCypher(`${coalesceValue}`) // TODO: move into Cypher.literal
-            );
+            if (Array.isArray(coalesceValue)) {
+                const list = new Cypher.List(coalesceValue.map((v) => new Cypher.Literal(v)));
+
+                propertyRef = Cypher.coalesce(propertyRef, list);
+            } else {
+                propertyRef = Cypher.coalesce(
+                    propertyRef,
+                    new Cypher.RawCypher(`${coalesceValue}`) // TODO: move into Cypher.literal
+                );
+            }
         }
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
-        const relationTypeName = node.connectionFields.find(
-            (x) => x.relationship.fieldName === fieldName
-        )?.relationshipTypeName;
-        const relationship = context.relationships.find((x) => x.name === relationTypeName);
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
+            const relationTypeName = node.connectionFields.find(
+                (x) => x.relationship.fieldName === fieldName
+            )?.relationshipTypeName;
+            const relationship = context.relationships.find((x) => x.name === relationTypeName);
             return aggregatePreComputedWhereFields({
                 value,
                 relationField,

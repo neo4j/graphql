@@ -73,23 +73,23 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)<-[this_connection_moviesConnectionthis0:HAS_GENRE]-(this_Movie:\`Movie\`)
+                    MATCH (this)<-[this0:HAS_GENRE]-(this1:\`Movie\`)
                     WHERE EXISTS {
-                        MATCH (this_Movie)-[this_connection_moviesConnectionthis1:HAS_GENRE]->(this_connection_moviesConnectionthis2:\`Genre\`)
-                        WHERE this_connection_moviesConnectionthis2.name = $this_connection_moviesConnectionparam0
+                        MATCH (this1)-[this2:HAS_GENRE]->(this3:\`Genre\`)
+                        WHERE this3.name = $param0
                     }
-                    WITH { node: { __resolveType: \\"Movie\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_moviesConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { moviesConnection: this_moviesConnection, .name } AS this"
+            RETURN this { moviesConnection: var4, .name } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_moviesConnectionparam0\\": \\"Action\\"
+                \\"param0\\": \\"Action\\"
             }"
         `);
     });

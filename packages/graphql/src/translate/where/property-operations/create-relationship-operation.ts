@@ -25,6 +25,7 @@ import { getListPredicate, ListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
 import type { Node, Relationship } from "../../../classes";
 import { createConnectionWherePropertyOperation } from "./create-connection-operation";
+import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 
 export function createRelationshipOperation({
     relationField,
@@ -46,21 +47,19 @@ export function createRelationshipOperation({
 
     const childNode = new Cypher.Node({ labels: refNode.getLabels(context) });
 
-    const relationship = new Cypher.Relationship({
-        source: relationField.direction === "IN" ? childNode : parentNode,
-        target: relationField.direction === "IN" ? parentNode : childNode,
-        type: relationField.type,
-    });
+    const relationship = new Cypher.Relationship({ type: relationField.type });
+    const direction = getCypherRelationshipDirection(relationField);
 
-    const matchPattern = relationship.pattern({
-        source: relationField.direction === "IN" ? { variable: true } : { labels: false },
-        target: relationField.direction === "IN" ? { labels: false } : { variable: true },
-        relationship: { variable: false },
-    });
+    const matchPattern = new Cypher.Pattern(parentNode)
+        .withoutLabels()
+        .related(relationship)
+        .withoutVariable()
+        .withDirection(direction)
+        .to(childNode);
 
     // TODO: check null in return projection
     if (value === null) {
-        const existsSubquery = new Cypher.Match(matchPattern, {});
+        const existsSubquery = new Cypher.Match(matchPattern);
         const exists = new Cypher.Exists(existsSubquery);
         if (!isNot) {
             // Bit confusing, but basically checking for not null is the same as checking for relationship exists
@@ -181,7 +180,6 @@ export function createRelationPredicate({
             matchPattern: targetPattern,
             listPredicateStr,
             innerOperation: innerOperation.predicate,
-            edgePredicate: refEdge ? true : false,
         }),
     };
 }
@@ -191,13 +189,11 @@ function createSimpleRelationshipPredicate({
     listPredicateStr,
     childNode,
     innerOperation,
-    edgePredicate,
 }: {
     matchPattern: Cypher.Pattern;
     listPredicateStr: ListPredicate;
     childNode: Cypher.Node;
     innerOperation: Cypher.Predicate | undefined;
-    edgePredicate?: boolean;
 }): Cypher.Predicate | undefined {
     if (!innerOperation) return undefined;
     const matchClause = new Cypher.Match(matchPattern).where(innerOperation);
@@ -209,17 +205,10 @@ function createSimpleRelationshipPredicate({
             return Cypher.and(new Cypher.Exists(matchClause), Cypher.not(new Cypher.Exists(notExistsMatchClause)));
         }
         case "single": {
-            // If there are edge properties used in the innerOperation predicate, it is not possible to use the
-            // more performant single() function. Therefore, we fall back to size()
-            if (edgePredicate) {
-                const sizeFunction = Cypher.size(
-                    new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(innerOperation)
-                );
-                return Cypher.eq(sizeFunction, new Cypher.Literal(1));
-            }
-
-            const patternComprehension = new Cypher.PatternComprehension(matchPattern, childNode);
-            return Cypher.single(childNode, patternComprehension, innerOperation);
+            const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(
+                innerOperation
+            );
+            return Cypher.single(childNode, patternComprehension, new Cypher.Literal(true));
         }
         case "not":
         case "none":
