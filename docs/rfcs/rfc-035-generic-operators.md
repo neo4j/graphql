@@ -226,14 +226,15 @@ input IntListWhere {
 }
 
 input IntWhere {
-    OR: [IntListWhere!]
-    AND: [IntListWhere!]
-    NOT: IntListWhere
-    equals: [Int!]
-    all: IntWhere
-    some: IntWhere
-    single: IntWhere
-    none: IntWhere
+    OR: [IntWhere!]
+    AND: [IntWhere!]
+    NOT: IntWhere
+    equals: Int
+    in: [Int]
+    lt: Int
+    lte: Int
+    gt: Int
+    gte: Int
 }
 
 input StringWhere {
