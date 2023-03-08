@@ -19,7 +19,8 @@
 
 import type { Driver } from "neo4j-driver";
 import type { DocumentNode, GraphQLSchema } from "graphql";
-import { addResolversToSchema, IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
+import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
+import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
