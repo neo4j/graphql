@@ -389,7 +389,6 @@ describe("Batch Create, Auth", () => {
             			UNWIND parentNodes as this3
             			UNWIND connectedNodes as this3_actors_connect0_node
             			MERGE (this3)<-[this3_actors_connect0_relationship:\`ACTED_IN\`]-(this3_actors_connect0_node)
-            			RETURN count(*) AS _
             		}
             	}
             WITH this3, this3_actors_connect0_node

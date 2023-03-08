@@ -83,7 +83,6 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_activeOrganization0_node
             			MERGE (this)-[:\`ACTIVELY_MANAGING\`]->(this_connect_activeOrganization0_node)
-            			RETURN count(*) AS _
             		}
             	}
             WITH this, this_connect_activeOrganization0_node

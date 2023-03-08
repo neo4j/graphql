@@ -410,7 +410,6 @@ describe("Batch Create", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
             			MERGE (this0)<-[this0_actors_connect0_relationship:\`ACTED_IN\`]-(this0_actors_connect0_node)
-            			RETURN count(*) AS _
             		}
             	}
             WITH this0, this0_actors_connect0_node
@@ -442,7 +441,6 @@ describe("Batch Create", () => {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_actors_connect0_node
             			MERGE (this1)<-[this1_actors_connect0_relationship:\`ACTED_IN\`]-(this1_actors_connect0_node)
-            			RETURN count(*) AS _
             		}
             	}
             WITH this1, this1_actors_connect0_node
@@ -610,7 +608,6 @@ describe("Batch Create", () => {
             			UNWIND parentNodes as this3
             			UNWIND connectedNodes as this3_actors_connect0_node
             			MERGE (this3)<-[this3_actors_connect0_relationship:\`ACTED_IN\`]-(this3_actors_connect0_node)
-            			RETURN count(*) AS _
             		}
             	}
             WITH this3, this3_actors_connect0_node
@@ -636,7 +633,6 @@ describe("Batch Create", () => {
                 ON CREATE SET
                     this4_actors_connectOrCreate0.name = $this4_actors_connectOrCreate_param1
                 MERGE (this4)<-[this4_actors_connectOrCreate_this0:\`ACTED_IN\`]-(this4_actors_connectOrCreate0)
-                RETURN COUNT(*) AS _
             }
             WITH this4
             CALL {

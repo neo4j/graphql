@@ -578,7 +578,6 @@ describe("@auth allow on specific interface implementation", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content0_node
             			MERGE (this)-[:\`HAS_CONTENT\`]->(this_connect_content0_node)
-            			RETURN count(*) AS _
             		}
             	}
             WITH this, this_connect_content0_node
@@ -598,7 +597,6 @@ describe("@auth allow on specific interface implementation", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content1_node
             			MERGE (this)-[:\`HAS_CONTENT\`]->(this_connect_content1_node)
-            			RETURN count(*) AS _
             		}
             	}
             WITH this, this_connect_content1_node
