@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { Screen } from "../contexts/screen";
-import { Theme } from "../contexts/theme";
-import { TypeDefinitionsAnalyticsResults } from "./analytics";
+import type { Screen } from "../contexts/screen";
+import type { Theme } from "../contexts/theme";
+import type { TypeDefinitionsAnalyticsResults } from "./analytics";
 
 export interface TrackingTBIntrospect {
     screen: "query editor" | "type definitions" | "initial modal";

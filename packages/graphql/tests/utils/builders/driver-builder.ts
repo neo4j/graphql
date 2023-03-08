@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { Driver, Session, Transaction, Record } from "neo4j-driver";
+import type { Driver, Session, Transaction } from "neo4j-driver";
+import { Record } from "neo4j-driver";
 import { Builder } from "./builder";
 import { DBMS_COMPONENTS_QUERY } from "../../../src/constants";
 

@@ -19,7 +19,8 @@
 
 import { HasLabel } from "../expressions/HasLabel";
 import type { Param } from "./Param";
-import { NamedReference, Reference } from "./Reference";
+import type { NamedReference } from "./Reference";
+import { Reference } from "./Reference";
 
 export type NodeProperties = Record<string, Param<any>>;
 

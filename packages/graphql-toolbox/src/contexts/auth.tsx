@@ -33,7 +33,7 @@ import {
     resolveNeo4jDesktopLoginPayload,
     resolveSelectedDatabaseName,
 } from "./utils";
-import { LoginPayload, Neo4jDatabase } from "../types";
+import type { LoginPayload, Neo4jDatabase } from "../types";
 import { Storage } from "../utils/storage";
 import { getURLProtocolFromText } from "../utils/utils";
 

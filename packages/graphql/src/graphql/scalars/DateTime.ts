@@ -19,7 +19,8 @@
 
 import type { ValueNode } from "graphql";
 import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
-import neo4j, { isDateTime, DateTime, Integer } from "neo4j-driver";
+import type { DateTime, Integer } from "neo4j-driver";
+import neo4j, { isDateTime } from "neo4j-driver";
 
 export const GraphQLDateTime = new GraphQLScalarType({
     name: "DateTime",
