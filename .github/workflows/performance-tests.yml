@@ -65,7 +65,7 @@ jobs:
       - name: Target Branch - Run @neo4j/graphql Subgraph Schema performance tests
         run: |
           yarn performance --subgraph-schema # Warmup
-          VAR1=$(yarn performance --subgraph-schema) && echo "Old $VAR1" > ./performance/schemaPerformance
+          VAR1=$(yarn performance --subgraph-schema) && echo "Old $VAR1" > ./performance/subgraphSchemaPerformance
         working-directory: packages/graphql
         env:
           NEO_USER: neo4j
@@ -106,7 +106,7 @@ jobs:
         run: |
           yarn performance --subgraph-schema # Warmup
           yarn performance --subgraph-schema >> ./performance/subgraphSchemaPerformance
-          cat ./performance/schemaPerformance >> ./performance/performanceReport
+          cat ./performance/subgraphSchemaPerformance >> ./performance/performanceReport
         working-directory: packages/graphql
         env:
           NEO_USER: neo4j
