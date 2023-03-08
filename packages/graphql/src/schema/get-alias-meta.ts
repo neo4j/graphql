@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { DirectiveNode, StringValueNode } from "graphql";
 
 type AliasMeta = {
     property: string;
+    propertyUnescaped: string;
 };
 
 function getAliasMeta(directive: DirectiveNode): AliasMeta | undefined {
@@ -32,7 +34,8 @@ function getAliasMeta(directive: DirectiveNode): AliasMeta | undefined {
     const property = (stmtArg.value as StringValueNode).value;
 
     return {
-        property,
+        property: Cypher.utils.escapeLabel(property),
+        propertyUnescaped: property,
     };
 }
 
