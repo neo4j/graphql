@@ -792,14 +792,6 @@ describe("Cypher Update", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
             WITH this
-            CALL {
-            	WITH this
-            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
-            	SET this_actors0.name = $this_update_actors0_name
-            	RETURN count(*) AS update_this_actors0
-            }
-            WITH this
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
             WHERE this_delete_actors0.name = $updateMovies_args_delete_actors0_where_this_delete_actors0param0
             WITH this, collect(DISTINCT this_delete_actors0) AS this_delete_actors0_to_delete
@@ -809,6 +801,14 @@ describe("Cypher Update", () => {
             	DETACH DELETE x
             	RETURN count(*) AS _
             }
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
+            	SET this_actors0.name = $this_update_actors0_name
+            	RETURN count(*) AS update_this_actors0
+            }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -816,11 +816,22 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param0\\": \\"Actor to delete\\",
                 \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"Actor to update\\",
                 \\"this_update_actors0_name\\": \\"Updated name\\",
-                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param0\\": \\"Actor to delete\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
+                        \\"delete\\": {
+                            \\"actors\\": [
+                                {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"name\\": \\"Actor to delete\\"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
                         \\"update\\": {
                             \\"actors\\": [
                                 {
@@ -832,17 +843,6 @@ describe("Cypher Update", () => {
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"name\\": \\"Updated name\\"
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        \\"delete\\": {
-                            \\"actors\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name\\": \\"Actor to delete\\"
                                         }
                                     }
                                 }
