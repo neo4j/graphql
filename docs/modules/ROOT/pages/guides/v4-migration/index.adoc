@@ -503,6 +503,18 @@ interface ActedIn {
 }
 ----
 
+=== Properties in the alias directive are now automatically escaped
+
+Properties in the alias directive automatically escaped using backticks. If you were using backticks in the `property` argument of your `@alias` directives, you should now remove the escape strings as this is covered by the library.
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID! @id
+    username: String! @alias(property: "dbUserName")
+}
+----
+
 == Miscellaneous changes
 
 [[startup-validation]]

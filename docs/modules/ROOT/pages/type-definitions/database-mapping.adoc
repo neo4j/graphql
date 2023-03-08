@@ -43,6 +43,10 @@ interface UserLivesInProperties @relationshipProperties {
 }
 ----
 
+==== Properties are automatically escaped
+
+The property in aliases are automatically escaped (wrapped with backticks ``), so there's no need to add escape characters around them.
+
 [[type-definitions-plural]]
 == `@plural`
 
