@@ -48,9 +48,7 @@ export class Create extends Clause {
         this.setSubClause = new SetClause(this);
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
 

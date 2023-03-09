@@ -19,7 +19,7 @@
 
 import { LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING } from "../constants";
 import { Storage } from "../utils/storage";
-import {
+import type {
     TrackingTBBuildSchemaClick,
     TrackingTBCannyChangelogClick,
     TrackingTBChangeDatabase,

@@ -40,9 +40,7 @@ export class Union extends Clause {
         return this;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const subqueriesStr = this.subqueries.map((s) => s.getCypher(env));
         const unionStr = this.includeAll ? "UNION ALL" : "UNION";

@@ -18,7 +18,8 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import { Projection, ProjectionColumn } from "./sub-clauses/Projection";
+import type { ProjectionColumn } from "./sub-clauses/Projection";
+import { Projection } from "./sub-clauses/Projection";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import { Clause } from "./Clause";
 import { WithWith } from "./mixins/WithWith";
@@ -44,9 +45,7 @@ export class Unwind extends Clause {
         this.projection.addColumns(columns);
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
         const withCypher = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });

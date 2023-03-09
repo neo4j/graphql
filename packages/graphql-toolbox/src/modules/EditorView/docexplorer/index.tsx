@@ -6,8 +6,9 @@
  */
 
 import React from "react";
-import { GraphQLSchema, isType, GraphQLNamedType, GraphQLError } from "graphql";
-import { FieldType } from "./types";
+import type { GraphQLSchema, GraphQLNamedType, GraphQLError } from "graphql";
+import { isType } from "graphql";
+import type { FieldType } from "./types";
 
 import FieldDoc from "./FieldDoc";
 import SchemaDoc from "./SchemaDoc";

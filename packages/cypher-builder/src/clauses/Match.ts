@@ -25,7 +25,8 @@ import { mixin } from "./utils/mixin";
 import { WithWhere } from "./mixins/WithWhere";
 import { WithSet } from "./mixins/WithSet";
 import { WithWith } from "./mixins/WithWith";
-import { DeleteClause, DeleteInput } from "./sub-clauses/Delete";
+import type { DeleteInput } from "./sub-clauses/Delete";
+import { DeleteClause } from "./sub-clauses/Delete";
 import type { PropertyRef } from "../references/PropertyRef";
 import { RemoveClause } from "./sub-clauses/Remove";
 import type { CypherEnvironment } from "../Environment";
@@ -91,9 +92,7 @@ export class Match extends Clause {
         return this;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
 
