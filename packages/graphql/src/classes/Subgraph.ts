@@ -20,17 +20,15 @@
 import { buildSubgraphSchema } from "@apollo/subgraph";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import type { IResolvers, TypeSource } from "@graphql-tools/utils";
-import {
+import type {
     ConstDirectiveNode,
     DocumentNode,
     GraphQLDirective,
     GraphQLNamedType,
     GraphQLResolveInfo,
-    Kind,
-    parse,
-    print,
     SchemaExtensionNode,
 } from "graphql";
+import { Kind, parse, print } from "graphql";
 import { translateResolveReference } from "../translate/translate-resolve-reference";
 import type { Context, Node } from "../types";
 import { execute } from "../utils";

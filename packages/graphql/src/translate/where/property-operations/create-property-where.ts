@@ -19,8 +19,10 @@
 
 import type { Context, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
-import { GraphElement, Node } from "../../../classes";
-import { whereRegEx, WhereRegexGroups } from "../utils";
+import type { GraphElement } from "../../../classes";
+import { Node } from "../../../classes";
+import type { WhereRegexGroups } from "../utils";
+import { whereRegEx } from "../utils";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createGlobalNodeOperation } from "./create-global-node-operation";
 // Recursive function

@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
+import type { Dispatch, SetStateAction} from "react";
+import React, { useState, useEffect } from "react";
 import {
     LOCAL_STATE_CONSTRAINT,
     LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING,

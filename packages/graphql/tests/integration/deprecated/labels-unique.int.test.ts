@@ -25,7 +25,8 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
-import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
+import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
+import { getNeo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
 import { Executor } from "../../../src/classes/Executor";
 
 describe("assertIndexesAndConstraints/unique", () => {
