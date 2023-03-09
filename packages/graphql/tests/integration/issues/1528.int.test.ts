@@ -55,8 +55,9 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
                     @cypher(
                         statement: """
                         MATCH (this)<-[:ACTED_IN]-(ac:${testPerson})
-                        RETURN count(ac)
-                        """
+                        RETURN count(ac) as res
+                        """,
+                        columnName: "res"
                     )
             }
 

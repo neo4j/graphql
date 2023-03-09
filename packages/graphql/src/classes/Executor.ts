@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { Driver, Neo4jError, QueryResult, Result, Session, SessionMode, Transaction } from "neo4j-driver";
+import type { Driver, QueryResult, Result, Session, SessionMode, Transaction } from "neo4j-driver";
+import { Neo4jError } from "neo4j-driver";
 import Debug from "debug";
 import environment from "../environment";
 import {

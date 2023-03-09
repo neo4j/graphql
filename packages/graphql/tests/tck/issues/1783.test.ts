@@ -40,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 fullName: String!
             }
 
-            interface RelationProps {
+            interface RelationProps @relationshipProperties {
                 current: Boolean!
             }
 
@@ -121,10 +121,10 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (this.current = $param0 AND single(this3 IN [(this)-[this0:ARCHITECTURE]->(this3:\`MasterData\`) WHERE (this0.current = $param1 AND single(this2 IN [(this3)-[this1:HAS_NAME]->(this2:\`NameDetails\`) WHERE (this1.current = $param2 AND this2.fullName = $param3) | 1] WHERE true)) | 1] WHERE true) AND single(this5 IN [(this)-[this4:HAS_NAME]->(this5:\`NameDetails\`) WHERE (this4.current = $param4 AND this5.fullName CONTAINS $param5) | 1] WHERE true))
+            WHERE (this.current = $param0 AND single(this3 IN [(this)-[this0:\`ARCHITECTURE\`]->(this3:\`MasterData\`) WHERE (this0.current = $param1 AND single(this2 IN [(this3)-[this1:\`HAS_NAME\`]->(this2:\`NameDetails\`) WHERE (this1.current = $param2 AND this2.fullName = $param3) | 1] WHERE true)) | 1] WHERE true) AND single(this5 IN [(this)-[this4:\`HAS_NAME\`]->(this5:\`NameDetails\`) WHERE (this4.current = $param4 AND this5.fullName CONTAINS $param5) | 1] WHERE true))
             CALL {
                 WITH this
-                MATCH (this)-[this6:HAS_NAME]->(this7:\`NameDetails\`)
+                MATCH (this)-[this6:\`HAS_NAME\`]->(this7:\`NameDetails\`)
                 WHERE this6.current = $param6
                 WITH { node: { fullName: this7.fullName } } AS edge
                 WITH collect(edge) AS edges
@@ -133,11 +133,11 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)-[this9:ARCHITECTURE]->(this10:\`MasterData\`)
+                MATCH (this)-[this9:\`ARCHITECTURE\`]->(this10:\`MasterData\`)
                 WHERE this9.current = $param7
                 CALL {
                     WITH this10
-                    MATCH (this10:\`MasterData\`)-[this11:HAS_NAME]->(this12:\`NameDetails\`)
+                    MATCH (this10:\`MasterData\`)-[this11:\`HAS_NAME\`]->(this12:\`NameDetails\`)
                     WHERE this11.current = $param8
                     WITH { node: { fullName: this12.fullName } } AS edge
                     WITH collect(edge) AS edges

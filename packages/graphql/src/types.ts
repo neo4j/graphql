@@ -143,6 +143,7 @@ export interface BaseField {
     readonly?: boolean;
     writeonly?: boolean;
     dbPropertyName?: string;
+    dbPropertyNameUnescaped?: string;
     unique?: Unique;
 }
 
@@ -151,6 +152,7 @@ export interface BaseField {
  */
 export interface RelationField extends BaseField {
     direction: "OUT" | "IN";
+    typeUnescaped: string;
     type: string;
     connectionPrefix?: string;
     inherited: boolean;
@@ -170,7 +172,7 @@ export interface ConnectionField extends BaseField {
  */
 export interface CypherField extends BaseField {
     statement: string;
-    columnName?: string;
+    columnName: string;
     isEnum: boolean;
     isScalar: boolean;
 }
@@ -202,7 +204,7 @@ export interface UnionField extends BaseField {
 }
 
 export interface CustomResolverField extends BaseField {
-    requiredFields: string[];
+    requiredFields: Record<string, ResolveTree>;
 }
 
 export interface InterfaceField extends BaseField {

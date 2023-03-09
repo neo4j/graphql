@@ -185,7 +185,7 @@ describe("makeAugmentedSchema", () => {
                 }
 
                 type Query {
-                    movies: [Movie!]! @cypher(statement: "")
+                    movies: [Movie!]! @cypher(statement: "RETURN 5 as a", columnName: "a")
                 }
             `;
 
@@ -208,7 +208,7 @@ describe("makeAugmentedSchema", () => {
                 name: String
             }
 
-            interface ActedIn @auth(rules: [{ operations: [CREATE], roles: ["admin"] }]) {
+            interface ActedIn @auth(rules: [{ operations: [CREATE], roles: ["admin"] }]) @relationshipProperties {
                 screenTime: Int
             }
         `;
@@ -228,7 +228,7 @@ describe("makeAugmentedSchema", () => {
                 name: String
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int @auth(rules: [{ operations: [CREATE], roles: ["admin"] }])
             }
         `;
@@ -246,7 +246,7 @@ describe("makeAugmentedSchema", () => {
                 name: String
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
@@ -266,8 +266,8 @@ describe("makeAugmentedSchema", () => {
                 name: String
             }
 
-            interface ActedIn {
-                id: ID @cypher(statement: "RETURN id(this)")
+            interface ActedIn @relationshipProperties {
+                id: ID @cypher(statement: "RETURN id(this) as id", columnName: "id")
                 roles: [String]
             }
         `;
@@ -285,7 +285,7 @@ describe("makeAugmentedSchema", () => {
                             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
 
-                        interface ActedIn {
+                        interface ActedIn @relationshipProperties {
                             node: ID
                         }
 
@@ -306,7 +306,7 @@ describe("makeAugmentedSchema", () => {
                             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
 
-                        interface ActedIn {
+                        interface ActedIn @relationshipProperties {
                             cursor: ID
                         }
 
@@ -334,7 +334,7 @@ describe("makeAugmentedSchema", () => {
                     name: String
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     id: ID @unique
                     roles: [String]
                 }

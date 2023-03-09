@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { graphql, GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
@@ -46,8 +47,8 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
               leadActorsCount: Int! @cypher(statement:"""
                 MATCH (this)<-[rel:ACTED_IN]-(a:${actorType.name})
                 WHERE rel.isLead = true
-                RETURN count(a)
-              """)
+                RETURN count(a) as result
+              """, columnName: "result")
           }
 
           type ${actorType.name} {

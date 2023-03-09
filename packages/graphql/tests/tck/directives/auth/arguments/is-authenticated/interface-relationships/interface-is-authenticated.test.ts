@@ -71,7 +71,7 @@ describe("Cypher Auth isAuthenticated", () => {
 
             extend type User {
                 history: [History]
-                    @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
+                    @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h", columnName: "h")
                     @auth(rules: [{ operations: [READ], isAuthenticated: true }])
             }
         `;
@@ -220,10 +220,8 @@ describe("Cypher Auth isAuthenticated", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content0_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            			RETURN count(*) AS _
+            			MERGE (this)-[:\`HAS_CONTENT\`]->(this_connect_content0_node)
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_content0_node
             	RETURN count(*) AS connect_this_connect_content_Comment
@@ -240,10 +238,8 @@ describe("Cypher Auth isAuthenticated", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content1_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content1_node)
-            			RETURN count(*) AS _
+            			MERGE (this)-[:\`HAS_CONTENT\`]->(this_connect_content1_node)
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_content1_node
             	RETURN count(*) AS connect_this_connect_content_Post
@@ -292,7 +288,7 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
+            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:\`HAS_CONTENT\`]->(this_disconnect_content0:Comment)
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -300,13 +296,12 @@ describe("Cypher Auth isAuthenticated", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_content_Comment
             }
             CALL {
             	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
+            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:\`HAS_CONTENT\`]->(this_disconnect_content0:Post)
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -314,7 +309,6 @@ describe("Cypher Auth isAuthenticated", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_content_Post
             }

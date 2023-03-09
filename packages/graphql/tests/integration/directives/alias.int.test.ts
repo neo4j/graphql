@@ -60,7 +60,7 @@ describe("@alias directive", () => {
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 
-            interface AliasDirectiveTestLikesProps {
+            interface AliasDirectiveTestLikesProps @relationshipProperties {
                 comment: String! @alias(property: "dbComment")
                 relationshipCreatedAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }

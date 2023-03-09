@@ -18,7 +18,8 @@
  */
 
 import type { RelationField, Context, PrimitiveField } from "../types";
-import { Neo4jGraphQLError, Node, Relationship } from "../classes";
+import type { Node, Relationship } from "../classes";
+import { Neo4jGraphQLError } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
@@ -94,17 +95,17 @@ export function createConnectOrCreateAndParams({
     });
 
     const wrappedQueries = statements.map((statement) => {
-        const countResult = new Cypher.RawCypher(() => {
-            if (context.subscriptionsEnabled) {
-                return "meta as update_meta";
-            }
-            return "COUNT(*) AS _";
-        });
-        const returnStatement = new Cypher.Return(countResult);
+        let subquery: Cypher.Clause = statement;
+
+        if (context.subscriptionsEnabled) {
+            const susbcriptionsMeta = new Cypher.RawCypher("meta as update_meta");
+            const returnStatement = new Cypher.Return(susbcriptionsMeta);
+            subquery = Cypher.concat(statement, returnStatement);
+        }
+
         const withStatement = new Cypher.With(...withVarsVariables);
-        const callStatement = new Cypher.Call(Cypher.concat(statement, returnStatement)).innerWith(
-            ...withVarsVariables
-        );
+
+        const callStatement = new Cypher.Call(subquery).innerWith(...withVarsVariables);
         const subqueryClause = Cypher.concat(withStatement, callStatement);
         if (context.subscriptionsEnabled) {
             const afterCallWithStatement = new Cypher.With("*", [new Cypher.NamedVariable("update_meta"), "meta"]);
@@ -258,7 +259,7 @@ function mergeStatement({
                 relVariable: relationship.getCypher(env),
                 fromVariable: fromNode.getCypher(env),
                 toVariable: toNode.getCypher(env),
-                typename: relationField.type,
+                typename: relationField.typeUnescaped,
                 fromTypename,
                 toTypename,
             });

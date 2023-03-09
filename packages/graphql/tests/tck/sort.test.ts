@@ -39,8 +39,9 @@ describe("Cypher sort tests", () => {
                     @cypher(
                         statement: """
                         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                        RETURN count(DISTINCT genre)
+                        RETURN count(DISTINCT genre) as result
                         """
+                        columnName: "result"
                     )
             }
 
@@ -51,8 +52,9 @@ describe("Cypher sort tests", () => {
                     @cypher(
                         statement: """
                         MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
-                        RETURN count(DISTINCT movie)
+                        RETURN count(DISTINCT movie) as result
                         """
+                        columnName: "result"
                     )
             }
         `;
@@ -162,8 +164,13 @@ describe("Cypher sort tests", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                    RETURN count(DISTINCT genre) as result
+                }
+                UNWIND result AS this0
                 RETURN head(collect(this0)) AS this0
             }
             WITH *
@@ -171,17 +178,7 @@ describe("Cypher sort tests", () => {
             RETURN this { totalGenres: this0 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
-                }
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("Multi Sort", async () => {
@@ -273,7 +270,7 @@ describe("Cypher sort tests", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:HAS_GENRE]->(this1:\`Genre\`)
+                MATCH (this)-[this0:\`HAS_GENRE\`]->(this1:\`Genre\`)
                 WITH this1 { .name } AS this1
                 ORDER BY this1.name DESC
                 RETURN collect(this1) AS var2
@@ -304,7 +301,7 @@ describe("Cypher sort tests", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:HAS_GENRE]->(this1:\`Genre\`)
+                MATCH (this)-[this0:\`HAS_GENRE\`]->(this1:\`Genre\`)
                 WITH this1 { .name } AS this1
                 ORDER BY this1.name ASC
                 RETURN collect(this1) AS var2
@@ -336,11 +333,16 @@ describe("Cypher sort tests", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:HAS_GENRE]->(this1:\`Genre\`)
+                MATCH (this)-[this0:\`HAS_GENRE\`]->(this1:\`Genre\`)
                 CALL {
                     WITH this1
-                    UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
-                    RETURN count(DISTINCT movie)\\", { this: this1, auth: $auth }) AS this2
+                    CALL {
+                        WITH this1
+                        WITH this1 AS this
+                        MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
+                        RETURN count(DISTINCT movie) as result
+                    }
+                    UNWIND result AS this2
                     RETURN head(collect(this2)) AS this2
                 }
                 WITH this1 { .name, totalMovies: this2 } AS this1
@@ -350,16 +352,6 @@ describe("Cypher sort tests", () => {
             RETURN this { genres: var3 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
-                }
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

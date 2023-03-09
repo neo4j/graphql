@@ -58,6 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
                     }
                     RETURN DISTINCT post AS result ORDER BY result.modifiedDate DESC
                     """
+                    columnName: "result"
                 )
         }
     `;

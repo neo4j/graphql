@@ -176,7 +176,7 @@ function createCreateAndParams({
                                 relVariable: propertiesName,
                                 fromVariable,
                                 toVariable,
-                                typename: relationField.type,
+                                typename: relationField.typeUnescaped,
                                 fromTypename,
                                 toTypename,
                             });

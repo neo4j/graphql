@@ -261,7 +261,7 @@ describe("getRelationshipMeta", () => {
         const result = getRelationshipMeta(field);
 
         expect(result).toMatchObject({
-            type: "ACTED_IN",
+            type: "`ACTED_IN`",
             direction: "IN",
         });
     });

@@ -8,12 +8,8 @@ query TopLevelCypherDirective {
     }
 }
 
-query TopLevelCypherDirectiveWithColumnName {
-    experimentalCustomCypher {
+mutation TopLevelMutationDirective {
+    getCustomUser {
         name
-        born
-        movies {
-            title
-        }
     }
 }

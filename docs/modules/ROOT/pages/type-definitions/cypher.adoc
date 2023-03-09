@@ -3,6 +3,8 @@
 
 The `@cypher` directive binds a GraphQL field to the result(s) of a Cypher query.
 
+This directive can be used both for properties in a type or as top level queries:
+
 == Definition
 
 [source, graphql, indent=0]
@@ -11,37 +13,11 @@ The `@cypher` directive binds a GraphQL field to the result(s) of a Cypher query
 directive @cypher(
     """The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied."""
     statement: String!,
-    """[Experimental] Name of the returned variable from the Cypher statement, if provided, the query will be optimized to improve performance."""
-    columnName: String
+    """Name of the returned variable from the Cypher statement."""
+    columnName: String!
 ) on FIELD_DEFINITION
 ----
 
-== Character Escaping
-
-All double quotes must be _double escaped_ when used in a @cypher directive - once for GraphQL and once for the function in which the Cypher is wrapped. For example, at its simplest:
-
-[source, graphql, indent=0]
-----
-type Example {
-    string: String!
-        @cypher(
-            statement: """
-            RETURN \\"field-level string\\"
-            """
-        )
-}
-
-type Query {
-    string: String!
-        @cypher(
-            statement: """
-            RETURN \\"Query-level string\\"
-            """
-        )
-}
-----
-
-Note the double-backslash (`\\`) before each double quote (`"`).
 
 == Globals
 
@@ -79,7 +55,8 @@ type Query {
         statement: """
         MATCH (user:User {id: $auth.jwt.sub})
         RETURN user
-        """
+        """,
+        columnName: "user"
     )
 }
 ----
@@ -110,13 +87,15 @@ type Query {
     userPosts: [Post] @cypher(statement: """
         MATCH (:User {id: $cypherParams.userId})-[:POSTED]->(p:Post)
         RETURN p
-    """)
+    """, columnName: "p")
 }
 ----
 
 == Return values
 
 The return value of the Cypher statement must be of the same type to which the directive is applied.
+
+The variable should also be aliased with a name that must be the same as the named passed to `columnName`, this can be the name of a node or relationship query or an alias in the `RETURN` statement of the cypher.
 
 === Scalar values
 
@@ -125,7 +104,7 @@ The Cypher statement must return a value which matches the scalar type to which 
 [source, graphql, indent=0]
 ----
 type Query {
-    randomNumber: Int @cypher(statement: "RETURN rand()")
+    randomNumber: Int @cypher(statement: "RETURN rand() as result", columnName: "result")
 }
 ----
 
@@ -145,7 +124,8 @@ type Query {
             statement: """
             MATCH (u:User)
             RETURN u
-            """
+            """,
+            columnName: "u"
         )
 }
 ----
@@ -161,41 +141,12 @@ type Query {
         MATCH (u:User)
         RETURN {
             id: u.id
-        }
-    """)
+        } as result
+    """, columnName: "result")
 }
 ----
 
 The downside of the latter approach is that you will need to adjust the return object as you change your object type definition.
-
-== columnName
-
-The `columName` argument will change the translation of custom Cypher. Instead of using https://neo4j.com/labs/apoc/4.0/overview/apoc.cypher/apoc.cypher.runFirstColumnMany/[apoc.cypher.runFirstColumnMany] it will directly wrap the query within a `CALL { }` subquery. This behvaiour has proven to be much more performant for the same queries.
-
-
-`columnName` should be the name of the returned variable to be used in the rest of the query. For example:
-
-The graphql query:
-[source, graphql, indent=0]
-----
-type query {
-    test: String! @cypher(statement: "MATCH(m:Movie) RETURN m", columnName: "m")
-}
-----
-
-Would get translated to:
-[source,cypher, indent=0]
-----
-CALL {
-    MATCH(m:Movie) RETURN m
-}
-WITH m AS this
-RETURN this
-----
-
-Additionally, escaping strings is no longer needed when `columName` is set.
-
-NOTE: This alternative behaviour may lead to unexpected changes, mainly if using Neo4j 5.x, where subqueries need to be _aliased_.
 
 == Usage examples
 
@@ -225,7 +176,8 @@ type Movie {
             MATCH (this)<-[:ACTED_IN]-(:Actor)-[:ACTED_IN]->(rec:Movie)
             WITH rec, COUNT(*) AS score ORDER BY score DESC
             RETURN rec LIMIT $limit
-            """
+            """,
+            columnName: "rec"
         )
 }
 ----
@@ -247,7 +199,8 @@ type Query {
             statement: """
             MATCH (a:Actor)
             RETURN a
-            """
+            """,
+            columnName: "a"
         )
 }
 ----
@@ -269,7 +222,8 @@ type Mutation {
             statement: """
             CREATE (a:Actor {name: $name})
             RETURN a
-            """
+            """,
+            columnName: "a"
         )
 }
 ----

@@ -47,7 +47,7 @@ describe("369", () => {
                 dependeFrom: [Dato!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
             }
 
-            interface Depende {
+            interface Depende @relationshipProperties {
                 uuid: ID
             }
 
@@ -57,6 +57,7 @@ describe("369", () => {
                         statement: """
                         MATCH (d:Dato {uuid: $uuid}) RETURN d
                         """
+                        columnName: "d"
                     )
             }
         `;
@@ -131,7 +132,7 @@ describe("369", () => {
                 dependeFrom: [Dato!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
             }
 
-            interface Depende {
+            interface Depende @relationshipProperties {
                 uuid: ID
             }
 
@@ -141,6 +142,7 @@ describe("369", () => {
                         statement: """
                         MATCH (d:Dato {uuid: $uuid}) RETURN d
                         """
+                        columnName: "d"
                     )
             }
         `;

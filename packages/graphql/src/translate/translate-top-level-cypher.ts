@@ -162,26 +162,20 @@ export function translateTopLevelCypher({
 
     params = { ...params, ...apocParams.params };
 
-    const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
-
     if (type === "Query") {
-        if (field.columnName) {
-            const experimentalCypherStatement = createCypherDirectiveSubquery({
-                field,
-            });
-            cypherStrs.push(...experimentalCypherStatement);
-        } else {
-            const legacyCypherStatement = createCypherDirectiveApocProcedure({
-                field,
-                apocParams: apocParamsStr,
-            });
-            cypherStrs.push(...legacyCypherStatement);
-        }
+        const cypherStatement = createCypherDirectiveSubquery({
+            field,
+        });
+        cypherStrs.push(...cypherStatement);
     } else {
+        const columnName = field.columnName;
         cypherStrs.push(`
-            CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value
-            WITH [k in keys(value) | value[k]][0] AS this
-            `);
+            CALL {
+                ${statement}
+            }
+            WITH ${columnName} AS this
+        
+        `);
     }
 
     if (unionWhere.length) {
@@ -211,27 +205,6 @@ export function translateTopLevelCypher({
         }
         return [cypherStrs.join("\n"), params];
     }).build();
-}
-
-function createCypherDirectiveApocProcedure({
-    field,
-    apocParams,
-}: {
-    field: CypherField;
-    apocParams: string;
-}): string[] {
-    const isArray = field.typeMeta.array;
-    const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
-    const cypherStrs: string[] = [];
-
-    if (expectMultipleValues) {
-        cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${field.statement}", ${apocParams}) as x`);
-    } else {
-        cypherStrs.push(`WITH apoc.cypher.runFirstColumnSingle("${field.statement}", ${apocParams}) as x`);
-    }
-
-    cypherStrs.push("UNWIND x as this\nWITH this");
-    return cypherStrs;
 }
 
 function createCypherDirectiveSubquery({ field }: { field: CypherField }): string[] {

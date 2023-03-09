@@ -38,6 +38,7 @@ describe("Cypher directive", () => {
                         MATCH (m:Movie {title: $title})
                         RETURN m
                         """
+                        columnName: "m"
                     )
 
                 tvShows(title: String): [Movie]
@@ -46,6 +47,7 @@ describe("Cypher directive", () => {
                         MATCH (t:TVShow {title: $title})
                         RETURN t
                         """
+                        columnName: "t"
                     )
 
                 movieOrTVShow(title: String): [MovieOrTVShow]
@@ -55,13 +57,15 @@ describe("Cypher directive", () => {
                         WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
                         RETURN n
                         """
+                        columnName: "n"
                     )
 
                 randomNumber: Int
                     @cypher(
                         statement: """
-                        RETURN rand()
+                        RETURN rand() as res
                         """
+                        columnName: "res"
                     )
             }
 
@@ -77,6 +81,7 @@ describe("Cypher directive", () => {
                         MATCH (a:Actor)
                         RETURN a
                         """
+                        columnName: "a"
                     )
                 topActor: Actor
                     @cypher(
@@ -84,6 +89,7 @@ describe("Cypher directive", () => {
                         MATCH (a:Actor)
                         RETURN a
                         """
+                        columnName: "a"
                     )
             }
 
@@ -96,6 +102,7 @@ describe("Cypher directive", () => {
                         MATCH (a:Actor)
                         RETURN a
                         """
+                        columnName: "a"
                     )
                 topActor: Actor
                     @cypher(
@@ -103,6 +110,7 @@ describe("Cypher directive", () => {
                         MATCH (a:Actor)
                         RETURN a
                         """
+                        columnName: "a"
                     )
             }
         `;
@@ -134,21 +142,19 @@ describe("Cypher directive", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                RETURN a\\", { this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (a:Actor)
+                    RETURN a
+                }
+                WITH a AS this0
                 RETURN head(collect(this0 { .name })) AS this0
             }
             RETURN this { .title, topActor: this0 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("Simple directive (primitive)", async () => {
@@ -169,20 +175,18 @@ describe("Cypher directive", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    RETURN rand() as res
+                }
+                UNWIND res AS this0
                 RETURN head(collect(this0)) AS this0
             }
             RETURN this { randomNumber: this0 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("LIMIT happens before custom Cypher if not sorting on the custom Cypher field", async () => {
@@ -205,7 +209,12 @@ describe("Cypher directive", () => {
             LIMIT $param0
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    RETURN rand() as res
+                }
+                UNWIND res AS this0
                 RETURN head(collect(this0)) AS this0
             }
             RETURN this { randomNumber: this0 } AS this"
@@ -216,10 +225,6 @@ describe("Cypher directive", () => {
                 \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
                 }
             }"
         `);
@@ -243,24 +248,25 @@ describe("Cypher directive", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    RETURN rand() as res
+                }
+                UNWIND res AS this0
                 RETURN head(collect(this0)) AS this0
             }
             WITH *
             ORDER BY this0 ASC
-            LIMIT $param1
+            LIMIT $param0
             RETURN this { randomNumber: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param1\\": {
+                \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
                 }
             }"
         `);
@@ -290,12 +296,22 @@ describe("Cypher directive", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                RETURN a\\", { this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (a:Actor)
+                    RETURN a
+                }
+                WITH a AS this0
                 CALL {
                     WITH this0
-                    UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-                    RETURN m\\", { title: $param1, this: this0, auth: $auth }) AS this1
+                    CALL {
+                        WITH this0
+                        WITH this0 AS this
+                        MATCH (m:Movie {title: $param0})
+                        RETURN m
+                    }
+                    WITH m AS this1
                     RETURN collect(this1 { .title }) AS this1
                 }
                 RETURN head(collect(this0 { .name, movies: this1 })) AS this0
@@ -305,11 +321,7 @@ describe("Cypher directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param1\\": \\"some title\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"param0\\": \\"some title\\"
             }"
         `);
     });
@@ -344,20 +356,40 @@ describe("Cypher directive", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                RETURN a\\", { this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (a:Actor)
+                    RETURN a
+                }
+                WITH a AS this0
                 CALL {
                     WITH this0
-                    UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-                    RETURN m\\", { title: $param1, this: this0, auth: $auth }) AS this1
+                    CALL {
+                        WITH this0
+                        WITH this0 AS this
+                        MATCH (m:Movie {title: $param0})
+                        RETURN m
+                    }
+                    WITH m AS this1
                     CALL {
                         WITH this1
-                        UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                        RETURN a\\", { this: this1, auth: $auth }) AS this2
+                        CALL {
+                            WITH this1
+                            WITH this1 AS this
+                            MATCH (a:Actor)
+                            RETURN a
+                        }
+                        WITH a AS this2
                         CALL {
                             WITH this2
-                            UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-                            RETURN m\\", { title: $param4, this: this2, auth: $auth }) AS this3
+                            CALL {
+                                WITH this2
+                                WITH this2 AS this
+                                MATCH (m:Movie {title: $param1})
+                                RETURN m
+                            }
+                            WITH m AS this3
                             RETURN collect(this3 { .title }) AS this3
                         }
                         RETURN head(collect(this2 { .name, movies: this3 })) AS this2
@@ -371,12 +403,8 @@ describe("Cypher directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param1\\": \\"some title\\",
-                \\"param4\\": \\"another title\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"param0\\": \\"some title\\",
+                \\"param1\\": \\"another title\\"
             }"
         `);
     });
@@ -405,12 +433,22 @@ describe("Cypher directive", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                RETURN a\\", { this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (a:Actor)
+                    RETURN a
+                }
+                WITH a AS this0
                 CALL {
                     WITH this0
-                    UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-                    RETURN m\\", { title: $param1, this: this0, auth: $auth }) AS this1
+                    CALL {
+                        WITH this0
+                        WITH this0 AS this
+                        MATCH (m:Movie {title: $param0})
+                        RETURN m
+                    }
+                    WITH m AS this1
                     RETURN collect(this1 { .title }) AS this1
                 }
                 RETURN head(collect(this0 { .name, movies: this1 })) AS this0
@@ -420,11 +458,7 @@ describe("Cypher directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param1\\": \\"some title\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"param0\\": \\"some title\\"
             }"
         `);
     });
@@ -466,29 +500,49 @@ describe("Cypher directive", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (n)
-                WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
-                RETURN n\\", { title: $param0, this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (n)
+                    WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
+                    RETURN n
+                }
+                WITH n AS this0
                 WITH *
                 WHERE (this0:\`Movie\` OR this0:\`TVShow\`)
                 WITH *, this0 AS this1
                 CALL {
                     WITH this1
-                    UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                    RETURN a\\", { this: this1, auth: $auth }) AS this2
+                    CALL {
+                        WITH this1
+                        WITH this1 AS this
+                        MATCH (a:Actor)
+                        RETURN a
+                    }
+                    WITH a AS this2
                     RETURN head(collect(this2 { .name, .year })) AS this2
                 }
                 CALL {
                     WITH this1
-                    UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (a:Actor)
-                    RETURN a\\", { this: this1, auth: $auth }) AS this3
+                    CALL {
+                        WITH this1
+                        WITH this1 AS this
+                        MATCH (a:Actor)
+                        RETURN a
+                    }
+                    WITH a AS this3
                     RETURN collect(this3 { .name }) AS this3
                 }
                 WITH *, this0 AS this4
                 CALL {
                     WITH this4
-                    UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
-                    RETURN a\\", { this: this4, auth: $auth }) AS this5
+                    CALL {
+                        WITH this4
+                        WITH this4 AS this
+                        MATCH (a:Actor)
+                        RETURN a
+                    }
+                    WITH a AS this5
                     RETURN head(collect(this5 { .name })) AS this5
                 }
                 RETURN collect(CASE
@@ -501,11 +555,7 @@ describe("Cypher directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"some title\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"param0\\": \\"some title\\"
             }"
         `);
     });
@@ -530,9 +580,14 @@ describe("Cypher directive", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (n)
-                WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
-                RETURN n\\", { title: $param0, this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (n)
+                    WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
+                    RETURN n
+                }
+                WITH n AS this0
                 WITH *
                 WHERE (this0:\`Movie\` OR this0:\`TVShow\`)
                 RETURN collect(CASE
@@ -545,11 +600,7 @@ describe("Cypher directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"some title\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"param0\\": \\"some title\\"
             }"
         `);
     });
@@ -573,7 +624,8 @@ describe("Cypher directive", () => {
                             statement: """
                             MATCH (m:Movie {title: $title})
                             RETURN m
-                            """
+                            """,
+                            columnName: "m"
                         )
                 }
             `;
@@ -597,13 +649,14 @@ describe("Cypher directive", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "WITH apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-                RETURN m\\", {auth: $auth, title: $title}) as x
-                UNWIND x as this
-                WITH this
+                "CALL {
+                MATCH (m:Movie {title: $title})
+                RETURN m
+                }
+                WITH m as this
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                    MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                     WITH this1 { .name } AS this1
                     RETURN collect(this1) AS var2
                 }
@@ -671,7 +724,7 @@ describe("Cypher directive", () => {
                 WITH m as this
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                    MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                     WITH this1 { .name } AS this1
                     RETURN collect(this1) AS var2
                 }
@@ -743,7 +796,7 @@ describe("Cypher directive", () => {
                     WITH m AS this0
                     CALL {
                         WITH this0
-                        MATCH (this0)<-[this1:ACTED_IN]-(this2:\`Actor\`)
+                        MATCH (this0)<-[this1:\`ACTED_IN\`]-(this2:\`Actor\`)
                         WITH this2 { .name } AS this2
                         RETURN collect(this2) AS var3
                     }

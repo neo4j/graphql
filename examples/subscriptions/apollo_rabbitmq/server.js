@@ -40,7 +40,7 @@ const plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
 });
 
 //Alternatively, we can remove the AMQP server if we are only using a development server
-// const plugin = new new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
+// const plugin = new Neo4jGrapghQLSubscriptionsSingleInstancePlugin();
 
 if (!process.argv[2]) throw new Error("Usage node server.js [port]");
 

@@ -197,7 +197,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             	strProp: String!
             }
 
-            type TestLabel2 @node(additionalLabels: [\\"TestLabel3\\"]) {
+            type TestLabel2 @node(labels: [\\"TestLabel2\\", \\"TestLabel3\\"]) {
             	singleProp: BigInt!
             }"
         `);
@@ -227,11 +227,11 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type Test_Label @node(label: \\"Test\`Label\\") {
+            "type Test_Label @node(labels: [\\"Test\`Label\\"]) {
             	strProp: String!
             }
 
-            type Test_Label2 @node(label: \\"Test-Label\\") {
+            type Test_Label2 @node(labels: [\\"Test-Label\\"]) {
             	singleProp: BigInt!
             }"
         `);
@@ -256,7 +256,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type _2number @node(label: \\"2number\\") {
+            "type _2number @node(labels: [\\"2number\\"]) {
             	prop: BigInt!
             }"
         `);
@@ -380,7 +380,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
             	strProp: String!
             }
 
-            type TestLabel2 @node(additionalLabels: [\\"TestLabel3\\"]) @exclude(operations: [CREATE, DELETE, UPDATE]) {
+            type TestLabel2 @node(labels: [\\"TestLabel2\\", \\"TestLabel3\\"]) @exclude(operations: [CREATE, DELETE, UPDATE]) {
             	singleProp: BigInt!
             }"
         `);

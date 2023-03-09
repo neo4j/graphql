@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
                 manufacturer: Series @relationship(type: "HAS_MANUFACTURER", direction: OUT, properties: "Properties")
             }
 
-            interface Properties {
+            interface Properties @relationshipProperties {
                 current: Boolean
             }
         `;
@@ -95,16 +95,16 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (single(this1 IN [(this)-[this0:HAS_MANUFACTURER]->(this1:\`Series\`) WHERE (this0.current = $param0 AND this1.name = $param1) | 1] WHERE true) OR single(this3 IN [(this)-[this2:HAS_BRAND]->(this3:\`Series\`) WHERE (this2.current = $param2 AND this3.name = $param3) | 1] WHERE true))
+            WHERE (single(this1 IN [(this)-[this0:\`HAS_MANUFACTURER\`]->(this1:\`Series\`) WHERE (this0.current = $param0 AND this1.name = $param1) | 1] WHERE true) OR single(this3 IN [(this)-[this2:\`HAS_BRAND\`]->(this3:\`Series\`) WHERE (this2.current = $param2 AND this3.name = $param3) | 1] WHERE true))
             CALL {
                 WITH this
-                MATCH (this)-[this4:HAS_BRAND]->(this5:\`Series\`)
+                MATCH (this)-[this4:\`HAS_BRAND\`]->(this5:\`Series\`)
                 WITH this5 { .name } AS this5
                 RETURN head(collect(this5)) AS var6
             }
             CALL {
                 WITH this
-                MATCH (this)-[this7:HAS_MANUFACTURER]->(this8:\`Series\`)
+                MATCH (this)-[this7:\`HAS_MANUFACTURER\`]->(this8:\`Series\`)
                 WITH this8 { .name } AS this8
                 RETURN head(collect(this8)) AS var9
             }

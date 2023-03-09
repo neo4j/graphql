@@ -73,7 +73,7 @@ describe("Subscriptions connect with create", () => {
                 year: Int!
             }
             
-            interface Review {
+            interface Review @relationshipProperties {
                 score: Int!
             }
         

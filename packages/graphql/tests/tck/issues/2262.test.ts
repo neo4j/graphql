@@ -75,10 +75,10 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
             WHERE this.uuid = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:OUTPUT]-(this1:\`Process\`)
+                MATCH (this)<-[this0:\`OUTPUT\`]-(this1:\`Process\`)
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Process\`)<-[this2:INPUT]-(this3:\`Component\`)
+                    MATCH (this1:\`Process\`)<-[this2:\`INPUT\`]-(this3:\`Component\`)
                     WITH this2, this3
                     ORDER BY this3.uuid DESC
                     WITH { node: { uuid: this3.uuid } } AS edge

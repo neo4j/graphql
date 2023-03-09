@@ -60,7 +60,7 @@ describe("Cypher Auth isAuthenticated", () => {
 
             extend type User {
                 history: [History]
-                    @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
+                    @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h", columnName: "h")
                     @auth(rules: [{ operations: [READ], isAuthenticated: true }])
             }
         `;
@@ -178,7 +178,12 @@ describe("Cypher Auth isAuthenticated", () => {
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h\\", { this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h
+                }
+                WITH h AS this0
                 RETURN collect(this0 { .url }) AS this0
             }
             RETURN this { history: this0 } AS this"
@@ -437,10 +442,8 @@ describe("Cypher Auth isAuthenticated", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_posts0_node
-            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-            			RETURN count(*) AS _
+            			MERGE (this)-[:\`HAS_POST\`]->(this_connect_posts0_node)
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_posts0_node
             	RETURN count(*) AS connect_this_connect_posts_Post
@@ -489,7 +492,7 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
+            OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:\`HAS_POST\`]->(this_disconnect_posts0:Post)
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -497,7 +500,6 @@ describe("Cypher Auth isAuthenticated", () => {
             	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }

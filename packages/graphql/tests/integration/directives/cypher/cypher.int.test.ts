@@ -79,7 +79,8 @@ describe("cypher", () => {
                                 statement: """
                                 MATCH (m:${Movie} {title: $title})
                                 RETURN m
-                                """
+                                """,
+                                columnName: "m"
                             )
                     }
                 `;
@@ -150,7 +151,7 @@ describe("cypher", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                        """
+                        """, columnName: "m"
                         )
                     }
                 `;
@@ -221,7 +222,7 @@ describe("cypher", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                            """)
+                            """, columnName: "m")
                     }
                 `;
 
@@ -306,7 +307,8 @@ describe("cypher", () => {
                             MATCH (m:${Movie})
                             WHERE m.title in $titles
                             RETURN m
-                            """
+                            """,
+                            columnName: "m"
                             )
                     }
                 `;
@@ -404,7 +406,8 @@ describe("cypher", () => {
                                 MATCH (m:${Movie})
                                 WHERE m.title = $title
                                 RETURN m
-                                """
+                                """,
+                                columnName: "m"
                             )
                     }
                 `;
@@ -506,7 +509,8 @@ describe("cypher", () => {
                                 statement: """
                                 MATCH (m:${Movie} {title: $title})
                                 RETURN m
-                                """
+                                """,
+                                columnName: "m"
                             )
                     }
                 `;
@@ -577,7 +581,8 @@ describe("cypher", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                            """)
+                            """,
+                            columnName: "m")
                     }
                 `;
 
@@ -647,7 +652,8 @@ describe("cypher", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                            """)
+                            """,
+                            columnName: "m")
                     }
                 `;
 
@@ -709,7 +715,7 @@ describe("cypher", () => {
                     id: ID!
                     preposition(caseName: String${
                         withDefaultValue ? "= null" : ""
-                    }): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}')")
+                    }): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}') as result", columnName: "result")
                 }
 
                 type Query {
@@ -717,7 +723,8 @@ describe("cypher", () => {
                         MATCH (town:Town {id:$id})
                         OPTIONAL MATCH (town)<-[:BELONGS_TO]-(destination:Destination)
                         RETURN destination
-                    """)
+                    """,
+                    columnName: "destination")
                 }
             `;
 
@@ -858,7 +865,8 @@ describe("cypher", () => {
                             MATCH (this:User)-[:WROTE]->(wrote:Post)
                             RETURN wrote
                             LIMIT 5
-                            """
+                            """,
+                            columnName: "wrote"
                         )
                 }
             `;

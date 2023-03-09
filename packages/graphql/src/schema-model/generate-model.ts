@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import {
+import type {
     DirectiveNode,
     DocumentNode,
     FieldDefinitionNode,
-    Kind,
     ObjectTypeDefinitionNode,
     UnionTypeDefinitionNode,
     ValueNode,
 } from "graphql";
+import { Kind } from "graphql";
 import { SCALAR_TYPES } from "../constants";
 import { getDefinitionNodes } from "../schema/get-definition-nodes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
@@ -93,16 +93,10 @@ function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteE
 }
 
 function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments: Record<string, unknown>): string[] {
-    // TODO: use when removing label & additionalLabels
-    // const nodeExplicitLabels = nodeDirectiveArguments.labels as string[];
-    // return nodeExplicitLabels ?? [definition.name.value];
     if ((nodeDirectiveArguments.labels as string[] | undefined)?.length) {
         return nodeDirectiveArguments.labels as string[];
     }
-    const nodeLabel = nodeDirectiveArguments.label as string | undefined;
-    const additionalLabels = (nodeDirectiveArguments.additionalLabels || []) as string[];
-    const label = nodeLabel || definition.name.value;
-    return [label, ...additionalLabels];
+    return [definition.name.value];
 }
 
 function generateField(field: FieldDefinitionNode): Attribute | undefined {

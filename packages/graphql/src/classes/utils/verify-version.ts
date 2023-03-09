@@ -17,26 +17,13 @@
  * limitations under the License.
  */
 
-import { MIN_VERSIONS } from "../../constants";
+import { MIN_NEO4J_VERSION } from "../../constants";
 import type { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
 
 export function verifyVersion(dbInfo: Neo4jDatabaseInfo): void {
     if (!dbInfo.toString().includes("aura")) {
-        const minimumVersions = MIN_VERSIONS.find(({ majorMinor }) => dbInfo.toString().startsWith(majorMinor));
-
-        if (!minimumVersions) {
-            // If new major/minor version comes out, this will stop error being thrown
-            if (dbInfo.lt(MIN_VERSIONS[0].neo4j)) {
-                throw new Error(
-                    `Expected Neo4j version '${
-                        MIN_VERSIONS[0].majorMinor
-                    }' or greater, received: '${dbInfo.toString()}'`
-                );
-            }
-        } else if (dbInfo.lt(minimumVersions.neo4j)) {
-            throw new Error(
-                `Expected minimum Neo4j version: '${minimumVersions.neo4j}' received: '${dbInfo.toString()}'`
-            );
+        if (dbInfo.lt(MIN_NEO4J_VERSION)) {
+            throw new Error(`Expected minimum Neo4j version: '${MIN_NEO4J_VERSION}', received: '${dbInfo.toString()}'`);
         }
     }
 }

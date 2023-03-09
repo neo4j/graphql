@@ -43,6 +43,10 @@ interface UserLivesInProperties @relationshipProperties {
 }
 ----
 
+==== Properties are automatically escaped
+
+The property in aliases are automatically escaped (wrapped with backticks ``), so there's no need to add escape characters around them.
+
 [[type-definitions-plural]]
 == `@plural`
 
@@ -72,12 +76,6 @@ The same is applied to other operations such as `createTechs`. Note that databas
 [[type-definitions-node]]
 == `@node`
 
-NOTE: The plural argument has been deprecated and will be removed in version 4.0.
-Please use the xref::type-definitions/database-mapping.adoc#type-definitions-plural[`@plural` directive] instead.
-
-NOTE: The label and additionalLabels arguments of the `@node` directive have been deprecated and will be removed in version 4.0.
-Please use the xref::type-definitions/database-mapping.adoc#_labels[`labels argument`] instead.
-
 The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
 
 === Definition
@@ -88,12 +86,6 @@ The `@node` directive is used to specify the configuration of a GraphQL object t
 directive @node(
     """Map the GraphQL type to match Neo4j node labels"""
     labels: [String]
-    """Map the GraphQL type to a custom Neo4j node label"""
-    label: String
-    """Map the GraphQL type to match additional Neo4j node labels"""
-    additionalLabels: [String]
-    """Allows for the specification of the plural of the type name."""
-    plural: String
 ) on OBJECT
 ----
 
@@ -168,45 +160,12 @@ type Dog @node(labels: ["K9", "Dog"]) {
 }
 ----
 
-==== `label`
-
-NOTE: The label and additionalLabels arguments of the `@node` directive have been deprecated and will be removed in version 4.0.
-Please use the xref::type-definitions/database-mapping.adoc#_labels[`labels argument`] instead.
-
-The parameter `label` defines the label to be used in Neo4j instead of the GraphQL type name:
-
-[source, graphql, indent=0]
-----
-type Movie @node(label: "Film") {
-    title: String!
-}
-----
-
-This way, the following query:
-
-[source, graphql, indent=0]
-----
-{
-  movies {
-    title
-  }
-}
-----
-
-Generates the cypher query:
-
-[source, cypher, indent=0]
-----
-MATCH (this: Film)
-RETURN this { .title } as this
-----
-
 ===== Using `$jwt` and `$context`
 In some cases, we may want to generate dynamic labels depending on the user requesting. In these cases, we can use the variable `$jwt` to define a custom label define in the JWT (similarly to how it is used in the xref::auth/index.adoc[`@auth` directive]):
 
 [source, graphql, indent=0]
 ----
-type User @node(label: "$jwt.username") {
+type User @node(labels: ["$jwt.username"]) {
     name: String!
 }
 ----
@@ -234,7 +193,7 @@ Similarly, context values can be passed directly:
 
 [source, graphql, indent=0]
 ----
-type User @node(label: "$context.appId") {
+type User @node(label: ["$context.appId"]) {
     name: String!
 }
 ----
@@ -250,88 +209,3 @@ neoSchema.getSchema().then((schema) => {
     });
 })
 ----
-
-==== `additionalLabels`
-
-NOTE: The label and additionalLabels arguments of the `@node` directive have been deprecated and will be removed in version 4.0.
-Please use the xref::type-definitions/database-mapping.adoc#_labels[`labels argument`] instead.
-
-`additionalLabels` lets you define extra Neo4j labels that need to exist on the node for that GraphQL type.
-
-[source, graphql, indent=0]
-----
-type Actor @node(additionalLabels: ["Person", "User"]) {
-    name: String!
-}
-----
-
-The following query:
-
-[source, graphql, indent=0]
-----
-{
-  Actor {
-    name
-  }
-}
-----
-
-Generates the following cypher query, with the labels `Actor`, `Person` and `User`:
-
-[source, cypher, indent=0]
-----
-MATCH (this:Actor:Person:User)
-RETURN this { .name } as this
-----
-
-Note that `additionalLabels` can be used along with `label`:
-
-[source, graphql, indent=0]
-----
-type Actor @node(label: "ActorDB", additionalLabels: ["Person"]) {
-    name: String!
-}
-----
-
-In this case, the resulting Cypher query will use the labels `ActorDB` and `Person` instead of `Actor`:
-
-----
-MATCH (this:ActorDB:Person)
-RETURN this { .name } as this
-----
-<<#_using_jwt_and_context,Context and JWT variables>> can be used with `additionalLabels` in the same fashion as in `label`:
-
-[source, graphql, indent=0]
-----
-type User @node(additionalLabels: ["$jwt.username"]) {
-    name: String!
-}
-----
-
-==== `plural`
-
-NOTE: The plural argument has been deprecated and will be removed in version 4.0.
-Please use the xref::type-definitions/database-mapping.adoc#type-definitions-plural[`@plural` directive] instead.
-
-The parameter `plural` redefines how to compose the plural of the type for the generated operations. This is particularly
-useful for types that are not correctly pluralized or are non-English words.
-
-[source, graphql, indent=0]
-----
-type Tech @node(plural: "Techs") {
-  name: String
-}
-----
-
-This way, instead of the wrongly generated `teches`, the type is properly written as `techs`:
-
-[source, graphql, indent=0]
-----
-{
-  techs {
-    title
-  }
-}
-----
-
-The same is applied to other operations such as `createTechs`. Note that database labels will not change.

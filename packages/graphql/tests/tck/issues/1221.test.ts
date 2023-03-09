@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 fullName: String!
             }
 
-            interface RelationProps {
+            interface RelationProps @relationshipProperties {
                 current: Boolean!
             }
 
@@ -86,14 +86,14 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (this.current = $param0 AND single(this1 IN [(this)-[this3:ARCHITECTURE]->(this1:\`MasterData\`) WHERE single(this0 IN [(this1)-[this2:HAS_NAME]->(this0:\`NameDetails\`) WHERE this0.fullName = $param1 | 1] WHERE true) | 1] WHERE true))
+            WHERE (this.current = $param0 AND single(this1 IN [(this)-[this3:\`ARCHITECTURE\`]->(this1:\`MasterData\`) WHERE single(this0 IN [(this1)-[this2:\`HAS_NAME\`]->(this0:\`NameDetails\`) WHERE this0.fullName = $param1 | 1] WHERE true) | 1] WHERE true))
             CALL {
                 WITH this
-                MATCH (this)-[this4:ARCHITECTURE]->(this5:\`MasterData\`)
+                MATCH (this)-[this4:\`ARCHITECTURE\`]->(this5:\`MasterData\`)
                 WHERE this4.current = $param2
                 CALL {
                     WITH this5
-                    MATCH (this5:\`MasterData\`)-[this6:HAS_NAME]->(this7:\`NameDetails\`)
+                    MATCH (this5:\`MasterData\`)-[this6:\`HAS_NAME\`]->(this7:\`NameDetails\`)
                     WHERE this6.current = $param3
                     WITH { node: { fullName: this7.fullName } } AS edge
                     WITH collect(edge) AS edges
@@ -137,7 +137,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 fullName: String!
             }
 
-            interface RelationProps {
+            interface RelationProps @relationshipProperties {
                 current: Boolean!
             }
 
@@ -194,21 +194,21 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Main\`)
-            WHERE (this.current = $param0 AND single(this0 IN [(this)-[this5:MAIN]->(this0:\`Series\`) WHERE EXISTS {
-                MATCH (this0)-[this1:ARCHITECTURE]->(this2:\`MasterData\`)
-                WHERE single(this3 IN [(this2)-[this4:HAS_NAME]->(this3:\`NameDetails\`) WHERE this3.fullName = $param1 | 1] WHERE true)
+            WHERE (this.current = $param0 AND single(this0 IN [(this)-[this5:\`MAIN\`]->(this0:\`Series\`) WHERE EXISTS {
+                MATCH (this0)-[this1:\`ARCHITECTURE\`]->(this2:\`MasterData\`)
+                WHERE single(this3 IN [(this2)-[this4:\`HAS_NAME\`]->(this3:\`NameDetails\`) WHERE this3.fullName = $param1 | 1] WHERE true)
             } | 1] WHERE true))
             CALL {
                 WITH this
-                MATCH (this)-[this6:MAIN]->(this7:\`Series\`)
+                MATCH (this)-[this6:\`MAIN\`]->(this7:\`Series\`)
                 WHERE this6.current = $param2
                 CALL {
                     WITH this7
-                    MATCH (this7:\`Series\`)-[this8:ARCHITECTURE]->(this9:\`MasterData\`)
+                    MATCH (this7:\`Series\`)-[this8:\`ARCHITECTURE\`]->(this9:\`MasterData\`)
                     WHERE this8.current = $param3
                     CALL {
                         WITH this9
-                        MATCH (this9:\`MasterData\`)-[this10:HAS_NAME]->(this11:\`NameDetails\`)
+                        MATCH (this9:\`MasterData\`)-[this10:\`HAS_NAME\`]->(this11:\`NameDetails\`)
                         WHERE this10.current = $param4
                         WITH { node: { fullName: this11.fullName } } AS edge
                         WITH collect(edge) AS edges

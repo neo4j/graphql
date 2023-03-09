@@ -836,8 +836,8 @@ function makeAugmentedSchema(
     }
 
     ["Mutation", "Query"].forEach((type) => {
-        const objectComposer = composer[type] as ObjectTypeComposer;
-        const cypherType = customResolvers[`customCypher${type}`] as ObjectTypeDefinitionNode;
+        const objectComposer: ObjectTypeComposer = composer[type];
+        const cypherType: ObjectTypeDefinitionNode = customResolvers[`customCypher${type}`];
 
         if (cypherType) {
             const objectFields = getObjFieldMeta({
@@ -911,7 +911,7 @@ function makeAugmentedSchema(
 
     let parsedDoc = parse(generatedTypeDefs);
 
-    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
+    function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
         return "name" in x;
     }
 
@@ -929,7 +929,7 @@ function makeAugmentedSchema(
         );
     }
 
-    const documentNames = new Set(parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value));
+    const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));
     const resolveMethods = getResolveAndSubscriptionMethods(composer);
 
     const generatedResolveMethods: Record<string, any> = {};

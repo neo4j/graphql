@@ -42,9 +42,7 @@ export class MapExpr implements CypherCompilable {
         }
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         return serializeMap(env, this.value);
     }

@@ -1,0 +1,22 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "graphql-manual": "3.0.0",
+    "migration": "0.0.1",
+    "neo-place": "0.1.0",
+    "neo-push-client": "1.0.0",
+    "neo-push-server": "1.0.0",
+    "apollo-suscriptions-server": "1.0.0",
+    "yoga-subscriptions-server": "1.0.0",
+    "@neo4j/cypher-builder": "0.1.8",
+    "@neo4j/graphql": "3.14.1",
+    "@neo4j/graphql-toolbox": "1.4.6",
+    "@neo4j/introspector": "1.0.2",
+    "@neo4j/graphql-ogm": "3.14.1",
+    "@neo4j/package-tests": "1.0.0",
+    "@neo4j/graphql-plugin-auth": "1.1.1",
+    "@neo4j/graphql-plugin-subscriptions-amqp": "1.0.0"
+  },
+  "changesets": []
+}

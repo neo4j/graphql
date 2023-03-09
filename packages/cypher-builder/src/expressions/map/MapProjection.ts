@@ -49,6 +49,7 @@ export class MapProjection implements CypherCompilable {
         }
     }
 
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const variableStr = this.variable.getCypher(env);
         const extraValuesStr = serializeMap(env, this.extraValues, true);

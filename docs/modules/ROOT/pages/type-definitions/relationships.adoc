@@ -56,7 +56,7 @@ The following should be noted about the fields you just added:
 
 Relationship properties can be added to the above type definitions in two steps:
 
-1. Add an interface definition containing the desired relationship properties
+1. Add an interface definition, decorated with the `@relationshipProperties` directive, containing the desired relationship properties
 2. Add a `properties` argument to both "sides" of the `@relationship` directive which points to the newly defined interface
 
 For example, to distinguish which roles an actor played in a movie:
@@ -278,3 +278,16 @@ type Post {
 ----
 
 The relationship at `User.posts` is considered a "many" relationship. Relationships such as the one above should always be of type `NonNullListType` and `NonNullNamedType`, meaning both the array and the type inside of it should have a `!`.
+
+== Relationship types are automatically escaped
+
+Relationship types are automatically escaped (wrapped with backticks ``), so there's no need to add escape characters around the relationship type names. For example, do this:
+
+[source, graphql, indent=0]
+----
+type User {
+    name: String!
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+}
+----
+

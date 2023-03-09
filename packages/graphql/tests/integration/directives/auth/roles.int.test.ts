@@ -176,7 +176,7 @@ describe("auth/roles", () => {
 
                 extend type ${typeUser} {
                     history: [${typeHistory}]
-                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${typeHistory}) RETURN h")
+                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${typeHistory}) RETURN h", columnName: "h")
                         @auth(rules: [{ operations: [READ], roles: ["super-admin"] }])
                 }
             `;
@@ -984,7 +984,7 @@ describe("auth/roles", () => {
                 }
 
                 type Query {
-                    ${typeUser.plural}: [${typeUser}] @cypher(statement: "MATCH (u:${typeUser}) RETURN u") @auth(rules: [{ roles: ["admin"] }])
+                    ${typeUser.plural}: [${typeUser}] @cypher(statement: "MATCH (u:${typeUser}) RETURN u", columnName: "u") @auth(rules: [{ roles: ["admin"] }])
                 }
             `;
 
@@ -1030,7 +1030,7 @@ describe("auth/roles", () => {
                 }
 
                 type Mutation {
-                    ${typeUser.operations.create}: ${typeUser} @cypher(statement: "CREATE (u:${typeUser}) RETURN u") @auth(rules: [{ roles: ["admin"] }])
+                    ${typeUser.operations.create}: ${typeUser} @cypher(statement: "CREATE (u:${typeUser}) RETURN u", columnName: "u") @auth(rules: [{ roles: ["admin"] }])
                 }
             `;
 
@@ -1077,7 +1077,7 @@ describe("auth/roles", () => {
                 type ${typeUser} {
                     id: ID
                     history: [${typeHistory}]
-                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${typeHistory}) RETURN h")
+                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${typeHistory}) RETURN h", columnName: "h")
                         @auth(rules: [{ operations: [READ], roles: ["admin"] }])
                 }
             `;

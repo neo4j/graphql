@@ -267,7 +267,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                         statement: """
                         MATCH (m:${movieType.name} {title: $title})
                         RETURN m
-                        """
+                        """,
+                        columnName: "m"
                     )
 
                 tvShows(title: String): [${movieType.name}]
@@ -275,7 +276,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                         statement: """
                         MATCH (t:${tvShowType.name} {title: $title})
                         RETURN t
-                        """
+                        """,
+                        columnName: "t"
                     )
 
                 movieOrTVShow(title: String): [${movieOrTVShowType.name}]
@@ -284,7 +286,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                         MATCH (n)
                         WHERE (n:${tvShowType.name} OR n:${movieType.name}) AND ($title IS NULL OR n.title = $title)
                         RETURN n
-                        """
+                        """,
+                        columnName: "n"
                     )
             }
 
@@ -299,14 +302,16 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                         statement: """
                         MATCH (a:${actorType.name})
                         RETURN a
-                        """
+                        """,
+                        columnName: "a"
                     )
                 topActor: ${actorType.name}
                     @cypher(
                         statement: """
                         MATCH (a:${actorType.name})
                         RETURN a
-                        """
+                        """,
+                        columnName: "a"
                     )
             }
 
@@ -318,14 +323,16 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                         statement: """
                         MATCH (a:${actorType.name})
                         RETURN a
-                        """
+                        """,
+                        columnName: "a"
                     )
                 topActor: ${actorType.name}
                     @cypher(
                         statement: """
                         MATCH (a:${actorType.name})
                         RETURN a
-                        """
+                        """,
+                        columnName: "a"
                     )
             }
         `;

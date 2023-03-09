@@ -1,4 +1,4 @@
-import { GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
 import { DocExplorer } from "../EditorView/docexplorer";

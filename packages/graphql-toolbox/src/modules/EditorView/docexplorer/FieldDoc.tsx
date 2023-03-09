@@ -10,8 +10,8 @@ import Argument from './Argument';
 import Directive from './Directive';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
-import { GraphQLArgument, DirectiveNode } from 'graphql';
-import { OnClickTypeFunction, FieldType } from './types';
+import type { GraphQLArgument, DirectiveNode } from 'graphql';
+import type { OnClickTypeFunction, FieldType } from './types';
 
 type FieldDocProps = {
   field?: FieldType;

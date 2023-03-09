@@ -51,7 +51,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;
@@ -118,7 +118,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;
@@ -188,7 +188,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;
@@ -255,7 +255,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;
@@ -324,7 +324,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;

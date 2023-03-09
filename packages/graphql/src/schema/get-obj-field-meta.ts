@@ -38,7 +38,7 @@ import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
 import { getCypherMeta } from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
-import getCustomResolverMeta from "./get-custom-resolver-meta";
+import { getCustomResolverMeta } from "./get-custom-resolver-meta";
 import getRelationshipMeta from "./get-relationship-meta";
 import getUniqueMeta from "./parse/get-unique-meta";
 import { SCALAR_TYPES } from "../constants";
@@ -106,7 +106,7 @@ function getObjFieldMeta({
     validateResolvers: boolean;
     callbacks?: Neo4jGraphQLCallbacks;
     customResolvers?: IResolvers | Array<IResolvers>;
-}) {
+}): ObjectFields {
     const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
     const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
 
@@ -132,13 +132,16 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const customResolverMeta = getCustomResolverMeta(
+            const customResolverMeta = getCustomResolverMeta({
                 field,
-                obj,
+                object: obj,
+                objects,
+                interfaces,
+                unions,
                 validateResolvers,
                 customResolvers,
-                interfaceField
-            );
+                interfaceField,
+            });
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
@@ -170,7 +173,6 @@ function getObjFieldMeta({
                             "auth",
                             "readonly",
                             "writeonly",
-                            "computed",
                             "customResolver",
                             "default",
                             "coalesce",
@@ -197,6 +199,7 @@ function getObjFieldMeta({
                 const aliasMeta = getAliasMeta(aliasDirective);
                 if (aliasMeta) {
                     baseField.dbPropertyName = aliasMeta.property;
+                    baseField.dbPropertyNameUnescaped = aliasMeta.propertyUnescaped;
                 }
             }
 

@@ -18,8 +18,8 @@
  */
 
 import { useContext, useEffect, useRef, useState } from "react";
-import { GraphQLSchema } from "graphql";
-import { EditorFromTextArea } from "codemirror";
+import type { GraphQLSchema } from "graphql";
+import type { EditorFromTextArea } from "codemirror";
 import { CodeMirror } from "../../utils/utils";
 import { EDITOR_QUERY_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
 import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";

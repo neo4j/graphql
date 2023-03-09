@@ -39,9 +39,7 @@ export class Validate extends CypherASTNode {
         this.params = params;
     }
 
-    /**
-     * @ignore
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const predicateCypher = this.predicate.getCypher(env);
         const paramsCypher = this.params.getCypher(env);

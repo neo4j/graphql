@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                 current: Boolean!
             }
 
-            interface RelationProps {
+            interface RelationProps @relationshipProperties {
                 current: Boolean!
             }
         `;
@@ -137,18 +137,18 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
             WHERE (((EXISTS {
-                MATCH (this)-[this0:MANUFACTURER]->(this1:\`Manufacturer\`)
+                MATCH (this)-[this0:\`MANUFACTURER\`]->(this1:\`Manufacturer\`)
                 WHERE (this0.current = $param0 AND this1.name = $param1)
             } OR EXISTS {
-                MATCH (this)-[this2:MANUFACTURER]->(this3:\`Manufacturer\`)
+                MATCH (this)-[this2:\`MANUFACTURER\`]->(this3:\`Manufacturer\`)
                 WHERE (this2.current = $param2 AND this3.name = $param3)
             }) AND EXISTS {
-                MATCH (this)-[this4:BRAND]->(this5:\`Brand\`)
+                MATCH (this)-[this4:\`BRAND\`]->(this5:\`Brand\`)
                 WHERE (this4.current = $param4 AND this5.name = $param5)
             }) AND this.current = $param6)
             CALL {
                 WITH this
-                MATCH (this)-[this6:MANUFACTURER]->(this7:\`Manufacturer\`)
+                MATCH (this)-[this6:\`MANUFACTURER\`]->(this7:\`Manufacturer\`)
                 WITH { current: this6.current, node: { name: this7.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -156,7 +156,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)-[this9:BRAND]->(this10:\`Brand\`)
+                MATCH (this)-[this9:\`BRAND\`]->(this10:\`Brand\`)
                 WITH { current: this9.current, node: { name: this10.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

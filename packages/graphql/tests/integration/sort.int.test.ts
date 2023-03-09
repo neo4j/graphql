@@ -49,7 +49,7 @@ describe("sort", () => {
             title: String!
             runtime: Int!
             actors: [${actorType}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            numberOfActors: Int! @cypher(statement: "MATCH (actor:${actorType})-[:ACTED_IN]->(this) RETURN count(actor)")
+            numberOfActors: Int! @cypher(statement: "MATCH (actor:${actorType})-[:ACTED_IN]->(this) RETURN count(actor) AS count", columnName: "count")
         }
 
         type ${seriesType} implements Production {
@@ -66,8 +66,9 @@ describe("sort", () => {
                 @cypher(
                     statement: """
                     MATCH (this)-[r:ACTED_IN]->(:${movieType})
-                    RETURN sum(r.screenTime)
-                    """
+                    RETURN sum(r.screenTime) AS sum
+                    """,
+                    columnName: "sum"
                 )
         }
         interface ActedIn @relationshipProperties {

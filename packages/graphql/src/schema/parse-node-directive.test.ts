@@ -64,18 +64,4 @@ describe("parseNodeDirective", () => {
 
         expect(parseNodeDirective(directive)).toMatchObject(expected);
     });
-
-    test("should return a node directive with custom plural", () => {
-        const typeDefs = `
-            type TestType @node(plural: "testTypes") {
-                name: String
-            }
-        `;
-
-        const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
-        const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-        const expected = new NodeDirective({ plural: "testTypes" });
-
-        expect(parseNodeDirective(directive)).toMatchObject(expected);
-    });
 });

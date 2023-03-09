@@ -294,7 +294,7 @@ function createDeleteAndParams({
                             relVariable: relationshipVariable,
                             fromVariable,
                             toVariable,
-                            typename: relationField.type,
+                            typename: relationField.typeUnescaped,
                             fromTypename,
                             toTypename,
                         });
@@ -333,6 +333,7 @@ function createDeleteAndParams({
                                 .related(new Cypher.Relationship({ type: relationField.type }))
                                 .to(node2)
                         );
+                    }
 
                         const innerSubqueryEnabled = new Cypher.Call(
                             new Cypher.Unwind(aliasedNodeToDelete)

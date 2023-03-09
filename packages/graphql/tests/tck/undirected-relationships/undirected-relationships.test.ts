@@ -68,13 +68,13 @@ describe("Undirected relationships", () => {
             "MATCH (this:\`User\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:FRIENDS_WITH]-(this1:\`User\`)
+                MATCH (this)-[this0:\`FRIENDS_WITH\`]-(this1:\`User\`)
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[this3:FRIENDS_WITH]->(this4:\`User\`)
+                MATCH (this)-[this3:\`FRIENDS_WITH\`]->(this4:\`User\`)
                 WITH this4 { .name } AS this4
                 RETURN collect(this4) AS var5
             }
@@ -137,12 +137,12 @@ describe("Undirected relationships", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:HAS_CONTENT]-(this1:\`Blog\`)
+                    MATCH (this)-[this0:\`HAS_CONTENT\`]-(this1:\`Blog\`)
                     WITH this1 { __resolveType: \\"Blog\\", __id: id(this), .title } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this3:HAS_CONTENT]-(this4:\`Post\`)
+                    MATCH (this)-[this3:\`HAS_CONTENT\`]-(this4:\`Post\`)
                     WITH this4 { __resolveType: \\"Post\\", __id: id(this), .content } AS this4
                     RETURN this4 AS var2
                 }
@@ -213,12 +213,12 @@ describe("Undirected relationships", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:ACTED_IN]-(this1:\`Movie\`)
+                    MATCH (this)-[this0:\`ACTED_IN\`]-(this1:\`Movie\`)
                     WITH this1 { __resolveType: \\"Movie\\", __id: id(this), .title } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this3:ACTED_IN]-(this4:\`Series\`)
+                    MATCH (this)-[this3:\`ACTED_IN\`]-(this4:\`Series\`)
                     WITH this4 { __resolveType: \\"Series\\", __id: id(this), .title } AS this4
                     RETURN this4 AS var2
                 }
@@ -277,10 +277,10 @@ describe("Undirected relationships", () => {
             "MATCH (this:\`Foo\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:DRINKS_AT]->(this1:\`Bar\`)
+                MATCH (this)-[this0:\`DRINKS_AT\`]->(this1:\`Bar\`)
                 CALL {
                     WITH this1
-                    MATCH (this1)-[this2:DRINKS_AT]-(this3:\`Foo\`)
+                    MATCH (this1)-[this2:\`DRINKS_AT\`]-(this3:\`Foo\`)
                     WITH this3 { .Name } AS this3
                     RETURN collect(this3) AS var4
                 }

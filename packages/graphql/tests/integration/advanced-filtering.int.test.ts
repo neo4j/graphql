@@ -1617,7 +1617,7 @@ describe("Advanced Filtering", () => {
                             id: ID
                         }
 
-                        interface ActedIn {
+                        interface ActedIn @relationshipProperties {
                             id: String
                         }
                 `;
@@ -1684,7 +1684,7 @@ describe("Advanced Filtering", () => {
                             id: ID
                         }
 
-                        interface ActedIn {
+                        interface ActedIn @relationshipProperties {
                             id: String
                         }
                 `;
@@ -1904,7 +1904,7 @@ describe("Advanced Filtering", () => {
                             id: ID
                         }
 
-                        interface ActedIn {
+                        interface ActedIn @relationshipProperties {
                             id: ID
                         }
                 `;

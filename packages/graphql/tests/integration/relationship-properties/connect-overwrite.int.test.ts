@@ -18,7 +18,8 @@
  */
 
 import type { Driver, Session } from "neo4j-driver";
-import { DocumentNode, graphql } from "graphql";
+import type { DocumentNode } from "graphql";
+import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
@@ -70,10 +71,10 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     directed: [ ${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
-                interface Directed {
+                interface Directed @relationshipProperties {
                     year: Int!
                 }
             `;
@@ -312,7 +313,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
             `;
@@ -709,7 +710,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
             `;
@@ -1352,7 +1353,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     directed: [${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
                 }
 
-                interface Directed {
+                interface Directed @relationshipProperties {
                     year: Int!
                 }
             `;

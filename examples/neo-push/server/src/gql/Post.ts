@@ -22,6 +22,7 @@ export const typeDefs = gql`
                 ) AS canEdit
                 RETURN canEdit
                 """
+                columnName: "canEdit"
             )
         canDelete: Boolean
             @cypher(
@@ -35,6 +36,7 @@ export const typeDefs = gql`
                 ) AS canDelete
                 RETURN canDelete
                 """
+                columnName: "canDelete"
             )
         createdAt: DateTime @timestamp(operations: [CREATE])
         updatedAt: DateTime @timestamp(operations: [UPDATE])

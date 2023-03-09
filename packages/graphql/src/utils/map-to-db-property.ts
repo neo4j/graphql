@@ -24,7 +24,7 @@ function mapToDbProperty(item: GraphElement, graphQLField: string): string {
     const itemProp = item.primitiveFields
         .concat(item.temporalFields, item.pointFields)
         .find(({ fieldName }) => fieldName === graphQLField);
-    return itemProp?.dbPropertyName || graphQLField;
+    return itemProp?.dbPropertyNameUnescaped || graphQLField;
 }
 
 export default mapToDbProperty;

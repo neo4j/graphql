@@ -31,6 +31,7 @@ import type * as Performance from "./types";
 import { schemaPerformance } from "./schema-performance";
 import { MarkdownFormatter } from "./utils/formatters/MarkdownFormatter";
 import { TTYFormatter } from "./utils/formatters/TTYFormatter";
+import { subgraphSchemaPerformance } from "./subgraph-schema-performance";
 
 let driver: Driver;
 
@@ -62,7 +63,8 @@ const typeDefs = gql`
         reviewers: [Person!]! @relationship(type: "REVIEWED", direction: IN)
         producers: [Person!]! @relationship(type: "PRODUCED", direction: IN)
         likedBy: [User!]! @relationship(type: "LIKES", direction: IN)
-        oneActorName: String @cypher(statement: "MATCH (this)<-[:ACTED_IN]-(a:Person) RETURN a.name")
+        oneActorName: String
+            @cypher(statement: "MATCH (this)<-[:ACTED_IN]-(a:Person) RETURN a.name AS name", columnName: "name")
     }
 
     type User {
@@ -78,15 +80,18 @@ const typeDefs = gql`
                 WHERE m.released > 2000
                 RETURN p
                 """
+                columnName: "p"
             )
-        experimentalCustomCypher: [Person]
+    }
+
+    type Mutation {
+        getCustomUser: [Person]!
             @cypher(
                 statement: """
-                MATCH(m:Movie)--(p:Person)
-                WHERE m.released > 2000
-                RETURN p
+                MATCH (user:Person { name_INCLUDES: "Wa" })
+                RETURN user
                 """
-                columnName: "p"
+                columnName: "user"
             )
     }
 `;
@@ -124,6 +129,8 @@ async function afterAll() {
 async function main() {
     if (process.argv.includes("--schema")) {
         await schemaPerformance();
+    } else if (process.argv.includes("--subgraph-schema")) {
+        await subgraphSchemaPerformance();
     } else {
         await queryPerformance();
     }

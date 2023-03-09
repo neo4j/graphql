@@ -18,7 +18,8 @@
  */
 
 import { gql } from "apollo-server";
-import { graphql, GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";
@@ -43,7 +44,8 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 markets: [Market!]! @relationship(type: "HAS_MARKETS", direction: OUT)
                 id: ID! @id(autogenerate: false)
-                relatedId: ID @cypher(statement: "MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id")
+                relatedId: ID
+                    @cypher(statement: "MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id as res", columnName: "res")
                 baseObject: BaseObject! @relationship(type: "HAS_BASE", direction: IN)
                 current: Boolean!
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", direction: OUT)

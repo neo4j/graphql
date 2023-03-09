@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { DocumentNode, graphql } from "graphql";
+import type { DocumentNode } from "graphql";
+import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { cleanNodes } from "../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../src";

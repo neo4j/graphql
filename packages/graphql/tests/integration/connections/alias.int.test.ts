@@ -723,7 +723,7 @@ describe("Connections Alias", () => {
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 roles: [String]!
             }
         `;
@@ -786,7 +786,7 @@ describe("Connections Alias", () => {
                 name: String!
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 roles: [String]!
             }
         `;
@@ -957,7 +957,7 @@ describe("Connections Alias", () => {
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;

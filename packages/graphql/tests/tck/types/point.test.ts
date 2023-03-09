@@ -227,7 +227,7 @@ describe("Cypher Points", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
-                WHERE distance(this.point, point($param0.point)) < $param0.distance
+                WHERE point.distance(this.point, point($param0.point)) < $param0.distance
                 RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
@@ -266,7 +266,7 @@ describe("Cypher Points", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
-                WHERE distance(this.point, point($param0.point)) <= $param0.distance
+                WHERE point.distance(this.point, point($param0.point)) <= $param0.distance
                 RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
@@ -305,7 +305,7 @@ describe("Cypher Points", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
-                WHERE distance(this.point, point($param0.point)) > $param0.distance
+                WHERE point.distance(this.point, point($param0.point)) > $param0.distance
                 RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
@@ -344,7 +344,7 @@ describe("Cypher Points", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
-                WHERE distance(this.point, point($param0.point)) >= $param0.distance
+                WHERE point.distance(this.point, point($param0.point)) >= $param0.distance
                 RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
@@ -385,7 +385,7 @@ describe("Cypher Points", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`PointContainer\`)
-                WHERE distance(this.point, point($param0.point)) = $param0.distance
+                WHERE point.distance(this.point, point($param0.point)) = $param0.distance
                 RETURN this { point: CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL

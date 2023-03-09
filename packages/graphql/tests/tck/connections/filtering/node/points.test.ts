@@ -42,7 +42,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -101,8 +101,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE distance(this1.currentLocation, point($param0.point)) = $param0.distance
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                WHERE point.distance(this1.currentLocation, point($param0.point)) = $param0.distance
                 WITH { screenTime: this0.screenTime, node: { name: this1.name, currentLocation: CASE
                     WHEN this1.currentLocation IS NOT NULL THEN { point: this1.currentLocation }
                     ELSE NULL

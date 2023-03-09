@@ -21,7 +21,8 @@ import type { Context, GraphQLWhereArg, RelationField, PredicateReturn } from ".
 import Cypher from "@neo4j/cypher-builder";
 
 import { createWherePredicate } from "../create-where-predicate";
-import { getListPredicate, ListPredicate } from "../utils";
+import type { ListPredicate } from "../utils";
+import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
 import type { Node, Relationship } from "../../../classes";
 import { createConnectionWherePropertyOperation } from "./create-connection-operation";

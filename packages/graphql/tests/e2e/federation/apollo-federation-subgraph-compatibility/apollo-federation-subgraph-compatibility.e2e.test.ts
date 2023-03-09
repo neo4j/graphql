@@ -97,11 +97,15 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
 
             type Query {
                 product(id: ID!): Product
-                    @cypher(statement: "MATCH (product:Product) WHERE product.id = $id RETURN product")
+                    @cypher(
+                        statement: "MATCH (product:Product) WHERE product.id = $id RETURN product"
+                        columnName: "product"
+                    )
                 deprecatedProduct(sku: String!, package: String!): DeprecatedProduct
                     @deprecated(reason: "Use product query instead")
                     @cypher(
                         statement: "MATCH (product:DeprecatedProduct) WHERE product.sku = $sku AND product.package = $package = $id RETURN product"
+                        columnName: "product"
                     )
             }
 

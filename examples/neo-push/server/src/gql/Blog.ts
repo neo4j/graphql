@@ -14,6 +14,7 @@ export const typeDefs = gql`
                 WITH creator IS NOT NULL AS isCreator
                 RETURN isCreator
                 """
+                columnName: "isCreator"
             )
         isAuthor: Boolean
             @cypher(
@@ -22,6 +23,7 @@ export const typeDefs = gql`
                 WITH author IS NOT NULL AS isAuthor
                 RETURN isAuthor
                 """
+                columnName: "isAuthor"
             )
         createdAt: DateTime @timestamp(operations: [CREATE])
         updatedAt: DateTime @timestamp(operations: [UPDATE])

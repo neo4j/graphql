@@ -31,7 +31,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback1: String! @callback(operations: [CREATE], name: "callback4") @default(value: "Test")
                 }
@@ -57,7 +57,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback1: String! @callback(operations: [CREATE], name: "callback4") @id
                 }
@@ -84,7 +84,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
                 genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
             }
 
-            interface RelProperties {
+            interface RelProperties @relationshipProperties {
                 id: ID!
                 callback1: String! @callback(operations: [CREATE], name: "callback4")
             }
@@ -111,7 +111,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
                 genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
             }
 
-            interface RelProperties {
+            interface RelProperties @relationshipProperties {
                 id: ID!
                 callback1: String! @callback(operations: [CREATE], name: "callback1")
                 callback2: String! @callback(operations: [UPDATE], name: "callback2")
@@ -705,7 +705,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
                 genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
             }
 
-            interface RelProperties {
+            interface RelProperties @relationshipProperties {
                 id: ID!
                 callback1: Int! @callback(operations: [CREATE], name: "callback1")
                 callback2: Int! @callback(operations: [UPDATE], name: "callback2")

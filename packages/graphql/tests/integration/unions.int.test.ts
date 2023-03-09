@@ -19,7 +19,8 @@
 
 import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
-import { DocumentNode, graphql } from "graphql";
+import type { DocumentNode } from "graphql";
+import { graphql } from "graphql";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { generate } from "randomstring";
 import Neo4j from "./neo4j";

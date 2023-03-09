@@ -70,7 +70,7 @@ describe("Connect Subscription with optional filters valid for all types", () =>
                 year: Int!
             }
             
-            interface Review {
+            interface Review @relationshipProperties {
                 score: Int!
             }
         

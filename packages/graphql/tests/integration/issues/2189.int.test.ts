@@ -54,7 +54,8 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                         OPTIONAL MATCH (this)<-[:TEST_RELATIONSHIP]-(t:${Test_Feedback})
                         RETURN t
                         LIMIT 1
-                        """
+                        """,
+                        columnName: "t"
                     )
             }
             type ${Test_Feedback} {

@@ -58,7 +58,8 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                     )
                 soldCopiesWithoutColumnName: Int
                     @cypher(
-                        statement: "OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result"
+                        statement: "OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result",
+                        columnName: "result"
                     )
                 authors: [Author!]! @relationship(type: "AUTHORED_BOOK", direction: IN)
             }
@@ -144,7 +145,12 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
                 WITH result AS this0
                 CALL {
                     WITH this0
-                    UNWIND apoc.cypher.runFirstColumnSingle(\\"OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result\\", { this: this0, auth: $auth }) AS this1
+                    CALL {
+                        WITH this0
+                        WITH this0 AS this
+                        OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
+                    }
+                    UNWIND result AS this1
                     RETURN head(collect(this1)) AS this1
                 }
                 RETURN head(collect(this0 { .name, .year, soldCopiesWithoutColumnName: this1 })) AS this0
@@ -152,13 +158,6 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
             RETURN this { .name, mostRecentBook: this0 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });
