@@ -182,20 +182,24 @@ For filtering edges, we can use the `fields` property and the array operators if
 
 ```graphql
 query PeopleAndMoviesActedAfter2001 {
-    peopleConnection(where: { edges: { node: { movies: { edges: { some: { fields: { year: { gt: 1999 } } } } } } } }) {
-        edges {
-            node {
-                name
-                movies {
-                    edges {
-                        node {
-                            title
-                        }
-                    }
-                }
-            }
-        }
+  peopleConnection(
+    where: {
+      edges: { node: { movies: { some: { fields: { year: { gt: 1999 } } } } } }
     }
+  ) {
+    edges {
+      node {
+        name
+        movies {
+          edges {
+            node {
+              title
+            }
+          }
+        }
+      }
+    }
+  }
 }
 ```
 
@@ -690,11 +694,11 @@ interface ActedIn {
 ### "Top Level" aggregation
 
 type MoviesAggregation {
-    node: MoviesAggregationNode!
+    nodes: MoviesAggregationNode!
 }
 
 type PeopleAggregation {
-    node: PeopleAggregationNode!
+    nodes: PeopleAggregationNode!
 }
 
 ### "Node" aggregation
@@ -797,18 +801,11 @@ input MovieActorsConnectionWhere {
     AND: [MovieActorsConnectionWhere!]
     OR: [MovieActorsConnectionWhere!]
     NOT: MovieActorsConnectionWhere
-    edges: MovieActorsWhereFilters
-    aggregation: MovieActorsAggregationEdgeWhere
-}
-
-input MovieActorsWhereFilters {
-    AND: [MovieActorsWhereFilters!]
-    OR: [MovieActorsWhereFilters!]
-    NOT: MovieActorsWhereFilters
     all: MovieActorsEdgeWhere
     none: MovieActorsEdgeWhere
     single: MovieActorsEdgeWhere
     some: MovieActorsEdgeWhere
+    aggregation: MovieActorsAggregationEdgeWhere
 }
 
 input MovieDirectorConnectionWhere {
@@ -822,18 +819,11 @@ input PersonMoviesConnectionWhere {
     AND: [PersonMoviesConnectionWhere!]
     OR: [PersonMoviesConnectionWhere!]
     NOT: PersonMoviesConnectionWhere
-    edges: PersonMoviesWhereFilters
-    aggregation: PersonMoviesAggregationEdgeWhere
-}
-
-input PersonMoviesWhereFilters {
-    AND: [PersonMoviesWhereFilters!]
-    OR: [PersonMoviesWhereFilters!]
-    NOT: PersonMoviesWhereFilters
     all: PersonMoviesEdgeWhere
     none: PersonMoviesEdgeWhere
     single: PersonMoviesEdgeWhere
     some: PersonMoviesEdgeWhere
+    aggregation: PersonMoviesAggregationEdgeWhere
 }
 
 input PersonDirectedConnectionWhere {
@@ -1185,7 +1175,7 @@ The following are some example queries on the previous schema:
 ```graphql
 query MoviesWithAllActorsNamedKeanuReeves {
     moviesConnection(
-        where: { edges: { node: { actors: { edges: { all: { node: { name: { equals: "Keanu Reeves" } } } } } } } }
+        where: { edges: { node: { actors: { all: { node: { name: { equals: "Keanu Reeves" } } }  } } } }
     ) {
         edges {
             node {
@@ -1249,7 +1239,7 @@ query MoviesWithMoreThan10ActorNodes {
 }
 
 query MoviesWithMoreThan10ActorEdges {
-    moviesConnection(where: { edges: { node: { actors: { aggregation: { count: { gt: 10 } } } } } }) {
+    moviesConnection(where: { edges: { node: { actors: { aggregation: { nodes: { count: { gt: 10 } } } } } } }) {
         edges {
             node {
                 actors {
@@ -1259,7 +1249,7 @@ query MoviesWithMoreThan10ActorEdges {
                         }
                     }
                     aggregation {
-                        node {
+                        nodes {
                             count
                         }
                     }
@@ -1288,7 +1278,7 @@ query GetMoviesPaginatedIn10 {
 }
 
 query PaginateActorsInMovie {
-    moviesConnection(where: { edges: { node: { title: { equal: "The Matrix" } } } }) {
+    moviesConnection(where: { edges: { node: { title: { equals: "The Matrix" } } } }) {
         edges {
             node {
                 actors(sort: [{ edges: { fields: { year: DESC } } }, { edges: { node: { name: ASC } } }], first: 20) {
