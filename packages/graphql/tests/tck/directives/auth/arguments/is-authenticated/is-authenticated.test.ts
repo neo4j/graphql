@@ -588,16 +588,18 @@ describe("Cypher Auth isAuthenticated", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
+            CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-            WITH this, this_posts0
+            WITH this, this_posts0, this_posts0_relationship
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this, collect(DISTINCT this_posts0) AS this_posts0_to_delete
+            WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete
             CALL {
             	WITH this_posts0_to_delete
             	UNWIND this_posts0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
+            }
             }
             WITH this
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])

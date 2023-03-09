@@ -733,25 +733,29 @@ describe("tck/rfs/003", () => {
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
                             WHERE this.id = $param0
+                            WITH *
+                            CALL {
                             WITH this
                             OPTIONAL MATCH (this)<-[this_delete_director0_relationship:DIRECTED]-(this_delete_director0:Director)
                             WHERE this_delete_director0.id = $updateMovies_args_delete_director_where_this_delete_director0param0
+                            WITH *
+                            CALL {
                             WITH this, this_delete_director0
                             OPTIONAL MATCH (this_delete_director0)-[this_delete_director0_address0_relationship:HAS_ADDRESS]->(this_delete_director0_address0:Address)
                             WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0
-                            WITH this, this_delete_director0, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
+                            WITH this_delete_director0_address0_relationship, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
                             CALL {
                             	WITH this_delete_director0_address0_to_delete
                             	UNWIND this_delete_director0_address0_to_delete AS x
                             	DETACH DELETE x
-                            	RETURN count(*) AS _
                             }
-                            WITH this, collect(DISTINCT this_delete_director0) AS this_delete_director0_to_delete
+                            }
+                            WITH this_delete_director0_relationship, collect(DISTINCT this_delete_director0) AS this_delete_director0_to_delete
                             CALL {
                             	WITH this_delete_director0_to_delete
                             	UNWIND this_delete_director0_to_delete AS x
                             	DETACH DELETE x
-                            	RETURN count(*) AS _
+                            }
                             }
                             WITH *
                             WITH *
@@ -856,25 +860,29 @@ describe("tck/rfs/003", () => {
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
                             WHERE this.id = $param0
+                            WITH *
+                            CALL {
                             WITH this
                             OPTIONAL MATCH (this)<-[this_delete_director0_relationship:DIRECTED]-(this_delete_director0:Director)
                             WHERE this_delete_director0.id = $updateMovies_args_delete_director_where_this_delete_director0param0
+                            WITH *
+                            CALL {
                             WITH this, this_delete_director0
                             OPTIONAL MATCH (this_delete_director0)-[this_delete_director0_address0_relationship:HAS_ADDRESS]->(this_delete_director0_address0:Address)
                             WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0
-                            WITH this, this_delete_director0, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
+                            WITH this_delete_director0_address0_relationship, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
                             CALL {
                             	WITH this_delete_director0_address0_to_delete
                             	UNWIND this_delete_director0_address0_to_delete AS x
                             	DETACH DELETE x
-                            	RETURN count(*) AS _
                             }
-                            WITH this, collect(DISTINCT this_delete_director0) AS this_delete_director0_to_delete
+                            }
+                            WITH this_delete_director0_relationship, collect(DISTINCT this_delete_director0) AS this_delete_director0_to_delete
                             CALL {
                             	WITH this_delete_director0_to_delete
                             	UNWIND this_delete_director0_to_delete AS x
                             	DETACH DELETE x
-                            	RETURN count(*) AS _
+                            }
                             }
                             WITH *
                             WITH *

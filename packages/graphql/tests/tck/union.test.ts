@@ -637,15 +637,17 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
+            WITH *
+            CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_delete_search_Genre0_relationship:SEARCH]->(this_delete_search_Genre0:Genre)
             WHERE this_delete_search_Genre0.name = $updateMovies_args_delete_search_Genre0_where_this_delete_search_Genre0param0
-            WITH this, collect(DISTINCT this_delete_search_Genre0) AS this_delete_search_Genre0_to_delete
+            WITH this_delete_search_Genre0_relationship, collect(DISTINCT this_delete_search_Genre0) AS this_delete_search_Genre0_to_delete
             CALL {
             	WITH this_delete_search_Genre0_to_delete
             	UNWIND this_delete_search_Genre0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
+            }
             }
             WITH *
             RETURN collect(DISTINCT this { .title }) AS data"

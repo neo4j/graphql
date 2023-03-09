@@ -91,15 +91,17 @@ describe("Cypher Delete", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
+            WITH *
+            CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
-            WITH this, collect(DISTINCT this_actors0) AS this_actors0_to_delete
+            WITH this_actors0_relationship, collect(DISTINCT this_actors0) AS this_actors0_to_delete
             CALL {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
+            }
             }
             DETACH DELETE this"
         `);
@@ -152,25 +154,29 @@ describe("Cypher Delete", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
+            WITH *
+            CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
-            WITH this, collect(DISTINCT this_actors0) AS this_actors0_to_delete
+            WITH this_actors0_relationship, collect(DISTINCT this_actors0) AS this_actors0_to_delete
             CALL {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
+            }
+            WITH *
+            CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_actors1_relationship:ACTED_IN]-(this_actors1:Actor)
             WHERE this_actors1.name = $this_deleteMovies_args_delete_actors1_where_this_actors1param0
-            WITH this, collect(DISTINCT this_actors1) AS this_actors1_to_delete
+            WITH this_actors1_relationship, collect(DISTINCT this_actors1) AS this_actors1_to_delete
             CALL {
             	WITH this_actors1_to_delete
             	UNWIND this_actors1_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
+            }
             }
             DETACH DELETE this"
         `);
@@ -231,25 +237,29 @@ describe("Cypher Delete", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
+            WITH *
+            CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
+            WITH *
+            CALL {
             WITH this, this_actors0
             OPTIONAL MATCH (this_actors0)-[this_actors0_movies0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
             WHERE this_actors0_movies0.id = $this_deleteMovies_args_delete_actors0_delete_movies0_where_this_actors0_movies0param0
-            WITH this, this_actors0, collect(DISTINCT this_actors0_movies0) AS this_actors0_movies0_to_delete
+            WITH this_actors0_movies0_relationship, collect(DISTINCT this_actors0_movies0) AS this_actors0_movies0_to_delete
             CALL {
             	WITH this_actors0_movies0_to_delete
             	UNWIND this_actors0_movies0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
-            WITH this, collect(DISTINCT this_actors0) AS this_actors0_to_delete
+            }
+            WITH this_actors0_relationship, collect(DISTINCT this_actors0) AS this_actors0_to_delete
             CALL {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
+            }
             }
             DETACH DELETE this"
         `);
@@ -319,35 +329,41 @@ describe("Cypher Delete", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
+            WITH *
+            CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
+            WITH *
+            CALL {
             WITH this, this_actors0
             OPTIONAL MATCH (this_actors0)-[this_actors0_movies0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
             WHERE this_actors0_movies0.id = $this_deleteMovies_args_delete_actors0_delete_movies0_where_this_actors0_movies0param0
+            WITH *
+            CALL {
             WITH this, this_actors0, this_actors0_movies0
             OPTIONAL MATCH (this_actors0_movies0)<-[this_actors0_movies0_actors0_relationship:ACTED_IN]-(this_actors0_movies0_actors0:Actor)
             WHERE this_actors0_movies0_actors0.name = $this_deleteMovies_args_delete_actors0_delete_movies0_delete_actors0_where_this_actors0_movies0_actors0param0
-            WITH this, this_actors0, this_actors0_movies0, collect(DISTINCT this_actors0_movies0_actors0) AS this_actors0_movies0_actors0_to_delete
+            WITH this_actors0_movies0_actors0_relationship, collect(DISTINCT this_actors0_movies0_actors0) AS this_actors0_movies0_actors0_to_delete
             CALL {
             	WITH this_actors0_movies0_actors0_to_delete
             	UNWIND this_actors0_movies0_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
-            WITH this, this_actors0, collect(DISTINCT this_actors0_movies0) AS this_actors0_movies0_to_delete
+            }
+            WITH this_actors0_movies0_relationship, collect(DISTINCT this_actors0_movies0) AS this_actors0_movies0_to_delete
             CALL {
             	WITH this_actors0_movies0_to_delete
             	UNWIND this_actors0_movies0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
-            WITH this, collect(DISTINCT this_actors0) AS this_actors0_to_delete
+            }
+            WITH this_actors0_relationship, collect(DISTINCT this_actors0) AS this_actors0_to_delete
             CALL {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
+            }
             }
             DETACH DELETE this"
         `);
