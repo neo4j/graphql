@@ -41,21 +41,21 @@ type Colour {
 }
 ----
 
-The `@node` directive is used to change the database label mapping in this next example, so a unique constraint will be asserted for the label `Color` and the property `hexadecimal`:
+The `@node` directive is used to change the database label mapping in this next example, so a unique constraint will be asserted for the first label in the list, `Color`, and the property `hexadecimal`:
 
 [source, graphql, indent=0]
 ----
-type Colour @node(label: "Color") {
+type Colour @node(labels: ["Color"]) {
     hexadecimal: String! @unique
 }
 ----
 
-In the following example, labels specified in the `additionalLabels` argument of the `@node` directive are also checked when asserting constraints.
+In the following example, all labels specified in the `labels` argument of the `@node` directive are also checked when asserting constraints.
 If there is a unique constraint specified for the `hexadecimal` property of nodes with the `Hue` label, but not the `Color` label, no error will be thrown and no new constraints created when running `assertIndexesAndConstraints`.
 
 [source, graphql, indent=0]
 ----
-type Colour @node(label: "Color", additionalLabels: ["Hue"]) {
+type Colour @node(labels: ["Color", "Hue"]) {
     hexadecimal: String! @unique
 }
 ----

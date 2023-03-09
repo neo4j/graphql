@@ -20,7 +20,8 @@
 import type { CypherEnvironment } from "../Environment";
 import { Pattern } from "../pattern/Pattern";
 import { Clause } from "./Clause";
-import { OnCreate, OnCreateParam } from "./sub-clauses/OnCreate";
+import type { OnCreateParam } from "./sub-clauses/OnCreate";
+import { OnCreate } from "./sub-clauses/OnCreate";
 import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
 import { WithSet } from "./mixins/WithSet";
@@ -57,9 +58,7 @@ export class Merge extends Clause {
         return this;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const pathAssignStr = this.compilePath(env);
 

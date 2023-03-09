@@ -5,7 +5,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ChangeEventHandler } from "react";
+import type { ChangeEventHandler } from "react";
+import React from "react";
 
 import debounce from "./debounce";
 

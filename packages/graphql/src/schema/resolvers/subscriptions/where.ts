@@ -19,12 +19,8 @@
 
 import type { SubscriptionsEvent } from "../../../types";
 import type Node from "../../../classes/Node";
-import {
-    filterByProperties,
-    filterByRelationshipProperties,
-    RecordType,
-    RelationshipType,
-} from "./utils/compare-properties";
+import type { RecordType, RelationshipType } from "./utils/compare-properties";
+import { filterByProperties, filterByRelationshipProperties } from "./utils/compare-properties";
 import type { ObjectFields } from "../../../schema/get-obj-field-meta";
 
 export function subscriptionWhere({

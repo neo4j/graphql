@@ -31,9 +31,6 @@ export class CypherFunction extends CypherASTNode {
     protected name: string;
     private params: Array<Expr>;
 
-    /**
-     * @hidden
-     */
     constructor(name: string, params: Array<Expr> = []) {
         super();
         this.name = name;
@@ -45,9 +42,7 @@ export class CypherFunction extends CypherASTNode {
         }
     }
 
-    /**
-     * @internal
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const argsStr = this.params.map((expr) => expr.getCypher(env)).join(", ");
 

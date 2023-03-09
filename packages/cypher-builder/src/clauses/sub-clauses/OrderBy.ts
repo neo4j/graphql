@@ -55,6 +55,7 @@ export class OrderBy extends CypherASTNode {
         return this.exprs.length > 0;
     }
 
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         let orderStr = "";
         const skipStr = compileCypherIfExists(this.skipClause, env, { prefix: "\n" });

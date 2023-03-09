@@ -19,9 +19,11 @@
 
 import { ClauseMixin } from "./ClauseMixin";
 import { Where } from "../sub-clauses/Where";
-import { and, BooleanOp } from "../../expressions/operations/boolean";
+import type { BooleanOp } from "../../expressions/operations/boolean";
+import { and } from "../../expressions/operations/boolean";
 import { PropertyRef } from "../../references/PropertyRef";
-import { ComparisonOp, eq } from "../../expressions/operations/comparison";
+import type { ComparisonOp } from "../../expressions/operations/comparison";
+import { eq } from "../../expressions/operations/comparison";
 import type { Predicate } from "../../types";
 import { Reference } from "../../references/Reference";
 import type { RelationshipRef } from "../../references/RelationshipRef";

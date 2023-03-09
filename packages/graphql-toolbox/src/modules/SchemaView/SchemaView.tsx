@@ -21,9 +21,9 @@ import { useCallback, useContext, useRef, useState } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { Banner } from "@neo4j-ndl/react";
-import { GraphQLError, GraphQLSchema } from "graphql";
+import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
-import { EditorFromTextArea } from "codemirror";
+import type { EditorFromTextArea } from "codemirror";
 import {
     DEFAULT_DATABASE_NAME,
     LOCAL_STATE_CONSTRAINT,
@@ -43,7 +43,8 @@ import { SchemaSettings } from "./SchemaSettings";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { ActionElementsBar } from "./ActionElementsBar";
 import { SchemaEditor } from "./SchemaEditor";
-import { ConstraintState, Favorite } from "../../types";
+import type { Favorite } from "../../types";
+import { ConstraintState } from "../../types";
 import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
 import { tracking } from "../../analytics/tracking";

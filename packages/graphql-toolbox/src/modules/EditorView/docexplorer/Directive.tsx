@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { DirectiveNode } from "graphql";
+import type { DirectiveNode } from "graphql";
 
 type DirectiveProps = {
     directive: DirectiveNode;

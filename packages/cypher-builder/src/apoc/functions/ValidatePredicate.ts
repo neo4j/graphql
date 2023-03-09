@@ -36,9 +36,7 @@ export class ValidatePredicate extends CypherASTNode {
         this.message = message;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const predicateCypher = this.predicate.getCypher(env);
         return `apoc.util.validatePredicate(${predicateCypher}, "${this.message}", [0])`;

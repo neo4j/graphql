@@ -22,7 +22,8 @@ import type { Node } from "../../../classes";
 import type { GraphQLSortArg, Context, CypherField, CypherFieldReferenceMap } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
-import createProjectionAndParams, { ProjectionMeta } from "../../create-projection-and-params";
+import type { ProjectionMeta } from "../../create-projection-and-params";
+import createProjectionAndParams from "../../create-projection-and-params";
 import { CompositeEntity } from "../../../schema-model/entity/CompositeEntity";
 
 interface Res {

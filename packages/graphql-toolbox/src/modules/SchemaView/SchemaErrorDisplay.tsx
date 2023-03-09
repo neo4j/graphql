@@ -18,7 +18,7 @@
  */
 
 import { Fragment } from "react";
-import { GraphQLError } from "graphql";
+import type { GraphQLError } from "graphql";
 
 interface Props {
     error: string | GraphQLError;

@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import {
+import type {
     DirectiveNode,
     DocumentNode,
     FieldDefinitionNode,
-    Kind,
     ObjectTypeDefinitionNode,
     UnionTypeDefinitionNode,
     ValueNode,
 } from "graphql";
+import { Kind } from "graphql";
 import { SCALAR_TYPES } from "../constants";
 import { getDefinitionNodes } from "../schema/get-definition-nodes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
