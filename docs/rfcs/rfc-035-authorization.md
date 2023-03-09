@@ -32,7 +32,7 @@ type AuthorizationConfig = {
 
 `AuthorizationConfig.verify` will be `true` by default, but can be set to `false` if the desired behaviour is to decode only.
 
-`AuthorizationConfig.verifyOptions` allows configuration of the JWT verify options in `jose`. It will simply passthrough the types used directly by `jose`.
+`AuthorizationConfig.verifyOptions` allows configuration of the JWT verify options in `jose`. It will simply passthrough the types used directly by `jose`. The `JWTVerifyOptions` and also the `RemoteJWKSetOptions` will need to be re-exported for TypeScript users.
 
 To configure auth with a symmetric secret "secret", the following can be executed:
 
@@ -342,7 +342,7 @@ enum AuthorizationValidateWhen {
   AFTER
 }
 
-input UserAuthorizationValidationRule {
+input UserAuthorizationValidateRule {
   operations: [AuthorizationValidateOperation!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   when: [AuthorizationValidateStage!]! = [BEFORE, AFTER]
   requireAuthentication: Boolean! = true
@@ -394,7 +394,7 @@ enum AuthorizationValidateWhen {
   AFTER
 }
 
-input PostAuthorizationValidationRule {
+input PostAuthorizationValidateRule {
   operations: [AuthorizationValidateOperation!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
   when: [AuthorizationValidateStage!]! = [BEFORE, AFTER]
   requireAuthentication: Boolean! = true
@@ -671,12 +671,12 @@ If, following the Mutation operation, the rule is not satisfied, an error "Unaut
 
 #### Before operations
 
-If a rule is only desired to run before operations, you will need to set `after` to an empty array:
+If a rule is only desired to run before operations, you can set the `when` value:
 
 ```gql
 type User
   @authorization(
-    validate: [{ after: [], where: { node: { id: "$jwt.sub" } } }]
+    validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
   ) {
   id: String!
   name: String!
@@ -716,12 +716,12 @@ If, following the user's filter application, the data to be returned does not sa
 
 #### After operations
 
-Like disabling `after` operations, you will need to do the same with `before` to run only after an operation:
+Similar to the above, you can set the `when` value to run only after an operation:
 
 ```gql
 type User
   @authorization(
-    validate: [{ before: [], where: { node: { id: "$jwt.sub" } } }]
+    validate: [{ when: [AFTER], where: { node: { id: "$jwt.sub" } } }]
   ) {
   id: String!
   name: String!
