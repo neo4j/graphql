@@ -18,7 +18,7 @@
  */
 
 import type { IResolvers } from "@graphql-tools/utils";
-import {
+import type {
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
@@ -26,9 +26,10 @@ import {
     SelectionSetNode,
     TypeNode,
     UnionTypeDefinitionNode,
+    FieldNode} from "graphql";
+import {
     Kind,
     parse,
-    FieldNode,
 } from "graphql";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { generateResolveTree } from "../translate/utils/resolveTree";

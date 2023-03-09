@@ -18,12 +18,13 @@
  */
 
 import { mergeSchemas } from "@graphql-tools/schema";
-import {
+import type {
     DocumentNode,
     GraphQLSchema,
     InterfaceTypeDefinitionNode,
+    ObjectTypeDefinitionNode} from "graphql";
+import {
     Kind,
-    ObjectTypeDefinitionNode,
     parse,
     validate,
 } from "graphql";

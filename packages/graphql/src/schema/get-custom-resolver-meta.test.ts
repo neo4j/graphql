@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import {
+import type {
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
-    UnionTypeDefinitionNode,
+    UnionTypeDefinitionNode} from "graphql";
+import {
     Kind,
 } from "graphql";
 import { generateResolveTree } from "../translate/utils/resolveTree";

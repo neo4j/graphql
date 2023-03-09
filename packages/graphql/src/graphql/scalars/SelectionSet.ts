@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { parse, ValueNode, GraphQLError, GraphQLScalarType, Kind } from "graphql";
+import type { ValueNode} from "graphql";
+import { parse, GraphQLError, GraphQLScalarType, Kind } from "graphql";
 
 export const GraphQLSelectionSet = new GraphQLScalarType({
     name: "SelectionSet",
