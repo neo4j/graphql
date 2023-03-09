@@ -4,22 +4,35 @@ This RFC documents the proposal to add new authorization functionality into the 
 
 ## Instantiation
 
-The following is a type proposal for auth configuration:
+Requirements gathered from the various methods of verifying JWTs using `jose`:
+
+* <https://github.com/panva/jose/blob/main/docs/functions/jwt_verify.jwtVerify.md>
+* <https://github.com/panva/jose/blob/main/docs/functions/jwks_remote.createRemoteJWKSet.md>
+
+For now we will support only secret keys and JWKS as we currently support, but objects for SPKI and JWK keys could be supported in future.
 
 ```ts
-type JWKS = {
-  uri: string;
+type RemoteJWKS = {
+  url: string | URL;
+  // https://github.com/panva/jose/blob/main/docs/functions/jwks_remote.createRemoteJWKSet.md
+  options: RemoteJWKSetOptions;
 }
 
+type Key = string | RemoteJWKS
+
 type AuthorizationConfig = {
-  secret: string | JWKS
+  key: Key | ((req: RequestLike) => Key);
   verify: boolean;
+  // https://github.com/panva/jose/blob/main/docs/interfaces/jwt_verify.JWTVerifyOptions.md
+  verifyOptions: JWTVerifyOptions;
 }
 ```
 
-`AuthorizationConfig.secret` will assume symmetric type if passed a string, or other types by passing in different objects. This will allow us to use the same configuration for a variety of secret types. `jose` also supports SPKI encoded RSA keys.
+`AuthorizationConfig.key` will assume symmetric type if passed a string, or other types by passing in different objects. This will allow us to use the same configuration for a variety of secret types. `jose` also supports SPKI encoded RSA keys. This can also be a function executed using the request context to return the same object.
 
 `AuthorizationConfig.verify` will be `true` by default, but can be set to `false` if the desired behaviour is to decode only.
+
+`AuthorizationConfig.verifyOptions` allows configuration of the JWT verify options in `jose`. It will simply passthrough the types used directly by `jose`.
 
 To configure auth with a symmetric secret "secret", the following can be executed:
 
@@ -28,7 +41,7 @@ new Neo4jGraphQL({
   typeDefs,
   features: {
     authorization: {
-      secret: "secret",
+      key: "secret",
     }
   }
 })
@@ -315,7 +328,7 @@ input UserAuthorizationFilterRule {
   where: UserAuthorizationWhere!
 }
 
-enum AuthorizationValidateBefore {
+enum AuthorizationValidateOperation {
   READ
   CREATE
   UPDATE
@@ -324,17 +337,14 @@ enum AuthorizationValidateBefore {
   DELETE_RELATIONSHIP
 }
 
-enum AuthorizationValidateAfter {
-  CREATE
-  UPDATE
-  DELETE
-  CREATE_RELATIONSHIP
-  DELETE_RELATIONSHIP
+enum AuthorizationValidateWhen {
+  BEFORE
+  AFTER
 }
 
-input UserAuthorizationFilterRule {
-  before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-  after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+input UserAuthorizationValidationRule {
+  operations: [AuthorizationValidateOperation!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  when: [AuthorizationValidateStage!]! = [BEFORE, AFTER]
   requireAuthentication: Boolean! = true
   where: UserAuthorizationWhere!
 }
@@ -370,7 +380,7 @@ input PostAuthorizationFilterRule {
   where: PostAuthorizationWhere!
 }
 
-enum AuthorizationValidateBefore {
+enum AuthorizationValidateOperation {
   READ
   CREATE
   UPDATE
@@ -379,17 +389,14 @@ enum AuthorizationValidateBefore {
   DELETE_RELATIONSHIP
 }
 
-enum AuthorizationValidateAfter {
-  CREATE
-  UPDATE
-  DELETE
-  CREATE_RELATIONSHIP
-  DELETE_RELATIONSHIP
+enum AuthorizationValidateWhen {
+  BEFORE
+  AFTER
 }
 
-input PostAuthorizationFilterRule {
-  before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-  after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+input PostAuthorizationValidationRule {
+  operations: [AuthorizationValidateOperation!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  when: [AuthorizationValidateStage!]! = [BEFORE, AFTER]
   requireAuthentication: Boolean! = true
   where: PostAuthorizationWhere!
 }
@@ -413,7 +420,7 @@ enum AuthorizationFilterOperation {
   DELETE_RELATIONSHIP
 }
 
-enum AuthorizationValidateBefore {
+enum AuthorizationValidateOperation {
   READ
   CREATE
   UPDATE
@@ -422,12 +429,9 @@ enum AuthorizationValidateBefore {
   DELETE_RELATIONSHIP
 }
 
-enum AuthorizationValidateAfter {
-  CREATE
-  UPDATE
-  DELETE
-  CREATE_RELATIONSHIP
-  DELETE_RELATIONSHIP
+enum AuthorizationValidateWhen {
+  BEFORE
+  AFTER
 }
 ```
 
@@ -448,9 +452,9 @@ input ${typename}AuthorizationFilterRule {
   where: ${typename}AuthorizationWhere!
 }
 
-input ${typename}AuthorizationFilterRule {
-  before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-  after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+input ${typename}AuthorizationValidateRule {
+  operations: [AuthorizationValidateOperation!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  when: [AuthorizationValidateStage!]! = [BEFORE, AFTER]
   requireAuthentication: Boolean! = true
   where: ${typename}AuthorizationWhere!
 }
@@ -512,9 +516,9 @@ input PostAuthorizationFilterRule {
   where: PostAuthorizationWhere!
 }
 
-input PostAuthorizationFilterRule {
-  before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-  after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+input PostAuthorizationValidateRule {
+  operations: [AuthorizationValidateOperation!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  when: [AuthorizationValidateStage!]! = [BEFORE, AFTER]
   requireAuthentication: Boolean! = true
   where: PostAuthorizationWhere!
 }
@@ -538,9 +542,9 @@ input UserAuthorizationFilterRule {
   where: UserAuthorizationWhere!
 }
 
-input UserAuthorizationFilterRule {
-  before: [AuthorizationValidateBefore!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-  after: [AuthorizationValidateAfter!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+input UserAuthorizationValidateRule {
+  operations: [AuthorizationValidateOperation!]! = [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+  when: [AuthorizationValidateStage!]! = [BEFORE, AFTER]
   requireAuthentication: Boolean! = true
   where: UserAuthorizationWhere!
 }
