@@ -388,7 +388,7 @@ describe("@auth allow with interface relationships", () => {
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:\`HAS_CONTENT\`]->(this_content_Comment0:Comment)
             WHERE this_content_Comment0.id = $this_deleteUsers_args_delete_content0_where_this_content_Comment0param0
             WITH this, this_content_Comment0, this_content_Comment0_relationship
-            CALL apoc.util.validate(NOT ((exists((this_content_Comment0)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_content_Comment0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content_Comment0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((exists((this_content_Comment0)<-[:\`HAS_CONTENT\`]-(:\`User\`)) AND any(auth_this0 IN [(this_content_Comment0)<-[:\`HAS_CONTENT\`]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content_Comment0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this_content_Comment0_relationship, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
             CALL {
             	WITH this_content_Comment0_to_delete
@@ -402,7 +402,7 @@ describe("@auth allow with interface relationships", () => {
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:\`HAS_CONTENT\`]->(this_content_Post0:Post)
             WHERE this_content_Post0.id = $this_deleteUsers_args_delete_content0_where_this_content_Post0param0
             WITH this, this_content_Post0, this_content_Post0_relationship
-            CALL apoc.util.validate(NOT ((exists((this_content_Post0)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_content_Post0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content_Post0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((exists((this_content_Post0)<-[:\`HAS_CONTENT\`]-(:\`User\`)) AND any(auth_this0 IN [(this_content_Post0)<-[:\`HAS_CONTENT\`]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content_Post0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this_content_Post0_relationship, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
             CALL {
             	WITH this_content_Post0_to_delete

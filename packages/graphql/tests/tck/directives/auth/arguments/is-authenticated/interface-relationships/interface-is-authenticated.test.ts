@@ -402,7 +402,7 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH *
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
+            OPTIONAL MATCH (this)-[this_content_Comment0_relationship:\`HAS_CONTENT\`]->(this_content_Comment0:Comment)
             WITH this, this_content_Comment0, this_content_Comment0_relationship
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this_content_Comment0_relationship, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
@@ -415,7 +415,7 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH *
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
+            OPTIONAL MATCH (this)-[this_content_Post0_relationship:\`HAS_CONTENT\`]->(this_content_Post0:Post)
             WITH this, this_content_Post0, this_content_Post0_relationship
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this_content_Post0_relationship, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete

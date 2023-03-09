@@ -789,7 +789,7 @@ describe("Cypher Auth Roles", () => {
             WITH *
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
+            OPTIONAL MATCH (this)-[this_posts0_relationship:\`HAS_POST\`]->(this_posts0:Post)
             WITH this, this_posts0, this_posts0_relationship
             CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete

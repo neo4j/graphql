@@ -85,10 +85,10 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
             WITH *
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_admins0_relationship:HAS_ADMINISTRATOR]->(this_admins0:Admin)
+            OPTIONAL MATCH (this)-[this_admins0_relationship:\`HAS_ADMINISTRATOR\`]->(this_admins0:Admin)
             CALL {
                 WITH this_admins0
-                MATCH (this_admins0)<-[this_deleteOrganizations_args_delete_admins0_where_this_admins0this1:HAS_ADMINISTRATOR]-(this_deleteOrganizations_args_delete_admins0_where_this_admins0this2:\`Organization\`)
+                MATCH (this_admins0)<-[this_deleteOrganizations_args_delete_admins0_where_this_admins0this1:\`HAS_ADMINISTRATOR\`]-(this_deleteOrganizations_args_delete_admins0_where_this_admins0this2:\`Organization\`)
                 RETURN count(this_deleteOrganizations_args_delete_admins0_where_this_admins0this2) = $this_deleteOrganizations_args_delete_admins0_where_this_admins0param0 AS this_deleteOrganizations_args_delete_admins0_where_this_admins0var0
             }
             WITH *, CASE this_deleteOrganizations_args_delete_admins0_where_this_admins0var0 = true

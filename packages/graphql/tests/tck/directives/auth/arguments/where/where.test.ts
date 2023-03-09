@@ -646,8 +646,8 @@ describe("Cypher Auth Where", () => {
             WITH *
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-            WHERE (exists((this_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0auth_param0)))
+            OPTIONAL MATCH (this)-[this_posts0_relationship:\`HAS_POST\`]->(this_posts0:Post)
+            WHERE (exists((this_posts0)<-[:\`HAS_POST\`]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0)<-[:\`HAS_POST\`]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0auth_param0)))
             WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete
             CALL {
             	WITH this_posts0_to_delete

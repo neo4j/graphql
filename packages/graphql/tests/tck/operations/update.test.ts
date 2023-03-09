@@ -784,18 +784,10 @@ describe("Cypher Update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.id = $param0
-            WITH this
-            CALL {
-            	WITH this
-            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
-            	SET this_actors0.name = $this_update_actors0_name
-            	RETURN count(*) AS update_this_actors0
-            }
             WITH *
             CALL {
             WITH this
-            OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
+            OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:\`ACTED_IN\`]-(this_delete_actors0:Actor)
             WHERE this_delete_actors0.name = $updateMovies_args_delete_actors0_where_this_delete_actors0param0
             WITH this_delete_actors0_relationship, collect(DISTINCT this_delete_actors0) AS this_delete_actors0_to_delete
             CALL {
@@ -803,6 +795,14 @@ describe("Cypher Update", () => {
             	UNWIND this_delete_actors0_to_delete AS x
             	DETACH DELETE x
             }
+            }
+            WITH this
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:\`ACTED_IN\`]-(this_actors0:Actor)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
+            	SET this_actors0.name = $this_update_actors0_name
+            	RETURN count(*) AS update_this_actors0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
