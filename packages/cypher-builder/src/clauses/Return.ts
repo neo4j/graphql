@@ -19,7 +19,8 @@
 
 import { WithOrder } from "./mixins/WithOrder";
 import { mixin } from "./utils/mixin";
-import { Projection, ProjectionColumn } from "./sub-clauses/Projection";
+import type { ProjectionColumn } from "./sub-clauses/Projection";
+import { Projection } from "./sub-clauses/Projection";
 import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";

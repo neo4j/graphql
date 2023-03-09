@@ -18,7 +18,8 @@
  */
 
 import pluralize from "pluralize";
-import { Neo4jGraphQLError, Node, Relationship } from "../classes";
+import type { Node, Relationship } from "../classes";
+import { Neo4jGraphQLError } from "../classes";
 import type { BaseField, Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";

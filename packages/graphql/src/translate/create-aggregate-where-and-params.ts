@@ -20,13 +20,15 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
 import type { RelationField, Context, GraphQLWhereArg, PredicateReturn } from "../types";
-import { aggregationFieldRegEx, AggregationFieldRegexGroups, whereRegEx } from "./where/utils";
+import type { AggregationFieldRegexGroups } from "./where/utils";
+import { aggregationFieldRegEx, whereRegEx } from "./where/utils";
 import {
     createBaseOperation,
     createComparisonOperation,
 } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
-import { getCypherLogicalOperator, isLogicalOperator, LogicalOperator } from "./utils/logical-operators";
+import type { LogicalOperator } from "./utils/logical-operators";
+import { getCypherLogicalOperator, isLogicalOperator } from "./utils/logical-operators";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { asArray } from "../utils/utils";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";

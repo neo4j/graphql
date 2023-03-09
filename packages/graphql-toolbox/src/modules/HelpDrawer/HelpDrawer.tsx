@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { Dispatch, Fragment, SetStateAction, useContext, useState } from "react";
-import { GraphQLSchema } from "graphql";
+import type { Dispatch, SetStateAction} from "react";
+import { Fragment, useContext, useState } from "react";
+import type { GraphQLSchema } from "graphql";
 import {
     ChatBubbleOvalLeftEllipsisIconOutline,
     ComputerDesktopIconOutline,

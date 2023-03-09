@@ -19,8 +19,8 @@
 
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../classes";
+import type { AuthContext } from "../types";
 import {
-    AuthContext,
     CypherConnectComponentsPlanner,
     CypherExpressionEngine,
     CypherInterpretedPipesFallback,

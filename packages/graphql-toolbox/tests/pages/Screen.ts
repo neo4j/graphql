@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 export abstract class Screen {
     page: Page;
