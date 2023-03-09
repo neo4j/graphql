@@ -95,16 +95,9 @@ function createDeleteAndParams({
                           }${index}`;
                     const relationshipVariable = `${variableName}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
-                    const withRelationshipStr = context.subscriptionsEnabled ? `, ${relationshipVariable}` : "";
-
-                    // if (withVars) {
-                    //     res.strs.push(`WITH ${withVars.join(", ")}`);
-                    // }
+                    const nodeToDelete = `${variableName}_to_delete`;
 
                     const labels = refNode.getLabelString(context);
-                    // res.strs.push(
-                    //     `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
-                    // );
 
                     const varsWithoutMeta = filterMetaVariable(withVars).join(", ");
                     innerStrs.push("WITH *");
@@ -144,17 +137,15 @@ function createDeleteAndParams({
                                 }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
                             });
                             if (whereCypher) {
-                                console.log("where cypher", innerStrs);
                                 whereStrs.push(whereCypher);
                                 res.params = { ...res.params, ...whereParams };
                                 if (preComputedSubqueries) {
-                                    console.log("preComputedSubqueries", preComputedSubqueries);
                                     innerStrs.push(preComputedSubqueries);
                                     aggregationWhere = true;
                                 }
                             }
                         } catch (err) {
-                            console.error("errorrr!", err);
+                            // console.error("errorrr!", err);
                             innerStrs.push(" \n}");
                             return;
                         }
@@ -185,12 +176,12 @@ function createDeleteAndParams({
                         }
                     }
 
-                    let whereStatements, authStatements;
-                    if (whereStrs.length) {
-                        whereStatements = new Cypher.RawCypher(() => {
-                            return `WHERE ${whereStrs.join(" AND ")}`;
-                        });
-                    }
+                    // let whereStatements, authStatements;
+                    // if (whereStrs.length) {
+                    //     whereStatements = new Cypher.RawCypher(() => {
+                    //         return `WHERE ${whereStrs.join(" AND ")}`;
+                    //     });
+                    // }
 
                     const allowAuth = createAuthAndParams({
                         entity: refNode,
@@ -202,7 +193,6 @@ function createDeleteAndParams({
                     if (allowAuth[0]) {
                         const quote = insideDoWhen ? `\\"` : `"`;
                         innerStrs.push(
-                            // `WITH ${[...filterMetaVariable(withVars), variableName, relationshipVariable].join(", ")}${withRelationshipStr}`
                             `WITH ${varsWithoutMeta}${
                                 context.subscriptionsEnabled ? ", meta" : ""
                             }, ${variableName}, ${relationshipVariable}`
@@ -289,20 +279,6 @@ function createDeleteAndParams({
                         }
                     }
 
-                    const nodeToDelete = `${variableName}_to_delete`;
-
-                    // res.strs.push(
-                    //     `WITH ${[...withVars, `collect(DISTINCT ${variableName}) AS ${nodeToDelete}`].join(
-                    //         ", "
-                    //     )}${withRelationshipStr}`
-                    // );
-
-                    /**
-                     * This ORDER BY is required to prevent hitting the "Node with id 2 has been deleted in this transaction"
-                     * bug. TODO - remove once the bug has bee fixed.
-                     */
-                    // if (aggregationWhere) res.strs.push(`ORDER BY ${nodeToDelete} DESC`);
-
                     if (context.subscriptionsEnabled) {
                         const metaObjectStr = createEventMetaObject({
                             event: "delete",
@@ -322,11 +298,11 @@ function createDeleteAndParams({
                             fromTypename,
                             toTypename,
                         });
-                        const reduceStr = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${metaObjectStr} + ${eventWithMetaStr}) AS ${META_CYPHER_VARIABLE}`;
-                        const eventMetaWithClause = new Cypher.RawCypher((env: Cypher.Environment) => {
-                            // return `${metaObjectStr} AS node_meta, x, ${relationshipVariable}, ${varsWithoutMeta}`;
-                            return `${[...filterMetaVariable(withVars), nodeToDelete].join(", ")}, ${reduceStr}`;
-                        });
+                        // const reduceStr = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${metaObjectStr} + ${eventWithMetaStr}) AS ${META_CYPHER_VARIABLE}`;
+                        // const eventMetaWithClause = new Cypher.RawCypher((env: Cypher.Environment) => {
+                        //     // return `${metaObjectStr} AS node_meta, x, ${relationshipVariable}, ${varsWithoutMeta}`;
+                        //     return `${[...filterMetaVariable(withVars), nodeToDelete].join(", ")}, ${reduceStr}`;
+                        // });
 
                         // --------------------------------------
                         /*
@@ -391,7 +367,6 @@ function createDeleteAndParams({
                         //  need relationshipVariable for disconnect meta
                         const statements = [
                             `WITH ${varsWithoutMeta}, meta, ${relationshipVariable}, collect(DISTINCT ${variableName}) AS ${nodeToDelete}`,
-                            // `${aggregationWhere ? `ORDER BY ${nodeToDelete} DESC` : ""}`,
                             "CALL {",
                             `\tWITH ${relationshipVariable}, ${nodeToDelete}, ${varsWithoutMeta}`,
                             `\tUNWIND ${nodeToDelete} AS x`,
@@ -410,14 +385,11 @@ function createDeleteAndParams({
                     } else {
                         const statements = [
                             `WITH ${relationshipVariable}, collect(DISTINCT ${variableName}) AS ${nodeToDelete}`,
-                            // `ORDER BY ${nodeToDelete} DESC`,
                             "CALL {",
                             `\tWITH ${nodeToDelete}`,
                             `\tUNWIND ${nodeToDelete} AS x`,
                             `\tDETACH DELETE x`,
-                            // `\tRETURN count(*) AS _`,
                             `}`,
-                            // `RETURN count(*) AS _${relationshipVariable}`,
                             `}`,
                         ];
                         innerStrs.push(...statements);
