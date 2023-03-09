@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { NamedReference, Reference } from "./Reference";
+import { Reference } from "./Reference";
+import type { NamedReference } from "./Reference";
 
 /** Reference to a path
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/patterns/#cypher-pattern-path-variables)
