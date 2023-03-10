@@ -121,7 +121,7 @@ export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
 export type { Order } from "./clauses/sub-clauses/OrderBy";
 export type { CompositeClause } from "./clauses/utils/concat";
-export type { CypherAggregationFunction } from "./expressions/functions/AggregationFunctions";
+export type { CypherAggregationFunction as AggregationFunction } from "./expressions/functions/AggregationFunctions";
 
 // utils
 // --Procedures

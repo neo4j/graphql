@@ -32,7 +32,7 @@ export function collectUnionSubqueriesResults({
 }): Cypher.Clause {
     const withSortClause = createWithSortAndPaginationClauses(resultVariable, optionsInput);
 
-    let returnProjection = Cypher.collect(resultVariable);
+    let returnProjection: Cypher.Function = Cypher.collect(resultVariable);
     if (!isArray) {
         returnProjection = Cypher.head(returnProjection);
     }
