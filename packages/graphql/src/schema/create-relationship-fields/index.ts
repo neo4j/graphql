@@ -347,7 +347,7 @@ function createRelationshipFields({
                     });
 
                     unionCreateFieldInput.addFields({
-                        [n.name]: `[${createName}!]`,
+                        [n.name]:  rel.typeMeta.array ? `[${createName}!]` : createName,
                     });
                 }
 
