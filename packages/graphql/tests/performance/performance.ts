@@ -65,6 +65,7 @@ const typeDefs = gql`
         likedBy: [User!]! @relationship(type: "LIKES", direction: IN)
         oneActorName: String
             @cypher(statement: "MATCH (this)<-[:ACTED_IN]-(a:Person) RETURN a.name AS name", columnName: "name")
+        favouriteActor: Person @relationship(type: "FAV", direction: OUT)
     }
 
     type User {

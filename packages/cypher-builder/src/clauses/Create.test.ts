@@ -89,4 +89,38 @@ describe("CypherBuilder Create", () => {
                 }
             `);
     });
+
+    test("Create Node with null property and assign path variable", () => {
+        const idParam = new Cypher.Param(null);
+        const testParam = new Cypher.Param(null);
+        const nullStringParam = new Cypher.Param("null");
+
+        const movieNode = new Cypher.Node({
+            labels: ["Movie"],
+        });
+
+        const properties = {
+            id: idParam,
+        };
+        const path = new Cypher.Path();
+        const createQuery = new Cypher.Create(new Cypher.Pattern(movieNode).withProperties(properties))
+            .assignToPath(path)
+            .set([movieNode.property("test"), testParam], [movieNode.property("nullStr"), nullStringParam])
+            .return(movieNode);
+
+        const queryResult = createQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "CREATE p0 = (this1:\`Movie\` { id: NULL })
+            SET
+                this1.test = NULL,
+                this1.nullStr = $param0
+            RETURN this1"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "null",
+                }
+            `);
+    });
 });
