@@ -36,4 +36,27 @@ describe("CypherBuilder CallProcedure", () => {
         expect(queryResult.cypher).toMatchInlineSnapshot(`"CALL apoc.util.validate(1 = 2, \\"My Message\\", [0])"`);
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
+
+    describe("CALL ... YIELD", () => {
+        test("Call procedure with yield *", () => {
+            const labelsProcedure = Cypher.db.labels();
+            const callClause = new Cypher.CallProcedure(labelsProcedure).yield("*");
+
+            const queryResult = callClause.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`"CALL db.labels() YIELD *"`);
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
+
+        test("Call procedure with yield columns", () => {
+            const labelsProcedure = Cypher.db.labels();
+            const callClause = new Cypher.CallProcedure(labelsProcedure).yield([
+                new Cypher.NamedVariable("label"),
+                "myLabels",
+            ]);
+
+            const queryResult = callClause.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`"CALL db.labels() YIELD label AS myLabels"`);
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
+    });
 });

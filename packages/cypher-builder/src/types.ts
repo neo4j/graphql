@@ -38,6 +38,7 @@ import type { Reference } from "./references/Reference";
 import type { ApocFunction, ApocPredicate, ApocProcedure } from "./apoc/types";
 import type { ListIndex } from "./expressions/list/ListIndex";
 import type { Path } from "./references/Path";
+import type { CypherProcedure } from "./procedures/CypherProcedure";
 
 export type Operation = BooleanOp | ComparisonOp | MathOp;
 
@@ -74,7 +75,7 @@ export type Predicate =
     | HasLabel;
 
 /** Represents a procedure, invocable with the CALL statement */
-export type Procedure = ApocProcedure;
+export type Procedure = ApocProcedure | CypherProcedure;
 
 export type CypherResult = {
     cypher: string;

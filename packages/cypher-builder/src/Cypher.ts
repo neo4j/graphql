@@ -47,9 +47,6 @@ export { Path, NamedPath } from "./references/Path";
 export { Exists } from "./expressions/Exists";
 export { Case } from "./expressions/Case";
 
-// --Procedures
-export * as db from "./procedures/db";
-
 // --Apoc
 export * as apoc from "./apoc/apoc";
 
@@ -115,6 +112,9 @@ export * from "./expressions/functions/PathFunctions";
 
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";
 
+// Procedures
+export * as db from "./procedures/db";
+
 // Types
 export type { CypherResult } from "./types";
 export type { PropertyRef } from "./references/PropertyRef";
@@ -128,7 +128,7 @@ export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
 export type { Order } from "./clauses/sub-clauses/OrderBy";
 export type { CompositeClause } from "./clauses/utils/concat";
+export type { CallProcedureYield } from "./clauses/CallProcedure";
 
 // utils
-// --Procedures
 export * as utils from "./utils/utils";

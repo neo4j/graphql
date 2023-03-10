@@ -20,6 +20,13 @@
 import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
 import type { Procedure } from "../types";
+import { asArray } from "../utils/as-array";
+import { WithReturn } from "./mixins/WithReturn";
+import { WithWhere } from "./mixins/WithWhere";
+import { mixin } from "./utils/mixin";
+import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
+import type { ProjectionColumn } from "./sub-clauses/Projection";
+import { Projection } from "./sub-clauses/Projection";
 
 // TODO: ADD yield, where and return
 /**
@@ -34,9 +41,44 @@ export class CallProcedure extends Clause {
         this.procedure = procedure;
     }
 
+    public yield(...columns: Array<"*" | ProjectionColumn>): CallProcedureYield {
+        if (columns.length === 0) throw new Error("Empty projection in CALL ... YIELD");
+        return new CallProcedureYield(this, columns);
+    }
+
     /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const procedureCypher = this.procedure.getCypher(env);
         return `CALL ${procedureCypher}`;
+    }
+}
+
+export interface CallProcedureYield extends WithReturn, WithWhere {}
+
+@mixin(WithReturn, WithWhere)
+export class CallProcedureYield extends Clause {
+    private callProcedure: CallProcedure;
+    private projection: Projection;
+
+    constructor(call: CallProcedure, yieldColumns: Array<"*" | ProjectionColumn>) {
+        super();
+        this.callProcedure = call;
+
+        const columns = asArray<ProjectionColumn | "*">(yieldColumns);
+        this.projection = new Projection(columns);
+    }
+
+    /** @internal */
+    public getCypher(env: CypherEnvironment): string {
+        const whereStr = compileCypherIfExists(this.whereSubClause, env, {
+            prefix: "\n",
+        });
+        const returnStr = compileCypherIfExists(this.returnStatement, env, {
+            prefix: "\n",
+        });
+        const callProcedureStr = this.callProcedure.getCypher(env);
+        const yieldProjectionStr = this.projection.getCypher(env);
+
+        return `${callProcedureStr} YIELD ${yieldProjectionStr}${whereStr}${returnStr}`;
     }
 }

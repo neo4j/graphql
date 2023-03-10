@@ -26,6 +26,7 @@ import { mixin } from "../clauses/utils/mixin";
 import type { Variable } from "../references/Variable";
 import type { Predicate } from "../types";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
+import { CypherProcedure } from "./CypherProcedure";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface FullTextQueryNodes extends WithReturn {}
@@ -36,6 +37,7 @@ export interface FullTextQueryNodes extends WithReturn {}
  */
 @mixin(WithReturn)
 export class FullTextQueryNodes extends Clause {
+    // TODO: this should be a function and use the call procedure yield instead
     private targetNode: NodeRef;
     private indexName: string;
     private phrase: Variable;
@@ -74,4 +76,8 @@ export class FullTextQueryNodes extends Clause {
 
         return `${textSearchStr}${whereStr}${returnStr}`;
     }
+}
+
+export function labels(): CypherProcedure {
+    return new CypherProcedure("db.labels");
 }
