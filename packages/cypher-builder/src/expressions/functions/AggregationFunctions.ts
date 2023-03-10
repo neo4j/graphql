@@ -24,6 +24,10 @@ import { CypherFunction } from "./CypherFunctions";
 export class CypherAggregationFunction extends CypherFunction {
     private hasDistinct = false;
 
+    constructor(name: string, param: Expr) {
+        super(name, [param]);
+    }
+
     /**
      * Adds DISTINCT to remove duplicates on the aggregation functions
      * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#_counting_with_and_without_duplicates)
@@ -48,7 +52,7 @@ export class CypherAggregationFunction extends CypherFunction {
  * @category Cypher Functions
  */
 export function count(expr: Expr): CypherAggregationFunction {
-    return new CypherAggregationFunction("count", [expr]);
+    return new CypherAggregationFunction("count", expr);
 }
 
 /**
@@ -57,7 +61,7 @@ export function count(expr: Expr): CypherAggregationFunction {
  * @category Cypher Functions
  */
 export function min(expr: Expr): CypherAggregationFunction {
-    return new CypherAggregationFunction("min", [expr]);
+    return new CypherAggregationFunction("min", expr);
 }
 
 /**
@@ -66,7 +70,7 @@ export function min(expr: Expr): CypherAggregationFunction {
  * @category Cypher Functions
  */
 export function max(expr: Expr): CypherAggregationFunction {
-    return new CypherAggregationFunction("max", [expr]);
+    return new CypherAggregationFunction("max", expr);
 }
 
 /**
@@ -75,7 +79,7 @@ export function max(expr: Expr): CypherAggregationFunction {
  * @category Cypher Functions
  */
 export function avg(expr: Expr): CypherAggregationFunction {
-    return new CypherAggregationFunction("avg", [expr]);
+    return new CypherAggregationFunction("avg", expr);
 }
 
 /**
@@ -84,7 +88,7 @@ export function avg(expr: Expr): CypherAggregationFunction {
  * @category Cypher Functions
  */
 export function sum(expr: Expr): CypherAggregationFunction {
-    return new CypherAggregationFunction("sum", [expr]);
+    return new CypherAggregationFunction("sum", expr);
 }
 
 /**
@@ -93,5 +97,5 @@ export function sum(expr: Expr): CypherAggregationFunction {
  * @category Cypher Functions
  */
 export function collect(expr: Expr): CypherAggregationFunction {
-    return new CypherAggregationFunction("collect", [expr]);
+    return new CypherAggregationFunction("collect", expr);
 }
