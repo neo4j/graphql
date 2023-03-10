@@ -103,12 +103,27 @@ new Neo4jGraphQL({
 });
 ----
 
+[[customResolver-checks]]
 ==== Checks for custom resolvers
 
 Previously, if no custom resolver was specified for a `@computed` field when creating an instance of Neo4jGraphQL, no errors would be thrown when generating the schema.
 However, it is likely that the lack of a custom resolver would lead to errors at runtime. It is preferable to fail fast in this case as it is easier to debug and makes it less likely that bugs will make it into production.
 
 As a result, checks are now performed to ensure that every `@customResolver` field has a custom resolver provided. If not the library will throw an error during schema generation.
+
+These checks may not always be required or desirable. If this is the case, they can be disabled using the new xref::guides/v4-migration/index.adoc#startup-validation[`startupValidation`] config option:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+          resolvers: false
+        },
+    },
+})
+----
 
 [plural-migration]
 === `plural` argument removed from `@node` and replaced with `@plural`
@@ -131,6 +146,64 @@ It would need to be updated to use the new directive as below:
 ----
 type Tech @node(label: "TechDB") @plural(value: "Techs") {
   name: String
+}
+----
+
+[label-migration]
+=== `label` and `additionalLabels` arguments removed from `@node` and replaced with new argument `labels`
+
+There is no concept of a "main label" in the Neo4j database. As such, keeping these two separate arguments causes a disconnect between the database and the GraphQL library.
+As a result, the `label` and `additionalLabels` arguments have been condensed into a single argument `labels` which will accept a list of string labels that used when a node of the given GraphQL type is created.
+Please note that defining `labels` means you take control of the database labels of the node. Indexes and constraints in Neo4j only support a single label, for which the first element of the `labels` argument will be used.
+
+The equivalent of using just the `label` argument is now a list with a single value:
+
+[source, graphql, indent=0]
+----
+type Tech @node(label: "TechDB") {
+  name: String
+}
+# becomes
+type Tech @node(labels: ["TechDB"]) {
+  name: String
+}
+----
+
+When creating the equivalent of using just the `additionalLabels` argument now requires the first value in the list to be the GraphQL type name:
+
+[source, graphql, indent=0]
+----
+type Tech @node(additionalLabels: ["TechDB"]) {
+  name: String
+}
+# becomes
+type Tech @node(labels: ["Tech", "TechDB"]) {
+  name: String
+}
+----
+
+The equivalent of using both deprecated arguments is a list with all the values concatenated:
+
+[source, graphql, indent=0]
+----
+type Tech @node(label: "TechDB", additionalLabels: ["AwesomeTech"]) {
+  name: String
+}
+# becomes
+type Tech @node(labels: ["TechDB", "AwesomeTech"]) {
+  name: String
+}
+----
+
+As before, providing none of these arguments results in the node label being the same as the GraphQL type name. 
+
+Please note the implications on constraints.
+In the following example, a unique constraint will be asserted for the label `Tech` and the property `name`:
+
+[source, graphql, indent=0]
+----
+type Tech @node(labels: ["Tech", "TechDB"]) {
+  name: String @unique
 }
 ----
 
@@ -338,3 +411,52 @@ type query {
 ----
 
 Additionally, escaping strings is no longer needed.
+
+
+== Miscellaneous changes
+
+[[startup-validation]]
+=== Startup validation
+
+In version 4.0.0, startup xref::guides/v4-migration/index.adoc#customResolver-checks[checks for custom resolvers] have been added. As a result, a new configuration option has been added that can disable these checks.
+This new option has been combined with the option to `skipValidateTypeDefs`. As a result, `skipValidateTypeDefs` will be removed and replaced by `startupValidation`.
+
+To only disable strict type definition validation, the following config option should be used:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+          typeDefs: false
+        },
+    },
+})
+----
+
+To only disable checks for custom resolvers, the following config option should be used:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+          resolvers: false
+        },
+    },
+})
+----
+
+To disable all startup checks, the following config option should be used:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: false,
+    },
+})
+----

@@ -23,10 +23,10 @@ import { gql } from "apollo-server";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 
-import { generateUniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import type { ArrayPushTest } from "./types";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("array-push", () => {
     let driver: Driver;
@@ -54,8 +54,11 @@ describe("array-push", () => {
     const expectedDateOutput = date.split("T")[0];
     const time = faker.date.past().toISOString().split("T")[1];
     const expectedTimeOutput = `${time.slice(0, -1)}000000Z`;
-    const localTime = `${faker.date.past().toISOString().split("T")[1].split("Z")[0]}000000`;
-    const localDateTime = `${faker.date.past().toISOString().split("Z")[0]}000000`;
+    const localTime = `${faker.date.past().toISOString().split("T")[1].split("Z")[0]}`;
+    const localDateTime = `${faker.date.past().toISOString().split("Z")[0]}`;
+    // Expected localTime and localDateTime may cause flakiness with the ms precision.
+    const expectedLocalTime = expect.stringContaining(localTime);
+    const expectedLocalDateTime = expect.stringContaining(localDateTime);
 
     test.each<ArrayPushTest>([
         { description: "a single Int element", inputType: "Int", inputValue: 100, expectedOutputValue: [100] },
@@ -183,19 +186,19 @@ describe("array-push", () => {
             description: "a single LocalTime element",
             inputType: "LocalTime",
             inputValue: `"${localTime}"`,
-            expectedOutputValue: [localTime],
+            expectedOutputValue: [expectedLocalTime],
         },
         {
             description: "a single LocalTime element in an array",
             inputType: "LocalTime",
             inputValue: `["${localTime}"]`,
-            expectedOutputValue: [localTime],
+            expectedOutputValue: [expectedLocalTime],
         },
         {
             description: "multiple LocalTime elements",
             inputType: "LocalTime",
             inputValue: `["${localTime}", "${localTime}"]`,
-            expectedOutputValue: [localTime, localTime],
+            expectedOutputValue: [expectedLocalTime, expectedLocalTime],
         },
         {
             description: "a single DateTime element",
@@ -219,22 +222,22 @@ describe("array-push", () => {
             description: "a single LocalDateTime element",
             inputType: "LocalDateTime",
             inputValue: `"${localDateTime}"`,
-            expectedOutputValue: [localDateTime],
+            expectedOutputValue: [expectedLocalDateTime],
         },
         {
             description: "a single LocalDateTime element in an array",
             inputType: "LocalDateTime",
             inputValue: `["${localDateTime}"]`,
-            expectedOutputValue: [localDateTime],
+            expectedOutputValue: [expectedLocalDateTime],
         },
         {
             description: "multiple LocalDateTime elements",
             inputType: "LocalDateTime",
             inputValue: `["${localDateTime}", "${localDateTime}"]`,
-            expectedOutputValue: [localDateTime, localDateTime],
+            expectedOutputValue: [expectedLocalDateTime, expectedLocalDateTime],
         },
     ])("should push $description on to an existing array", async ({ inputType, inputValue, expectedOutputValue }) => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -309,7 +312,7 @@ describe("array-push", () => {
             expectedOutputValue: [point, point],
         },
     ])("should push $description on to an existing array", async ({ inputType, inputValue, expectedOutputValue }) => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -388,7 +391,7 @@ describe("array-push", () => {
             expectedOutputValue: [cartesianPoint, cartesianPoint],
         },
     ])("should push $description on to an existing array", async ({ inputType, inputValue, expectedOutputValue }) => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -442,7 +445,7 @@ describe("array-push", () => {
     });
 
     test("should push to two different arrays in the same update", async () => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -495,8 +498,8 @@ describe("array-push", () => {
 
     test("should be able to push in a nested update", async () => {
         const actorName = "Luigino";
-        const movie = generateUniqueType("Movie");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const actor = new UniqueType("Actor");
         const typeDefs = `
             type ${movie.name} {
                 viewers: [Int]!
@@ -567,8 +570,8 @@ describe("array-push", () => {
     test("should be possible to update relationship properties", async () => {
         const initialPay = 100;
         const payIncrement = 50;
-        const movie = generateUniqueType("Movie");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const actor = new UniqueType("Actor");
         const typeDefs = `
             type ${movie.name} {
                 title: String
@@ -651,8 +654,8 @@ describe("array-push", () => {
     });
 
     test("should be possible to update Point relationship properties", async () => {
-        const movie = generateUniqueType("Movie");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const actor = new UniqueType("Actor");
         const typeDefs = `
             type ${movie.name} {
                 title: String

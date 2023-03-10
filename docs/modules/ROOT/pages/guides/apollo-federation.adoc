@@ -1,0 +1,176 @@
+[[apollo-federation]]
+= Apollo Federation - beta
+
+WARNING: Apollo Federation is currently experimental. There will be missing functionality, and breaking changes may occur in patch and minor releases. It is not recommended to use it in a production environment.
+
+The Neo4j GraphQL Library can be used to generate a subgraph schema to be used as a part of a federated supergraph using https://www.apollographql.com/apollo-federation/[Apollo Federation].
+
+== Usage
+
+This section will walk through setting up some example subgraphs using the Neo4j GraphQL Library, and composing them into a supergraph schema.
+
+=== Prerequisites
+
+Install Rover from Apollo by following their https://www.apollographql.com/docs/rover/getting-started[installation instructions].
+
+The example subgraphs below assume that the database URI is stored in an environment variable "NEO4J_URI", and the password in "NEO4J_PASSWORD".
+
+Create a new directory, and within it, run the following commands to start a new npm project and install the dependencies:
+
+[source, bash, indent=0]
+----
+npm init --yes
+npm install @apollo/server @neo4j/graphql graphql-tag neo4j-driver
+----
+
+=== Example subgraphs
+
+NOTE: In the two subgraphs below, notice that `@shareable` has been applied to both of the `Location` definitions.
+This is a necessary workaround because the Neo4j GraphQL Library generates identically named types for the `Location` definitions, which causes a collision when the Gateway stitches the two federated schemas.
+
+==== Locations
+
+Create a file `locations.js` with the following contents:
+
+[source, javascript, indent=0]
+----
+const { ApolloServer } = require("@apollo/server");
+const { startStandaloneServer } = require("@apollo/server/standalone");
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const gql = require("graphql-tag");
+const neo4j = require("neo4j-driver");
+
+const typeDefs = gql`
+  extend schema
+    @link(url: "https://specs.apollo.dev/federation/v2.0",
+          import: ["@key", "@shareable"])
+
+  type Location @key(fields: "id") @shareable {
+    id: ID!
+    "The name of the location"
+    name: String!
+    "A short description about the location"
+    description: String!
+    "The location's main photo as a URL"
+    photo: String!
+  }
+`;
+
+const driver = neo4j.driver(
+  process.env.NEO4J_URI,
+  neo4j.auth.basic("neo4j", process.env.NEO4J_PASSWORD)
+);
+
+const neo4jgraphql = new Neo4jGraphQL({
+  typeDefs,
+  driver,
+});
+
+neo4jgraphql.getSubgraphSchema().then((schema) => {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+  });
+
+  startStandaloneServer(server, { listen: { port: 4001 } }).then((url) => {
+    console.log(`🚀  Server ready at ${url}`);
+  });
+});
+----
+
+Start this server by running `node locations.js`.
+
+==== Reviews
+
+Create a file `reviews.js` with the following contents:
+
+[source, javascript, indent=0]
+----
+const { ApolloServer } = require("@apollo/server");
+const { startStandaloneServer } = require("@apollo/server/standalone");
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const gql = require("graphql-tag");
+const neo4j = require("neo4j-driver");
+
+const typeDefs = gql`
+  extend schema
+    @link(url: "https://specs.apollo.dev/federation/v2.0",
+          import: ["@key", "@shareable"])
+
+  type Location @key(fields: "id") @shareable {
+    id: ID!
+    "The calculated overall rating based on all reviews"
+    overallRating: Float
+    "All submitted reviews about this location"
+    reviewsForLocation: [Review]!
+  }
+
+  type Review {
+    id: ID!
+    "Written text"
+    comment: String
+    "A number from 1 - 5 with 1 being lowest and 5 being highest"
+    rating: Int
+    "The location the review is about"
+    location: Location! @relationship(type: "HAS_REVIEW", direction: IN)
+  }
+`;
+
+const driver = neo4j.driver(
+  process.env.NEO4J_URI,
+  neo4j.auth.basic("neo4j", process.env.NEO4J_PASSWORD)
+);
+
+const neo4jgraphql = new Neo4jGraphQL({
+  typeDefs,
+  driver,
+});
+
+neo4jgraphql.getSubgraphSchema().then((schema) => {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+  });
+
+  startStandaloneServer(server, { listen: { port: 4002 } }).then((url) => {
+    console.log(`🚀  Server ready at ${url}`);
+  });
+});
+----
+
+Start this server by running `node reviews.js`.
+
+=== Supergraph composition
+
+Create a new file, `supergraph.yaml`
+
+[source, yaml, indent=0]
+----
+federation_version: 2
+subgraphs:
+  locations:
+    routing_url: http://localhost:4001/
+    schema:
+      subgraph_url: http://localhost:4001/
+  reviews:
+    routing_url: http://localhost:4002/
+    schema:
+      subgraph_url: http://localhost:4002/
+----
+
+In the same directory, execute the following command to generate the supergraph schema:
+
+[source, bash, indent=0]
+----
+rover supergraph compose --config supergraph.yaml > supergraph.graphql
+----
+
+Finally, execute the following commands to download Apollo Router and start the supergraph server:
+
+[source, bash, indent=0]
+----
+curl -sSL https://router.apollo.dev/download/nix/latest | sh
+./router --dev --supergraph supergraph.graphql
+----
+
+You should now be able to navigate to http://127.0.0.1:4000/ in a web browser to access Apollo Sandbox and query the supergraph.

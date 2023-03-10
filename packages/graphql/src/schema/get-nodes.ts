@@ -19,6 +19,7 @@
 
 import type { IResolvers } from "@graphql-tools/utils";
 import type { DirectiveNode, NamedTypeNode } from "graphql";
+import { Kind } from "graphql";
 import type { Exclude } from "../classes";
 import { Node } from "../classes";
 import type { NodeDirective } from "../classes/NodeDirective";
@@ -45,7 +46,11 @@ type Nodes = {
 
 function getNodes(
     definitionNodes: DefinitionNodes,
-    options: { callbacks?: Neo4jGraphQLCallbacks; userCustomResolvers?: IResolvers | Array<IResolvers> }
+    options: {
+        callbacks?: Neo4jGraphQLCallbacks;
+        userCustomResolvers?: IResolvers | Array<IResolvers>;
+        validateResolvers: boolean;
+    }
 ): Nodes {
     let pointInTypeDefs = false;
     let cartesianPointInTypeDefs = false;
@@ -56,8 +61,20 @@ function getNodes(
 
     const nodes = definitionNodes.objectTypes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node", "fulltext", "queryOptions", "plural"].includes(x.name.value)
+            (x) =>
+                !["auth", "exclude", "node", "fulltext", "queryOptions", "plural", "shareable", "deprecated"].includes(
+                    x.name.value
+                )
         );
+        const propagatedDirectives = (definition.directives || []).filter((x) =>
+            ["deprecated", "shareable"].includes(x.name.value)
+        );
+        let resolvable = true;
+        const keyDirective = (definition.directives || []).find((x) => x.name.value === "key");
+        const resolvableArgument = (keyDirective?.arguments || []).find((x) => x.name.value === "resolvable");
+        if (resolvableArgument?.value.kind === Kind.BOOLEAN && resolvableArgument.value.value === false) {
+            resolvable = false;
+        }
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
@@ -134,6 +151,7 @@ function getNodes(
             unions: definitionNodes.unionTypes,
             callbacks: options.callbacks,
             customResolvers,
+            validateResolvers: options.validateResolvers,
         });
 
         // Ensure that all required fields are returning either a scalar type or an enum
@@ -233,6 +251,7 @@ function getNodes(
             name: definition.name.value,
             interfaces: nodeInterfaces,
             otherDirectives,
+            propagatedDirectives,
             ...nodeFields,
             // @ts-ignore we can be sure it's defined
             auth,
@@ -248,6 +267,7 @@ function getNodes(
             globalIdField: globalIdField?.fieldName,
             globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
             plural: parsePluralDirective(pluralDirectiveDefinition),
+            federationResolvable: resolvable,
         });
 
         return node;

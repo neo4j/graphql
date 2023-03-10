@@ -18,11 +18,13 @@
  */
 
 import { useCallback, useState, useRef, useEffect, useContext, Fragment } from "react";
-import { graphql, GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
-import { Button, HeroIcon, IconButton, Switch } from "@neo4j-ndl/react";
-import tokens from "@neo4j-ndl/base/lib/tokens/js/tokens";
-import { EditorFromTextArea } from "codemirror";
+import { Button, IconButton, Switch } from "@neo4j-ndl/react";
+import { PlayIconOutline } from "@neo4j-ndl/react/icons";
+import { tokens } from "@neo4j-ndl/base";
+import type { EditorFromTextArea } from "codemirror";
 import debounce from "lodash.debounce";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
@@ -208,7 +210,7 @@ export const Editor = ({ schema }: Props) => {
                                                         className="mr-2"
                                                         color="neutral"
                                                         fill="outlined"
-                                                        buttonSize="small"
+                                                        size="small"
                                                         onClick={formatTheCode}
                                                         disabled={loading}
                                                     >
@@ -223,12 +225,10 @@ export const Editor = ({ schema }: Props) => {
                                                         onClick={() => onSubmit()}
                                                         disabled={!schema || loading}
                                                     >
-                                                        <HeroIcon
+                                                        <PlayIconOutline
                                                             style={{
                                                                 color: tokens.colors.primary[50],
                                                             }}
-                                                            iconName="PlayIcon"
-                                                            type="outline"
                                                         />
                                                     </IconButton>
                                                 </Fragment>

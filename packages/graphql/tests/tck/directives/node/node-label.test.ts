@@ -31,12 +31,12 @@ describe("Label in Node directive", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Actor @node(label: "Person") {
+            type Actor @node(labels: ["Person"]) {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
-            type Movie @node(label: "Film") {
+            type Movie @node(labels: ["Film"]) {
                 id: ID
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -97,11 +97,11 @@ describe("Label in Node directive", () => {
             "MATCH (this:\`Film\`)
             CALL {
                 WITH this
-                MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
-                WITH this_actors { .name } AS this_actors
-                RETURN collect(this_actors) AS this_actors
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                WITH this1 { .name } AS this1
+                RETURN collect(this1) AS var2
             }
-            RETURN this { .title, actors: this_actors } AS this"
+            RETURN this { .title, actors: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -132,13 +132,13 @@ describe("Label in Node directive", () => {
             "MATCH (this:\`Film\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Person\`)
-                WITH { node: { name: this_Actor.name } } AS edge
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                WITH { node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -161,15 +161,15 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Film\`)
+                WITH create_var0
+                CREATE (create_this1:\`Film\`)
                 SET
-                    create_this0.id = create_var1.id
-                RETURN create_this0
+                    create_this1.id = create_var0.id
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id }) AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -206,26 +206,26 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Film\`)
+                WITH create_var0
+                CREATE (create_this1:\`Film\`)
                 SET
-                    create_this0.id = create_var1.id
-                WITH create_this0, create_var1
+                    create_this1.id = create_var0.id
+                WITH create_this1, create_var0
                 CALL {
-                    WITH create_this0, create_var1
-                    UNWIND create_var1.actors.create AS create_var2
-                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                    WITH create_this1, create_var0
+                    UNWIND create_var0.actors.create AS create_var2
+                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
                     CREATE (create_this5:\`Person\`)
                     SET
                         create_this5.name = create_var3.name
-                    MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
+                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
                     RETURN collect(NULL) AS create_var7
                 }
-                RETURN create_this0
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id }) AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -318,28 +318,21 @@ describe("Label in Node directive", () => {
             "MATCH (this:\`Film\`)
             WHERE this.id = $param0
             WITH this
-            OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
-            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
-            CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
-            SET this_actors0.name = $this_update_actors0_name
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-            YIELD value AS _
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
+            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
+            	SET this_actors0.name = $this_update_actors0_name
+            	RETURN count(*) AS update_this_actors0
+            }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"old name\\",
+                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"old name\\",
                 \\"this_update_actors0_name\\": \\"new name\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
-                },
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -440,7 +433,7 @@ describe("Label in Node directive", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:\`Person\`)
-            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
+            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actor_this_disconnect_actors0param0
             CALL {
             	WITH this_disconnect_actors0, this_disconnect_actors0_rel, this
             	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel, this
@@ -457,7 +450,7 @@ describe("Label in Node directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_disconnect_actors0_where_Actorparam0\\": \\"Daniel\\",
+                \\"updateMovies_args_disconnect_actors0_where_Actor_this_disconnect_actors0param0\\": \\"Daniel\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -524,7 +517,7 @@ describe("Label in Node directive", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
-            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
+            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
             WITH this, collect(DISTINCT this_actors0) AS this_actors0_to_delete
             CALL {
             	WITH this_actors0_to_delete
@@ -553,7 +546,7 @@ describe("Label in Node directive", () => {
                         }
                     }
                 },
-                \\"this_deleteMovies_args_delete_actors0_where_Actorparam0\\": \\"Actor to delete\\"
+                \\"this_deleteMovies_args_delete_actors0_where_this_actors0param0\\": \\"Actor to delete\\"
             }"
         `);
     });
@@ -575,7 +568,7 @@ describe("Label in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
             WHERE EXISTS {
-                MATCH (this0:\`Person\`)-[:ACTED_IN]->(this)
+                MATCH (this)<-[:ACTED_IN]-(this0:\`Person\`)
                 WHERE this0.name = $param0
             }
             DETACH DELETE this"

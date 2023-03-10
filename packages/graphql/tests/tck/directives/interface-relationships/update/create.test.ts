@@ -96,21 +96,23 @@ describe("Interface Relationships - Update create", () => {
             MERGE (this)-[this_create_actedIn_Movie0_relationship:ACTED_IN]->(this_create_actedIn_Movie0_node_Movie)
             SET this_create_actedIn_Movie0_relationship.screenTime = $this_create_actedIn_Movie0_relationship_screenTime
             WITH *
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(this_Movie:\`Movie\`)
-                RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS this_actedIn
-                UNION
-                WITH this
-                MATCH (this)-[update_this1:ACTED_IN]->(this_Series:\`Series\`)
-                RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS this_actedIn
+                CALL {
+                    WITH *
+                    MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                    WITH update_this1 { __resolveType: \\"Movie\\", __id: id(this), .runtime, .title } AS update_this1
+                    RETURN update_this1 AS update_var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[update_this3:ACTED_IN]->(update_this4:\`Series\`)
+                    WITH update_this4 { __resolveType: \\"Series\\", __id: id(this), .episodes, .title } AS update_this4
+                    RETURN update_this4 AS update_var2
+                }
+                WITH update_var2
+                RETURN collect(update_var2) AS update_var2
             }
-            RETURN collect(this_actedIn) AS this_actedIn
-            }
-            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: update_var2 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

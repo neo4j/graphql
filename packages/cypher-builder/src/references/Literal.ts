@@ -31,6 +31,7 @@ export class Literal<T extends LiteralValue = any> implements CypherCompilable {
         this.value = value;
     }
 
+    /** @internal */
     public getCypher(): string {
         return this.formatLiteralValue(this.value);
     }

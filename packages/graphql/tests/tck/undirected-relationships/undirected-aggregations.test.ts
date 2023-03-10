@@ -64,10 +64,10 @@ describe("Undirected Aggregations", () => {
             "MATCH (this:\`User\`)
             CALL {
                 WITH this
-                MATCH (this)-[this_friendsAggregate_this0:FRIENDS_WITH]-(this_friendsAggregate_this1:\`User\`)
-                RETURN count(this) AS this_friendsAggregate_var2
+                MATCH (this)-[this0:FRIENDS_WITH]-(this1:\`User\`)
+                RETURN count(this1) AS var2
             }
-            RETURN this { friendsAggregate: { count: this_friendsAggregate_var2 } } AS this"
+            RETURN this { friendsAggregate: { count: var2 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

@@ -20,10 +20,10 @@
 import { useCallback, useContext, useRef, useState } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
-import { Alert } from "@neo4j-ndl/react";
-import { GraphQLError, GraphQLSchema } from "graphql";
+import { Banner } from "@neo4j-ndl/react";
+import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
-import { EditorFromTextArea } from "codemirror";
+import type { EditorFromTextArea } from "codemirror";
 import {
     DEFAULT_DATABASE_NAME,
     LOCAL_STATE_CONSTRAINT,
@@ -43,7 +43,8 @@ import { SchemaSettings } from "./SchemaSettings";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { ActionElementsBar } from "./ActionElementsBar";
 import { SchemaEditor } from "./SchemaEditor";
-import { ConstraintState, Favorite } from "../../types";
+import type { Favorite } from "../../types";
+import { ConstraintState } from "../../types";
 import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
 import { tracking } from "../../analytics/tracking";
@@ -233,7 +234,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                                 saveAsFavorite={saveAsFavorite}
                             />
                             {!appSettings.hideProductUsageMessage ? (
-                                <Alert
+                                <Banner
                                     className="absolute bottom-7 ml-4 w-[57rem] z-40"
                                     closeable
                                     name="ProductUsageMessage"

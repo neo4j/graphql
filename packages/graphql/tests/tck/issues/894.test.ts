@@ -72,6 +72,20 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             WHERE this.name = $param0
             WITH this
             CALL {
+            WITH this
+            OPTIONAL MATCH (this)-[this_disconnect_activeOrganization0_rel:ACTIVELY_MANAGING]->(this_disconnect_activeOrganization0:Organization)
+            WHERE NOT (this_disconnect_activeOrganization0._id = $updateUsers_args_disconnect_activeOrganization_where_Organization_this_disconnect_activeOrganization0param0)
+            CALL {
+            	WITH this_disconnect_activeOrganization0, this_disconnect_activeOrganization0_rel, this
+            	WITH collect(this_disconnect_activeOrganization0) as this_disconnect_activeOrganization0, this_disconnect_activeOrganization0_rel, this
+            	UNWIND this_disconnect_activeOrganization0 as x
+            	DELETE this_disconnect_activeOrganization0_rel
+            	RETURN count(*) AS _
+            }
+            RETURN count(*) AS disconnect_this_disconnect_activeOrganization_Organization
+            }
+            WITH this
+            CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_activeOrganization0_node:Organization)
             	WHERE this_connect_activeOrganization0_node._id = $this_connect_activeOrganization0_node_param0
@@ -90,20 +104,6 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             WITH this, this_connect_activeOrganization0_node
             	RETURN count(*) AS connect_this_connect_activeOrganization_Organization
             }
-            WITH this
-            CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_activeOrganization0_rel:ACTIVELY_MANAGING]->(this_disconnect_activeOrganization0:Organization)
-            WHERE NOT (this_disconnect_activeOrganization0._id = $updateUsers_args_disconnect_activeOrganization_where_Organizationparam0)
-            CALL {
-            	WITH this_disconnect_activeOrganization0, this_disconnect_activeOrganization0_rel, this
-            	WITH collect(this_disconnect_activeOrganization0) as this_disconnect_activeOrganization0, this_disconnect_activeOrganization0_rel, this
-            	UNWIND this_disconnect_activeOrganization0 as x
-            	DELETE this_disconnect_activeOrganization0_rel
-            	RETURN count(*) AS _
-            }
-            RETURN count(*) AS disconnect_this_disconnect_activeOrganization_Organization
-            }
             WITH *
             WITH *
             CALL {
@@ -119,7 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Luke Skywalker\\",
-                \\"updateUsers_args_disconnect_activeOrganization_where_Organizationparam0\\": \\"test-id\\",
+                \\"updateUsers_args_disconnect_activeOrganization_where_Organization_this_disconnect_activeOrganization0param0\\": \\"test-id\\",
                 \\"this_connect_activeOrganization0_node_param0\\": \\"test-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {

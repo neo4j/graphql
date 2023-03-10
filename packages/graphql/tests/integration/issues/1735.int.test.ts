@@ -17,15 +17,16 @@
  * limitations under the License.
  */
 
-import { graphql, GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1735", () => {
-    const actorType = generateUniqueType("Actor");
-    const movieType = generateUniqueType("Movie");
+    const actorType = new UniqueType("Actor");
+    const movieType = new UniqueType("Movie");
 
     let schema: GraphQLSchema;
     let driver: Driver;

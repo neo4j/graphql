@@ -17,18 +17,14 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg, Context } from "../../types";
+import type { GraphQLWhereArg, Context, PredicateReturn } from "../../types";
 import type { GraphElement } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
 // Recursive function
-
 import { createPropertyWhere } from "./property-operations/create-property-where";
-
-type WhereOperators = "OR" | "AND";
-
-function isWhereOperator(key: string): key is WhereOperators {
-    return ["OR", "AND"].includes(key);
-}
+import type { LogicalOperator } from "../utils/logical-operators";
+import { getCypherLogicalOperator, isLogicalOperator } from "../utils/logical-operators";
+import { asArray } from "../../utils/utils";
 
 /** Translate a target node and GraphQL input into a Cypher operation o valid where expression */
 export function createWherePredicate({
@@ -41,19 +37,18 @@ export function createWherePredicate({
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
-}): { predicate: Cypher.Predicate | undefined; preComputedSubqueries?: Cypher.CompositeClause | undefined } {
+}): PredicateReturn {
     const whereFields = Object.entries(whereInput);
-
     const predicates: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
     whereFields.forEach(([key, value]) => {
-        if (isWhereOperator(key)) {
+        if (isLogicalOperator(key)) {
             const { predicate, preComputedSubqueries } = createNestedPredicate({
-                key,
+                key: key as LogicalOperator,
                 element,
                 targetElement,
                 context,
-                value,
+                value: asArray(value),
             });
             if (predicate) {
                 predicates.push(predicate);
@@ -62,15 +57,25 @@ export function createWherePredicate({
             }
             return;
         }
-        const { predicate, preComputedSubquery } = createPropertyWhere({ key, value, element, targetElement, context });
+        const { predicate, preComputedSubqueries } = createPropertyWhere({
+            key,
+            value,
+            element,
+            targetElement,
+            context,
+        });
         if (predicate) {
             predicates.push(predicate);
-            if (preComputedSubquery) subqueries = Cypher.concat(subqueries, preComputedSubquery);
+            if (preComputedSubqueries && !preComputedSubqueries.empty)
+                subqueries = Cypher.concat(subqueries, preComputedSubqueries);
             return;
         }
     });
     // Implicit AND
-    return { predicate: Cypher.and(...predicates), preComputedSubqueries: subqueries };
+    return {
+        predicate: Cypher.and(...predicates),
+        preComputedSubqueries: subqueries,
+    };
 }
 
 function createNestedPredicate({
@@ -80,14 +85,15 @@ function createNestedPredicate({
     context,
     value,
 }: {
-    key: WhereOperators;
-    value: Array<GraphQLWhereArg>;
+    key: LogicalOperator;
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
-}): { predicate: Cypher.Predicate | undefined; preComputedSubqueries?: Cypher.CompositeClause | undefined } {
+    value: Array<GraphQLWhereArg>;
+}): PredicateReturn {
     const nested: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
+
     value.forEach((v) => {
         const { predicate, preComputedSubqueries } = createWherePredicate({
             whereInput: v,
@@ -101,8 +107,6 @@ function createNestedPredicate({
         if (preComputedSubqueries && !preComputedSubqueries.empty)
             subqueries = Cypher.concat(subqueries, preComputedSubqueries);
     });
-    if (key === "OR") {
-        return { predicate: Cypher.or(...nested), preComputedSubqueries: subqueries };
-    }
-    return { predicate: Cypher.and(...nested), preComputedSubqueries: subqueries };
+    const logicalOperator = getCypherLogicalOperator(key);
+    return { predicate: logicalOperator(...nested), preComputedSubqueries: subqueries };
 }

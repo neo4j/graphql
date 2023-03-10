@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { NamedReference, Reference } from "./Reference";
+import type { NamedReference } from "./Reference";
+import { Reference } from "./Reference";
 
 /** Represents a variable
  * @group Internal

@@ -19,16 +19,13 @@
 
 import type { CypherEnvironment } from "../Environment";
 import type { NodeRef } from "../references/NodeRef";
-import type { Param } from "../references/Param";
-import { Pattern } from "../Pattern";
+import { Pattern } from "../pattern/Pattern";
 import { SetClause } from "./sub-clauses/Set";
 import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
 import { WithSet } from "./mixins/WithSet";
-
-type Params = Record<string, Param<any>>;
 
 export interface Create extends WithReturn, WithSet {}
 
@@ -38,17 +35,20 @@ export interface Create extends WithReturn, WithSet {}
  */
 @mixin(WithReturn, WithSet)
 export class Create extends Clause {
-    private pattern: Pattern<NodeRef>;
+    private pattern: Pattern;
 
-    constructor(node: NodeRef, params: Params = {}) {
+    constructor(pattern: NodeRef | Pattern) {
         super();
-        this.pattern = new Pattern(node).withParams(params);
+        if (pattern instanceof Pattern) {
+            this.pattern = pattern;
+        } else {
+            this.pattern = new Pattern(pattern);
+        }
+
         this.setSubClause = new SetClause(this);
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
 

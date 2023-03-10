@@ -54,9 +54,7 @@ export class Foreach extends Clause {
         this.mapClause = mapClause;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const variableStr = this.variable.getCypher(env);
         const listExpr = this.listExpr.getCypher(env);

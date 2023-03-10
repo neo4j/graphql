@@ -32,6 +32,7 @@ export class RemoveClause extends CypherASTNode {
         this.removeInput = removeInput;
     }
 
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const propertiesToDelete = this.removeInput.map((e) => e.getCypher(env));
         return `REMOVE ${propertiesToDelete.join(",")}`;

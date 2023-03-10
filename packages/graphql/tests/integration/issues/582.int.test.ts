@@ -20,8 +20,7 @@
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import type { UniqueType } from "../../utils/graphql-types";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/582", () => {
@@ -33,7 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
     let neo4j: Neo4j;
 
     beforeAll(async () => {
-        type = generateUniqueType("Entity");
+        type = new UniqueType("Entity");
 
         typeDefs = `
             type ${type.name} {

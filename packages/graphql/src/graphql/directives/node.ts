@@ -25,6 +25,18 @@ const pluralDescription =
     "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/" +
     "#_plural_argument_removed_from_node_and_replaced_with_plural. " +
     "Allows for the specification of the plural of the type name.";
+const labelDescription =
+    "NOTE: The label argument has been deprecated and will be removed in version 4.0.0. " +
+    "Please use the labels argument instead. More information can be found at " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/" +
+    "#_label_and_additionalLabels_arguments_removed_from_node_and_replaced_with_new_argument_labels. ";
+const additionalLabelsDescription =
+    "NOTE: The additionalLabels argument has been deprecated and will be removed in version 4.0.0. " +
+    "Please use the labels argument instead. " +
+    "If not used in conjunction with the also deprecated label argument, make sure to specify the GraphQL node type as first item in the array." +
+    "More information can be found at " +
+    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/" +
+    "#_label_and_additionalLabels_arguments_removed_from_node_and_replaced_with_new_argument_labels. ";
 
 export const nodeDirective = new GraphQLDirective({
     name: "node",
@@ -32,16 +44,23 @@ export const nodeDirective = new GraphQLDirective({
     locations: [DirectiveLocation.OBJECT],
     args: {
         label: {
-            description: "Map the GraphQL type to a custom Neo4j node label",
+            description: "Map the GraphQL type to a custom Neo4j node label.",
             type: GraphQLString,
+            deprecationReason: labelDescription,
         },
         additionalLabels: {
-            description: "Map the GraphQL type to match additional Neo4j node labels",
+            description: "Map the GraphQL type to match additional Neo4j node labels.",
+            type: new GraphQLList(new GraphQLNonNull(GraphQLString)),
+            deprecationReason: additionalLabelsDescription,
+        },
+        labels: {
+            description: "The labels to map this GraphQL type to in the Neo4j database",
             type: new GraphQLList(new GraphQLNonNull(GraphQLString)),
         },
         plural: {
             description: pluralDescription,
             type: GraphQLString,
+            deprecationReason: pluralDescription,
         },
     },
 });

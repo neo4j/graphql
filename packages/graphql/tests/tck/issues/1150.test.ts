@@ -113,41 +113,41 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             WHERE this.current = $param0
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_driveCompositionsConnectionthis0:CONSISTS_OF]->(this_DriveComposition:\`DriveComposition\`)
-                WHERE this_connection_driveCompositionsConnectionthis0.current = $this_connection_driveCompositionsConnectionparam0
+                MATCH (this)-[this0:CONSISTS_OF]->(this1:\`DriveComposition\`)
+                WHERE this0.current = $param1
                 CALL {
-                    WITH this_DriveComposition
+                    WITH this1
                     CALL {
-                        WITH this_DriveComposition
-                        MATCH (this_DriveComposition)-[this_DriveComposition_connection_driveComponentConnectionthis0:HAS]->(this_DriveComposition_Battery:\`Battery\`)
-                        WHERE (this_DriveComposition_connection_driveComponentConnectionthis0.current = $this_DriveComposition_connection_driveComponentConnectionparam0 AND apoc.util.validatePredicate(NOT ((any(this_DriveComposition_connection_driveComponentConnectionvar2 IN [\\"admin\\"] WHERE any(this_DriveComposition_connection_driveComponentConnectionvar1 IN $auth.roles WHERE this_DriveComposition_connection_driveComponentConnectionvar1 = this_DriveComposition_connection_driveComponentConnectionvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                        WITH { current: this_DriveComposition_connection_driveComponentConnectionthis0.current, node: { __resolveType: \\"Battery\\", id: this_DriveComposition_Battery.id } } AS edge
+                        WITH this1
+                        MATCH (this1:\`DriveComposition\`)-[this2:HAS]->(this3:\`Battery\`)
+                        WHERE (this2.current = $param2 AND apoc.util.validatePredicate(NOT ((any(var5 IN [\\"admin\\"] WHERE any(var4 IN $auth.roles WHERE var4 = var5)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                        WITH { current: this2.current, node: { __resolveType: \\"Battery\\", __id: id(this3), id: this3.id } } AS edge
                         RETURN edge
                         UNION
-                        WITH this_DriveComposition
-                        MATCH (this_DriveComposition)-[this_DriveComposition_connection_driveComponentConnectionthis2:HAS]->(this_DriveComposition_CombustionEngine:\`CombustionEngine\`)
-                        WHERE this_DriveComposition_connection_driveComponentConnectionthis2.current = $this_DriveComposition_connection_driveComponentConnectionparam3
-                        WITH { current: this_DriveComposition_connection_driveComponentConnectionthis2.current, node: { __resolveType: \\"CombustionEngine\\", id: this_DriveComposition_CombustionEngine.id } } AS edge
+                        WITH this1
+                        MATCH (this1:\`DriveComposition\`)-[this6:HAS]->(this7:\`CombustionEngine\`)
+                        WHERE this6.current = $param4
+                        WITH { current: this6.current, node: { __resolveType: \\"CombustionEngine\\", __id: id(this7), id: this7.id } } AS edge
                         RETURN edge
                     }
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_DriveComposition_driveComponentConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS var8
                 }
-                WITH { node: { driveComponentConnection: this_DriveComposition_driveComponentConnection } } AS edge
+                WITH { node: { driveComponentConnection: var8 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_driveCompositionsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var9
             }
-            RETURN this { .current, driveCompositionsConnection: this_driveCompositionsConnection } AS this"
+            RETURN this { .current, driveCompositionsConnection: var9 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
-                \\"this_connection_driveCompositionsConnectionparam0\\": true,
-                \\"this_DriveComposition_connection_driveComponentConnectionparam0\\": true,
-                \\"this_DriveComposition_connection_driveComponentConnectionparam3\\": true,
+                \\"param1\\": true,
+                \\"param2\\": true,
+                \\"param4\\": true,
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [

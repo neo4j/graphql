@@ -18,7 +18,8 @@
  */
 
 import { gql } from "apollo-server";
-import { graphql, GraphQLError } from "graphql";
+import type { GraphQLError } from "graphql";
+import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { IncomingMessage } from "http";
@@ -26,8 +27,8 @@ import { Socket } from "net";
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("array-pop-errors", () => {
     let driver: Driver;
@@ -54,7 +55,7 @@ describe("array-pop-errors", () => {
         await session.close();
     });
     test("should throw an error when trying to pop an element from a non-existing array", async () => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -106,7 +107,7 @@ describe("array-pop-errors", () => {
     });
 
     test("should throw an error when trying to pop an element from multiple non-existing arrays", async () => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -158,7 +159,7 @@ describe("array-pop-errors", () => {
     });
 
     test("should throw an error if not authenticated on field definition", async () => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
         const typeDefs = `
             type ${typeMovie} {
                 title: String
@@ -214,7 +215,7 @@ describe("array-pop-errors", () => {
     });
 
     test("should throw an error when input is invalid", async () => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -267,7 +268,7 @@ describe("array-pop-errors", () => {
     });
 
     test("should throw an error when performing an ambiguous property update", async () => {
-        const typeMovie = generateUniqueType("Movie");
+        const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -320,8 +321,8 @@ describe("array-pop-errors", () => {
 
     test("should throw an error when performing an ambiguous property update on relationship properties", async () => {
         const initialPay = 100;
-        const movie = generateUniqueType("Movie");
-        const actor = generateUniqueType("Actor");
+        const movie = new UniqueType("Movie");
+        const actor = new UniqueType("Actor");
         const typeDefs = `
             type ${movie.name} {
                 title: String

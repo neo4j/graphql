@@ -21,7 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/2614", () => {
@@ -41,8 +41,8 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
     beforeEach(async () => {
         session = await neo4j.getSession();
 
-        Actor = generateUniqueType("Actor");
-        Movie = generateUniqueType("Movie");
+        Actor = new UniqueType("Actor");
+        Movie = new UniqueType("Movie");
 
         const typeDefs = `
             interface Production {
@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
                 actors: [${Actor}!]!
             }
             
-            type ${Movie} implements Production @node(label:"Film"){
+            type ${Movie} implements Production @node(labels:["Film"]){
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 runtime: Int!

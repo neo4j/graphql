@@ -22,27 +22,32 @@ jobs:
 
   unit-tests:
     uses: ./.github/workflows/reusable-unit-tests.yml
+    with:
+      disable-code-cov-upload: ${{ github.event_name == 'schedule' }}
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   api-library-tests:
     uses: ./.github/workflows/reusable-api-library-tests.yml
+    with:
+      disable-code-cov-upload: ${{ github.event_name == 'schedule' }}
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-  # nextjs-app-setup:
-  #   uses: ./.github/workflows/reusable-nextjs-app-setup.yml
 
   package-tests:
     uses: ./.github/workflows/reusable-package-tests.yml
 
   integration-tests-on-prem:
     uses: ./.github/workflows/reusable-integration-tests-on-prem.yml
+    with:
+      disable-code-cov-upload: ${{ github.event_name == 'schedule' }}
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   integration-tests-on-prem-nightly:
     uses: ./.github/workflows/reusable-integration-tests-on-prem-nightly.yml
+    with:
+      disable-code-cov-upload: ${{ github.event_name == 'schedule' }}
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_NEO4J_DEV_ACCESS_KEY_ID }}

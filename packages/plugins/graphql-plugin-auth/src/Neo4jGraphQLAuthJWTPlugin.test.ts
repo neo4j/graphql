@@ -1,3 +1,4 @@
+import { AUTH_JWT_PLUGIN_NULL_SECRET_EXCEPTION } from "./exceptions";
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -22,12 +23,10 @@ import Neo4jGraphQLAuthJWTPlugin from "./Neo4jGraphQLAuthJWTPlugin";
 
 describe("Neo4jGraphQLAuthJWTPlugin", () => {
     const secret = "secret";
-
+    const payload = {
+        sub: "my-id",
+    };
     test("should decode token", async () => {
-        const payload = {
-            sub: "my-id",
-        };
-
         const encoded = jsonwebtoken.sign(payload, secret);
 
         const plugin = new Neo4jGraphQLAuthJWTPlugin({
@@ -39,11 +38,41 @@ describe("Neo4jGraphQLAuthJWTPlugin", () => {
         expect(decoded).toMatchObject(payload);
     });
 
-    test("should decode token when using noVerify", async () => {
-        const payload = {
-            sub: "my-id",
-        };
+    test("should decode token when secret is a generic", async () => {
+        const encoded = jsonwebtoken.sign(payload, secret);
 
+        const plugin = new Neo4jGraphQLAuthJWTPlugin({
+            secret: () => {
+                return secret;
+            },
+        });
+
+        plugin.tryToResolveKeys({
+            headers: {
+                test: "test-header",
+            },
+        });
+
+        const decoded = await plugin.decode(encoded);
+
+        expect(decoded).toMatchObject(payload);
+    });
+
+    test(`should throw '${AUTH_JWT_PLUGIN_NULL_SECRET_EXCEPTION}' exception, when a function for calculating the secret is passed but the result is null`, async () => {
+        const encoded = jsonwebtoken.sign(payload, secret);
+
+        const plugin = new Neo4jGraphQLAuthJWTPlugin({
+            secret: () => {
+                return secret;
+            },
+        });
+
+        await expect(async () => {
+            await plugin.decode(encoded);
+        }).rejects.toEqual(AUTH_JWT_PLUGIN_NULL_SECRET_EXCEPTION);
+    });
+
+    test("should decode token when using noVerify", async () => {
         const encoded = jsonwebtoken.sign(payload, secret);
 
         const plugin = new Neo4jGraphQLAuthJWTPlugin({
@@ -57,10 +86,6 @@ describe("Neo4jGraphQLAuthJWTPlugin", () => {
     });
 
     test("should decode JWT token with globalAuthentication enabled", async () => {
-        const payload = {
-            sub: "my-id",
-        };
-
         const encoded = jsonwebtoken.sign(payload, secret);
 
         const plugin = new Neo4jGraphQLAuthJWTPlugin({

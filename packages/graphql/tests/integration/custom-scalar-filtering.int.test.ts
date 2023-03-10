@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { generateUniqueType } from "../utils/graphql-types";
+import { UniqueType } from "../utils/graphql-types";
 
 describe("Custom Scalar Filtering", () => {
     let driver: Driver;
@@ -40,7 +40,7 @@ describe("Custom Scalar Filtering", () => {
     describe("Single Value Custom Scalar", () => {
         test("Filter NOT CustomScalar - expect return value", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomScalar
@@ -87,7 +87,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter NOT CustomScalar - expect array of return values", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomScalar
@@ -143,7 +143,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter NOT CustomScalar - expect no return values", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomScalar
@@ -187,7 +187,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter IN CustomScalar - expect return value", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomScalar
@@ -236,7 +236,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter IN CustomScalar - expect array of return values", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomScalar
@@ -294,7 +294,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter IN CustomScalar - expect no return values", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomScalar
@@ -339,7 +339,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter NOT_IN CustomScalar - expect return value", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomScalar
@@ -388,7 +388,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter NOT_IN CustomScalar - expect array of return values", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomScalar
@@ -444,7 +444,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter NOT_IN CustomScalar - expect no return values", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomScalar
@@ -490,7 +490,7 @@ describe("Custom Scalar Filtering", () => {
     describe("List Custom Scalar Filtering", () => {
         test("Filter NOT CustomListScalar - expect return value", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomListScalar
@@ -538,7 +538,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter NOT CustomListScalar - expect array of return values", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomListScalar
@@ -595,7 +595,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter NOT CustomListScalar - expect no return values", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomListScalar
@@ -640,7 +640,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter INCLUDES CustomListScalar - expect return value", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomListScalar
@@ -687,7 +687,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter INCLUDES CustomListScalar - expect array of return values", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomListScalar
@@ -743,7 +743,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter INCLUDES CustomListScalar - expect no return values", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomListScalar
@@ -788,7 +788,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter NOT_INCLUDES CustomListScalar - expect return value", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomListScalar
@@ -835,7 +835,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter NOT_INCLUDES CustomListScalar - expect array of return values", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomListScalar
@@ -891,7 +891,7 @@ describe("Custom Scalar Filtering", () => {
         });
         test("Filter NOT_INCLUDES CustomListScalar - expect no return values", async () => {
             const session = await neo4j.getSession();
-            const randomType = generateUniqueType("Movie");
+            const randomType = new UniqueType("Movie");
 
             const typeDefs = `
                 scalar CustomListScalar

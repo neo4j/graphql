@@ -22,7 +22,8 @@ import type { GraphQLResolveInfo } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
-import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
+import type { Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
+import { getNeo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DEBUG_GRAPHQL } from "../../constants";
@@ -32,6 +33,7 @@ import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
+import { IncomingMessage } from "http";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -87,6 +89,11 @@ export const wrapResolver =
         context.callbacks = config.callbacks;
 
         if (!context.jwt) {
+            if (context.plugins.auth) {
+                // Here we will try to compute the generic Secret or the generic jwksEndpoint
+                const contextRequest = context.req || context.request;
+                context.plugins.auth.tryToResolveKeys(context instanceof IncomingMessage ? context : contextRequest);
+            }
             const token = getToken(context);
             context.jwt = await decodeToken(token, context.plugins.auth);
         }

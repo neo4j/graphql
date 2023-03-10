@@ -25,7 +25,7 @@ import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { UniqueType } from "../../../utils/graphql-types";
 
 describe("cypher with columnName argument", () => {
     let driver: Driver;
@@ -47,9 +47,9 @@ describe("cypher with columnName argument", () => {
             let Director: UniqueType;
 
             beforeEach(() => {
-                Movie = generateUniqueType("Movie");
-                Actor = generateUniqueType("Actor");
-                Director = generateUniqueType("Director");
+                Movie = new UniqueType("Movie");
+                Actor = new UniqueType("Actor");
+                Director = new UniqueType("Director");
             });
 
             test("should query custom query and return relationship data", async () => {
@@ -480,8 +480,8 @@ describe("cypher with columnName argument", () => {
             let Actor: UniqueType;
 
             beforeEach(() => {
-                Movie = generateUniqueType("Movie");
-                Actor = generateUniqueType("Actor");
+                Movie = new UniqueType("Movie");
+                Actor = new UniqueType("Actor");
             });
 
             test("should query custom mutation and return relationship data", async () => {

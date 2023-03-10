@@ -156,34 +156,22 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Mandate\`)
-            WHERE ((this.price >= $param0 AND EXISTS {
-                MATCH (this)-[:HAS_VALUATION]->(this0:\`Valuation\`)
-                WHERE EXISTS {
-                    MATCH (this0)-[:VALUATION_FOR]->(this1:\`Estate\`)
-                    WHERE (this1.area >= $param1 AND this1.floor >= $param2 AND this1.estateType IN $param3 AND EXISTS {
-                        MATCH (this1)-[:HAS_ADDRESS]->(this2:\`Address\`)
-                        WHERE EXISTS {
-                            MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
-                            WHERE this3.number IN $param4
-                        }
-                    })
-                }
-            }) AND this.archivedAt IS NULL)
+            WHERE ((this.price >= $param0 AND single(this3 IN [(this)-[:HAS_VALUATION]->(this3:\`Valuation\`) WHERE single(this0 IN [(this3)-[:VALUATION_FOR]->(this0:\`Estate\`) WHERE (this0.area >= $param1 AND this0.floor >= $param2 AND this0.estateType IN $param3 AND single(this2 IN [(this0)-[:HAS_ADDRESS]->(this2:\`Address\`) WHERE single(this1 IN [(this2)-[:HAS_POSTAL_CODE]->(this1:\`PostalCode\`) WHERE this1.number IN $param4 | 1] WHERE true) | 1] WHERE true)) | 1] WHERE true) | 1] WHERE true)) AND this.archivedAt IS NULL)
             CALL {
                 WITH this
-                MATCH (this)-[this4:HAS_VALUATION]->(this_valuation:\`Valuation\`)
-                WHERE this_valuation.archivedAt IS NULL
+                MATCH (this)-[this4:HAS_VALUATION]->(this5:\`Valuation\`)
+                WHERE this5.archivedAt IS NULL
                 CALL {
-                    WITH this_valuation
-                    MATCH (this_valuation)-[this5:VALUATION_FOR]->(this_valuation_estate:\`Estate\`)
-                    WHERE this_valuation_estate.archivedAt IS NULL
-                    WITH this_valuation_estate { .uuid } AS this_valuation_estate
-                    RETURN head(collect(this_valuation_estate)) AS this_valuation_estate
+                    WITH this5
+                    MATCH (this5)-[this6:VALUATION_FOR]->(this7:\`Estate\`)
+                    WHERE this7.archivedAt IS NULL
+                    WITH this7 { .uuid } AS this7
+                    RETURN head(collect(this7)) AS var8
                 }
-                WITH this_valuation { estate: this_valuation_estate } AS this_valuation
-                RETURN head(collect(this_valuation)) AS this_valuation
+                WITH this5 { estate: var8 } AS this5
+                RETURN head(collect(this5)) AS var9
             }
-            RETURN this { valuation: this_valuation } AS this"
+            RETURN this { valuation: var9 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -243,37 +231,25 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Mandate\`)
-            WHERE ((this.price >= $param0 AND EXISTS {
-                MATCH (this)-[:HAS_VALUATION]->(this0:\`Valuation\`)
-                WHERE EXISTS {
-                    MATCH (this0)-[:VALUATION_FOR]->(this1:\`Estate\`)
-                    WHERE (this1.area >= $param1 AND this1.floor >= $param2 AND this1.estateType IN $param3 AND EXISTS {
-                        MATCH (this1)-[:HAS_ADDRESS]->(this2:\`Address\`)
-                        WHERE EXISTS {
-                            MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
-                            WHERE this3.number IN $param4
-                        }
-                    })
-                }
-            }) AND this.archivedAt IS NULL)
+            WHERE ((this.price >= $param0 AND single(this3 IN [(this)-[:HAS_VALUATION]->(this3:\`Valuation\`) WHERE single(this0 IN [(this3)-[:VALUATION_FOR]->(this0:\`Estate\`) WHERE (this0.area >= $param1 AND this0.floor >= $param2 AND this0.estateType IN $param3 AND single(this2 IN [(this0)-[:HAS_ADDRESS]->(this2:\`Address\`) WHERE single(this1 IN [(this2)-[:HAS_POSTAL_CODE]->(this1:\`PostalCode\`) WHERE this1.number IN $param4 | 1] WHERE true) | 1] WHERE true)) | 1] WHERE true) | 1] WHERE true)) AND this.archivedAt IS NULL)
             WITH *
             SKIP $param5
             LIMIT $param6
             CALL {
                 WITH this
-                MATCH (this)-[this4:HAS_VALUATION]->(this_valuation:\`Valuation\`)
-                WHERE this_valuation.archivedAt IS NULL
+                MATCH (this)-[this4:HAS_VALUATION]->(this5:\`Valuation\`)
+                WHERE this5.archivedAt IS NULL
                 CALL {
-                    WITH this_valuation
-                    MATCH (this_valuation)-[this5:VALUATION_FOR]->(this_valuation_estate:\`Estate\`)
-                    WHERE this_valuation_estate.archivedAt IS NULL
-                    WITH this_valuation_estate { .uuid } AS this_valuation_estate
-                    RETURN head(collect(this_valuation_estate)) AS this_valuation_estate
+                    WITH this5
+                    MATCH (this5)-[this6:VALUATION_FOR]->(this7:\`Estate\`)
+                    WHERE this7.archivedAt IS NULL
+                    WITH this7 { .uuid } AS this7
+                    RETURN head(collect(this7)) AS var8
                 }
-                WITH this_valuation { estate: this_valuation_estate } AS this_valuation
-                RETURN head(collect(this_valuation)) AS this_valuation
+                WITH this5 { estate: var8 } AS this5
+                RETURN head(collect(this5)) AS var9
             }
-            RETURN this { valuation: this_valuation } AS this"
+            RETURN this { valuation: var9 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -341,37 +317,25 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Mandate\`)
-            WHERE ((this.price >= $param0 AND EXISTS {
-                MATCH (this)-[:HAS_VALUATION]->(this0:\`Valuation\`)
-                WHERE EXISTS {
-                    MATCH (this0)-[:VALUATION_FOR]->(this1:\`Estate\`)
-                    WHERE (this1.area >= $param1 AND this1.floor >= $param2 AND this1.estateType IN $param3 AND EXISTS {
-                        MATCH (this1)-[:HAS_ADDRESS]->(this2:\`Address\`)
-                        WHERE EXISTS {
-                            MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
-                            WHERE this3.number IN $param4
-                        }
-                    })
-                }
-            }) AND this.archivedAt IS NULL)
+            WHERE ((this.price >= $param0 AND single(this3 IN [(this)-[:HAS_VALUATION]->(this3:\`Valuation\`) WHERE single(this0 IN [(this3)-[:VALUATION_FOR]->(this0:\`Estate\`) WHERE (this0.area >= $param1 AND this0.floor >= $param2 AND this0.estateType IN $param3 AND single(this2 IN [(this0)-[:HAS_ADDRESS]->(this2:\`Address\`) WHERE single(this1 IN [(this2)-[:HAS_POSTAL_CODE]->(this1:\`PostalCode\`) WHERE this1.number IN $param4 | 1] WHERE true) | 1] WHERE true)) | 1] WHERE true) | 1] WHERE true)) AND this.archivedAt IS NULL)
             WITH *
             SKIP $param5
             LIMIT $param6
             CALL {
                 WITH this
-                MATCH (this)-[this4:HAS_VALUATION]->(this_valuation:\`Valuation\`)
-                WHERE this_valuation.archivedAt IS NULL
+                MATCH (this)-[this4:HAS_VALUATION]->(this5:\`Valuation\`)
+                WHERE this5.archivedAt IS NULL
                 CALL {
-                    WITH this_valuation
-                    MATCH (this_valuation)-[this5:VALUATION_FOR]->(this_valuation_estate:\`Estate\`)
-                    WHERE this_valuation_estate.archivedAt IS NULL
-                    WITH this_valuation_estate { .uuid } AS this_valuation_estate
-                    RETURN head(collect(this_valuation_estate)) AS this_valuation_estate
+                    WITH this5
+                    MATCH (this5)-[this6:VALUATION_FOR]->(this7:\`Estate\`)
+                    WHERE this7.archivedAt IS NULL
+                    WITH this7 { .uuid } AS this7
+                    RETURN head(collect(this7)) AS var8
                 }
-                WITH this_valuation { estate: this_valuation_estate } AS this_valuation
-                RETURN head(collect(this_valuation)) AS this_valuation
+                WITH this5 { estate: var8 } AS this5
+                RETURN head(collect(this5)) AS var9
             }
-            RETURN this { valuation: this_valuation } AS this"
+            RETURN this { valuation: var9 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

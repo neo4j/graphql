@@ -31,7 +31,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
     const typeDefs = `
         type Bulk
             @exclude(operations: [CREATE, DELETE, UPDATE])
-            @node(additionalLabels: ["$context.cypherParams.tenant"]) {
+            @node(labels: ["Bulk", "$context.cypherParams.tenant"]) {
             id: ID!
             supplierMaterialNumber: String!
             material: Material! @relationship(type: "MATERIAL_BULK", direction: OUT)

@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { HeroIcon } from "@neo4j-ndl/react";
+import { IconButton } from "@neo4j-ndl/react";
+import { CheckIconOutline, PencilIconOutline, TrashIconOutline } from "@neo4j-ndl/react/icons";
 import { Storage } from "../../utils/storage";
-import { Favorite } from "../../types";
+import type { Favorite } from "../../types";
 import { LOCAL_STATE_FAVORITES } from "../../constants";
 import { Fragment, useState } from "react";
 
@@ -34,6 +35,8 @@ interface FavoritesProps {
     setFavorites: (nextState: Favorite[] | null) => void;
     onSelectFavorite: (typeDefs: string) => void;
 }
+
+const ALTERNATE_BG_COLOR = "n-bg-neutral-20";
 
 const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps) => {
     const [editMode, setEditMode] = useState<boolean>(false);
@@ -57,27 +60,36 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
             >
                 {editMode ? (
                     <input
-                        className="w-64"
+                        className="w-60"
                         value={nameValue}
                         onChange={(event) => setNameValue(event.currentTarget.value)}
                         onKeyDown={_handleKeyDown}
                     />
                 ) : (
-                    <div className="truncate w-64">{name}</div>
+                    <div className="truncate w-60">{name}</div>
                 )}
             </div>
             {editMode ? (
-                <HeroIcon
-                    className="h-5 w-5"
-                    iconName="CheckIcon"
-                    type="outline"
+                <IconButton
+                    aria-label="Finish editing favorite name"
+                    className={`border-none h-5 w-5`}
+                    clean
                     onClick={() => {
                         setEditMode(false);
                         saveName(nameValue);
                     }}
-                />
+                >
+                    <CheckIconOutline />
+                </IconButton>
             ) : (
-                <HeroIcon className="h-5 w-5" iconName="PencilIcon" type="outline" onClick={() => setEditMode(true)} />
+                <IconButton
+                    aria-label="Edit favorite name"
+                    className={`border-none h-5 w-5`}
+                    clean
+                    onClick={() => setEditMode(true)}
+                >
+                    <PencilIconOutline />
+                </IconButton>
             )}
         </Fragment>
     );
@@ -102,11 +114,12 @@ export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: Favorit
             {favorites?.length ? (
                 <ul className="pt-3 h-favorite overflow-y-scroll">
                     {favorites.map((favorite, idx) => {
+                        const isAlternateBackground = idx % 2 === 1;
                         return (
                             <li
                                 key={favorite.id}
                                 className={`flex justify-between items-center p-2 mb-1 cursor-pointer hover:n-bg-neutral-40 rounded ${
-                                    idx % 2 === 1 ? "n-bg-neutral-20" : ""
+                                    isAlternateBackground ? ALTERNATE_BG_COLOR : ""
                                 }`}
                             >
                                 <NameComponent
@@ -115,12 +128,14 @@ export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: Favorit
                                     onSelectFavorite={() => onSelectFavorite(favorite.typeDefs)}
                                 />
 
-                                <HeroIcon
-                                    className="h-5 w-5 n-text-danger-30 ml-3"
-                                    iconName="TrashIcon"
-                                    type="outline"
+                                <IconButton
+                                    aria-label="Delete favorite"
+                                    className="border-none h-5 w-5 n-text-danger-30 ml-3"
+                                    clean
                                     onClick={() => deleteFavorite(favorite.id)}
-                                />
+                                >
+                                    <TrashIconOutline />
+                                </IconButton>
                             </li>
                         );
                     })}

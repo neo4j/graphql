@@ -122,19 +122,19 @@ describe("Cypher Fragment", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:OWNS]->(this_owns:\`Tile\`)
-                    WITH this_owns { __resolveType: \\"Tile\\" } AS this_owns
-                    RETURN this_owns AS this_owns
+                    MATCH (this)-[this0:OWNS]->(this1:\`Tile\`)
+                    WITH this1 { __resolveType: \\"Tile\\", __id: id(this), .id } AS this1
+                    RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this1:OWNS]->(this_owns:\`Character\`)
-                    WITH this_owns { __resolveType: \\"Character\\" } AS this_owns
-                    RETURN this_owns AS this_owns
+                    MATCH (this)-[this3:OWNS]->(this4:\`Character\`)
+                    WITH this4 { __resolveType: \\"Character\\", __id: id(this), .id } AS this4
+                    RETURN this4 AS var2
                 }
-                WITH this_owns
-                RETURN collect(this_owns) AS this_owns
+                WITH var2
+                RETURN collect(var2) AS var2
             }
-            RETURN this { .id, owns: this_owns } AS this"
+            RETURN this { .id, owns: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

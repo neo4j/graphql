@@ -71,23 +71,23 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
             "MATCH (this:\`Team\`)
             CALL {
                 WITH this
-                MATCH (this)-[this_accepted_this0:OWNS_RISK]->(this_accepted_this1:\`Risk\`)
-                WHERE $this_accepted_param0 IN this_accepted_this1.mitigationState
-                RETURN count(this) AS this_accepted_var2
+                MATCH (this)-[this0:OWNS_RISK]->(this1:\`Risk\`)
+                WHERE $param0 IN this1.mitigationState
+                RETURN count(this1) AS var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[this_identified_this0:OWNS_RISK]->(this_identified_this1:\`Risk\`)
-                WHERE $this_identified_param0 IN this_identified_this1.mitigationState
-                RETURN count(this) AS this_identified_var2
+                MATCH (this)-[this3:OWNS_RISK]->(this4:\`Risk\`)
+                WHERE $param1 IN this4.mitigationState
+                RETURN count(this4) AS var5
             }
-            RETURN this { accepted: { count: this_accepted_var2 }, identified: { count: this_identified_var2 } } AS this"
+            RETURN this { accepted: { count: var2 }, identified: { count: var5 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_accepted_param0\\": \\"Accepted\\",
-                \\"this_identified_param0\\": \\"Identified\\"
+                \\"param0\\": \\"Accepted\\",
+                \\"param1\\": \\"Identified\\"
             }"
         `);
     });

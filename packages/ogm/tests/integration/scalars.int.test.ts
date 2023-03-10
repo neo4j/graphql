@@ -17,14 +17,15 @@
  * limitations under the License.
  */
 
-import { Driver, Session, Date as Neo4jDate, DateTime, Duration, LocalDateTime, LocalTime, Time } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
+import { Date as Neo4jDate, DateTime, Duration, LocalDateTime, LocalTime, Time } from "neo4j-driver";
 import { gql } from "graphql-tag";
 import neo4j from "./neo4j";
 import { OGM } from "../../src";
-import { generateUniqueType } from "../utils";
+import { UniqueType } from "../utils";
 
 describe("Neo4j native types used with OGM", () => {
-    const TestType = generateUniqueType("TestType");
+    const TestType = new UniqueType("TestType");
 
     const typeDefs = gql`
         type ${TestType.name} {

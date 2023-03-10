@@ -22,15 +22,15 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { generateUniqueType } from "../utils/graphql-types";
+import { UniqueType } from "../utils/graphql-types";
 
 describe("root-connections", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
 
-    const pilotType = generateUniqueType("Pilot");
-    const aircraftType = generateUniqueType("Aircraft");
+    const pilotType = new UniqueType("Pilot");
+    const aircraftType = new UniqueType("Aircraft");
 
     const typeDefs = `
           type ${pilotType.name} {

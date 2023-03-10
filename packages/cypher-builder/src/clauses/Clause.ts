@@ -18,7 +18,8 @@
  */
 
 import { CypherASTNode } from "../CypherASTNode";
-import { CypherEnvironment, EnvPrefix } from "../Environment";
+import type { EnvPrefix } from "../Environment";
+import { CypherEnvironment } from "../Environment";
 import type { CypherResult } from "../types";
 import { convertToCypherParams } from "../utils/convert-to-cypher-params";
 import { padBlock } from "../utils/pad-block";
@@ -42,8 +43,11 @@ export abstract class Clause extends CypherASTNode {
                 params: env.getParams(),
             };
         }
-        const root = this.getRoot() as Clause;
-        return root.build(prefix, extraParams);
+        const root = this.getRoot();
+        if (root instanceof Clause) {
+            return root.build(prefix, extraParams);
+        }
+        throw new Error(`Cannot build root: ${root.constructor.name}`);
     }
 
     private getEnv(prefix?: string | EnvPrefix): CypherEnvironment {
@@ -54,8 +58,13 @@ export abstract class Clause extends CypherASTNode {
      * @hidden
      */
     public toString() {
-        const cypher = padBlock(this.build().cypher);
-        return `<Clause ${this.constructor.name}> """\n${cypher}\n"""`;
+        try {
+            const cypher = padBlock(this.build().cypher);
+            return `<Clause ${this.constructor.name}> """\n${cypher}\n"""`;
+        } catch (error) {
+            const errorName = error instanceof Error ? error.message : "";
+            return `<Clause ${this.constructor.name}> """\nError: ${errorName}\n"""`;
+        }
     }
 
     /** Custom log for console.log in Node

@@ -7,8 +7,8 @@
 
 import TypeLink from "./TypeLink";
 import MarkdownContent from "./MarkdownContent";
-import { GraphQLSchema } from "graphql";
-import { OnClickTypeFunction } from "./types";
+import type { GraphQLSchema } from "graphql";
+import type { OnClickTypeFunction } from "./types";
 
 type SchemaDocProps = {
     schema: GraphQLSchema;
