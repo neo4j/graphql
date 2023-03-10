@@ -34,9 +34,6 @@ jobs:
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-  # nextjs-app-setup:
-  #   uses: ./.github/workflows/reusable-nextjs-app-setup.yml
-
   package-tests:
     uses: ./.github/workflows/reusable-package-tests.yml
 
