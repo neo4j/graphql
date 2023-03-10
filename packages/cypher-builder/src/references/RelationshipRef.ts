@@ -40,7 +40,7 @@ type RelationshipRefOptions = {
 export class RelationshipRef extends Reference {
     private _type: string | undefined;
 
-    constructor(input: { type?: string } = {}) {
+    constructor(input: RelationshipRefOptions = {}) {
         super("this");
         this._type = input.type || undefined;
     }

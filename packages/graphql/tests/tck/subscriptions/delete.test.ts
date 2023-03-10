@@ -130,10 +130,10 @@ describe("Subscriptions metadata on delete", () => {
             	RETURN collect(meta) AS delete_meta
             }
             WITH delete_meta, meta
-            RETURN REDUCE(m=meta, n IN delete_meta | m + n) AS delete_meta
+            RETURN reduce(m=meta, n IN delete_meta | m + n) AS delete_meta
             }
             WITH this, meta, collect(delete_meta) as delete_meta
-            WITH this, REDUCE(m=meta, n IN delete_meta | m + n) AS meta
+            WITH this, reduce(m=meta, n IN delete_meta | m + n) AS meta
             DETACH DELETE this
             WITH collect(meta) AS meta
             WITH REDUCE(m=[], n IN meta | m + n) AS meta
@@ -221,10 +221,10 @@ describe("Subscriptions metadata on delete", () => {
             	RETURN collect(meta) AS delete_meta
             }
             WITH delete_meta, meta
-            RETURN REDUCE(m=meta, n IN delete_meta | m + n) AS delete_meta
+            RETURN reduce(m=meta, n IN delete_meta | m + n) AS delete_meta
             }
             WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, meta, collect(delete_meta) as delete_meta
-            WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, REDUCE(m=meta, n IN delete_meta | m + n) AS meta
+            WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, reduce(m=meta, n IN delete_meta | m + n) AS meta
             WITH this, this_actors0, this_actors0_relationship, meta, this_actors0_movies0_relationship, collect(DISTINCT this_actors0_movies0) AS this_actors0_movies0_to_delete
             CALL {
             	WITH this_actors0_movies0_relationship, this_actors0_movies0_to_delete, this, this_actors0, this_actors0_relationship
@@ -234,10 +234,10 @@ describe("Subscriptions metadata on delete", () => {
             	RETURN collect(meta) AS delete_meta
             }
             WITH delete_meta, meta
-            RETURN REDUCE(m=meta, n IN delete_meta | m + n) AS delete_meta
+            RETURN reduce(m=meta, n IN delete_meta | m + n) AS delete_meta
             }
             WITH this, this_actors0, this_actors0_relationship, meta, collect(delete_meta) as delete_meta
-            WITH this, this_actors0, this_actors0_relationship, REDUCE(m=meta, n IN delete_meta | m + n) AS meta
+            WITH this, this_actors0, this_actors0_relationship, reduce(m=meta, n IN delete_meta | m + n) AS meta
             WITH this, meta, this_actors0_relationship, collect(DISTINCT this_actors0) AS this_actors0_to_delete
             CALL {
             	WITH this_actors0_relationship, this_actors0_to_delete, this
@@ -247,10 +247,10 @@ describe("Subscriptions metadata on delete", () => {
             	RETURN collect(meta) AS delete_meta
             }
             WITH delete_meta, meta
-            RETURN REDUCE(m=meta, n IN delete_meta | m + n) AS delete_meta
+            RETURN reduce(m=meta, n IN delete_meta | m + n) AS delete_meta
             }
             WITH this, meta, collect(delete_meta) as delete_meta
-            WITH this, REDUCE(m=meta, n IN delete_meta | m + n) AS meta
+            WITH this, reduce(m=meta, n IN delete_meta | m + n) AS meta
             DETACH DELETE this
             WITH collect(meta) AS meta
             WITH REDUCE(m=[], n IN meta | m + n) AS meta
