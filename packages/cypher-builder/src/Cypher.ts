@@ -37,10 +37,11 @@ export { Pattern } from "./pattern/Pattern";
 
 // Variables and references
 export { NodeRef as Node, NamedNode } from "./references/NodeRef";
-export { RelationshipRef as Relationship } from "./references/RelationshipRef";
+export { RelationshipRef as Relationship, NamedRelationship } from "./references/RelationshipRef";
 export { Param, NamedParam } from "./references/Param";
 export { NamedVariable, Variable } from "./references/Variable";
 export { Literal, CypherNull as Null } from "./references/Literal";
+export { Path, NamedPath } from "./references/Path";
 
 // Expressions
 export { Exists } from "./expressions/Exists";
@@ -109,6 +110,9 @@ export {
 export * from "./expressions/functions/StringFunctions";
 
 export * from "./expressions/functions/ListFunctions";
+
+export * from "./expressions/functions/PathFunctions";
+
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";
 
 // Types
