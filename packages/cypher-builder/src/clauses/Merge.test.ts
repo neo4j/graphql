@@ -101,4 +101,40 @@ describe("CypherBuilder Merge", () => {
                 }
             `);
     });
+
+    test("Merge relationship with path assign", () => {
+        const node1 = new Cypher.Node({
+            labels: ["MyLabel"],
+        });
+        const node2 = new Cypher.Node({});
+
+        const relationship = new Cypher.Relationship();
+        const pattern = new Cypher.Pattern(node1).withoutLabels().related(relationship).to(node2);
+        const path = new Cypher.Path();
+        const query = new Cypher.Merge(pattern)
+            .assignToPath(path)
+            .onCreate(
+                [node1.property("age"), new Cypher.Param(23)],
+                [node1.property("name"), new Cypher.Param("Keanu")],
+                [relationship.property("screentime"), new Cypher.Param(10)]
+            )
+            .return([node1.property("title"), "movie"]);
+
+        const queryResult = query.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "MERGE p0 = (this1)-[this2]->(this3)
+            ON CREATE SET
+                this1.age = $param0,
+                this1.name = $param1,
+                this2.screentime = $param2
+            RETURN this1.title AS movie"
+        `);
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": 23,
+              "param1": "Keanu",
+              "param2": 10,
+            }
+        `);
+    });
 });
