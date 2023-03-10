@@ -630,17 +630,24 @@ CREATE (JohnC)-[:LIKES]->(Brooke)
 CREATE (JohnC)-[:LIKES]->(JohnnyMnemonic)
 CREATE (JohnC)-[:LIKES]->(CloudAtlas)
 
+WITH collect(null) as x // Reduce cardinality
+CALL {
+    MATCH(m:Movie)-[:ACTED_IN]-(p:Person)
+    WITH m, p ORDER BY p.name DESC
+    WITH m, head(collect(p)) as fav
+    CREATE(m)-[:FAV]->(fav)
+    RETURN NULL as n
+}
+RETURN NULL
 `;
 
 const indexQuery = `
-
 CREATE FULLTEXT INDEX MovieTaglineFulltextIndex
 IF NOT EXISTS FOR (n:Movie)
 ON EACH [n.tagline]
-
 `;
 
-const deleteIndexQuery = `
+const deleteIndexesQuery = `
 
 CALL apoc.schema.assert({},{},true) YIELD label, key
 RETURN *
@@ -649,11 +656,11 @@ RETURN *
 
 export async function cleanDatabase(session: Session): Promise<void> {
     await session.run("MATCH (N) DETACH DELETE N");
-    await session.run(deleteIndexQuery);
+    await session.run(deleteIndexesQuery);
 }
 
 export async function setupDatabase(session: Session): Promise<void> {
     await cleanDatabase(session);
-    await session.run(cypherQuery);
     await session.run(indexQuery);
+    await session.run(cypherQuery);
 }
