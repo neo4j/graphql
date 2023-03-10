@@ -21,7 +21,7 @@ import type { Path } from "../../Cypher";
 import { CypherFunction } from "./CypherFunctions";
 
 /**
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/list/#functions-nodes)
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-cheat-sheet/current/#_path_functions)
  * @group Expressions
  * @category Cypher Functions
  */
@@ -30,10 +30,19 @@ export function nodes(expr: Path): CypherFunction {
 }
 
 /**
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/list/#functions-relationships)
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-cheat-sheet/current/#_path_functions)
  * @group Expressions
  * @category Cypher Functions
  */
 export function relationships(expr: Path): CypherFunction {
     return new CypherFunction("relationships", [expr]);
+}
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-cheat-sheet/current/#_path_functions)
+ * @group Expressions
+ * @category Cypher Functions
+ */
+export function length(expr: Path): CypherFunction {
+    return new CypherFunction("length", [expr]);
 }
