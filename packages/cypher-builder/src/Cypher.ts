@@ -88,15 +88,12 @@ export {
     distance,
     pointDistance,
     labels,
-    count,
-    min,
-    max,
-    avg,
-    sum,
     randomUUID,
     id,
     elementId,
 } from "./expressions/functions/CypherFunctions";
+
+export { count, min, max, avg, sum, collect } from "./expressions/functions/AggregationFunctions";
 
 export {
     cypherDatetime as datetime,
@@ -107,8 +104,8 @@ export {
 } from "./expressions/functions/TemporalFunctions";
 
 export * from "./expressions/functions/StringFunctions";
-
 export * from "./expressions/functions/ListFunctions";
+
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";
 
 // Types
@@ -124,6 +121,7 @@ export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
 export type { Order } from "./clauses/sub-clauses/OrderBy";
 export type { CompositeClause } from "./clauses/utils/concat";
+export type { CypherAggregationFunction } from "./expressions/functions/AggregationFunctions";
 
 // utils
 // --Procedures
