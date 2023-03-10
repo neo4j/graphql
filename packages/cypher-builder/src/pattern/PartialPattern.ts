@@ -77,6 +77,9 @@ export class PartialPattern extends PatternElement<RelationshipRef> {
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const prevStr = this.previous.getCypher(env);
 
