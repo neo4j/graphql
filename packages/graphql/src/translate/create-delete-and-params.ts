@@ -330,6 +330,7 @@ function createDeleteAndParams({
 }
 
 // use me when migrating strs to Cypher.Clause
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function createDeleteAndParamsClauses({
     deleteInput,
     varName,
