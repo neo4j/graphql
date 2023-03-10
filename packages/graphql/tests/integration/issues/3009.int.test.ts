@@ -67,14 +67,14 @@ describe("https://github.com/neo4j/graphql/issues/3009", () => {
     });
 
     test("custom resolvers should correctly format dateTimes", async () => {
-const typeDefs = `
-    type User {
-        joinedAt: DateTime!
-    }
-`;
+        const typeDefs = `
+            type User {
+                joinedAt: DateTime!
+            }
+        `;
 
-const resolvers = { Query: { users: () => [{ joinedAt: new Date("2020-01-01").toISOString() }] } };
-const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
+        const resolvers = { Query: { users: () => [{ joinedAt: new Date("2020-01-01").toISOString() }] } };
+        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
 
         const query = `
             query {
