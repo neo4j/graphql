@@ -20,56 +20,32 @@
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "apollo-server";
-import { Neo4jGraphQL } from "../../src";
+import { Neo4jGraphQL } from "../../../src";
 
-describe("Apollo Federation", () => {
-    test("@shareable", async () => {
+describe("https://github.com/neo4j/graphql/issues/2969", () => {
+    test("authorAggregate should not be generated", async () => {
         const typeDefs = gql`
-            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
-
-            type User @shareable {
-                name: String!
-                posts: [Post!]! @relationship(type: "HAS_AUTHOR", direction: IN)
-            }
-
             type Post {
                 content: String!
                 author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
             }
+
+            type User {
+                id: ID!
+                name: String!
+                posts: [Post!]! @relationship(type: "HAS_AUTHOR", direction: IN)
+            }
         `;
-
-        // @ts-ignore
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver: jest.fn() });
-
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema @link(url: \\"https://specs.apollo.dev/link/v1.0\\") @link(url: \\"https://specs.apollo.dev/federation/v2.0\\", import: [\\"@shareable\\"]) {
+            "schema {
               query: Query
               mutation: Mutation
             }
 
-            directive @federation__extends on INTERFACE | OBJECT
-
-            directive @federation__external(reason: String) on FIELD_DEFINITION | OBJECT
-
-            directive @federation__inaccessible on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
-
-            directive @federation__key(fields: federation__FieldSet!, resolvable: Boolean = true) repeatable on INTERFACE | OBJECT
-
-            directive @federation__override(from: String!) on FIELD_DEFINITION
-
-            directive @federation__provides(fields: federation__FieldSet!) on FIELD_DEFINITION
-
-            directive @federation__requires(fields: federation__FieldSet!) on FIELD_DEFINITION
-
-            directive @federation__tag(name: String!) repeatable on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
-
-            directive @link(as: String, for: link__Purpose, import: [link__Import], url: String) repeatable on SCHEMA
-
-            directive @shareable on FIELD_DEFINITION | OBJECT
-
-            type CreateInfo @shareable {
+            type CreateInfo {
               bookmark: String
               nodesCreated: Int!
               relationshipsCreated: Int!
@@ -80,28 +56,33 @@ describe("Apollo Federation", () => {
               posts: [Post!]!
             }
 
-            type CreateUsersMutationResponse @shareable {
+            type CreateUsersMutationResponse {
               info: CreateInfo!
               users: [User!]!
             }
 
-            type DeleteInfo @shareable {
+            type DeleteInfo {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
 
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Mutation {
               createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
-              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse! @shareable
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
-              deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo! @shareable
+              deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
               updatePosts(connect: PostConnectInput, create: PostRelationInput, delete: PostDeleteInput, disconnect: PostDisconnectInput, update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
-              updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse! @shareable
+              updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo @shareable {
+            type PageInfo {
               endCursor: String
               hasNextPage: Boolean!
               hasPreviousPage: Boolean!
@@ -109,7 +90,7 @@ describe("Apollo Federation", () => {
             }
 
             type Post {
-              author: User!
+              author(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               content: String!
             }
@@ -261,13 +242,12 @@ describe("Apollo Federation", () => {
             }
 
             type Query {
-              _service: _Service!
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
-              users(options: UserOptions, where: UserWhere): [User!]! @shareable
-              usersAggregate(where: UserWhere): UserAggregateSelection! @shareable
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection! @shareable
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
             enum SortDirection {
@@ -277,12 +257,12 @@ describe("Apollo Federation", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable @shareable {
+            type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
             }
 
-            type UpdateInfo @shareable {
+            type UpdateInfo {
               bookmark: String
               nodesCreated: Int!
               nodesDeleted: Int!
@@ -295,20 +275,22 @@ describe("Apollo Federation", () => {
               posts: [Post!]!
             }
 
-            type UpdateUsersMutationResponse @shareable {
+            type UpdateUsersMutationResponse {
               info: UpdateInfo!
               users: [User!]!
             }
 
-            type User @shareable {
+            type User {
+              id: ID!
               name: String!
               posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(directed: Boolean = true, where: PostWhere): UserPostPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
             }
 
-            type UserAggregateSelection @shareable {
+            type UserAggregateSelection {
               count: Int!
+              id: IDAggregateSelectionNonNullable!
               name: StringAggregateSelectionNonNullable!
             }
 
@@ -321,6 +303,7 @@ describe("Apollo Federation", () => {
             }
 
             input UserCreateInput {
+              id: ID!
               name: String!
               posts: UserPostsFieldInput
             }
@@ -333,7 +316,7 @@ describe("Apollo Federation", () => {
               posts: [UserPostsDisconnectFieldInput!]
             }
 
-            type UserEdge @shareable {
+            type UserEdge {
               cursor: String!
               node: User!
             }
@@ -481,10 +464,12 @@ describe("Apollo Federation", () => {
             Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
             \\"\\"\\"
             input UserSort {
+              id: SortDirection
               name: SortDirection
             }
 
             input UserUpdateInput {
+              id: ID
               name: String
               posts: [UserPostsUpdateFieldInput!]
             }
@@ -493,6 +478,16 @@ describe("Apollo Federation", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID!]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -534,349 +529,10 @@ describe("Apollo Federation", () => {
               posts_SOME: PostWhere
             }
 
-            type UsersConnection @shareable {
+            type UsersConnection {
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
-            }
-
-            scalar _Any
-
-            type _Service {
-              sdl: String
-            }
-
-            scalar federation__FieldSet
-
-            scalar link__Import
-
-            enum link__Purpose {
-              \\"\\"\\"
-              \`EXECUTION\` features provide metadata necessary for operation execution.
-              \\"\\"\\"
-              EXECUTION
-              \\"\\"\\"
-              \`SECURITY\` features provide metadata necessary to securely resolve fields.
-              \\"\\"\\"
-              SECURITY
-            }"
-        `);
-    });
-
-    test("@key(resolvable: false)", async () => {
-        const typeDefs = gql`
-            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
-
-            type User @key(fields: "name", resolvable: false) {
-                name: String!
-            }
-
-            type Post {
-                content: String!
-                author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
-            }
-        `;
-
-        // @ts-ignore
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver: jest.fn() });
-
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
-
-        expect(printedSchema).toMatchInlineSnapshot(`
-            "schema @link(url: \\"https://specs.apollo.dev/link/v1.0\\") @link(url: \\"https://specs.apollo.dev/federation/v2.0\\", import: [\\"@key\\"]) {
-              query: Query
-              mutation: Mutation
-            }
-
-            directive @federation__extends on INTERFACE | OBJECT
-
-            directive @federation__external(reason: String) on FIELD_DEFINITION | OBJECT
-
-            directive @federation__inaccessible on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
-
-            directive @federation__override(from: String!) on FIELD_DEFINITION
-
-            directive @federation__provides(fields: federation__FieldSet!) on FIELD_DEFINITION
-
-            directive @federation__requires(fields: federation__FieldSet!) on FIELD_DEFINITION
-
-            directive @federation__shareable on FIELD_DEFINITION | OBJECT
-
-            directive @federation__tag(name: String!) repeatable on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
-
-            directive @key(fields: federation__FieldSet!, resolvable: Boolean = true) repeatable on INTERFACE | OBJECT
-
-            directive @link(as: String, for: link__Purpose, import: [link__Import], url: String) repeatable on SCHEMA
-
-            type CreateInfo @federation__shareable {
-              bookmark: String
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
-            type CreatePostsMutationResponse {
-              info: CreateInfo!
-              posts: [Post!]!
-            }
-
-            type DeleteInfo @federation__shareable {
-              bookmark: String
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type Mutation {
-              createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
-              deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
-              updatePosts(connect: PostConnectInput, create: PostRelationInput, delete: PostDeleteInput, disconnect: PostDisconnectInput, update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
-            }
-
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo @federation__shareable {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
-
-            type Post {
-              author: User!
-              authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
-              content: String!
-            }
-
-            type PostAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
-              count: Int!
-            }
-
-            input PostAuthorConnectFieldInput {
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
-              \\"\\"\\"
-              overwrite: Boolean! = true
-              where: UserConnectWhere
-            }
-
-            type PostAuthorConnection {
-              edges: [PostAuthorRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input PostAuthorConnectionSort {
-              node: UserSort
-            }
-
-            input PostAuthorConnectionWhere {
-              AND: [PostAuthorConnectionWhere!]
-              NOT: PostAuthorConnectionWhere
-              OR: [PostAuthorConnectionWhere!]
-              node: UserWhere
-              node_NOT: UserWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
-
-            input PostAuthorCreateFieldInput {
-              node: UserCreateInput!
-            }
-
-            input PostAuthorDeleteFieldInput {
-              where: PostAuthorConnectionWhere
-            }
-
-            input PostAuthorDisconnectFieldInput {
-              where: PostAuthorConnectionWhere
-            }
-
-            input PostAuthorFieldInput {
-              connect: PostAuthorConnectFieldInput
-              create: PostAuthorCreateFieldInput
-            }
-
-            type PostAuthorRelationship {
-              cursor: String!
-              node: User!
-            }
-
-            input PostAuthorUpdateConnectionInput {
-              node: UserUpdateInput
-            }
-
-            input PostAuthorUpdateFieldInput {
-              connect: PostAuthorConnectFieldInput
-              create: PostAuthorCreateFieldInput
-              delete: PostAuthorDeleteFieldInput
-              disconnect: PostAuthorDisconnectFieldInput
-              update: PostAuthorUpdateConnectionInput
-              where: PostAuthorConnectionWhere
-            }
-
-            input PostConnectInput {
-              author: PostAuthorConnectFieldInput
-            }
-
-            input PostCreateInput {
-              author: PostAuthorFieldInput
-              content: String!
-            }
-
-            input PostDeleteInput {
-              author: PostAuthorDeleteFieldInput
-            }
-
-            input PostDisconnectInput {
-              author: PostAuthorDisconnectFieldInput
-            }
-
-            type PostEdge {
-              cursor: String!
-              node: Post!
-            }
-
-            input PostOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [PostSort!]
-            }
-
-            input PostRelationInput {
-              author: PostAuthorCreateFieldInput
-            }
-
-            \\"\\"\\"
-            Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
-            \\"\\"\\"
-            input PostSort {
-              content: SortDirection
-            }
-
-            input PostUpdateInput {
-              author: PostAuthorUpdateFieldInput
-              content: String
-            }
-
-            input PostWhere {
-              AND: [PostWhere!]
-              NOT: PostWhere
-              OR: [PostWhere!]
-              author: UserWhere
-              authorConnection: PostAuthorConnectionWhere
-              authorConnection_NOT: PostAuthorConnectionWhere
-              author_NOT: UserWhere
-              content: String
-              content_CONTAINS: String
-              content_ENDS_WITH: String
-              content_IN: [String!]
-              content_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              content_STARTS_WITH: String
-            }
-
-            type PostsConnection {
-              edges: [PostEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Query {
-              _entities(representations: [_Any!]!): [_Entity]!
-              _service: _Service!
-              posts(options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
-              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
-            }
-
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
-
-            type StringAggregateSelectionNonNullable @federation__shareable {
-              longest: String!
-              shortest: String!
-            }
-
-            type UpdateInfo @federation__shareable {
-              bookmark: String
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type UpdatePostsMutationResponse {
-              info: UpdateInfo!
-              posts: [Post!]!
-            }
-
-            type User @key(fields: \\"name\\", resolvable: false) {
-              name: String!
-            }
-
-            input UserConnectWhere {
-              node: UserWhere!
-            }
-
-            input UserCreateInput {
-              name: String!
-            }
-
-            \\"\\"\\"
-            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
-            \\"\\"\\"
-            input UserSort {
-              name: SortDirection
-            }
-
-            input UserUpdateInput {
-              name: String
-            }
-
-            input UserWhere {
-              AND: [UserWhere!]
-              NOT: UserWhere
-              OR: [UserWhere!]
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-            }
-
-            scalar _Any
-
-            union _Entity = User
-
-            type _Service {
-              sdl: String
-            }
-
-            scalar federation__FieldSet
-
-            scalar link__Import
-
-            enum link__Purpose {
-              \\"\\"\\"
-              \`EXECUTION\` features provide metadata necessary for operation execution.
-              \\"\\"\\"
-              EXECUTION
-              \\"\\"\\"
-              \`SECURITY\` features provide metadata necessary to securely resolve fields.
-              \\"\\"\\"
-              SECURITY
             }"
         `);
     });

@@ -785,34 +785,34 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[:\`IN_GENRE\`]->(this0:\`Genre\`)
-                CALL {
-                    WITH this0
-                    MATCH (this0)<-[this1:\`IN_GENRE\`]-(this2:\`Movie\`)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                RETURN count(this1) = $param0 AS var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[this5:\`IN_GENRE\`]->(this6:\`Genre\`)
-                RETURN count(this6) = $param1 AS var7
+                MATCH (this)-[:\`IN_GENRE\`]->(this3:\`Genre\`)
+                CALL {
+                    WITH this3
+                    MATCH (this3)<-[this4:\`IN_GENRE\`]-(this5:\`Movie\`)
+                    RETURN count(this5) = $param1 AS var6
+                }
+                WITH *
+                WHERE var6 = true
+                RETURN count(this3) > 0 AS var7
             }
             WITH *
-            WHERE (var4 = true AND var7 = true)
+            WHERE (var2 = true AND var7 = true)
             RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 3,
+                    \\"low\\": 1,
                     \\"high\\": 0
                 },
                 \\"param1\\": {
-                    \\"low\\": 1,
+                    \\"low\\": 3,
                     \\"high\\": 0
                 }
             }"
