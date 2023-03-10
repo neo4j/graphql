@@ -67,4 +67,56 @@ describe("db procedures", () => {
             `);
         });
     });
+    describe("db.index.fulltext.queryNodes", () => {
+        test("Simple fulltext", () => {
+            const targetNode = new Cypher.Node({ labels: ["Movie"] });
+            const fulltextProcedure = Cypher.db.index.fulltext.queryNodes(
+                "my-text-index",
+                new Param("This is a lovely phrase")
+            );
+
+            const callClause = new Cypher.CallProcedure(fulltextProcedure).yield([
+                new Cypher.NamedVariable("node"),
+                targetNode,
+            ]);
+
+            const { cypher, params } = callClause.build();
+
+            expect(cypher).toMatchInlineSnapshot(
+                `"CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param0) YIELD node AS this0"`
+            );
+            expect(params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "This is a lovely phrase",
+                }
+            `);
+        });
+
+        test("Fulltext with where and return", () => {
+            const targetNode = new Cypher.Node({ labels: ["Movie"] });
+            const fulltextProcedure = Cypher.db.index.fulltext.queryNodes(
+                "my-text-index",
+                new Param("This is a lovely phrase")
+            );
+
+            const callClause = new Cypher.CallProcedure(fulltextProcedure)
+                .yield([new Cypher.NamedVariable("node"), targetNode])
+                .where(Cypher.eq(targetNode.property("title"), new Cypher.Param("The Matrix")))
+                .return(targetNode);
+
+            const { cypher, params } = callClause.build();
+
+            expect(cypher).toMatchInlineSnapshot(`
+                "CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param0) YIELD node AS this0
+                WHERE this0.title = $param1
+                RETURN this0"
+            `);
+            expect(params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "This is a lovely phrase",
+                  "param1": "The Matrix",
+                }
+            `);
+        });
+    });
 });

@@ -17,66 +17,24 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../Environment";
-import { Where } from "../clauses/sub-clauses/Where";
-import type { NodeRef } from "../references/NodeRef";
-import { Clause } from "../clauses/Clause";
-import { WithReturn } from "../clauses/mixins/WithReturn";
-import { mixin } from "../clauses/utils/mixin";
-import type { Variable } from "../references/Variable";
-import type { Predicate } from "../types";
-import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import { CypherProcedure } from "./CypherProcedure";
+import type { Literal } from "../references/Literal";
+import type { Param } from "../references/Param";
+import type { Variable } from "../references/Variable";
+import { normalizeVariable } from "../utils/normalize-variable";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FullTextQueryNodes extends WithReturn {}
+type FulltextPhrase = string | Literal<string> | Param | Variable;
 
-// TODO: remove yield and CALL and put them in CallProcedure
-/**
- * @group Procedures
- */
-@mixin(WithReturn)
-export class FullTextQueryNodes extends Clause {
-    // TODO: this should be a function and use the call procedure yield instead
-    private targetNode: NodeRef;
-    private indexName: string;
-    private phrase: Variable;
-    private scoreVar: Variable | undefined;
-    private whereClause: Where | undefined;
+export const index = {
+    fulltext: {
+        queryNodes(indexName: string | Literal<string>, phrase: FulltextPhrase): CypherProcedure {
+            const phraseVar = normalizeVariable(phrase);
+            const indexNameVar = normalizeVariable(indexName);
 
-    constructor(targetNode: NodeRef, indexName: string, phrase: Variable, scoreVar?: Variable, parent?: Clause) {
-        super(parent);
-        this.targetNode = targetNode;
-        this.indexName = indexName;
-        this.phrase = phrase;
-        this.scoreVar = scoreVar;
-    }
-
-    public where(input: Predicate): this {
-        if (!this.whereClause) {
-            const whereStatement = new Where(this, input);
-            this.addChildren(whereStatement);
-            this.whereClause = whereStatement;
-        } else {
-            this.whereClause.and(input);
-        }
-        return this;
-    }
-
-    public getCypher(env: CypherEnvironment): string {
-        const targetId = this.targetNode.getCypher(env);
-        const scoreYield = compileCypherIfExists(this.scoreVar, env, { prefix: ", score AS " });
-
-        const textSearchStr = `CALL db.index.fulltext.queryNodes("${this.indexName}", ${this.phrase.getCypher(
-            env
-        )}) YIELD node AS ${targetId}${scoreYield}`;
-
-        const whereStr = compileCypherIfExists(this.whereClause, env, { prefix: "\n" });
-        const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
-
-        return `${textSearchStr}${whereStr}${returnStr}`;
-    }
-}
+            return new CypherProcedure("db.index.fulltext.queryNodes", [indexNameVar, phraseVar]);
+        },
+    },
+};
 
 export function labels(): CypherProcedure {
     return new CypherProcedure("db.labels");

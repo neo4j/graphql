@@ -70,14 +70,15 @@ export class CallProcedureYield extends Clause {
 
     /** @internal */
     public getCypher(env: CypherEnvironment): string {
+        const callProcedureStr = this.callProcedure.getCypher(env);
+        const yieldProjectionStr = this.projection.getCypher(env);
+
         const whereStr = compileCypherIfExists(this.whereSubClause, env, {
             prefix: "\n",
         });
         const returnStr = compileCypherIfExists(this.returnStatement, env, {
             prefix: "\n",
         });
-        const callProcedureStr = this.callProcedure.getCypher(env);
-        const yieldProjectionStr = this.projection.getCypher(env);
 
         return `${callProcedureStr} YIELD ${yieldProjectionStr}${whereStr}${returnStr}`;
     }
