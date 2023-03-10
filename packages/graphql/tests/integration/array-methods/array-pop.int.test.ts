@@ -50,8 +50,8 @@ describe("array-pop", () => {
         await session.close();
     });
 
-    const date = new Date().toISOString();
-    const initialDateValue = date.split("T")[0];
+    const dateTime = new Date().toISOString();
+    const date = dateTime.split("T")[0];
     const time = faker.date.past().toISOString().split("T")[1];
     const initialTimeValue = `${time.slice(0, -1)}000000Z`;
     const initialLocalTimeValue = `${faker.date.past().toISOString().split("T")[1].split("Z")[0]}000000`;
@@ -85,7 +85,7 @@ describe("array-pop", () => {
         },
         {
             inputType: "Date",
-            initialValue: `["${initialDateValue}"]`,
+            initialValue: `["${date}"]`,
             expectedOutputValue: [],
         },
         {
@@ -100,7 +100,7 @@ describe("array-pop", () => {
         },
         {
             inputType: "DateTime",
-            initialValue: `["${initialDateValue}"]`,
+            initialValue: `["${dateTime}"]`,
             expectedOutputValue: [],
         },
         {
@@ -204,8 +204,8 @@ describe("array-pop", () => {
         },
         {
             inputType: "DateTime",
-            initialValue: `["${date}", "${date}"]`,
-            expectedOutputValue: [date],
+            initialValue: `["${dateTime}", "${dateTime}"]`,
+            expectedOutputValue: [dateTime],
         },
         {
             inputType: "LocalDateTime",
