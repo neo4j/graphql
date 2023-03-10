@@ -3183,7 +3183,7 @@ __metadata:
     ts-jest: 29.0.5
     ts-loader: 9.4.2
     ts-node: 10.9.1
-    tsconfig-paths-webpack-plugin: 4.0.0
+    tsconfig-paths-webpack-plugin: 4.0.1
     typescript: 4.9.5
     webpack: 5.76.0
     webpack-cli: 5.0.1
@@ -6103,7 +6103,7 @@ __metadata:
     graphql-tag: ^2.12.6
     neo4j-driver: ^5.5.0
     ts-loader: 9.4.2
-    tsconfig-paths-webpack-plugin: 4.0.0
+    tsconfig-paths-webpack-plugin: 4.0.1
     typescript: 4.9.5
     webpack: 5.76.0
   languageName: unknown
@@ -23454,18 +23454,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths-webpack-plugin@npm:4.0.0":
-  version: 4.0.0
-  resolution: "tsconfig-paths-webpack-plugin@npm:4.0.0"
+"tsconfig-paths-webpack-plugin@npm:4.0.1":
+  version: 4.0.1
+  resolution: "tsconfig-paths-webpack-plugin@npm:4.0.1"
   dependencies:
     chalk: ^4.1.0
     enhanced-resolve: ^5.7.0
-    tsconfig-paths: ^4.0.0
-  checksum: 7ff7d63c1153e6dd30ce660b006495ae5cb5cbb78b30bb59b3cb627567325d4af52c7a69dda8aec7b94d576f5385581a69307472992954c40fe6949564155397
+    tsconfig-paths: ^4.1.2
+  checksum: a09e765c4939379fa060f78bbc906d0a7be541b9b49d3ad4744e99a2e87f28aa30d549a549196159bc5a50f420fdb1391b8eed360f47ee8ce40e15dcb800b5aa
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:4.1.2, tsconfig-paths@npm:^4.0.0":
+"tsconfig-paths@npm:4.1.2, tsconfig-paths@npm:^4.1.2":
   version: 4.1.2
   resolution: "tsconfig-paths@npm:4.1.2"
   dependencies:
