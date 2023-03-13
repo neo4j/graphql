@@ -19,30 +19,19 @@
 
 import type { ListExpr as List } from "../../expressions/list/ListExpr";
 import type { MapExpr as Map } from "../../expressions/map/MapExpr";
-import type { CypherEnvironment } from "../../Environment";
 import type { Predicate } from "../../types";
 import { Literal } from "../../references/Literal";
-import { CypherASTNode } from "../../CypherASTNode";
+import { CypherProcedure } from "../../procedures/CypherProcedure";
+import { normalizeVariable } from "../../utils/normalize-variable";
 
 /**
- * @group Procedures
+ * @group procedures
  */
-export class Validate extends CypherASTNode {
-    private predicate: Predicate;
-    private message: string;
-    private params: List | Map | Literal;
-
-    constructor(predicate: Predicate, message: string, params: List | Literal | Map = new Literal([0])) {
-        super();
-        this.predicate = predicate;
-        this.message = message;
-        this.params = params;
-    }
-
-    /** @internal */
-    public getCypher(env: CypherEnvironment): string {
-        const predicateCypher = this.predicate.getCypher(env);
-        const paramsCypher = this.params.getCypher(env);
-        return `apoc.util.validate(${predicateCypher}, "${this.message}", ${paramsCypher})`;
-    }
+export function validate(
+    predicate: Predicate,
+    message: string | Literal<string>,
+    params: List | Literal | Map = new Literal([0])
+): CypherProcedure {
+    const messageVar = normalizeVariable(message);
+    return new CypherProcedure("apoc.util.validate", [predicate, messageVar, params]);
 }

@@ -25,6 +25,9 @@ import { normalizeVariable } from "../utils/normalize-variable";
 
 type FulltextPhrase = string | Literal<string> | Param | Variable;
 
+/**
+ * @group procedures
+ */
 export const index = {
     fulltext: {
         queryNodes(indexName: string | Literal<string>, phrase: FulltextPhrase): CypherProcedure {
@@ -36,6 +39,9 @@ export const index = {
     },
 };
 
+/**
+ * @group procedures
+ */
 export function labels(): CypherProcedure {
     return new CypherProcedure("db.labels");
 }

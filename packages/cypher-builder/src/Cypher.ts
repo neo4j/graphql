@@ -22,7 +22,6 @@ export { Match, OptionalMatch } from "./clauses/Match";
 export { Create } from "./clauses/Create";
 export { Merge } from "./clauses/Merge";
 export { Call } from "./clauses/Call";
-export { CallProcedure } from "./clauses/CallProcedure";
 export { Return } from "./clauses/Return";
 export { RawCypher } from "./clauses/RawCypher";
 export { With } from "./clauses/With";
@@ -113,6 +112,8 @@ export * from "./expressions/functions/PathFunctions";
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";
 
 // Procedures
+export { CypherProcedure as Procedure } from "./procedures/CypherProcedure";
+
 export * as db from "./procedures/db";
 
 // Types
@@ -122,13 +123,13 @@ export type { Clause } from "./clauses/Clause";
 export type { CypherEnvironment as Environment } from "./Environment";
 export type { ComparisonOp } from "./expressions/operations/comparison";
 export type { BooleanOp } from "./expressions/operations/boolean";
-export type { Expr, Predicate, Operation, Procedure } from "./types";
+export type { Expr, Predicate, Operation } from "./types";
+export type { CypherProcedureYield } from "./procedures/CypherProcedure";
 export type { ProjectionColumn } from "./clauses/sub-clauses/Projection";
 export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
 export type { Order } from "./clauses/sub-clauses/OrderBy";
 export type { CompositeClause } from "./clauses/utils/concat";
-export type { CallProcedureYield } from "./clauses/CallProcedure";
 
 // utils
 export * as utils from "./utils/utils";

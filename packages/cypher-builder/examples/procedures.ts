@@ -17,8 +17,18 @@
  * limitations under the License.
  */
 
-export { RunFirstColumn } from "./functions/RunFirstColumn";
-export { ValidatePredicate } from "./functions/ValidatePredicate";
+import Cypher from "../src";
 
-export * as date from "./functions/date";
-export * as util from "./procedures/util";
+// CALL db.labels() yield label
+// RETURN label
+
+const label = new Cypher.NamedVariable("label");
+
+const labelsCall = Cypher.db.labels().yield(label).return(label);
+
+const { cypher, params } = labelsCall.build();
+
+console.log("Cypher");
+console.log(cypher);
+console.log("----");
+console.log("Params", params);

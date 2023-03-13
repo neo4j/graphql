@@ -17,30 +17,20 @@
  * limitations under the License.
  */
 
-import { expectTypeOf } from "expect-type";
 import Cypher from "../..";
-import { CypherEnvironment } from "../../Environment";
-import type { CypherASTNode } from "../../CypherASTNode";
 
 describe("Validate", () => {
-    let env: CypherEnvironment;
-
-    beforeEach(() => {
-        env = new CypherEnvironment();
-    });
-
-    test("Validate types", () => {
-        expectTypeOf<Cypher.apoc.Validate>().toMatchTypeOf<CypherASTNode>();
-        expectTypeOf<Cypher.apoc.Validate>().toMatchTypeOf<Cypher.Procedure>();
-    });
+    // test("Validate types", () => {
+    //     expectTypeOf<Cypher.apoc.Validate>().toMatchTypeOf<CypherASTNode>();
+    //     expectTypeOf<Cypher.apoc.Validate>().toMatchTypeOf<Cypher.Procedure>();
+    // });
 
     test("Simple Validate", () => {
-        const validate = new Cypher.apoc.Validate(
+        const validate = Cypher.apoc.util.validate(
             Cypher.eq(new Cypher.Literal(1), new Cypher.Literal(2)),
             "That's not how math works"
         );
-        const callableProceedure = new Cypher.CallProcedure(validate);
-        expect(callableProceedure.getCypher(env)).toMatchInlineSnapshot(
+        expect(validate.build().cypher).toMatchInlineSnapshot(
             `"CALL apoc.util.validate(1 = 2, \\"That's not how math works\\", [0])"`
         );
     });
