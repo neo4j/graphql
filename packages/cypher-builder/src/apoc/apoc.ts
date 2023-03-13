@@ -18,7 +18,6 @@
  */
 
 export { RunFirstColumn } from "./functions/RunFirstColumn";
-export { ValidatePredicate } from "./functions/ValidatePredicate";
 
 export * as date from "./functions/date";
-export * as util from "./procedures/util";
+export * as util from "./util";

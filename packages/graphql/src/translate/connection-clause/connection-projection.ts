@@ -163,12 +163,10 @@ function createConnectionNodeProjection({
     ];
 
     if (projectionMeta?.authValidatePredicates?.length) {
-        const projectionAuth = new Cypher.CallProcedure(
-            new Cypher.apoc.Validate(
-                Cypher.not(Cypher.and(...projectionMeta.authValidatePredicates)),
-                AUTH_FORBIDDEN_ERROR,
-                new Cypher.Literal([0])
-            )
+        const projectionAuth = Cypher.apoc.util.validate(
+            Cypher.not(Cypher.and(...projectionMeta.authValidatePredicates)),
+            AUTH_FORBIDDEN_ERROR,
+            new Cypher.Literal([0])
         );
 
         projectionSubqueries.push(projectionAuth);

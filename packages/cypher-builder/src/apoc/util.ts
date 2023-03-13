@@ -17,15 +17,17 @@
  * limitations under the License.
  */
 
-import type { ListExpr as List } from "../../expressions/list/ListExpr";
-import type { MapExpr as Map } from "../../expressions/map/MapExpr";
-import type { Predicate } from "../../types";
-import { Literal } from "../../references/Literal";
-import { normalizeVariable } from "../../utils/normalize-variable";
-import { VoidCypherProcedure } from "../../procedures/CypherProcedure";
+import type { ListExpr as List } from "../expressions/list/ListExpr";
+import type { MapExpr as Map } from "../expressions/map/MapExpr";
+import { Literal } from "../references/Literal";
+import { normalizeVariable } from "../utils/normalize-variable";
+import { VoidCypherProcedure } from "../procedures/CypherProcedure";
+import { CypherFunction } from "../expressions/functions/CypherFunctions";
+import type { Predicate } from "../types";
 
 /**
- * @group procedures
+ * @group Expressions
+ * @category Procedures
  */
 export function validate(
     predicate: Predicate,
@@ -34,4 +36,14 @@ export function validate(
 ): VoidCypherProcedure {
     const messageVar = normalizeVariable(message);
     return new VoidCypherProcedure("apoc.util.validate", [predicate, messageVar, params]);
+}
+
+/**
+ * @group Expressions
+ * @category Functions
+ */
+export function validatePredicate(predicate: Predicate, message: string): CypherFunction {
+    const defaultParam = new Literal([0]);
+
+    return new CypherFunction("apoc.util.validatePredicate", [predicate, new Literal(message), defaultParam]);
 }

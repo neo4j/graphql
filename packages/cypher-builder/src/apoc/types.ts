@@ -19,7 +19,5 @@
 
 import type { ConvertFormat } from "./functions/convert-format";
 import type { RunFirstColumn } from "./functions/RunFirstColumn";
-import type { ValidatePredicate } from "./functions/ValidatePredicate";
 
-export type ApocPredicate = ValidatePredicate;
-export type ApocFunction = ApocPredicate | RunFirstColumn | ConvertFormat;
+export type ApocFunction = RunFirstColumn | ConvertFormat;

@@ -433,7 +433,7 @@ function createRelationshipPredicate({
             authPredicate
         );
     } else {
-        predicateFunction = Cypher[context.auth?.bindPredicate ?? context.plugins?.auth?.bindPredicate ?? 'all'](
+        predicateFunction = Cypher[context.auth?.bindPredicate ?? context.plugins?.auth?.bindPredicate ?? "all"](
             targetNodeRef,
             new Cypher.PatternComprehension(innerPattern, targetNodeRef),
             authPredicate
@@ -465,7 +465,7 @@ function createAuthenticatedPredicate(
 ): Cypher.Predicate {
     const authenticatedPredicate = Cypher.not(Cypher.eq(authenticatedParam, new Cypher.Literal(authenticated)));
 
-    return new Cypher.apoc.ValidatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
+    return Cypher.apoc.util.validatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
 }
 
 function createAuthField({

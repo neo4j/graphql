@@ -107,7 +107,7 @@ export function createEdgeSubquery({
     });
 
     if (authAllowPredicate)
-        predicates.push(new Cypher.apoc.ValidatePredicate(Cypher.not(authAllowPredicate), AUTH_FORBIDDEN_ERROR));
+        predicates.push(Cypher.apoc.util.validatePredicate(Cypher.not(authAllowPredicate), AUTH_FORBIDDEN_ERROR));
 
     const projection = createEdgeProjection({
         resolveTree,

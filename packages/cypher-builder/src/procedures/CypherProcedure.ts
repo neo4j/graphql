@@ -21,6 +21,7 @@ import { Clause } from "../clauses/Clause";
 import { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
 import type { Expr } from "../types";
+import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import type { YieldProjectionColumn } from "./Yield";
 import { Yield } from "./Yield";
 
@@ -62,10 +63,22 @@ export class VoidCypherProcedure extends Clause {
  * @group Expressions
  * @category Procedures
  */
-export class CypherProcedure<T extends string> extends VoidCypherProcedure {
-    // TODO: withwith
+export class CypherProcedure<T extends string = string> extends VoidCypherProcedure {
+    private yieldStatement: Yield | undefined;
+
     public yield(...columns: Array<"*" | YieldProjectionColumn<T>>): Yield {
         if (columns.length === 0) throw new Error("Empty projection in CALL ... YIELD");
-        return new Yield(this, columns);
+        this.yieldStatement = new Yield(columns);
+        this.addChildren(this.yieldStatement);
+
+        return this.yieldStatement;
+    }
+
+    /** @internal */
+    public getCypher(env: CypherEnvironment): string {
+        const callCypher = super.getCypher(env);
+        const yieldCypher = compileCypherIfExists(this.yieldStatement, env, { prefix: " " });
+
+        return `${callCypher}${yieldCypher}`;
     }
 }

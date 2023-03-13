@@ -20,6 +20,7 @@
 import { Clause } from "../clauses/Clause";
 import { WithReturn } from "../clauses/mixins/WithReturn";
 import { WithWhere } from "../clauses/mixins/WithWhere";
+import { WithWith } from "../clauses/mixins/WithWith";
 import type { ProjectionColumn } from "../clauses/sub-clauses/Projection";
 import { Projection } from "../clauses/sub-clauses/Projection";
 import { mixin } from "../clauses/utils/mixin";
@@ -30,25 +31,22 @@ import { NamedVariable } from "../references/Variable";
 import type { Expr } from "../types";
 import { asArray } from "../utils/as-array";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
-import type { CypherProcedure } from "./CypherProcedure";
 
 export type YieldProjectionColumn<T extends string> = T | [T, Variable | Literal];
 
-export interface Yield extends WithReturn, WithWhere {}
+export interface Yield extends WithReturn, WithWhere, WithWith {}
 
-/** Cypher Procedure yield projection
+/** Yield statement after a Procedure CALL
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/call/#call-call-a-procedure-call-yield-star)
  * @group Expressions
  * @category Procedures
  */
-@mixin(WithReturn, WithWhere)
+@mixin(WithReturn, WithWhere, WithWith)
 export class Yield extends Clause {
-    private cypherProcedure: CypherProcedure<any>;
     private projection: YieldProjection;
 
-    constructor(call: CypherProcedure<any>, yieldColumns: Array<"*" | YieldProjectionColumn<any>>) {
+    constructor(yieldColumns: Array<"*" | YieldProjectionColumn<any>>) {
         super();
-        this.cypherProcedure = call;
 
         const columns = asArray<YieldProjectionColumn<any> | "*">(yieldColumns);
         this.projection = new YieldProjection(columns);
@@ -56,17 +54,21 @@ export class Yield extends Clause {
 
     /** @internal */
     public getCypher(env: CypherEnvironment): string {
-        const callProcedureStr = this.cypherProcedure.getCypher(env);
         const yieldProjectionStr = this.projection.getCypher(env);
 
         const whereStr = compileCypherIfExists(this.whereSubClause, env, {
             prefix: "\n",
         });
+
+        const withStr = compileCypherIfExists(this.withStatement, env, {
+            prefix: "\n",
+        });
+
         const returnStr = compileCypherIfExists(this.returnStatement, env, {
             prefix: "\n",
         });
 
-        return `${callProcedureStr} YIELD ${yieldProjectionStr}${whereStr}${returnStr}`;
+        return `YIELD ${yieldProjectionStr}${whereStr}${withStr}${returnStr}`;
     }
 }
 

@@ -225,7 +225,7 @@ export class UnwindCreateVisitor implements Visitor {
             if (authExpr) {
                 return Cypher.concat(
                     new Cypher.With("*"),
-                    new Cypher.CallProcedure(new Cypher.apoc.Validate(Cypher.not(authExpr), AUTH_FORBIDDEN_ERROR))
+                    Cypher.apoc.util.validate(Cypher.not(authExpr), AUTH_FORBIDDEN_ERROR)
                 );
             }
         }
@@ -267,7 +267,7 @@ export class UnwindCreateVisitor implements Visitor {
 
                     const fieldsAuth = Cypher.concat(
                         new Cypher.With("*"),
-                        new Cypher.CallProcedure(new Cypher.apoc.Validate(predicate, AUTH_FORBIDDEN_ERROR))
+                        Cypher.apoc.util.validate(predicate, AUTH_FORBIDDEN_ERROR)
                     ).getCypher(env);
 
                     const fieldsPredicateParams = fieldsPredicates.reduce((prev, next) => {
