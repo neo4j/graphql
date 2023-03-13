@@ -18,7 +18,8 @@
  */
 
 import type { Driver, Session } from "neo4j-driver";
-import { DocumentNode, graphql } from "graphql";
+import type { DocumentNode } from "graphql";
+import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";

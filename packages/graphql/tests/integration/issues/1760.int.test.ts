@@ -18,7 +18,8 @@
  */
 
 import { gql } from "apollo-server";
-import { graphql, GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";

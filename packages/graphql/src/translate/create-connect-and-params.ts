@@ -282,14 +282,12 @@ function createConnectAndParams({
                 relVariable: relationshipName,
                 fromVariable,
                 toVariable,
-                typename: relationField.type,
+                typename: relationField.typeUnescaped,
                 fromTypename,
                 toTypename,
             });
             subquery.push(`\t\t\tWITH ${eventWithMetaStr} as meta`);
             subquery.push(`\t\t\tRETURN collect(meta) as update_meta`);
-        } else {
-            subquery.push(`\t\t\tRETURN count(*) AS _`);
         }
 
         subquery.push("\t\t}");
@@ -297,11 +295,8 @@ function createConnectAndParams({
         if (context.subscriptionsEnabled) {
             subquery.push(`\t\tWITH meta + update_meta as meta`);
             subquery.push(`\t\tRETURN meta AS connect_meta`);
-            subquery.push("\t}");
-        } else {
-            subquery.push(`\t\tRETURN count(*) AS _`);
-            subquery.push("\t}");
         }
+        subquery.push("\t}");
 
         let innerMetaStr = "";
         if (context.subscriptionsEnabled) {

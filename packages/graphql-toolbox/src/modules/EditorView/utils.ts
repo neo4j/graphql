@@ -22,7 +22,8 @@ import prettier from "prettier/standalone";
 import prettierBabel from "prettier/parser-babel";
 import parserGraphQL from "prettier/parser-graphql";
 import { getComplexity, simpleEstimator } from "graphql-query-complexity";
-import { GraphQLSchema, parse } from "graphql";
+import type { GraphQLSchema } from "graphql";
+import { parse } from "graphql";
 
 export enum ParserOptions {
     GRAPH_QL,

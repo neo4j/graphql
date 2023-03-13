@@ -78,7 +78,7 @@ describe("Relationship Properties Cypher", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -121,7 +121,7 @@ describe("Relationship Properties Cypher", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WHERE this1.name = $param1
                 WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
@@ -166,7 +166,7 @@ describe("Relationship Properties Cypher", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WITH this0, this1
                 ORDER BY this0.screenTime DESC
                 WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
@@ -217,7 +217,7 @@ describe("Relationship Properties Cypher", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WITH this0, this1
                 ORDER BY this0.year DESC, this1.name ASC
                 WITH { year: this0.year, node: { name: this1.name } } AS edge
@@ -263,7 +263,7 @@ describe("Relationship Properties Cypher", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WITH this0, this1
                 ORDER BY this1.name ASC, this0.year DESC
                 WITH { year: this0.year, node: { name: this1.name } } AS edge
@@ -320,10 +320,10 @@ describe("Relationship Properties Cypher", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Actor\`)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    MATCH (this1:\`Actor\`)-[this2:\`ACTED_IN\`]->(this3:\`Movie\`)
                     WITH { screenTime: this2.screenTime, node: { title: this3.title } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
@@ -387,13 +387,13 @@ describe("Relationship Properties Cypher", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Actor\`)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    MATCH (this1:\`Actor\`)-[this2:\`ACTED_IN\`]->(this3:\`Movie\`)
                     CALL {
                         WITH this3
-                        MATCH (this3:\`Movie\`)<-[this4:ACTED_IN]-(this5:\`Actor\`)
+                        MATCH (this3:\`Movie\`)<-[this4:\`ACTED_IN\`]-(this5:\`Actor\`)
                         WITH { screenTime: this4.screenTime, node: { name: this5.name } } AS edge
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount

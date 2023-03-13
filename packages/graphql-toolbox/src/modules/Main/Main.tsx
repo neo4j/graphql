@@ -18,7 +18,7 @@
  */
 
 import { useContext, useEffect, useState } from "react";
-import { GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
 import { TopBar } from "../TopBar/TopBar";
 import { Login } from "../Login/Login";
 import { SchemaView } from "../SchemaView/SchemaView";

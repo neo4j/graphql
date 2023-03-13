@@ -39,6 +39,7 @@ export type DriverConfig = {
 export interface AuthContext {
     isAuthenticated: boolean;
     roles: string[];
+    bindPredicate?: "any" | "all";
     jwt?: JwtPayload;
 }
 
@@ -142,6 +143,7 @@ export interface BaseField {
     readonly?: boolean;
     writeonly?: boolean;
     dbPropertyName?: string;
+    dbPropertyNameUnescaped?: string;
     unique?: Unique;
 }
 
@@ -150,6 +152,7 @@ export interface BaseField {
  */
 export interface RelationField extends BaseField {
     direction: "OUT" | "IN";
+    typeUnescaped: string;
     type: string;
     connectionPrefix?: string;
     inherited: boolean;
@@ -377,7 +380,7 @@ export type InputField = { type: string; defaultValue?: string; directives?: Dir
 export interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;
     isGlobalAuthenticationEnabled?: boolean;
-    bindPredicate: "all" | "any";
+    bindPredicate?: "all" | "any";
 
     decode<T>(token: string): Promise<T | undefined>;
     /**

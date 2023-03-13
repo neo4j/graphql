@@ -85,7 +85,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WHERE (this0.role ENDS WITH $param0 OR this0.screenTime < $param1)
                 WITH { role: this0.role, screenTime: this0.screenTime, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges

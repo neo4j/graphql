@@ -5,8 +5,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { astFromValue, print, ValueNode } from "graphql";
-import { FieldType } from "./types";
+import type { ValueNode } from "graphql";
+import { astFromValue, print } from "graphql";
+import type { FieldType } from "./types";
 
 const printDefault = (ast?: ValueNode | null): string => {
     if (!ast) {

@@ -232,7 +232,6 @@ describe("issues/635", () => {
             noWrite: true,
         })) as string;
 
-        expect(generated).toContain(`export type CompanyClockSettingsAggregateInput`);
         expect(generated).not.toContain(`export interface CompanyClockSettingsAggregateInput`);
         expect(generated).toContain(`export interface CompanyClockSettingsAggregateSelectionInput`);
 

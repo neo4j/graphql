@@ -16,8 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode, DocumentNode, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
+import type {
+    DirectiveNode,
+    DocumentNode,
+    FieldDefinitionNode,
+    ObjectTypeDefinitionNode,
+} from "graphql";
 import { SCALAR_TYPES } from "../constants";
 import { getDefinitionNodes } from "../schema/get-definition-nodes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";

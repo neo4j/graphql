@@ -24,6 +24,8 @@ import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import type { Literal } from "../references/Literal";
 import type { Variable } from "../references/Variable";
 import { Clause } from "./Clause";
+import type { DeleteInput } from "./sub-clauses/Delete";
+import { DeleteClause } from "./sub-clauses/Delete";
 import { WithOrder } from "./mixins/WithOrder";
 import { WithReturn } from "./mixins/WithReturn";
 import { WithWhere } from "./mixins/WithWhere";
@@ -43,6 +45,7 @@ export class With extends Clause {
     private projection: Projection;
     private isDistinct = false;
     private withStatement: With | undefined;
+    private deleteClause: DeleteClause | undefined;
 
     constructor(...columns: Array<"*" | WithProjection>) {
         super();
@@ -59,18 +62,17 @@ export class With extends Clause {
         return this;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
         const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
         const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
         const withStr = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });
         const whereStr = compileCypherIfExists(this.whereSubClause, env, { prefix: "\n" });
+        const deleteStr = compileCypherIfExists(this.deleteClause, env, { prefix: "\n" });
         const distinctStr = this.isDistinct ? " DISTINCT" : "";
 
-        return `WITH${distinctStr} ${projectionStr}${whereStr}${orderByStr}${withStr}${returnStr}`;
+        return `WITH${distinctStr} ${projectionStr}${whereStr}${orderByStr}${withStr}${deleteStr}${returnStr}`;
     }
 
     // Cannot be part of WithWith due to dependency cycles
@@ -82,5 +84,21 @@ export class With extends Clause {
             this.addChildren(this.withStatement);
         }
         return this.withStatement;
+    }
+
+    public delete(...deleteInput: DeleteInput): this {
+        this.createDeleteClause(deleteInput);
+        return this;
+    }
+
+    public detachDelete(...deleteInput: DeleteInput): this {
+        const deleteClause = this.createDeleteClause(deleteInput);
+        deleteClause.detach();
+        return this;
+    }
+
+    private createDeleteClause(deleteInput: DeleteInput): DeleteClause {
+        this.deleteClause = new DeleteClause(this, deleteInput);
+        return this.deleteClause;
     }
 }

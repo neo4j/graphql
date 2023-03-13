@@ -48,9 +48,7 @@ export class ListIndex implements CypherCompilable {
         this.index = index;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         return `${this.value.getCypher(env)}[${this.index}]`;
     }

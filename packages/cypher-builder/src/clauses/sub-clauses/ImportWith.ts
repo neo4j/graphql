@@ -35,6 +35,7 @@ export class ImportWith extends CypherASTNode {
         this.params = params;
     }
 
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const paramsStr = this.params.map((v) => v.getCypher(env));
         return `WITH ${paramsStr.join(", ")}`;

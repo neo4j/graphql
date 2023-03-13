@@ -48,9 +48,7 @@ export class CompositeClause extends Clause {
         return this.children.length === 0;
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const childrenStrs = this.children.map((c) => c.getCypher(env));
         return childrenStrs.join(this.separator);

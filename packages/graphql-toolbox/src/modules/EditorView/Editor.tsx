@@ -18,12 +18,13 @@
  */
 
 import { useCallback, useState, useRef, useEffect, useContext, Fragment } from "react";
-import { graphql, GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
 import { Button, IconButton, Switch } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
 import { tokens } from "@neo4j-ndl/base";
-import { EditorFromTextArea } from "codemirror";
+import type { EditorFromTextArea } from "codemirror";
 import debounce from "lodash.debounce";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";

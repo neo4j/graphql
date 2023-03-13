@@ -73,10 +73,8 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_targets0_node
-            			MERGE (this)-[:HAS_TARGET]->(this_connect_targets0_node)
-            			RETURN count(*) AS _
+            			MERGE (this)-[:\`HAS_TARGET\`]->(this_connect_targets0_node)
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_targets0_node
             	RETURN count(*) AS connect_this_connect_targets_Target
@@ -132,7 +130,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_targets0_rel:HAS_TARGET]->(this_disconnect_targets0:Target)
+            OPTIONAL MATCH (this)-[this_disconnect_targets0_rel:\`HAS_TARGET\`]->(this_disconnect_targets0:Target)
             WHERE this_disconnect_targets0.id = $updateSources_args_disconnect_targets0_where_Target_this_disconnect_targets0param0
             WITH this, this_disconnect_targets0, this_disconnect_targets0_rel
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -141,7 +139,6 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             	WITH collect(this_disconnect_targets0) as this_disconnect_targets0, this_disconnect_targets0_rel, this
             	UNWIND this_disconnect_targets0 as x
             	DELETE this_disconnect_targets0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_targets_Target
             }

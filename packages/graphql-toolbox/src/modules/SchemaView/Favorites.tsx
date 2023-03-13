@@ -20,7 +20,7 @@
 import { IconButton } from "@neo4j-ndl/react";
 import { CheckIconOutline, PencilIconOutline, TrashIconOutline } from "@neo4j-ndl/react/icons";
 import { Storage } from "../../utils/storage";
-import { Favorite } from "../../types";
+import type { Favorite } from "../../types";
 import { LOCAL_STATE_FAVORITES } from "../../constants";
 import { Fragment, useState } from "react";
 

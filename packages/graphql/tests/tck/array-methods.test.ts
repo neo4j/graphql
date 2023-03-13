@@ -548,20 +548,20 @@ describe("Arrays Methods", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Movie)
             	SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_PUSH
             	RETURN count(*) AS update_this_actedIn0
             }
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                MATCH (this)-[update_this0:\`ACTED_IN\`]->(update_this1:\`Movie\`)
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[update_this3:ACTED_IN]->(update_this4:\`Movie\`)
+                MATCH (this)-[update_this3:\`ACTED_IN\`]->(update_this4:\`Movie\`)
                 WITH { pay: update_this3.pay } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -652,20 +652,20 @@ describe("Arrays Methods", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Movie)
             	SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay[0..-$updateActors.args.update.actedIn[0].update.edge.pay_POP]
             	RETURN count(*) AS update_this_actedIn0
             }
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                MATCH (this)-[update_this0:\`ACTED_IN\`]->(update_this1:\`Movie\`)
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[update_this3:ACTED_IN]->(update_this4:\`Movie\`)
+                MATCH (this)-[update_this3:\`ACTED_IN\`]->(update_this4:\`Movie\`)
                 WITH { pay: update_this3.pay } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

@@ -92,7 +92,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             }
             CALL {
                 WITH create_this0
-                MATCH (create_this0:\`Movie\`)<-[create_this1:ACTED_IN]-(create_this2:\`Actor\`)
+                MATCH (create_this0:\`Movie\`)<-[create_this1:\`ACTED_IN\`]-(create_this2:\`Actor\`)
                 WITH { screenTime: create_this1.screenTime, node: { name: create_this2.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -148,7 +148,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             }
             CALL {
                 WITH create_this0
-                MATCH (create_this0:\`Movie\`)<-[create_this1:ACTED_IN]-(create_this2:\`Actor\`)
+                MATCH (create_this0:\`Movie\`)<-[create_this1:\`ACTED_IN\`]-(create_this2:\`Actor\`)
                 WITH { screenTime: create_this1.screenTime, node: { name: create_this2.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -207,7 +207,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             }
             CALL {
                 WITH create_this0
-                MATCH (create_this0:\`Movie\`)<-[create_this1:ACTED_IN]-(create_this2:\`Actor\`)
+                MATCH (create_this0:\`Movie\`)<-[create_this1:\`ACTED_IN\`]-(create_this2:\`Actor\`)
                 WHERE create_this2.name = $create_param0
                 WITH { screenTime: create_this1.screenTime, node: { name: create_this2.name } } AS edge
                 WITH collect(edge) AS edges

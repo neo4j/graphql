@@ -448,10 +448,8 @@ describe("Cypher Auth Roles", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_posts0_node
-            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-            			RETURN count(*) AS _
+            			MERGE (this)-[:\`HAS_POST\`]->(this_connect_posts0_node)
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_posts0_node
             	RETURN count(*) AS connect_this_connect_posts_Post
@@ -504,7 +502,7 @@ describe("Cypher Auth Roles", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)
+            	MATCH (this)<-[this_has_comment0_relationship:\`HAS_COMMENT\`]-(this_post0:Post)
             	WITH this, this_post0
             	CALL {
             		WITH this, this_post0
@@ -519,10 +517,8 @@ describe("Cypher Auth Roles", () => {
             				WITH connectedNodes, parentNodes
             				UNWIND parentNodes as this_post0
             				UNWIND connectedNodes as this_post0_creator0_connect0_node
-            				MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
-            				RETURN count(*) AS _
+            				MERGE (this_post0)-[:\`HAS_POST\`]->(this_post0_creator0_connect0_node)
             			}
-            			RETURN count(*) AS _
             		}
             	WITH this, this_post0, this_post0_creator0_connect0_node
             		RETURN count(*) AS connect_this_post0_creator0_connect_User
@@ -530,7 +526,7 @@ describe("Cypher Auth Roles", () => {
             	WITH this, this_post0
             	CALL {
             		WITH this_post0
-            		MATCH (this_post0)-[this_post0_creator_User_unique:HAS_POST]->(:User)
+            		MATCH (this_post0)-[this_post0_creator_User_unique:\`HAS_POST\`]->(:User)
             		WITH count(this_post0_creator_User_unique) as c
             		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             		RETURN c AS this_post0_creator_User_unique_ignored
@@ -540,7 +536,7 @@ describe("Cypher Auth Roles", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)<-[this_post_Post_unique:HAS_COMMENT]-(:Post)
+            	MATCH (this)<-[this_post_Post_unique:\`HAS_COMMENT\`]-(:Post)
             	WITH count(this_post_Post_unique) as c
             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required exactly once', [0])
             	RETURN c AS this_post_Post_unique_ignored
@@ -589,7 +585,7 @@ describe("Cypher Auth Roles", () => {
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
+            OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:\`HAS_POST\`]->(this_disconnect_posts0:Post)
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -597,7 +593,6 @@ describe("Cypher Auth Roles", () => {
             	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
@@ -658,11 +653,11 @@ describe("Cypher Auth Roles", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)
+            	MATCH (this)<-[this_has_comment0_relationship:\`HAS_COMMENT\`]-(this_post0:Post)
             	WITH this, this_post0
             	CALL {
             	WITH this, this_post0
-            	OPTIONAL MATCH (this_post0)-[this_post0_creator0_disconnect0_rel:HAS_POST]->(this_post0_creator0_disconnect0:User)
+            	OPTIONAL MATCH (this_post0)-[this_post0_creator0_disconnect0_rel:\`HAS_POST\`]->(this_post0_creator0_disconnect0:User)
             	WHERE this_post0_creator0_disconnect0.id = $updateComments_args_update_post_update_node_creator_disconnect_where_User_this_post0_creator0_disconnect0param0
             	WITH this, this_post0, this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel
             	CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -671,14 +666,13 @@ describe("Cypher Auth Roles", () => {
             		WITH collect(this_post0_creator0_disconnect0) as this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel, this_post0
             		UNWIND this_post0_creator0_disconnect0 as x
             		DELETE this_post0_creator0_disconnect0_rel
-            		RETURN count(*) AS _
             	}
             	RETURN count(*) AS disconnect_this_post0_creator0_disconnect_User
             	}
             	WITH this, this_post0
             	CALL {
             		WITH this_post0
-            		MATCH (this_post0)-[this_post0_creator_User_unique:HAS_POST]->(:User)
+            		MATCH (this_post0)-[this_post0_creator_User_unique:\`HAS_POST\`]->(:User)
             		WITH count(this_post0_creator_User_unique) as c
             		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             		RETURN c AS this_post0_creator_User_unique_ignored
@@ -688,7 +682,7 @@ describe("Cypher Auth Roles", () => {
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)<-[this_post_Post_unique:HAS_COMMENT]-(:Post)
+            	MATCH (this)<-[this_post_Post_unique:\`HAS_COMMENT\`]-(:Post)
             	WITH count(this_post_Post_unique) as c
             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required exactly once', [0])
             	RETURN c AS this_post_Post_unique_ignored
@@ -792,16 +786,18 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
+            CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-            WITH this, this_posts0
+            OPTIONAL MATCH (this)-[this_posts0_relationship:\`HAS_POST\`]->(this_posts0:Post)
+            WITH this, this_posts0, this_posts0_relationship
             CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this, collect(DISTINCT this_posts0) AS this_posts0_to_delete
+            WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete
             CALL {
             	WITH this_posts0_to_delete
             	UNWIND this_posts0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
+            }
             }
             WITH this
             CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])

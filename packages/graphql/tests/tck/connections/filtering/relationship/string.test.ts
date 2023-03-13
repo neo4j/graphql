@@ -94,7 +94,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WHERE this0.role CONTAINS $param0
                 WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
@@ -137,7 +137,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WHERE NOT (this0.role CONTAINS $param0)
                 WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
@@ -180,7 +180,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WHERE this0.role STARTS WITH $param0
                 WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
@@ -223,7 +223,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WHERE NOT (this0.role STARTS WITH $param0)
                 WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
@@ -266,7 +266,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WHERE this0.role ENDS WITH $param0
                 WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
@@ -309,7 +309,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WHERE NOT (this0.role ENDS WITH $param0)
                 WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
@@ -352,7 +352,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
                 WHERE this0.role =~ $param0
                 WITH { role: this0.role, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges

@@ -25,7 +25,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - uses: reviewdog/action-eslint@0d9c815b089d06d77f6a6aad28e9d3bcd83896e5 # v1.18.1
+      - uses: reviewdog/action-eslint@94d539484aab48e9b2ffff6466d8866ee4e4b217 # v1.18.2
         with:
           fail_on_error: true
           eslint_flags: "."
@@ -84,9 +84,6 @@ jobs:
 
   api-library-tests:
     uses: ./.github/workflows/reusable-api-library-tests.yml
-
-  # nextjs-app-setup:
-  #   uses: ./.github/workflows/reusable-nextjs-app-setup.yml
 
   toolbox-tests:
     uses: ./.github/workflows/reusable-toolbox-tests.yml

@@ -228,6 +228,7 @@ type Tech @node(label: "TechDB") @plural(value: "Techs") {
 
 There is no concept of a "main label" in the Neo4j database. As such, keeping these two separate arguments causes a disconnect between the database and the GraphQL library.
 As a result, the `label` and `additionalLabels` arguments have been condensed into a single argument `labels` which will accept a list of string labels that used when a node of the given GraphQL type is created.
+Please note that defining `labels` means you take control of the database labels of the node. Indexes and constraints in Neo4j only support a single label, for which the first element of the `labels` argument will be used.
 
 The equivalent of using just the `label` argument is now a list with a single value:
 
@@ -268,7 +269,17 @@ type Tech @node(labels: ["TechDB", "AwesomeTech"]) {
 }
 ----
 
-As before, providing none of these arguments results in the node label being the same as the GraphQL type name.
+As before, providing none of these arguments results in the node label being the same as the GraphQL type name. 
+
+Please note the implications on constraints.
+In the following example, a unique constraint will be asserted for the label `Tech` and the property `name`:
+
+[source, graphql, indent=0]
+----
+type Tech @node(labels: ["Tech", "TechDB"]) {
+  name: String @unique
+}
+----
 
 [full-text-migration]
 === `@fulltext` changes
@@ -482,6 +493,10 @@ If it is not included, an error will be thrown.
 
 As a result, in version 4.0.0, the following type definitions are invalid:
 
+=== Relationship types are now automatically escaped
+
+Relationship types are now automatically escaped. If you have previously escaped your relationship types, you should now remove the escape strings as this is covered by the library.
+
 [source, graphql, indent=0]
 ----
 type Person {
@@ -499,22 +514,15 @@ interface ActedIn {
 }
 ----
 
-Instead, they would need to be updated as below:
+=== Properties in the alias directive are now automatically escaped
+
+Properties in the alias directive automatically escaped using backticks. If you were using backticks in the `property` argument of your `@alias` directives, you should now remove the escape strings as this is covered by the library.
 
 [source, graphql, indent=0]
 ----
-type Person {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-}
-
-type Movie {
-  title: String!
-  actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-}
-
-interface ActedIn @relationshipProperties {
-  screenTime: Int!
+type User {
+    id: ID! @id
+    username: String! @alias(property: "dbUserName")
 }
 ----
 

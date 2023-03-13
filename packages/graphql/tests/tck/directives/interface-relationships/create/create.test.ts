@@ -104,7 +104,7 @@ describe("Interface Relationships - Create create", () => {
             CREATE (this0_actedInMovie0_node:Movie)
             SET this0_actedInMovie0_node.title = $this0_actedInMovie0_node_title
             SET this0_actedInMovie0_node.runtime = $this0_actedInMovie0_node_runtime
-            MERGE (this0)-[this0_actedInMovie0_relationship:ACTED_IN]->(this0_actedInMovie0_node)
+            MERGE (this0)-[this0_actedInMovie0_relationship:\`ACTED_IN\`]->(this0_actedInMovie0_node)
             SET this0_actedInMovie0_relationship.screenTime = $this0_actedInMovie0_relationship_screenTime
             RETURN this0
             }
@@ -112,12 +112,12 @@ describe("Interface Relationships - Create create", () => {
                 WITH this0
                 CALL {
                     WITH *
-                    MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:\`Movie\`)
+                    MATCH (this0)-[create_this0:\`ACTED_IN\`]->(create_this1:\`Movie\`)
                     WITH create_this1 { __resolveType: \\"Movie\\", __id: id(this0), .runtime, .title } AS create_this1
                     RETURN create_this1 AS create_var2
                     UNION
                     WITH *
-                    MATCH (this0)-[create_this3:ACTED_IN]->(create_this4:\`Series\`)
+                    MATCH (this0)-[create_this3:\`ACTED_IN\`]->(create_this4:\`Series\`)
                     WITH create_this4 { __resolveType: \\"Series\\", __id: id(this0), .episodes, .title } AS create_this4
                     RETURN create_this4 AS create_var2
                 }

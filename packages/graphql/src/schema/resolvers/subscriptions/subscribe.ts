@@ -84,7 +84,7 @@ export function generateSubscribeMethod({
                     return false;
                 }
                 const relationFieldName = node.relationFields.find(
-                    (r) => r.type === relationEventPayload.relationshipName
+                    (r) => r.typeUnescaped === relationEventPayload.relationshipName
                 )?.fieldName;
 
                 return (

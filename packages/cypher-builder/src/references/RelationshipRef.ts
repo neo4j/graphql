@@ -18,6 +18,7 @@
  */
 
 import type { NodeRef } from "./NodeRef";
+import type { NamedReference } from "./Reference";
 import { Reference } from "./Reference";
 import type { Param } from "./Param";
 
@@ -29,18 +30,38 @@ export type RelationshipInput = {
 
 export type RelationshipProperties = Record<string, Param<any>>;
 
+type RelationshipRefOptions = {
+    type?: string;
+};
+
 /** Reference to a relationship property
  * @group References
  */
 export class RelationshipRef extends Reference {
     private _type: string | undefined;
 
-    constructor(input: { type?: string } = {}) {
+    constructor(input: RelationshipRefOptions = {}) {
         super("this");
         this._type = input.type || undefined;
     }
 
     public get type(): string | undefined {
         return this._type;
+    }
+}
+
+/** Represents a relationship reference with a given name
+ * @group References
+ */
+export class NamedRelationship extends RelationshipRef implements NamedReference {
+    public readonly id: string;
+
+    constructor(id: string, options?: RelationshipRefOptions) {
+        super(options || {});
+        this.id = id;
+    }
+
+    public get name(): string {
+        return this.id;
     }
 }

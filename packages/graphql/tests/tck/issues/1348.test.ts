@@ -86,17 +86,17 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:RELATES_TO]-(this1:\`Series\`)
+                    MATCH (this)-[this0:\`RELATES_TO\`]-(this1:\`Series\`)
                     WITH this1 { __resolveType: \\"Series\\", __id: id(this), .productTitle } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this3:RELATES_TO]-(this4:\`Season\`)
+                    MATCH (this)-[this3:\`RELATES_TO\`]-(this4:\`Season\`)
                     WITH this4 { __resolveType: \\"Season\\", __id: id(this), .productTitle } AS this4
                     RETURN this4 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this5:RELATES_TO]-(this6:\`ProgrammeItem\`)
+                    MATCH (this)-[this5:\`RELATES_TO\`]-(this6:\`ProgrammeItem\`)
                     WITH this6 { __resolveType: \\"ProgrammeItem\\", __id: id(this), .productTitle } AS this6
                     RETURN this6 AS var2
                 }
@@ -142,17 +142,17 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:RELATES_TO]-(this1:\`Series\`)
+                    MATCH (this)-[this0:\`RELATES_TO\`]-(this1:\`Series\`)
                     WITH { node: { __resolveType: \\"Series\\", __id: id(this1), productTitle: this1.productTitle } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this2:RELATES_TO]-(this3:\`Season\`)
+                    MATCH (this)-[this2:\`RELATES_TO\`]-(this3:\`Season\`)
                     WITH { node: { __resolveType: \\"Season\\", __id: id(this3), productTitle: this3.productTitle } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this4:RELATES_TO]-(this5:\`ProgrammeItem\`)
+                    MATCH (this)-[this4:\`RELATES_TO\`]-(this5:\`ProgrammeItem\`)
                     WITH { node: { __resolveType: \\"ProgrammeItem\\", __id: id(this5), productTitle: this5.productTitle } } AS edge
                     RETURN edge
                 }

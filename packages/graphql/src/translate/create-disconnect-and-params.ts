@@ -196,7 +196,7 @@ function createDisconnectAndParams({
                 relVariable: relVarName,
                 fromVariable,
                 toVariable,
-                typename: relationField.type,
+                typename: relationField.typeUnescaped,
                 fromTypename,
                 toTypename,
             });
@@ -205,7 +205,6 @@ function createDisconnectAndParams({
             subquery.push(`\tRETURN collect(meta) as update_meta`);
         } else {
             subquery.push(`\tDELETE ${relVarName}`);
-            subquery.push(`\tRETURN count(*) AS _`); // Avoids CANNOT END WITH DETACH DELETE ERROR
         }
 
         subquery.push(`}`);

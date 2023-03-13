@@ -70,7 +70,7 @@ describe("Field Level Aggregations Where", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Person\`)
                 WHERE this1.age > $param0
                 RETURN count(this1) AS var2
             }
@@ -111,13 +111,13 @@ describe("Field Level Aggregations Where", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Person\`)
                 WHERE this1.name CONTAINS $param0
                 RETURN count(this1) AS var2
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this3:DIRECTED]-(this4:\`Person\`)
+                MATCH (this)<-[this3:\`DIRECTED\`]-(this4:\`Person\`)
                 WHERE this4.name CONTAINS $param1
                 RETURN count(this4) AS var5
             }

@@ -96,7 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
             CREATE (this_reviewers0_create0_node:Person)
             SET this_reviewers0_create0_node.name = $this_reviewers0_create0_node_name
             SET this_reviewers0_create0_node.reputation = $this_reviewers0_create0_node_reputation
-            MERGE (this)<-[this_reviewers0_create0_relationship:REVIEWED]-(this_reviewers0_create0_node)
+            MERGE (this)<-[this_reviewers0_create0_relationship:\`REVIEWED\`]-(this_reviewers0_create0_node)
             SET this_reviewers0_create0_relationship.score = $updateMovies.args.update.reviewers[0].create[0].edge.score
             RETURN count(*) AS update_this_Person
             }
@@ -110,12 +110,12 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)<-[update_this0:REVIEWED]-(update_this1:\`Person\`)
+                    MATCH (this)<-[update_this0:\`REVIEWED\`]-(update_this1:\`Person\`)
                     WITH update_this1 { __resolveType: \\"Person\\", __id: id(this), .name, .reputation } AS update_this1
                     RETURN update_this1 AS update_var2
                     UNION
                     WITH *
-                    MATCH (this)<-[update_this3:REVIEWED]-(update_this4:\`Influencer\`)
+                    MATCH (this)<-[update_this3:\`REVIEWED\`]-(update_this4:\`Influencer\`)
                     WITH update_this4 { __resolveType: \\"Influencer\\", __id: id(this) } AS update_this4
                     RETURN update_this4 AS update_var2
                 }
