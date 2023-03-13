@@ -18,30 +18,27 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import type { Clause } from "../clauses/Clause";
-import { CypherASTNode } from "../CypherASTNode";
-import { padBlock } from "../utils/pad-block";
+import { Clause } from "./Clause";
+import type { CypherASTNode } from "../CypherASTNode";
 
 /**
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/expressions/#existential-subqueries)
- * @group Expressions
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/5/clauses/use/)
+ * @group Clauses
  */
-export class Exists extends CypherASTNode {
-    private subQuery: CypherASTNode;
+export class Use extends Clause {
+    private graph: string;
+    private subClause: CypherASTNode;
 
-    constructor(subQuery: Clause, parent?: CypherASTNode) {
-        super(parent);
-        const rootQuery = subQuery.getRoot();
-        this.addChildren(rootQuery);
-        this.subQuery = rootQuery;
+    constructor(graph: string, subClause: Clause) {
+        super();
+        this.subClause = subClause.getRoot();
+        this.graph = graph;
+        this.addChildren(this.subClause);
     }
 
-    /**
-     * @internal
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
-        const subQueryStr = this.subQuery.getCypher(env);
-        const paddedSubQuery = padBlock(subQueryStr);
-        return `EXISTS {\n${paddedSubQuery}\n}`;
+        const subClauseStr = this.subClause.getCypher(env);
+        return `USE ${this.graph}\n${subClauseStr}`;
     }
 }

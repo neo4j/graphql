@@ -37,6 +37,7 @@ import type { HasLabel } from "./expressions/HasLabel";
 import type { Reference } from "./references/Reference";
 import type { ApocFunction, ApocPredicate, ApocProcedure } from "./apoc/types";
 import type { ListIndex } from "./expressions/list/ListIndex";
+import type { Path } from "./references/Path";
 
 export type Operation = BooleanOp | ComparisonOp | MathOp;
 
@@ -57,7 +58,8 @@ export type Expr =
     | ListExpr
     | ListIndex
     | ApocFunction
-    | Case<ComparisonOp>;
+    | Case<ComparisonOp>
+    | Path;
 
 /** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */
 export type Predicate =

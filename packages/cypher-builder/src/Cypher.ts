@@ -23,6 +23,7 @@ export { Create } from "./clauses/Create";
 export { Merge } from "./clauses/Merge";
 export { Call } from "./clauses/Call";
 export { CallProcedure } from "./clauses/CallProcedure";
+export { Use } from "./clauses/Use";
 export { Return } from "./clauses/Return";
 export { RawCypher } from "./clauses/RawCypher";
 export { With } from "./clauses/With";
@@ -41,6 +42,7 @@ export { RelationshipRef as Relationship } from "./references/RelationshipRef";
 export { Param, NamedParam } from "./references/Param";
 export { NamedVariable, Variable } from "./references/Variable";
 export { Literal, CypherNull as Null } from "./references/Literal";
+export { Path, NamedPath } from "./references/Path";
 
 // Expressions
 export { Exists } from "./expressions/Exists";
@@ -88,15 +90,12 @@ export {
     distance,
     pointDistance,
     labels,
-    count,
-    min,
-    max,
-    avg,
-    sum,
     randomUUID,
     id,
     elementId,
 } from "./expressions/functions/CypherFunctions";
+
+export { count, min, max, avg, sum, collect } from "./expressions/functions/AggregationFunctions";
 
 export {
     cypherDatetime as datetime,
@@ -107,8 +106,10 @@ export {
 } from "./expressions/functions/TemporalFunctions";
 
 export * from "./expressions/functions/StringFunctions";
-
 export * from "./expressions/functions/ListFunctions";
+
+export * from "./expressions/functions/PathFunctions";
+
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";
 
 // Types
@@ -124,6 +125,7 @@ export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
 export type { Order } from "./clauses/sub-clauses/OrderBy";
 export type { CompositeClause } from "./clauses/utils/concat";
+export type { CypherAggregationFunction as AggregationFunction } from "./expressions/functions/AggregationFunctions";
 
 // utils
 // --Procedures
