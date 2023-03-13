@@ -19,7 +19,11 @@
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { gql } from "apollo-server";
-import type { AuthorizationAnnotation } from "./annotation/AuthorizationAnnotation";
+import {
+    AuthorizationAnnotation,
+    AuthorizationFilterOperationRule,
+    AuthorizationValidateOperationRule,
+} from "./annotation/AuthorizationAnnotation";
 import { generateModel } from "./generate-model";
 import type { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 
@@ -30,10 +34,10 @@ describe("ConcreteEntity generation", () => {
         const typeDefs = gql`
             type User
                 @authorization(
-                    validate: {
-                        pre: [{ where: { node: { id: { equals: "$jwt.sub" } } } }]
-                        post: [{ where: { node: { id: { equals: "$jwt.sub" } } } }]
-                    }
+                    validate: [
+                        { when: ["BEFORE"], where: { node: { id: { equals: "$jwt.sub" } } } }
+                        { when: ["AFTER"], where: { node: { id: { equals: "$jwt.sub" } } } }
+                    ]
                 ) {
                 id: ID!
                 name: String!
@@ -64,8 +68,20 @@ describe("ConcreteEntity generation", () => {
         expect(userEntity?.attributes.get("password")?.annotations).toHaveLength(1);
         const authAnnotation = userEntity?.attributes
             .get("password")
-            ?.annotations.find((a) => a.name === "AUTHORIZATION");
+            ?.annotations.find((a) => a.name === "AUTHORIZATION") as AuthorizationAnnotation;
         expect(authAnnotation).toBeDefined();
+        expect(authAnnotation.filter).toHaveLength(1);
+        expect(authAnnotation.filter).toEqual([
+            {
+                operations: AuthorizationFilterOperationRule,
+                requireAuthentication: true,
+                where: {
+                    jwtPayload: undefined,
+                    node: { id: { equals: "$jwt.sub" } },
+                },
+            },
+        ]);
+        expect(authAnnotation.validate).toBeUndefined();
     });
 
     test("creates the authorization annotation on User entity", () => {
@@ -77,8 +93,29 @@ describe("ConcreteEntity generation", () => {
         const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
         const authAnnotation = userEntity?.annotations.get("AUTHORIZATION") as AuthorizationAnnotation;
         expect(authAnnotation.filter).toBeUndefined();
-        expect(authAnnotation.validatePost).toHaveLength(1);
-        expect(authAnnotation.validatePre).toHaveLength(1);
+        expect(authAnnotation.validate).toHaveLength(2);
+        expect(authAnnotation.validate).toEqual(
+            expect.arrayContaining([
+                {
+                    operations: AuthorizationValidateOperationRule,
+                    when: ["BEFORE"],
+                    requireAuthentication: true,
+                    where: {
+                        jwtPayload: undefined,
+                        node: { id: { equals: "$jwt.sub" } },
+                    },
+                },
+                {
+                    operations: AuthorizationValidateOperationRule,
+                    when: ["AFTER"],
+                    requireAuthentication: true,
+                    where: {
+                        jwtPayload: undefined,
+                        node: { id: { equals: "$jwt.sub" } },
+                    },
+                },
+            ])
+        );
     });
 });
 
@@ -87,7 +124,6 @@ describe("ComposeEntity generation", () => {
 
     beforeAll(() => {
         const typeDefs = gql`
-            
             union Tool = Screwdriver | Pencil
 
             type Screwdriver {
@@ -98,17 +134,16 @@ describe("ComposeEntity generation", () => {
                 colour: String
             }
 
-
             interface Human {
                 id: ID!
             }
 
             type User implements Human
                 @authorization(
-                    validate: {
-                        pre: [{ where: { node: { id: { equals: "$jwt.sub" } } } }]
-                        post: [{ where: { node: { id: { equals: "$jwt.sub" } } } }]
-                    }
+                    validate: [
+                        { when: "BEFORE", where: { node: { id: { equals: "$jwt.sub" } } } }
+                        { when: "AFTER", where: { node: { id: { equals: "$jwt.sub" } } } }
+                    ]
                 ) {
                 id: ID!
                 name: String!

@@ -22,17 +22,18 @@ import {
     AuthorizationAnnotation,
     AuthorizationAnnotationArguments,
     AuthorizationFilterRule,
-    AuthorizationFilterRules,
+    AuthorizationFilterRuleConstructor,
+    AuthorizationValidateRule,
+    AuthorizationValidateRuleConstructor,
 } from "../annotation/AuthorizationAnnotation";
 import { parseArguments } from "./utils";
 
 export function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAnnotation {
-    const { filter, filterSubscriptions, validate, ...unrecognizedArguments } = parseArguments(directive) as {
+    const { filter, validate, ...unrecognizedArguments } = parseArguments(directive) as {
         filter?: Record<string, any>[];
-        filterSubscriptions?: Record<string, any>[];
-        validate?: { pre: Record<string, any>[]; post: Record<string, any>[] };
+        validate?: Record<string, any>[];
     };
-    if (!filter && !filterSubscriptions && !validate) {
+    if (!filter && !validate) {
         throw new Neo4jGraphQLSchemaValidationError(
             `@authorization requires at least one of ${Object.values(AuthorizationAnnotationArguments).join(
                 ", "
@@ -45,21 +46,13 @@ export function parseAuthorizationAnnotation(directive: DirectiveNode): Authoriz
         );
     }
     const filterRules = filter?.map(
-        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: AuthorizationFilterRules.filter })
+        (rule) => new AuthorizationFilterRule(rule as AuthorizationFilterRuleConstructor)
     );
-    const filterSubscriptionRules = filterSubscriptions?.map(
-        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: AuthorizationFilterRules.filterSubscription })
-    );
-    const validatePreRules = validate?.pre?.map(
-        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: AuthorizationFilterRules.validationPre })
-    );
-    const validatePostRules = validate?.post?.map(
-        (rule) => new AuthorizationFilterRule({ ...rule, ruleType: AuthorizationFilterRules.validationPost })
+    const validateRules = validate?.map(
+        (rule) => new AuthorizationValidateRule(rule as AuthorizationValidateRuleConstructor)
     );
     return new AuthorizationAnnotation({
         filter: filterRules,
-        filterSubscriptions: filterSubscriptionRules,
-        validatePre: validatePreRules,
-        validatePost: validatePostRules,
+        validate: validateRules,
     });
 }

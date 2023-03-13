@@ -22,34 +22,47 @@ import type { Annotation } from "./Annotation";
 export const AuthorizationAnnotationArguments = {
     filter: "filter",
     validate: "validate",
-    filterSubscriptions: "filterSubscriptions",
 };
-export const AuthorizationValidateFilterArguments = {
-    pre: "pre",
-    post: "post",
-};
+
+export const AuthorizationFilterOperationRule = [
+    "READ",
+    "UPDATE",
+    "DELETE",
+    "CREATE_RELATIONSHIP",
+    "DELETE_RELATIONSHIP",
+] as const;
+
+export const AuthorizationValidateOperationRule = [
+    "READ",
+    "CREATE",
+    "UPDATE",
+    "DELETE",
+    "CREATE_RELATIONSHIP",
+    "DELETE_RELATIONSHIP",
+] as const;
+
+export type AuthorizationFilterOperation =
+    (typeof AuthorizationFilterOperationRule)[keyof typeof AuthorizationFilterOperationRule];
+
+export type AuthorizationValidateOperation =
+    (typeof AuthorizationValidateOperationRule)[keyof typeof AuthorizationValidateOperationRule];
+
+export type ValidateWhen = "BEFORE" | "AFTER";
+
 export class AuthorizationAnnotation implements Annotation {
     name = "AUTHORIZATION";
     filter?: AuthorizationFilterRule[];
-    validatePre?: AuthorizationFilterRule[];
-    validatePost?: AuthorizationFilterRule[];
-    filterSubscriptions?: AuthorizationFilterRule[];
+    validate?: AuthorizationValidateRule[];
 
     constructor({
         filter,
-        validatePre,
-        validatePost,
-        filterSubscriptions,
+        validate,
     }: {
         filter?: AuthorizationFilterRule[];
-        validatePre?: AuthorizationFilterRule[];
-        validatePost?: AuthorizationFilterRule[];
-        filterSubscriptions?: AuthorizationFilterRule[];
+        validate?: AuthorizationValidateRule[];
     }) {
         this.filter = filter;
-        this.validatePre = validatePre;
-        this.validatePost = validatePost;
-        this.filterSubscriptions = filterSubscriptions;
+        this.validate = validate;
     }
 }
 
@@ -58,17 +71,46 @@ export const AuthorizationFilterRuleArguments = {
     requireAuthentication: "requireAuthentication",
     where: "where",
 };
-export class AuthorizationFilterRule {
+export type AuthorizationFilterRuleConstructor = {
     operations?: AuthorizationFilterOperation[];
+    requireAuthentication?: boolean;
+    where: AuthorizationFilterWhere;
+}
+export class AuthorizationFilterRule {
+    operations: AuthorizationFilterOperation[];
     requireAuthentication: boolean;
     where: AuthorizationFilterWhere;
 
-    constructor(rule: Record<string, any>) {
-        const { operations, requireAuthentication, where, ruleType } = rule;
-
-        this.operations = operations || getDefaultRuleOperations(ruleType);
+    constructor({ operations, requireAuthentication, where }: AuthorizationFilterRuleConstructor) {
+        this.operations = operations ?? [...AuthorizationFilterOperationRule];
         this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
         this.where = new AuthorizationFilterWhere(where);
+    }
+}
+
+export type AuthorizationValidateRuleConstructor = {
+    operations?: AuthorizationValidateOperation[];
+    requireAuthentication?: boolean;
+    where: AuthorizationFilterWhere;
+    when?: ValidateWhen[];
+}
+
+export class AuthorizationValidateRule {
+    operations: AuthorizationValidateOperation[];
+    requireAuthentication: boolean;
+    where: AuthorizationFilterWhere;
+    when: ValidateWhen[];
+
+    constructor({
+        operations,
+        requireAuthentication,
+        where,
+        when,
+    }: AuthorizationValidateRuleConstructor) {
+        this.operations = operations ?? [...AuthorizationValidateOperationRule];
+        this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
+        this.where = new AuthorizationFilterWhere(where);
+        this.when = when ?? ["BEFORE", "AFTER"];
     }
 }
 
@@ -85,35 +127,3 @@ export class AuthorizationFilterWhere {
         this.node = where.node;
     }
 }
-
-export type AuthorizationFilterOperation =
-    | "READ"
-    | "CREATE"
-    | "UPDATE"
-    | "DELETE"
-    | "CREATE_RELATIONSHIP"
-    | "DELETE_RELATIONSHIP";
-
-export const AuthorizationFilterRules = {
-    filter: "AuthorizationFilterValidationRule",
-    filterSubscription: "AuthorizationFilterSubscriptionValidationRule",
-    validationPre: "AuthorizationPreValidationRule",
-    validationPost: "AuthorizationPostValidationRule",
-} as const;
-export type AuthorizationFilterRuleType = typeof AuthorizationFilterRules[keyof typeof AuthorizationFilterRules];
-export const getDefaultRuleOperations = (
-    ruleType: AuthorizationFilterRuleType
-): AuthorizationFilterOperation[] | undefined => {
-    switch (ruleType) {
-        case AuthorizationFilterRules.filter:
-            return ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"];
-        case AuthorizationFilterRules.validationPre:
-            return ["READ", "CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"];
-        case AuthorizationFilterRules.validationPost:
-            return ["CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"];
-        case AuthorizationFilterRules.filterSubscription:
-            return undefined;
-        default:
-            throw new Error(`unrecognized ruleType in default operations`);
-    }
-};

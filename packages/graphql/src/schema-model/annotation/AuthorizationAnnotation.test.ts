@@ -17,29 +17,53 @@
  * limitations under the License.
  */
 
-import { AuthorizationAnnotation, AuthorizationFilterRule } from "./AuthorizationAnnotation";
+import {
+    AuthorizationAnnotation,
+    AuthorizationFilterOperationRule,
+    AuthorizationFilterRule,
+    AuthorizationValidateOperationRule,
+    AuthorizationValidateRule,
+    AuthorizationValidateRuleConstructor,
+} from "./AuthorizationAnnotation";
 
 describe("AuthorizationAnnotation", () => {
     it("initialize class correctly", () => {
-        const preRule = {
-            where: { node: { name: { equals: "Keanu" } } },
-            ruleType: "AuthorizationPreValidationRule",
-        };
         const filterRule = {
             where: { node: { id: { gt: 1 } } },
-            ruleType: "AuthorizationFilterValidationRule",
         };
-
+        const validateRule = {
+            where: { node: { name: { equals: "Keanu" } } },
+        };
         const authFilterRule = new AuthorizationFilterRule(filterRule);
-        const authPreValidationRule = new AuthorizationFilterRule(preRule);
+        const authPreValidationRule = new AuthorizationValidateRule(validateRule);
         const authAnnotation = new AuthorizationAnnotation({
             filter: [authFilterRule],
-            validatePre: [authPreValidationRule],
+            validate: [authPreValidationRule],
         });
         expect(authAnnotation.name).toBe("AUTHORIZATION");
         expect(authAnnotation.filter).toHaveLength(1);
-        expect(authAnnotation.validatePre).toHaveLength(1);
-        expect(authAnnotation.validatePost).toBeUndefined();
+        expect(authAnnotation.filter).toEqual([
+            {
+                operations: AuthorizationFilterOperationRule,
+                requireAuthentication: true,
+                where: {
+                    jwtPayload: undefined,
+                    node: filterRule.where.node,
+                },
+            },
+        ]);
+        expect(authAnnotation.validate).toHaveLength(1);
+        expect(authAnnotation.validate).toEqual([
+            {
+                operations: AuthorizationValidateOperationRule,
+                when: ["BEFORE", "AFTER"],
+                requireAuthentication: true,
+                where: {
+                    jwtPayload: undefined,
+                    node: validateRule.where.node,
+                },
+            },
+        ]);
     });
 });
 
@@ -47,7 +71,6 @@ describe("AuthorizationFilterRule", () => {
     it("initialize class correctly", () => {
         const rule = {
             where: { node: { name: { equals: "Keanu" } } },
-            ruleType: "AuthorizationFilterValidationRule",
         };
         const authFilterRule = new AuthorizationFilterRule(rule);
         expect(authFilterRule.operations).toEqual([
@@ -58,5 +81,33 @@ describe("AuthorizationFilterRule", () => {
             "DELETE_RELATIONSHIP",
         ]);
         expect(authFilterRule.requireAuthentication).toBeTrue();
+        expect(authFilterRule.where).toEqual({
+            jwtPayload: undefined,
+            node: rule.where.node,
+        });
+    });
+});
+
+describe("AuthorizationValidateRule", () => {
+    it("initialize class correctly", () => {
+        const rule = {
+            where: { node: { name: { equals: "Keanu" } } },
+            when: ["BEFORE"],
+        } as AuthorizationValidateRuleConstructor;
+        const authValidateRule = new AuthorizationValidateRule(rule);
+        expect(authValidateRule.operations).toEqual([
+            "READ",
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CREATE_RELATIONSHIP",
+            "DELETE_RELATIONSHIP",
+        ]);
+        expect(authValidateRule.requireAuthentication).toBeTrue();
+        expect(authValidateRule.where).toEqual({
+            jwtPayload: undefined,
+            node: rule.where.node,
+        });
+        expect(authValidateRule.when).toEqual(["BEFORE"]);
     });
 });
