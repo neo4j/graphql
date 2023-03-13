@@ -32,6 +32,7 @@ export class Projection extends CypherASTNode {
 
     constructor(columns: Array<"*" | ProjectionColumn>) {
         super();
+
         this.addColumns(columns);
     }
 

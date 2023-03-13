@@ -26,11 +26,14 @@ import { normalizeVariable } from "../utils/normalize-variable";
 type FulltextPhrase = string | Literal<string> | Param | Variable;
 
 /**
- * @group procedures
+ * @see [Neo4j Documentation](https://neo4j.com/docs/operations-manual/5/reference/procedures/)
+ * @group Expressions
+ * @category Procedures
  */
 export const index = {
     fulltext: {
-        queryNodes(indexName: string | Literal<string>, phrase: FulltextPhrase): CypherProcedure {
+        queryNodes(indexName: string | Literal<string>, phrase: FulltextPhrase): CypherProcedure<"node" | "score"> {
+            // TODO: add options, skip limit, analyzer
             const phraseVar = normalizeVariable(phrase);
             const indexNameVar = normalizeVariable(indexName);
 
@@ -39,9 +42,11 @@ export const index = {
     },
 };
 
-/**
- * @group procedures
+/** Returns all labels in database
+ * @see [Neo4j Documentation](https://neo4j.com/docs/operations-manual/5/reference/procedures/#procedure_db_labels)
+ * @group Expressions
+ * @category Procedures
  */
-export function labels(): CypherProcedure {
+export function labels(): CypherProcedure<"label"> {
     return new CypherProcedure("db.labels");
 }

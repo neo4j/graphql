@@ -21,8 +21,8 @@ import type { ListExpr as List } from "../../expressions/list/ListExpr";
 import type { MapExpr as Map } from "../../expressions/map/MapExpr";
 import type { Predicate } from "../../types";
 import { Literal } from "../../references/Literal";
-import { CypherProcedure } from "../../procedures/CypherProcedure";
 import { normalizeVariable } from "../../utils/normalize-variable";
+import { VoidCypherProcedure } from "../../procedures/CypherProcedure";
 
 /**
  * @group procedures
@@ -31,7 +31,7 @@ export function validate(
     predicate: Predicate,
     message: string | Literal<string>,
     params: List | Literal | Map = new Literal([0])
-): CypherProcedure {
+): VoidCypherProcedure {
     const messageVar = normalizeVariable(message);
-    return new CypherProcedure("apoc.util.validate", [predicate, messageVar, params]);
+    return new VoidCypherProcedure("apoc.util.validate", [predicate, messageVar, params]);
 }

@@ -112,7 +112,7 @@ export * from "./expressions/functions/PathFunctions";
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";
 
 // Procedures
-export { CypherProcedure as Procedure } from "./procedures/CypherProcedure";
+export { CypherProcedure as Procedure, VoidCypherProcedure as VoidProcedure } from "./procedures/CypherProcedure";
 
 export * as db from "./procedures/db";
 
@@ -124,7 +124,7 @@ export type { CypherEnvironment as Environment } from "./Environment";
 export type { ComparisonOp } from "./expressions/operations/comparison";
 export type { BooleanOp } from "./expressions/operations/boolean";
 export type { Expr, Predicate, Operation } from "./types";
-export type { CypherProcedureYield } from "./procedures/CypherProcedure";
+export type { Yield } from "./procedures/Yield";
 export type { ProjectionColumn } from "./clauses/sub-clauses/Projection";
 export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";

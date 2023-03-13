@@ -26,7 +26,7 @@ describe("db procedures", () => {
             const targetNode = new Cypher.Node({ labels: ["Movie"] });
             const fulltextProcedure = Cypher.db.index.fulltext
                 .queryNodes("my-text-index", new Param("This is a lovely phrase"))
-                .yield([new Cypher.NamedVariable("node"), targetNode]);
+                .yield(["node", targetNode]);
 
             const { cypher, params } = fulltextProcedure.build();
 
@@ -44,7 +44,7 @@ describe("db procedures", () => {
             const targetNode = new Cypher.Node({ labels: ["Movie"] });
             const fulltextProcedure = Cypher.db.index.fulltext
                 .queryNodes("my-text-index", new Param("This is a lovely phrase"))
-                .yield([new Cypher.NamedVariable("node"), targetNode])
+                .yield(["node", targetNode])
                 .where(Cypher.eq(targetNode.property("title"), new Cypher.Param("The Matrix")))
                 .return(targetNode);
 

@@ -19,12 +19,13 @@
 
 import Cypher from "../src";
 
-// CALL db.labels() yield label
-// RETURN label
+// CALL db.labels() yield label as this0
+// RETURN this0
 
 const label = new Cypher.NamedVariable("label");
 
-const labelsCall = Cypher.db.labels().yield(label).return(label);
+const labelVar = new Cypher.Variable();
+const labelsCall = Cypher.db.labels().yield(["label", labelVar]).return(label);
 
 const { cypher, params } = labelsCall.build();
 

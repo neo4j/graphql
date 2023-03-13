@@ -18,23 +18,18 @@
  */
 
 import { Clause } from "../clauses/Clause";
-import { WithReturn } from "../clauses/mixins/WithReturn";
-import { WithWhere } from "../clauses/mixins/WithWhere";
-import type { ProjectionColumn } from "../clauses/sub-clauses/Projection";
-import { Projection } from "../clauses/sub-clauses/Projection";
-import { mixin } from "../clauses/utils/mixin";
 import { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
 import type { Expr } from "../types";
-import { asArray } from "../utils/as-array";
-import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
+import type { YieldProjectionColumn } from "./Yield";
+import { Yield } from "./Yield";
 
-/** Represents a Cypher Function
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/)
+/** Represents a Cypher Procedure that does not yield columns
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/call/)
  * @group Expressions
- * @category Cypher Functions
+ * @category Procedures
  */
-export class CypherProcedure extends Clause {
+export class VoidCypherProcedure extends Clause {
     protected name: string;
     private params: Array<Expr>;
 
@@ -47,11 +42,6 @@ export class CypherProcedure extends Clause {
                 this.addChildren(param);
             }
         }
-    }
-
-    public yield(...columns: Array<"*" | ProjectionColumn>): CypherProcedureYield {
-        if (columns.length === 0) throw new Error("Empty projection in CALL ... YIELD");
-        return new CypherProcedureYield(this, columns);
     }
 
     /** @internal */
@@ -67,33 +57,15 @@ export class CypherProcedure extends Clause {
     }
 }
 
-export interface CypherProcedureYield extends WithReturn, WithWhere {}
-
-@mixin(WithReturn, WithWhere)
-export class CypherProcedureYield extends Clause {
-    private cypherProcedure: CypherProcedure;
-    private projection: Projection;
-
-    constructor(call: CypherProcedure, yieldColumns: Array<"*" | ProjectionColumn>) {
-        super();
-        this.cypherProcedure = call;
-
-        const columns = asArray<ProjectionColumn | "*">(yieldColumns);
-        this.projection = new Projection(columns);
-    }
-
-    /** @internal */
-    public getCypher(env: CypherEnvironment): string {
-        const callProcedureStr = this.cypherProcedure.getCypher(env);
-        const yieldProjectionStr = this.projection.getCypher(env);
-
-        const whereStr = compileCypherIfExists(this.whereSubClause, env, {
-            prefix: "\n",
-        });
-        const returnStr = compileCypherIfExists(this.returnStatement, env, {
-            prefix: "\n",
-        });
-
-        return `${callProcedureStr} YIELD ${yieldProjectionStr}${whereStr}${returnStr}`;
+/** Represents a Cypher Procedure
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/call/)
+ * @group Expressions
+ * @category Procedures
+ */
+export class CypherProcedure<T extends string> extends VoidCypherProcedure {
+    // TODO: withwith
+    public yield(...columns: Array<"*" | YieldProjectionColumn<T>>): Yield {
+        if (columns.length === 0) throw new Error("Empty projection in CALL ... YIELD");
+        return new Yield(this, columns);
     }
 }
