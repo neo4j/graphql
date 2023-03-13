@@ -4,7 +4,7 @@
     "private": true,
     "description": "Subscriptions example",
     "engines": {
-        "node": "18.x"
+        "node": "16.x"
     },
     "browserslist": [
         "last 2 versions",
