@@ -3912,7 +3912,6 @@ describe("Subscriptions", () => {
               id: Int!
               name: String
               owner(directed: Boolean = true, options: UserOptions, where: UserWhere): User
-              ownerAggregate(directed: Boolean = true, where: UserWhere): AgreementUserOwnerAggregationSelection
               ownerConnection(after: String, directed: Boolean = true, first: Int, sort: [AgreementOwnerConnectionSort!], where: AgreementOwnerConnectionWhere): AgreementOwnerConnection!
             }
 
@@ -3971,18 +3970,6 @@ describe("Subscriptions", () => {
               sort: [AgreementSort!]
             }
 
-            input AgreementOwnerAggregateInput {
-              AND: [AgreementOwnerAggregateInput!]
-              NOT: AgreementOwnerAggregateInput
-              OR: [AgreementOwnerAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: AgreementOwnerNodeAggregationWhereInput
-            }
-
             input AgreementOwnerConnectFieldInput {
               \\"\\"\\"
               Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
@@ -4024,82 +4011,6 @@ describe("Subscriptions", () => {
             input AgreementOwnerFieldInput {
               connect: AgreementOwnerConnectFieldInput
               create: AgreementOwnerCreateFieldInput
-            }
-
-            input AgreementOwnerNodeAggregationWhereInput {
-              AND: [AgreementOwnerNodeAggregationWhereInput!]
-              NOT: AgreementOwnerNodeAggregationWhereInput
-              OR: [AgreementOwnerNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_AVERAGE_LENGTH_EQUAL: Float
-              username_AVERAGE_LENGTH_GT: Float
-              username_AVERAGE_LENGTH_GTE: Float
-              username_AVERAGE_LENGTH_LT: Float
-              username_AVERAGE_LENGTH_LTE: Float
-              username_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              username_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              username_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              username_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_LONGEST_LENGTH_EQUAL: Int
-              username_LONGEST_LENGTH_GT: Int
-              username_LONGEST_LENGTH_GTE: Int
-              username_LONGEST_LENGTH_LT: Int
-              username_LONGEST_LENGTH_LTE: Int
-              username_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              username_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              username_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_SHORTEST_LENGTH_EQUAL: Int
-              username_SHORTEST_LENGTH_GT: Int
-              username_SHORTEST_LENGTH_GTE: Int
-              username_SHORTEST_LENGTH_LT: Int
-              username_SHORTEST_LENGTH_LTE: Int
-              username_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              username_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type AgreementOwnerRelationship {
@@ -4193,16 +4104,6 @@ describe("Subscriptions", () => {
               updatedAgreement: AgreementEventPayload!
             }
 
-            type AgreementUserOwnerAggregationSelection {
-              count: Int!
-              node: AgreementUserOwnerNodeAggregateSelection
-            }
-
-            type AgreementUserOwnerNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
-              username: StringAggregateSelectionNonNullable!
-            }
-
             input AgreementWhere {
               AND: [AgreementWhere!]
               NOT: AgreementWhere
@@ -4226,7 +4127,6 @@ describe("Subscriptions", () => {
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
               owner: UserWhere
-              ownerAggregate: AgreementOwnerAggregateInput
               ownerConnection: AgreementOwnerConnectionWhere
               ownerConnection_NOT: AgreementOwnerConnectionWhere
               owner_NOT: UserWhere

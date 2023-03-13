@@ -803,7 +803,6 @@ describe("Algebraic", () => {
 
             type Movie {
               directedBy(directed: Boolean = true, options: DirectorOptions, where: DirectorWhere): Director
-              directedByAggregate(directed: Boolean = true, where: DirectorWhere): MovieDirectorDirectedByAggregationSelection
               directedByConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieDirectedByConnectionSort!], where: MovieDirectedByConnectionWhere): MovieDirectedByConnection!
               id: ID
               viewers: Int!
@@ -831,18 +830,6 @@ describe("Algebraic", () => {
 
             input MovieDeleteInput {
               directedBy: MovieDirectedByDeleteFieldInput
-            }
-
-            input MovieDirectedByAggregateInput {
-              AND: [MovieDirectedByAggregateInput!]
-              NOT: MovieDirectedByAggregateInput
-              OR: [MovieDirectedByAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: MovieDirectedByNodeAggregationWhereInput
             }
 
             input MovieDirectedByConnectFieldInput {
@@ -891,47 +878,6 @@ describe("Algebraic", () => {
               create: MovieDirectedByCreateFieldInput
             }
 
-            input MovieDirectedByNodeAggregationWhereInput {
-              AND: [MovieDirectedByNodeAggregationWhereInput!]
-              NOT: MovieDirectedByNodeAggregationWhereInput
-              OR: [MovieDirectedByNodeAggregationWhereInput!]
-              lastName_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_AVERAGE_LENGTH_EQUAL: Float
-              lastName_AVERAGE_LENGTH_GT: Float
-              lastName_AVERAGE_LENGTH_GTE: Float
-              lastName_AVERAGE_LENGTH_LT: Float
-              lastName_AVERAGE_LENGTH_LTE: Float
-              lastName_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              lastName_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              lastName_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              lastName_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_LONGEST_LENGTH_EQUAL: Int
-              lastName_LONGEST_LENGTH_GT: Int
-              lastName_LONGEST_LENGTH_GTE: Int
-              lastName_LONGEST_LENGTH_LT: Int
-              lastName_LONGEST_LENGTH_LTE: Int
-              lastName_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              lastName_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              lastName_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_SHORTEST_LENGTH_EQUAL: Int
-              lastName_SHORTEST_LENGTH_GT: Int
-              lastName_SHORTEST_LENGTH_GTE: Int
-              lastName_SHORTEST_LENGTH_LT: Int
-              lastName_SHORTEST_LENGTH_LTE: Int
-              lastName_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-            }
-
             type MovieDirectedByRelationship {
               cursor: String!
               node: Director!
@@ -948,15 +894,6 @@ describe("Algebraic", () => {
               disconnect: MovieDirectedByDisconnectFieldInput
               update: MovieDirectedByUpdateConnectionInput
               where: MovieDirectedByConnectionWhere
-            }
-
-            type MovieDirectorDirectedByAggregationSelection {
-              count: Int!
-              node: MovieDirectorDirectedByNodeAggregateSelection
-            }
-
-            type MovieDirectorDirectedByNodeAggregateSelection {
-              lastName: StringAggregateSelectionNonNullable!
             }
 
             input MovieDisconnectInput {
@@ -1002,7 +939,6 @@ describe("Algebraic", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               directedBy: DirectorWhere
-              directedByAggregate: MovieDirectedByAggregateInput
               directedByConnection: MovieDirectedByConnectionWhere
               directedByConnection_NOT: MovieDirectedByConnectionWhere
               directedBy_NOT: DirectorWhere
