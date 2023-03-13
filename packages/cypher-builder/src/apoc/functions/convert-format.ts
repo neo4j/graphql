@@ -22,6 +22,7 @@ import { CypherASTNode } from "../../CypherASTNode";
 import type { PropertyRef } from "../../references/PropertyRef";
 import type { Variable } from "../../references/Variable";
 
+// TODO: convert into proper function
 export class ConvertFormat extends CypherASTNode {
     private temporalParam: Variable | PropertyRef;
     private currentFormat: string;
