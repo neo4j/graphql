@@ -535,23 +535,29 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
+            WITH *
+            CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:\`HAS_CONTENT\`]->(this_content_Comment0:Comment)
             WHERE (exists((this_content_Comment0)<-[:\`HAS_CONTENT\`]-(:\`User\`)) AND all(auth_this0 IN [(this_content_Comment0)<-[:\`HAS_CONTENT\`]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content_Comment0auth_param0)))
-            WITH this, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
+            WITH this_content_Comment0_relationship, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
             CALL {
             	WITH this_content_Comment0_to_delete
             	UNWIND this_content_Comment0_to_delete AS x
             	DETACH DELETE x
             }
+            }
+            WITH *
+            CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:\`HAS_CONTENT\`]->(this_content_Post0:Post)
             WHERE (exists((this_content_Post0)<-[:\`HAS_CONTENT\`]-(:\`User\`)) AND all(auth_this0 IN [(this_content_Post0)<-[:\`HAS_CONTENT\`]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content_Post0auth_param0)))
-            WITH this, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
+            WITH this_content_Post0_relationship, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
             CALL {
             	WITH this_content_Post0_to_delete
             	UNWIND this_content_Post0_to_delete AS x
             	DETACH DELETE x
+            }
             }
             DETACH DELETE this"
         `);

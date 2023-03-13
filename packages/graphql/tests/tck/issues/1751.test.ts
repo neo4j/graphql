@@ -82,6 +82,8 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Organization\`)
             WHERE this.title = $param0
+            WITH *
+            CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_admins0_relationship:\`HAS_ADMINISTRATOR\`]->(this_admins0:Admin)
             CALL {
@@ -94,12 +96,12 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
                 ELSE [ NULL, NULL ]
             END AS aggregateWhereFiltervar0
             WITH *, aggregateWhereFiltervar0[0] AS this_admins0_relationship, aggregateWhereFiltervar0[1] AS this_admins0
-            WITH this, collect(DISTINCT this_admins0) AS this_admins0_to_delete
-            ORDER BY this_admins0_to_delete DESC
+            WITH this_admins0_relationship, collect(DISTINCT this_admins0) AS this_admins0_to_delete
             CALL {
             	WITH this_admins0_to_delete
             	UNWIND this_admins0_to_delete AS x
             	DETACH DELETE x
+            }
             }
             DETACH DELETE this"
         `);
