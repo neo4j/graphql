@@ -565,6 +565,15 @@ function createRelationshipFields({
         const connectionUpdateInputName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}UpdateConnectionInput`;
         const relationshipWhereTypeInputName = `${sourceName}${upperFirst(rel.fieldName)}AggregateInput`;
 
+        whereInput.addFields({
+            [rel.fieldName]: {
+                type: `${n.name}Where`,
+            },
+            [`${rel.fieldName}_NOT`]: {
+                type: `${n.name}Where`,
+            },
+        });
+
         if (rel.typeMeta.array) {
             const [nodeWhereAggregationInput, edgeWhereAggregationInput] = [n, relFields].map((nodeOrRelFields) => {
                 if (!nodeOrRelFields) {
@@ -716,19 +725,7 @@ function createRelationshipFields({
                     directives: deprecatedDirectives,
                 },
             });
-        }
 
-        whereInput.addFields({
-            [rel.fieldName]: {
-                type: `${n.name}Where`,
-            },
-            [`${rel.fieldName}_NOT`]: {
-                type: `${n.name}Where`,
-            },
-        });
-
-        // n..m Relationships
-        if (rel.typeMeta.array) {
             addRelationshipArrayFilters({
                 whereInput,
                 fieldName: rel.fieldName,
