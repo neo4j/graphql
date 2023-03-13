@@ -22,6 +22,7 @@ export { Match, OptionalMatch } from "./clauses/Match";
 export { Create } from "./clauses/Create";
 export { Merge } from "./clauses/Merge";
 export { Call } from "./clauses/Call";
+export { Use } from "./clauses/Use";
 export { Return } from "./clauses/Return";
 export { RawCypher } from "./clauses/RawCypher";
 export { With } from "./clauses/With";
