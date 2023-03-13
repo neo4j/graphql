@@ -1453,11 +1453,11 @@ describe("generate", () => {
               title_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
               /** @deprecated Use \`actors_SOME\` instead. */
               actors?: InputMaybe<PersonWhere>;
               /** @deprecated Use \`actors_NONE\` instead. */
               actors_NOT?: InputMaybe<PersonWhere>;
+              actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
               /** Return Movies where all of the related People match this filter */
               actors_ALL?: InputMaybe<PersonWhere>;
               /** Return Movies where none of the related People match this filter */
