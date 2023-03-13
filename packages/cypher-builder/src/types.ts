@@ -68,7 +68,6 @@ export type Predicate =
     | RawCypher
     | Exists
     | PredicateFunction
-    | ApocPredicate
     | Literal<boolean>
     | Case
     | HasLabel;
