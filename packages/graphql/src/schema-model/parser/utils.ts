@@ -16,7 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DirectiveNode, Kind, ValueNode } from "graphql";
+import type { DirectiveNode, ValueNode } from "graphql";
+import { Kind } from "graphql";
 
 export function parseArguments(directive: DirectiveNode): Record<string, unknown> {
     return (directive.arguments || [])?.reduce((acc, argument) => {

@@ -18,13 +18,14 @@
  */
 import type { DirectiveNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
+import type {
+    AuthorizationFilterRuleConstructor,
+    AuthorizationValidateRuleConstructor} from "../annotation/AuthorizationAnnotation";
 import {
     AuthorizationAnnotation,
     AuthorizationAnnotationArguments,
     AuthorizationFilterRule,
-    AuthorizationFilterRuleConstructor,
-    AuthorizationValidateRule,
-    AuthorizationValidateRuleConstructor,
+    AuthorizationValidateRule
 } from "../annotation/AuthorizationAnnotation";
 import { parseArguments } from "./utils";
 

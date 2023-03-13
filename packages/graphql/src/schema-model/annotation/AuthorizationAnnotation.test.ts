@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
+import type { AuthorizationValidateRuleConstructor } from "./AuthorizationAnnotation";
 import {
     AuthorizationAnnotation,
     AuthorizationFilterOperationRule,
     AuthorizationFilterRule,
     AuthorizationValidateOperationRule,
     AuthorizationValidateRule,
-    AuthorizationValidateRuleConstructor,
 } from "./AuthorizationAnnotation";
 
 describe("AuthorizationAnnotation", () => {
