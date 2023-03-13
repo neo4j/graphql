@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 
-import { asArray, haveSharedElement } from "../utils/utils";
-import type { Auth, AuthOperations, AuthRule } from "../types";
+import { asArray, haveSharedElement } from "../../utils/utils";
+import type { AuthOperations } from "../../types/deprecated/auth/auth-operations";
+import type { AuthRule } from "../../types/deprecated/auth/auth-rule";
+import type { Auth } from "../../types/deprecated/auth/auth";
 
 /** Helper class for a node auth directive */
 export class NodeAuth implements Auth {

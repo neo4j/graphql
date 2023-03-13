@@ -20,11 +20,14 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import { Neo4jGraphQLAuthenticationError } from "../classes";
-import type { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context, RelationField } from "../types";
+import type { BaseField, Context, RelationField } from "../types";
+import type { AuthOperations } from "../types/deprecated/auth/auth-operations";
+import type { BaseAuthRule } from "../types/deprecated/auth/base-auth-rule";
+import type { AuthRule } from "../types/deprecated/auth/auth-rule";
 import { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
 import ContextParser from "../utils/context-parser";
 import { isString } from "../utils/utils";
-import { NodeAuth } from "../classes/NodeAuth";
+import { NodeAuth } from "../classes/deprecated/NodeAuth";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import { getOrCreateCypherNode } from "./utils/get-or-create-cypher-variable";
@@ -433,7 +436,7 @@ function createRelationshipPredicate({
             authPredicate
         );
     } else {
-        predicateFunction = Cypher[context.auth?.bindPredicate ?? context.plugins?.auth?.bindPredicate ?? 'all'](
+        predicateFunction = Cypher[context.auth?.bindPredicate ?? context.plugins?.auth?.bindPredicate ?? "all"](
             targetNodeRef,
             new Cypher.PatternComprehension(innerPattern, targetNodeRef),
             authPredicate
