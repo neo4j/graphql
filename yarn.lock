@@ -3086,9 +3086,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.0.3":
-  version: 1.0.3
-  resolution: "@neo4j-ndl/react@npm:1.0.3"
+"@neo4j-ndl/react@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@neo4j-ndl/react@npm:1.0.4"
   dependencies:
     "@floating-ui/react-dom-interactions": ^0.12.0
     "@heroicons/react": 2.0.13
@@ -3105,7 +3105,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: 17.x
-  checksum: 76315274e23990575bc169744ea61703bcae2ddfb8ab8db0a3f6550c5980307dec77f28326992bf9bdc6ba4eb1248d64e6971a463eb8a24e7931559fdaad6757
+  checksum: 30befebd0517e846af078e4ad4e6fcc3eeb566ec50fb374abf3c9ec4b57b491e1688605c4cce9cae99d2ba676fa7c46e0fea8109728ba5d96171beb01e1e123d
   languageName: node
   linkType: hard
 
@@ -3113,8 +3113,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
-    "@types/jest": 29.4.0
-    "@types/node": 18.11.17
+    "@types/jest": 29.4.1
+    "@types/node": 18.15.1
     expect-type: 0.15.0
     jest: 29.5.0
     ts-jest: 29.0.5
@@ -3133,8 +3133,8 @@ __metadata:
     "@graphql-tools/merge": ^8.3.3
     "@neo4j/graphql": ^3.17.1
     "@neo4j/graphql-plugin-auth": ^2.1.0
-    "@types/jest": 29.4.0
-    "@types/node": 18.11.17
+    "@types/jest": 29.4.1
+    "@types/node": 18.15.1
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 29.5.0
@@ -3158,9 +3158,9 @@ __metadata:
   resolution: "@neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth"
   dependencies:
     "@types/debug": 4.1.7
-    "@types/jest": 29.4.0
+    "@types/jest": 29.4.1
     "@types/jsonwebtoken": 9.0.1
-    "@types/node": 18.11.17
+    "@types/node": 18.15.1
     debug: ^4.3.4
     jest: 29.5.0
     jsonwebtoken: ^9.0.0
@@ -3177,8 +3177,8 @@ __metadata:
     "@neo4j/graphql": ^3.15.0
     "@types/amqplib": 0.10.1
     "@types/debug": 4.1.7
-    "@types/jest": 29.4.0
-    "@types/node": 18.11.17
+    "@types/jest": 29.4.1
+    "@types/node": 18.15.1
     amqplib: 0.10.3
     apollo-server: 3.12.0
     apollo-server-express: 3.12.0
@@ -3202,7 +3202,7 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@neo4j-ndl/base": 1.0.1
-    "@neo4j-ndl/react": 1.0.3
+    "@neo4j-ndl/react": 1.0.4
     "@neo4j/graphql": 3.17.1
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.31.2
@@ -3274,9 +3274,9 @@ __metadata:
     "@neo4j/graphql-plugin-auth": ^2.1.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
-    "@types/jest": 29.4.0
+    "@types/jest": 29.4.1
     "@types/jsonwebtoken": 9.0.1
-    "@types/node": 18.11.17
+    "@types/node": 18.15.1
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
     "@types/semver": 7.3.13
@@ -3326,8 +3326,8 @@ __metadata:
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
     "@neo4j/graphql": ^3.16.0
-    "@types/jest": 29.4.0
-    "@types/node": 18.11.17
+    "@types/jest": 29.4.1
+    "@types/node": 18.15.1
     "@types/pluralize": 0.0.29
     camelcase: ^6.3.0
     debug: ^4.3.4
@@ -4885,13 +4885,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.4.0":
-  version: 29.4.0
-  resolution: "@types/jest@npm:29.4.0"
+"@types/jest@npm:29.4.1":
+  version: 29.4.1
+  resolution: "@types/jest@npm:29.4.1"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: 23760282362a252e6690314584d83a47512d4cd61663e957ed3398ecf98195fe931c45606ee2f9def12f8ed7d8aa102d492ec42d26facdaf8b78094a31e6568e
+  checksum: 75cdd1804615b663b88844eef61cb7c8104d65baf718190a1cd88ce199412dbe2ee136df3698604cc258a9a62ba7cbd7bd7712a17d8cb748909263ef56d6aac3
   languageName: node
   linkType: hard
 
@@ -5039,10 +5039,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.11.17":
-  version: 18.11.17
-  resolution: "@types/node@npm:18.11.17"
-  checksum: 1933afd068d5c75c068c6c4df6d10edb3b0b2bb6503d544e2f0496ac007c90596e6a5e284a8ef032451bc16f871b7e46719d7d2bea60e9b25d13a77d52161cac
+"@types/node@npm:18.15.1":
+  version: 18.15.1
+  resolution: "@types/node@npm:18.15.1"
+  checksum: c63a40786919ef77c1dd26f60ffb1ed76c8b608fb156942e4d600d4536e06c19d09463a66cd76e6415f90cd281d7a1a4683e7cfd9a6f0927491853c56ffa17bf
   languageName: node
   linkType: hard
 
@@ -16605,9 +16605,9 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/dotenv": 8.2.0
     "@types/express": 4.17.17
-    "@types/jest": 29.4.0
+    "@types/jest": 29.4.1
     "@types/jsonwebtoken": 9.0.1
-    "@types/node": 18.11.17
+    "@types/node": 18.15.1
     apollo-server-express: 3.12.0
     bcrypt: 5.1.0
     cross-env: 7.0.3

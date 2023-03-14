@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
+import type { Context, GraphQLWhereArg } from "../types";
+import type { AuthOperations } from "../types/deprecated/auth/auth-operations";
 import type { Node } from "../classes";
 import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
