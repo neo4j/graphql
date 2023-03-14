@@ -121,43 +121,53 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (this.current = $param0 AND single(this3 IN [(this)-[this0:ARCHITECTURE]->(this3:\`MasterData\`) WHERE (this0.current = $param1 AND single(this2 IN [(this3)-[this1:HAS_NAME]->(this2:\`NameDetails\`) WHERE (this1.current = $param2 AND this2.fullName = $param3) | 1] WHERE true)) | 1] WHERE true) AND single(this5 IN [(this)-[this4:HAS_NAME]->(this5:\`NameDetails\`) WHERE (this4.current = $param4 AND this5.fullName CONTAINS $param5) | 1] WHERE true))
             CALL {
                 WITH this
-                MATCH (this)-[this6:HAS_NAME]->(this7:\`NameDetails\`)
-                WHERE this6.current = $param6
-                WITH { node: { fullName: this7.fullName } } AS edge
+                MATCH (this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`)
+                MATCH (this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`)
+                WITH *
+                WHERE (this0.current = $param0 AND (this2.current = $param1 AND this3.fullName = $param2))
+                RETURN count(this1) = 1 AS var4
+            }
+            MATCH (this)-[this5:HAS_NAME]->(this6:\`NameDetails\`)
+            WITH *
+            WHERE (this.current = $param3 AND var4 = true AND (this5.current = $param4 AND this6.fullName CONTAINS $param5))
+            CALL {
+                WITH this
+                MATCH (this)-[this7:HAS_NAME]->(this8:\`NameDetails\`)
+                WHERE this7.current = $param6
+                WITH { node: { fullName: this8.fullName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var8
+                RETURN { edges: edges, totalCount: totalCount } AS var9
             }
             CALL {
                 WITH this
-                MATCH (this)-[this9:ARCHITECTURE]->(this10:\`MasterData\`)
-                WHERE this9.current = $param7
+                MATCH (this)-[this10:ARCHITECTURE]->(this11:\`MasterData\`)
+                WHERE this10.current = $param7
                 CALL {
-                    WITH this10
-                    MATCH (this10:\`MasterData\`)-[this11:HAS_NAME]->(this12:\`NameDetails\`)
-                    WHERE this11.current = $param8
-                    WITH { node: { fullName: this12.fullName } } AS edge
+                    WITH this11
+                    MATCH (this11:\`MasterData\`)-[this12:HAS_NAME]->(this13:\`NameDetails\`)
+                    WHERE this12.current = $param8
+                    WITH { node: { fullName: this13.fullName } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var13
+                    RETURN { edges: edges, totalCount: totalCount } AS var14
                 }
-                WITH { node: { nameDetailsConnection: var13 } } AS edge
+                WITH { node: { nameDetailsConnection: var14 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var14
+                RETURN { edges: edges, totalCount: totalCount } AS var15
             }
-            RETURN this { .id, nameDetailsConnection: var8, architectureConnection: var14 } AS this"
+            RETURN this { .id, nameDetailsConnection: var9, architectureConnection: var15 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
                 \\"param1\\": true,
-                \\"param2\\": true,
-                \\"param3\\": \\"MHA\\",
+                \\"param2\\": \\"MHA\\",
+                \\"param3\\": true,
                 \\"param4\\": true,
                 \\"param5\\": \\"1\\",
                 \\"param6\\": true,

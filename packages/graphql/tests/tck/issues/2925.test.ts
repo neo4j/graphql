@@ -55,7 +55,9 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE single(this0 IN [(this)-[:HAS_GROUP]->(this0:\`Group\`) WHERE this0.name IN $param0 | 1] WHERE true)
+            MATCH (this)-[:HAS_GROUP]->(this0:\`Group\`)
+            WITH *
+            WHERE this0.name IN $param0
             RETURN this { .name } AS this"
         `);
 
