@@ -40,7 +40,6 @@ describe("AuthorizationAnnotation", () => {
             filter: [authFilterRule],
             validate: [authPreValidationRule],
         });
-        expect(authAnnotation.name).toBe("AUTHORIZATION");
         expect(authAnnotation.filter).toHaveLength(1);
         expect(authAnnotation.filter).toEqual([
             {

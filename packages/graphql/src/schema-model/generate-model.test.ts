@@ -19,7 +19,7 @@
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { gql } from "apollo-server";
-import type { AuthorizationAnnotation } from "./annotation/AuthorizationAnnotation";
+import { AnnotationsKey } from "./annotation/Annotation";
 import {
     AuthorizationFilterOperationRule,
     AuthorizationValidateOperationRule,
@@ -65,13 +65,12 @@ describe("ConcreteEntity generation", () => {
 
     test("creates the authorization annotation on password field", () => {
         const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-        expect(userEntity?.attributes.get("password")?.annotations).toHaveLength(1);
-        const authAnnotation = userEntity?.attributes
-            .get("password")
-            ?.annotations.find((a) => a.name === "AUTHORIZATION") as AuthorizationAnnotation;
+        expect(userEntity?.attributes.get("password")?.annotations).toHaveProperty(AnnotationsKey.authorization);
+        const authAnnotation = userEntity?.attributes.get("password")?.annotations[AnnotationsKey.authorization];
+
         expect(authAnnotation).toBeDefined();
-        expect(authAnnotation.filter).toHaveLength(1);
-        expect(authAnnotation.filter).toEqual([
+        expect(authAnnotation?.filter).toHaveLength(1);
+        expect(authAnnotation?.filter).toEqual([
             {
                 operations: AuthorizationFilterOperationRule,
                 requireAuthentication: true,
@@ -81,20 +80,21 @@ describe("ConcreteEntity generation", () => {
                 },
             },
         ]);
-        expect(authAnnotation.validate).toBeUndefined();
+        expect(authAnnotation?.validate).toBeUndefined();
     });
 
     test("creates the authorization annotation on User entity", () => {
         const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-        expect(userEntity?.annotations.get("AUTHORIZATION")).toBeDefined();
+        expect(userEntity?.annotations[AnnotationsKey.authorization]).toBeDefined();
     });
 
     test("authorization annotation is correct on User entity", () => {
         const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-        const authAnnotation = userEntity?.annotations.get("AUTHORIZATION") as AuthorizationAnnotation;
-        expect(authAnnotation.filter).toBeUndefined();
-        expect(authAnnotation.validate).toHaveLength(2);
-        expect(authAnnotation.validate).toEqual(
+        const authAnnotation = userEntity?.annotations[AnnotationsKey.authorization];
+        expect(authAnnotation).toBeDefined();
+        expect(authAnnotation?.filter).toBeUndefined();
+        expect(authAnnotation?.validate).toHaveLength(2);
+        expect(authAnnotation?.validate).toEqual(
             expect.arrayContaining([
                 {
                     operations: AuthorizationValidateOperationRule,

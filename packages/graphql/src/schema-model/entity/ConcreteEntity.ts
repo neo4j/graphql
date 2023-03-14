@@ -18,7 +18,8 @@
  */
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import type { Annotation } from "../annotation/Annotation";
+import { annotationToKey } from "../annotation/Annotation";
+import type { Annotation , Annotations} from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Entity } from "./Entity";
 
@@ -26,7 +27,7 @@ export class ConcreteEntity implements Entity {
     public readonly name: string;
     public readonly labels: Set<string>;
     public readonly attributes: Map<string, Attribute> = new Map();
-    public readonly annotations: Map<string, Annotation> = new Map();
+    public readonly annotations: Partial<Annotations> = {};
 
     constructor({
         name,
@@ -61,10 +62,11 @@ export class ConcreteEntity implements Entity {
     }
 
     private addAnnotation(annotation: Annotation): void {
-        if (this.annotations.has(annotation.name)) {
-            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotation.name} already exists in ${this.name}`);
+        const annotationKey = annotationToKey(annotation);
+        if (this.annotations[annotationKey]) {
+            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
         }
-        this.annotations.set(annotation.name, annotation);
+        this.annotations[annotationKey] = annotation as any;
     }
 
     private setsAreEqual(a: Set<string>, b: Set<string>): boolean {

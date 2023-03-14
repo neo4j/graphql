@@ -19,6 +19,7 @@
 import type { DirectiveNode, DocumentNode, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import { SCALAR_TYPES } from "../constants";
+import type { DefinitionNodes} from "../schema/get-definition-nodes";
 import { getDefinitionNodes } from "../schema/get-definition-nodes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
@@ -35,29 +36,9 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionNodes = getDefinitionNodes(document);
 
     // init interface to typennames map
-    const interfaceToImplementingTypeNamesMap = definitionNodes.interfaceTypes.reduce((acc, entity) => {
-        const interfaceTypeName = entity.name.value;
-        acc.set(interfaceTypeName, []);
-        return acc;
-    }, new Map<string, string[]>());
-
+    const interfaceToImplementingTypeNamesMap = initInterfacesToTypenamesMap(definitionNodes);
     // hydrate interface to typennames map
-    definitionNodes.objectTypes.forEach((el) => {
-        if (!el.interfaces) {
-            return;
-        }
-        const objectTypeName = el.name.value;
-        el.interfaces?.forEach((i) => {
-            const interfaceTypeName = i.name.value;
-            const before = interfaceToImplementingTypeNamesMap.get(interfaceTypeName);
-            if (!before) {
-                throw new Neo4jGraphQLSchemaValidationError(
-                    `Could not find composite entity with name ${interfaceTypeName}`
-                );
-            }
-            interfaceToImplementingTypeNamesMap.set(interfaceTypeName, before.concat(objectTypeName));
-        });
-    });
+    hydrateInterfacesToTypenamesMap(definitionNodes, interfaceToImplementingTypeNamesMap);
 
     const concreteEntities = definitionNodes.objectTypes.map(generateConcreteEntity);
     const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
@@ -84,6 +65,33 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     return new Neo4jGraphQLSchemaModel({
         compositeEntities: [...unionEntities, ...interfaceEntities],
         concreteEntities,
+    });
+}
+
+function initInterfacesToTypenamesMap(definitionNodes: DefinitionNodes) {
+    return definitionNodes.interfaceTypes.reduce((acc, entity) => {
+        const interfaceTypeName = entity.name.value;
+        acc.set(interfaceTypeName, []);
+        return acc;
+    }, new Map<string, string[]>());
+}
+
+function hydrateInterfacesToTypenamesMap(definitionNodes: DefinitionNodes, interfaceToImplementingTypeNamesMap: Map<string, string[]>) {
+    return definitionNodes.objectTypes.forEach((el) => {
+        if (!el.interfaces) {
+            return;
+        }
+        const objectTypeName = el.name.value;
+        el.interfaces?.forEach((i) => {
+            const interfaceTypeName = i.name.value;
+            const concreteEntities = interfaceToImplementingTypeNamesMap.get(interfaceTypeName);
+            if (!concreteEntities) {
+                throw new Neo4jGraphQLSchemaValidationError(
+                    `Could not find composite entity with name ${interfaceTypeName}`
+                );
+            }
+            interfaceToImplementingTypeNamesMap.set(interfaceTypeName, concreteEntities.concat(objectTypeName));
+        });
     });
 }
 
@@ -126,7 +134,7 @@ function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteE
         name: definition.name.value,
         labels,
         attributes: filterTruthy(fields),
-        annotations: createEntityAnnotation(definition.directives || []),
+        annotations: createEntityAnnotations(definition.directives || []),
     });
 }
 
@@ -169,7 +177,7 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
     );
 }
 
-function createEntityAnnotation(directives: readonly DirectiveNode[]): Annotation[] {
+function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
     return filterTruthy(
         directives.map((directive) => {
             switch (directive.name.value) {

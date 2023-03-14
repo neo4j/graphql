@@ -17,50 +17,45 @@
  * limitations under the License.
  */
 
-import type { Annotation } from "./Annotation";
-
 export const AuthorizationAnnotationArguments = {
     filter: "filter",
     validate: "validate",
 };
 
-export const AuthorizationFilterOperationRule = [
+export type AuthorizationFilterOperation = "READ" | "UPDATE" | "DELETE" | "CREATE_RELATIONSHIP" | "DELETE_RELATIONSHIP";
+
+export type AuthorizationValidateOperation =
+    | "READ"
+    | "CREATE"
+    | "UPDATE"
+    | "DELETE"
+    | "CREATE_RELATIONSHIP"
+    | "DELETE_RELATIONSHIP";
+
+export type ValidateWhen = "BEFORE" | "AFTER";
+
+export const AuthorizationFilterOperationRule: ReadonlyArray<AuthorizationFilterOperation> = [
     "READ",
     "UPDATE",
     "DELETE",
     "CREATE_RELATIONSHIP",
     "DELETE_RELATIONSHIP",
-] as const;
+];
 
-export const AuthorizationValidateOperationRule = [
+export const AuthorizationValidateOperationRule: ReadonlyArray<AuthorizationValidateOperation> = [
     "READ",
     "CREATE",
     "UPDATE",
     "DELETE",
     "CREATE_RELATIONSHIP",
     "DELETE_RELATIONSHIP",
-] as const;
+];
 
-export type AuthorizationFilterOperation =
-    (typeof AuthorizationFilterOperationRule)[keyof typeof AuthorizationFilterOperationRule];
+export class AuthorizationAnnotation {
+    public filter?: AuthorizationFilterRule[];
+    public validate?: AuthorizationValidateRule[];
 
-export type AuthorizationValidateOperation =
-    (typeof AuthorizationValidateOperationRule)[keyof typeof AuthorizationValidateOperationRule];
-
-export type ValidateWhen = "BEFORE" | "AFTER";
-
-export class AuthorizationAnnotation implements Annotation {
-    name = "AUTHORIZATION";
-    filter?: AuthorizationFilterRule[];
-    validate?: AuthorizationValidateRule[];
-
-    constructor({
-        filter,
-        validate,
-    }: {
-        filter?: AuthorizationFilterRule[];
-        validate?: AuthorizationValidateRule[];
-    }) {
+    constructor({ filter, validate }: { filter?: AuthorizationFilterRule[]; validate?: AuthorizationValidateRule[] }) {
         this.filter = filter;
         this.validate = validate;
     }
@@ -74,53 +69,44 @@ export const AuthorizationFilterRuleArguments = {
 export type AuthorizationFilterRuleConstructor = {
     operations?: AuthorizationFilterOperation[];
     requireAuthentication?: boolean;
-    where: AuthorizationFilterWhere;
-}
+    where: AuthorizationWhere;
+};
 export class AuthorizationFilterRule {
-    operations: AuthorizationFilterOperation[];
-    requireAuthentication: boolean;
-    where: AuthorizationFilterWhere;
+    public operations: AuthorizationFilterOperation[];
+    public requireAuthentication: boolean;
+    public where: AuthorizationWhere;
 
     constructor({ operations, requireAuthentication, where }: AuthorizationFilterRuleConstructor) {
         this.operations = operations ?? [...AuthorizationFilterOperationRule];
         this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
-        this.where = new AuthorizationFilterWhere(where);
+        this.where = new AuthorizationWhere(where);
     }
 }
 
 export type AuthorizationValidateRuleConstructor = {
     operations?: AuthorizationValidateOperation[];
     requireAuthentication?: boolean;
-    where: AuthorizationFilterWhere;
+    where: AuthorizationWhere;
     when?: ValidateWhen[];
-}
+};
 
 export class AuthorizationValidateRule {
-    operations: AuthorizationValidateOperation[];
-    requireAuthentication: boolean;
-    where: AuthorizationFilterWhere;
-    when: ValidateWhen[];
+    public operations: AuthorizationValidateOperation[];
+    public requireAuthentication: boolean;
+    public where: AuthorizationWhere;
+    public when: ValidateWhen[];
 
-    constructor({
-        operations,
-        requireAuthentication,
-        where,
-        when,
-    }: AuthorizationValidateRuleConstructor) {
+    constructor({ operations, requireAuthentication, where, when }: AuthorizationValidateRuleConstructor) {
         this.operations = operations ?? [...AuthorizationValidateOperationRule];
         this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
-        this.where = new AuthorizationFilterWhere(where);
+        this.where = new AuthorizationWhere(where);
         this.when = when ?? ["BEFORE", "AFTER"];
     }
 }
 
-export const AuthorizationFilterRuleWhereArguments = {
-    jwtPayload: "jwtPayload",
-    node: "node",
-};
-export class AuthorizationFilterWhere {
-    jwtPayload?: Record<string, any>;
-    node?: Record<string, any>;
+export class AuthorizationWhere {
+    public jwtPayload?: Record<string, any>;
+    public node?: Record<string, any>;
 
     constructor(where: { jwtPayload?: Record<string, any>; node?: Record<string, any> }) {
         this.jwtPayload = where.jwtPayload;
