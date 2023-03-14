@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode} from "graphql";
+import type { DirectiveNode } from "graphql";
 import { valueFromASTUntyped } from "graphql";
-import type { Auth, AuthRule, AuthOperations } from "../types";
+import type { AuthOperations } from "../types/deprecated/auth/auth-operations";
+import type { AuthRule } from "../types/deprecated/auth/auth-rule";
+import type { Auth } from "../types/deprecated/auth/auth";
 
 const validOperations: AuthOperations[] = ["CREATE", "READ", "UPDATE", "DELETE", "CONNECT", "DISCONNECT", "SUBSCRIBE"];
 const validFields = [
