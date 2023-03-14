@@ -286,6 +286,14 @@ class Neo4jGraphQL {
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
+    private setSchemaModel(document: DocumentNode) {
+        // This can be run several times but it will always be the same result,
+        // so we memoize the schemaModel.
+        if (!this.schemaModel) {
+            this.schemaModel = generateModel(document);
+        }
+    }
+
     private generateExecutableSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
             const document = this.getDocument(this.typeDefs);
@@ -294,9 +302,7 @@ class Neo4jGraphQL {
 
             validateDocument(document, validateTypeDefs);
 
-            if (!this.schemaModel) {
-                this.schemaModel = generateModel(document);
-            }
+            this.setSchemaModel(document);
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
@@ -334,9 +340,7 @@ class Neo4jGraphQL {
 
         validateDocument(document, validateTypeDefs, directives, types);
 
-        if (!this.schemaModel) {
-            this.schemaModel = generateModel(document);
-        }
+        this.setSchemaModel(document);
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
