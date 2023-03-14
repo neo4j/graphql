@@ -258,7 +258,7 @@ function createCreateAndParams({
                 entity: primitiveField,
                 operations: "CREATE",
                 context,
-                bind: { parentNode: node, varName },
+                bind: { node, varName },
                 escapeQuotes: Boolean(insideDoWhen),
             });
             if (authAndParams[0]) {
@@ -328,7 +328,7 @@ function createCreateAndParams({
             entity: node,
             operations: "CREATE",
             context,
-            bind: { parentNode: node, varName },
+            bind: { node, varName },
             escapeQuotes: Boolean(insideDoWhen),
         });
         if (bindAndParams[0]) {

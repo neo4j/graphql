@@ -285,7 +285,7 @@ function createAuthStatement({
         entity: node,
         operations: ["CONNECT", "CREATE"],
         context,
-        allow: { parentNode: node, varName: nodeName },
+        allow: { node, varName: nodeName },
         escapeQuotes: false,
     });
 
