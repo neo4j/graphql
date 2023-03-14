@@ -41,7 +41,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         entity: node,
         context,
         allow: {
-            parentNode: node,
+            node,
             varName,
         },
     });
@@ -71,7 +71,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                     entity: authField,
                     operations: "READ",
                     context,
-                    allow: { parentNode: node, varName },
+                    allow: { node, varName },
                 });
                 if (allowAndParams[0]) {
                     authStrs.push(allowAndParams[0]);

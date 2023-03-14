@@ -19,7 +19,7 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
-import { createAuthPredicates } from "../create-auth-and-params";
+import { createAuthPredicates } from "../create-auth-predicates";
 import type { Context } from "../../types";
 import type { Node } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
@@ -66,7 +66,7 @@ function getAllowAuth({
         entity: node,
         operations: "READ",
         context,
-        allow: { parentNode: node, varName },
+        allow: { node, varName },
         escapeQuotes: false,
     });
 
@@ -117,7 +117,7 @@ function getFieldAuth({
                 entity: authField,
                 operations: "READ",
                 context,
-                allow: { parentNode: node, varName },
+                allow: { node, varName },
                 escapeQuotes: false,
             });
 
