@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConnectionField, ConnectionWhereArg, Context, CypherFieldReferenceMap } from "../../types";
 import type { Node } from "../../classes";
 import type Relationship from "../../classes/Relationship";
-import { createAuthPredicates } from "../create-auth-and-params";
+import { createAuthPredicates } from "../create-auth-predicates";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionWherePropertyOperation } from "../where/property-operations/create-connection-operation";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
@@ -101,7 +101,7 @@ export function createEdgeSubquery({
         entity: relatedNode,
         context,
         allow: {
-            parentNode: relatedNode,
+            node: relatedNode,
             varName: relatedNodeRef,
         },
     });

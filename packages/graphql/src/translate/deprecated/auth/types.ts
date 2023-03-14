@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-import type { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
-import type { JwtPayload } from "../../../types/deprecated/auth/jwt-payload";
+import type Cypher from "@neo4j/cypher-builder";
+import type { Node } from "../../../classes";
 
-export type SubscriptionContext = {
-    plugin: Neo4jGraphQLSubscriptionsPlugin;
-    jwt?: JwtPayload;
-};
-
-export type SubscriptionConnectionContext = {
-    connectionParams?: {
-        authorization?: string;
-    };
-    jwt?: JwtPayload;
+export type Rule = {
+    varName: string | Cypher.Node;
+    node: Node;
 };

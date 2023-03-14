@@ -33,7 +33,8 @@ import {
     DEBUG_EXECUTE,
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
-import type { AuthContext, CypherQueryOptions } from "../types";
+import type { CypherQueryOptions } from "../types";
+import type { AuthContext } from "../types/deprecated/auth/auth-context";
 import createAuthParam from "../translate/create-auth-param";
 
 const debug = Debug(DEBUG_EXECUTE);

@@ -165,7 +165,7 @@ function createDeleteAndParams({
                         operations: "DELETE",
                         context,
                         escapeQuotes: Boolean(insideDoWhen),
-                        allow: { parentNode: refNode, varName: variableName },
+                        allow: { node: refNode, varName: variableName },
                     });
                     if (allowAuth[0]) {
                         const quote = insideDoWhen ? `\\"` : `"`;

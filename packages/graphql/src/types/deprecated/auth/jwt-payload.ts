@@ -17,17 +17,13 @@
  * limitations under the License.
  */
 
-import type { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
-import type { JwtPayload } from "../../../types/deprecated/auth/jwt-payload";
-
-export type SubscriptionContext = {
-    plugin: Neo4jGraphQLSubscriptionsPlugin;
-    jwt?: JwtPayload;
-};
-
-export type SubscriptionConnectionContext = {
-    connectionParams?: {
-        authorization?: string;
-    };
-    jwt?: JwtPayload;
-};
+export interface JwtPayload {
+    [key: string]: any;
+    iss?: string | undefined;
+    sub?: string | undefined;
+    aud?: string | string[] | undefined;
+    exp?: number | undefined;
+    nbf?: number | undefined;
+    iat?: number | undefined;
+    jti?: string | undefined;
+}
