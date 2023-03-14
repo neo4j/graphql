@@ -53,7 +53,7 @@
         "@neo4j/graphql-plugin-auth": "^2.1.0",
         "@types/deep-equal": "1.0.1",
         "@types/is-uuid": "1.0.0",
-        "@types/jest": "29.4.0",
+        "@types/jest": "29.4.1",
         "@types/jsonwebtoken": "9.0.1",
         "@types/node": "18.15.1",
         "@types/pluralize": "0.0.29",
