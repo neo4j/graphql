@@ -40,7 +40,7 @@ import { PointDistance } from "../../graphql/input-objects/PointDistance";
 import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPointDistance";
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import { isRootType } from "../../utils/is-root-type";
-import { validateCustomResolverRequires } from "./validate-custom-resolver-requires";
+import { validateSchemaAugments } from "./validate-schema-augments";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -199,7 +199,7 @@ function validateDocument(
             throw new Error(filteredErrors.join("\n"));
         }
     }
-    validateCustomResolverRequires(document, schema);
+    validateSchemaAugments(document, schema);
 }
 
 export default validateDocument;

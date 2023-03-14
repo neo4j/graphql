@@ -18,35 +18,36 @@
  */
 
 import { mergeSchemas } from "@graphql-tools/schema";
-import type {
-    DocumentNode,
-    GraphQLSchema,
-    InterfaceTypeDefinitionNode,
-    ObjectTypeDefinitionNode} from "graphql";
-import {
-    Kind,
-    parse,
-    validate,
-} from "graphql";
-import { getDefinitionNodes } from "../get-definition-nodes";
+import type { DocumentNode, GraphQLSchema, InterfaceTypeDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
+import { Kind, parse, validate } from "graphql";
 
-export function validateCustomResolverRequires(document: DocumentNode, schema: GraphQLSchema) {
-    const definitionNodes = getDefinitionNodes(document);
-    definitionNodes.objectTypes.forEach((objType) => {
-        objType.fields?.forEach((field) => {
-            const customResolverDirective = field.directives?.find(
-                (directive) => directive.name.value === "customResolver"
-            );
-            const requiresArg = customResolverDirective?.arguments?.find((arg) => arg.name.value === "requires");
-            if (requiresArg) {
-                if (requiresArg?.value.kind !== Kind.STRING) {
-                    throw new Error("@customResolver requires expects a string");
-                }
-                const selectionSetDocument = parse(`{ ${requiresArg.value.value} }`);
-                validateSelectionSet(schema, objType, selectionSetDocument);
-            }
-        });
-    });
+export function validateCustomResolverRequires(objType: ObjectTypeDefinitionNode, schema: GraphQLSchema) {
+    if (!objType.fields) {
+        return;
+    }
+
+    for (const field of objType.fields) {
+        if (!field.directives) {
+            continue;
+        }
+
+        const customResolverDirective = field.directives.find((directive) => directive.name.value === "customResolver");
+        if (!customResolverDirective || !customResolverDirective.arguments) {
+            continue;
+        }
+
+        const requiresArg = customResolverDirective.arguments.find((arg) => arg.name.value === "requires");
+        if (!requiresArg) {
+            continue;
+        }
+
+        if (requiresArg.value.kind !== Kind.STRING) {
+            throw new Error("@customResolver requires expects a string");
+        }
+
+        const selectionSetDocument = parse(`{ ${requiresArg.value.value} }`);
+        validateSelectionSet(schema, objType, selectionSetDocument);
+    }
 }
 
 function validateSelectionSet(
