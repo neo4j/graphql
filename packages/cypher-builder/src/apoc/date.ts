@@ -17,23 +17,23 @@
  * limitations under the License.
  */
 
-import { TestClause } from "../../utils/TestClause";
-import Cypher from "../..";
+import Cypher from "..";
+import { CypherFunction } from "../expressions/functions/CypherFunctions";
+import type { PropertyRef } from "../references/PropertyRef";
+import type { Variable } from "../references/Variable";
 
-describe("apoc.date", () => {
-    test("convertFormat", () => {
-        const converFormat = Cypher.apoc.date.convertFormat(
-            new Cypher.Variable(),
-            "iso_zoned_date_time",
-            "iso_offset_date_time"
-        );
-
-        const queryResult = new TestClause(converFormat).build();
-
-        expect(queryResult.cypher).toMatchInlineSnapshot(
-            `"apoc.date.convertFormat(toString(var0), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")"`
-        );
-
-        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
-    });
-});
+/**
+ * @group Expressions
+ * @category Cypher Functions
+ */
+export function convertFormat(
+    temporalParam: Variable | PropertyRef,
+    currentFormat: string,
+    convertTo = "yyyy-MM-dd"
+): CypherFunction {
+    return new CypherFunction("apoc.date.convertFormat", [
+        Cypher.toString(temporalParam),
+        new Cypher.Literal(currentFormat),
+        new Cypher.Literal(convertTo),
+    ]);
+}
