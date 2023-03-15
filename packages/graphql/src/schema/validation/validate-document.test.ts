@@ -29,7 +29,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow('Directive "@coalesce" may not be used on OBJECT.');
+        expect(() => validateDocument({ document: doc })).toThrow('Directive "@coalesce" may not be used on OBJECT.');
     });
 
     test("should throw an error if a directive is missing an argument", () => {
@@ -39,7 +39,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc })).toThrow(
             'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
         );
     });
@@ -51,7 +51,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow('Unknown type "Unknown".');
+        expect(() => validateDocument({ document: doc })).toThrow('Unknown type "Unknown".');
     });
 
     test("should throw an error if a user tries to pass in their own Point definition", () => {
@@ -66,7 +66,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc })).toThrow(
             'Type "Point" already exists in the schema. It cannot also be defined in this type definition.'
         );
     });
@@ -80,7 +80,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc })).toThrow(
             'Type "DateTime" already exists in the schema. It cannot also be defined in this type definition.'
         );
     });
@@ -94,7 +94,7 @@ describe("validateDocument", () => {
             extend type User @fulltext
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc })).toThrow(
             'Directive "@fulltext" argument "indexes" of type "[FullTextInput]!" is required, but it was not provided.'
         );
     });
@@ -111,7 +111,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc })).toThrow(
             'Type "PointInput" already exists in the schema. It cannot also be defined in this type definition.'
         );
     });
@@ -127,7 +127,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc })).toThrow(
             "Interface field UserInterface.age expected but User does not provide it."
         );
     });
@@ -141,7 +141,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc })).toThrow(
             'Directive "@relationship" already exists in the schema. It cannot be redefined.'
         );
     });
@@ -153,7 +153,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).not.toThrow();
+        expect(() => validateDocument({ document: doc })).not.toThrow();
     });
 
     test("should not throw error on use of internal node input types", () => {
@@ -181,7 +181,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).not.toThrow();
+        expect(() => validateDocument({ document: doc })).not.toThrow();
     });
 
     describe("relationshipProperties directive", () => {
@@ -202,7 +202,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument(doc)).not.toThrow();
+            expect(() => validateDocument({ document: doc })).not.toThrow();
         });
 
         test("should throw if used on an object type", () => {
@@ -212,7 +212,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument(doc)).toThrow(
+            expect(() => validateDocument({ document: doc })).toThrow(
                 'Directive "@relationshipProperties" may not be used on OBJECT.'
             );
         });
@@ -224,7 +224,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument(doc)).toThrow(
+            expect(() => validateDocument({ document: doc })).toThrow(
                 'Directive "@relationshipProperties" may not be used on FIELD_DEFINITION.'
             );
         });
@@ -307,7 +307,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).not.toThrow();
+        expect(() => validateDocument({ document: doc })).not.toThrow();
     });
 
     describe("Github Issue 158", () => {
@@ -322,7 +322,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument(doc)).not.toThrow();
+            expect(() => validateDocument({ document: doc })).not.toThrow();
         });
     });
 
@@ -339,7 +339,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument(doc)).not.toThrow();
+            expect(() => validateDocument({ document: doc })).not.toThrow();
         });
 
         test("should not throw error on validation of schema if SortDirection used", () => {
@@ -354,7 +354,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument(doc)).not.toThrow();
+            expect(() => validateDocument({ document: doc })).not.toThrow();
         });
     });
 
@@ -487,7 +487,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument(doc)).not.toThrow();
+            expect(() => validateDocument({ document: doc })).not.toThrow();
         });
     });
 
@@ -509,7 +509,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument(doc)).not.toThrow();
+            expect(() => validateDocument({ document: doc })).not.toThrow();
         });
     });
 
@@ -520,7 +520,7 @@ describe("validateDocument", () => {
                     name: String @alias
                 }
             `;
-            expect(() => validateDocument(doc)).toThrow(
+            expect(() => validateDocument({ document: doc })).toThrow(
                 'Directive "@alias" argument "property" of type "String!" is required, but it was not provided.'
             );
         });
@@ -530,7 +530,7 @@ describe("validateDocument", () => {
                     name: String
                 }
             `;
-            expect(() => validateDocument(doc)).toThrow('Directive "@alias" may not be used on OBJECT.');
+            expect(() => validateDocument({ document: doc })).toThrow('Directive "@alias" may not be used on OBJECT.');
         });
         test("should not throw when used correctly", () => {
             const doc = gql`
@@ -538,7 +538,7 @@ describe("validateDocument", () => {
                     name: String @alias(property: "dbName")
                 }
             `;
-            expect(() => validateDocument(doc)).not.toThrow();
+            expect(() => validateDocument({ document: doc })).not.toThrow();
         });
     });
 
@@ -551,7 +551,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument(doc)).toThrow(
+                expect(() => validateDocument({ document: doc })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error
                 );
             });
@@ -563,7 +563,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument(doc)).toThrow(
+                expect(() => validateDocument({ document: doc })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error
                 );
             });
@@ -575,7 +575,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument(doc)).toThrow(
+                expect(() => validateDocument({ document: doc })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error
                 );
             });
@@ -598,7 +598,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument(doc)).toThrow(
+                expect(() => validateDocument({ document: doc })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error
                 );
             });
@@ -619,7 +619,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument(doc)).toThrow(
+                expect(() => validateDocument({ document: doc })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error
                 );
             });
@@ -640,7 +640,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument(doc)).toThrow(
+                expect(() => validateDocument({ document: doc })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error
                 );
             });
@@ -655,7 +655,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument(doc)).not.toThrow();
+            expect(() => validateDocument({ document: doc })).not.toThrow();
         });
     });
 
@@ -675,7 +675,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument(doc)).not.toThrow();
+            expect(() => validateDocument({ document: doc })).not.toThrow();
         });
     });
 });

@@ -23,11 +23,15 @@ import { getDefinitionNodes } from "../get-definition-nodes";
 import { validateCustomResolverRequires } from "./validate-custom-resolver-requires";
 import { validateDuplicateRelationshipFields } from "./validate-duplicate-relationship-fields";
 
-export function validateSchemaCustomizations(
-    document: DocumentNode,
-    schema: GraphQLSchema,
-    validationConfig: ValidationConfig
-) {
+export function validateSchemaCustomizations({
+    document,
+    schema,
+    validationConfig,
+}: {
+    document: DocumentNode;
+    schema: GraphQLSchema;
+    validationConfig: ValidationConfig;
+}) {
     const definitionNodes = getDefinitionNodes(document);
 
     for (const objectType of definitionNodes.objectTypes) {

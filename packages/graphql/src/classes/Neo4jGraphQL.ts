@@ -312,7 +312,7 @@ class Neo4jGraphQL {
 
             const validationConfig = this.parseStartupValidationConfig();
 
-            validateDocument(document, validationConfig);
+            validateDocument({ document, validationConfig });
 
             this.setSchemaModel(document);
 
@@ -350,7 +350,7 @@ class Neo4jGraphQL {
 
         const validationConfig = this.parseStartupValidationConfig();
 
-        validateDocument(document, validationConfig, directives, types);
+        validateDocument({ document, validationConfig, additionalDirectives: directives, additionalTypes: types });
 
         this.setSchemaModel(document);
 

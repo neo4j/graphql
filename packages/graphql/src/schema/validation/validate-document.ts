@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLSchema, extendSchema, validateSchema, specifiedDirectives, Kind } from "graphql";
 import type {
     DefinitionNode,
     DocumentNode,
@@ -27,7 +28,6 @@ import type {
     GraphQLDirective,
     GraphQLNamedType,
 } from "graphql";
-import { GraphQLSchema, extendSchema, validateSchema, specifiedDirectives, Kind } from "graphql";
 import pluralize from "pluralize";
 import * as scalars from "../../graphql/scalars";
 import * as directives from "../../graphql/directives";
@@ -161,12 +161,17 @@ function filterDocument(document: DocumentNode): DocumentNode {
     };
 }
 
-function getBaseSchema(
-    document: DocumentNode,
+function getBaseSchema({
+    document,
     validateTypeDefs = true,
-    additionalDirectives: Array<GraphQLDirective> = [],
-    additionalTypes: Array<GraphQLNamedType> = []
-): GraphQLSchema {
+    additionalDirectives = [],
+    additionalTypes = [],
+}: {
+    document: DocumentNode;
+    validateTypeDefs: boolean;
+    additionalDirectives: Array<GraphQLDirective>;
+    additionalTypes: Array<GraphQLNamedType>;
+}): GraphQLSchema {
     const doc = filterDocument(document);
 
     const schemaToExtend = new GraphQLSchema({
@@ -187,13 +192,23 @@ function getBaseSchema(
     return extendSchema(schemaToExtend, doc, { assumeValid: !validateTypeDefs });
 }
 
-function validateDocument(
-    document: DocumentNode,
-    validationConfig: ValidationConfig = defaultValidationConfig,
-    additionalDirectives: Array<GraphQLDirective> = [],
-    additionalTypes: Array<GraphQLNamedType> = []
-): void {
-    const schema = getBaseSchema(document, validationConfig.validateTypeDefs, additionalDirectives, additionalTypes);
+function validateDocument({
+    document,
+    validationConfig = defaultValidationConfig,
+    additionalDirectives = [],
+    additionalTypes = [],
+}: {
+    document: DocumentNode;
+    validationConfig?: ValidationConfig;
+    additionalDirectives?: Array<GraphQLDirective>;
+    additionalTypes?: Array<GraphQLNamedType>;
+}): void {
+    const schema = getBaseSchema({
+        document,
+        validateTypeDefs: validationConfig.validateTypeDefs,
+        additionalDirectives,
+        additionalTypes,
+    });
     if (validationConfig.validateTypeDefs) {
         const errors = validateSchema(schema);
         const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
@@ -201,7 +216,7 @@ function validateDocument(
             throw new Error(filteredErrors.join("\n"));
         }
     }
-    validateSchemaCustomizations(document, schema, validationConfig);
+    validateSchemaCustomizations({ document, schema, validationConfig });
 }
 
 export default validateDocument;
