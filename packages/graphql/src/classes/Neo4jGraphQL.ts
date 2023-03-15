@@ -390,7 +390,7 @@ class Neo4jGraphQL {
     }
 
     private parseStartupValidationConfig(): ValidationConfig {
-        const validationConfig = defaultValidationConfig;
+        const validationConfig: ValidationConfig = { ...defaultValidationConfig };
 
         if (this.config?.startupValidation === false) {
             return {
