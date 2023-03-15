@@ -181,7 +181,7 @@ export function createRelationPredicate({
         matchPattern: targetPattern,
         listPredicateStr,
         innerOperation: innerOperation.predicate,
-        isArray: Boolean(relationField.typeMeta.array),
+        relationField,
     });
 }
 
@@ -190,13 +190,13 @@ function createSimpleRelationshipPredicate({
     listPredicateStr,
     childNode,
     innerOperation,
-    isArray,
+    relationField,
 }: {
     matchPattern: Cypher.Pattern;
     listPredicateStr: ListPredicate;
     childNode: Cypher.Node;
     innerOperation: Cypher.Predicate | undefined;
-    isArray: boolean;
+    relationField: RelationField;
 }): PredicateReturn {
     if (!innerOperation) return { predicate: undefined };
     const matchClause = new Cypher.Match(matchPattern).where(innerOperation);
@@ -213,15 +213,21 @@ function createSimpleRelationshipPredicate({
             };
         }
         case "single": {
+            const isArray = relationField.typeMeta.array;
+
             if (isArray) {
                 const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(
                     innerOperation
                 );
                 return { predicate: Cypher.single(childNode, patternComprehension, new Cypher.Literal(true)) };
             }
+            const isRequired = relationField.typeMeta.required;
+
+            const matchStatement = new Cypher.Match(matchPattern);
+            if (!isRequired) matchStatement.optional();
             return {
                 predicate: innerOperation,
-                preComputedSubqueries: Cypher.concat(new Cypher.Match(matchPattern)),
+                preComputedSubqueries: Cypher.concat(matchStatement),
             };
         }
         case "not":

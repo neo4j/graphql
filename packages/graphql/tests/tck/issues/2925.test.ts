@@ -61,10 +61,6 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
             RETURN this { .name } AS this"
         `);
 
-        // MATCH (this:\`User\`)-[:HAS_GROUP]->(this0:\`Group\`)
-        // WHERE this0.name IN $param0
-        // RETURN this { .title } AS this
-
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": [

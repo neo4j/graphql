@@ -1,6 +1,11 @@
 # Test: SingleRelationshipFilter
 MATCH (m:Movie)-[:FAV]->(p:Person) 
-WHERE p.name in ["Tom Hanks"] 
+WHERE p.name IN ["Tom Hanks"] 
+RETURN m { .title }
+
+# Test: SingleRelationshipFilterWithWithBeforeWhere
+MATCH (m:Movie)-[:FAV]->(p:Person) 
+WHERE p.name IN ["Tom Hanks"] 
 RETURN m { .title }
 
 # Test: SingleRelationshipFilterWithCount
