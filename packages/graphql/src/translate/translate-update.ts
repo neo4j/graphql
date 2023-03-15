@@ -408,12 +408,10 @@ export default async function translateUpdate({
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
         if (projection.meta?.authValidatePredicates?.length) {
-            projAuth = new Cypher.CallProcedure(
-                new Cypher.apoc.Validate(
-                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                    AUTH_FORBIDDEN_ERROR,
-                    new Cypher.Literal([0])
-                )
+            projAuth = Cypher.apoc.util.validate(
+                Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                AUTH_FORBIDDEN_ERROR,
+                new Cypher.Literal([0])
             );
         }
     }

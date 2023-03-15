@@ -21,16 +21,14 @@ import Cypher from "../index";
 import { Param } from "../references/Param";
 
 describe("db procedures", () => {
-    describe("FullTextQueryNodes", () => {
+    describe("db.index.fulltext.queryNodes", () => {
         test("Simple fulltext", () => {
             const targetNode = new Cypher.Node({ labels: ["Movie"] });
-            const fulltextClause = new Cypher.db.FullTextQueryNodes(
-                targetNode,
-                "my-text-index",
-                new Param("This is a lovely phrase")
-            );
+            const fulltextProcedure = Cypher.db.index.fulltext
+                .queryNodes("my-text-index", new Param("This is a lovely phrase"))
+                .yield(["node", targetNode]);
 
-            const { cypher, params } = fulltextClause.build();
+            const { cypher, params } = fulltextProcedure.build();
 
             expect(cypher).toMatchInlineSnapshot(
                 `"CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param0) YIELD node AS this0"`
@@ -44,15 +42,13 @@ describe("db procedures", () => {
 
         test("Fulltext with where and return", () => {
             const targetNode = new Cypher.Node({ labels: ["Movie"] });
-            const fulltextClause = new Cypher.db.FullTextQueryNodes(
-                targetNode,
-                "my-text-index",
-                new Param("This is a lovely phrase")
-            )
+            const fulltextProcedure = Cypher.db.index.fulltext
+                .queryNodes("my-text-index", new Param("This is a lovely phrase"))
+                .yield(["node", targetNode])
                 .where(Cypher.eq(targetNode.property("title"), new Cypher.Param("The Matrix")))
                 .return(targetNode);
 
-            const { cypher, params } = fulltextClause.build();
+            const { cypher, params } = fulltextProcedure.build();
 
             expect(cypher).toMatchInlineSnapshot(`
                 "CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param0) YIELD node AS this0

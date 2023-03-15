@@ -54,9 +54,9 @@ export function translateTopLevelMatch({
 }
 
 type CreateMatchClauseReturn = {
-    matchClause: Cypher.Match | Cypher.db.FullTextQueryNodes;
+    matchClause: Cypher.Match | Cypher.Yield;
     preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
-    whereClause: Cypher.Match | Cypher.db.FullTextQueryNodes | Cypher.With;
+    whereClause: Cypher.Match | Cypher.Yield | Cypher.With;
 };
 
 export function createMatchClause({
@@ -74,7 +74,7 @@ export function createMatchClause({
 }): CreateMatchClauseReturn {
     const { resolveTree } = context;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-    let matchClause: Cypher.Match | Cypher.db.FullTextQueryNodes = new Cypher.Match(matchNode);
+    let matchClause: Cypher.Match | Cypher.Yield = new Cypher.Match(matchNode);
     let whereOperators: Cypher.Predicate[] = [];
 
     // TODO: removed deprecated fulltext translation
@@ -85,7 +85,7 @@ export function createMatchClause({
         const [indexName, indexInput] = Object.entries(fulltextInput)[0];
         const phraseParam = new Cypher.Param(indexInput.phrase);
 
-        matchClause = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
+        matchClause = Cypher.db.index.fulltext.queryNodes(indexName, phraseParam).yield(["node", matchNode]);
 
         whereOperators = node.getLabels(context).map((label) => {
             return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));
@@ -95,7 +95,7 @@ export function createMatchClause({
         where = where?.[node.singular];
     }
 
-    let whereClause: Cypher.Match | Cypher.db.FullTextQueryNodes | Cypher.With = matchClause;
+    let whereClause: Cypher.Match | Cypher.Yield | Cypher.With = matchClause;
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
     if (where) {
         const { predicate: whereOp, preComputedSubqueries } = createWherePredicate({
@@ -147,7 +147,7 @@ function createFulltextMatchClause(
     node: Node,
     context: Context
 ): {
-    matchClause: Cypher.db.FullTextQueryNodes;
+    matchClause: Cypher.Yield;
     whereOperators: Cypher.Predicate[];
 } {
     // TODO: remove indexName assignment and undefined check once the name argument has been removed.
@@ -158,7 +158,9 @@ function createFulltextMatchClause(
     const phraseParam = new Cypher.Param(context.resolveTree.args.phrase);
     const scoreVar = context.fulltextIndex.scoreVariable;
 
-    const matchClause = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam, scoreVar);
+    const matchClause = Cypher.db.index.fulltext
+        .queryNodes(indexName, phraseParam)
+        .yield(["node", matchNode], ["score", scoreVar]);
 
     const expectedLabels = node.getLabels(context);
     const labelsChecks = matchNode.hasLabels(...expectedLabels);

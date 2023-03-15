@@ -70,7 +70,7 @@ function getAllowAuth({
         escapeQuotes: false,
     });
 
-    if (allowAuth) return new Cypher.apoc.ValidatePredicate(Cypher.not(allowAuth), AUTH_FORBIDDEN_ERROR);
+    if (allowAuth) return Cypher.apoc.util.validatePredicate(Cypher.not(allowAuth), AUTH_FORBIDDEN_ERROR);
 
     return undefined;
 }
@@ -126,7 +126,7 @@ function getFieldAuth({
     });
 
     if (authPredicates.length > 0) {
-        return new Cypher.apoc.ValidatePredicate(Cypher.not(Cypher.and(...authPredicates)), AUTH_FORBIDDEN_ERROR);
+        return Cypher.apoc.util.validatePredicate(Cypher.not(Cypher.and(...authPredicates)), AUTH_FORBIDDEN_ERROR);
     }
     return undefined;
 }
