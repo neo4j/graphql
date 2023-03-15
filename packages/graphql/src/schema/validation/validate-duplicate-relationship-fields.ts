@@ -56,7 +56,7 @@ export function validateDuplicateRelationshipFields(objType: ObjectTypeDefinitio
 
         if (relationshipUsages.has(`${typeMeta.name}__${typeArg.value.value}__${directionArg.value.value}`)) {
             throw new Error(
-                "Multiple relationship fields with the same type and direction may not have the same relationship type"
+                "Multiple relationship fields with the same type and direction may not have the same relationship type."
             );
         }
 

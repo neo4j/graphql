@@ -37,7 +37,7 @@ describe("validateDuplicateRelationshipFields", () => {
         `;
 
         expect(() => validateDocument(doc)).toThrow(
-            "Multiple relationship fields with the same type and direction may not have the same relationship type"
+            "Multiple relationship fields with the same type and direction may not have the same relationship type."
         );
     });
 

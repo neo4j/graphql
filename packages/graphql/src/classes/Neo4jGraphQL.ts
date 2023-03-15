@@ -67,6 +67,12 @@ export interface Neo4jGraphQLConfig {
     callbacks?: Neo4jGraphQLCallbacks;
 }
 
+export type ValidationConfig = {
+    validateTypeDefs: boolean;
+    validateResolvers: boolean;
+    validateDuplicateRelationshipFields: boolean;
+};
+
 export interface Neo4jGraphQLConstructor {
     typeDefs: TypeSource;
     resolvers?: IExecutableSchemaDefinition["resolvers"];
@@ -75,6 +81,12 @@ export interface Neo4jGraphQLConstructor {
     driver?: Driver;
     plugins?: Neo4jGraphQLPlugins;
 }
+
+export const defaultValidationConfig: ValidationConfig = {
+    validateTypeDefs: true,
+    validateResolvers: true,
+    validateDuplicateRelationshipFields: true,
+};
 
 class Neo4jGraphQL {
     typeDefs: TypeSource;
@@ -298,16 +310,16 @@ class Neo4jGraphQL {
         return new Promise((resolve) => {
             const document = this.getDocument(this.typeDefs);
 
-            const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
+            const validationConfig = this.parseStartupValidationConfig();
 
-            validateDocument(document, validateTypeDefs);
+            validateDocument(document, validationConfig);
 
             this.setSchemaModel(document);
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
-                validateResolvers,
+                validateResolvers: validationConfig.validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
                 userCustomResolvers: this.resolvers,
@@ -336,16 +348,16 @@ class Neo4jGraphQL {
 
         const { directives, types } = subgraph.getValidationDefinitions();
 
-        const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
+        const validationConfig = this.parseStartupValidationConfig();
 
-        validateDocument(document, validateTypeDefs, directives, types);
+        validateDocument(document, validationConfig, directives, types);
 
         this.setSchemaModel(document);
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
             enableRegex: this.config?.enableRegex,
-            validateResolvers,
+            validateResolvers: validationConfig.validateResolvers,
             generateSubscriptions: Boolean(this.plugins?.subscriptions),
             callbacks: this.config.callbacks,
             userCustomResolvers: this.resolvers,
@@ -377,32 +389,28 @@ class Neo4jGraphQL {
         return this.addDefaultFieldResolvers(schema);
     }
 
-    private parseStartupValidationConfig(): {
-        validateTypeDefs: boolean;
-        validateResolvers: boolean;
-    } {
-        let validateTypeDefs = true;
-        let validateResolvers = true;
+    private parseStartupValidationConfig(): ValidationConfig {
+        const validationConfig = defaultValidationConfig;
 
         if (this.config?.startupValidation === false) {
             return {
                 validateTypeDefs: false,
                 validateResolvers: false,
+                validateDuplicateRelationshipFields: false,
             };
         }
 
         // TODO - remove in 4.0.0 when skipValidateTypeDefs is removed
-        if (this.config?.skipValidateTypeDefs === true) validateTypeDefs = false;
+        if (this.config?.skipValidateTypeDefs === true) validationConfig.validateTypeDefs = false;
 
         if (typeof this.config?.startupValidation === "object") {
-            if (this.config?.startupValidation.typeDefs === false) validateTypeDefs = false;
-            if (this.config?.startupValidation.resolvers === false) validateResolvers = false;
+            if (this.config?.startupValidation.typeDefs === false) validationConfig.validateTypeDefs = false;
+            if (this.config?.startupValidation.resolvers === false) validationConfig.validateResolvers = false;
+            if (this.config?.startupValidation.noDuplicateRelationshipFields === false)
+                validationConfig.validateDuplicateRelationshipFields = false;
         }
 
-        return {
-            validateTypeDefs,
-            validateResolvers,
-        };
+        return validationConfig;
     }
 
     private pluginsSetup(): Promise<void> {

@@ -40,7 +40,9 @@ import { PointDistance } from "../../graphql/input-objects/PointDistance";
 import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPointDistance";
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import { isRootType } from "../../utils/is-root-type";
-import { validateSchemaAugments } from "./validate-schema-augments";
+import { validateSchemaCustomizations } from "./validate-schema-customizations";
+import type { ValidationConfig } from "../../classes/Neo4jGraphQL";
+import { defaultValidationConfig } from "../../classes/Neo4jGraphQL";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -187,19 +189,19 @@ function getBaseSchema(
 
 function validateDocument(
     document: DocumentNode,
-    validateTypeDefs = true,
+    validationConfig: ValidationConfig = defaultValidationConfig,
     additionalDirectives: Array<GraphQLDirective> = [],
     additionalTypes: Array<GraphQLNamedType> = []
 ): void {
-    const schema = getBaseSchema(document, validateTypeDefs, additionalDirectives, additionalTypes);
-    if (validateTypeDefs) {
+    const schema = getBaseSchema(document, validationConfig.validateTypeDefs, additionalDirectives, additionalTypes);
+    if (validationConfig.validateTypeDefs) {
         const errors = validateSchema(schema);
         const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
         if (filteredErrors.length) {
             throw new Error(filteredErrors.join("\n"));
         }
     }
-    validateSchemaAugments(document, schema);
+    validateSchemaCustomizations(document, schema, validationConfig);
 }
 
 export default validateDocument;
