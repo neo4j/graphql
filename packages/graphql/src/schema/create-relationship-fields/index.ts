@@ -142,7 +142,7 @@ function createRelationshipFields({
                         ...(schemaComposer.has(`${rel.typeMeta.name}ConnectInput`)
                             ? { connect: `${rel.typeMeta.name}ConnectInput` }
                             : {}),
-                        ...(rel.properties
+                        ...(hasNonGeneratedProperties
                             ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                         where: connectWhere,
@@ -180,9 +180,9 @@ function createRelationshipFields({
                     tc.addFields({
                         node: `${rel.typeMeta.name}CreateInput!`,
                     });
-                    if (rel.properties) {
+                    if (hasNonGeneratedProperties) {
                         tc.addFields({
-                            edge: `${rel.properties}CreateInput!`,
+                            edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}`,
                         });
                     }
                 }
@@ -190,7 +190,7 @@ function createRelationshipFields({
 
             schemaComposer.getOrCreateITC(`${sourceName}${upperFirst(rel.fieldName)}UpdateConnectionInput`, (tc) => {
                 tc.addFields({
-                    ...(rel.properties ? { edge: `${rel.properties}UpdateInput` } : {}),
+                    ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
                     node: `${rel.typeMeta.name}UpdateInput`,
                 });
             });
@@ -234,7 +234,9 @@ function createRelationshipFields({
                         name: createName,
                         fields: {
                             node: `${n.name}CreateInput!`,
-                            ...(rel.properties ? { edge: `${rel.properties}CreateInput!` } : {}),
+                            ...(hasNonGeneratedProperties
+                                ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                                : {}),
                         },
                     });
                 }
@@ -334,9 +336,7 @@ function createRelationshipFields({
                             node: `${n.name}CreateInput!`,
                             ...(hasNonGeneratedProperties
                                 ? {
-                                      edge: `${rel.properties}CreateInput${
-                                          hasNonNullNonGeneratedProperties ? `!` : ""
-                                      }`,
+                                      edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
                                   }
                                 : {}),
                         },
@@ -347,7 +347,7 @@ function createRelationshipFields({
                     });
 
                     unionCreateFieldInput.addFields({
-                        [n.name]: `[${createName}!]`,
+                        [n.name]:  rel.typeMeta.array ? `[${createName}!]` : createName,
                     });
                 }
 
@@ -370,16 +370,12 @@ function createRelationshipFields({
                             where: connectWhereName,
                             ...(n.relationFields.length
                                 ? {
-                                      connect: rel.typeMeta.array
-                                          ? `[${n.name}ConnectInput!]`
-                                          : `${n.name}ConnectInput`,
+                                      connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput`,
                                   }
                                 : {}),
                             ...(hasNonGeneratedProperties
                                 ? {
-                                      edge: `${rel.properties}CreateInput${
-                                          hasNonNullNonGeneratedProperties ? `!` : ""
-                                      }`,
+                                      edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
                                   }
                                 : {}),
                         },
