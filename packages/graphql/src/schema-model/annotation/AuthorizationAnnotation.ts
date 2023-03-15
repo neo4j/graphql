@@ -17,10 +17,7 @@
  * limitations under the License.
  */
 
-export const AuthorizationAnnotationArguments = {
-    filter: "filter",
-    validate: "validate",
-};
+export const AuthorizationAnnotationArguments = ["filter", "validate"] as const;
 
 export type AuthorizationFilterOperation = "READ" | "UPDATE" | "DELETE" | "CREATE_RELATIONSHIP" | "DELETE_RELATIONSHIP";
 
@@ -61,11 +58,6 @@ export class AuthorizationAnnotation {
     }
 }
 
-export const AuthorizationFilterRuleArguments = {
-    operations: "operations",
-    requireAuthentication: "requireAuthentication",
-    where: "where",
-};
 export type AuthorizationFilterRuleConstructor = {
     operations?: AuthorizationFilterOperation[];
     requireAuthentication?: boolean;

@@ -37,7 +37,7 @@ export function parseAuthorizationAnnotation(directive: DirectiveNode): Authoriz
     };
     if (!filter && !validate) {
         throw new Neo4jGraphQLSchemaValidationError(
-            `@authorization requires at least one of ${Object.values(AuthorizationAnnotationArguments).join(
+            `@authorization requires at least one of ${AuthorizationAnnotationArguments.join(
                 ", "
             )} arguments`
         );
