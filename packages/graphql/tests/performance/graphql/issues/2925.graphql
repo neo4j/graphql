@@ -3,3 +3,9 @@ query SingleRelationshipFilter {
         title
     }
 }
+
+query NestedSingleRelationshipFilter {
+    people(where: { movies: { favouriteActor: { name_IN: ["Tom Hanks"] } } }) {
+        name
+    }
+}

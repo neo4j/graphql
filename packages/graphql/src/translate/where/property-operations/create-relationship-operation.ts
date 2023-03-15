@@ -326,7 +326,6 @@ function createRelationPredicateWithSubqueries({
             return { predicate: undefined };
         }
         case "single": {
-            // TODO: check for optional single match
             const subquery = new Cypher.Call(
                 Cypher.concat(
                     subqueryContents,

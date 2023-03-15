@@ -124,12 +124,12 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`)
-                MATCH (this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`)
+                OPTIONAL MATCH (this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`)
                 WITH *
                 WHERE (this0.current = $param0 AND (this2.current = $param1 AND this3.fullName = $param2))
                 RETURN count(this1) = 1 AS var4
             }
-            MATCH (this)-[this5:HAS_NAME]->(this6:\`NameDetails\`)
+            OPTIONAL MATCH (this)-[this5:HAS_NAME]->(this6:\`NameDetails\`)
             WITH *
             WHERE (this.current = $param3 AND var4 = true AND (this5.current = $param4 AND this6.fullName CONTAINS $param5))
             CALL {

@@ -95,8 +95,8 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            MATCH (this)-[this0:HAS_MANUFACTURER]->(this1:\`Series\`)
-            MATCH (this)-[this2:HAS_BRAND]->(this3:\`Series\`)
+            OPTIONAL MATCH (this)-[this0:HAS_MANUFACTURER]->(this1:\`Series\`)
+            OPTIONAL MATCH (this)-[this2:HAS_BRAND]->(this3:\`Series\`)
             WITH *
             WHERE ((this0.current = $param0 AND this1.name = $param1) OR (this2.current = $param2 AND this3.name = $param3))
             CALL {

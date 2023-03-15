@@ -38,9 +38,9 @@ describe("Single relationship (1-*) filtering", () => {
         const typeDefs = `
         type ${Person} {
             name: String!
-            movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: IN)
-            directedMovies: [${Movie}!]! @relationship(type: "DIRECTED", direction: IN)
-            producedMovies: [${Movie}!]! @relationship(type: "PRODUCED", direction: IN)
+            actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            directedMovies: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT)
+            producedMovies: [${Movie}!]! @relationship(type: "PRODUCED", direction: OUT)
         }
 
         type ${Movie} {
@@ -69,7 +69,7 @@ describe("Single relationship (1-*) filtering", () => {
         await driver.close();
     });
 
-    it("Filter on required relationships", async () => {
+    it("Filter on required and optional relationships", async () => {
         const query = `
             query {
                 ${Movie.plural}(where: { OR: [{ director: { name: "Jon Wu" } }, { producer: { name: "Jon Wu" } }] }) {
@@ -99,6 +99,54 @@ describe("Single relationship (1-*) filtering", () => {
                 title: "Chi bi",
             },
             { title: "Hard Target" },
+        ]);
+    });
+
+    it("Filter on required and optional relationships in nested queries", async () => {
+        const query = `
+            query {
+                ${Person.plural}(
+                    where: { actedIn: { OR: [{ director: { name: "Jon Wu" } }, { producer: { name: "Jon Wu" } }] } }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        await session.run(`
+            CREATE(a:${Person} {name: "That actor that you are not so sure what the name is but have seen before"})
+            CREATE(a2:${Person} {name: "not so famous one"})
+            CREATE(a3:${Person} {name: "don't know this one"})
+
+
+
+            CREATE(jw:${Person} {name: "Jon Wu"})
+            CREATE(ht:${Movie} {title: "Hard Target"})<-[:DIRECTED]-(jw)
+            CREATE(cb:${Movie} {title: "Chi bi"})<-[:DIRECTED]-(jw)
+            CREATE(cb)<-[:PRODUCED]-(jw)
+            CREATE(m:${Movie} {title: "Avatar"})<-[:DIRECTED]-(:${Person} {name: "Richie McFamous"})
+
+            CREATE(a)-[:ACTED_IN]->(ht)
+            CREATE(a)-[:ACTED_IN]->(cb)
+            CREATE(a2)-[:ACTED_IN]->(cb)
+            CREATE(a)-[:ACTED_IN]->(m)
+            CREATE(a3)-[:ACTED_IN]->(m)
+        `);
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(result.errors).toBeUndefined();
+        expect((result.data as any)[Person.plural]).toIncludeSameMembers([
+            {
+                name: "That actor that you are not so sure what the name is but have seen before",
+            },
+            {
+                name: "not so famous one",
+            },
         ]);
     });
 });
