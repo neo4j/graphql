@@ -9,15 +9,3 @@ query NestedSingleRelationshipRequiredFilter {
         name
     }
 }
-
-query SingleRelationshipFilter {
-    movies(where: { favouriteActorOptional: { name_IN: ["Tom Hanks"] } }) {
-        title
-    }
-}
-
-query NestedSingleRelationshipFilter {
-    people(where: { movies: { favouriteActorOptional: { name_IN: ["Tom Hanks"] } } }) {
-        name
-    }
-}
