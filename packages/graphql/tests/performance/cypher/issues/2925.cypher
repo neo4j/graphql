@@ -5,6 +5,18 @@ RETURN m { .title }
 
 # Test: SingleRelationshipFilterWithWithBeforeWhere
 MATCH (m:Movie)-[:FAV]->(p:Person) 
+WITH *
+WHERE p.name IN ["Tom Hanks"] 
+RETURN m { .title }
+
+# Test: OptionalSingleRelationshipFilter
+OPTIONAL MATCH (m:Movie)-[:FAV]->(p:Person) 
+WHERE p.name IN ["Tom Hanks"] 
+RETURN m { .title }
+
+# Test: OptionalSingleRelationshipFilterWithWithBeforeWhere
+OPTIONAL MATCH (m:Movie)-[:FAV]->(p:Person) 
+WITH *
 WHERE p.name IN ["Tom Hanks"] 
 RETURN m { .title }
 

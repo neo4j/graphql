@@ -641,11 +641,17 @@ CALL {
 RETURN NULL
 `;
 
-const indexQuery = `
+const indexQueries = [
+    `
 CREATE FULLTEXT INDEX MovieTaglineFulltextIndex
 IF NOT EXISTS FOR (n:Movie)
-ON EACH [n.tagline]
-`;
+ON EACH [n.tagline]`,
+    //     `
+    // CREATE INDEX ActorName
+    // IF NOT EXISTS FOR (p:Person)
+    // ON p.name
+    // `,
+];
 
 const deleteIndexesQuery = `
 
@@ -661,6 +667,8 @@ export async function cleanDatabase(session: Session): Promise<void> {
 
 export async function setupDatabase(session: Session): Promise<void> {
     await cleanDatabase(session);
-    await session.run(indexQuery);
+    for (const query of indexQueries) {
+        await session.run(query);
+    }
     await session.run(cypherQuery);
 }
