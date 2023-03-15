@@ -81,7 +81,7 @@ describe("createAuthAndParams", () => {
                 context,
                 entity: node,
                 operations: "READ",
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
             expect(result[0]).toMatchInlineSnapshot(
@@ -220,7 +220,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
             expect(result[0]).toMatchInlineSnapshot(
@@ -286,7 +286,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
             expect(result[0]).toMatchInlineSnapshot(
@@ -353,7 +353,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
             expect(result[0]).toMatchInlineSnapshot(
@@ -419,7 +419,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
             expect(result[0]).toMatchInlineSnapshot(
@@ -491,7 +491,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
             expect(result[0]).toMatchInlineSnapshot(
@@ -593,7 +593,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
             expect(result[0]).toMatchInlineSnapshot(
@@ -693,7 +693,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
             expect(result[0]).toMatchInlineSnapshot(
@@ -761,7 +761,7 @@ describe("createAuthAndParams", () => {
                     context,
                     entity: node,
                     operations: "READ",
-                    allow: { parentNode: node, varName: "this" },
+                    allow: { node, varName: "this" },
                 });
             }).toThrow("Unauthenticated");
         });
@@ -819,7 +819,7 @@ describe("createAuthAndParams", () => {
                     context,
                     entity: node,
                     operations: "READ",
-                    allow: { parentNode: node, varName: "this" },
+                    allow: { node, varName: "this" },
                 });
             }).toThrow("Unauthenticated");
         });
@@ -876,7 +876,7 @@ describe("createAuthAndParams", () => {
                 context,
                 entity: node,
                 operations: "READ",
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
             expect(result[0]).toMatchInlineSnapshot(
@@ -937,7 +937,7 @@ describe("createAuthAndParams", () => {
                 context,
                 entity: node,
                 operations: "READ",
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
             expect(result[0]).toMatchInlineSnapshot(

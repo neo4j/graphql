@@ -22,7 +22,7 @@ import type { Context, GraphQLOptionsArg, GraphQLWhereArg, RelationField } from 
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../../where/create-where-predicate";
 import type { CypherRelationshipDirection } from "../../../utils/get-relationship-direction";
-import { createAuthPredicates } from "../../create-auth-and-params";
+import { createAuthPredicates } from "../../create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
 
@@ -108,7 +108,7 @@ export function createProjectionSubquery({
         operations: "READ",
         context,
         allow: {
-            parentNode: node,
+            node,
             varName: targetNode,
         },
     });

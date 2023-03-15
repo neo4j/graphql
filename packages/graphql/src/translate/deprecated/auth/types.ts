@@ -17,11 +17,10 @@
  * limitations under the License.
  */
 
+import type Cypher from "@neo4j/cypher-builder";
+import type { Node } from "../../../classes";
 
-export class CypherAnnotation {
-    public statement: string;
-
-    constructor({ statement }: { statement: string }) {
-        this.statement = statement;
-    }
-}
+export type Rule = {
+    varName: string | Cypher.Node;
+    node: Node;
+};

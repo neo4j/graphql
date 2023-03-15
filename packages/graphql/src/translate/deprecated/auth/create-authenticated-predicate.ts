@@ -17,11 +17,14 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
+import { AUTH_UNAUTHENTICATED_ERROR } from "../../../constants";
 
-export class CypherAnnotation {
-    public statement: string;
+export function createAuthenticatedPredicate(
+    authenticated: boolean,
+    authenticatedParam: Cypher.Variable | Cypher.PropertyRef
+): Cypher.Predicate {
+    const authenticatedPredicate = Cypher.not(Cypher.eq(authenticatedParam, new Cypher.Literal(authenticated)));
 
-    constructor({ statement }: { statement: string }) {
-        this.statement = statement;
-    }
+    return Cypher.apoc.util.validatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
 }

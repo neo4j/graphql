@@ -205,7 +205,7 @@ function createConnectAndParams({
                     operations: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: name },
+                    allow: { node, varName: name },
                 });
 
                 if (!str) {
@@ -469,7 +469,7 @@ function createConnectAndParams({
                     escapeQuotes: Boolean(insideDoWhen),
                     skipIsAuthenticated: true,
                     skipRoles: true,
-                    bind: { parentNode: node, varName: nodeName },
+                    bind: { node, varName: nodeName },
                 });
 
                 if (!str) {

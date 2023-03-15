@@ -21,7 +21,7 @@ import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import type { GraphQLOptionsArg, Context, GraphQLWhereArg, CypherFieldReferenceMap } from "../types";
-import { createAuthPredicates } from "./create-auth-and-params";
+import { createAuthPredicates } from "./create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
@@ -82,7 +82,7 @@ export function translateRead(
         entity: node,
         context,
         allow: {
-            parentNode: node,
+            node,
             varName,
         },
     });
