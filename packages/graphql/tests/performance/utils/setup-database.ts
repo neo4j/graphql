@@ -636,6 +636,7 @@ CALL {
     WITH m, p ORDER BY p.name DESC
     WITH m, head(collect(p)) as fav
     CREATE(m)-[:FAV]->(fav)
+    CREATE(m)-[:FAV_OPTIONAL]->(fav)
     RETURN NULL as n
 }
 RETURN NULL
