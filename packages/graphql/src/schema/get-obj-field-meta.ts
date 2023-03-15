@@ -168,6 +168,7 @@ function getObjFieldMeta({
                             "cypher",
                             "id",
                             "auth",
+                            "authorization",
                             "readonly",
                             "writeonly",
                             "computed",

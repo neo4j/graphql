@@ -28,8 +28,8 @@ const basicTypeDefs = `
         createdAt: DateTime! @timestamp
     }
 
-    type Article {
-        id: ID! @id
+    type Article @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+        id: ID! @id @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
         blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
