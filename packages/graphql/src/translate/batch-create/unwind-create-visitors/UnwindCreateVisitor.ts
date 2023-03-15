@@ -33,7 +33,7 @@ import { filterTruthy } from "../../../utils/utils";
 import type { Expr, Map, MapProjection } from "@neo4j/cypher-builder";
 import Cypher from "@neo4j/cypher-builder";
 import mapToDbProperty from "../../../utils/map-to-db-property";
-import { createAuthPredicates } from "../../create-auth-and-params";
+import { createAuthPredicates } from "../../create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 
@@ -219,7 +219,7 @@ export class UnwindCreateVisitor implements Visitor {
                 entity: node,
                 operations: "CREATE",
                 context,
-                bind: { parentNode: node, varName: nodeRef },
+                bind: { node, varName: nodeRef },
                 escapeQuotes: true,
             });
             if (authExpr) {
@@ -252,7 +252,7 @@ export class UnwindCreateVisitor implements Visitor {
                             operations: "CREATE",
                             context,
                             bind: {
-                                parentNode: astNode.node,
+                                node: astNode.node,
                                 varName: nodeRef,
                             },
                             escapeQuotes: true,

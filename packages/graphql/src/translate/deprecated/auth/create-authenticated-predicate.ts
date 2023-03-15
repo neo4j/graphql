@@ -17,17 +17,14 @@
  * limitations under the License.
  */
 
-import type { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
-import type { JwtPayload } from "../../../types/deprecated/auth/jwt-payload";
+import Cypher from "@neo4j/cypher-builder";
+import { AUTH_UNAUTHENTICATED_ERROR } from "../../../constants";
 
-export type SubscriptionContext = {
-    plugin: Neo4jGraphQLSubscriptionsPlugin;
-    jwt?: JwtPayload;
-};
+export function createAuthenticatedPredicate(
+    authenticated: boolean,
+    authenticatedParam: Cypher.Variable | Cypher.PropertyRef
+): Cypher.Predicate {
+    const authenticatedPredicate = Cypher.not(Cypher.eq(authenticatedParam, new Cypher.Literal(authenticated)));
 
-export type SubscriptionConnectionContext = {
-    connectionParams?: {
-        authorization?: string;
-    };
-    jwt?: JwtPayload;
-};
+    return new Cypher.apoc.ValidatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
+}
