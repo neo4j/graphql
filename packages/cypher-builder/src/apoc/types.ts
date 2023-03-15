@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { ConvertFormat } from "./functions/convert-format";
 import type { RunFirstColumn } from "./functions/RunFirstColumn";
 
-export type ApocFunction = RunFirstColumn | ConvertFormat;
+export type ApocFunction = RunFirstColumn;

@@ -19,5 +19,5 @@
 
 export { RunFirstColumn } from "./functions/RunFirstColumn";
 
-export * as date from "./functions/date";
+export * as date from "./date";
 export * as util from "./util";
