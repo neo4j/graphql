@@ -12,7 +12,7 @@
     "author": "Neo4j Inc.",
     "dependencies": {
         "@neo4j/graphql": "file:./package",
-        "apollo-server": "3.12.0",
+        "@apollo/server": "4.0.0",
         "cross-fetch": "^3.1.5",
         "graphql": "^16.6.0",
         "neo4j-driver": "^5.0.0"

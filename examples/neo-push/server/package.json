@@ -16,7 +16,7 @@
         "@neo4j/graphql": "^3.5.0",
         "@neo4j/graphql-ogm": "^3.5.0",
         "@neo4j/graphql-plugin-auth": "^2.0.0",
-        "apollo-server-express": "3.12.0",
+        "@apollo/server": "4.0.0",
         "bcrypt": "5.1.0",
         "debug": "4.3.4",
         "dotenv": "^16.0.1",
