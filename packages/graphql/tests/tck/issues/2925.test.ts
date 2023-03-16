@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         });
     });
 
-    test("should query nested relationship", async () => {
+    test("should query relationship", async () => {
         const query = gql`
             query Query {
                 users(where: { hasGroup: { name_IN: ["Group A"] } }) {
@@ -72,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         `);
     });
 
-    test("should query nested required relationship", async () => {
+    test("should query required relationship", async () => {
         const query = gql`
             query Query {
                 users(where: { hasRequiredGroup: { name_IN: ["Group A"] } }) {
@@ -88,6 +88,76 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
             MATCH (this)-[:HAS_REQUIRED_GROUP]->(this0:\`Group\`)
             WITH *
             WHERE this0.name IN $param0
+            RETURN this { .name } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": [
+                    \\"Group A\\"
+                ]
+            }"
+        `);
+    });
+
+    test("should query nested relationship", async () => {
+        const query = gql`
+            query Query {
+                groups(where: { hasGroupUser: { hasGroup: { name_IN: ["Group A"] } } }) {
+                    name
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Group\`)
+            CALL {
+                WITH this
+                MATCH (this)<-[:HAS_GROUP]-(this0:\`User\`)
+                OPTIONAL MATCH (this0)-[:HAS_GROUP]->(this1:\`Group\`)
+                WITH *
+                WHERE this1.name IN $param0
+                RETURN count(this0) > 0 AS var2
+            }
+            WITH *
+            WHERE var2 = true
+            RETURN this { .name } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": [
+                    \\"Group A\\"
+                ]
+            }"
+        `);
+    });
+
+    test("should query nested required relationship", async () => {
+        const query = gql`
+            query Query {
+                groups(where: { hasGroupUser: { hasRequiredGroup: { name_IN: ["Group A"] } } }) {
+                    name
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Group\`)
+            CALL {
+                WITH this
+                MATCH (this)<-[:HAS_GROUP]-(this0:\`User\`)
+                MATCH (this0)-[:HAS_REQUIRED_GROUP]->(this1:\`Group\`)
+                WITH *
+                WHERE this1.name IN $param0
+                RETURN count(this0) > 0 AS var2
+            }
+            WITH *
+            WHERE var2 = true
             RETURN this { .name } AS this"
         `);
 
