@@ -22,7 +22,6 @@ export { Match, OptionalMatch } from "./clauses/Match";
 export { Create } from "./clauses/Create";
 export { Merge } from "./clauses/Merge";
 export { Call } from "./clauses/Call";
-export { CallProcedure } from "./clauses/CallProcedure";
 export { Use } from "./clauses/Use";
 export { Return } from "./clauses/Return";
 export { RawCypher } from "./clauses/RawCypher";
@@ -47,9 +46,6 @@ export { Path, NamedPath } from "./references/Path";
 // Expressions
 export { Exists } from "./expressions/Exists";
 export { Case } from "./expressions/Case";
-
-// --Procedures
-export * as db from "./procedures/db";
 
 // --Apoc
 export * as apoc from "./apoc/apoc";
@@ -112,6 +108,11 @@ export * from "./expressions/functions/PathFunctions";
 
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";
 
+// Procedures
+export { CypherProcedure as Procedure, VoidCypherProcedure as VoidProcedure } from "./procedures/CypherProcedure";
+
+export * as db from "./procedures/db";
+
 // Types
 export type { CypherResult } from "./types";
 export type { PropertyRef } from "./references/PropertyRef";
@@ -119,7 +120,8 @@ export type { Clause } from "./clauses/Clause";
 export type { CypherEnvironment as Environment } from "./Environment";
 export type { ComparisonOp } from "./expressions/operations/comparison";
 export type { BooleanOp } from "./expressions/operations/boolean";
-export type { Expr, Predicate, Operation, Procedure } from "./types";
+export type { Expr, Predicate, Operation } from "./types";
+export type { Yield } from "./procedures/Yield";
 export type { ProjectionColumn } from "./clauses/sub-clauses/Projection";
 export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
@@ -128,5 +130,4 @@ export type { CompositeClause } from "./clauses/utils/concat";
 export type { CypherAggregationFunction as AggregationFunction } from "./expressions/functions/AggregationFunctions";
 
 // utils
-// --Procedures
 export * as utils from "./utils/utils";
