@@ -55,11 +55,16 @@ This RFC will discuss some options on how functionality might be split.
 
 ### Globals
 
-There are currently `@readonly` and `@writeonly` directive which are only applicable to fields. These will be extended:
+There are currently `@readonly` and `@writeonly` directive which are only applicable to fields. These will be extended, with a toggle argument added for usage in overriding situations:
 
 ```gql
-directive @readonly on SCHEMA | OBJECT | FIELD_DEFINITION
-directive @writeonly on SCHEMA | OBJECT | FIELD_DEFINITION
+directive @readonly(
+  enabled: Boolean! = true
+) on SCHEMA | OBJECT | FIELD_DEFINITION
+
+directive @writeonly(
+  enabled: Boolean! = true
+) on SCHEMA | OBJECT | FIELD_DEFINITION
 ```
 
 Only one of the above can be used in any given location.
@@ -89,7 +94,7 @@ type Actor {
 }
 ```
 
-_OPEN QUESTION_: given the following, how would you re-enable reads for the `Actor.movies` relationship?
+To re-enable reads for the `Actor.movies` relationship in the following example where the `Movie` type has been set as write-only:
 
 ```gql
 type Movie @writeonly {
@@ -98,24 +103,7 @@ type Movie @writeonly {
 
 type Actor {
   name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
-}
-```
-
-One proposal would be to introduce a directive mirroring `@write`, which could be used to re-able read permissions in a particular location:
-
-```gql
-directive @read (
-  enabled: Boolean! = true
-) on OBJECT | FIELD_DEFINITION
-
-type Movie @writeonly {
-  title: String!
-}
-
-type Actor {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT) @read
+  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT) @writeonly(enabled: false)
 }
 ```
 
