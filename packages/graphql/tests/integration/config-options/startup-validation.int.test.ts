@@ -379,16 +379,12 @@ describe("Startup Validation", () => {
         await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
 
-    test("should throw no errors when startupValidation.customResolver, startupValidation.typeDefs, and startupValidation.noDuplicateRelationshipFields are false", async () => {
+    test("should throw no errors when startupValidation false", async () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs: invalidAll,
             driver,
             config: {
-                startupValidation: {
-                    resolvers: false,
-                    typeDefs: false,
-                    noDuplicateRelationshipFields: false,
-                },
+                startupValidation: false,
             },
         });
 
