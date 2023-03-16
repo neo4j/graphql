@@ -58,14 +58,14 @@ This RFC will discuss some options on how functionality might be split.
 There are currently `@readonly` and `@writeonly` directive which are only applicable to fields. These will be extended, with a toggle argument added for usage in overriding situations:
 
 ```gql
-directive @readonly(
-  enabled: Boolean! = true
-) on SCHEMA | OBJECT | FIELD_DEFINITION
+directive @readonly on SCHEMA | OBJECT | FIELD_DEFINITION
 
 directive @writeonly(
   enabled: Boolean! = true
 ) on SCHEMA | OBJECT | FIELD_DEFINITION
 ```
+
+Note that the `@readonly` argument does not need a toggle argument because the `@write` directive can be used for this purpose. This reduces the number of sugar syntax directives.
 
 Only one of the above can be used in any given location.
 
@@ -187,8 +187,6 @@ The above will:
 
 ### Write operations
 
-#### Option 1: single `@write` directive
-
 This option takes an unopinionated view of root-level versus nested operations, encompassing them all in a single directive. These operations are:
 
 * `CREATE`
@@ -261,6 +259,6 @@ In the above example:
   * The `deleteComments` Mutation field, however, is reintroduced by the `@write` directive on the `Comment` type
 * When performing a nested operation from the `Post` type, you can only create a `Comment`, and nothing else
 
-##### `connectOrCreate`
+#### `connectOrCreate`
 
 The existence of the `connectOrCreate` operation will depend on both the `CREATE` and `CREATE_RELATIONSHIP` operations being present in the `@write` directive.
