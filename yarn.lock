@@ -3113,12 +3113,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
-    "@types/jest": 29.4.1
+    "@types/jest": 29.4.4
     "@types/node": 18.15.1
     expect-type: 0.15.0
     jest: 29.5.0
     ts-jest: 29.0.5
-    typedoc: 0.23.26
+    typedoc: 0.23.27
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -3133,7 +3133,7 @@ __metadata:
     "@graphql-tools/merge": ^8.3.3
     "@neo4j/graphql": ^3.17.1
     "@neo4j/graphql-plugin-auth": ^2.1.0
-    "@types/jest": 29.4.1
+    "@types/jest": 29.4.4
     "@types/node": 18.15.1
     camelcase: 6.3.0
     graphql-tag: 2.12.6
@@ -3158,7 +3158,7 @@ __metadata:
   resolution: "@neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth"
   dependencies:
     "@types/debug": 4.1.7
-    "@types/jest": 29.4.1
+    "@types/jest": 29.4.4
     "@types/jsonwebtoken": 9.0.1
     "@types/node": 18.15.1
     debug: ^4.3.4
@@ -3177,7 +3177,7 @@ __metadata:
     "@neo4j/graphql": ^3.15.0
     "@types/amqplib": 0.10.1
     "@types/debug": 4.1.7
-    "@types/jest": 29.4.1
+    "@types/jest": 29.4.4
     "@types/node": 18.15.1
     amqplib: 0.10.3
     apollo-server: 3.12.0
@@ -3251,7 +3251,7 @@ __metadata:
     ts-node: 10.9.1
     tsconfig-paths-webpack-plugin: 4.0.1
     typescript: 4.9.5
-    webpack: 5.76.1
+    webpack: 5.76.2
     webpack-cli: 5.0.1
     webpack-dev-server: 4.12.0
     webpack-notifier: 1.15.0
@@ -3274,7 +3274,7 @@ __metadata:
     "@neo4j/graphql-plugin-auth": ^2.1.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
-    "@types/jest": 29.4.1
+    "@types/jest": 29.4.4
     "@types/jsonwebtoken": 9.0.1
     "@types/node": 18.15.1
     "@types/pluralize": 0.0.29
@@ -3326,7 +3326,7 @@ __metadata:
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
     "@neo4j/graphql": ^3.16.0
-    "@types/jest": 29.4.1
+    "@types/jest": 29.4.4
     "@types/node": 18.15.1
     "@types/pluralize": 0.0.29
     camelcase: ^6.3.0
@@ -4885,13 +4885,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.4.1":
-  version: 29.4.1
-  resolution: "@types/jest@npm:29.4.1"
+"@types/jest@npm:29.4.4":
+  version: 29.4.4
+  resolution: "@types/jest@npm:29.4.4"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: 75cdd1804615b663b88844eef61cb7c8104d65baf718190a1cd88ce199412dbe2ee136df3698604cc258a9a62ba7cbd7bd7712a17d8cb748909263ef56d6aac3
+  checksum: 754c21d996c3457c761e55c4076a2dd14d82e6290c3f57122db17aa07ef59c12af7df50a82a06845ef9ba1fbf75bb024a1fed68426514618856bda7fb90eb773
   languageName: node
   linkType: hard
 
@@ -6215,7 +6215,7 @@ __metadata:
     ts-loader: 9.4.2
     tsconfig-paths-webpack-plugin: 4.0.1
     typescript: 4.9.5
-    webpack: 5.76.1
+    webpack: 5.76.2
   languageName: unknown
   linkType: soft
 
@@ -16660,7 +16660,7 @@ __metadata:
     style-loader: 3.3.2
     ts-loader: 9.4.2
     typescript: 4.9.5
-    webpack: 5.76.1
+    webpack: 5.76.2
     webpack-cli: 5.0.1
     webpack-dev-server: 4.12.0
   languageName: unknown
@@ -16678,7 +16678,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/dotenv": 8.2.0
     "@types/express": 4.17.17
-    "@types/jest": 29.4.1
+    "@types/jest": 29.4.4
     "@types/jsonwebtoken": 9.0.1
     "@types/node": 18.15.1
     apollo-server-express: 3.12.0
@@ -22780,9 +22780,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc@npm:0.23.26":
-  version: 0.23.26
-  resolution: "typedoc@npm:0.23.26"
+"typedoc@npm:0.23.27":
+  version: 0.23.27
+  resolution: "typedoc@npm:0.23.27"
   dependencies:
     lunr: ^2.3.9
     marked: ^4.2.12
@@ -22792,7 +22792,7 @@ __metadata:
     typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x
   bin:
     typedoc: bin/typedoc
-  checksum: 09dbd221b5bd27a7f6c593a6aa7e4efc3c46f20761e109a76bf0ed7239011cca1261357094710c01472582060d75a7558aab5bf5b78db3aff7c52188d146ee65
+  checksum: 1ddcccf0b839c708a37d18b6dc1ab57ace6e177daf8f0442ff60d6e72c23ecbd78b0e602f0e1e553c7cb0254e0c769afff7c24c58683e564a7a07a2469cf99a5
   languageName: node
   linkType: hard
 
@@ -23765,9 +23765,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.76.1":
-  version: 5.76.1
-  resolution: "webpack@npm:5.76.1"
+"webpack@npm:5.76.2":
+  version: 5.76.2
+  resolution: "webpack@npm:5.76.2"
   dependencies:
     "@types/eslint-scope": ^3.7.3
     "@types/estree": ^0.0.51
@@ -23798,7 +23798,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: b01fe0bc2dbca0e10d290ddb0bf81e807a031de48028176e2b21afd696b4d3f25ab9accdad888ef4a1f7c7f4d41f13d5bf2395b7653fdf3e5e3dafa54e56dab2
+  checksum: 86db98299a175c371031449c26077e87b33acd8f45de7f7945ed4b9b37c8ca11bc5169af9c44743efccd4d55e08042a3aa3a3bc42aff831309a0821ffbcd395e
   languageName: node
   linkType: hard
 
