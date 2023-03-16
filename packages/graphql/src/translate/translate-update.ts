@@ -340,11 +340,15 @@ export default async function translateUpdate({
                     if (!relationField.typeMeta.array) {
                         const singleCardinalityValidationTemplate = (nodeName) =>
                             `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        if (relationField.union) {
-                            const validateRelationshipExistence = relationField.union.nodes ? relationField.union.nodes.map(singleCardinalityValidationTemplate) : [];
+                        if (relationField.union && relationField.union.nodes) {
+                            const validateRelationshipExistence = relationField.union.nodes.map(
+                                singleCardinalityValidationTemplate
+                            );
                             createStrs.push(...validateRelationshipExistence);
-                        } else if (relationField.interface) {
-                            const validateRelationshipExistence = relationField.interface.implementations ? relationField.interface.implementations.map(singleCardinalityValidationTemplate): [];
+                        } else if (relationField.interface && relationField.interface.implementations) {
+                            const validateRelationshipExistence = relationField.interface.implementations.map(
+                                singleCardinalityValidationTemplate
+                            );
                             createStrs.push(...validateRelationshipExistence);
                         } else {
                             const validateRelationshipExistence = singleCardinalityValidationTemplate(refNode.name);
