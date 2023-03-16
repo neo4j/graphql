@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             });
         });
 
-        test("should validate cardinality against all the implementation", async () => {
+        test("should validate cardinality against all the implementations", async () => {
             const query = gql`
                 mutation UpdateBooks {
                     updateBooks(
@@ -151,7 +151,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             });
         });
 
-        test("should validate cardinality against all the implementation", async () => {
+        test("should validate cardinality against all the implementations", async () => {
             const query = gql`
                 mutation UpdateBooks {
                     updateBooks(

@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             await driver.close();
         });
 
-        test("should validate cardinality against all the implementation", async () => {
+        test("should validate cardinality against all the implementations", async () => {
             await session.run(`
            CREATE(book:${Book} {isbn: "123", originalTitle: "Original title"})<-[:TRANSLATED_BOOK_TITLE]-(:${BookTitle_SV} { value: "Exempel på svensk titel"})
         `);
@@ -121,12 +121,15 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             });
 
             expect(result.errors).toBeTruthy();
-            expect(result.errors).toEqual(expect.arrayContaining([
-                expect.objectContaining({
-                    message: expect.stringContaining(`Relationship field "${Book.name}.translatedTitle" cannot have more than one node linked`),
-                }),
-            ]
-            ));
+            expect(result.errors).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        message: expect.stringContaining(
+                            `Relationship field "${Book.name}.translatedTitle" cannot have more than one node linked`
+                        ),
+                    }),
+                ])
+            );
             expect(result.data as any).toBeNull();
         });
     });
@@ -195,7 +198,7 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             await driver.close();
         });
 
-        test("should validate cardinality against all the implementation", async () => {
+        test("should validate cardinality against all the implementations", async () => {
             await session.run(`
            CREATE(book:${Book} {isbn: "123", originalTitle: "Original title"})<-[:TRANSLATED_BOOK_TITLE]-(:${BookTitle_SV} { value: "Exempel på svensk titel"})
         `);
@@ -229,12 +232,15 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             });
 
             expect(result.errors).toBeTruthy();
-            expect(result.errors).toEqual(expect.arrayContaining([
-                expect.objectContaining({
-                    message: expect.stringContaining(`Relationship field "${Book.name}.translatedTitle" cannot have more than one node linked`),
-                }),
-            ]
-            ));
+            expect(result.errors).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        message: expect.stringContaining(
+                            `Relationship field "${Book.name}.translatedTitle" cannot have more than one node linked`
+                        ),
+                    }),
+                ])
+            );
             expect(result.data as any).toBeNull();
         });
     });
