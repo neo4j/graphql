@@ -18,17 +18,4 @@ type Person {
 }
 ```
 
-In this example, there are multiple fields in the `Team` type which have the same `Person` type, the same `@relationship` type and ("PLAYS_IN") direction (IN). This is an issue when returning data from the database, as there would be no difference between `player1`, `player2` and `backupPlayers`. Selecting these fields would then return the same data.
-
-To disable checks for duplicate relationship fields, the `noDuplicateRelationshipFields` config option should be used:
-
-```ts
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    config: {
-        startupValidation: {
-            noDuplicateRelationshipFields: false,
-        },
-    },
-});
-```
+For more information about this change and how to disable this validation please see the [4.0.0 migration guide](https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/)
