@@ -70,12 +70,10 @@ export function translateRead(
     });
 
     if (projection.meta?.authValidatePredicates?.length) {
-        projAuth = new Cypher.CallProcedure(
-            new Cypher.apoc.Validate(
-                Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                AUTH_FORBIDDEN_ERROR,
-                new Cypher.Literal([0])
-            )
+        projAuth = Cypher.apoc.util.validate(
+            Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+            AUTH_FORBIDDEN_ERROR,
+            new Cypher.Literal([0])
         );
     }
 
@@ -90,7 +88,7 @@ export function translateRead(
     });
 
     if (authPredicates) {
-        topLevelWhereClause.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR));
+        topLevelWhereClause.where(Cypher.apoc.util.validatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR));
     }
 
     const projectionSubqueries = Cypher.concat(...projection.subqueries);

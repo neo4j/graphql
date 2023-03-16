@@ -192,7 +192,7 @@ export function translateTopLevelCypher({
 
     return new Cypher.RawCypher((env) => {
         if (projectionAuthStrs.length) {
-            const validatePred = new Cypher.apoc.ValidatePredicate(
+            const validatePred = Cypher.apoc.util.validatePredicate(
                 Cypher.not(Cypher.and(...projectionAuthStrs)),
                 AUTH_FORBIDDEN_ERROR
             );

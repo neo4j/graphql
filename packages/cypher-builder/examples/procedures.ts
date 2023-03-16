@@ -17,26 +17,19 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../Environment";
-import { Clause } from "./Clause";
-import type { Procedure } from "../types";
+import Cypher from "../src";
 
-// TODO: ADD yield, where and return
-/**
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/call/)
- * @group Clauses
- */
-export class CallProcedure extends Clause {
-    private procedure: Procedure;
+// CALL db.labels() yield label as this0
+// RETURN this0
 
-    constructor(procedure: Procedure) {
-        super();
-        this.procedure = procedure;
-    }
+const label = new Cypher.NamedVariable("label");
 
-    /** @internal */
-    public getCypher(env: CypherEnvironment): string {
-        const procedureCypher = this.procedure.getCypher(env);
-        return `CALL ${procedureCypher}`;
-    }
-}
+const labelVar = new Cypher.Variable();
+const labelsCall = Cypher.db.labels().yield(["label", labelVar]).return(label);
+
+const { cypher, params } = labelsCall.build();
+
+console.log("Cypher");
+console.log(cypher);
+console.log("----");
+console.log("Params", params);
