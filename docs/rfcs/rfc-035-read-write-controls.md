@@ -107,13 +107,11 @@ type Actor {
 }
 ```
 
-### Read operations
+### Aggregations
 
 At present, it is the intention to only introduce toggling for aggregation queries.
 
 Due to future intentions of API design in the library, Connections will become the primary currency, and we want to normalize their usage as opposed to encourage them being disabled.
-
-#### Aggregations
 
 We will introduce a single directive to toggle aggregations:
 
