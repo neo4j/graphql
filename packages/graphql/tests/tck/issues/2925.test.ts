@@ -57,8 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            OPTIONAL MATCH (this)-[:HAS_GROUP]->(this0:\`Group\`)
-            WHERE this0.name IN $param0
+            WHERE single(this0 IN [(this)-[:HAS_GROUP]->(this0:\`Group\`) WHERE this0.name IN $param0 | 1] WHERE true)
             RETURN this { .name } AS this"
         `);
 
@@ -111,16 +110,10 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Group\`)
-            CALL {
-                WITH this
+            WHERE EXISTS {
                 MATCH (this)<-[:HAS_GROUP]-(this0:\`User\`)
-                OPTIONAL MATCH (this0)-[:HAS_GROUP]->(this1:\`Group\`)
-                WITH *
-                WHERE this1.name IN $param0
-                RETURN count(this0) > 0 AS var2
+                WHERE single(this1 IN [(this0)-[:HAS_GROUP]->(this1:\`Group\`) WHERE this1.name IN $param0 | 1] WHERE true)
             }
-            WITH *
-            WHERE var2 = true
             RETURN this { .name } AS this"
         `);
 

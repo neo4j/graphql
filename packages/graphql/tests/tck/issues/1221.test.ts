@@ -86,41 +86,32 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
+            WHERE (this.current = $param0 AND single(this1 IN [(this)-[this3:ARCHITECTURE]->(this1:\`MasterData\`) WHERE single(this0 IN [(this1)-[this2:HAS_NAME]->(this0:\`NameDetails\`) WHERE this0.fullName = $param1 | 1] WHERE true) | 1] WHERE true))
             CALL {
                 WITH this
-                MATCH (this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`)
-                OPTIONAL MATCH (this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`)
-                WITH *
-                WHERE this3.fullName = $param0
-                RETURN count(this1) = 1 AS var4
-            }
-            WITH *
-            WHERE (this.current = $param1 AND var4 = true)
-            CALL {
-                WITH this
-                MATCH (this)-[this5:ARCHITECTURE]->(this6:\`MasterData\`)
-                WHERE this5.current = $param2
+                MATCH (this)-[this4:ARCHITECTURE]->(this5:\`MasterData\`)
+                WHERE this4.current = $param2
                 CALL {
-                    WITH this6
-                    MATCH (this6:\`MasterData\`)-[this7:HAS_NAME]->(this8:\`NameDetails\`)
-                    WHERE this7.current = $param3
-                    WITH { node: { fullName: this8.fullName } } AS edge
+                    WITH this5
+                    MATCH (this5:\`MasterData\`)-[this6:HAS_NAME]->(this7:\`NameDetails\`)
+                    WHERE this6.current = $param3
+                    WITH { node: { fullName: this7.fullName } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var9
+                    RETURN { edges: edges, totalCount: totalCount } AS var8
                 }
-                WITH { node: { nameDetailsConnection: var9 } } AS edge
+                WITH { node: { nameDetailsConnection: var8 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var10
+                RETURN { edges: edges, totalCount: totalCount } AS var9
             }
-            RETURN this { .id, architectureConnection: var10 } AS this"
+            RETURN this { .id, architectureConnection: var9 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"MHA\\",
-                \\"param1\\": true,
+                \\"param0\\": true,
+                \\"param1\\": \\"MHA\\",
                 \\"param2\\": true,
                 \\"param3\\": true
             }"
@@ -203,57 +194,44 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Main\`)
+            WHERE (this.current = $param0 AND single(this0 IN [(this)-[this5:MAIN]->(this0:\`Series\`) WHERE EXISTS {
+                MATCH (this0)-[this1:ARCHITECTURE]->(this2:\`MasterData\`)
+                WHERE single(this3 IN [(this2)-[this4:HAS_NAME]->(this3:\`NameDetails\`) WHERE this3.fullName = $param1 | 1] WHERE true)
+            } | 1] WHERE true))
             CALL {
                 WITH this
-                MATCH (this)-[this0:MAIN]->(this1:\`Series\`)
+                MATCH (this)-[this6:MAIN]->(this7:\`Series\`)
+                WHERE this6.current = $param2
                 CALL {
-                    WITH this1
-                    MATCH (this1)-[this2:ARCHITECTURE]->(this3:\`MasterData\`)
-                    OPTIONAL MATCH (this3)-[this4:HAS_NAME]->(this5:\`NameDetails\`)
-                    WITH *
-                    WHERE this5.fullName = $param0
-                    RETURN count(this3) > 0 AS var6
-                }
-                WITH *
-                WHERE var6 = true
-                RETURN count(this1) = 1 AS var7
-            }
-            WITH *
-            WHERE (this.current = $param1 AND var7 = true)
-            CALL {
-                WITH this
-                MATCH (this)-[this8:MAIN]->(this9:\`Series\`)
-                WHERE this8.current = $param2
-                CALL {
-                    WITH this9
-                    MATCH (this9:\`Series\`)-[this10:ARCHITECTURE]->(this11:\`MasterData\`)
-                    WHERE this10.current = $param3
+                    WITH this7
+                    MATCH (this7:\`Series\`)-[this8:ARCHITECTURE]->(this9:\`MasterData\`)
+                    WHERE this8.current = $param3
                     CALL {
-                        WITH this11
-                        MATCH (this11:\`MasterData\`)-[this12:HAS_NAME]->(this13:\`NameDetails\`)
-                        WHERE this12.current = $param4
-                        WITH { node: { fullName: this13.fullName } } AS edge
+                        WITH this9
+                        MATCH (this9:\`MasterData\`)-[this10:HAS_NAME]->(this11:\`NameDetails\`)
+                        WHERE this10.current = $param4
+                        WITH { node: { fullName: this11.fullName } } AS edge
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var14
+                        RETURN { edges: edges, totalCount: totalCount } AS var12
                     }
-                    WITH { node: { nameDetailsConnection: var14 } } AS edge
+                    WITH { node: { nameDetailsConnection: var12 } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var15
+                    RETURN { edges: edges, totalCount: totalCount } AS var13
                 }
-                WITH { node: { architectureConnection: var15 } } AS edge
+                WITH { node: { architectureConnection: var13 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var16
+                RETURN { edges: edges, totalCount: totalCount } AS var14
             }
-            RETURN this { .id, mainConnection: var16 } AS this"
+            RETURN this { .id, mainConnection: var14 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"MHA\\",
-                \\"param1\\": true,
+                \\"param0\\": true,
+                \\"param1\\": \\"MHA\\",
                 \\"param2\\": true,
                 \\"param3\\": true,
                 \\"param4\\": true
