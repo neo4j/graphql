@@ -64,19 +64,10 @@ describe("validateDuplicateRelationshipFields", () => {
 
     test("should not throw an error if multiple relationship fields in the same type have the same relationship type but have different directions.", () => {
         const doc = gql`
-            type Team {
-                name: String!
-                player: Person! @relationship(type: "PLAYS_IN", direction: IN)
-                venue: Venue! @relationship(type: "PLAYS_IN", direction: IN)
-            }
-
             type Person {
                 name: String!
-                teams: [Team!]! @relationship(type: "PLAYS_IN", direction: OUT)
-            }
-
-            type Venue {
-                location: String!
+                knows: [Person!]! @relationship(type: "KNOWS", direction: OUT)
+                knowedBy: [Person!]! @relationship(type: "KNOWS", direction: IN)
             }
         `;
 
