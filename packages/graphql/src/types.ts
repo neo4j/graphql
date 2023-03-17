@@ -366,6 +366,7 @@ export interface CypherQueryOptions {
 export interface StartupValidationOptions {
     typeDefs?: boolean;
     resolvers?: boolean;
+    noDuplicateRelationshipFields?: boolean;
 }
 
 /**

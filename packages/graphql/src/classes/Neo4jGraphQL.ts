@@ -67,6 +67,12 @@ export interface Neo4jGraphQLConfig {
     callbacks?: Neo4jGraphQLCallbacks;
 }
 
+export type ValidationConfig = {
+    validateTypeDefs: boolean;
+    validateResolvers: boolean;
+    validateDuplicateRelationshipFields: boolean;
+};
+
 export interface Neo4jGraphQLConstructor {
     typeDefs: TypeSource;
     resolvers?: IExecutableSchemaDefinition["resolvers"];
@@ -75,6 +81,12 @@ export interface Neo4jGraphQLConstructor {
     driver?: Driver;
     plugins?: Neo4jGraphQLPlugins;
 }
+
+export const defaultValidationConfig: ValidationConfig = {
+    validateTypeDefs: true,
+    validateResolvers: true,
+    validateDuplicateRelationshipFields: true,
+};
 
 class Neo4jGraphQL {
     typeDefs: TypeSource;
@@ -238,17 +250,16 @@ class Neo4jGraphQL {
         return getNeo4jDatabaseInfo(new Executor(executorConstructorParam));
     }
 
-    private wrapResolvers(resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>) {
-        if (!this.schemaModel) {
-            throw new Error("Schema Model is not defined");
-        }
-
+    private wrapResolvers(
+        resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>,
+        schemaModel: Neo4jGraphQLSchemaModel
+    ) {
         const wrapResolverArgs = {
             driver: this.driver,
             config: this.config,
             nodes: this.nodes,
             relationships: this.relationships,
-            schemaModel: this.schemaModel,
+            schemaModel: schemaModel,
             plugins: this.plugins,
         };
 
@@ -263,17 +274,16 @@ class Neo4jGraphQL {
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
-    private wrapFederationResolvers(resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>) {
-        if (!this.schemaModel) {
-            throw new Error("Schema Model is not defined");
-        }
-
+    private wrapFederationResolvers(
+        resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>,
+        schemaModel: Neo4jGraphQLSchemaModel
+    ) {
         const wrapResolverArgs = {
             driver: this.driver,
             config: this.config,
             nodes: this.nodes,
             relationships: this.relationships,
-            schemaModel: this.schemaModel,
+            schemaModel: schemaModel,
             plugins: this.plugins,
         };
 
@@ -286,22 +296,27 @@ class Neo4jGraphQL {
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
+    private generateSchemaModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
+        // This can be run several times but it will always be the same result,
+        // so we memoize the schemaModel.
+        if (!this.schemaModel) {
+            this.schemaModel = generateModel(document);
+        }
+        return this.schemaModel;
+    }
+
     private generateExecutableSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
             const document = this.getDocument(this.typeDefs);
 
-            const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
+            const validationConfig = this.parseStartupValidationConfig();
 
-            validateDocument(document, validateTypeDefs);
-
-            if (!this.schemaModel) {
-                this.schemaModel = generateModel(document);
-            }
+            validateDocument({ document, validationConfig });
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
-                validateResolvers,
+                validateResolvers: validationConfig.validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
                 userCustomResolvers: this.resolvers,
@@ -310,8 +325,10 @@ class Neo4jGraphQL {
             this._nodes = nodes;
             this._relationships = relationships;
 
+            const schemaModel = this.generateSchemaModel(document);
+
             // Wrap the generated and custom resolvers, which adds a context including the schema to every request
-            const wrappedResolvers = this.wrapResolvers(resolvers);
+            const wrappedResolvers = this.wrapResolvers(resolvers, schemaModel);
 
             const schema = makeExecutableSchema({
                 typeDefs,
@@ -330,18 +347,14 @@ class Neo4jGraphQL {
 
         const { directives, types } = subgraph.getValidationDefinitions();
 
-        const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
+        const validationConfig = this.parseStartupValidationConfig();
 
-        validateDocument(document, validateTypeDefs, directives, types);
-
-        if (!this.schemaModel) {
-            this.schemaModel = generateModel(document);
-        }
+        validateDocument({ document, validationConfig, additionalDirectives: directives, additionalTypes: types });
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
             enableRegex: this.config?.enableRegex,
-            validateResolvers,
+            validateResolvers: validationConfig.validateResolvers,
             generateSubscriptions: Boolean(this.plugins?.subscriptions),
             callbacks: this.config.callbacks,
             userCustomResolvers: this.resolvers,
@@ -354,7 +367,9 @@ class Neo4jGraphQL {
         // TODO: Move into makeAugmentedSchema, add resolvers alongside other resolvers
         const referenceResolvers = subgraph.getReferenceResolvers(this._nodes);
 
-        const wrappedResolvers = this.wrapResolvers([resolvers, referenceResolvers]);
+        const schemaModel = this.generateSchemaModel(document);
+
+        const wrappedResolvers = this.wrapResolvers([resolvers, referenceResolvers], schemaModel);
 
         const schema = subgraph.buildSchema({
             typeDefs,
@@ -365,7 +380,7 @@ class Neo4jGraphQL {
         const subgraphResolvers = getResolversFromSchema(schema);
 
         // Wrap the _entities and _service Query resolvers
-        const wrappedSubgraphResolvers = this.wrapFederationResolvers(subgraphResolvers);
+        const wrappedSubgraphResolvers = this.wrapFederationResolvers(subgraphResolvers, schemaModel);
 
         // Add the wrapped resolvers back to the schema, context will now be populated
         addResolversToSchema({ schema, resolvers: wrappedSubgraphResolvers, updateResolversInPlace: true });
@@ -373,32 +388,28 @@ class Neo4jGraphQL {
         return this.addDefaultFieldResolvers(schema);
     }
 
-    private parseStartupValidationConfig(): {
-        validateTypeDefs: boolean;
-        validateResolvers: boolean;
-    } {
-        let validateTypeDefs = true;
-        let validateResolvers = true;
+    private parseStartupValidationConfig(): ValidationConfig {
+        const validationConfig: ValidationConfig = { ...defaultValidationConfig };
 
         if (this.config?.startupValidation === false) {
             return {
                 validateTypeDefs: false,
                 validateResolvers: false,
+                validateDuplicateRelationshipFields: false,
             };
         }
 
         // TODO - remove in 4.0.0 when skipValidateTypeDefs is removed
-        if (this.config?.skipValidateTypeDefs === true) validateTypeDefs = false;
+        if (this.config?.skipValidateTypeDefs === true) validationConfig.validateTypeDefs = false;
 
         if (typeof this.config?.startupValidation === "object") {
-            if (this.config?.startupValidation.typeDefs === false) validateTypeDefs = false;
-            if (this.config?.startupValidation.resolvers === false) validateResolvers = false;
+            if (this.config?.startupValidation.typeDefs === false) validationConfig.validateTypeDefs = false;
+            if (this.config?.startupValidation.resolvers === false) validationConfig.validateResolvers = false;
+            if (this.config?.startupValidation.noDuplicateRelationshipFields === false)
+                validationConfig.validateDuplicateRelationshipFields = false;
         }
 
-        return {
-            validateTypeDefs,
-            validateResolvers,
-        };
+        return validationConfig;
     }
 
     private pluginsSetup(): Promise<void> {

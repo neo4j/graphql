@@ -27,6 +27,8 @@ describe("Startup Validation", () => {
 
     const invalidTypeDefsError = 'Type "Point" already exists in the schema.';
     const missingCustomResolverError = "Custom resolver for fullName has not been provided";
+    const duplicateRelationshipFieldsError =
+        "Multiple relationship fields with the same type and direction may not have the same relationship type.";
 
     const customResolverTypeDefs = `
         type User {
@@ -63,6 +65,32 @@ describe("Startup Validation", () => {
             id: ID!
             firstName: String!
             lastName: String!
+        }
+    `;
+
+    const invalidDuplicateRelationship = `
+        type User {
+            id: ID!
+            firstName: String!
+            lastName: String!
+            friend1: User! @relationship(type: "FRIENDS_WITH", direction: IN)
+            friend2: User! @relationship(type: "FRIENDS_WITH", direction: IN)
+        }
+    `;
+
+    const invalidAll = `
+        type User {
+            id: ID!
+            firstName: String!
+            lastName: String!
+            fullName: String @customResolver(requires: "firstName lastName")
+            friend1: User! @relationship(type: "FRIENDS_WITH", direction: IN)
+            friend2: User! @relationship(type: "FRIENDS_WITH", direction: IN)
+        }
+
+        type Point {
+            latitude: Float!
+            longitude: Float!
         }
     `;
 
@@ -313,6 +341,50 @@ describe("Startup Validation", () => {
                     resolvers: false,
                     typeDefs: false,
                 },
+            },
+        });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
+    });
+
+    test("should throw an error for duplicate relationship fields when startupValidation.noDuplicateRelationshipFields is true", async () => {
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs: invalidDuplicateRelationship,
+            driver,
+            config: {
+                startupValidation: {
+                    typeDefs: true,
+                    resolvers: true,
+                    noDuplicateRelationshipFields: true,
+                },
+            },
+        });
+
+        await expect(neoSchema.getSchema()).rejects.toThrow(duplicateRelationshipFieldsError);
+    });
+
+    test("should not throw an error for duplicate relationship fields when startupValidation.noDuplicateRelationshipFields is false", async () => {
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs: invalidDuplicateRelationship,
+            driver,
+            config: {
+                startupValidation: {
+                    typeDefs: true,
+                    resolvers: true,
+                    noDuplicateRelationshipFields: false,
+                },
+            },
+        });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
+    });
+
+    test("should throw no errors when startupValidation false", async () => {
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs: invalidAll,
+            driver,
+            config: {
+                startupValidation: false,
             },
         });
 

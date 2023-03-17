@@ -29,11 +29,19 @@ describe("schema/rfc/003", () => {
             const typeDefs = gql`
                 type Source {
                     targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
-                    target1: Target! @relationship(type: "HAS_TARGET", direction: OUT)
-                    target2: Target @relationship(type: "HAS_TARGET", direction: OUT)
+                    target1: SecondTarget! @relationship(type: "HAS_TARGET", direction: OUT)
+                    target2: ThirdTarget @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
                 type Target {
+                    id: ID @id
+                }
+
+                type SecondTarget {
+                    id: ID @id
+                }
+
+                type ThirdTarget {
                     id: ID @id
                 }
             `;
