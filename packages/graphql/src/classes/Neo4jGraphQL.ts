@@ -250,17 +250,16 @@ class Neo4jGraphQL {
         return getNeo4jDatabaseInfo(new Executor(executorConstructorParam));
     }
 
-    private wrapResolvers(resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>) {
-        if (!this.schemaModel) {
-            throw new Error("Schema Model is not defined");
-        }
-
+    private wrapResolvers(
+        resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>,
+        schemaModel: Neo4jGraphQLSchemaModel
+    ) {
         const wrapResolverArgs = {
             driver: this.driver,
             config: this.config,
             nodes: this.nodes,
             relationships: this.relationships,
-            schemaModel: this.schemaModel,
+            schemaModel: schemaModel,
             plugins: this.plugins,
         };
 
@@ -275,17 +274,16 @@ class Neo4jGraphQL {
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
-    private wrapFederationResolvers(resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>) {
-        if (!this.schemaModel) {
-            throw new Error("Schema Model is not defined");
-        }
-
+    private wrapFederationResolvers(
+        resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>,
+        schemaModel: Neo4jGraphQLSchemaModel
+    ) {
         const wrapResolverArgs = {
             driver: this.driver,
             config: this.config,
             nodes: this.nodes,
             relationships: this.relationships,
-            schemaModel: this.schemaModel,
+            schemaModel: schemaModel,
             plugins: this.plugins,
         };
 
@@ -298,12 +296,13 @@ class Neo4jGraphQL {
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
-    private setSchemaModel(document: DocumentNode) {
+    private generateSchemaModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         // This can be run several times but it will always be the same result,
         // so we memoize the schemaModel.
         if (!this.schemaModel) {
             this.schemaModel = generateModel(document);
         }
+        return this.schemaModel;
     }
 
     private generateExecutableSchema(): Promise<GraphQLSchema> {
@@ -313,8 +312,6 @@ class Neo4jGraphQL {
             const validationConfig = this.parseStartupValidationConfig();
 
             validateDocument({ document, validationConfig });
-
-            this.setSchemaModel(document);
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
@@ -328,8 +325,10 @@ class Neo4jGraphQL {
             this._nodes = nodes;
             this._relationships = relationships;
 
+            const schemaModel = this.generateSchemaModel(document);
+
             // Wrap the generated and custom resolvers, which adds a context including the schema to every request
-            const wrappedResolvers = this.wrapResolvers(resolvers);
+            const wrappedResolvers = this.wrapResolvers(resolvers, schemaModel);
 
             const schema = makeExecutableSchema({
                 typeDefs,
@@ -352,8 +351,6 @@ class Neo4jGraphQL {
 
         validateDocument({ document, validationConfig, additionalDirectives: directives, additionalTypes: types });
 
-        this.setSchemaModel(document);
-
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
             enableRegex: this.config?.enableRegex,
@@ -370,7 +367,9 @@ class Neo4jGraphQL {
         // TODO: Move into makeAugmentedSchema, add resolvers alongside other resolvers
         const referenceResolvers = subgraph.getReferenceResolvers(this._nodes);
 
-        const wrappedResolvers = this.wrapResolvers([resolvers, referenceResolvers]);
+        const schemaModel = this.generateSchemaModel(document);
+
+        const wrappedResolvers = this.wrapResolvers([resolvers, referenceResolvers], schemaModel);
 
         const schema = subgraph.buildSchema({
             typeDefs,
@@ -381,7 +380,7 @@ class Neo4jGraphQL {
         const subgraphResolvers = getResolversFromSchema(schema);
 
         // Wrap the _entities and _service Query resolvers
-        const wrappedSubgraphResolvers = this.wrapFederationResolvers(subgraphResolvers);
+        const wrappedSubgraphResolvers = this.wrapFederationResolvers(subgraphResolvers, schemaModel);
 
         // Add the wrapped resolvers back to the schema, context will now be populated
         addResolversToSchema({ schema, resolvers: wrappedSubgraphResolvers, updateResolversInPlace: true });
