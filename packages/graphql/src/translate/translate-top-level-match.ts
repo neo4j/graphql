@@ -46,17 +46,13 @@ export function translateTopLevelMatch({
         where,
     });
 
-    if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
-        return Cypher.concat(matchClause, preComputedWhereFieldSubqueries, whereClause).build();
-    }
-
-    return matchClause.build();
+    return Cypher.concat(matchClause, preComputedWhereFieldSubqueries, whereClause).build();
 }
 
 type CreateMatchClauseReturn = {
     matchClause: Cypher.Match | Cypher.Yield;
     preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
-    whereClause: Cypher.Match | Cypher.Yield | Cypher.With;
+    whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
 };
 
 export function createMatchClause({
@@ -95,7 +91,7 @@ export function createMatchClause({
         where = where?.[node.singular];
     }
 
-    let whereClause: Cypher.Match | Cypher.Yield | Cypher.With = matchClause;
+    let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined = matchClause;
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
     if (where) {
         const { predicate: whereOp, preComputedSubqueries } = createWherePredicate({
@@ -107,10 +103,17 @@ export function createMatchClause({
 
         preComputedWhereFieldSubqueries = preComputedSubqueries;
 
-        whereClause =
-            preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty
-                ? new Cypher.With("*")
-                : matchClause;
+        if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
+            if (
+                preComputedWhereFieldSubqueries.children.length === 1 &&
+                preComputedWhereFieldSubqueries.children[0] instanceof Cypher.Match
+            ) {
+                whereClause = preComputedWhereFieldSubqueries.children[0];
+                preComputedWhereFieldSubqueries = undefined;
+            } else {
+                whereClause = new Cypher.With("*");
+            }
+        }
 
         if (whereOp) whereClause.where(whereOp);
     }
@@ -134,6 +137,9 @@ export function createMatchClause({
         whereClause.where(authQuery);
     }
 
+    if (matchClause === whereClause) {
+        whereClause = undefined;
+    }
     return {
         matchClause,
         preComputedWhereFieldSubqueries,

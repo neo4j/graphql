@@ -636,6 +636,7 @@ CALL {
     WITH m, p ORDER BY p.name DESC
     WITH m, head(collect(p)) as fav
     CREATE(m)-[:FAV]->(fav)
+    CREATE(movieClone:MovieClone {title: m.title})-[:FAV]->(personClone:PersonClone {name: fav.name})
     RETURN NULL as n
 }
 RETURN NULL
@@ -643,10 +644,10 @@ RETURN NULL
 
 const indexQueries = [
     `
-CREATE FULLTEXT INDEX MovieTaglineFulltextIndex
-IF NOT EXISTS FOR (n:Movie)
-ON EACH [n.tagline]`,
-    //     `
+    CREATE FULLTEXT INDEX MovieTaglineFulltextIndex
+    IF NOT EXISTS FOR (n:Movie)
+    ON EACH [n.tagline]`,
+    // `
     // CREATE INDEX ActorName
     // IF NOT EXISTS FOR (p:Person)
     // ON p.name

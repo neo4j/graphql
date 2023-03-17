@@ -214,17 +214,16 @@ function createSimpleRelationshipPredicate({
         }
         case "single": {
             const isArray = relationField.typeMeta.array;
+            const isRequired = relationField.typeMeta.required;
 
-            if (isArray) {
+            if (isArray || !isRequired) {
                 const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(
                     innerOperation
                 );
                 return { predicate: Cypher.single(childNode, patternComprehension, new Cypher.Literal(true)) };
             }
-            const isRequired = relationField.typeMeta.required;
 
             const matchStatement = new Cypher.Match(matchPattern);
-            if (!isRequired) matchStatement.optional();
             return {
                 predicate: innerOperation,
                 preComputedSubqueries: Cypher.concat(matchStatement),

@@ -64,7 +64,6 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`FirstLevel\`)
             MATCH (this)-[:HAS_SECOND_LEVEL]->(this0:\`SecondLevel\`)
-            WITH *
             WHERE EXISTS {
                 MATCH (this0)-[:HAS_THIRD_LEVEL]->(this1:\`ThirdLevel\`)
                 WHERE this1.id = $param0
@@ -94,7 +93,6 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`FirstLevel\`)
             MATCH (this)-[:HAS_SECOND_LEVEL]->(this0:\`SecondLevel\`)
-            WITH *
             WHERE (EXISTS {
                 MATCH (this0)-[:HAS_THIRD_LEVEL]->(this1:\`ThirdLevel\`)
                 WHERE this1.id = $param0
@@ -127,7 +125,6 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`FirstLevel\`)
             MATCH (this)-[:HAS_SECOND_LEVEL]->(this0:\`SecondLevel\`)
-            WITH *
             WHERE NOT (EXISTS {
                 MATCH (this0)-[:HAS_THIRD_LEVEL]->(this1:\`ThirdLevel\`)
                 WHERE this1.id = $param0

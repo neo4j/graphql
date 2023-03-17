@@ -93,7 +93,7 @@ describe("CypherBuilder Match", () => {
         `);
     });
 
-    describe("assign to path variable", () => {
+    describe("Assign to path variable", () => {
         const a = new Cypher.Node();
         const b = new Cypher.Node();
         const rel = new Cypher.Relationship({

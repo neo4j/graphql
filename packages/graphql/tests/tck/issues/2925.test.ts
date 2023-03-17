@@ -58,7 +58,6 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             OPTIONAL MATCH (this)-[:HAS_GROUP]->(this0:\`Group\`)
-            WITH *
             WHERE this0.name IN $param0
             RETURN this { .name } AS this"
         `);
@@ -86,7 +85,6 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             MATCH (this)-[:HAS_REQUIRED_GROUP]->(this0:\`Group\`)
-            WITH *
             WHERE this0.name IN $param0
             RETURN this { .name } AS this"
         `);

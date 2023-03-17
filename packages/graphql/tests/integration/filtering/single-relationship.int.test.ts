@@ -149,4 +149,32 @@ describe("Single relationship (1-*) filtering", () => {
             },
         ]);
     });
+
+    it("Filter on optional relationships without results", async () => {
+        const query = `
+            query {
+                ${Movie.plural}(where: { producer: { name: "Uw Noj" } } ) {
+                    title
+                }
+            }
+        `;
+
+        await session.run(`
+            CREATE(jw:${Person} {name: "Jon Wu"})
+            CREATE(:${Movie} {title: "Hard Target"})<-[:DIRECTED]-(jw)
+            CREATE(cb:${Movie} {title: "Chi bi"})<-[:DIRECTED]-(jw)
+            CREATE(cb)<-[:PRODUCED]-(jw)
+            CREATE(m:${Movie} {title: "Avatar"})<-[:DIRECTED]-(:${Person} {name: "Richie McFamous"})
+        `);
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(result.errors).toBeUndefined();
+
+        expect((result.data as any)[Movie.plural]).toBeEmpty();
+    });
 });
