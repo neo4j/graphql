@@ -3253,7 +3253,7 @@ __metadata:
     typescript: 5.0.2
     webpack: 5.76.2
     webpack-cli: 5.0.1
-    webpack-dev-server: 4.13.0
+    webpack-dev-server: 4.13.1
     webpack-notifier: 1.15.0
   languageName: unknown
   linkType: soft
@@ -16674,7 +16674,7 @@ __metadata:
     typescript: 5.0.2
     webpack: 5.76.2
     webpack-cli: 5.0.1
-    webpack-dev-server: 4.13.0
+    webpack-dev-server: 4.13.1
   languageName: unknown
   linkType: soft
 
@@ -23700,9 +23700,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-dev-server@npm:4.13.0":
-  version: 4.13.0
-  resolution: "webpack-dev-server@npm:4.13.0"
+"webpack-dev-server@npm:4.13.1":
+  version: 4.13.1
+  resolution: "webpack-dev-server@npm:4.13.1"
   dependencies:
     "@types/bonjour": ^3.5.9
     "@types/connect-history-api-fallback": ^1.3.5
@@ -23737,11 +23737,13 @@ __metadata:
   peerDependencies:
     webpack: ^4.37.0 || ^5.0.0
   peerDependenciesMeta:
+    webpack:
+      optional: true
     webpack-cli:
       optional: true
   bin:
     webpack-dev-server: bin/webpack-dev-server.js
-  checksum: 7546dd3b5a05f886209caf3c06265c717dea292e5a1a8e392bb8f1c9c58c7f87cc03daa0b92fa6eb56812c8c88304044bef923642e18c54b0a17ea233c02fdf4
+  checksum: f70611544b7d964a31eb3d934d7c2b376b97e6927a89e03b2e21cfa5812bb639625cd18fd350de1604ba6c455b324135523a894032f28c69d90d90682e4f3b7d
   languageName: node
   linkType: hard
 
