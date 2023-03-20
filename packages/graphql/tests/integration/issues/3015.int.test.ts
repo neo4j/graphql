@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/3015", () => {
         await driver.close();
     });
 
-    test("custom resolvers should correctly format dates", async () => {
+    test("union should filter by top level match", async () => {
         const typeDefs = `
             type ${NodeA} {
                 name: String!
