@@ -1,7 +1,7 @@
 {
     "name": "apollo-federation-subgraph-compatibility",
     "version": "1.0.0",
-    "packageManager": "yarn@3.4.1",
+    "packageManager": "yarn@3.5.0",
     "scripts": {
         "build": "webpack --config webpack.config.js",
         "test:docker": "yarn build && fedtest docker --compose docker-compose.yml --schema schema.graphql",
@@ -20,7 +20,7 @@
         "fork-ts-checker-webpack-plugin": "8.0.0",
         "ts-loader": "9.4.2",
         "tsconfig-paths-webpack-plugin": "4.0.1",
-        "typescript": "4.9.5",
-        "webpack": "5.76.1"
+        "typescript": "5.0.2",
+        "webpack": "5.76.2"
     }
 }
