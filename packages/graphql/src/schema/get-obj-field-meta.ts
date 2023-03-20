@@ -84,7 +84,7 @@ export interface ObjectFields {
     customResolverFields: CustomResolverField[];
 }
 
-let callbackDeprecatedWarningShown = false;
+const callbackDeprecatedWarningShown = false;
 
 function getObjFieldMeta({
     obj,
@@ -149,7 +149,6 @@ function getObjFieldMeta({
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
-            const callbackDirective = directives.find((x) => x.name.value === "callback");
             const populatedByDirective = directives.find((x) => x.name.value === "populatedBy");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
@@ -501,15 +500,6 @@ function getObjFieldMeta({
 
                     if (populatedByDirective) {
                         const callback = getPopulatedByMeta(populatedByDirective, callbacks);
-                        primitiveField.callback = callback;
-                    }
-
-                    if (callbackDirective) {
-                        if (!callbackDeprecatedWarningShown) {
-                            console.warn(deprecationWarning);
-                            callbackDeprecatedWarningShown = true;
-                        }
-                        const callback = getCallbackMeta(callbackDirective, callbacks);
                         primitiveField.callback = callback;
                     }
 

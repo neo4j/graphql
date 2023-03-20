@@ -28,7 +28,7 @@ describe("schema/rfc/autogenerate-properties-node", () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
-                    callback1: String! @callback(operations: [CREATE], name: "callback1") @default(value: "Test")
+                    callback1: String! @populatedBy(operations: [CREATE], callback: "callback1") @default(value: "Test")
                 }
             `;
 
@@ -37,7 +37,7 @@ describe("schema/rfc/autogenerate-properties-node", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toThrow(
-                "Directive @callback cannot be used in combination with @default"
+                "Directive @populatedBy cannot be used in combination with @default"
             );
         });
 
@@ -45,7 +45,7 @@ describe("schema/rfc/autogenerate-properties-node", () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
-                    callback1: String! @callback(operations: [CREATE], name: "callback1") @id
+                    callback1: String! @populatedBy(operations: [CREATE], callback: "callback1") @id
                 }
             `;
 
@@ -54,16 +54,16 @@ describe("schema/rfc/autogenerate-properties-node", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toThrow(
-                "Directive @callback cannot be used in combination with @id"
+                "Directive @populatedBy cannot be used in combination with @id"
             );
         });
     });
 
-    test("Callback - existance", async () => {
+    test("Callback - existence", async () => {
         const typeDefs = gql`
             type Movie {
                 id: ID
-                callback1: String! @callback(operations: [CREATE], name: "callback1")
+                callback1: String! @populatedBy(operations: [CREATE], callback: "callback1")
             }
         `;
 
@@ -71,7 +71,9 @@ describe("schema/rfc/autogenerate-properties-node", () => {
             typeDefs,
         });
 
-        await expect(neoSchema.getSchema()).rejects.toThrow("Directive callback 'callback1' must be of type function");
+        await expect(neoSchema.getSchema()).rejects.toThrow(
+            "PopulatedBy callback 'callback1' must be of type function"
+        );
     });
 
     test("Callback - String", async () => {
@@ -82,9 +84,9 @@ describe("schema/rfc/autogenerate-properties-node", () => {
         const typeDefs = gql`
             type Movie {
                 id: ID
-                callback1: String! @callback(operations: [CREATE], name: "callback1")
-                callback2: String! @callback(operations: [UPDATE], name: "callback2")
-                callback3: String! @callback(operations: [CREATE, UPDATE], name: "callback3")
+                callback1: String! @populatedBy(operations: [CREATE], callback: "callback1")
+                callback2: String! @populatedBy(operations: [UPDATE], callback: "callback2")
+                callback3: String! @populatedBy(operations: [CREATE, UPDATE], callback: "callback3")
             }
         `;
 
@@ -283,9 +285,9 @@ describe("schema/rfc/autogenerate-properties-node", () => {
         const typeDefs = gql`
             type Movie {
                 id: ID
-                callback1: Int! @callback(operations: [CREATE], name: "callback1")
-                callback2: Int! @callback(operations: [UPDATE], name: "callback2")
-                callback3: Int! @callback(operations: [CREATE, UPDATE], name: "callback3")
+                callback1: Int! @populatedBy(operations: [CREATE], callback: "callback1")
+                callback2: Int! @populatedBy(operations: [UPDATE], callback: "callback2")
+                callback3: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback3")
             }
         `;
 

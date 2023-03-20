@@ -60,7 +60,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
 
                 interface RelProperties @relationshipProperties {
                     id: ID!
-                    callback: String! @callback(operations: [CREATE], name: "callback")
+                    callback: String! @populatedBy(operations: [CREATE], callback: "callback")
                 }
 
                 type ${testGenre.name} {
@@ -170,7 +170,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
 
                 interface RelProperties @relationshipProperties {
                     id: ID!
-                    callback: String! @callback(operations: [UPDATE], name: "callback")
+                    callback: String! @populatedBy(operations: [UPDATE], callback: "callback")
                 }
 
                 type ${testGenre.name} {
@@ -298,7 +298,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
 
                 interface RelProperties @relationshipProperties {
                     id: ID!
-                    callback: String! @callback(operations: [CREATE, UPDATE], name: "callback")
+                    callback: String! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                 }
 
                 type ${testGenre.name} {
@@ -455,7 +455,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
 
                 interface RelProperties @relationshipProperties {
                     id: ID!
-                    callback: Int! @callback(operations: [CREATE], name: "callback")
+                    callback: Int! @populatedBy(operations: [CREATE], callback: "callback")
                 }
 
                 type ${testGenre.name} {
@@ -568,7 +568,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
 
                 interface RelProperties @relationshipProperties {
                     id: ID!
-                    callback: Int! @callback(operations: [UPDATE], name: "callback")
+                    callback: Int! @populatedBy(operations: [UPDATE], callback: "callback")
                 }
 
                 type ${testGenre.name} {
@@ -702,7 +702,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
 
                 interface RelProperties @relationshipProperties {
                     id: ID!
-                    callback: Int! @callback(operations: [CREATE, UPDATE], name: "callback")
+                    callback: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                 }
 
                 type ${testGenre.name} {
@@ -853,7 +853,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
                 interface RelProperties @relationshipProperties {
                     id: ID!
                     title: String!
-                    slug: String! @callback(operations: [CREATE], name: "callback")
+                    slug: String! @populatedBy(operations: [CREATE], callback: "callback")
                 }
 
                 type ${testGenre.name} {
@@ -966,7 +966,7 @@ describe("integration/rfc/autogenerate-properties-rel", () => {
                 interface RelProperties @relationshipProperties {
                     id: ID!
                     title: String!
-                    slug: String! @callback(operations: [UPDATE], name: "callback")
+                    slug: String! @populatedBy(operations: [UPDATE], callback: "callback")
                 }
 
                 type ${testGenre.name} {

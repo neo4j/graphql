@@ -19,6 +19,7 @@
 
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
+import { gql } from "apollo-server";
 import type { Driver } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
@@ -46,9 +47,9 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
 
-        const typeDefs = `
+        const typeDefs = gql`
             interface ${testProduct.name} {
-                id: ID! @callback(operations: [CREATE], name: "nanoid")
+                id: ID! @populatedBy(operations: [CREATE], callback: "nanoid")
                 productTitle: String!
             }
 

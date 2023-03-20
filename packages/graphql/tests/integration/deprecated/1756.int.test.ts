@@ -37,7 +37,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
         driver = await neo4j.getDriver();
         const typeDefs = `
         interface INode {
-            id: ID! @callback(operations: [CREATE], name: "nanoid")
+            id: ID! @populatedBy(operations: [CREATE], callback: "nanoid")
         }
 
         type ${productType.name} implements INode {

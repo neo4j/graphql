@@ -33,7 +33,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
 
                 interface RelProperties @relationshipProperties {
                     id: ID!
-                    callback1: String! @callback(operations: [CREATE], name: "callback4") @default(value: "Test")
+                    callback1: String! @populatedBy(operations: [CREATE], callback: "callback4") @default(value: "Test")
                 }
 
                 type Genre {
@@ -46,7 +46,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toThrow(
-                "Directive @callback cannot be used in combination with @default"
+                "Directive @populatedBy cannot be used in combination with @default"
             );
         });
 
@@ -59,7 +59,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
 
                 interface RelProperties @relationshipProperties {
                     id: ID!
-                    callback1: String! @callback(operations: [CREATE], name: "callback4") @id
+                    callback1: String! @populatedBy(operations: [CREATE], callback: "callback4") @id
                 }
 
                 type Genre {
@@ -72,12 +72,12 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toThrow(
-                "Directive @callback cannot be used in combination with @id"
+                "Directive @populatedBy cannot be used in combination with @id"
             );
         });
     });
 
-    test("Callback - existance", async () => {
+    test("Callback - existence", async () => {
         const typeDefs = gql`
             type Movie {
                 id: ID
@@ -86,7 +86,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
 
             interface RelProperties @relationshipProperties {
                 id: ID!
-                callback1: String! @callback(operations: [CREATE], name: "callback4")
+                callback1: String! @populatedBy(operations: [CREATE], callback: "callback4")
             }
 
             type Genre {
@@ -98,7 +98,9 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
             typeDefs,
         });
 
-        await expect(neoSchema.getSchema()).rejects.toThrow("Directive callback 'callback4' must be of type function");
+        await expect(neoSchema.getSchema()).rejects.toThrow(
+            "PopulatedBy callback 'callback4' must be of type function"
+        );
     });
     test("Callback - String", async () => {
         const callback1 = () => "random-string";
@@ -113,9 +115,9 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
 
             interface RelProperties @relationshipProperties {
                 id: ID!
-                callback1: String! @callback(operations: [CREATE], name: "callback1")
-                callback2: String! @callback(operations: [UPDATE], name: "callback2")
-                callback3: String! @callback(operations: [CREATE, UPDATE], name: "callback3")
+                callback1: String! @populatedBy(operations: [CREATE], callback: "callback1")
+                callback2: String! @populatedBy(operations: [UPDATE], callback: "callback2")
+                callback3: String! @populatedBy(operations: [CREATE, UPDATE], callback: "callback3")
             }
 
             type Genre {
@@ -707,9 +709,9 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
 
             interface RelProperties @relationshipProperties {
                 id: ID!
-                callback1: Int! @callback(operations: [CREATE], name: "callback1")
-                callback2: Int! @callback(operations: [UPDATE], name: "callback2")
-                callback3: Int! @callback(operations: [CREATE, UPDATE], name: "callback3")
+                callback1: Int! @populatedBy(operations: [CREATE], callback: "callback1")
+                callback2: Int! @populatedBy(operations: [UPDATE], callback: "callback2")
+                callback3: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback3")
             }
 
             type Genre {

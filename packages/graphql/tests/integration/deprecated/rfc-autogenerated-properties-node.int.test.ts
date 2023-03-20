@@ -50,7 +50,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const typeDefs = gql`
                 type ${testMovie.name} {
                     id: ID
-                    callback: String! @callback(operations: [CREATE], name: "callback")
+                    callback: String! @populatedBy(operations: [CREATE], callback: "callback")
                 }
             `;
 
@@ -108,7 +108,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const typeDefs = gql`
                 type ${testMovie.name} {
                     id: ID
-                    callback: String! @callback(operations: [UPDATE], name: "callback")
+                    callback: String! @populatedBy(operations: [UPDATE], callback: "callback")
                 }
             `;
 
@@ -188,7 +188,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const typeDefs = gql`
                 type ${testMovie.name} {
                     id: ID
-                    callback: String! @callback(operations: [CREATE, UPDATE], name: "callback")
+                    callback: String! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                 }
             `;
 
@@ -265,7 +265,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const typeDefs = gql`
                 type ${testMovie.name} {
                     id: ID
-                    callback: Int! @callback(operations: [CREATE], name: "callback")
+                    callback: Int! @populatedBy(operations: [CREATE], callback: "callback")
                 }
             `;
 
@@ -326,7 +326,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const typeDefs = gql`
                 type ${testMovie.name} {
                     id: ID
-                    callback: Int! @callback(operations: [UPDATE], name: "callback")
+                    callback: Int! @populatedBy(operations: [UPDATE], callback: "callback")
                 }
             `;
 
@@ -412,7 +412,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const typeDefs = gql`
                 type ${testMovie.name} {
                     id: ID
-                    callback: Int! @callback(operations: [CREATE, UPDATE], name: "callback")
+                    callback: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                 }
             `;
 
@@ -486,7 +486,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const typeDefs = gql`
                 type ${testMovie.name} {
                     id: ID
-                    callback: String @callback(operations: [UPDATE], name: "callback")
+                    callback: String @populatedBy(operations: [UPDATE], callback: "callback")
                 }
             `;
 
@@ -553,7 +553,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const typeDefs = gql`
                 type ${testMovie.name} {
                     id: ID
-                    callback: String @callback(operations: [UPDATE], name: "callback")
+                    callback: String @populatedBy(operations: [UPDATE], callback: "callback")
                 }
             `;
 
@@ -617,7 +617,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 type ${testMovie.name} {
                     id: ID!
                     title: String!
-                    slug: String @callback(operations: [CREATE], name: "callback")
+                    slug: String @populatedBy(operations: [CREATE], callback: "callback")
                 }
             `;
 
@@ -678,7 +678,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 type ${testMovie.name} {
                     id: ID!
                     title: String!
-                    slug: String @callback(operations: [UPDATE], name: "callback")
+                    slug: String @populatedBy(operations: [UPDATE], callback: "callback")
                 }
             `;
 
@@ -749,7 +749,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 type ${testMovie.name} {
                     id: ID!
                     title: String!
-                    contextValue: String @callback(operations: [CREATE], name: "callback")
+                    contextValue: String @populatedBy(operations: [CREATE], callback: "callback")
                 }
             `;
 
