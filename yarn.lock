@@ -3113,13 +3113,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
-    "@types/jest": 29.4.4
+    "@types/jest": 29.5.0
     "@types/node": 18.15.1
     expect-type: 0.15.0
     jest: 29.5.0
     ts-jest: 29.0.5
     typedoc: 0.23.27
-    typescript: 4.9.5
+    typescript: 5.0.2
   languageName: unknown
   linkType: soft
 
@@ -3133,7 +3133,7 @@ __metadata:
     "@graphql-tools/merge": ^8.3.3
     "@neo4j/graphql": ^3.17.1
     "@neo4j/graphql-plugin-auth": ^2.1.0
-    "@types/jest": 29.4.4
+    "@types/jest": 29.5.0
     "@types/node": 18.15.1
     camelcase: 6.3.0
     graphql-tag: 2.12.6
@@ -3146,7 +3146,7 @@ __metadata:
     randomstring: 1.2.3
     semver: 7.3.8
     ts-jest: 29.0.5
-    typescript: 4.9.5
+    typescript: 5.0.2
   peerDependencies:
     graphql: ^16.0.0
     neo4j-driver: ^4.1.0 || ^5.0.0
@@ -3158,7 +3158,7 @@ __metadata:
   resolution: "@neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth"
   dependencies:
     "@types/debug": 4.1.7
-    "@types/jest": 29.4.4
+    "@types/jest": 29.5.0
     "@types/jsonwebtoken": 9.0.1
     "@types/node": 18.15.1
     debug: ^4.3.4
@@ -3166,7 +3166,7 @@ __metadata:
     jsonwebtoken: ^9.0.0
     jwks-rsa: ^3.0.0
     ts-jest: 29.0.5
-    typescript: 4.9.5
+    typescript: 5.0.2
   languageName: unknown
   linkType: soft
 
@@ -3177,7 +3177,7 @@ __metadata:
     "@neo4j/graphql": ^3.15.0
     "@types/amqplib": 0.10.1
     "@types/debug": 4.1.7
-    "@types/jest": 29.4.4
+    "@types/jest": 29.5.0
     "@types/node": 18.15.1
     amqplib: 0.10.3
     apollo-server: 3.12.0
@@ -3190,7 +3190,7 @@ __metadata:
     randomstring: 1.2.3
     supertest: 6.3.3
     ts-jest: 29.0.5
-    typescript: 4.9.5
+    typescript: 5.0.2
     ws: 8.13.0
   peerDependencies:
     "@neo4j/graphql": ^3.15.0
@@ -3236,7 +3236,7 @@ __metadata:
     node-polyfill-webpack-plugin: 2.0.1
     parse5: 7.1.2
     postcss: 8.4.21
-    postcss-loader: 7.0.2
+    postcss-loader: 7.1.0
     prettier: 2.8.4
     process: 0.11.10
     randomstring: 1.2.3
@@ -3250,10 +3250,10 @@ __metadata:
     ts-loader: 9.4.2
     ts-node: 10.9.1
     tsconfig-paths-webpack-plugin: 4.0.1
-    typescript: 4.9.5
+    typescript: 5.0.2
     webpack: 5.76.2
     webpack-cli: 5.0.1
-    webpack-dev-server: 4.12.0
+    webpack-dev-server: 4.13.1
     webpack-notifier: 1.15.0
   languageName: unknown
   linkType: soft
@@ -3274,7 +3274,7 @@ __metadata:
     "@neo4j/graphql-plugin-auth": ^2.1.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
-    "@types/jest": 29.4.4
+    "@types/jest": 29.5.0
     "@types/jsonwebtoken": 9.0.1
     "@types/node": 18.15.1
     "@types/pluralize": 0.0.29
@@ -3312,7 +3312,7 @@ __metadata:
     supertest: 6.3.3
     ts-jest: 29.0.5
     ts-node: 10.9.1
-    typescript: 4.9.5
+    typescript: 5.0.2
     uuid: ^9.0.0
     ws: 8.13.0
   peerDependencies:
@@ -3326,7 +3326,7 @@ __metadata:
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
     "@neo4j/graphql": ^3.16.0
-    "@types/jest": 29.4.4
+    "@types/jest": 29.5.0
     "@types/node": 18.15.1
     "@types/pluralize": 0.0.29
     camelcase: ^6.3.0
@@ -3334,7 +3334,7 @@ __metadata:
     jest: 29.5.0
     pluralize: ^8.0.0
     ts-jest: 29.0.5
-    typescript: 4.9.5
+    typescript: 5.0.2
   peerDependencies:
     neo4j-driver: ^4.1.0 || ^5.0.0
   languageName: unknown
@@ -4885,13 +4885,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.4.4":
-  version: 29.4.4
-  resolution: "@types/jest@npm:29.4.4"
+"@types/jest@npm:29.5.0":
+  version: 29.5.0
+  resolution: "@types/jest@npm:29.5.0"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: 754c21d996c3457c761e55c4076a2dd14d82e6290c3f57122db17aa07ef59c12af7df50a82a06845ef9ba1fbf75bb024a1fed68426514618856bda7fb90eb773
+  checksum: cd877e5c56d299cceb8bfdcbb1a77723c706750dd3c3bc47403bc3599b8faff590a3b009c68bb5b11bf7a8c77d1fb01de5e124329b4a08e65f1cdda28b0ecdb8
   languageName: node
   linkType: hard
 
@@ -6214,7 +6214,7 @@ __metadata:
     neo4j-driver: ^5.5.0
     ts-loader: 9.4.2
     tsconfig-paths-webpack-plugin: 4.0.1
-    typescript: 4.9.5
+    typescript: 5.0.2
     webpack: 5.76.2
   languageName: unknown
   linkType: soft
@@ -8603,6 +8603,18 @@ __metadata:
     path-type: ^4.0.0
     yaml: ^1.10.0
   checksum: c53bf7befc1591b2651a22414a5e786cd5f2eeaa87f3678a3d49d6069835a9d8d1aef223728e98aa8fec9a95bf831120d245096db12abe019fecb51f5696c96f
+  languageName: node
+  linkType: hard
+
+"cosmiconfig@npm:^8.0.0":
+  version: 8.1.0
+  resolution: "cosmiconfig@npm:8.1.0"
+  dependencies:
+    import-fresh: ^3.2.1
+    js-yaml: ^4.1.0
+    parse-json: ^5.0.0
+    path-type: ^4.0.0
+  checksum: 78a1846acc4935ab4d928e3f768ee2ad2fddbec96377935462749206568423ff4757140ac7f2ccd1f547f86309b8448c04b26588848b5a1520f2e9741cdeecf0
   languageName: node
   linkType: hard
 
@@ -14722,7 +14734,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"klona@npm:^2.0.5":
+"klona@npm:^2.0.6":
   version: 2.0.6
   resolution: "klona@npm:2.0.6"
   checksum: ac9ee3732e42b96feb67faae4d27cf49494e8a3bf3fa7115ce242fe04786788e0aff4741a07a45a2462e2079aa983d73d38519c85d65b70ef11447bbc3c58ce7
@@ -16659,10 +16671,10 @@ __metadata:
     showdown: 2.1.0
     style-loader: 3.3.2
     ts-loader: 9.4.2
-    typescript: 4.9.5
+    typescript: 5.0.2
     webpack: 5.76.2
     webpack-cli: 5.0.1
-    webpack-dev-server: 4.12.0
+    webpack-dev-server: 4.13.1
   languageName: unknown
   linkType: soft
 
@@ -16678,7 +16690,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/dotenv": 8.2.0
     "@types/express": 4.17.17
-    "@types/jest": 29.4.4
+    "@types/jest": 29.5.0
     "@types/jsonwebtoken": 9.0.1
     "@types/node": 18.15.1
     apollo-server-express: 3.12.0
@@ -16697,7 +16709,7 @@ __metadata:
     ts-jest: 29.0.5
     ts-node: 10.9.1
     tsconfig-paths: 4.1.2
-    typescript: 4.9.5
+    typescript: 5.0.2
   languageName: unknown
   linkType: soft
 
@@ -16789,7 +16801,7 @@ __metadata:
     prettier: 2.8.4
     set-tz: 0.2.0
     ts-jest: 29.0.5
-    typescript: 4.9.5
+    typescript: 5.0.2
   languageName: unknown
   linkType: soft
 
@@ -18629,17 +18641,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-loader@npm:7.0.2":
-  version: 7.0.2
-  resolution: "postcss-loader@npm:7.0.2"
+"postcss-loader@npm:7.1.0":
+  version: 7.1.0
+  resolution: "postcss-loader@npm:7.1.0"
   dependencies:
-    cosmiconfig: ^7.0.0
-    klona: ^2.0.5
+    cosmiconfig: ^8.0.0
+    klona: ^2.0.6
     semver: ^7.3.8
   peerDependencies:
     postcss: ^7.0.0 || ^8.0.1
     webpack: ^5.0.0
-  checksum: 2d251537d482eb751f812c96c8b515f46d7c9905cad7afab33f0f34872670619b7440cefc9e2babbf89fb11b4708850d522d79fa5ff788227587645e78f16638
+  checksum: 44e4018a8f2f81150f501a5ca56e59571d81c965b5a8581f5dbae5e55a113b79bde33c3de0d4397cbf36a3be0c24b7e7e37f0154b6e63df16185edd086d4e352
   languageName: node
   linkType: hard
 
@@ -22796,23 +22808,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.9.5":
-  version: 4.9.5
-  resolution: "typescript@npm:4.9.5"
+"typescript@npm:5.0.2":
+  version: 5.0.2
+  resolution: "typescript@npm:5.0.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: ee000bc26848147ad423b581bd250075662a354d84f0e06eb76d3b892328d8d4440b7487b5a83e851b12b255f55d71835b008a66cbf8f255a11e4400159237db
+  checksum: bef1dcd166acfc6934b2ec4d72f93edb8961a5fab36b8dd2aaf6f4f4cd5c0210f2e0850aef4724f3b4913d5aef203a94a28ded731b370880c8bcff7e4ff91fc1
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@4.9.5#~builtin<compat/typescript>":
-  version: 4.9.5
-  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=23ec76"
+"typescript@patch:typescript@5.0.2#~builtin<compat/typescript>":
+  version: 5.0.2
+  resolution: "typescript@patch:typescript@npm%3A5.0.2#~builtin<compat/typescript>::version=5.0.2&hash=85af82"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: ab417a2f398380c90a6cf5a5f74badd17866adf57f1165617d6a551f059c3ba0a3e4da0d147b3ac5681db9ac76a303c5876394b13b3de75fdd5b1eaa06181c9d
+  checksum: b63cb742fbb9aeb3085e002ad8f10d5fd963606aa4d6b3b65b4e76c396ff09739f03b5dbae08e1698c3bce9d5619d3f67aeb7ee470ed4016bd345b3cfe37b54a
   languageName: node
   linkType: hard
 
@@ -23688,9 +23700,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-dev-server@npm:4.12.0":
-  version: 4.12.0
-  resolution: "webpack-dev-server@npm:4.12.0"
+"webpack-dev-server@npm:4.13.1":
+  version: 4.13.1
+  resolution: "webpack-dev-server@npm:4.13.1"
   dependencies:
     "@types/bonjour": ^3.5.9
     "@types/connect-history-api-fallback": ^1.3.5
@@ -23725,11 +23737,13 @@ __metadata:
   peerDependencies:
     webpack: ^4.37.0 || ^5.0.0
   peerDependenciesMeta:
+    webpack:
+      optional: true
     webpack-cli:
       optional: true
   bin:
     webpack-dev-server: bin/webpack-dev-server.js
-  checksum: 3e33acb774457ee787038d66c12e04c3e4a9f91bbff7ca143083e4ac1937b1615a1b9e7387ec623df8ebc36f56b3c34742578c09f665fe811b6e38d2e8222a94
+  checksum: f70611544b7d964a31eb3d934d7c2b376b97e6927a89e03b2e21cfa5812bb639625cd18fd350de1604ba6c455b324135523a894032f28c69d90d90682e4f3b7d
   languageName: node
   linkType: hard
 
