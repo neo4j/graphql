@@ -69,7 +69,7 @@ describe("Single relationship (1-*) filtering", () => {
         await driver.close();
     });
 
-    it("Filter on required and optional relationships", async () => {
+    test("Filter on required and optional relationships", async () => {
         const query = `
             query {
                 ${Movie.plural}(where: { OR: [{ director: { name: "Jon Wu" } }, { producer: { name: "Jon Wu" } }] }) {
