@@ -38,7 +38,7 @@
         "expect-type": "0.15.0",
         "jest": "29.5.0",
         "ts-jest": "29.0.5",
-        "typedoc": "0.23.27",
+        "typedoc": "0.23.28",
         "typescript": "5.0.2"
     }
 }
