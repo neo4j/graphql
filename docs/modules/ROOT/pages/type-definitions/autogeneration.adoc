@@ -209,16 +209,6 @@ new Neo4jGraphQL({
 
 NOTE: The second positional argument, in this case `_args`, has a type of `Record<string, never>`, and as such will always be an empty object.
 
-
-[[type-definitions-autogeneration-callback]]
-== `@callback`
-
-NOTE: The `@callback` directive has been deprecated and will be removed in version 4.0. Please use xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-populated-by[`@populatedBy`] instead.
-
-The `@callback` directive is used to specify a function that will be invoked when updating or creating the properties on a node or relationship.
-
-For non-required values, callbacks may return `undefined` (meaning that nothing will be changed or added to the property) or `null` (meaning that the property will be removed).
-
 === Definition
 
 [source, graphql, indent=0]
