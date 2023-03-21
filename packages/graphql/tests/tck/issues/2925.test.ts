@@ -28,11 +28,13 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         type Group {
             name: String
             hasGroupUser: [User!]! @relationship(type: "HAS_GROUP", direction: IN)
+            hasRequiredGroupUser: [User!]! @relationship(type: "HAS_REQUIRED_GROUP", direction: IN)
         }
 
         type User {
             name: String
-            hasGroupGroup: Group @relationship(type: "HAS_GROUP", direction: OUT)
+            hasGroup: Group @relationship(type: "HAS_GROUP", direction: OUT)
+            hasRequiredGroup: Group! @relationship(type: "HAS_REQUIRED_GROUP", direction: OUT)
         }
     `;
 
@@ -42,10 +44,10 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         });
     });
 
-    test("should query nested relationship", async () => {
+    test("should query relationship", async () => {
         const query = gql`
             query Query {
-                users(where: { hasGroupGroup: { name_IN: ["Group A"] } }) {
+                users(where: { hasGroup: { name_IN: ["Group A"] } }) {
                     name
                 }
             }
@@ -59,9 +61,96 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
             RETURN this { .name } AS this"
         `);
 
-        // MATCH (this:\`User\`)-[:HAS_GROUP]->(this0:\`Group\`)
-        // WHERE this0.name IN $param0
-        // RETURN this { .title } AS this
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": [
+                    \\"Group A\\"
+                ]
+            }"
+        `);
+    });
+
+    test("should query required relationship", async () => {
+        const query = gql`
+            query Query {
+                users(where: { hasRequiredGroup: { name_IN: ["Group A"] } }) {
+                    name
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`User\`)
+            MATCH (this)-[:HAS_REQUIRED_GROUP]->(this0:\`Group\`)
+            WHERE this0.name IN $param0
+            RETURN this { .name } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": [
+                    \\"Group A\\"
+                ]
+            }"
+        `);
+    });
+
+    test("should query nested relationship", async () => {
+        const query = gql`
+            query Query {
+                groups(where: { hasGroupUser: { hasGroup: { name_IN: ["Group A"] } } }) {
+                    name
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Group\`)
+            WHERE EXISTS {
+                MATCH (this)<-[:HAS_GROUP]-(this0:\`User\`)
+                WHERE single(this1 IN [(this0)-[:HAS_GROUP]->(this1:\`Group\`) WHERE this1.name IN $param0 | 1] WHERE true)
+            }
+            RETURN this { .name } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": [
+                    \\"Group A\\"
+                ]
+            }"
+        `);
+    });
+
+    test("should query nested required relationship", async () => {
+        const query = gql`
+            query Query {
+                groups(where: { hasGroupUser: { hasRequiredGroup: { name_IN: ["Group A"] } } }) {
+                    name
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Group\`)
+            CALL {
+                WITH this
+                MATCH (this)<-[:HAS_GROUP]-(this0:\`User\`)
+                MATCH (this0)-[:HAS_REQUIRED_GROUP]->(this1:\`Group\`)
+                WITH *
+                WHERE this1.name IN $param0
+                RETURN count(this0) > 0 AS var2
+            }
+            WITH *
+            WHERE var2 = true
+            RETURN this { .name } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
