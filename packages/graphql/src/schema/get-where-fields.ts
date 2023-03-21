@@ -134,9 +134,9 @@ function getWhereFields({
 
                 const stringWhereOperatorsNegate = ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"];
 
-                Object.entries(features?.filters?.String || {}).forEach(([key, value]) => {
-                    if (value) {
-                        stringWhereOperators.push(`_${key}`);
+                Object.entries(features?.filters?.String || {}).forEach(([filter, enabled]) => {
+                    if (enabled) {
+                        stringWhereOperators.push(`_${filter}`);
                     }
                 });
                 stringWhereOperators.forEach((comparator) => {
