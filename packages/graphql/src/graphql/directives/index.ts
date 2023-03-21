@@ -18,7 +18,6 @@
  */
 
 export { aliasDirective } from "./alias";
-export { callbackDirective } from "./callback";
 export { coalesceDirective } from "./coalesce";
 export { customResolverDirective } from "./customResolver";
 export { cypherDirective } from "./cypher";
