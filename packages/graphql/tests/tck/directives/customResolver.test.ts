@@ -45,7 +45,6 @@ describe("Cypher customResolver directive", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers,
-            config: { enableRegex: true },
         });
     });
 
