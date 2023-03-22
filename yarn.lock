@@ -9785,13 +9785,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:10.0.0":
-  version: 10.0.0
-  resolution: "dotenv@npm:10.0.0"
-  checksum: f412c5fe8c24fbe313d302d2500e247ba8a1946492db405a4de4d30dd0eb186a88a43f13c958c5a7de303938949c4231c56994f97d05c4bc1f22478d631b4005
-  languageName: node
-  linkType: hard
-
 "dotenv@npm:^7.0.0":
   version: 7.0.0
   resolution: "dotenv@npm:7.0.0"
@@ -11911,7 +11904,7 @@ __metadata:
     "@neo4j-documentation/macros": ^1.0.2
     "@neo4j-documentation/remote-include": ^1.0.0
     cheerio: 1.0.0-rc.12
-    dotenv: 10.0.0
+    dotenv: 16.0.3
     express: 4.18.2
     hyperlink: 5.0.4
     neo4j-driver: 4.4.10
