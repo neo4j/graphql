@@ -20,9 +20,11 @@
 import type { Context, RelationField } from "../../types";
 import type { GraphQLCreateInput, TreeDescriptor } from "./types";
 import { UnsupportedUnwindOptimization } from "./types";
-import { GraphElement, Neo4jGraphQLError, Node, Relationship } from "../../classes";
+import type { GraphElement, Node, Relationship } from "../../classes";
+import { Neo4jGraphQLError } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
-import { AST, CreateAST, NestedCreateAST } from "./GraphQLInputAST/GraphQLInputAST";
+import type { AST } from "./GraphQLInputAST/GraphQLInputAST";
+import { CreateAST, NestedCreateAST } from "./GraphQLInputAST/GraphQLInputAST";
 import mapToDbProperty from "../../utils/map-to-db-property";
 
 function getRelationshipFields(

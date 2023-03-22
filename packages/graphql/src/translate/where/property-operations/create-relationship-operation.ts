@@ -21,7 +21,8 @@ import type { Context, GraphQLWhereArg, RelationField, PredicateReturn } from ".
 import Cypher from "@neo4j/cypher-builder";
 
 import { createWherePredicate } from "../create-where-predicate";
-import { getListPredicate, ListPredicate } from "../utils";
+import type { ListPredicate } from "../utils";
+import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
 import type { Node, Relationship } from "../../../classes";
 import { createConnectionWherePropertyOperation } from "./create-connection-operation";
@@ -174,14 +175,14 @@ export function createRelationPredicate({
             refEdge,
         });
     }
-    return {
-        predicate: createSimpleRelationshipPredicate({
-            childNode: targetNode,
-            matchPattern: targetPattern,
-            listPredicateStr,
-            innerOperation: innerOperation.predicate,
-        }),
-    };
+
+    return createSimpleRelationshipPredicate({
+        childNode: targetNode,
+        matchPattern: targetPattern,
+        listPredicateStr,
+        innerOperation: innerOperation.predicate,
+        relationField,
+    });
 }
 
 function createSimpleRelationshipPredicate({
@@ -189,26 +190,44 @@ function createSimpleRelationshipPredicate({
     listPredicateStr,
     childNode,
     innerOperation,
+    relationField,
 }: {
     matchPattern: Cypher.Pattern;
     listPredicateStr: ListPredicate;
     childNode: Cypher.Node;
     innerOperation: Cypher.Predicate | undefined;
-}): Cypher.Predicate | undefined {
-    if (!innerOperation) return undefined;
+    relationField: RelationField;
+}): PredicateReturn {
+    if (!innerOperation) return { predicate: undefined };
     const matchClause = new Cypher.Match(matchPattern).where(innerOperation);
 
     switch (listPredicateStr) {
         case "all": {
             // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter exists
             const notExistsMatchClause = new Cypher.Match(matchPattern).where(Cypher.not(innerOperation));
-            return Cypher.and(new Cypher.Exists(matchClause), Cypher.not(new Cypher.Exists(notExistsMatchClause)));
+            return {
+                predicate: Cypher.and(
+                    new Cypher.Exists(matchClause),
+                    Cypher.not(new Cypher.Exists(notExistsMatchClause))
+                ),
+            };
         }
         case "single": {
-            const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(
-                innerOperation
-            );
-            return Cypher.single(childNode, patternComprehension, new Cypher.Literal(true));
+            const isArray = relationField.typeMeta.array;
+            const isRequired = relationField.typeMeta.required;
+
+            if (isArray || !isRequired) {
+                const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(
+                    innerOperation
+                );
+                return { predicate: Cypher.single(childNode, patternComprehension, new Cypher.Literal(true)) };
+            }
+
+            const matchStatement = new Cypher.Match(matchPattern);
+            return {
+                predicate: innerOperation,
+                preComputedSubqueries: Cypher.concat(matchStatement),
+            };
         }
         case "not":
         case "none":
@@ -216,9 +235,9 @@ function createSimpleRelationshipPredicate({
         default: {
             const existsPredicate = new Cypher.Exists(matchClause);
             if (["not", "none"].includes(listPredicateStr)) {
-                return Cypher.not(existsPredicate);
+                return { predicate: Cypher.not(existsPredicate) };
             }
-            return existsPredicate;
+            return { predicate: existsPredicate };
         }
     }
 }

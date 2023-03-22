@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React from "react";
+import type React from "react";
 
 interface Props {
     value: string | number | readonly string[] | undefined;

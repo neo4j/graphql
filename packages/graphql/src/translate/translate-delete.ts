@@ -54,7 +54,7 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
         entity: node,
         context,
         allow: {
-            parentNode: node,
+            node,
             varName,
         },
     });

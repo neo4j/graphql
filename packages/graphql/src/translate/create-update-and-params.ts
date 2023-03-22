@@ -18,7 +18,8 @@
  */
 
 import pluralize from "pluralize";
-import { Neo4jGraphQLError, Node, Relationship } from "../classes";
+import type { Node, Relationship } from "../classes";
+import { Neo4jGraphQLError } from "../classes";
 import type { BaseField, Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
@@ -562,7 +563,7 @@ export default function createUpdateAndParams({
                     entity: authableField,
                     operations: "UPDATE",
                     context,
-                    allow: { varName, parentNode: node },
+                    allow: { varName, node },
                 });
                 const postAuth = createAuthAndParams({
                     entity: authableField,
@@ -570,7 +571,7 @@ export default function createUpdateAndParams({
                     skipRoles: true,
                     skipIsAuthenticated: true,
                     context,
-                    bind: { parentNode: node, varName },
+                    bind: { node, varName },
                 });
 
                 if (!res.meta) {
@@ -649,7 +650,7 @@ export default function createUpdateAndParams({
     const preAuth = createAuthAndParams({
         entity: node,
         context,
-        allow: { parentNode: node, varName },
+        allow: { node, varName },
         operations: "UPDATE",
     });
     if (preAuth[0]) {
@@ -663,7 +664,7 @@ export default function createUpdateAndParams({
         skipIsAuthenticated: true,
         skipRoles: true,
         operations: "UPDATE",
-        bind: { parentNode: node, varName },
+        bind: { node, varName },
     });
     if (postAuth[0]) {
         postAuthStrs.push(postAuth[0]);

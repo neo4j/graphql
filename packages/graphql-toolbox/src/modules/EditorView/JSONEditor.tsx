@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-import { EditorFromTextArea } from "codemirror";
+import type { EditorFromTextArea } from "codemirror";
 import { useContext, useEffect, useRef } from "react";
 import { THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
 import { ThemeContext, Theme } from "../../contexts/theme";
 import { CodeMirror } from "../../utils/utils";
-import { Extension, FileName } from "../../components/Filename";
+import type { Extension} from "../../components/Filename";
+import { FileName } from "../../components/Filename";
 import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 
 export interface Props {

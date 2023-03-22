@@ -76,7 +76,9 @@ class When<T extends Expr | undefined> extends CypherASTNode {
         return this.parent;
     }
 
-    /** @internal */
+    /**
+     * @internal
+     */
     public getCypher(env: CypherEnvironment): string {
         const predicateStr = this.predicate.getCypher(env);
         if (!this.result) throw new Error("Cannot generate CASE ... WHEN statement without THEN");

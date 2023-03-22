@@ -41,18 +41,16 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         entity: node,
         context,
         allow: {
-            parentNode: node,
+            node,
             varName,
         },
     });
     if (allowAuth[0]) {
         cypherStrs.push(
-            new Cypher.CallProcedure(
-                new Cypher.apoc.Validate(
-                    Cypher.not(new Cypher.RawCypher(allowAuth[0])),
-                    AUTH_FORBIDDEN_ERROR,
-                    new Cypher.Literal([0])
-                )
+            Cypher.apoc.util.validate(
+                Cypher.not(new Cypher.RawCypher(allowAuth[0])),
+                AUTH_FORBIDDEN_ERROR,
+                new Cypher.Literal([0])
             )
         );
         cypherParams = { ...cypherParams, ...allowAuth[1] };
@@ -71,7 +69,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                     entity: authField,
                     operations: "READ",
                     context,
-                    allow: { parentNode: node, varName },
+                    allow: { node, varName },
                 });
                 if (allowAndParams[0]) {
                     authStrs.push(allowAndParams[0]);
@@ -83,12 +81,10 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
     if (authStrs.length) {
         cypherStrs.push(
-            new Cypher.CallProcedure(
-                new Cypher.apoc.Validate(
-                    Cypher.not(Cypher.and(...authStrs.map((str) => new Cypher.RawCypher(str)))),
-                    AUTH_FORBIDDEN_ERROR,
-                    new Cypher.Literal([0])
-                )
+            Cypher.apoc.util.validate(
+                Cypher.not(Cypher.and(...authStrs.map((str) => new Cypher.RawCypher(str)))),
+                AUTH_FORBIDDEN_ERROR,
+                new Cypher.Literal([0])
             )
         );
     }

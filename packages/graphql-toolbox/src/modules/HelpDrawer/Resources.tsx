@@ -1,4 +1,5 @@
-import { Fragment, ReactNode, useContext, useEffect } from "react";
+import type { ReactNode} from "react";
+import { Fragment, useContext, useEffect } from "react";
 import {
     AcademicCapIconOutline,
     ArrowSmallUpIconOutline,
@@ -10,7 +11,8 @@ import {
     VariableIconOutline,
 } from "@neo4j-ndl/react/icons";
 import { tracking } from "../../analytics/tracking";
-import { Screen, ScreenContext } from "../../contexts/screen";
+import type { Screen} from "../../contexts/screen";
+import { ScreenContext } from "../../contexts/screen";
 import { cannySettings } from "../../common/canny";
 
 interface Props {

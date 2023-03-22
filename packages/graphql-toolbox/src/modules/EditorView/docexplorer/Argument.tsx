@@ -5,10 +5,10 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { GraphQLArgument } from "graphql";
+import type { GraphQLArgument } from "graphql";
 import TypeLink from "./TypeLink";
 import DefaultValue from "./DefaultValue";
-import { OnClickTypeFunction } from "./types";
+import type { OnClickTypeFunction } from "./types";
 
 type ArgumentProps = {
     arg: GraphQLArgument;

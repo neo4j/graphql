@@ -93,6 +93,42 @@ describe("CypherBuilder Match", () => {
         `);
     });
 
+    describe("Assign to path variable", () => {
+        const a = new Cypher.Node();
+        const b = new Cypher.Node();
+        const rel = new Cypher.Relationship({
+            type: "ACTED_IN",
+        });
+
+        const pattern = new Cypher.Pattern(a).related(rel).to(b);
+
+        test("with unique id", () => {
+            const path = new Cypher.Path();
+
+            const query = new Cypher.Match(pattern).assignToPath(path).return(path);
+
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MATCH p0 = (this1)-[this2:ACTED_IN]->(this3)
+                RETURN p0"
+            `);
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
+
+        test("with named path", () => {
+            const path = new Cypher.NamedPath("my-path");
+
+            const query = new Cypher.Match(pattern).assignToPath(path).return(path);
+
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MATCH my-path = (this0)-[this1:ACTED_IN]->(this2)
+                RETURN my-path"
+            `);
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
+    });
+
     describe("With where", () => {
         test("Match node with where", () => {
             const idParam = new Cypher.Param("my-id");

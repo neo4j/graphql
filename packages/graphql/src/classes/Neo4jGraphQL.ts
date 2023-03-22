@@ -42,11 +42,14 @@ import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
-import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
-import { Executor, ExecutorConstructorParam } from "./Executor";
+import type { Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
+import { getNeo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
+import type { ExecutorConstructorParam } from "./Executor";
+import { Executor } from "./Executor";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
-import { forEachField, getResolversFromSchema, TypeSource } from "@graphql-tools/utils";
+import type { TypeSource } from "@graphql-tools/utils";
+import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import { validateDocument } from "../schema/validation";
 
 export interface Neo4jGraphQLConfig {

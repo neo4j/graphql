@@ -18,7 +18,8 @@
  */
 
 import type { CypherEnvironment } from "../../Environment";
-import { SetClause, SetParam } from "./Set";
+import type { SetParam } from "./Set";
+import { SetClause } from "./Set";
 
 export type OnCreateParam = SetParam;
 

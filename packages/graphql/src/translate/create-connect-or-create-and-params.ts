@@ -18,7 +18,8 @@
  */
 
 import type { RelationField, Context, PrimitiveField } from "../types";
-import { Neo4jGraphQLError, Node, Relationship } from "../classes";
+import type { Node, Relationship } from "../classes";
+import { Neo4jGraphQLError } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
@@ -284,7 +285,7 @@ function createAuthStatement({
         entity: node,
         operations: ["CONNECT", "CREATE"],
         context,
-        allow: { parentNode: node, varName: nodeName },
+        allow: { node, varName: nodeName },
         escapeQuotes: false,
     });
 

@@ -630,17 +630,31 @@ CREATE (JohnC)-[:LIKES]->(Brooke)
 CREATE (JohnC)-[:LIKES]->(JohnnyMnemonic)
 CREATE (JohnC)-[:LIKES]->(CloudAtlas)
 
+WITH collect(null) as x // Reduce cardinality
+CALL {
+    MATCH(m:Movie)-[:ACTED_IN]-(p:Person)
+    WITH m, p ORDER BY p.name DESC
+    WITH m, head(collect(p)) as fav
+    CREATE(m)-[:FAV]->(fav)
+    CREATE(movieClone:MovieClone {title: m.title})-[:FAV]->(personClone:PersonClone {name: fav.name})
+    RETURN NULL as n
+}
+RETURN NULL
 `;
 
-const indexQuery = `
+const indexQueries = [
+    `
+    CREATE FULLTEXT INDEX MovieTaglineFulltextIndex
+    IF NOT EXISTS FOR (n:Movie)
+    ON EACH [n.tagline]`,
+    // `
+    // CREATE INDEX ActorName
+    // IF NOT EXISTS FOR (p:Person)
+    // ON p.name
+    // `,
+];
 
-CREATE FULLTEXT INDEX MovieTaglineFulltextIndex
-IF NOT EXISTS FOR (n:Movie)
-ON EACH [n.tagline]
-
-`;
-
-const deleteIndexQuery = `
+const deleteIndexesQuery = `
 
 CALL apoc.schema.assert({},{},true) YIELD label, key
 RETURN *
@@ -649,11 +663,13 @@ RETURN *
 
 export async function cleanDatabase(session: Session): Promise<void> {
     await session.run("MATCH (N) DETACH DELETE N");
-    await session.run(deleteIndexQuery);
+    await session.run(deleteIndexesQuery);
 }
 
 export async function setupDatabase(session: Session): Promise<void> {
     await cleanDatabase(session);
+    for (const query of indexQueries) {
+        await session.run(query);
+    }
     await session.run(cypherQuery);
-    await session.run(indexQuery);
 }

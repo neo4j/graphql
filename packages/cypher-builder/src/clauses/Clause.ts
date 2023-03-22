@@ -18,7 +18,8 @@
  */
 
 import { CypherASTNode } from "../CypherASTNode";
-import { CypherEnvironment, EnvPrefix } from "../Environment";
+import type { EnvPrefix } from "../Environment";
+import { CypherEnvironment } from "../Environment";
 import type { CypherResult } from "../types";
 import { convertToCypherParams } from "../utils/convert-to-cypher-params";
 import { padBlock } from "../utils/pad-block";

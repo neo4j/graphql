@@ -23,6 +23,8 @@ import type { Variable } from "../../references/Variable";
 import type { CypherEnvironment } from "../../Environment";
 import type { MapExpr } from "../../expressions/map/MapExpr";
 
+// TODO: convert into proper function
+
 /**
  * @group Expressions
  * @category Cypher Functions

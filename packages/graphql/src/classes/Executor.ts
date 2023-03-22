@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { Driver, Neo4jError, QueryResult, Result, Session, SessionMode, Transaction } from "neo4j-driver";
+import type { Driver, QueryResult, Result, Session, SessionMode, Transaction } from "neo4j-driver";
+import { Neo4jError } from "neo4j-driver";
 import Debug from "debug";
 import environment from "../environment";
 import {
@@ -32,7 +33,8 @@ import {
     DEBUG_EXECUTE,
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
-import type { AuthContext, CypherQueryOptions } from "../types";
+import type { CypherQueryOptions } from "../types";
+import type { AuthContext } from "../types/deprecated/auth/auth-context";
 import createAuthParam from "../translate/create-auth-param";
 
 const debug = Debug(DEBUG_EXECUTE);

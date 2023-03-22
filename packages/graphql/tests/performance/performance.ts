@@ -64,6 +64,16 @@ const typeDefs = gql`
         producers: [Person!]! @relationship(type: "PRODUCED", direction: IN)
         likedBy: [User!]! @relationship(type: "LIKES", direction: IN)
         oneActorName: String @cypher(statement: "MATCH (this)<-[:ACTED_IN]-(a:Person) RETURN a.name")
+        favouriteActor: Person @relationship(type: "FAV", direction: OUT)
+    }
+
+    type MovieClone {
+        title: String!
+        favouriteActor: Person! @relationship(type: "FAV", direction: OUT)
+    }
+    type PersonClone {
+        name: String!
+        movies: [MovieClone!]! @relationship(type: "FAV", direction: IN)
     }
 
     type User {

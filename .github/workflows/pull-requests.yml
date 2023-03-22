@@ -65,7 +65,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v4
         with:
           go-version: "^1.17.0"
       - name: Install addlicense
@@ -84,9 +84,6 @@ jobs:
 
   api-library-tests:
     uses: ./.github/workflows/reusable-api-library-tests.yml
-
-  # nextjs-app-setup:
-  #   uses: ./.github/workflows/reusable-nextjs-app-setup.yml
 
   toolbox-tests:
     uses: ./.github/workflows/reusable-toolbox-tests.yml

@@ -18,7 +18,8 @@
  */
 
 import { gql } from "apollo-server";
-import { graphql, GraphQLError } from "graphql";
+import type { GraphQLError } from "graphql";
+import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { IncomingMessage } from "http";
