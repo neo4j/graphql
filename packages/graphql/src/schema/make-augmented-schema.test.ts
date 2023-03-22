@@ -173,6 +173,139 @@ describe("makeAugmentedSchema", () => {
 
             expect(matchesField).toBeDefined();
         });
+
+        test("should add the name_MATCHES filter when Features.Filters.String.MATCHES is set", () => {
+            const typeDefs = gql`
+                type User {
+                    name: String
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema(typeDefs, {
+                validateResolvers: true,
+                features: {
+                    filters: {
+                        String: {
+                            MATCHES: true,
+                        },
+                    },
+                },
+            });
+
+            const document = neoSchema.typeDefs;
+
+            const nodeWhereInput = document.definitions.find(
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
+            ) as InputObjectTypeDefinitionNode;
+
+            const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("name_MATCHES"));
+
+            expect(matchesField).toBeDefined();
+        });
+
+        test("should add the id_MATCHES filter when Features.Filters.ID.MATCHES is set", () => {
+            const typeDefs = gql`
+                type User {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema(typeDefs, {
+                validateResolvers: true,
+                features: {
+                    filters: {
+                        ID: {
+                            MATCHES: true,
+                        },
+                    },
+                },
+            });
+
+            const document = neoSchema.typeDefs;
+
+            const nodeWhereInput = document.definitions.find(
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
+            ) as InputObjectTypeDefinitionNode;
+
+            const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("id_MATCHES"));
+
+            expect(matchesField).toBeDefined();
+        });
+
+        test("should not add the id_MATCHES filter when Features.Filters.String.MATCHES is set but Features.Filters.ID.MATCHES is not set", () => {
+            const typeDefs = gql`
+                type User {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema(typeDefs, {
+                validateResolvers: true,
+                features: {
+                    filters: {
+                        String: {
+                            MATCHES: true,
+                        },
+                        ID: {
+                            MATCHES: false,
+                        },
+                    },
+                },
+            });
+
+            const document = neoSchema.typeDefs;
+
+            const nodeWhereInput = document.definitions.find(
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
+            ) as InputObjectTypeDefinitionNode;
+
+            const nameMatchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("name_MATCHES"));
+
+            expect(nameMatchesField).toBeDefined();
+
+            const idMatchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("id_MATCHES"));
+
+            expect(idMatchesField).toBeUndefined();
+        });
+
+        test("should not add the name_MATCHES filter when Features.Filters.ID.MATCHES is set but Features.Filters.Name.MATCHES is not set", () => {
+            const typeDefs = gql`
+                type User {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema(typeDefs, {
+                validateResolvers: true,
+                features: {
+                    filters: {
+                        String: {
+                            MATCHES: false,
+                        },
+                        ID: {
+                            MATCHES: true,
+                        },
+                    },
+                },
+            });
+
+            const document = neoSchema.typeDefs;
+
+            const nodeWhereInput = document.definitions.find(
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
+            ) as InputObjectTypeDefinitionNode;
+
+            const nameMatchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("name_MATCHES"));
+
+            expect(nameMatchesField).toBeUndefined();
+
+            const idMatchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("id_MATCHES"));
+
+            expect(idMatchesField).toBeDefined();
+        });
     });
 
     describe("issues", () => {
