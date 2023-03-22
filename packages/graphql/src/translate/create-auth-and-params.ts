@@ -24,6 +24,11 @@ import type { AuthOperations } from "../types/deprecated/auth/auth-operations";
 import type { Rule } from "./deprecated/auth/types";
 import { createAuthPredicates } from "./create-auth-predicates";
 
+type AuthAndParams = {
+    cypher: string;
+    params: Record<string, any>;
+};
+
 export function createAuthAndParams({
     entity,
     operations,
@@ -44,7 +49,7 @@ export function createAuthAndParams({
     escapeQuotes?: boolean;
     bind?: Rule;
     where?: Rule;
-}): [string, Record<string, any>] {
+}): AuthAndParams {
     const authPredicate = createAuthPredicates({
         entity,
         operations,
@@ -56,7 +61,12 @@ export function createAuthAndParams({
         bind,
         where,
     });
-    if (!authPredicate) return ["", {}];
+    if (!authPredicate) {
+        return {
+            cypher: "",
+            params: {},
+        };
+    }
 
     const authPredicateExpr = new Cypher.RawCypher((env: Cypher.Environment) => {
         return authPredicate.getCypher(env);
@@ -67,7 +77,7 @@ export function createAuthAndParams({
     // Params must be globally unique, variables can be just slightly different, as each auth statement is scoped
     const authCypher = authPredicateExpr.build({ params: `${chainStr}auth_`, variables: `auth_` });
 
-    return [authCypher.cypher, authCypher.params];
+    return { cypher: authCypher.cypher, params: authCypher.params };
 }
 
 function generateUniqueChainStr(varNames: Array<string | Cypher.Node | undefined>): string {
