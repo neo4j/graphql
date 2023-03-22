@@ -47,7 +47,6 @@ function createConnectAndParams({
     labelOverride,
     parentNode,
     fromCreate,
-    insideDoWhen,
     includeRelationshipValidation,
     isFirstLevel = true,
 }: {
@@ -62,7 +61,6 @@ function createConnectAndParams({
     labelOverride?: string;
     parentNode: Node;
     fromCreate?: boolean;
-    insideDoWhen?: boolean;
     includeRelationshipValidation?: boolean;
     isFirstLevel?: boolean;
 }): [string, any] {
@@ -204,7 +202,6 @@ function createConnectAndParams({
                     entity: node,
                     operations: "CONNECT",
                     context,
-                    escapeQuotes: Boolean(insideDoWhen),
                     allow: { node, varName: name },
                 });
 
@@ -221,12 +218,9 @@ function createConnectAndParams({
         );
 
         if (preAuth.connects.length) {
-            const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
             subquery.push(
-                `\tCALL apoc.util.validate(NOT (${preAuth.connects.join(
-                    " AND "
-                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                `\tCALL apoc.util.validate(NOT (${preAuth.connects.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
             );
             params = { ...params, ...preAuth.params };
         }
@@ -466,7 +460,6 @@ function createConnectAndParams({
                     entity: node,
                     operations: "CONNECT",
                     context,
-                    escapeQuotes: Boolean(insideDoWhen),
                     skipIsAuthenticated: true,
                     skipRoles: true,
                     bind: { node, varName: nodeName },
@@ -485,12 +478,9 @@ function createConnectAndParams({
         );
 
         if (postAuth.connects.length) {
-            const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
             subquery.push(
-                `\tCALL apoc.util.validate(NOT (${postAuth.connects.join(
-                    " AND "
-                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                `\tCALL apoc.util.validate(NOT (${postAuth.connects.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
             );
             params = { ...params, ...postAuth.params };
         }

@@ -41,7 +41,6 @@ function createDeleteAndParams({
     chainStr,
     withVars,
     context,
-    insideDoWhen,
     parameterPrefix,
     recursing,
 }: {
@@ -52,7 +51,6 @@ function createDeleteAndParams({
     node: Node;
     withVars: string[];
     context: Context;
-    insideDoWhen?: boolean;
     parameterPrefix: string;
     recursing?: boolean;
 }): [string, any] {
@@ -164,15 +162,11 @@ function createDeleteAndParams({
                         entity: refNode,
                         operations: "DELETE",
                         context,
-                        escapeQuotes: Boolean(insideDoWhen),
                         allow: { node: refNode, varName: variableName },
                     });
                     if (allowAuth[0]) {
-                        const quote = insideDoWhen ? `\\"` : `"`;
                         res.strs.push(`WITH ${[...withVars, variableName].join(", ")}${withRelationshipStr}`);
-                        res.strs.push(
-                            `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
-                        );
+                        res.strs.push(`CALL apoc.util.validate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
                         res.params = { ...res.params, ...allowAuth[1] };
                     }
 
