@@ -88,7 +88,9 @@ export function translateRead(
     });
 
     if (authPredicates) {
-        topLevelWhereClause.where(Cypher.apoc.util.validatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR));
+        (topLevelWhereClause || topLevelMatch).where(
+            Cypher.apoc.util.validatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR)
+        );
     }
 
     const projectionSubqueries = Cypher.concat(...projection.subqueries);
@@ -189,10 +191,10 @@ export function translateRead(
         projectionClause = Cypher.concat(withTotalCount, returnClause);
     }
 
-    const preComputedWhereFields =
+    const preComputedWhereFields: Cypher.Clause | undefined =
         preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty
             ? Cypher.concat(preComputedWhereFieldSubqueries, topLevelWhereClause)
-            : undefined;
+            : topLevelWhereClause;
 
     const readQuery = Cypher.concat(
         topLevelMatch,

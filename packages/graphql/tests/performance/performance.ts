@@ -67,6 +67,15 @@ const typeDefs = gql`
         favouriteActor: Person @relationship(type: "FAV", direction: OUT)
     }
 
+    type MovieClone {
+        title: String!
+        favouriteActor: Person! @relationship(type: "FAV", direction: OUT)
+    }
+    type PersonClone {
+        name: String!
+        movies: [MovieClone!]! @relationship(type: "FAV", direction: IN)
+    }
+
     type User {
         name: String!
         likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
