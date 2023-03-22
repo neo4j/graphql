@@ -99,12 +99,25 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
 
                 Storage.storeJSON(LOCAL_STATE_TYPE_DEFS, typeDefs);
 
+                const features = isRegexChecked
+                    ? {
+                          filters: {
+                              String: {
+                                  MATCHES: true,
+                              },
+                              ID: {
+                                  MATCHES: true,
+                              },
+                          },
+                      }
+                    : {};
+
                 const options = {
                     typeDefs,
                     driver: auth.driver,
+                    features,
                     config: {
                         enableDebug: isDebugChecked === "true",
-                        enableRegex: isRegexChecked === "true",
                         driverConfig: {
                             database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
                         },
