@@ -46,7 +46,6 @@ describe("Connections Alias", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

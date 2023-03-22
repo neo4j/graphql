@@ -58,7 +58,6 @@ describe("Cypher Disconnect", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
