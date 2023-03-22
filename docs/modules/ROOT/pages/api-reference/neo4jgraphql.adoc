@@ -221,8 +221,11 @@ const { CypherRuntime } = require("@neo4j/graphql");
  +
  Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jstringfilterssettings[`Neo4jStringFiltersSettings`]
 |Additional configuration for String filters.
+|`ID` +
+ +
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jstringfilterssettings[`Neo4jIDFiltersSettings`]
+|Additional configuration for String filters.
 |===
-
 
 [[api-reference-neo4jgraphql-input-neo4jstringfilterssettings]]
 ==== `Neo4jStringFiltersSettings`
@@ -250,13 +253,31 @@ const { CypherRuntime } = require("@neo4j/graphql");
  Type: `boolean`
 | Enables LTE comparator.
 
+|`MATCHES` +
+ +
+ Type: `boolean`
+| Enables MATCHES comparator.
+
+|===
+
+[[api-reference-neo4jgraphql-input-neo4jidfilterssettings]]
+==== `Neo4jIDFiltersSettings`
+
+|===
+|Name and Type |Description
+
+|`MATCHES` +
+ +
+ Type: `boolean`
+| Enables MATCHES comparator.
+
 |===
 
 [[api-reference-neo4jgraphql-input-neo4jgraphqlplugins]]
 ==== `Neo4jGraphQLPlugins`
 
 |===
-|Name and Type |Description
+|Name and Type |DescriptionW
 
 |`auth` +
  +
@@ -414,4 +435,3 @@ Accepts the arguments below:
  Type: `boolean`
 |Whether or not to create constraints if they do not yet exist. Disabled by default.
 |===
-
