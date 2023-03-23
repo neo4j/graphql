@@ -3,3 +3,21 @@ query SingleRelationshipFilter {
         title
     }
 }
+
+query NestedSingleRelationshipFilter {
+    people(where: { movies: { favouriteActor: { name_IN: ["Tom Hanks"] } } }) {
+        name
+    }
+}
+
+query SingleRelationshipRequiredFilter {
+    movieClones(where: { favouriteActor: { name_IN: ["Tom Hanks"] } }) {
+        title
+    }
+}
+
+query NestedSingleRelationshipRequiredFilter {
+    personClones(where: { movies: { favouriteActor: { name_IN: ["Tom Hanks"] } } }) {
+        name
+    }
+}

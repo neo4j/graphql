@@ -51,7 +51,6 @@ describe("tck/rfs/022 subquery projection", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
@@ -184,7 +183,6 @@ describe("tck/rfs/022 subquery projection", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",

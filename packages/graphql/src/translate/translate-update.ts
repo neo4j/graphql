@@ -338,8 +338,22 @@ export default async function translateUpdate({
                     const relTypeStr = `[${relationVarName}:${relationField.type}]`;
 
                     if (!relationField.typeMeta.array) {
-                        const validateRelationshipExistance = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        createStrs.push(validateRelationshipExistance);
+                        const singleCardinalityValidationTemplate = (nodeName) =>
+                            `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                        if (relationField.union && relationField.union.nodes) {
+                            const validateRelationshipExistence = relationField.union.nodes.map(
+                                singleCardinalityValidationTemplate
+                            );
+                            createStrs.push(...validateRelationshipExistence);
+                        } else if (relationField.interface && relationField.interface.implementations) {
+                            const validateRelationshipExistence = relationField.interface.implementations.map(
+                                singleCardinalityValidationTemplate
+                            );
+                            createStrs.push(...validateRelationshipExistence);
+                        } else {
+                            const validateRelationshipExistence = singleCardinalityValidationTemplate(refNode.name);
+                            createStrs.push(validateRelationshipExistence);
+                        }
                     }
 
                     const createAndParams = createCreateAndParams({
@@ -408,12 +422,10 @@ export default async function translateUpdate({
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
         if (projection.meta?.authValidatePredicates?.length) {
-            projAuth = new Cypher.CallProcedure(
-                new Cypher.apoc.Validate(
-                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                    AUTH_FORBIDDEN_ERROR,
-                    new Cypher.Literal([0])
-                )
+            projAuth = Cypher.apoc.util.validate(
+                Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                AUTH_FORBIDDEN_ERROR,
+                new Cypher.Literal([0])
             );
         }
     }

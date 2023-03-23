@@ -46,7 +46,6 @@ describe("Cypher TimeStamps On DateTime Fields", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

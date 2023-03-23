@@ -48,7 +48,6 @@ describe("Subscriptions metadata on create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
                 auth: new Neo4jGraphQLAuthJWTPlugin({

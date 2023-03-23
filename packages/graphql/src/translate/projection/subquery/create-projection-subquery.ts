@@ -114,14 +114,14 @@ export function createProjectionSubquery({
     });
 
     if (preAuth) {
-        const allowAuth = new Cypher.apoc.ValidatePredicate(Cypher.not(preAuth), AUTH_FORBIDDEN_ERROR);
+        const allowAuth = Cypher.apoc.util.validatePredicate(Cypher.not(preAuth), AUTH_FORBIDDEN_ERROR);
         predicates.push(allowAuth);
     }
 
     if (authValidatePredicates?.length) {
         const authValidatePredicate = Cypher.and(...authValidatePredicates);
 
-        const authStatement = new Cypher.apoc.ValidatePredicate(
+        const authStatement = Cypher.apoc.util.validatePredicate(
             Cypher.not(authValidatePredicate),
             AUTH_FORBIDDEN_ERROR
         );

@@ -1,5 +1,19 @@
 # @neo4j/cypher-builder
 
+## 0.3.0
+
+### Minor Changes
+
+-   [#3025](https://github.com/neo4j/graphql/pull/3025) [`507f9f7ff`](https://github.com/neo4j/graphql/commit/507f9f7ff5a57ff42f6554b21c2eff0cf37c10ba) Thanks [@angrykoala](https://github.com/angrykoala)! - CallProcedure clause deprecated and improvements on Procedures API
+
+### Patch Changes
+
+-   [#3012](https://github.com/neo4j/graphql/pull/3012) [`cdbf0c1fe`](https://github.com/neo4j/graphql/commit/cdbf0c1fed34e5c39c8697410e13b338498f7520) Thanks [@angrykoala](https://github.com/angrykoala)! - Add support for USE in CypherBuilder
+
+-   [#2984](https://github.com/neo4j/graphql/pull/2984) [`084e0e036`](https://github.com/neo4j/graphql/commit/084e0e036ea05091db9082cae227b55a55157109) Thanks [@angrykoala](https://github.com/angrykoala)! - Support for path variables over patterns
+
+-   [#3008](https://github.com/neo4j/graphql/pull/3008) [`c4b9f120a`](https://github.com/neo4j/graphql/commit/c4b9f120ac2e22a6c9c1a34c920cb1ddf88fa45d) Thanks [@angrykoala](https://github.com/angrykoala)! - Adds support for DISTINCT in aggregation functions
+
 ## 0.2.1
 
 ### Patch Changes

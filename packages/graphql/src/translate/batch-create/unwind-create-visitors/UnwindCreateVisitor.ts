@@ -220,12 +220,11 @@ export class UnwindCreateVisitor implements Visitor {
                 operations: "CREATE",
                 context,
                 bind: { node, varName: nodeRef },
-                escapeQuotes: true,
             });
             if (authExpr) {
                 return Cypher.concat(
                     new Cypher.With("*"),
-                    new Cypher.CallProcedure(new Cypher.apoc.Validate(Cypher.not(authExpr), AUTH_FORBIDDEN_ERROR))
+                    Cypher.apoc.util.validate(Cypher.not(authExpr), AUTH_FORBIDDEN_ERROR)
                 );
             }
         }
@@ -255,7 +254,6 @@ export class UnwindCreateVisitor implements Visitor {
                                 node: astNode.node,
                                 varName: nodeRef,
                             },
-                            escapeQuotes: true,
                         });
                         if (fieldAuthCypher) {
                             return Cypher.or(Cypher.isNull(unwindVar.property(field.fieldName)), fieldAuthCypher);
@@ -267,7 +265,7 @@ export class UnwindCreateVisitor implements Visitor {
 
                     const fieldsAuth = Cypher.concat(
                         new Cypher.With("*"),
-                        new Cypher.CallProcedure(new Cypher.apoc.Validate(predicate, AUTH_FORBIDDEN_ERROR))
+                        Cypher.apoc.util.validate(predicate, AUTH_FORBIDDEN_ERROR)
                     ).getCypher(env);
 
                     const fieldsPredicateParams = fieldsPredicates.reduce((prev, next) => {

@@ -73,7 +73,6 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,

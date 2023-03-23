@@ -36,7 +36,6 @@ describe("Cypher Aggregations DateTime", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
