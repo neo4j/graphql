@@ -36,7 +36,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     cypherStrs.push(new Cypher.RawCypher(topLevelMatch.cypher));
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
-    const allowAuth = createAuthAndParams({
+    const { cypher: nodeAuthCypher, params: nodeAuthParams } = createAuthAndParams({
         operations: "READ",
         entity: node,
         context,
@@ -45,15 +45,15 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             varName,
         },
     });
-    if (allowAuth[0]) {
+    if (nodeAuthCypher) {
         cypherStrs.push(
             Cypher.apoc.util.validate(
-                Cypher.not(new Cypher.RawCypher(allowAuth[0])),
+                Cypher.not(new Cypher.RawCypher(nodeAuthCypher)),
                 AUTH_FORBIDDEN_ERROR,
                 new Cypher.Literal([0])
             )
         );
-        cypherParams = { ...cypherParams, ...allowAuth[1] };
+        cypherParams = { ...cypherParams, ...nodeAuthParams };
     }
 
     const selections = fieldsByTypeName[node.aggregateTypeNames.selection];
@@ -65,15 +65,15 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         const authField = node.authableFields.find((x) => x.fieldName === selection[0]);
         if (authField) {
             if (authField.auth) {
-                const allowAndParams = createAuthAndParams({
+                const { cypher: fieldAuthCypher, params: fieldAuthParams } = createAuthAndParams({
                     entity: authField,
                     operations: "READ",
                     context,
                     allow: { node, varName },
                 });
-                if (allowAndParams[0]) {
-                    authStrs.push(allowAndParams[0]);
-                    cypherParams = { ...cypherParams, ...allowAndParams[1] };
+                if (fieldAuthCypher) {
+                    authStrs.push(fieldAuthCypher);
+                    cypherParams = { ...cypherParams, ...fieldAuthParams };
                 }
             }
         }

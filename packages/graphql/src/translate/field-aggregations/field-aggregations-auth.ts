@@ -67,7 +67,6 @@ function getAllowAuth({
         operations: "READ",
         context,
         allow: { node, varName },
-        escapeQuotes: false,
     });
 
     if (allowAuth) return Cypher.apoc.util.validatePredicate(Cypher.not(allowAuth), AUTH_FORBIDDEN_ERROR);
@@ -118,7 +117,6 @@ function getFieldAuth({
                 operations: "READ",
                 context,
                 allow: { node, varName },
-                escapeQuotes: false,
             });
 
             if (allowAuth) authPredicates.push(allowAuth);

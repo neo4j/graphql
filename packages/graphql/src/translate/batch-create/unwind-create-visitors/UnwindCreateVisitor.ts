@@ -220,7 +220,6 @@ export class UnwindCreateVisitor implements Visitor {
                 operations: "CREATE",
                 context,
                 bind: { node, varName: nodeRef },
-                escapeQuotes: true,
             });
             if (authExpr) {
                 return Cypher.concat(
@@ -255,7 +254,6 @@ export class UnwindCreateVisitor implements Visitor {
                                 node: astNode.node,
                                 varName: nodeRef,
                             },
-                            escapeQuotes: true,
                         });
                         if (fieldAuthCypher) {
                             return Cypher.or(Cypher.isNull(unwindVar.property(field.fieldName)), fieldAuthCypher);
