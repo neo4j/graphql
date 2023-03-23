@@ -21,12 +21,7 @@
 *** xref:mutations/delete.adoc[]
 ** xref:subscriptions/index.adoc[]
 *** xref:subscriptions/getting-started.adoc[Getting Started]
-*** Events
-**** xref:subscriptions/events/create.adoc[Create]
-**** xref:subscriptions/events/update.adoc[Update]
-**** xref:subscriptions/events/delete.adoc[Delete]
-**** xref:subscriptions/events/create_relationship.adoc[Create Relationship]
-**** xref:subscriptions/events/delete_relationship.adoc[Delete Relationship]
+*** xref:subscriptions/events.adoc[Events]
 *** xref:subscriptions/filtering.adoc[]
 *** xref:subscriptions/scaling.adoc[]
 *** xref:subscriptions/plugins/index.adoc[Plugins]
