@@ -252,19 +252,19 @@ function createCreateAndParams({
         }
 
         if (primitiveField?.auth) {
-            const authAndParams = createAuthAndParams({
+            const { cypher: authCypher, params: authParams } = createAuthAndParams({
                 entity: primitiveField,
                 operations: "CREATE",
                 context,
                 bind: { node, varName },
             });
-            if (authAndParams[0]) {
+            if (authCypher) {
                 if (!res.meta) {
                     res.meta = { authStrs: [] };
                 }
 
-                res.meta.authStrs.push(authAndParams[0]);
-                res.params = { ...res.params, ...authAndParams[1] };
+                res.meta.authStrs.push(authCypher);
+                res.params = { ...res.params, ...authParams };
             }
         }
 
@@ -319,16 +319,16 @@ function createCreateAndParams({
     }
 
     if (node.auth) {
-        const bindAndParams = createAuthAndParams({
+        const { cypher: authCypher, params: authParams } = createAuthAndParams({
             entity: node,
             operations: "CREATE",
             context,
             bind: { node, varName },
         });
-        if (bindAndParams[0]) {
+        if (authCypher) {
             creates.push(`WITH ${withVars.join(", ")}`);
-            creates.push(`CALL apoc.util.validate(NOT (${bindAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-            params = { ...params, ...bindAndParams[1] };
+            creates.push(`CALL apoc.util.validate(NOT (${authCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+            params = { ...params, ...authParams };
         }
     }
 

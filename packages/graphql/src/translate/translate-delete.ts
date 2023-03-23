@@ -49,7 +49,7 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
-    const allowAuth = createAuthAndParams({
+    const { cypher: authCypher, params: authParams } = createAuthAndParams({
         operations: "DELETE",
         entity: node,
         context,
@@ -58,11 +58,11 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
             varName,
         },
     });
-    if (allowAuth[0]) {
-        cypherParams = { ...cypherParams, ...allowAuth[1] };
-        allowStr = `WITH ${withVars.join(", ")}\nCALL apoc.util.validate(NOT (${
-            allowAuth[0]
-        }), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    if (authCypher) {
+        cypherParams = { ...cypherParams, ...authParams };
+        allowStr = `WITH ${withVars.join(
+            ", "
+        )}\nCALL apoc.util.validate(NOT (${authCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
     if (deleteInput) {

@@ -123,15 +123,15 @@ export function createMatchClause({
         whereClause.where(andChecks);
     }
 
-    const whereAuth = createAuthAndParams({
+    const { cypher: authCypher, params: authParams } = createAuthAndParams({
         operations: operation,
         entity: node,
         context,
         where: { varName: matchNode, node },
     });
-    if (whereAuth[0]) {
+    if (authCypher) {
         const authQuery = new Cypher.RawCypher(() => {
-            return whereAuth;
+            return [authCypher, authParams];
         });
 
         whereClause.where(authQuery);
