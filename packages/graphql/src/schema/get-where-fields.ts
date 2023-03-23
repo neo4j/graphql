@@ -132,7 +132,7 @@ function getWhereFields({
                         res[`${f.fieldName}_MATCHES`] = { type: "String", directives: deprecatedDirectives };
                     }
                 } else if (enableRegex) {
-                    // Deprecated. To be removed.
+                    // TODO: This is deprecated. To be removed in 4.0.0.
                     res[`${f.fieldName}_MATCHES`] = { type: "String", directives: deprecatedDirectives };
                 }
 
