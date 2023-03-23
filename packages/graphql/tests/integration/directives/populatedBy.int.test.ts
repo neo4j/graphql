@@ -57,9 +57,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -115,9 +117,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -195,9 +199,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -272,9 +278,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -333,9 +341,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -419,9 +429,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -493,9 +505,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -560,9 +574,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -624,9 +640,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -685,9 +703,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -756,9 +776,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -841,9 +863,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -951,9 +975,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -1079,9 +1105,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -1236,9 +1264,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -1349,9 +1379,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -1483,9 +1515,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -1634,9 +1668,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });
@@ -1747,9 +1783,11 @@ describe("@populatedBy directive", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    config: {
-                        callbacks: {
-                            callback,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback,
+                            },
                         },
                     },
                 });

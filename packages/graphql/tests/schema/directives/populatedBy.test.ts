@@ -95,11 +95,13 @@ describe("@populatedBy tests", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    callbacks: {
-                        callback1,
-                        callback2,
-                        callback3,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
                     },
                 },
             });
@@ -296,11 +298,13 @@ describe("@populatedBy tests", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    callbacks: {
-                        callback1,
-                        callback2,
-                        callback3,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
                     },
                 },
             });
@@ -584,11 +588,13 @@ describe("@populatedBy tests", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    callbacks: {
-                        callback1,
-                        callback2,
-                        callback3,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
                     },
                 },
             });
@@ -1178,11 +1184,13 @@ describe("@populatedBy tests", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    callbacks: {
-                        callback1,
-                        callback2,
-                        callback3,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
                     },
                 },
             });
