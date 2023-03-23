@@ -277,7 +277,7 @@ const { CypherRuntime } = require("@neo4j/graphql");
 ==== `Neo4jGraphQLPlugins`
 
 |===
-|Name and Type |DescriptionW
+|Name and Type |Description
 
 |`auth` +
  +
