@@ -36,7 +36,6 @@ export function createAuthAndParams({
     skipIsAuthenticated,
     allow,
     context,
-    escapeQuotes,
     bind,
     where,
 }: {
@@ -46,7 +45,6 @@ export function createAuthAndParams({
     skipIsAuthenticated?: boolean;
     allow?: Rule;
     context: Context;
-    escapeQuotes?: boolean;
     bind?: Rule;
     where?: Rule;
 }): AuthAndParams {
@@ -57,7 +55,6 @@ export function createAuthAndParams({
         skipIsAuthenticated,
         allow,
         context,
-        escapeQuotes,
         bind,
         where,
     });

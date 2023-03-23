@@ -42,7 +42,6 @@ function createDisconnectAndParams({
     context,
     labelOverride,
     parentNode,
-    insideDoWhen,
     parameterPrefix,
     isFirstLevel = true,
 }: {
@@ -55,7 +54,6 @@ function createDisconnectAndParams({
     refNodes: Node[];
     labelOverride?: string;
     parentNode: Node;
-    insideDoWhen?: boolean;
     parameterPrefix: string;
     isFirstLevel?: boolean;
 }): [string, any] {
@@ -152,7 +150,6 @@ function createDisconnectAndParams({
                     entity: node,
                     operations: "DISCONNECT",
                     context,
-                    escapeQuotes: Boolean(insideDoWhen),
                     allow: { node, varName: name },
                 });
 
@@ -169,12 +166,9 @@ function createDisconnectAndParams({
         );
 
         if (preAuth.disconnects.length) {
-            const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`WITH ${[...withVars, variableName, relVarName].join(", ")}`);
             subquery.push(
-                `CALL apoc.util.validate(NOT (${preAuth.disconnects.join(
-                    " AND "
-                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                `CALL apoc.util.validate(NOT (${preAuth.disconnects.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
             );
             params = { ...params, ...preAuth.params };
         }
@@ -355,7 +349,6 @@ function createDisconnectAndParams({
                     entity: node,
                     operations: "DISCONNECT",
                     context,
-                    escapeQuotes: Boolean(insideDoWhen),
                     skipRoles: true,
                     skipIsAuthenticated: true,
                     bind: { node, varName: variableName },
@@ -374,12 +367,9 @@ function createDisconnectAndParams({
         );
 
         if (postAuth.disconnects.length) {
-            const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`WITH ${[...withVars, variableName].join(", ")}`);
             subquery.push(
-                `CALL apoc.util.validate(NOT (${postAuth.disconnects.join(
-                    " AND "
-                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                `CALL apoc.util.validate(NOT (${postAuth.disconnects.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
             );
             params = { ...params, ...postAuth.params };
         }

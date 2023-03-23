@@ -286,7 +286,6 @@ function createAuthStatement({
         operations: ["CONNECT", "CREATE"],
         context,
         allow: { node, varName: nodeName },
-        escapeQuotes: false,
     });
 
     if (!cypher) return undefined;
