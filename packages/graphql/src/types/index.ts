@@ -498,8 +498,13 @@ export interface Neo4jFiltersSettings {
     String?: Neo4jStringFiltersSettings;
 }
 
+export interface Neo4jPopulatedBySettings {
+    callbacks?: Neo4jGraphQLCallbacks;
+}
+
 export interface Neo4jFeaturesSettings {
     filters?: Neo4jFiltersSettings;
+    populatedBy?: Neo4jPopulatedBySettings;
 }
 
 export type PredicateReturn = {
