@@ -167,15 +167,15 @@ function createConnectAndParams({
         }
 
         if (relatedNode.auth) {
-            const whereAuth = createAuthAndParams({
+            const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
                 operations: "CONNECT",
                 entity: relatedNode,
                 context,
                 where: { varName: nodeName, node: relatedNode },
             });
-            if (whereAuth[0]) {
-                whereStrs.push(whereAuth[0]);
-                params = { ...params, ...whereAuth[1] };
+            if (authWhereCypher) {
+                whereStrs.push(authWhereCypher);
+                params = { ...params, ...authWhereParams };
             }
         }
 
@@ -200,7 +200,7 @@ function createConnectAndParams({
                     return result;
                 }
 
-                const [str, p] = createAuthAndParams({
+                const { cypher, params } = createAuthAndParams({
                     entity: node,
                     operations: "CONNECT",
                     context,
@@ -208,12 +208,12 @@ function createConnectAndParams({
                     allow: { node, varName: name },
                 });
 
-                if (!str) {
+                if (!cypher) {
                     return result;
                 }
 
-                result.connects.push(str);
-                result.params = { ...result.params, ...p };
+                result.connects.push(cypher);
+                result.params = { ...result.params, ...params };
 
                 return result;
             },
@@ -462,7 +462,7 @@ function createConnectAndParams({
                     return result;
                 }
 
-                const [str, p] = createAuthAndParams({
+                const { cypher, params } = createAuthAndParams({
                     entity: node,
                     operations: "CONNECT",
                     context,
@@ -472,12 +472,12 @@ function createConnectAndParams({
                     bind: { node, varName: nodeName },
                 });
 
-                if (!str) {
+                if (!cypher) {
                     return result;
                 }
 
-                result.connects.push(str);
-                result.params = { ...result.params, ...p };
+                result.connects.push(cypher);
+                result.params = { ...result.params, ...params };
 
                 return result;
             },
@@ -507,16 +507,16 @@ function createConnectAndParams({
 
     function reducer(res: Res, connect: any, index: number): Res {
         if (parentNode.auth && !fromCreate) {
-            const whereAuth = createAuthAndParams({
+            const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
                 operations: "CONNECT",
                 entity: parentNode,
                 context,
                 where: { varName: parentVar, node: parentNode },
             });
-            if (whereAuth[0]) {
+            if (authWhereCypher) {
                 res.connects.push(`WITH ${withVars.join(", ")}`);
-                res.connects.push(`WHERE ${whereAuth[0]}`);
-                res.params = { ...res.params, ...whereAuth[1] };
+                res.connects.push(`WHERE ${authWhereCypher}`);
+                res.params = { ...res.params, ...authWhereParams };
             }
         }
 

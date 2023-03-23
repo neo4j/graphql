@@ -281,7 +281,7 @@ function createAuthStatement({
 }): Cypher.Clause | undefined {
     if (!node.auth) return undefined;
 
-    const auth = createAuthAndParams({
+    const { cypher, params } = createAuthAndParams({
         entity: node,
         operations: ["CONNECT", "CREATE"],
         context,
@@ -289,15 +289,15 @@ function createAuthStatement({
         escapeQuotes: false,
     });
 
-    if (!auth[0]) return undefined;
+    if (!cypher) return undefined;
 
     return new Cypher.RawCypher(() => {
-        const predicate = `NOT (${auth[0]})`;
+        const predicate = `NOT (${cypher})`;
         const message = AUTH_FORBIDDEN_ERROR;
 
         const cypherStr = `CALL apoc.util.validate(${predicate}, "${message}", [0])`;
 
-        return [cypherStr, auth[1]];
+        return [cypherStr, params];
     });
 }
 
