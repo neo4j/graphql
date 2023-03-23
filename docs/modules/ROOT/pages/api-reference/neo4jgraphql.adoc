@@ -223,7 +223,7 @@ const { CypherRuntime } = require("@neo4j/graphql");
 |Additional configuration for String filters.
 |`ID` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jstringfilterssettings[`Neo4jIDFiltersSettings`]
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jidfilterssettings[`Neo4jIDFiltersSettings`]
 |Additional configuration for String filters.
 |===
 
