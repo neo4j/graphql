@@ -23,7 +23,6 @@ import type { Driver } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
-import { id } from "@neo4j/cypher-builder";
 
 describe("https://github.com/neo4j/graphql/issues/1414", () => {
     const testProduct = new UniqueType("Product");
