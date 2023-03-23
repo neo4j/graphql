@@ -34,7 +34,6 @@ This documentation covers the following topics:
 - xref::sorting.adoc[Sorting] - This chapter covers how to sort the data being returned.
 - xref::pagination/index.adoc[Pagination] - This chapter covers the pagination options offered by the Neo4j GraphQL Library.
 - xref::mathematical-operators.adoc[Mathematical operators] - This chapter covers how to use the Mathematical operators.
-- xref::array-methods.adoc[Array methods] - This chapter covers how to use the Array methods.
 - xref::custom-resolvers.adoc[Custom Resolvers] - Learn how to implement custom functionality accessible through your API.
 - xref::auth/index.adoc[Auth] - Covers the authentication and authorization options offered by this library.
 - xref::directives.adoc[Directives] - An index of all of the directives offered by the Neo4j GraphQL Library.
