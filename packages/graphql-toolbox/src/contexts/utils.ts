@@ -154,6 +154,7 @@ export const getConnectUrlSearchParamValue = (): {
 
 export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string => {
     let usedDatabaseName: string | null = null;
+
     const searchParam = getUrlSearchParam(DATABASE_PARAM_NAME as string);
     if (searchParam) {
         Storage.store(LOCAL_STATE_SELECTED_DATABASE_NAME, searchParam);
@@ -167,14 +168,9 @@ export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string 
         return usedDatabaseName;
     }
 
-    const defaultDatabase = databases?.find((database) => database.default) || undefined;
-    if (defaultDatabase) {
-        return defaultDatabase.name;
-    }
-
-    const homeDatabase = databases?.find((database) => database.home) || undefined;
-    if (homeDatabase) {
-        return homeDatabase.name;
+    const defaultOrHomeDatabase = databases?.find((database) => database.default || database.home) || undefined;
+    if (defaultOrHomeDatabase) {
+        return defaultOrHomeDatabase.name;
     }
 
     if (databases?.length === 1) {
