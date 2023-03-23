@@ -62,7 +62,7 @@ describe("@populatedBy tests", () => {
             });
         });
 
-        test("PopulatedBy - existance", async () => {
+        test("PopulatedBy - existence", async () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
@@ -538,7 +538,7 @@ describe("@populatedBy tests", () => {
             });
         });
 
-        test("PopulatedBy - existance", async () => {
+        test("PopulatedBy - existence", async () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
