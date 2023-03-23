@@ -64,6 +64,11 @@ export interface Neo4jGraphQLConfig {
     skipValidateTypeDefs?: boolean;
     startupValidation?: StartupValidationConfig;
     queryOptions?: CypherQueryOptions;
+    /**
+     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
+     * Please use features.populatedBy instead. More information can be found at
+     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby
+     */
     callbacks?: Neo4jGraphQLCallbacks;
 }
 
