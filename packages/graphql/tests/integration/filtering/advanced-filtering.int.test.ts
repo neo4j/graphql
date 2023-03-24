@@ -115,7 +115,16 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs, config: { enableRegex: true } });
+                    const neoSchema = new Neo4jGraphQL({
+                        typeDefs,
+                        features: {
+                            filters: {
+                                [type]: {
+                                    MATCHES: true,
+                                },
+                            },
+                        },
+                    });
 
                     const value = generate({
                         readable: true,

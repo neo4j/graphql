@@ -75,7 +75,60 @@ const neoSchema = new Neo4jGraphQL({ features, typeDefs, driver });
 The filter `_MATCHES` is also available for comparison of `String` and `ID` types, which accepts a RegEx string as an argument and returns any matches.
 Note that RegEx matching filters are **disabled by default**.
 
-To enable the inclusion of this filter, set the config option `enableRegex` to `true`.
+To enable the inclusion of this filter, set the features configuration object for each.
+
+For `String`:
+
+[source, javascript, indent=0]
+----
+const features = {
+    filters: {
+        String: {
+            MATCHES: true,
+        }
+    }
+};
+
+const neoSchema = new Neo4jGraphQL({ features, typeDefs, driver });
+----
+
+For `ID`:
+
+
+[source, javascript, indent=0]
+----
+const features = {
+    filters: {
+        String: {
+            ID: true,
+        }
+    }
+};
+
+const neoSchema = new Neo4jGraphQL({ features, typeDefs, driver });
+----
+
+For both `String` and `ID`:
+
+
+[source, javascript, indent=0]
+----
+const features = {
+    filters: {
+        String: {
+            MATCHES: true,
+        },
+        ID: {
+            MATCHES: true,
+        }
+    }
+};
+
+const neoSchema = new Neo4jGraphQL({ features, typeDefs, driver });
+----
+
+
+Previously to enable to this filter the config option `enableRegex` was used, it has been deprecated. Use the `features` configuration object as described here, as the `enableRegex` will be removed in the future.
 
 > The nature of RegEx matching means that on an unprotected API, this could potentially be used to execute a ReDoS attack (https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) against the backing Neo4j database.
 
