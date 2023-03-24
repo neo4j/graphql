@@ -21,7 +21,7 @@ import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import { upperFirst } from "../../utils/upper-first";
 import type { Attribute } from "../attribute/Attribute";
 import type { ConcreteEntity } from "../entity/ConcreteEntity";
-import { Entity } from "../entity/Entity";
+import type { Entity } from "../entity/Entity";
 
 export type RelationshipDirection = "IN" | "OUT";
 
