@@ -21,6 +21,7 @@ import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import { upperFirst } from "../../utils/upper-first";
 import type { Attribute } from "../attribute/Attribute";
 import type { ConcreteEntity } from "../entity/ConcreteEntity";
+import { Entity } from "../entity/Entity";
 
 export type RelationshipDirection = "IN" | "OUT";
 
@@ -29,7 +30,7 @@ export class Relationship {
     public readonly type: string;
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly source: ConcreteEntity; // Origin field of relationship
-    public readonly target: ConcreteEntity;
+    public readonly target: Entity;
     public readonly direction: RelationshipDirection;
 
     /**Note: Required for now to infer the types without ResolveTree */
@@ -54,7 +55,7 @@ export class Relationship {
         type: string;
         attributes?: Attribute[];
         source: ConcreteEntity;
-        target: ConcreteEntity;
+        target: Entity;
         direction: RelationshipDirection;
     }) {
         this.type = type;
@@ -66,6 +67,17 @@ export class Relationship {
         for (const attribute of attributes) {
             this.addAttribute(attribute);
         }
+    }
+
+    public clone(): Relationship {
+        return new Relationship({
+            name: this.name,
+            type: this.type,
+            attributes: Array.from(this.attributes.values()).map((a) => a.clone()),
+            source: this.source,
+            target: this.target,
+            direction: this.direction,
+        });
     }
 
     private addAttribute(attribute: Attribute): void {

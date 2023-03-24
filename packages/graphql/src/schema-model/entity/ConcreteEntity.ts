@@ -22,7 +22,7 @@ import { annotationToKey } from "../annotation/Annotation";
 import type { Annotation, Annotations } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Entity } from "./Entity";
-import { Relationship } from "../relationship/Relationship";
+import type { Relationship } from "../relationship/Relationship";
 import { setsAreEqual } from "../../utils/sets-are-equal";
 
 export class ConcreteEntity implements Entity {

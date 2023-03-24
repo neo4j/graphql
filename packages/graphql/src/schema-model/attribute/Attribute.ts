@@ -63,6 +63,15 @@ export class Attribute {
         }
     }
 
+    public clone(): Attribute {
+        return new Attribute({
+            name: this.name,
+            annotations: Object.values(this.annotations),
+            type: this.type,
+            isArray: this.isArray,
+        });
+    }
+
     private addAnnotation(annotation: Annotation): void {
         const annotationKey = annotationToKey(annotation);
         if (this.annotations[annotationKey]) {
