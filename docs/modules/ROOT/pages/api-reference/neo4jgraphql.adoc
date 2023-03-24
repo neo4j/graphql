@@ -56,11 +56,6 @@ Accepts all of the options from https://www.graphql-tools.com/docs/generate-sche
  Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-driverconfig[`DriverConfig`]
 |Additional driver configuration options.
 
-|`enableRegex` +
- +
- Type: `boolean`
-|Whether to enable RegEx filters, see xref::filtering.adoc#filtering-regex[RegEx matching] for more information.
-
 |`queryOptions` +
  +
  Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-cypherqueryoptions[`CypherQueryOptions`]

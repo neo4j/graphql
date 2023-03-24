@@ -127,9 +127,6 @@ const features = {
 const neoSchema = new Neo4jGraphQL({ features, typeDefs, driver });
 ----
 
-
-Previously to enable to this filter the config option `enableRegex` was used, it has been deprecated. Use the `features` configuration object as described here, as the `enableRegex` will be removed in the future.
-
 > The nature of RegEx matching means that on an unprotected API, this could potentially be used to execute a ReDoS attack (https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) against the backing Neo4j database.
 
 === Array comparison
