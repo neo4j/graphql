@@ -86,6 +86,7 @@ export function distance(lexpr: Expr, rexpr: Expr): CypherFunction {
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/spatial/#functions-distance)
  * @group Expressions
  * @category Cypher Functions
+ * @example Generated Cypher: `point.distance(point1, point2)`
  */
 export function pointDistance(lexpr: Expr, rexpr: Expr): CypherFunction {
     return new CypherFunction("point.distance", [lexpr, rexpr]);

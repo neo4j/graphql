@@ -25,7 +25,7 @@ import { Reference } from "./Reference";
 export type NodeProperties = Record<string, Param<any>>;
 
 type NodeRefOptions = {
-    labels?: string[];
+    labels?: Iterable<string>;
 };
 
 /** Represents a node reference
@@ -36,7 +36,7 @@ export class NodeRef extends Reference {
 
     constructor(options: NodeRefOptions = {}) {
         super("this");
-        this.labels = options.labels || [];
+        this.labels = Array.from(options.labels || []);
     }
 
     public hasLabels(...labels: string[]): HasLabel {
