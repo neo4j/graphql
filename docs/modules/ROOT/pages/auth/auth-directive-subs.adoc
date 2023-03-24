@@ -1,9 +1,11 @@
-[[auth-directive]]
-= `@auth` directive
+[[auth-directive-subsctiptions]]
+= `@auth` directive and Subscriptions
+
+== `@auth` directive
 
 The `@auth` directive definition is dynamically generated on runtime based on user type definitions.
 
-== `rules`
+=== `rules`
 
 You can have many rules for many operations. Each rule is fallen through until a match is found against the corresponding operation. If no match is found, an error is thrown. You can think of rules as a big `OR`.
 
@@ -16,7 +18,7 @@ You can have many rules for many operations. Each rule is fallen through until a
 ])
 ----
 
-== `operations`
+=== `operations`
 
 `operations` is an array which allows you to re-use the same rule for many operations.
 
@@ -52,9 +54,40 @@ mutation {
 
 In the above example, there is a `CREATE` operation followed by a `CONNECT`, so the auth rule must allow a user to perform both of these operations.
 
-== Auth Value Plucking
+=== Auth Value Plucking
 
 When using the `@auth` directive, you use the following prefixes to substitute in their relevant values:
 
 - `$jwt.` - pulls value from JWT
 - `$context.` - pulls value from context
+
+
+[[subscriptions]]
+== Subscriptions
+
+xref::subscriptions/index.adoc[Subscriptions] can be used along with `@auth`, however, some operations are not supported. To setup rules,
+use the `SUBSCRIBE` operation.
+
+```graphql
+type Movie {
+    title: String!
+}
+
+extend type Movie @auth(rules: [{ isAuthenticated: true, operations: [SUBSCRIBE] }])
+```
+
+=== Authentication
+If the authentication rules `isAuthenticated` and `allowUnauthenticated` are not met, the subscription request will fail and no events will
+be sent.
+
+=== Roles
+Roles can be set for subscriptions. Only requests matching the roles set will be accepted.
+
+=== Bind
+NOTE: Not Supported
+
+=== Where
+NOTE: Not Supported
+
+=== Allow
+NOTE: Not Supported

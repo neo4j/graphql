@@ -1,14 +1,7 @@
 [[auth]]
-= Auth
+= Authentication and Authorization
 
 In this chapter you will learn more about how to secure your GraphQL API using the Neo4j GraphQL Library's built-in auth mechanics.
-
-- xref::auth/setup.adoc[Setup]
-- xref::auth/auth-directive.adoc[`@auth` directive]
-- xref::auth/global-authentication.adoc[Global authentication]
-- xref::auth/authentication.adoc[Authentication]
-- xref::auth/authorization/index.adoc[Authorization]
-- xref::auth/subscriptions.adoc[Subscriptions]
 
 == Quickstart examples
 

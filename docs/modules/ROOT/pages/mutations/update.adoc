@@ -168,7 +168,7 @@ mutation {
 This operation is equivalent to the previous example.
 
 [[array-methods]]
-= Array methods
+== Array methods
 
 Array methods allow us to modify existing property arrays in Update mutations within these entities:
 
@@ -186,9 +186,9 @@ The POP operator expects a single Int value as input
 
 The PUSH operator conforms to the type of input defined in the type definition.
 
-== Examples
+=== Examples
 
-=== Array pop
+==== Array pop
 Suppose we have the following type definition, a Movie with a property array called tags:
 
 [source, graphql, indent=0]
@@ -276,7 +276,7 @@ mutation {
 }
 ----
 
-=== Array push
+==== Array push
 Suppose we have the following type definition, a Movie with a property array called tags:
 
 [source, graphql, indent=0]
@@ -362,7 +362,7 @@ mutation {
 }
 ----
 
-=== Array push and pop in one update
+==== Array push and pop in one update
 
 It is possible to perform both a push and pop operation in one Update mutation.
 

@@ -1,5 +1,5 @@
-[[subscriptions-events]]
-= Subscriptions Events
+[[subscription-events]]
+= Subscription Events
 
 [[create]]
 == Create Subscriptions

@@ -1,0 +1,421 @@
+[[ogm-api-reference]]
+= API Reference
+
+[[ogm-api-reference-ogm]]
+== `OGM`
+
+=== `constructor`
+
+Returns an `OGM` instance.
+
+Takes an `input` object as a parameter, which is then passed to the `Neo4jGraphQL` constructor. Supported options are listed in the documentation for xref::api-reference/neo4jgraphql.adoc[`Neo4jGraphQL`].
+
+==== Example
+
+[source, javascript, indent=0]
+----
+const ogm = new OGM({
+    typeDefs,
+});
+----
+
+=== `init`
+
+Asynchronous method to initialize the OGM. Internally, calls xref::api-reference/neo4jgraphql.adoc#api-reference-getschema[`Neo4jGraphQL.getSchema()`] to generate a GraphQL schema, and stores the result. Initializes any models which have been created before this execution, and will throw an error if any of them are invalid.
+
+=== `model`
+
+Returns a `Model` instance matching the passed in name, or (if the OGM has been initialized) throws an `Error` if one can't be found.
+
+Accepts a single argument `name` of type `string`.
+
+==== Example
+
+For the following type definitions:
+
+[source, graphql, indent=0]
+----
+type User {
+    username: String!
+}
+----
+
+The following would successfully return a `Model` instance:
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+----
+
+The following would throw an `Error`:
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("NotFound");
+----
+
+[[ogm-api-type-generation]]
+=== `generate`
+
+Either writes to specified `outFile` or returns a string - if `noWrite` is set. 
+
+==== Example with outFile
+
+Will write to outFile:
+
+[source, typescript, indent=0]
+----
+import { OGM, generate } from "@neo4j/graphql-ogm";
+
+const typeDefs = `
+    type Movie {
+        id: ID
+        name: String
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
+);
+
+const ogm = new OGM({ typeDefs, driver });
+
+await generate({
+    ogm,
+    outFile: "path/to/my/file.ts",
+});
+
+console.log("Types Generated");
+----
+
+==== Example with noWrite
+
+Will return a string:
+
+[source, typescript, indent=0]
+----
+import { OGM, generate } from "@neo4j/graphql-ogm";
+
+const typeDefs = `
+    type Movie {
+        id: ID
+        name: String
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
+);
+
+const ogm = new OGM({ typeDefs, driver });
+
+const source = await generate({
+    ogm,
+    noWrite: true,
+});
+
+console.log("Types Generated ", source);
+----
+
+[[ogm-model]]
+== Model
+
+[[ogm-api-reference-model-aggregate]]
+=== `aggregate`
+
+This method can be used to aggregate nodes, and maps to the underlying schema xref::queries.adoc#queries-aggregate[Aggregate].
+
+==== Example
+
+Find the longest User name:
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+
+const usersAggregate = await User.aggregate({
+    aggregate: {
+        name: {
+            longest: true
+        }
+    }
+});
+----
+
+Find the longest User name where name starts with the letter "D":
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+
+const usersAggregate = await User.aggregate({
+    where: {
+        name_STARTS_WITH: "D"
+    },
+    aggregate: {
+        name: {
+            longest: true
+        }
+    }
+});
+----
+
+==== Arguments
+
+|===
+|Name and Type |Description
+
+|`where` +
+ +
+ Type: `GraphQLWhereArg`
+|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc[Filtering].
+|===
+
+[[ogm-api-reference-model-create]]
+=== `create`
+
+This method can be used to update nodes, and maps to the underlying xref::mutations/create.adoc[Create] Mutation.
+
+Returns a `Promise` that resolves to the equivalent of the Mutation response for this operation.
+
+==== Example
+
+To create a Movie with title "The Matrix":
+
+[source, javascript, indent=0]
+----
+const Movie = ogm.model("Movie");
+
+await Movie.create({ input: [{ title: "The Matrix" }] })
+----
+
+==== Arguments
+
+|===
+|Name and Type |Description
+
+|`input` +
+ +
+ Type: `any`
+|JavaScript object representation of the GraphQL `input` input type used for xref::mutations/create.adoc[Create] mutations.
+
+|`selectionSet` +
+ +
+ Type: `string` or `DocumentNode` or `SelectionSetNode`
+|Selection set for the Mutation, see xref::ogm/selection-set.adoc[Selection Set] for more information.
+
+|`args` +
+ +
+ Type: `any`
+|The `args` value for the GraphQL Mutation.
+
+|`context` +
+ +
+ Type: `any`
+|The `context` value for the GraphQL Mutation.
+
+|`rootValue` +
+ +
+ Type: `any`
+|The `rootValue` value for the GraphQL Mutation.
+|===
+
+[[ogm-api-reference-model-delete]]
+=== `delete`
+
+This method can be used to delete nodes, and maps to the underlying xref::mutations/delete.adoc[Delete] Mutation.
+
+Returns a `Promise` which resolvers to a `DeleteInfo` object:
+
+|===
+|Name and Type |Description
+
+|`nodesDeleted` +
+ +
+ Type: `number`
+|The number of nodes deleted.
+
+|`relationshipsDeleted` +
+ +
+ Type: `number`
+|The number of relationships deleted.
+|===
+
+==== Example
+
+To delete all User nodes where the name is "Dan":
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+
+await User.delete({ where: { name: "Dan" }});
+----
+
+==== Arguments
+
+|===
+|Name and Type |Description
+
+|`where` +
+ +
+ Type: `GraphQLWhereArg`
+|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc[Filtering].
+
+|`delete` +
+ +
+ Type: `string` or `DocumentNode` or `SelectionSetNode`
+|A JavaScript object representation of the GraphQL `delete` input type used for xref::mutations/delete.adoc[Delete] Mutations.
+
+|`context` +
+ +
+ Type: `any`
+|The `context` value for the GraphQL Mutation.
+
+|`rootValue` +
+ +
+ Type: `any`
+|The `rootValue` value for the GraphQL Mutation.
+|===
+
+[[ogm-api-reference-model-find]]
+=== `find`
+
+This method can be used to find nodes, and maps to the underlying schema xref::queries.adoc[Queries].
+
+Returns a `Promise` which resolvers to an array of objects matching the type of the Model.
+
+==== Example
+
+To find all user nodes in the database:
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+
+const users = await User.find();
+----
+
+To find users with name "Jane Smith":
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+
+const users = await User.find({ where: { name: "Jane Smith" }});
+----
+
+==== Arguments
+
+|===
+|Name and Type |Description
+
+|`where` +
+ +
+ Type: `GraphQLWhereArg`
+|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc[Filtering].
+
+|`options` +
+ +
+ Type: `GraphQLOptionsArg`
+|A JavaScript object representation of the GraphQL `options` input type used for xref::sorting.adoc[Sorting] and xref::pagination/index.adoc[Pagination].
+
+|`selectionSet` +
+ +
+ Type: `string` or `DocumentNode` or `SelectionSetNode`
+|Selection set for the Mutation, see xref::ogm/selection-set.adoc[Selection Set] for more information.
+
+|`args` +
+ +
+ Type: `any`
+|The `args` value for the GraphQL Mutation.
+
+|`context` +
+ +
+ Type: `any`
+|The `context` value for the GraphQL Mutation.
+
+|`rootValue` +
+ +
+ Type: `any`
+|The `rootValue` value for the GraphQL Mutation.
+|===
+
+[[ogm-api-reference-model-update]]
+=== `update`
+
+This method can be used to update nodes, and maps to the underlying xref::mutations/update.adoc[Update] Mutation.
+
+Returns a `Promise` that resolves to the equivalent of the Mutation response for this operation.
+
+==== Example
+
+For the User with name "John", update their name to be "Jane":
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+
+const { users } = await User.update({
+    where: { name: "John" },
+    update: { name: "Jane" },
+});
+----
+
+==== Arguments
+
+|===
+|Name and Type |Description
+
+|`where` +
+ +
+ Type: `GraphQLWhereArg`
+|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc[Filtering].
+
+|`update` +
+ +
+ Type: `any`
+|A JavaScript object representation of the GraphQL `update` input type used for xref::mutations/update.adoc[Update] Mutations.
+
+|`connect` +
+ +
+ Type: `any`
+|A JavaScript object representation of the GraphQL `connect` input type used for xref::mutations/update.adoc[Update] Mutations.
+
+|`disconnect` +
+ +
+ Type: `any`
+|A JavaScript object representation of the GraphQL `disconnect` input type used for xref::mutations/update.adoc[Update] Mutations.
+
+|`create` +
+ +
+ Type: `any`
+|A JavaScript object representation of the GraphQL `create` input type used for xref::mutations/update.adoc[Update] Mutations.
+
+|`options` +
+ +
+ Type: `GraphQLOptionsArg`
+|A JavaScript object representation of the GraphQL `options` input type used for xref::sorting.adoc[Sorting] and xref::pagination/index.adoc[Pagination].
+
+|`selectionSet` +
+ +
+ Type: `string` or `DocumentNode` or `SelectionSetNode`
+|Selection set for the Mutation, see xref::ogm/selection-set.adoc[Selection Set] for more information.
+
+|`args` +
+ +
+ Type: `any`
+|The `args` value for the GraphQL Mutation.
+
+|`context` +
+ +
+ Type: `any`
+|The `context` value for the GraphQL Mutation.
+
+|`rootValue` +
+ +
+ Type: `any`
+|The `rootValue` value for the GraphQL Mutation.
+|===

@@ -1,0 +1,162 @@
+[[queries-aggregations]]
+= Aggregations
+
+Neo4j GraphQL supports aggregations on fields with type:
+
+1. `ID`- String
+2. `String` - String
+3. `Int` - Numerical
+4. `Float` - Numerical
+5. `BigInt` - Numerical
+6. `DateTime`
+7. `Time`
+8. `LocalTime`
+9. `LocalDateTime`
+10. `Duration`
+
+Numerical Fields will expose the following aggregation selections:
+
+1. `min`
+2. `max`
+3. `average`
+4. `sum`
+
+String fields will expose:
+
+1. `shortest`
+2. `longest`
+
+The rest will only expose:
+
+1. `min`
+2. `max`
+
+
+Aggregation queries accepts a `where` argument for xref::filtering.adoc[filtering] data.
+
+== Counting Using aggregation
+
+The following Query will count all User nodes:
+
+[source, graphql, indent=0]
+----
+query {
+    usersAggregate {
+        count
+    }
+}
+----
+
+== Counting User nodes where name starts with "J"
+
+[source, graphql, indent=0]
+----
+query {
+    usersAggregate(where: { name_STARTS_WITH: "J" }) {
+        count
+    }
+}
+----
+
+== Querying for the longest User name
+
+[source, graphql, indent=0]
+----
+query {
+    usersAggregate {
+        name {
+            longest
+        }
+    }
+}
+----
+
+== Querying for first Post date
+
+[source, graphql, indent=0]
+----
+query {
+    postsAggregate {
+        createdAt {
+            min
+        }
+    }
+}
+----
+
+[[queries-aggregate-related-nodes]]
+== Aggregate related nodes
+
+Related nodes can also be aggregated within a query by accessing the aggregation fields in the node.
+In these fields, you can **count**, aggregate the **nodes** or **edges** fields.
+
+The same selections and types as before are available in relationship aggregations.
+
+=== Counting all posts per users
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        id
+        postsAggregate {
+            count
+        }
+    }
+}
+----
+
+=== Finding longest post per user
+By using the `node` field, related nodes properties can be aggregated.
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        name
+        postsAggregate {
+            node {
+                content {
+                  longest
+                }
+            }
+        }
+    }
+}
+----
+
+=== Aggregate relationships
+Relationship properties can be aggregated as well by using the `edge` field.
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        name
+        postsAggregate {
+            edge {
+              date {
+                max
+              }
+            }
+        }
+    }
+}
+----
+
+=== Undirected aggregation queries
+
+When performing an aggregation on related nodes, the query against the relationship
+can be defined as an xref::queries.adoc#_undirected_queries[undirected] using the argument `directed: false`:
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        id
+        postsAggregate(directed: false) {
+            count
+        }
+    }
+}
+----

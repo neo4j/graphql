@@ -42,3 +42,53 @@ type BlogPost
     published: Boolean!
 }
 ----
+
+[[auth-global-authentication]]
+== Global Authentication
+
+For some cases the GraphQL API needs to be secured globally to restrict access to _any_ of the top-level GraphQL types without prior authentication. In the Neo4j GraphQL Library this is referred to as global authentication. It is also known as API-wide authorization. 
+
+=== Configuration
+
+To use the global authentication functionality, it is required to have an instance of an auth plugin for the Neo4j GraphQL Library. For most use cases you will only need to use our provided plugins at `@neo4j/graphql-plugin-auth`. Below is an example configuration enabling global authentication via the `Neo4jGraphQLAuthJWTPlugin` class:
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: "super-secret",
+            globalAuthentication: true,
+        })
+    }
+});
+----
+
+NOTE: Observe that the `Neo4jGraphQLAuthJWTPlugin` class does not accept to enable both `noVerify` and `globalAuthentication` simultaneously.
+
+If you would like to use JWKS decoding and enable global authentication then use the `Neo4jGraphQLAuthJWKSPlugin` class like so:
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
+            jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
+            globalAuthentication: true,
+        })
+    }
+});
+----
+
+=== Functionality
+
+If global authentication is enabled in the auth plugin for the Neo4j GraphQL Library, it is required that _each_ request contains a valid JWT token in the `authorization` header. Otherwise an authentication error will be thrown.
+

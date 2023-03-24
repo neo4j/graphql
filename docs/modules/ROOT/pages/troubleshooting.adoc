@@ -1,0 +1,236 @@
+[[troubleshooting]]
+= Troubleshooting
+
+This chapter contains common troubleshooting steps. Additionally, there is a section for xref::troubleshooting/faqs.adoc[FAQs] (Frequently Asked Questions) where you might find answers to your problems.
+
+[[troubleshooting-debug-logging]]
+== Debug Logging
+
+=== For `@neo4j/graphql`
+
+`@neo4j/graphql` uses the https://www.npmjs.com/package/debug[`debug`] library for debug-level logging. You can turn on all debug logging by setting the environment variable `DEBUG` to `@neo4j/graphql:*` when running. For example:
+
+[source, bash, indent=0]
+----
+DEBUG=@neo4j/graphql:* node src/index.js
+----
+
+Alternatively, if you are debugging a particular functionality, you can specify a number of namespaces to isolate certain log lines:
+
+1. `@neo4j/graphql:*` - Logs all
+2. `@neo4j/graphql:auth` - Logs the status of authorization header and token extraction, and decoding of JWT
+3. `@neo4j/graphql:graphql` - Logs the GraphQL query and variables
+4. `@neo4j/graphql:execute` - Logs the Cypher and Cypher paramaters before execution, and summary of execution
+
+=== For `@neo4j/introspector`
+
+`@neo4j/introspector` has its own debug logging namespace and you can turn on logging for it with:
+
+[source, bash, indent=0]
+----
+DEBUG=@neo4j/introspector node src/index.js
+----
+
+Read more about the xref::introspector.adoc[introspector].
+
+[[troubleshooting-query-tuning]]
+== Query Tuning
+
+Hopefully you won't need to perform any query tuning, but if you do, the Neo4j GraphQL Library allows you to set the full array of query options on construction of the library.
+
+You can read more about the available query options at https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/#cypher-query-options.
+
+_Please only set these options if you know what you are doing._
+
+For example, in order to set the Cypher runtime to "interpreted":
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL, CypherRuntime } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String!
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    config: {
+        queryOptions: {
+            runtime: CypherRuntime.INTERPRETED,
+        },
+    },
+});
+
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req }),
+    });
+
+    server.listen().then(({ url }) => {
+        console.log(`Server ready at ${url}`);
+    });
+});
+----
+
+[[troubleshooting-faqs]]
+== FAQs
+
+This chapter contains commonly asked questions and their solutions.
+
+=== I've upgraded from <1.1.0 and my `DateTime` fields aren't sorting as expected
+
+Due to a bug in versions less than 1.1.0, there is a chance that your `DateTime` fields are stored in the database as strings instead of temporal values. You should perform a rewrite of those properties in your database using a Cypher query. For an example where the affected node has label "Movie" and the affected property is "timestamp", you can do this using the following Cypher:
+
+[source, javascript, indent=0]
+----
+MATCH (m:Movie)
+WHERE apoc.meta.type(m.timestamp) = "STRING"
+SET m.timestamp = datetime(m.timestamp)
+RETURN m
+----
+
+=== I've created some data and then gone to query it, but it's not there
+
+If you use a causal cluster or an Aura Professional instance, there is a chance that the created data is not yet present on the server which gets connected to on the next GraphQL query.
+
+You can ensure that the data is available to query by passing a bookmark into your request - see xref::driver-configuration.adoc[Specifying Neo4j Bookmarks] for more information.
+
+=== What is `_emptyInput` in my update and create inputs?
+
+`_emptyInput` will appear in your update and create inputs if you define a type with only auto-generated and/or relationship properties. It is a placeholder property and therefore giving it a value in neither update nor create will give it a value on the node. `_emptyInput` will be removed if you add a user-provided property.
+
+The following example will create inputs with `_emptyInput`:
+
+```graphql
+type Cookie {
+    id: ID! @id
+    owner: Owner!  @relationship(type: "HAS_OWNER", direction: OUT)
+    # f: String # If you don't want _emptyInput, uncomment this line.
+}
+```
+
+=== Relationship nullability isn't being enforced in my graph
+
+Currently, and given the typeDefs below, Neo4j GraphQL will enforce cardinality when creating and updating a one-one relationship such as the movie director field below: 
+
+[source, graphql, indent=0]
+----
+type Movie {
+    title: String!
+    director: Person! @relationship(type: "DIRECTED", direction: IN)
+    actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
+}
+
+type Person {
+    name: String!
+}
+----
+
+However, at this point, there is no mechanism to support validating the actors relationship. Furthermore, there is a known limitation given if you were create a movie and a director in one mutation: 
+
+[source, graphql, indent=0]
+----
+mutation {
+  createMovies(
+    input: [
+      {
+        title: "Forrest Gump"
+        director: { create: { node: { name: "Robert Zemeckis" } } }
+      }
+    ]
+  ) {
+    movies {
+      title
+      director {
+        name
+      }
+    }
+  }
+}
+----
+
+Then delete the director node: 
+
+[source, graphql, indent=0]
+----
+mutation {
+  deletePeople(where: { name: "Robert Zemeckis" }) {
+    nodesDeleted
+  }
+}
+----
+
+No error is thrown, even though the schema states that all movies must have a director thus technically rendering the movie node invalid. 
+
+Finally, we do not enforce relationship cardinality on union or interface relationships.
+
+[[security]]
+== Security
+
+This section describes security considerations and known issues.
+
+=== Authorization not triggered for empty match
+
+If a query yields no results, the xref::auth/auth-directive.adoc[Authorization] process will not be triggered.
+This means that the result will be empty, instead of throwing an authentication error. Unauthorized users may
+then discern whether or not a certain type exists in the database, even if data itself cannot be accessed.
+
+[[appendix-preventing-overfetching]]
+== Preventing overfetching
+
+When querying for unions and interfaces in Cypher, each union member/interface implementation is broken out into a subquery and joined with `UNION`. For example, using one of the examples above, when we query with no `where` argument, each subquery has a similar structure:
+
+[source, cypher, indent=0]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    RETURN { __resolveType: "Blog", title: blog.title }
+UNION
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(journal:Post)
+    RETURN { __resolveType: "Post" }
+}
+----
+
+Now if you were to leave both subqueries and add a `WHERE` clause for blogs, it would look like this:
+
+[source, cypher, indent=0]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    WHERE blog.title IS NOT NULL
+    RETURN { __resolveType: "Blog", title: blog.title }
+UNION
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(journal:Post)
+    RETURN { __resolveType: "Post" }
+}
+----
+
+As you can see, the subqueries are now "unbalanced", which could result in massive overfetching of `Post` nodes.
+
+So, when a `where` argument is passed in, only union members which are in the `where` object are fetched, so it is essentially acting as a logical OR gate, different from the rest of the `where` arguments in the schema:
+
+[source, cypher, indent=0]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    WHERE blog.title IS NOT NULL
+    RETURN { __resolveType: "Blog", title: blog.title }
+}
+----
+

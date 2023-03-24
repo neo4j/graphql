@@ -1,5 +1,5 @@
-[[auth-setup]]
-= Setup
+[[auth-getting-started]]
+= Getting Started
 
 == Configuration
 

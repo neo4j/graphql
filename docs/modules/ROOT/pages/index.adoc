@@ -1,12 +1,92 @@
 [[index]]
 = Neo4j GraphQL Library
 :experimental:
-:sectnums:
 :chapter-label:
 :toc-title: Contents
 //:front-cover-image: image::title-page.png[]
 :header-title: NEO4J GRAPHQL LIBRARY
 :title-page-background-image: image::title-page.png[]
+
+The Neo4j GraphQL Library is a highly flexible, low-code, open source JavaScript library that enables rapid API development for cross-platform and mobile applications by tapping into the power of connected data.
+
+With Neo4j as the graph database, the GraphQL Library makes it simple for applications to have application data treated as a graph natively from the front-end all the way to storage, avoiding duplicate schema work and ensuring flawless integration between front-end and backend developers.
+
+Written in TypeScript, the library's schema-first paradigm lets developers focus on the application data they need, while taking care of the heavy lifting involved in building the API.
+
+TIP: Are you a GRANDstack user? We have deprecated the GRANDstack starter app, find more information xref::deprecations.adoc[here].
+
+== How does it work?
+
+By supplying the Neo4j GraphQL Library with a set of type definitions describing the shape of your graph data, it can generate an entire executable schema with all of the additional types needed to execute queries and mutations to interact with your Neo4j database.
+
+For every query and mutation that is executed against this generated schema, the Neo4j GraphQL Library generates a single Cypher query which is executed against the database. This eliminates the infamous https://www.google.com/search?q=graphql+n%2B1[N+1 Problem] which can make GraphQL implementations slow and inefficient.
+
+== Features
+
+The Neo4j GraphQL Library presents a large feature set for interacting with a Neo4j database using GraphQL:
+
+- Automatic generation of xref::queries.adoc[Queries] and xref::mutations/index.adoc[Mutations] for CRUD interactions
+- Various xref::type-definitions/types.adoc[Types], including temporal and spatial types
+- Support for both node and relationship properties
+- Extensibility through the xref::type-definitions/cypher.adoc[`@cypher` directive] and/or xref::custom-resolvers.adoc[Custom Resolvers]
+- Extensive xref::filtering.adoc[Filtering] and xref::sorting.adoc[Sorting] options
+- Options for value xref::type-definitions/autogeneration.adoc[Autogeneration] and xref::type-definitions/default-values.adoc[Default Values]
+- Multiple xref::pagination/index.adoc[Pagination] options
+- Comprehensive authentication and authorisation options (xref::auth/index.adoc[Auth]), and additional xref::type-definitions/access-control.adoc[Access Control] options
+- An xref::ogm/index.adoc[OGM] (Object Graph Mapper) for programmatic interaction with your GraphQL API
+- A xref::getting-started/toolbox.adoc[Toolbox] (UI) to experiment with your Neo4j GraphQL API on Neo4j Desktop.
+
+
+== Interaction
+
+In the xref::getting-started/index.adoc[Getting Started] guide, Apollo Server is used to host the GraphQL schema. This bundles Apollo Sandbox which can be used to interact directly with your GraphQL API with no front-end.
+
+There are a variety of front-end frameworks with clients for interacting with GraphQL APIs:
+
+- https://reactjs.org/[React] - support through https://www.apollographql.com/docs/react/[Apollo Client]
+- https://vuejs.org/[Vue.js] - support through https://apollo.vuejs.org/[Vue Apollo]
+- https://angularjs.org/[AngularJS] - support through https://apollo-angular.com/docs/[Apollo Angular]
+
+== Deployment
+
+There are a variety of methods for deploying GraphQL APIs, the details of which will not be in this documentation.
+
+However, Apollo has documented a subset in their https://www.apollographql.com/docs/apollo-server/deployment[Deployment] documentation, which will be a good starting point.
+
+== Versioning
+
+The Neo4j GraphQL Library uses https://semver.org/[Semantic Versioning]. Given a version number `MAJOR.MINOR.PATCH`, the increment is based on:
+
+- `MAJOR` - incompatible API changes compared to the previous `MAJOR` version, for which you will likely have to migrate.
+- `MINOR` - new features have been added in a backwards compatible manner.
+- `PATCH` - bug fixes have been added in a backwards compatible manner.
+
+Additionally, prerelease version numbers may have additional suffixes, for example `MAJOR.MINOR.PATCH-PRERELEASE.NUMBER`, where `PRERELEASE` is one of the following:
+
+- `alpha` - unstable prerelease artifacts, and the API may change between releases during this phase.
+- `beta` - feature complete prerelease artifacts, which will be more stable than `alpha` releases but will likely still contain bugs.
+- `rc` - release candidate release artifacts where each could be promoted to a stable release, in a last effort to find trailing bugs.
+
+`NUMBER` in the suffix is simply an incrementing release number in each phase.
+
+[[introduction-requirements]]
+== Requirements
+
+1. https://neo4j.com/[Neo4j Database] version 4.4 and newer with https://neo4j.com/developer/neo4j-apoc/[APOC] plugin:
+2. https://nodejs.org/en/[Node.js] 16+
+
+For help installing the APOC plugin, see https://neo4j.com/labs/apoc/4.4/installation/[this page].
+
+== Resources
+
+1. https://github.com/neo4j/graphql[GitHub]
+2. https://github.com/neo4j/graphql/issues[Issue Tracker]
+3. https://www.npmjs.com/package/@neo4j/graphql[npm package]
+
+== Licence
+
+1. Documentation: link:{common-license-page-uri}[Creative Commons 4.0]
+2. Source: https://www.apache.org/licenses/LICENSE-2.0[Apache 2.0]
 
 ifndef::backend-pdf[]
 Documentation license: link:{common-license-page-uri}[Creative Commons 4.0]
@@ -17,33 +97,3 @@ ifdef::backend-pdf[]
 
 Documentation license: <<license, Creative Commons 4.0>>
 endif::[]
-
-> This is the documentation for the Neo4j GraphQL Library, authored by the Neo4j GraphQL Team.
-
-TIP: Are you a GRANDstack user? We have deprecated the GRANDstack starter app, find more information xref::deprecations.adoc[here].
-
-This documentation covers the following topics:
-
-- xref::introduction.adoc[Introduction] - Introduction to the Neo4j GraphQL Library.
-- xref::getting-started.adoc[Getting Started] - Start here if you want to quickly get up and running with the library.
-- xref::type-definitions/index.adoc[Type Definitions] - Define your nodes and relationships using type definitions as documented here.
-- xref::queries.adoc[Queries] - GraphQL Queries allow you to read data in your Neo4j database.
-- xref::mutations/index.adoc[Mutations] - GraphQL Mutations allow you to change data in your Neo4j database.
-- xref::subscriptions/index.adoc[Subscriptions] - GraphQL Subscriptions for real-time data updates.
-- xref::filtering.adoc[Filtering] - This chapter covers how to filter your data in Queries and Mutations.
-- xref::sorting.adoc[Sorting] - This chapter covers how to sort the data being returned.
-- xref::pagination/index.adoc[Pagination] - This chapter covers the pagination options offered by the Neo4j GraphQL Library.
-- xref::mathematical-operators.adoc[Mathematical operators] - This chapter covers how to use the Mathematical operators.
-- xref::custom-resolvers.adoc[Custom Resolvers] - Learn how to implement custom functionality accessible through your API.
-- xref::auth/index.adoc[Auth] - Covers the authentication and authorization options offered by this library.
-- xref::directives.adoc[Directives] - An index of all of the directives offered by the Neo4j GraphQL Library.
-- xref::api-reference/index.adoc[API Reference] - API reference for constructing an instance of the library.
-- xref::ogm/index.adoc[OGM] - This chapter covers the OGM (Object Graph Mapper), a programmatic way of using your API.
-- xref::introspector.adoc[Introspector] - This chapter covers how you can introspect an existing Neo4j database and automatically generate GraphQL type definitions from that.
-- xref::toolbox.adoc[GraphQL Toolbox] - Purpose-built Developer UI for your Neo4j GraphQL API.
-- xref::driver-configuration.adoc[Driver Configuration] - How to configure a database driver for use with this library.
-- xref::guides/index.adoc[Guides] - Guides for usage of the library, including migration guides for moving between versions.
-- xref::troubleshooting/index.adoc[Troubleshooting] - Having problems with the library? See if your problem has been found and solved before.
-- xref::deprecations.adoc[Deprecations] - Overview and information regarding deprecated products and applications.
-
-This manual is primarily written for software engineers building an API using the Neo4j GraphQL Library.
