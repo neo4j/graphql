@@ -1,0 +1,129 @@
+[[security]]
+= Security considerations
+
+As Graphql, it allows the user a lot of flexibility in the queries that can be made.
+Malicious users can craft evil queries that can cause a denial of service or expose sensitive data.
+
+While deploying an application to production, it is important to consider the security implications of the application.
+This section discusses some of the security considerations that should be taken into account before going to production.
+
+== Setup CORS
+
+While devloping, you may have set the following header : `Access-Control-Allow-Origin: *`.
+This means that all websites can access your API.
+
+If your API define too broad CORS rules, it can be used by malicious websites to perform cross-site scripting attacks.
+So a user can create a website that will make a request to your API.
+
+The best way to avoid this is to only allow requests from domains that you control.
+It will look like this : `Access-Control-Allow-Origin: https://mywebsite.com`.
+
+== Unsecure HTTP
+
+If you are using HTTP, you should consider using HTTPS.
+It is important to use HTTPS because it protects the integrity and confidentiality of the data exchanged between the client and the server.
+
+Even redirecting HTTP to HTTPS is not the best while building an API.
+If a devlopper is using HTTP, he will first hit the unencrypted endpoint and then be redirected to the encrypted endpoint.
+
+As the first request is unencrypted, it can be intercepted by a malicious user.
+This request is most of the time a login request, leaking the user credentials.
+
+== Use graphql armor
+
+link:https://github.com/Escape-Technologies/graphql-armor[Graphql armor] is a library that allows you to protect your API from malicious queries.
+It define some default rules that will filter evil queries and remove some secret leaks.
+
+Here is an example of how you can use it :
+
+[source,typescript]
+----
+import { ApolloServer } from 'apollo-server-express';
+import { ApolloArmor } from '@escape.tech/graphql-armor';
+
+const armor = new ApolloArmor();
+
+neoSchema.getSchema().then((schema) => {
+  const server = new ApolloServer({
+      schema,
+      ...armor.protect()
+  });
+
+  server.listen().then(({ url }) => {
+      console.log(`🚀 Server ready at ${url}`);
+  });
+})
+----
+
+Here is a non exhaustive list of fixes that Graphql armor will apply :
+
+=== Remove stacktraces
+
+If an error occurs, the stacktrace will be removed from the response.
+In the stacktrace, an attacker can find some information about the server operating system, database, library versions...
+
+=== Batched queries
+
+Batched queries are a way to make multiple queries in a single request.
+This can be useful to reduce the number of requests made to the API.
+
+However, it can be used by an attacker to make a lot of queries in a single request.
+If your rate limiting is at the HTTP level, it can be bypassed by an attacker sending the following queries :
+
+[source,graphql]
+----
+mutation { login(user: "admin", password: "admin") }
+mutation { login(user: "admin", password: "123456") }
+mutation { login(user: "admin", password: "qwerty") }
+...
+----
+
+=== Depth limit
+
+The depth limit is the maximum number of nested fields that can be requested in a query.
+This can be used to prevent a denial of service attack.
+
+Here is an example of a query that will be blocked by the depth limit :
+
+[source,graphql]
+----
+query {
+  user {
+    friends {
+      friends {
+        friends {
+          # and so on
+          # dumping the all database
+          ...
+        }
+      }
+    }
+  }
+}
+----
+
+=== Customization
+
+You can customize each rules independently and add your own plugins to armor, for more information, check the link:https://escape.tech/graphql-armor/docs/getting-started[Graphql armor documentation].
+
+== Proper access control
+
+Access control is really important while deploying to production your API.
+Any leak of data can cause a lot of business problems.
+Depending on the business case, you may want to implement some integration test or use a dynamic application security testing tool.
+
+== Use a DAST
+
+To ensure the security of your API, it's highly recommended to scan it every time you deploy it to the staging or production environments.
+By incorporating GraphQL DAST into your CI/CD pipeline, you can fortify your application before it's released to production.
+
+Here is a list of different DAST tools that you can use :
+
+=== GraphQL security
+
+You can use link:https://graphql.security[graphql.security], a free GraphQL security testing tool that quickly identifies the most common vulnerabilities in your application.
+
+=== Escape
+
+Another option is link:https://escape.tech[Escape], a GraphQL security SaaS platform that includes an automated pentest tool.
+This can be integrated into your CI/CD pipeline, such as Github Actions or Gitlab CIs. The security notifications will be automatically communicated to your CI/CD platform, allowing you to address any issues promptly.
