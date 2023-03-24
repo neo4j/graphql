@@ -45,7 +45,6 @@ describe("Subscriptions metadata on update", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
             } as any,

@@ -53,7 +53,13 @@ describe("Cypher coalesce()", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
+            features: {
+                filters: {
+                    String: {
+                        MATCHES: true,
+                    },
+                },
+            },
         });
 
         const query = gql`
@@ -132,7 +138,13 @@ describe("Cypher coalesce()", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
+            features: {
+                filters: {
+                    String: {
+                        MATCHES: true,
+                    },
+                },
+            },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
             },
@@ -183,7 +195,13 @@ describe("Cypher coalesce()", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
+            features: {
+                filters: {
+                    String: {
+                        MATCHES: true,
+                    },
+                },
+            },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
             },

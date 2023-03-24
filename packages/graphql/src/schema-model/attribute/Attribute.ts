@@ -17,14 +17,27 @@
  * limitations under the License.
  */
 
-import type { Annotation } from "../annotation/Annotation";
+import { Neo4jGraphQLSchemaValidationError } from "../../classes/Error";
+import type { Annotation, Annotations} from "../annotation/Annotation";
+import { annotationToKey } from "../annotation/Annotation";
 
 export class Attribute {
     public readonly name: string;
-    public readonly annotations: Annotation[];
+    public readonly annotations: Partial<Annotations> = {};
 
     constructor({ name, annotations }: { name: string; annotations: Annotation[] }) {
         this.name = name;
-        this.annotations = annotations;
+        for (const annotation of annotations) {
+            this.addAnnotation(annotation);
+        }
     }
+
+    private addAnnotation(annotation: Annotation): void {
+        const annotationKey = annotationToKey(annotation);
+        if (this.annotations[annotationKey]) {
+            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
+        }
+        this.annotations[annotationKey] = annotation as any;
+    }
+
 }

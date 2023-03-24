@@ -55,7 +55,6 @@ describe("Cypher -> Connections -> Interfaces", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

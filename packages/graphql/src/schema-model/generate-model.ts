@@ -16,79 +16,125 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import type {
-    DirectiveNode,
-    DocumentNode,
-    FieldDefinitionNode,
-    ObjectTypeDefinitionNode,
-    UnionTypeDefinitionNode,
-    ValueNode,
-} from "graphql";
-import { Kind } from "graphql";
+import type { DirectiveNode, DocumentNode, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
+import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import { SCALAR_TYPES } from "../constants";
+import type { DefinitionNodes} from "../schema/get-definition-nodes";
 import { getDefinitionNodes } from "../schema/get-definition-nodes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import type { Annotation } from "./annotation/Annotation";
-import { CypherAnnotation } from "./annotation/CypherAnnotation";
 import { Attribute } from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
+import { parseAuthorizationAnnotation } from "./parser/authorization-annotation";
+import { parseCypherAnnotation } from "./parser/cypher-annotation";
+import { parseArguments } from "./parser/utils";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionNodes = getDefinitionNodes(document);
+
+    // init interface to typennames map
+    const interfaceToImplementingTypeNamesMap = initInterfacesToTypenamesMap(definitionNodes);
+    // hydrate interface to typennames map
+    hydrateInterfacesToTypenamesMap(definitionNodes, interfaceToImplementingTypeNamesMap);
+
     const concreteEntities = definitionNodes.objectTypes.map(generateConcreteEntity);
     const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
         if (acc.has(entity.name)) {
-            throw new Error(`Duplicate node ${entity.name}`);
+            throw new Neo4jGraphQLSchemaValidationError(`Duplicate node ${entity.name}`);
         }
         acc.set(entity.name, entity);
         return acc;
     }, new Map<string, ConcreteEntity>());
 
-    // TODO: add interfaces as well
-    const compositeEntities = definitionNodes.unionTypes.map((entity) => {
-        return generateCompositeEntity(entity, concreteEntitiesMap);
+    const interfaceEntities = Array.from(interfaceToImplementingTypeNamesMap.entries()).map(
+        ([name, concreteEntities]) => {
+            return generateCompositeEntity(name, concreteEntities, concreteEntitiesMap);
+        }
+    );
+    const unionEntities = definitionNodes.unionTypes.map((entity) => {
+        return generateCompositeEntity(
+            entity.name.value,
+            entity.types?.map((t) => t.name.value) || [],
+            concreteEntitiesMap
+        );
     });
 
-    return new Neo4jGraphQLSchemaModel({ compositeEntities, concreteEntities });
+    return new Neo4jGraphQLSchemaModel({
+        compositeEntities: [...unionEntities, ...interfaceEntities],
+        concreteEntities,
+    });
+}
+
+function initInterfacesToTypenamesMap(definitionNodes: DefinitionNodes) {
+    return definitionNodes.interfaceTypes.reduce((acc, entity) => {
+        const interfaceTypeName = entity.name.value;
+        acc.set(interfaceTypeName, []);
+        return acc;
+    }, new Map<string, string[]>());
+}
+
+function hydrateInterfacesToTypenamesMap(definitionNodes: DefinitionNodes, interfaceToImplementingTypeNamesMap: Map<string, string[]>) {
+    return definitionNodes.objectTypes.forEach((el) => {
+        if (!el.interfaces) {
+            return;
+        }
+        const objectTypeName = el.name.value;
+        el.interfaces?.forEach((i) => {
+            const interfaceTypeName = i.name.value;
+            const concreteEntities = interfaceToImplementingTypeNamesMap.get(interfaceTypeName);
+            if (!concreteEntities) {
+                throw new Neo4jGraphQLSchemaValidationError(
+                    `Could not find composite entity with name ${interfaceTypeName}`
+                );
+            }
+            interfaceToImplementingTypeNamesMap.set(interfaceTypeName, concreteEntities.concat(objectTypeName));
+        });
+    });
 }
 
 function generateCompositeEntity(
-    definition: UnionTypeDefinitionNode,
+    entityDefinitionName: string,
+    entityImplementingTypeNames: string[],
     concreteEntities: Map<string, ConcreteEntity>
 ): CompositeEntity {
-    const compositeFields = (definition.types || []).map((type) => {
-        const concreteEntity = concreteEntities.get(type.name.value);
+    const compositeFields = entityImplementingTypeNames.map((type) => {
+        const concreteEntity = concreteEntities.get(type);
         if (!concreteEntity) {
-            throw new Error(`Could not find concrete entity with name ${type.name.value}`);
+            throw new Neo4jGraphQLSchemaValidationError(`Could not find concrete entity with name ${type}`);
         }
         return concreteEntity;
     });
 
-    if (!compositeFields.length) {
-        throw new Error(`Composite entity ${definition.name.value} has no concrete entities`);
-    }
+    // TODO: fix for interfaces annotated with @relationshipFields - which will never have concrete entities
+    // if (!compositeFields.length) {
+    //     throw new Neo4jGraphQLSchemaValidationError(
+    //         `Composite entity ${entityDefinitionName} has no concrete entities`
+    //     );
+    // }
+    // TODO: add annotations
     return new CompositeEntity({
-        name: definition.name.value,
+        name: entityDefinitionName,
         concreteEntities: compositeFields,
     });
 }
 
 function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteEntity {
-    const fields = (definition.fields || []).map(generateField);
+    const fields = (definition.fields || []).map((fieldDefinition) => generateField(fieldDefinition));
     const directives = (definition.directives || []).reduce((acc, directive) => {
         acc.set(directive.name.value, parseArguments(directive));
         return acc;
     }, new Map<string, Record<string, unknown>>());
     const labels = getLabels(definition, directives.get("node") || {});
+    // TODO: add annotations inherited from interface
 
     return new ConcreteEntity({
         name: definition.name.value,
         labels,
         attributes: filterTruthy(fields),
+        annotations: createEntityAnnotations(definition.directives || []),
     });
 }
 
@@ -116,6 +162,8 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
             switch (directive.name.value) {
                 case "cypher":
                     return parseCypherAnnotation(directive);
+                case "authorization":
+                    return parseAuthorizationAnnotation(directive);
                 default:
                     return undefined;
             }
@@ -123,29 +171,15 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
     );
 }
 
-function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
-    const { statement } = parseArguments(directive);
-    if (!statement || typeof statement !== "string") {
-        throw new Error("@cypher statement required");
-    }
-    return new CypherAnnotation({
-        statement: statement,
-    });
-}
-
-function parseArguments(directive: DirectiveNode): Record<string, unknown> {
-    return (directive.arguments || [])?.reduce((acc, argument) => {
-        acc[argument.name.value] = getArgumentValueByType(argument.value);
-        return acc;
-    }, {});
-}
-
-function getArgumentValueByType(argumentValue: ValueNode): unknown {
-    // TODO: parse other kinds
-    if (argumentValue.kind === Kind.STRING) {
-        return argumentValue.value;
-    }
-    if (argumentValue.kind === Kind.LIST) {
-        return argumentValue.values.map((v) => getArgumentValueByType(v));
-    }
+function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
+    return filterTruthy(
+        directives.map((directive) => {
+            switch (directive.name.value) {
+                case "authorization":
+                    return parseAuthorizationAnnotation(directive);
+                default:
+                    return undefined;
+            }
+        })
+    );
 }

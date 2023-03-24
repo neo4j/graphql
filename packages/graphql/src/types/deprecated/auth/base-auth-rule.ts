@@ -17,26 +17,13 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../Environment";
-import { Clause } from "./Clause";
-import type { Procedure } from "../types";
-
-// TODO: ADD yield, where and return
-/**
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/call/)
- * @group Clauses
- */
-export class CallProcedure extends Clause {
-    private procedure: Procedure;
-
-    constructor(procedure: Procedure) {
-        super();
-        this.procedure = procedure;
-    }
-
-    /** @internal */
-    public getCypher(env: CypherEnvironment): string {
-        const procedureCypher = this.procedure.getCypher(env);
-        return `CALL ${procedureCypher}`;
-    }
+export interface BaseAuthRule {
+    isAuthenticated?: boolean;
+    allowUnauthenticated?: boolean;
+    allow?: { [k: string]: any } | "*";
+    bind?: { [k: string]: any } | "*";
+    where?: { [k: string]: any } | "*";
+    roles?: string[];
+    AND?: BaseAuthRule[];
+    OR?: BaseAuthRule[];
 }

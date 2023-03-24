@@ -17,28 +17,28 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../../CypherASTNode";
-import type { CypherEnvironment } from "../../Environment";
-import type { Predicate } from "../../types";
+import type { CypherEnvironment } from "../Environment";
+import { Clause } from "./Clause";
+import type { CypherASTNode } from "../CypherASTNode";
 
-// Note, this is a procedure, but acts as a predicate expression
 /**
- * @group Expressions
- * @category Cypher Functions
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/5/clauses/use/)
+ * @group Clauses
  */
-export class ValidatePredicate extends CypherASTNode {
-    private predicate: Predicate;
-    private message: string;
+export class Use extends Clause {
+    private graph: string;
+    private subClause: CypherASTNode;
 
-    constructor(predicate: Predicate, message: string) {
+    constructor(graph: string, subClause: Clause) {
         super();
-        this.predicate = predicate;
-        this.message = message;
+        this.subClause = subClause.getRoot();
+        this.graph = graph;
+        this.addChildren(this.subClause);
     }
 
     /** @internal */
     public getCypher(env: CypherEnvironment): string {
-        const predicateCypher = this.predicate.getCypher(env);
-        return `apoc.util.validatePredicate(${predicateCypher}, "${this.message}", [0])`;
+        const subClauseStr = this.subClause.getCypher(env);
+        return `USE ${this.graph}\n${subClauseStr}`;
     }
 }

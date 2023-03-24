@@ -66,7 +66,6 @@ describe("connectOrCreate", () => {
         test("Create with createOrConnect and CONNECT operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CONNECT]"),
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -118,7 +117,6 @@ describe("connectOrCreate", () => {
         test("Create with createOrConnect and CREATE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE]"),
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -170,7 +168,6 @@ describe("connectOrCreate", () => {
         test("Create with createOrConnect and CREATE, CONNECT operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE, CONNECT]"),
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -222,7 +219,6 @@ describe("connectOrCreate", () => {
         test("Create with createOrConnect and DELETE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[DELETE]"),
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -286,7 +282,6 @@ describe("connectOrCreate", () => {
         test("Update with createOrConnect and CONNECT operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CONNECT]"),
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -335,7 +330,6 @@ describe("connectOrCreate", () => {
         test("Update with createOrConnect and CREATE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE]"),
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -384,7 +378,6 @@ describe("connectOrCreate", () => {
         test("Update with createOrConnect and CREATE, CONNECT operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE, CONNECT]"),
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -433,7 +426,6 @@ describe("connectOrCreate", () => {
         test("Create with createOrConnect and DELETE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[DELETE]"),
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -490,7 +482,6 @@ describe("connectOrCreate", () => {
         test("Update with createOrConnect and CONNECT operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CONNECT]"),
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -540,7 +531,6 @@ describe("connectOrCreate", () => {
         test("Update with createOrConnect and CREATE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE]"),
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -590,7 +580,6 @@ describe("connectOrCreate", () => {
         test("Update with createOrConnect and CREATE, CONNECT operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE, CONNECT]"),
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -640,7 +629,6 @@ describe("connectOrCreate", () => {
         test("Create with createOrConnect and DELETE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[DELETE]"),
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -694,7 +682,6 @@ describe("connectOrCreate", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,

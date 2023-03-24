@@ -134,12 +134,10 @@ export default async function translateCreate({
             const projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
 
             if (projection.meta?.authValidatePredicates?.length) {
-                const projAuth = new Cypher.CallProcedure(
-                    new Cypher.apoc.Validate(
-                        Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                        AUTH_FORBIDDEN_ERROR,
-                        new Cypher.Literal([0])
-                    )
+                const projAuth = Cypher.apoc.util.validate(
+                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                    AUTH_FORBIDDEN_ERROR,
+                    new Cypher.Literal([0])
                 );
                 return {
                     projection: projectionExpr,

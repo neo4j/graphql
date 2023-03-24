@@ -47,9 +47,6 @@ describe("Cypher Advanced Filtering", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                enableRegex: true,
-            },
             features: {
                 filters: {
                     String: {
@@ -57,6 +54,10 @@ describe("Cypher Advanced Filtering", () => {
                         GT: true,
                         LTE: true,
                         GTE: true,
+                        MATCHES: true,
+                    },
+                    ID: {
+                        MATCHES: true,
                     },
                 },
             },

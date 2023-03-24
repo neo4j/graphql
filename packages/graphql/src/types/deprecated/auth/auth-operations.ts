@@ -17,23 +17,4 @@
  * limitations under the License.
  */
 
-import { TestClause } from "../../utils/TestClause";
-import Cypher from "../..";
-
-describe("apoc.date", () => {
-    test("convertFormat", () => {
-        const converFormat = Cypher.apoc.date.convertFormat(
-            new Cypher.Variable(),
-            "iso_zoned_date_time",
-            "iso_offset_date_time"
-        );
-
-        const queryResult = new TestClause(converFormat).build();
-
-        expect(queryResult.cypher).toMatchInlineSnapshot(
-            `"apoc.date.convertFormat(toString(var0), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")"`
-        );
-
-        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
-    });
-});
+export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "SUBSCRIBE";

@@ -39,7 +39,6 @@ describe("Cypher Aggregations Many with Alias directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

@@ -17,31 +17,27 @@
  * limitations under the License.
  */
 
+import type Cypher from "@neo4j/cypher-builder";
 import type { EventEmitter } from "events";
 import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
-import type Cypher from "@neo4j/cypher-builder";
-import type { Node, Relationship } from "./classes";
-import type { Neo4jDatabaseInfo } from "./classes/Neo4jDatabaseInfo";
-import type { RelationshipQueryDirectionOption } from "./constants";
-import type { Executor } from "./classes/Executor";
+import type { Node, Relationship } from "../classes";
+import type { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
+import type { RelationshipQueryDirectionOption } from "../constants";
+import type { Executor } from "../classes/Executor";
 import type { Directive } from "graphql-compose";
-import type { Neo4jGraphQLSchemaModel } from "./schema-model/Neo4jGraphQLSchemaModel";
+import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import type { Auth } from "./deprecated/auth/auth";
+import type { JwtPayload } from "./deprecated/auth/jwt-payload";
+import type { AuthContext } from "./deprecated/auth/auth-context";
 
-export { Node } from "./classes";
+export { Node } from "../classes";
 
 export type DriverConfig = {
     database?: string;
     bookmarks?: string | string[];
 };
-
-export interface AuthContext {
-    isAuthenticated: boolean;
-    roles: string[];
-    bindPredicate?: "any" | "all";
-    jwt?: JwtPayload;
-}
 
 export interface Context {
     driver?: Driver;
@@ -60,26 +56,6 @@ export interface Context {
     executionContext: Driver | Session | Transaction;
     executor: Executor;
     [k: string]: any;
-}
-
-export interface BaseAuthRule {
-    isAuthenticated?: boolean;
-    allowUnauthenticated?: boolean;
-    allow?: { [k: string]: any } | "*";
-    bind?: { [k: string]: any } | "*";
-    where?: { [k: string]: any } | "*";
-    roles?: string[];
-    AND?: BaseAuthRule[];
-    OR?: BaseAuthRule[];
-}
-
-export interface AuthRule extends BaseAuthRule {
-    operations?: AuthOperations[];
-}
-
-export interface Auth {
-    rules: AuthRule[];
-    type: "JWT";
 }
 
 export type FulltextIndex = {
@@ -284,10 +260,6 @@ export interface InterfaceWhereArg {
     _on?: GraphQLWhereArg[];
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
 }
-
-export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "SUBSCRIBE";
-
-export type AuthOrders = "pre" | "post";
 
 /**
  * Whats returned when deleting nodes
@@ -508,17 +480,6 @@ export interface Neo4jGraphQLPlugins {
     subscriptions?: Neo4jGraphQLSubscriptionsPlugin;
 }
 
-export interface JwtPayload {
-    [key: string]: any;
-    iss?: string | undefined;
-    sub?: string | undefined;
-    aud?: string | string[] | undefined;
-    exp?: number | undefined;
-    nbf?: number | undefined;
-    iat?: number | undefined;
-    jti?: string | undefined;
-}
-
 export type CallbackReturnValue = string | number | boolean | undefined | null;
 
 export type Neo4jGraphQLCallback = (
@@ -534,10 +495,16 @@ export interface Neo4jStringFiltersSettings {
     GTE?: boolean;
     LT?: boolean;
     LTE?: boolean;
+    MATCHES?: boolean;
+}
+
+export interface Neo4jIDFiltersSettings {
+    MATCHES?: boolean;
 }
 
 export interface Neo4jFiltersSettings {
     String?: Neo4jStringFiltersSettings;
+    ID?: Neo4jIDFiltersSettings;
 }
 
 export interface Neo4jFeaturesSettings {

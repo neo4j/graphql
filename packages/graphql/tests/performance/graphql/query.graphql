@@ -176,15 +176,7 @@ query DeeplyNestedWithRelationshipFilters {
 
 query NestedWithRelationshipSingleFilters {
     people(
-        where: {
-            name_STARTS_WITH: "T"
-            movies_SINGLE: {
-                title_CONTAINS: "i"
-                actors_SINGLE: {
-                    name_CONTAINS: "i"
-                }
-            }
-        }
+        where: { name_STARTS_WITH: "T", movies_SINGLE: { title_CONTAINS: "i", actors_SINGLE: { name_CONTAINS: "i" } } }
     ) {
         name
     }

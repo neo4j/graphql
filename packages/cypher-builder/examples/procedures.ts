@@ -17,4 +17,19 @@
  * limitations under the License.
  */
 
-export { convertFormat } from "./convert-format";
+import Cypher from "../src";
+
+// CALL db.labels() yield label as this0
+// RETURN this0
+
+const label = new Cypher.NamedVariable("label");
+
+const labelVar = new Cypher.Variable();
+const labelsCall = Cypher.db.labels().yield(["label", labelVar]).return(label);
+
+const { cypher, params } = labelsCall.build();
+
+console.log("Cypher");
+console.log(cypher);
+console.log("----");
+console.log("Params", params);

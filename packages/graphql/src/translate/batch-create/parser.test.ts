@@ -66,7 +66,6 @@ describe("TreeDescriptor Parser", () => {
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
         schema = await neoSchema.getSchema();
         nodes = neoSchema.nodes;

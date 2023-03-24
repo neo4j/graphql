@@ -41,7 +41,6 @@ describe("Cypher Where Aggregations with @node directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
