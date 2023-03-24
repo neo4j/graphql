@@ -134,7 +134,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type BookTitle_EN {
               book(directed: Boolean = true, options: BookOptions, where: BookWhere): Book!
-              bookAggregate(directed: Boolean = true, where: BookWhere): BookTitle_ENBookBookAggregationSelection
               bookConnection(after: String, directed: Boolean = true, first: Int, sort: [BookTitle_ENBookConnectionSort!], where: BookTitle_ENBookConnectionWhere): BookTitle_ENBookConnection!
               value: String!
             }
@@ -142,28 +141,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             type BookTitle_ENAggregateSelection {
               count: Int!
               value: StringAggregateSelectionNonNullable!
-            }
-
-            input BookTitle_ENBookAggregateInput {
-              AND: [BookTitle_ENBookAggregateInput!]
-              NOT: BookTitle_ENBookAggregateInput
-              OR: [BookTitle_ENBookAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: BookTitle_ENBookNodeAggregationWhereInput
-            }
-
-            type BookTitle_ENBookBookAggregationSelection {
-              count: Int!
-              node: BookTitle_ENBookBookNodeAggregateSelection
-            }
-
-            type BookTitle_ENBookBookNodeAggregateSelection {
-              isbn: StringAggregateSelectionNonNullable!
-              originalTitle: StringAggregateSelectionNonNullable!
             }
 
             input BookTitle_ENBookConnectFieldInput {
@@ -210,82 +187,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             input BookTitle_ENBookFieldInput {
               connect: BookTitle_ENBookConnectFieldInput
               create: BookTitle_ENBookCreateFieldInput
-            }
-
-            input BookTitle_ENBookNodeAggregationWhereInput {
-              AND: [BookTitle_ENBookNodeAggregationWhereInput!]
-              NOT: BookTitle_ENBookNodeAggregationWhereInput
-              OR: [BookTitle_ENBookNodeAggregationWhereInput!]
-              isbn_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_AVERAGE_LENGTH_EQUAL: Float
-              isbn_AVERAGE_LENGTH_GT: Float
-              isbn_AVERAGE_LENGTH_GTE: Float
-              isbn_AVERAGE_LENGTH_LT: Float
-              isbn_AVERAGE_LENGTH_LTE: Float
-              isbn_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              isbn_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              isbn_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              isbn_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_LONGEST_LENGTH_EQUAL: Int
-              isbn_LONGEST_LENGTH_GT: Int
-              isbn_LONGEST_LENGTH_GTE: Int
-              isbn_LONGEST_LENGTH_LT: Int
-              isbn_LONGEST_LENGTH_LTE: Int
-              isbn_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              isbn_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              isbn_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_SHORTEST_LENGTH_EQUAL: Int
-              isbn_SHORTEST_LENGTH_GT: Int
-              isbn_SHORTEST_LENGTH_GTE: Int
-              isbn_SHORTEST_LENGTH_LT: Int
-              isbn_SHORTEST_LENGTH_LTE: Int
-              isbn_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_AVERAGE_LENGTH_EQUAL: Float
-              originalTitle_AVERAGE_LENGTH_GT: Float
-              originalTitle_AVERAGE_LENGTH_GTE: Float
-              originalTitle_AVERAGE_LENGTH_LT: Float
-              originalTitle_AVERAGE_LENGTH_LTE: Float
-              originalTitle_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              originalTitle_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              originalTitle_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              originalTitle_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_LONGEST_LENGTH_EQUAL: Int
-              originalTitle_LONGEST_LENGTH_GT: Int
-              originalTitle_LONGEST_LENGTH_GTE: Int
-              originalTitle_LONGEST_LENGTH_LT: Int
-              originalTitle_LONGEST_LENGTH_LTE: Int
-              originalTitle_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              originalTitle_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              originalTitle_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_SHORTEST_LENGTH_EQUAL: Int
-              originalTitle_SHORTEST_LENGTH_GT: Int
-              originalTitle_SHORTEST_LENGTH_GTE: Int
-              originalTitle_SHORTEST_LENGTH_LT: Int
-              originalTitle_SHORTEST_LENGTH_LTE: Int
-              originalTitle_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type BookTitle_ENBookRelationship {
@@ -362,7 +263,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               NOT: BookTitle_ENWhere
               OR: [BookTitle_ENWhere!]
               book: BookWhere
-              bookAggregate: BookTitle_ENBookAggregateInput
               bookConnection: BookTitle_ENBookConnectionWhere
               bookConnection_NOT: BookTitle_ENBookConnectionWhere
               book_NOT: BookWhere
@@ -380,7 +280,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type BookTitle_SV {
               book(directed: Boolean = true, options: BookOptions, where: BookWhere): Book!
-              bookAggregate(directed: Boolean = true, where: BookWhere): BookTitle_SVBookBookAggregationSelection
               bookConnection(after: String, directed: Boolean = true, first: Int, sort: [BookTitle_SVBookConnectionSort!], where: BookTitle_SVBookConnectionWhere): BookTitle_SVBookConnection!
               value: String!
             }
@@ -388,28 +287,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             type BookTitle_SVAggregateSelection {
               count: Int!
               value: StringAggregateSelectionNonNullable!
-            }
-
-            input BookTitle_SVBookAggregateInput {
-              AND: [BookTitle_SVBookAggregateInput!]
-              NOT: BookTitle_SVBookAggregateInput
-              OR: [BookTitle_SVBookAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: BookTitle_SVBookNodeAggregationWhereInput
-            }
-
-            type BookTitle_SVBookBookAggregationSelection {
-              count: Int!
-              node: BookTitle_SVBookBookNodeAggregateSelection
-            }
-
-            type BookTitle_SVBookBookNodeAggregateSelection {
-              isbn: StringAggregateSelectionNonNullable!
-              originalTitle: StringAggregateSelectionNonNullable!
             }
 
             input BookTitle_SVBookConnectFieldInput {
@@ -456,82 +333,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             input BookTitle_SVBookFieldInput {
               connect: BookTitle_SVBookConnectFieldInput
               create: BookTitle_SVBookCreateFieldInput
-            }
-
-            input BookTitle_SVBookNodeAggregationWhereInput {
-              AND: [BookTitle_SVBookNodeAggregationWhereInput!]
-              NOT: BookTitle_SVBookNodeAggregationWhereInput
-              OR: [BookTitle_SVBookNodeAggregationWhereInput!]
-              isbn_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_AVERAGE_LENGTH_EQUAL: Float
-              isbn_AVERAGE_LENGTH_GT: Float
-              isbn_AVERAGE_LENGTH_GTE: Float
-              isbn_AVERAGE_LENGTH_LT: Float
-              isbn_AVERAGE_LENGTH_LTE: Float
-              isbn_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              isbn_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              isbn_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              isbn_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_LONGEST_LENGTH_EQUAL: Int
-              isbn_LONGEST_LENGTH_GT: Int
-              isbn_LONGEST_LENGTH_GTE: Int
-              isbn_LONGEST_LENGTH_LT: Int
-              isbn_LONGEST_LENGTH_LTE: Int
-              isbn_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              isbn_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              isbn_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_SHORTEST_LENGTH_EQUAL: Int
-              isbn_SHORTEST_LENGTH_GT: Int
-              isbn_SHORTEST_LENGTH_GTE: Int
-              isbn_SHORTEST_LENGTH_LT: Int
-              isbn_SHORTEST_LENGTH_LTE: Int
-              isbn_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              isbn_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_AVERAGE_LENGTH_EQUAL: Float
-              originalTitle_AVERAGE_LENGTH_GT: Float
-              originalTitle_AVERAGE_LENGTH_GTE: Float
-              originalTitle_AVERAGE_LENGTH_LT: Float
-              originalTitle_AVERAGE_LENGTH_LTE: Float
-              originalTitle_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              originalTitle_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              originalTitle_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              originalTitle_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_LONGEST_LENGTH_EQUAL: Int
-              originalTitle_LONGEST_LENGTH_GT: Int
-              originalTitle_LONGEST_LENGTH_GTE: Int
-              originalTitle_LONGEST_LENGTH_LT: Int
-              originalTitle_LONGEST_LENGTH_LTE: Int
-              originalTitle_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              originalTitle_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              originalTitle_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_SHORTEST_LENGTH_EQUAL: Int
-              originalTitle_SHORTEST_LENGTH_GT: Int
-              originalTitle_SHORTEST_LENGTH_GTE: Int
-              originalTitle_SHORTEST_LENGTH_LT: Int
-              originalTitle_SHORTEST_LENGTH_LTE: Int
-              originalTitle_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              originalTitle_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type BookTitle_SVBookRelationship {
@@ -608,7 +409,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               NOT: BookTitle_SVWhere
               OR: [BookTitle_SVWhere!]
               book: BookWhere
-              bookAggregate: BookTitle_SVBookAggregateInput
               bookConnection: BookTitle_SVBookConnectionWhere
               bookConnection_NOT: BookTitle_SVBookConnectionWhere
               book_NOT: BookWhere
