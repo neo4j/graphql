@@ -42,6 +42,12 @@ export class Neo4jGraphQLSchemaModel {
         this.compositeEntities = compositeEntities;
     }
 
+    public getEntity(name: string): Entity {
+        const entity = this.entities.get(name);
+        if (!entity) throw new Error(`Entity ${name} not found in schema model`);
+        return entity;
+    }
+
     public getEntitiesByLabels(labels: string[]): ConcreteEntity[] {
         return this.concreteEntities.filter((entity) => entity.matchLabels(labels));
     }
