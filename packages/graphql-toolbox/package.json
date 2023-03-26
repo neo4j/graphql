@@ -44,7 +44,7 @@
         "@neo4j/graphql": "3.17.2",
         "@neo4j/introspector": "1.0.3",
         "codemirror": "5.65.12",
-        "codemirror-graphql": "2.0.4",
+        "codemirror-graphql": "2.0.5",
         "dotenv-webpack": "8.0.1",
         "graphiql-explorer": "0.9.0",
         "graphql": "16.6.0",
