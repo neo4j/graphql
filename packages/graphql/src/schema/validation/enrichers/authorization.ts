@@ -1,24 +1,31 @@
 import { Kind } from "graphql";
 import type {
-    TypeDefinitionNode,
     ObjectTypeDefinitionNode,
     FieldDefinitionNode,
     DefinitionNode,
     ConstDirectiveNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeExtensionNode,
+    InterfaceTypeExtensionNode,
 } from "graphql";
-import { createAuthorizationDefinitions } from "../../../graphql/directives/dynamic-directives/authorization";
+import { createAuthorizationDefinitions } from "../../../graphql/directives/type-dependant-directives/authorization";
 
 import type { EnricherContext } from "../EnricherContext";
-import type { Enricher } from "./types";
+import type { Enricher } from "../types";
+
+type PossibleAuthorizationLocation =
+    | ObjectTypeDefinitionNode
+    | InterfaceTypeDefinitionNode
+    | ObjectTypeExtensionNode
+    | InterfaceTypeExtensionNode;
 
 function isAuthorizationDefinition(directive: ConstDirectiveNode): boolean {
     return directive.name.value === "authorization";
 }
 
-function containsAuthorization(object: TypeDefinitionNode | ObjectTypeExtensionNode): boolean {
+function containsAuthorization(object: PossibleAuthorizationLocation): boolean {
     switch (object.kind) {
+        case Kind.INTERFACE_TYPE_EXTENSION:
         case Kind.OBJECT_TYPE_EXTENSION:
         case Kind.INTERFACE_TYPE_DEFINITION:
         case Kind.OBJECT_TYPE_DEFINITION: {
@@ -45,7 +52,7 @@ function getAuthorizationUsage(currentDirectiveUsage: ConstDirectiveNode, typeNa
 
 function changeAuthorizationUsageOnField(
     field: FieldDefinitionNode,
-    userDocumentObject: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | ObjectTypeExtensionNode
+    userDocumentObject: PossibleAuthorizationLocation
 ): FieldDefinitionNode {
     const userField = userDocumentObject.fields?.find(
         (userDefinitionField) => field.name.value === userDefinitionField.name.value
@@ -65,7 +72,7 @@ function changeAuthorizationUsageOnField(
 
 function changeAuthorizationUsageOnFields(
     fields: readonly FieldDefinitionNode[],
-    userDocumentObject: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | ObjectTypeExtensionNode
+    userDocumentObject: PossibleAuthorizationLocation
 ): FieldDefinitionNode[] {
     return fields?.map((field) => {
         return changeAuthorizationUsageOnField(field, userDocumentObject);
@@ -73,9 +80,13 @@ function changeAuthorizationUsageOnFields(
 }
 
 function changeAuthorizationUsageOnObject(
-    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | ObjectTypeExtensionNode,
-    userDocumentObject: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | ObjectTypeExtensionNode
-): ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | ObjectTypeExtensionNode {
+    object:
+        | ObjectTypeDefinitionNode
+        | InterfaceTypeDefinitionNode
+        | ObjectTypeExtensionNode
+        | InterfaceTypeExtensionNode,
+    userDocumentObject: PossibleAuthorizationLocation
+): PossibleAuthorizationLocation {
     const userAuthorizationUsage = userDocumentObject.directives?.find(isAuthorizationDefinition) as ConstDirectiveNode;
     const fieldsWithNewAuthorizationUsage =
         object.fields && changeAuthorizationUsageOnFields(object.fields, userDocumentObject);
@@ -91,10 +102,12 @@ function changeAuthorizationUsageOnObject(
 export function authorizationDefinitionsEnricher(enricherContext: EnricherContext): Enricher {
     return (accumulatedDefinitions: DefinitionNode[], definition: DefinitionNode) => {
         switch (definition.kind) {
+            case Kind.INTERFACE_TYPE_DEFINITION:
             case Kind.OBJECT_TYPE_DEFINITION: {
                 const typeName = definition.name.value;
                 const userDocumentObject = enricherContext.userDefinitionNodeMap[typeName] as
                     | ObjectTypeDefinitionNode
+                    | InterfaceTypeDefinitionNode
                     | undefined;
                 const hasAuthorization = userDocumentObject ? containsAuthorization(userDocumentObject) : false;
                 if (hasAuthorization) {
@@ -102,7 +115,7 @@ export function authorizationDefinitionsEnricher(enricherContext: EnricherContex
                     accumulatedDefinitions.push(...authDefinitions);
                 }
                 const userDocumentExtensions = enricherContext.userDefinitionNodeMap[`${typeName}_EXTENSIONS`] as
-                    | ObjectTypeExtensionNode[]
+                    | Array<ObjectTypeExtensionNode | InterfaceTypeExtensionNode>
                     | undefined;
                 if (userDocumentExtensions) {
                     const extensionAuthorizations = userDocumentExtensions.filter((userDocumentExtension) =>
@@ -110,7 +123,7 @@ export function authorizationDefinitionsEnricher(enricherContext: EnricherContex
                     );
                     if (extensionAuthorizations.length > 1 || hasAuthorization) {
                         throw new Error(
-                            `@authorization directive used in ambiguous way, Type ${typeName} has already @authorization applied`
+                            `@authorization directive used in ambiguous way, ${typeName} has already @authorization applied`
                         );
                     }
                     if (extensionAuthorizations.length === 1) {
@@ -121,19 +134,6 @@ export function authorizationDefinitionsEnricher(enricherContext: EnricherContex
                         accumulatedDefinitions.push(...authDefinitions);
                     }
                 }
-                break;
-            }
-            case Kind.INTERFACE_TYPE_DEFINITION: {
-                const typeName = definition.name.value;
-                const userDocumentInterface = enricherContext.userDefinitionNodeMap[typeName] as
-                    | InterfaceTypeDefinitionNode
-                    | undefined;
-                const hasAuthorization = userDocumentInterface ? containsAuthorization(userDocumentInterface) : false;
-                if (hasAuthorization) {
-                    const authDefinitions = createAuthorizationDefinitions(typeName, enricherContext.augmentedSchema);
-                    accumulatedDefinitions.push(...authDefinitions);
-                }
-                break;
             }
         }
         accumulatedDefinitions.push(definition);
@@ -144,50 +144,39 @@ export function authorizationDefinitionsEnricher(enricherContext: EnricherContex
 export function authorizationUsageEnricher(enricherContext: EnricherContext): Enricher {
     return (accumulatedDefinitions: DefinitionNode[], definition: DefinitionNode) => {
         switch (definition.kind) {
+            case Kind.INTERFACE_TYPE_DEFINITION:
             case Kind.OBJECT_TYPE_DEFINITION: {
                 const typeName = definition.name.value;
                 const userDocumentObject = enricherContext.userDefinitionNodeMap[typeName] as
                     | ObjectTypeDefinitionNode
+                    | InterfaceTypeDefinitionNode
                     | undefined;
+
                 const userDocumentExtensions = enricherContext.userDefinitionNodeMap[`${typeName}_EXTENSIONS`] as
-                    | ObjectTypeExtensionNode[]
+                    | Array<ObjectTypeExtensionNode | InterfaceTypeExtensionNode>
                     | undefined;
-                if (userDocumentObject) {
-                    if (containsAuthorization(userDocumentObject)) {
-                        const newDefinition = changeAuthorizationUsageOnObject(definition, userDocumentObject);
+                if (userDocumentObject && containsAuthorization(userDocumentObject)) {
+                    const newDefinition = changeAuthorizationUsageOnObject(definition, userDocumentObject);
+                    accumulatedDefinitions.push(newDefinition);
+                } else {
+                    const extensionWithAuthorization =
+                        userDocumentExtensions &&
+                        userDocumentExtensions.find(
+                            (userDocumentExtension: ObjectTypeExtensionNode | InterfaceTypeExtensionNode) =>
+                                containsAuthorization(userDocumentExtension)
+                        );
+                    if (extensionWithAuthorization) {
+                        const newDefinition = changeAuthorizationUsageOnObject(definition, extensionWithAuthorization);
                         accumulatedDefinitions.push(newDefinition);
-                        return accumulatedDefinitions;
+                    } else {
+                        accumulatedDefinitions.push(definition);
                     }
                 }
-                const extensionWithAuthorization =
-                    userDocumentExtensions &&
-                    userDocumentExtensions.find((userDocumentExtension) =>
-                        containsAuthorization(userDocumentExtension)
-                    );
-                if (extensionWithAuthorization) {
-                    const newDefinition = changeAuthorizationUsageOnObject(definition, extensionWithAuthorization);
-                    accumulatedDefinitions.push(newDefinition);
-                    return accumulatedDefinitions;
-                }
-
-                accumulatedDefinitions.push(definition);
-                return accumulatedDefinitions;
-            }
-            case Kind.INTERFACE_TYPE_DEFINITION: {
-                const typeName = definition.name.value;
-                const userDocumentInterface = enricherContext.userDefinitionNodeMap[
-                    typeName
-                ] as InterfaceTypeDefinitionNode;
-                const newDefinition =
-                    userDocumentInterface && containsAuthorization(userDocumentInterface)
-                        ? changeAuthorizationUsageOnObject(definition, userDocumentInterface)
-                        : definition;
-                accumulatedDefinitions.push(newDefinition);
-                return accumulatedDefinitions;
+                break;
             }
             default:
                 accumulatedDefinitions.push(definition);
-                return accumulatedDefinitions;
         }
+        return accumulatedDefinitions;
     };
 }

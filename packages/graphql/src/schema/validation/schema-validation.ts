@@ -17,18 +17,34 @@
  * limitations under the License.
  */
 
-import type { DocumentNode, DefinitionNode, GraphQLDirective, GraphQLNamedType } from "graphql";
-import { specifiedDirectives, GraphQLSchema } from "graphql";
-import { validateSDL } from "graphql/validation/validate";
-import { getStaticAuthorizationDefinitions } from "../../graphql/directives/dynamic-directives/authorization";
+import type {
+    DocumentNode,
+    DefinitionNode,
+    GraphQLDirective,
+    GraphQLNamedType,
+    ObjectTypeDefinitionNode,
+    GraphQLError,
+} from "graphql";
+import { visit, visitInParallel, specifiedDirectives, GraphQLSchema } from "graphql";
+import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/authorization";
 import { authorizationDefinitionsEnricher, authorizationUsageEnricher } from "./enrichers/authorization";
 import { EnricherContext } from "./EnricherContext";
-import type { Enricher } from "./enrichers/types";
+import type { Enricher } from "./types";
+import { specifiedSDLRules } from "graphql/validation/specifiedRules";
+import type { SDLValidationRule } from "graphql/validation/ValidationContext";
+import { SDLValidationContext } from "graphql/validation/ValidationContext";
+import type { Maybe } from "graphql/jsutils/Maybe";
 
-function staticEnrichment(): DefinitionNode[] {
-    return getStaticAuthorizationDefinitions();
+function getAdditionalDefinitions(enricherContext: EnricherContext): DefinitionNode[] {
+    return getStaticAuthorizationDefinitions(
+        enricherContext.userDefinitionNodeMap["jwtPayload"] as ObjectTypeDefinitionNode
+    );
 }
-function enrichDocument(enrichers: Enricher[], document: DocumentNode): DocumentNode {
+function enrichDocument(
+    enrichers: Enricher[],
+    additionalDefinitions: DefinitionNode[],
+    document: DocumentNode
+): DocumentNode {
     return {
         ...document,
         definitions: enrichers
@@ -36,23 +52,25 @@ function enrichDocument(enrichers: Enricher[], document: DocumentNode): Document
                 (definitions, enricher) => definitions.reduce(enricher, [] as DefinitionNode[]),
                 document.definitions
             )
-            .concat(staticEnrichment()),
+            .concat(...additionalDefinitions),
     };
 }
 
-export function makeValidationDocument(userDocument: DocumentNode, augmentedDocument: DocumentNode): DocumentNode {
+function makeValidationDocument(userDocument: DocumentNode, augmentedDocument: DocumentNode): DocumentNode {
     const enricherContext = new EnricherContext(userDocument, augmentedDocument);
     const enrichers: Enricher[] = [];
     enrichers.push(authorizationDefinitionsEnricher(enricherContext)); // Add Authorization directive definitions, for instance UserAuthorization
     enrichers.push(authorizationUsageEnricher(enricherContext)); // Apply the previously generated directive definitions to the authorized types
-    return enrichDocument(enrichers, augmentedDocument);
+    const additionalDefinitions = getAdditionalDefinitions(enricherContext);
+    return enrichDocument(enrichers, additionalDefinitions, augmentedDocument);
 }
 
 export function validateUserDefinition(
     userDocument: DocumentNode,
     augmentedDocument: DocumentNode,
     additionalDirectives: Array<GraphQLDirective> = [],
-    additionalTypes: Array<GraphQLNamedType> = []
+    additionalTypes: Array<GraphQLNamedType> = [],
+    rules: readonly SDLValidationRule[] = specifiedSDLRules
 ): void {
     const validationDocument = makeValidationDocument(userDocument, augmentedDocument);
     const schemaToExtend = new GraphQLSchema({
@@ -60,8 +78,22 @@ export function validateUserDefinition(
         types: [...additionalTypes],
     });
 
-    const errors = validateSDL(validationDocument, schemaToExtend);
+    const errors = validateSDL(validationDocument, rules, schemaToExtend);
     if (errors.length) {
         throw new Error(errors.join("\n"));
     }
+}
+
+function validateSDL(
+    documentAST: DocumentNode,
+    rules: ReadonlyArray<SDLValidationRule>,
+    schemaToExtend?: Maybe<GraphQLSchema>
+): ReadonlyArray<GraphQLError> {
+    const errors: Array<GraphQLError> = [];
+    const context = new SDLValidationContext(documentAST, schemaToExtend, (error) => {
+        errors.push(error);
+    });
+    const visitors = rules.map((rule) => rule(context));
+    visit(documentAST, visitInParallel(visitors));
+    return errors;
 }

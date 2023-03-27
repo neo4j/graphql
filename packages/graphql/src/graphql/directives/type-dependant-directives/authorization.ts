@@ -18,7 +18,13 @@
  */
 
 import { astFromDirective, astFromEnumType, astFromInputObjectType } from "@graphql-tools/utils";
-import type { TypeDefinitionNode, DirectiveDefinitionNode } from "graphql";
+import type {
+    TypeDefinitionNode,
+    DirectiveDefinitionNode,
+    ObjectTypeDefinitionNode,
+    EnumTypeDefinitionNode,
+    InputObjectTypeDefinitionNode,
+} from "graphql";
 import {
     GraphQLEnumType,
     GraphQLSchema,
@@ -28,6 +34,9 @@ import {
     GraphQLBoolean,
     DirectiveLocation,
 } from "graphql";
+import { SchemaComposer } from "graphql-compose";
+import getObjFieldMeta from "../../../schema/get-obj-field-meta";
+import getWhereFields from "../../../schema/get-where-fields";
 
 const AUTHORIZATION_VALIDATE_STAGE = new GraphQLEnumType({
     name: "AuthorizationValidateStage",
@@ -53,7 +62,6 @@ function createAuthorizationWhere(typeDefinitionName: string, schema: GraphQLSch
      * and unused interface will not generate the {typeDefinitionName}Where making the inputWhere undefined
      * */
     const inputWhere = schema.getType(`${typeDefinitionName}Where`) as GraphQLInputObjectType | undefined;
-    const JWTPayloadWhere = schema.getType(`${typeDefinitionName}Where`) as GraphQLInputObjectType | undefined;
     const authorizationWhere = new GraphQLInputObjectType({
         name: `${typeDefinitionName}AuthorizationWhere`,
         fields() {
@@ -74,13 +82,9 @@ function createAuthorizationWhere(typeDefinitionName: string, schema: GraphQLSch
                           },
                       }
                     : {}),
-                ...(JWTPayloadWhere
-                    ? {
-                          jwtPayload: {
-                              type: JWTPayloadWhere,
-                          },
-                      }
-                    : {}),
+                jwtPayload: {
+                    type: new GraphQLInputObjectType({ name: "JWTPayloadWhere", fields: {} }),
+                },
             };
         },
     });
@@ -160,6 +164,33 @@ function createAuthorization(
     });
 }
 
+function createJWTPayloadWhere(JWTPayloadDefinition?: ObjectTypeDefinitionNode): GraphQLInputObjectType {
+    const fields = JWTPayloadDefinition
+        ? getObjFieldMeta({
+              obj: JWTPayloadDefinition,
+              objects: [],
+              interfaces: [],
+              unions: [],
+              scalars: [],
+              enums: [],
+              validateResolvers: false,
+          })
+        : {
+              scalarFields: [],
+              enumFields: [],
+              primitiveFields: [],
+              temporalFields: [],
+              pointFields: [],
+          };
+    const inputFieldsType = getWhereFields({ typeName: "JWTPayload", fields });
+    const composer = new SchemaComposer();
+    const inputTC = composer.createInputTC({
+        name: "JWTPayloadWhere",
+        fields: inputFieldsType,
+    });
+    return inputTC.getType();
+}
+
 export function createAuthorizationDefinitions(
     typeDefinitionName: string,
     schema: GraphQLSchema
@@ -173,22 +204,26 @@ export function createAuthorizationDefinitions(
         directives: [authorization],
         types: [authorizationWhere, authorizationFilterRule, authorizationValidateRule],
     });
-    const authorizationWhereDefinition = astFromInputObjectType(authorizationWhere, authorizationSchema);
-    const authorizationFilterRuleDefinition = astFromInputObjectType(authorizationFilterRule, authorizationSchema);
-    const authorizationValidateRuleDefinition = astFromInputObjectType(authorizationValidateRule, authorizationSchema);
-    const authorizationDefinition = astFromDirective(authorization);
-
-    return [
-        authorizationWhereDefinition,
-        authorizationFilterRuleDefinition,
-        authorizationValidateRuleDefinition,
-        authorizationDefinition,
-    ];
+    const authorizationWhereAST = astFromInputObjectType(authorizationWhere, authorizationSchema);
+    const authorizationFilterRuleAST = astFromInputObjectType(authorizationFilterRule, authorizationSchema);
+    const authorizationValidateRuleAST = astFromInputObjectType(authorizationValidateRule, authorizationSchema);
+    const authorizationAST = astFromDirective(authorization);
+    return [authorizationWhereAST, authorizationFilterRuleAST, authorizationValidateRuleAST, authorizationAST];
 }
 
-export function getStaticAuthorizationDefinitions() {
+export function getStaticAuthorizationDefinitions(
+    JWTPayloadDefinition?: ObjectTypeDefinitionNode
+): Array<InputObjectTypeDefinitionNode | EnumTypeDefinitionNode> {
     const schema = new GraphQLSchema({});
     const authorizationValidateStage = astFromEnumType(AUTHORIZATION_VALIDATE_STAGE, schema);
     const authorizationValidateOperation = astFromEnumType(AUTHORIZATION_VALIDATE_OPERATION, schema);
-    return [authorizationValidateOperation, authorizationValidateStage];
+    const ASTs: Array<InputObjectTypeDefinitionNode | EnumTypeDefinitionNode> = [
+        authorizationValidateStage,
+        authorizationValidateOperation,
+    ];
+
+    const JWTPayloadWere = createJWTPayloadWhere(JWTPayloadDefinition);
+    const JWTPayloadWereAST = astFromInputObjectType(JWTPayloadWere, schema);
+    ASTs.push(JWTPayloadWereAST);
+    return ASTs;
 }
