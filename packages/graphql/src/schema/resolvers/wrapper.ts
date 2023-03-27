@@ -37,7 +37,7 @@ import { IncomingMessage } from "http";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
-type WrapResolverArguments = {
+export type WrapResolverArguments = {
     driver?: Driver;
     config: Neo4jGraphQLConfig;
     nodes: Node[];

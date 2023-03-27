@@ -39,6 +39,7 @@ import type Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
 import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
 import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
+import type { WrapResolverArguments } from "../schema/resolvers/wrapper";
 import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
@@ -260,7 +261,7 @@ class Neo4jGraphQL {
             callbacks: this.features?.populatedBy?.callbacks,
         };
 
-        const wrapResolverArgs = {
+        const wrapResolverArgs: WrapResolverArguments = {
             driver: this.driver,
             config,
             nodes: this.nodes,
@@ -285,7 +286,7 @@ class Neo4jGraphQL {
         resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>,
         schemaModel: Neo4jGraphQLSchemaModel
     ) {
-        const wrapResolverArgs = {
+        const wrapResolverArgs: WrapResolverArguments = {
             driver: this.driver,
             config: this.config,
             nodes: this.nodes,
