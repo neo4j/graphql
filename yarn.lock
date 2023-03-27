@@ -4372,6 +4372,41 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-aria/utils@npm:^3.15.0":
+  version: 3.15.0
+  resolution: "@react-aria/utils@npm:3.15.0"
+  dependencies:
+    "@react-aria/ssr": ^3.5.0
+    "@react-stately/utils": ^3.6.0
+    "@react-types/shared": ^3.17.0
+    "@swc/helpers": ^0.4.14
+    clsx: ^1.1.1
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+  checksum: 9d852b3a8ca492b5e8c733f6258437430d050950d4cbdb99ab221d1a076ebca2625d45384bfb7b651072adc93368462445061c83ceac079418c8deafca2b47c3
+  languageName: node
+  linkType: hard
+
+"@react-stately/utils@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "@react-stately/utils@npm:3.6.0"
+  dependencies:
+    "@swc/helpers": ^0.4.14
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+  checksum: d2ff4cfed5555b112ad71b9bc1837abd777d8fa225043c476b7c9417f8b21a0bcddad0d7127e0acdbf4d85dc9a260c9ae97722b4e9507e6243b412c2724c5f54
+  languageName: node
+  linkType: hard
+
+"@react-types/shared@npm:^3.17.0":
+  version: 3.17.0
+  resolution: "@react-types/shared@npm:3.17.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+  checksum: 004fc58ab0d3d64a84ce5a98e7e201b88bbb64f8b4a8309d50be30fe6172d0f172f00c666074aa96f13bbbfbced8b986901ad6b35b6d2d32d8dc25e251fcdb31
+  languageName: node
+  linkType: hard
+
 "@remix-run/router@npm:1.4.0":
   version: 1.4.0
   resolution: "@remix-run/router@npm:1.4.0"
@@ -17075,7 +17110,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
 "nodemon@npm:2.0.22":
   version: 2.0.22
   resolution: "nodemon@npm:2.0.22"
@@ -17097,9 +17131,6 @@ __metadata:
   linkType: hard
 
 "nodemon@npm:^2.0.0":
-=======
-"nodemon@npm:2.0.21, nodemon@npm:^2.0.0":
->>>>>>> 01f78cac6 (Update dependency nodemon to v2)
   version: 2.0.21
   resolution: "nodemon@npm:2.0.21"
   dependencies:
@@ -20089,16 +20120,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-=======
-"regexpp@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "regexpp@npm:3.2.0"
-  checksum: a78dc5c7158ad9ddcfe01aa9144f46e192ddbfa7b263895a70a5c6c73edd9ce85faf7c0430e59ac38839e1734e275b9c3de5c57ee3ab6edc0e0b1bdebefccef8
-  languageName: node
-  linkType: hard
-
->>>>>>> 01f78cac6 (Update dependency nodemon to v2)
 "registry-auth-token@npm:^4.0.0":
   version: 4.2.2
   resolution: "registry-auth-token@npm:4.2.2"
