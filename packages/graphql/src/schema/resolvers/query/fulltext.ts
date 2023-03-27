@@ -25,6 +25,7 @@ import type { Node } from "../../../classes";
 import type { Context, FulltextIndex } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import Cypher from "@neo4j/cypher-builder";
+import { createFulltextDeprecationMessage } from "../../augment/fulltext";
 
 export function fulltextResolver(
     { node }: { node: Node },
@@ -52,6 +53,14 @@ export function fulltextResolver(
             limit: "Int",
             offset: "Int",
         },
+        directives: [
+            {
+                name: "deprecated",
+                args: {
+                    reason: createFulltextDeprecationMessage(node, "operation"),
+                },
+            },
+        ],
     };
 }
 

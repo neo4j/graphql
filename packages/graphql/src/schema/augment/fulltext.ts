@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
+import type { GraphQLEnumValueConfigMap } from "graphql";
+import { GraphQLEnumType, GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import { fulltextResolver } from "../resolvers/query/fulltext";
@@ -25,11 +26,35 @@ import { upperFirst } from "../../utils/upper-first";
 import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
 import { SCORE_FIELD } from "../../graphql/directives/fulltext";
 
-export const fulltextArgDeprecationMessage =
+export function createFulltextDeprecationMessage(node: Node, type = "argument") {
+    return `This ${type} has been deprecated and will be removed in version 4.0.0 of the library.
+Please use the fulltext argument in ${node.plural}Connection with index you wish to query instead.
+More information about the changes to @fulltext can be found here:
+https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.
+`;
+}
+
+const fulltextArgDeprecationMessageInArgument =
     "This argument has been deprecated and will be removed in version 4.0.0 of the library. " +
-    "Please use the top-level query that corresponds to the index you wish to query instead. " +
+    "Please use the phrase and index arguments instead. " +
     "More information about the changes to @fulltext can be found here: " +
     "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.";
+
+function createEnumType(name: string, rawValues: string[]): GraphQLEnumType {
+    const values = rawValues.reduce((acc, value) => {
+        return {
+            ...acc,
+            [value]: {
+                value,
+            },
+        };
+    }, {} as GraphQLEnumValueConfigMap);
+
+    return new GraphQLEnumType({
+        name: `${name}FulltextIndexes`,
+        values,
+    });
+}
 
 export function augmentFulltextSchema(
     node: Node,
@@ -38,19 +63,44 @@ export function augmentFulltextSchema(
     nodeSortTypeName: string
 ) {
     if (node.fulltextDirective) {
-        const fields = node.fulltextDirective.indexes.reduce((res, index) => {
+        const indexes = node.fulltextDirective.indexes.map((index) => {
             const indexName = index.indexName || index.name;
             if (indexName === undefined) {
                 throw new Error("The name of the fulltext index should be defined using the indexName argument.");
             }
+            return indexName;
+        });
+
+        const indexEnumType = createEnumType(node.name, indexes);
+        const indexEnum = composer.createEnumTC(indexEnumType);
+
+        const legacyFields = node.fulltextDirective.indexes.reduce((res, index) => {
+            const indexName = index.indexName || index.name;
+            if (indexName === undefined) {
+                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            }
+            console.log(indexName);
+
+            composer.createInputTC({
+                name: `${node.name}${upperFirst(indexName)}Fulltext`,
+                fields: {
+                    phrase: new GraphQLNonNull(GraphQLString),
+                },
+            });
+
             return {
                 ...res,
-                [indexName]: composer.createInputTC({
-                    name: `${node.name}${upperFirst(indexName)}Fulltext`,
-                    fields: {
-                        phrase: new GraphQLNonNull(GraphQLString),
-                    },
-                }),
+                [indexName]: {
+                    type: `${node.name}${upperFirst(indexName)}Fulltext`,
+                    directives: [
+                        {
+                            name: "deprecated",
+                            args: {
+                                reason: fulltextArgDeprecationMessageInArgument,
+                            },
+                        },
+                    ],
+                },
             };
         }, {});
 
@@ -60,7 +110,15 @@ export function augmentFulltextSchema(
 
         composer.createInputTC({
             name: `${node.name}Fulltext`,
-            fields,
+            fields: {
+                phrase: {
+                    type: "String", // TODO: make it required on 4.0
+                },
+                index: {
+                    type: indexEnum,
+                },
+                ...legacyFields,
+            },
         });
 
         composer.createInputTC({

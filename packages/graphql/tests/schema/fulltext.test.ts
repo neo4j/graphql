@@ -91,8 +91,15 @@ describe("@fulltext schema", () => {
             }
 
             input MovieFulltext {
-              MovieDescription: MovieMovieDescriptionFulltext
-              MovieTitle: MovieMovieTitleFulltext
+              MovieDescription: MovieMovieDescriptionFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0.0 of the library. Please use the phrase and index arguments instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\")
+              MovieTitle: MovieMovieTitleFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0.0 of the library. Please use the phrase and index arguments instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\")
+              index: MovieFulltextIndexes
+              phrase: String
+            }
+
+            enum MovieFulltextIndexes {
+              MovieDescription
+              MovieTitle
             }
 
             \\"\\"\\"The result of a fulltext search on an index of Movie\\"\\"\\"
@@ -190,11 +197,11 @@ describe("@fulltext schema", () => {
             }
 
             type Query {
-              movies(fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0.0 of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\"), options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0.0 of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\"), where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0.0 of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\"), sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              moviesFulltextMovieDescription(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]!
-              moviesFulltextMovieTitle(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]!
+              movies(fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0.0 of the library.\\\\nPlease use the fulltext argument in moviesConnection with index you wish to query instead.\\\\nMore information about the changes to @fulltext can be found here:\\\\nhttps://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\\\n\\"), options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in version 4.0.0 of the library.\\\\nPlease use the fulltext argument in moviesConnection with index you wish to query instead.\\\\nMore information about the changes to @fulltext can be found here:\\\\nhttps://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\\\n\\"), where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, fulltext: MovieFulltext, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesFulltextMovieDescription(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]! @deprecated(reason: \\"This operation has been deprecated and will be removed in version 4.0.0 of the library.\\\\nPlease use the fulltext argument in moviesConnection with index you wish to query instead.\\\\nMore information about the changes to @fulltext can be found here:\\\\nhttps://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\\\n\\")
+              moviesFulltextMovieTitle(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]! @deprecated(reason: \\"This operation has been deprecated and will be removed in version 4.0.0 of the library.\\\\nPlease use the fulltext argument in moviesConnection with index you wish to query instead.\\\\nMore information about the changes to @fulltext can be found here:\\\\nhttps://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\\\n\\")
             }
 
             enum SortDirection {

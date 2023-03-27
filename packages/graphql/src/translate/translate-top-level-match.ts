@@ -55,6 +55,10 @@ type CreateMatchClauseReturn = {
     whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
 };
 
+type FulltextInput = { phrase: string; index: string };
+
+type CompatibleFulltextInput = FulltextInput | Record<string, { phrase: string }>;
+
 export function createMatchClause({
     matchNode,
     node,
@@ -75,11 +79,8 @@ export function createMatchClause({
 
     // TODO: removed deprecated fulltext translation
     if (Object.entries(fulltextInput).length) {
-        if (Object.entries(fulltextInput).length > 1) {
-            throw new Error("Can only call one search at any given time");
-        }
-        const [indexName, indexInput] = Object.entries(fulltextInput)[0];
-        const phraseParam = new Cypher.Param(indexInput.phrase);
+        const { index: indexName, phrase } = parseFulltextInput(fulltextInput);
+        const phraseParam = new Cypher.Param(phrase);
 
         matchClause = Cypher.db.index.fulltext.queryNodes(indexName, phraseParam).yield(["node", matchNode]);
 
@@ -189,4 +190,26 @@ function createFulltextMatchClause(
         matchClause,
         whereOperators,
     };
+}
+
+function isValidFulltextInput(input: Record<string, any>): input is FulltextInput {
+    return input.phrase && input.index;
+}
+
+function parseFulltextInput(input: CompatibleFulltextInput): FulltextInput {
+    if (isValidFulltextInput(input)) {
+        return {
+            phrase: input.phrase,
+            index: input.index,
+        };
+    } else {
+        if (Object.entries(input).length > 1) {
+            throw new Error("Can only call one search at any given time");
+        }
+        const [indexName, indexInput] = Object.entries(input)[0];
+        return {
+            index: indexName,
+            phrase: indexInput.phrase,
+        };
+    }
 }
