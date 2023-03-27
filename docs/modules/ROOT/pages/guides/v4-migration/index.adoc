@@ -21,7 +21,7 @@ other than `typeDefs` and `resolvers`, these are no longer supported.
 
 === config.enableRegex replaced by `MATCHES` in features.filters
 
-config.enableRegex has been replaced by `MATCHES` in features.filters. With this change comes more granularity in the feature configuration. You can now enable the `MATCHES` filter on `String` and `ID` fields separately.
+`config.enableRegex` has been replaced by `MATCHES` in features.filters. With this change comes more granularity in the feature configuration. You can now enable the `MATCHES` filter on `String` and `ID` fields separately.
 
 A direct replacement of the `enableRegex: true` configuration would be as follows:
 
