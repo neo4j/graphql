@@ -17075,6 +17075,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "nodemon@npm:2.0.22":
   version: 2.0.22
   resolution: "nodemon@npm:2.0.22"
@@ -17096,6 +17097,9 @@ __metadata:
   linkType: hard
 
 "nodemon@npm:^2.0.0":
+=======
+"nodemon@npm:2.0.21, nodemon@npm:^2.0.0":
+>>>>>>> 01f78cac6 (Update dependency nodemon to v2)
   version: 2.0.21
   resolution: "nodemon@npm:2.0.21"
   dependencies:
@@ -20085,6 +20089,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
+=======
+"regexpp@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "regexpp@npm:3.2.0"
+  checksum: a78dc5c7158ad9ddcfe01aa9144f46e192ddbfa7b263895a70a5c6c73edd9ce85faf7c0430e59ac38839e1734e275b9c3de5c57ee3ab6edc0e0b1bdebefccef8
+  languageName: node
+  linkType: hard
+
+>>>>>>> 01f78cac6 (Update dependency nodemon to v2)
 "registry-auth-token@npm:^4.0.0":
   version: 4.2.2
   resolution: "registry-auth-token@npm:4.2.2"

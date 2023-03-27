@@ -25,7 +25,7 @@
         "@neo4j-antora/antora-modify-sitemaps": "^0.4.4",
         "@neo4j-documentation/macros": "^1.0.2",
         "@neo4j-documentation/remote-include": "^1.0.0",
-        "nodemon": "^1.19.4"
+        "nodemon": "^2.0.0"
     },
     "devDependencies": {
         "cheerio": "1.0.0-rc.12",
