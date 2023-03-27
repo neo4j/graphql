@@ -27,6 +27,7 @@ import type { AuthContext } from "../../../src/types/deprecated/auth/auth-contex
 import { Builder } from "./builder";
 import { Executor } from "../../../src/classes/Executor";
 import { Neo4jGraphQLSchemaModel } from "../../../src/schema-model/Neo4jGraphQLSchemaModel";
+import Cypher from "@neo4j/cypher-builder";
 
 export class ContextBuilder extends Builder<Context, Context> {
     constructor(newOptions: Partial<Context> = {}) {
@@ -44,6 +45,7 @@ export class ContextBuilder extends Builder<Context, Context> {
             executionContext: {} as neo4j.Driver,
             executor: new Executor({ executionContext: {} as neo4j.Driver, auth: {} as AuthContext }),
             neo4jDatabaseInfo: {} as Neo4jDatabaseInfo,
+            authParam: new Cypher.Param({}),
             ...newOptions,
         });
     }

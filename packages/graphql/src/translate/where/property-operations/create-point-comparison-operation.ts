@@ -30,8 +30,8 @@ export function createPointComparisonOperation({
     neo4jDatabaseInfo,
 }: {
     operator: string | undefined;
-    propertyRefOrCoalesce: Cypher.PropertyRef | Cypher.Function | Cypher.Variable;
-    param: Cypher.Param;
+    propertyRefOrCoalesce: Cypher.Property | Cypher.Function | Cypher.Variable;
+    param: Cypher.Param | Cypher.Property;
     pointField: PointField;
     neo4jDatabaseInfo: Neo4jDatabaseInfo;
 }): Cypher.ComparisonOp {
@@ -71,7 +71,7 @@ export function createPointComparisonOperation({
     }
 }
 
-function createPointListComprehension(param: Cypher.Param): Cypher.ListComprehension {
+function createPointListComprehension(param: Cypher.Param | Cypher.Property): Cypher.ListComprehension {
     const comprehensionVar = new Cypher.Variable();
     const mapPoint = Cypher.point(comprehensionVar);
     return new Cypher.ListComprehension(comprehensionVar, param).map(mapPoint);
@@ -79,7 +79,7 @@ function createPointListComprehension(param: Cypher.Param): Cypher.ListComprehen
 
 function createPointDistanceExpression(
     property: Cypher.Expr,
-    param: Cypher.Param,
+    param: Cypher.Param | Cypher.Property,
     neo4jDatabaseInfo: Neo4jDatabaseInfo
 ): Cypher.Function {
     const nestedPointRef = param.property("point");

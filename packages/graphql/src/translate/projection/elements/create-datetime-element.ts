@@ -69,6 +69,6 @@ export function createDatetimeExpression({
     return createApocConvertFormat(fieldProperty);
 }
 
-function createApocConvertFormat(variableOrProperty: Cypher.Variable | Cypher.PropertyRef): Cypher.Expr {
+function createApocConvertFormat(variableOrProperty: Cypher.Variable | Cypher.Property): Cypher.Expr {
     return Cypher.apoc.date.convertFormat(variableOrProperty, "iso_zoned_date_time", "iso_offset_date_time");
 }

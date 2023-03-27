@@ -77,6 +77,7 @@ export function translateRead(
         );
     }
 
+    // TODO: Authorization - delete for 4.0.0 (provided by createMatchClause)
     const authPredicates = createAuthPredicates({
         operations: "READ",
         entity: node,
@@ -86,7 +87,6 @@ export function translateRead(
             varName,
         },
     });
-
     if (authPredicates) {
         (topLevelWhereClause || topLevelMatch).where(
             Cypher.apoc.util.validatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR)

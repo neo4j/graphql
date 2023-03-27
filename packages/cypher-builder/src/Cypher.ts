@@ -42,6 +42,7 @@ export { Param, NamedParam } from "./references/Param";
 export { NamedVariable, Variable } from "./references/Variable";
 export { Literal, CypherNull as Null } from "./references/Literal";
 export { Path, NamedPath } from "./references/Path";
+export { PropertyRef as Property } from "./references/PropertyRef";
 
 // Expressions
 export { Exists } from "./expressions/Exists";
@@ -115,7 +116,6 @@ export * as db from "./procedures/db";
 
 // Types
 export type { CypherResult } from "./types";
-export type { PropertyRef } from "./references/PropertyRef";
 export type { Clause } from "./clauses/Clause";
 export type { CypherEnvironment as Environment } from "./Environment";
 export type { ComparisonOp } from "./expressions/operations/comparison";

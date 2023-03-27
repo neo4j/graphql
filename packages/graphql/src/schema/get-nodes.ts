@@ -63,9 +63,17 @@ function getNodes(
     const nodes = definitionNodes.objectTypes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
             (x) =>
-                !["auth", "exclude", "node", "fulltext", "queryOptions", "plural", "shareable", "deprecated"].includes(
-                    x.name.value
-                )
+                ![
+                    "auth",
+                    "authorization",
+                    "exclude",
+                    "node",
+                    "fulltext",
+                    "queryOptions",
+                    "plural",
+                    "shareable",
+                    "deprecated",
+                ].includes(x.name.value)
         );
         const propagatedDirectives = (definition.directives || []).filter((x) =>
             ["deprecated", "shareable"].includes(x.name.value)

@@ -34,6 +34,7 @@ import type { SubscriptionConnectionContext, SubscriptionContext } from "./subsc
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { IncomingMessage } from "http";
+import Cypher from "@neo4j/cypher-builder";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -100,7 +101,10 @@ export const wrapResolver =
 
         verifyGlobalAuthentication(context, context.plugins?.auth);
 
-        context.auth = createAuthParam({ context });
+        const authParam = createAuthParam({ context });
+
+        context.auth = authParam;
+        context.authParam = new Cypher.Param(authParam.jwt);
 
         const executorConstructorParam: ExecutorConstructorParam = {
             executionContext: context.executionContext,

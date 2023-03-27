@@ -24,6 +24,8 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
+import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
+import { authOperationsToAuthorizationOperations } from "./authorization/utils/auth-operations-to-authorization-operations";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -123,18 +125,38 @@ export function createMatchClause({
         whereClause.where(andChecks);
     }
 
-    const { cypher: authCypher, params: authParams } = createAuthAndParams({
-        operations: operation,
-        entity: node,
+    const authorizationPredicateReturn = createAuthorizationBeforePredicate({
         context,
-        where: { varName: matchNode, node },
+        variable: matchNode,
+        node,
+        operations: authOperationsToAuthorizationOperations(operation),
     });
-    if (authCypher) {
-        const authQuery = new Cypher.RawCypher(() => {
-            return [authCypher, authParams];
-        });
 
-        whereClause.where(authQuery);
+    if (authorizationPredicateReturn) {
+        const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
+
+        if (predicate) {
+            whereClause.where(predicate);
+        }
+
+        if (preComputedSubqueries && !preComputedSubqueries.empty) {
+            preComputedWhereFieldSubqueries = Cypher.concat(preComputedWhereFieldSubqueries, preComputedSubqueries);
+        }
+    } else {
+        // TODO: Authorization - delete for 4.0.0
+        const { cypher: authCypher, params: authParams } = createAuthAndParams({
+            operations: operation,
+            entity: node,
+            context,
+            where: { varName: matchNode, node },
+        });
+        if (authCypher) {
+            const authQuery = new Cypher.RawCypher(() => {
+                return [authCypher, authParams];
+            });
+
+            whereClause.where(authQuery);
+        }
     }
 
     if (matchClause === whereClause) {

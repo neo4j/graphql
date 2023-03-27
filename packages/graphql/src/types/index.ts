@@ -55,6 +55,7 @@ export interface Context {
     subscriptionsEnabled: boolean;
     executionContext: Driver | Session | Transaction;
     executor: Executor;
+    authParam: Cypher.Param;
     [k: string]: any;
 }
 

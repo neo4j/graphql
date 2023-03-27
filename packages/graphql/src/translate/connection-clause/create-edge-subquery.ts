@@ -31,6 +31,7 @@ import { getEdgeSortFieldKeys } from "./get-sort-fields";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
 import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
+import { createAuthorizationBeforePredicate } from "../authorization/create-authorization-before-predicate";
 
 /** Create the match, filtering and projection of the edge and the nested node */
 export function createEdgeSubquery({
@@ -89,25 +90,50 @@ export function createEdgeSubquery({
         if (wherePredicate) predicates.push(wherePredicate);
         preComputedSubqueries = tempPreComputedSubqueries;
     }
-    const authPredicate = createAuthPredicates({
-        operations: "READ",
-        entity: relatedNode,
+
+    const authorizationPredicateReturn = createAuthorizationBeforePredicate({
         context,
-        where: { varName: relatedNodeRef, node: relatedNode },
-    });
-    if (authPredicate) predicates.push(authPredicate);
-    const authAllowPredicate = createAuthPredicates({
-        operations: "READ",
-        entity: relatedNode,
-        context,
-        allow: {
-            node: relatedNode,
-            varName: relatedNodeRef,
-        },
+        variable: relatedNodeRef,
+        node: relatedNode,
+        operations: ["READ"],
     });
 
-    if (authAllowPredicate)
-        predicates.push(Cypher.apoc.util.validatePredicate(Cypher.not(authAllowPredicate), AUTH_FORBIDDEN_ERROR));
+    if (authorizationPredicateReturn) {
+        const { predicate: authorizationPredicate, preComputedSubqueries: authorizationSubqueries } =
+            authorizationPredicateReturn;
+
+        if (authorizationPredicate) {
+            predicates.push(authorizationPredicate);
+        }
+
+        if (authorizationSubqueries && !authorizationSubqueries.empty) {
+            preComputedSubqueries = Cypher.concat(preComputedSubqueries, authorizationSubqueries);
+        }
+    } else {
+        // TODO: Authorization - delete for 4.0.0
+
+        const authPredicate = createAuthPredicates({
+            operations: "READ",
+            entity: relatedNode,
+            context,
+            where: { varName: relatedNodeRef, node: relatedNode },
+        });
+
+        if (authPredicate) predicates.push(authPredicate);
+
+        const authAllowPredicate = createAuthPredicates({
+            operations: "READ",
+            entity: relatedNode,
+            context,
+            allow: {
+                node: relatedNode,
+                varName: relatedNodeRef,
+            },
+        });
+
+        if (authAllowPredicate)
+            predicates.push(Cypher.apoc.util.validatePredicate(Cypher.not(authAllowPredicate), AUTH_FORBIDDEN_ERROR));
+    }
 
     const projection = createEdgeProjection({
         resolveTree,

@@ -49,6 +49,7 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
+    // TODO: Authorization - delete for 4.0.0 (provided by translateTopLevelMatch)
     const { cypher: authCypher, params: authParams } = createAuthAndParams({
         operations: "DELETE",
         entity: node,

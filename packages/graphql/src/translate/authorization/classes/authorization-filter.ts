@@ -17,14 +17,12 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
-import { AUTH_UNAUTHENTICATED_ERROR } from "../../../constants";
+import type { AuthorizationFilterOperation } from "../../../schema-model/annotation/AuthorizationAnnotation";
 
-export function createAuthenticatedPredicate(
-    authenticated: boolean,
-    authenticatedParam: Cypher.Variable | Cypher.Property
-): Cypher.Predicate {
-    const authenticatedPredicate = Cypher.not(Cypher.eq(authenticatedParam, new Cypher.Literal(authenticated)));
+export class AuthorizationFilter {
+    public operations: AuthorizationFilterOperation[];
 
-    return Cypher.apoc.util.validatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
+    constructor({ operations }: { operations: AuthorizationFilterOperation[] }) {
+        this.operations = operations;
+    }
 }

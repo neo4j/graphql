@@ -21,7 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 
 export function createRolesPredicate(
     roles: string[],
-    rolesParam: Cypher.Param | Cypher.PropertyRef
+    rolesParam: Cypher.Param | Cypher.Property
 ): Cypher.PredicateFunction {
     const roleVar = new Cypher.Variable();
     const rolesList = new Cypher.Literal(roles);

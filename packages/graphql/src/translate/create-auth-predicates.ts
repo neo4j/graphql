@@ -40,44 +40,44 @@ export function createAuthPredicates({
     operations?: AuthOperations | AuthOperations[];
     skipRoles?: boolean;
     skipIsAuthenticated?: boolean;
-    allow?: Rule;
+    allow?: Rule; // yes
     context: Context;
     bind?: Rule;
     where?: Rule;
 }): Cypher.Predicate | undefined {
-    if (!entity.auth) {
-        return undefined;
-    }
+    if (entity.auth) {
+        /** FIXME: this is required to keep compatibility with BaseField type */
+        const nodeAuth = new NodeAuth(entity.auth);
+        const authRules = nodeAuth.getRules(operations);
 
-    /** FIXME: this is required to keep compatibility with BaseField type */
-    const nodeAuth = new NodeAuth(entity.auth);
-    const authRules = nodeAuth.getRules(operations);
+        const hasWhere = (rule: BaseAuthRule): boolean =>
+            !!(rule.where || rule.AND?.some(hasWhere) || rule.OR?.some(hasWhere));
 
-    const hasWhere = (rule: BaseAuthRule): boolean =>
-        !!(rule.where || rule.AND?.some(hasWhere) || rule.OR?.some(hasWhere));
+        if (where && !authRules.some(hasWhere)) {
+            return undefined;
+        }
+        const subPredicates = authRules.map((authRule: AuthRule) => {
+            const predicate = createSubPredicate({
+                authRule,
+                skipRoles,
+                skipIsAuthenticated,
+                allow,
+                context,
+                bind,
+                where,
+            });
 
-    if (where && !authRules.some(hasWhere)) {
-        return undefined;
-    }
-    const subPredicates = authRules.map((authRule: AuthRule) => {
-        const predicate = createSubPredicate({
-            authRule,
-            skipRoles,
-            skipIsAuthenticated,
-            allow,
-            context,
-            bind,
-            where,
+            return predicate;
         });
 
-        return predicate;
-    });
+        const orPredicates = Cypher.or(...subPredicates);
+        if (!orPredicates) return undefined;
 
-    const orPredicates = Cypher.or(...subPredicates);
-    if (!orPredicates) return undefined;
-
-    const authPredicate = new Cypher.RawCypher((env: Cypher.Environment) => {
-        return orPredicates.getCypher(env);
-    });
-    return authPredicate;
+        const authPredicate = new Cypher.RawCypher((env: Cypher.Environment) => {
+            return orPredicates.getCypher(env);
+        });
+        return authPredicate;
+    } else {
+        return undefined;
+    }
 }

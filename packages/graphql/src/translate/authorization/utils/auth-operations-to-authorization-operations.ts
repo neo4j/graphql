@@ -17,14 +17,24 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
-import { AUTH_UNAUTHENTICATED_ERROR } from "../../../constants";
+import type { AuthorizationOperation } from "../../../types/authorization";
+import type { AuthOperations } from "../../../types/deprecated/auth/auth-operations";
+import { asArray } from "../../../utils/utils";
 
-export function createAuthenticatedPredicate(
-    authenticated: boolean,
-    authenticatedParam: Cypher.Variable | Cypher.Property
-): Cypher.Predicate {
-    const authenticatedPredicate = Cypher.not(Cypher.eq(authenticatedParam, new Cypher.Literal(authenticated)));
+export function authOperationsToAuthorizationOperations(
+    authOperations: AuthOperations | AuthOperations[]
+): AuthorizationOperation[] {
+    const operations = asArray(authOperations);
 
-    return Cypher.apoc.util.validatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
+    return operations.map((operation) => {
+        if (operation === "CONNECT") {
+            return "CREATE_RELATIONSHIP";
+        }
+
+        if (operation === "DISCONNECT") {
+            return "DELETE_RELATIONSHIP";
+        }
+
+        return operation;
+    });
 }

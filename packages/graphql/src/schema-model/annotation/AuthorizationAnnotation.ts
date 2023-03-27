@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import type { GraphQLWhereArg } from "../../types";
+
 export const AuthorizationAnnotationArguments = ["filter", "validate"] as const;
 
 export type AuthorizationFilterOperation = "READ" | "UPDATE" | "DELETE" | "CREATE_RELATIONSHIP" | "DELETE_RELATIONSHIP";
@@ -30,6 +32,14 @@ export type AuthorizationValidateOperation =
     | "DELETE_RELATIONSHIP";
 
 export type ValidateWhen = "BEFORE" | "AFTER";
+
+export type AuthorizationWhere = {
+    AND?: AuthorizationWhere[];
+    OR?: AuthorizationWhere[];
+    NOT?: AuthorizationWhere;
+    jwtPayload?: GraphQLWhereArg;
+    node?: GraphQLWhereArg;
+};
 
 export const AuthorizationFilterOperationRule: ReadonlyArray<AuthorizationFilterOperation> = [
     "READ",
@@ -58,11 +68,45 @@ export class AuthorizationAnnotation {
     }
 }
 
+class AuthorizationRule {
+    requireAuthentication?: boolean;
+    where: AuthorizationWhere;
+
+    constructor({ requireAuthentication, where }) {
+        this.requireAuthentication = requireAuthentication;
+        this.where = this.parseWhere(where);
+    }
+
+    private parseWhere(where: Record<string, any>): AuthorizationWhere {
+        const parsed: AuthorizationWhere = {};
+
+        Object.entries(where).forEach(([k, v]) => {
+            if (Array.isArray(v)) {
+                parsed[k] = v.map((w) => this.parseWhere(w));
+            } else if (v === null) {
+                parsed[k] = v;
+            } else if (typeof v === "object") {
+                parsed[k] = this.parseWhere(v);
+            } else if (typeof v === "string") {
+                if (v.startsWith("$jwt")) {
+                } else {
+                    parsed[k] = v;
+                }
+            } else {
+                parsed[k] = v;
+            }
+        });
+
+        return parsed;
+    }
+}
+
 export type AuthorizationFilterRuleConstructor = {
     operations?: AuthorizationFilterOperation[];
     requireAuthentication?: boolean;
     where: AuthorizationWhere;
 };
+
 export class AuthorizationFilterRule {
     public operations: AuthorizationFilterOperation[];
     public requireAuthentication: boolean;
@@ -71,7 +115,7 @@ export class AuthorizationFilterRule {
     constructor({ operations, requireAuthentication, where }: AuthorizationFilterRuleConstructor) {
         this.operations = operations ?? [...AuthorizationFilterOperationRule];
         this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
-        this.where = new AuthorizationWhere(where);
+        this.where = where;
     }
 }
 
@@ -91,17 +135,7 @@ export class AuthorizationValidateRule {
     constructor({ operations, requireAuthentication, where, when }: AuthorizationValidateRuleConstructor) {
         this.operations = operations ?? [...AuthorizationValidateOperationRule];
         this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
-        this.where = new AuthorizationWhere(where);
+        this.where = where;
         this.when = when ?? ["BEFORE", "AFTER"];
-    }
-}
-
-export class AuthorizationWhere {
-    public jwtPayload?: Record<string, any>;
-    public node?: Record<string, any>;
-
-    constructor(where: { jwtPayload?: Record<string, any>; node?: Record<string, any> }) {
-        this.jwtPayload = where.jwtPayload;
-        this.node = where.node;
     }
 }
