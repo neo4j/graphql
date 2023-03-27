@@ -3213,7 +3213,7 @@ __metadata:
     "@types/markdown-it": 12.2.3
     "@types/prettier": 2.7.2
     "@types/react-dom": 18.0.11
-    "@types/webpack": 5.28.0
+    "@types/webpack": 5.28.1
     autoprefixer: 10.4.14
     codemirror: 5.65.12
     codemirror-graphql: 2.0.5
@@ -5358,14 +5358,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/webpack@npm:5.28.0":
-  version: 5.28.0
-  resolution: "@types/webpack@npm:5.28.0"
+"@types/webpack@npm:5.28.1":
+  version: 5.28.1
+  resolution: "@types/webpack@npm:5.28.1"
   dependencies:
     "@types/node": "*"
     tapable: ^2.2.0
     webpack: ^5
-  checksum: a038d7e12dd109c6a8d2eb744fd32070ef94f1655e730fb1443b370db98864c3a0e408638b02d12ba08269b9c012b3be8b801117ced2d1102e7676203fd663ed
+  checksum: 9f9bfe041382acfab36015f95011f6539705ba116fd9b3b8d7599a6396d996b7efcdb71947dba6d24a1a1bf397d15fdfb3c50d2f73e0aa5366a76198d5ec98b3
   languageName: node
   linkType: hard
 
