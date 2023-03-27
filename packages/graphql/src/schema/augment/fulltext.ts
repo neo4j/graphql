@@ -79,7 +79,6 @@ export function augmentFulltextSchema(
             if (indexName === undefined) {
                 throw new Error("The name of the fulltext index should be defined using the indexName argument.");
             }
-            console.log(indexName);
 
             composer.createInputTC({
                 name: `${node.name}${upperFirst(indexName)}Fulltext`,

@@ -41,7 +41,7 @@ describe("Cypher -> fulltext -> Aggregate", () => {
     test("simple aggregate with single fulltext property", async () => {
         const query = gql`
             query {
-                moviesAggregate(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
+                moviesAggregate(fulltext: { index: MovieTitle, phrase: "something AND something" }) {
                     count
                 }
             }

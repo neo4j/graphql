@@ -19,9 +19,9 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../../src";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher -> fulltext -> Additional Labels", () => {
     test("simple match with single fulltext property and static additionalLabels", async () => {
@@ -39,7 +39,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         const query = gql`
             query {
-                movies(fulltext: { index: MovieTitle, phrase: "something AND something" }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
                 }
             }
@@ -84,7 +84,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         const query = gql`
             query {
-                movies(fulltext: { index: MovieTitle, phrase: "something AND something" }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
                 }
             }

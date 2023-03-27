@@ -19,10 +19,10 @@
 
 import { gql } from "apollo-server";
 import type { DocumentNode } from "graphql";
-import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../../src";
+import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
-describe("Cypher -> fulltext -> Match", () => {
+describe("Cypher -> fulltext -> Aggregate", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -38,11 +38,11 @@ describe("Cypher -> fulltext -> Match", () => {
         });
     });
 
-    test("simple match with single fulltext property", async () => {
+    test("simple aggregate with single fulltext property", async () => {
         const query = gql`
             query {
-                movies(fulltext: { index: MovieTitle, phrase: "something AND something" }) {
-                    title
+                moviesAggregate(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
+                    count
                 }
             }
         `;
@@ -52,40 +52,12 @@ describe("Cypher -> fulltext -> Match", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
             WHERE \\"Movie\\" IN labels(this)
-            RETURN this { .title } AS this"
+            RETURN { count: count(this) }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"something AND something\\"
-            }"
-        `);
-    });
-
-    test("match with where and single fulltext property", async () => {
-        const query = gql`
-            query {
-                movies(
-                    fulltext: { index: MovieTitle, phrase: "something AND something" }
-                    where: { title: "some-title" }
-                ) {
-                    title
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query, {});
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
-            WHERE (this.title = $param1 AND \\"Movie\\" IN labels(this))
-            RETURN this { .title } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"something AND something\\",
-                \\"param1\\": \\"some-title\\"
             }"
         `);
     });

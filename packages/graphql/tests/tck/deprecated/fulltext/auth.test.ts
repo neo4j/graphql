@@ -19,9 +19,9 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery } from "../utils/tck-test-utils";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { Neo4jGraphQL } from "../../../../src";
+import { formatCypher, translateQuery } from "../../utils/tck-test-utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("Cypher -> fulltext -> Auth", () => {
     test("simple match with auth where", async () => {
@@ -53,7 +53,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const query = gql`
             query {
-                movies(fulltext: { index: MovieTitle, phrase: "something AND something" }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
                 }
             }
@@ -106,7 +106,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const query = gql`
             query {
-                movies(fulltext: { index: MovieTitle, phrase: "something AND something" }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
                 }
             }

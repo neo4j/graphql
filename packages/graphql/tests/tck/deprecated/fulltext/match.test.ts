@@ -19,8 +19,8 @@
 
 import { gql } from "apollo-server";
 import type { DocumentNode } from "graphql";
-import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../../src";
+import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher -> fulltext -> Match", () => {
     let typeDefs: DocumentNode;
@@ -41,7 +41,7 @@ describe("Cypher -> fulltext -> Match", () => {
     test("simple match with single fulltext property", async () => {
         const query = gql`
             query {
-                movies(fulltext: { index: MovieTitle, phrase: "something AND something" }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
                 }
             }
@@ -66,7 +66,7 @@ describe("Cypher -> fulltext -> Match", () => {
         const query = gql`
             query {
                 movies(
-                    fulltext: { index: MovieTitle, phrase: "something AND something" }
+                    fulltext: { MovieTitle: { phrase: "something AND something" } }
                     where: { title: "some-title" }
                 ) {
                     title
