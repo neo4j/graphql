@@ -124,7 +124,7 @@ function getWhereFields({
             }
 
             if (["String", "ID"].includes(f.typeMeta.name)) {
-                const stringWhereOperators: { comparator: string; typeName: string }[] = [
+                const stringWhereOperators: Array<{ comparator: string; typeName: string }> = [
                     { comparator: "_CONTAINS", typeName: f.typeMeta.name },
                     { comparator: "_STARTS_WITH", typeName: f.typeMeta.name },
                     { comparator: "_ENDS_WITH", typeName: f.typeMeta.name },
