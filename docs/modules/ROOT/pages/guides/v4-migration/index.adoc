@@ -47,7 +47,7 @@ type User {
 }
 ----
 
-Note that before and after these changes, a callback named `nanoid` would need to be defined as below:
+Configuration for callbacks has also been moved as part of this change. Before these changes, a callback named `nanoid` would need to be defined as below:
 
 [source, javascript, indent=0]
 ----
@@ -56,6 +56,22 @@ new Neo4jGraphQL({
   config: {
     callbacks: {
       nanoid: () => { return nanoid(); }
+    }
+  }
+});
+----
+
+This has been changed to use the `features` constructor object:
+
+[source, javascript, indent=0]
+----
+new Neo4jGraphQL({
+  typeDefs,
+  features: {
+    populatedBy: {
+      callbacks: {
+        nanoid: () => { return nanoid(); }
+      }
     }
   }
 });

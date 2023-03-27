@@ -493,14 +493,25 @@ export interface Neo4jStringFiltersSettings {
     GTE?: boolean;
     LT?: boolean;
     LTE?: boolean;
+    MATCHES?: boolean;
+}
+
+export interface Neo4jIDFiltersSettings {
+    MATCHES?: boolean;
 }
 
 export interface Neo4jFiltersSettings {
     String?: Neo4jStringFiltersSettings;
+    ID?: Neo4jIDFiltersSettings;
+}
+
+export interface Neo4jPopulatedBySettings {
+    callbacks?: Neo4jGraphQLCallbacks;
 }
 
 export interface Neo4jFeaturesSettings {
     filters?: Neo4jFiltersSettings;
+    populatedBy?: Neo4jPopulatedBySettings;
 }
 
 export type PredicateReturn = {
