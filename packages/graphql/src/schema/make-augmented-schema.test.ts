@@ -151,29 +151,6 @@ describe("makeAugmentedSchema", () => {
             expect(matchesField).toBeUndefined();
         });
 
-        test("should add the MATCHES filter when NEO4J_GRAPHQL_ENABLE_REGEX is set", () => {
-            const typeDefs = gql`
-                type User {
-                    name: String
-                }
-            `;
-
-            const neoSchema = makeAugmentedSchema(typeDefs, {
-                enableRegex: true,
-                validateResolvers: true,
-            });
-
-            const document = neoSchema.typeDefs;
-
-            const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
-            ) as InputObjectTypeDefinitionNode;
-
-            const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
-
-            expect(matchesField).toBeDefined();
-        });
-
         test("should add the name_MATCHES filter when Features.Filters.String.MATCHES is set", () => {
             const typeDefs = gql`
                 type User {

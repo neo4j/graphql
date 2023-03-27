@@ -90,7 +90,6 @@ function makeAugmentedSchema(
     document: DocumentNode,
     {
         features,
-        enableRegex,
         validateResolvers,
         generateSubscriptions,
         callbacks,
@@ -98,7 +97,6 @@ function makeAugmentedSchema(
         subgraph,
     }: {
         features?: Neo4jFeaturesSettings;
-        enableRegex?: boolean;
         validateResolvers: boolean;
         generateSubscriptions?: boolean;
         callbacks?: Neo4jGraphQLCallbacks;
@@ -269,7 +267,6 @@ function makeAugmentedSchema(
                 pointFields: relFields.pointFields,
                 primitiveFields: relFields.primitiveFields,
             },
-            enableRegex,
             features,
         });
 
@@ -374,7 +371,6 @@ function makeAugmentedSchema(
                 pointFields: interfaceFields.pointFields,
                 primitiveFields: interfaceFields.primitiveFields,
             },
-            enableRegex,
             isInterface: true,
             features,
         });
@@ -622,7 +618,6 @@ function makeAugmentedSchema(
 
         const queryFields = getWhereFields({
             typeName: node.name,
-            enableRegex,
             fields: {
                 temporalFields: node.temporalFields,
                 enumFields: node.enumFields,

@@ -54,12 +54,6 @@ import { validateDocument } from "../schema/validation";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
-    /**
-     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
-     * Please use features.filters instead. More information can be found at
-     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#features
-     */
-    enableRegex?: boolean;
     enableDebug?: boolean;
     /**
      * @deprecated This argument has been deprecated and will be removed in v4.0.0.
@@ -334,7 +328,6 @@ class Neo4jGraphQL {
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
-                enableRegex: this.config?.enableRegex,
                 validateResolvers: validationConfig.validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
@@ -372,7 +365,6 @@ class Neo4jGraphQL {
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
-            enableRegex: this.config?.enableRegex,
             validateResolvers: validationConfig.validateResolvers,
             generateSubscriptions: Boolean(this.plugins?.subscriptions),
             callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
