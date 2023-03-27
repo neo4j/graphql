@@ -60,12 +60,14 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: {
-                callbacks: {
-                    nanoid: () => {
-                        const id = `nanoid${counter}`;
-                        counter += 1;
-                        return id;
+            features: {
+                populatedBy: {
+                    callbacks: {
+                        nanoid: () => {
+                            const id = `nanoid${counter}`;
+                            counter += 1;
+                            return id;
+                        },
                     },
                 },
             },

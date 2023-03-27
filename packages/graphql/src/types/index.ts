@@ -507,8 +507,13 @@ export interface Neo4jFiltersSettings {
     ID?: Neo4jIDFiltersSettings;
 }
 
+export interface Neo4jPopulatedBySettings {
+    callbacks?: Neo4jGraphQLCallbacks;
+}
+
 export interface Neo4jFeaturesSettings {
     filters?: Neo4jFiltersSettings;
+    populatedBy?: Neo4jPopulatedBySettings;
 }
 
 export type PredicateReturn = {
