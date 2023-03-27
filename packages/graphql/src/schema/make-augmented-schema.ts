@@ -30,7 +30,7 @@ import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
 import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
-import type { BaseField, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings } from "../types";
+import type { BaseField, Neo4jFeaturesSettings } from "../types";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { numericalResolver } from "./resolvers/field/numerical";
 import { aggregateResolver } from "./resolvers/query/aggregate";
@@ -92,14 +92,12 @@ function makeAugmentedSchema(
         features,
         validateResolvers,
         generateSubscriptions,
-        callbacks,
         userCustomResolvers,
         subgraph,
     }: {
         features?: Neo4jFeaturesSettings;
         validateResolvers: boolean;
         generateSubscriptions?: boolean;
-        callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
         subgraph?: Subgraph;
     } = { validateResolvers: true }
@@ -110,6 +108,7 @@ function makeAugmentedSchema(
     resolvers: IResolvers;
 } {
     const composer = new SchemaComposer();
+    const callbacks = features?.populatedBy?.callbacks;
 
     let relationships: Relationship[] = [];
 

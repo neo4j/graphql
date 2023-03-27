@@ -30,7 +30,6 @@ import type {
     DriverConfig,
     CypherQueryOptions,
     Neo4jGraphQLPlugins,
-    Neo4jGraphQLCallbacks,
     Neo4jFeaturesSettings,
     StartupValidationConfig,
 } from "../types";
@@ -292,6 +291,7 @@ class Neo4jGraphQL {
             relationships: this.relationships,
             schemaModel: schemaModel,
             plugins: this.plugins,
+            features: this.features,
         };
 
         const resolversComposition = {
@@ -324,7 +324,6 @@ class Neo4jGraphQL {
                 features: this.features,
                 validateResolvers: validationConfig.validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
-                callbacks: this.features?.populatedBy?.callbacks,
                 userCustomResolvers: this.resolvers,
             });
 
@@ -361,7 +360,6 @@ class Neo4jGraphQL {
             features: this.features,
             validateResolvers: validationConfig.validateResolvers,
             generateSubscriptions: Boolean(this.plugins?.subscriptions),
-            callbacks: this.features?.populatedBy?.callbacks,
             userCustomResolvers: this.resolvers,
             subgraph,
         });
