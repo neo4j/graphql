@@ -343,6 +343,13 @@ describe("generate", () => {
 
             export type Query = {
               __typename?: \\"Query\\";
+              /**
+               * @deprecated This operation has been deprecated and will be removed in version 4.0.0 of the library.
+               * Please use the fulltext argument in usersConnection with index you wish to query instead.
+               * More information about the changes to @fulltext can be found here:
+               * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.
+               *
+               */
               usersFulltextUserName: Array<UserFulltextResult>;
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
@@ -401,6 +408,10 @@ describe("generate", () => {
               Asc = \\"ASC\\",
               /** Sort by field values in descending order. */
               Desc = \\"DESC\\",
+            }
+
+            export enum UserFulltextIndexes {
+              UserName = \\"UserName\\",
             }
 
             export type CreateInfo = {
@@ -495,6 +506,9 @@ describe("generate", () => {
             };
 
             export type UserFulltext = {
+              phrase?: InputMaybe<Scalars[\\"String\\"]>;
+              index?: InputMaybe<UserFulltextIndexes>;
+              /** @deprecated This argument has been deprecated and will be removed in version 4.0.0 of the library. Please use the phrase and index arguments instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes. */
               UserName?: InputMaybe<UserUserNameFulltext>;
             };
 
