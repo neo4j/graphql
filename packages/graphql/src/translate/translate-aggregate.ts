@@ -36,6 +36,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     cypherStrs.push(new Cypher.RawCypher(topLevelMatch.cypher));
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
+    // TODO: Authorization - delete for 4.0.0 (provided by translateTopLevelMatch)
     const { cypher: nodeAuthCypher, params: nodeAuthParams } = createAuthAndParams({
         operations: "READ",
         entity: node,

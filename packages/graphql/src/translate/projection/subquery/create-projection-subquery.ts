@@ -25,6 +25,7 @@ import type { CypherRelationshipDirection } from "../../../utils/get-relationshi
 import { createAuthPredicates } from "../../create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
+import { createAuthorizationBeforePredicate } from "../../authorization/create-authorization-before-predicate";
 
 export function createProjectionSubquery({
     parentNode,
@@ -89,33 +90,54 @@ export function createProjectionSubquery({
         preComputedWhereFieldSubqueries = preComputedSubqueries;
     }
 
-    const whereAuth = createAuthPredicates({
-        entity: node,
-        operations: "READ",
+    const authorizationPredicateReturn = createAuthorizationBeforePredicate({
         context,
-        where: {
-            varName: targetNode,
-            node,
-        },
+        variable: targetNode,
+        node,
+        operations: ["READ"],
     });
 
-    if (whereAuth) {
-        predicates.push(whereAuth);
-    }
+    if (authorizationPredicateReturn) {
+        const { predicate: authorizationPredicate, preComputedSubqueries: authorizationSubqueries } =
+            authorizationPredicateReturn;
 
-    const preAuth = createAuthPredicates({
-        entity: node,
-        operations: "READ",
-        context,
-        allow: {
-            node,
-            varName: targetNode,
-        },
-    });
+        if (authorizationPredicate) {
+            predicates.push(authorizationPredicate);
+        }
 
-    if (preAuth) {
-        const allowAuth = Cypher.apoc.util.validatePredicate(Cypher.not(preAuth), AUTH_FORBIDDEN_ERROR);
-        predicates.push(allowAuth);
+        if (authorizationSubqueries && !authorizationSubqueries.empty) {
+            preComputedWhereFieldSubqueries = Cypher.concat(preComputedWhereFieldSubqueries, authorizationSubqueries);
+        }
+    } else {
+        // TODO: Authorization - delete for 4.0.0
+        const whereAuth = createAuthPredicates({
+            entity: node,
+            operations: "READ",
+            context,
+            where: {
+                varName: targetNode,
+                node,
+            },
+        });
+
+        if (whereAuth) {
+            predicates.push(whereAuth);
+        }
+
+        const preAuth = createAuthPredicates({
+            entity: node,
+            operations: "READ",
+            context,
+            allow: {
+                node,
+                varName: targetNode,
+            },
+        });
+
+        if (preAuth) {
+            const allowAuth = Cypher.apoc.util.validatePredicate(Cypher.not(preAuth), AUTH_FORBIDDEN_ERROR);
+            predicates.push(allowAuth);
+        }
     }
 
     if (authValidatePredicates?.length) {
