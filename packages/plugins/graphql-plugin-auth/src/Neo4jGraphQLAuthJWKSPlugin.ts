@@ -18,16 +18,19 @@
  */
 
 import jsonwebtoken from "jsonwebtoken";
+import { JwtPayload } from 'jsonwebtoken'
 import type JwksRsa from "jwks-rsa";
 import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
 import type { RequestLike } from "./types";
+import { type } from "os";
 
 const debug = Debug(DEBUG_PREFIX);
 
 export interface JWKSPluginInput {
     jwksEndpoint: string | ((req: RequestLike) => string);
+    issuer?: string;
     rolesPath?: string;
     globalAuthentication?: boolean;
     bindPredicate?: "all" | "any";
@@ -40,6 +43,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
     options!: JwksRsa.Options;
     bindPredicate: "all" | "any";
     input: JWKSPluginInput;
+    issuer?: string;
     constructor(input: JWKSPluginInput) {
         //We are going to use this input later, so we need to save it here.
         this.input = input;
@@ -51,6 +55,9 @@ class Neo4jGraphQLAuthJWKSPlugin {
         //It will be empty string if the endpoint is a function
         //This means the value will be calculated later
         const jwksEndpoint = typeof input.jwksEndpoint === "string" ? input.jwksEndpoint : "";
+
+        // If the issuer is set, we will check it against the token
+        this.issuer = input.issuer;
 
         this.options = {
             jwksUri: jwksEndpoint,
@@ -122,9 +129,15 @@ class Neo4jGraphQLAuthJWKSPlugin {
                 (err, decoded) => {
                     if (err) {
                         reject(err);
-                    } else {
-                        resolve(decoded as unknown as T);
+                        return;
                     }
+                    if (this.issuer && decoded && typeof decoded === "object") {
+                        if (decoded?.iss !== this.issuer) {
+                            reject("Invalid token");
+                            return;
+                        }
+                    }
+                    resolve(decoded as unknown as T);
                 }
             );
         });
