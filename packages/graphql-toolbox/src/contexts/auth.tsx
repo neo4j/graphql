@@ -20,10 +20,7 @@
 import React, { useState, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
 import {
-    LOCAL_STATE_CONNECTION_URL,
-    LOCAL_STATE_CONNECTION_USERNAME,
     LOCAL_STATE_HIDE_INTROSPECTION_PROMPT,
-    LOCAL_STATE_LOGIN,
     LOCAL_STATE_SELECTED_DATABASE_NAME,
     VERIFY_CONNECTION_INTERVAL_MS,
 } from "../constants";
@@ -36,6 +33,7 @@ import {
 import type { LoginPayload, Neo4jDatabase } from "../types";
 import { Storage } from "../utils/storage";
 import { getURLProtocolFromText } from "../utils/utils";
+import { useStore } from "../store";
 
 interface LoginOptions {
     username: string;
@@ -62,6 +60,7 @@ export const AuthContext = React.createContext({} as State);
 
 export function AuthProvider(props: any) {
     let intervalId: number;
+    const store = useStore();
 
     const [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
@@ -84,8 +83,8 @@ export function AuthProvider(props: any) {
                 Storage.store(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT, "true");
             }
 
-            Storage.store(LOCAL_STATE_CONNECTION_USERNAME, options.username);
-            Storage.store(LOCAL_STATE_CONNECTION_URL, options.url);
+            store.setConnectionUsername(options.username);
+            store.setConnectionUrl(options.url);
 
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             intervalId = window.setInterval(async () => {
@@ -104,9 +103,8 @@ export function AuthProvider(props: any) {
             }));
         },
         logout: () => {
-            Storage.remove(LOCAL_STATE_LOGIN);
-            Storage.remove(LOCAL_STATE_CONNECTION_USERNAME);
-            Storage.remove(LOCAL_STATE_CONNECTION_URL);
+            store.setConnectionUsername(null);
+            store.setConnectionUrl(null);
             Storage.remove(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT);
             if (intervalId) {
                 clearInterval(intervalId);
@@ -149,12 +147,10 @@ export function AuthProvider(props: any) {
             loginPayload = loginPayloadFromDesktop;
             setValue((values) => ({ ...values, isNeo4jDesktop: true }));
         } else {
-            const storedConnectionUsername = Storage.retrieve(LOCAL_STATE_CONNECTION_USERNAME);
-            const storedConnectionUrl = Storage.retrieve(LOCAL_STATE_CONNECTION_URL);
-            if (storedConnectionUrl && storedConnectionUsername) {
+            if (store.connectionUrl && store.connectionUsername) {
                 loginPayload = {
-                    username: storedConnectionUsername,
-                    url: storedConnectionUrl,
+                    username: store.connectionUsername,
+                    url: store.connectionUrl,
                 };
             }
         }

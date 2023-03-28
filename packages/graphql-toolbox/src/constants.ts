@@ -17,12 +17,6 @@
  * limitations under the License.
  */
 
-export const LOCAL_STATE_OPTIONS = "neo4j.graphql.options";
-export const LOCAL_STATE_TYPE_LAST_QUERY = "neo4j.graphql.lastQuery";
-export const LOCAL_STATE_TYPE_LAST_PARAMS = "neo4j.graphql.lastParams";
-export const LOCAL_STATE_LOGIN = "neo4j.graphql.login";
-export const LOCAL_STATE_CONNECTION_USERNAME = "neo4j.graphql.connection.username";
-export const LOCAL_STATE_CONNECTION_URL = "neo4j.graphql.connection.url";
 export const LOCAL_STATE_ENABLE_DEBUG = "neo4j.graphql.debug";
 export const LOCAL_STATE_CHECK_CONSTRAINT = "neo4j.graphql.checkConstraint";
 export const LOCAL_STATE_CREATE_CONSTRAINT = "neo4j.graphql.createConstraint";

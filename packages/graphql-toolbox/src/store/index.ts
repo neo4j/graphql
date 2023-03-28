@@ -19,14 +19,14 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage, devtools } from "zustand/middleware";
+import { DEFAULT_TYPE_DEFS, DEFAULT_QUERY } from "./../constants";
 
 interface Store {
     typeDefinitions: string;
     lastQuery: string;
     lastParams: string;
-    login: string;
-    connectionUsername: string;
-    connectionUrl: string;
+    connectionUsername: string | null;
+    connectionUrl: string | null;
     enableDebug: boolean;
     enableRegex: string; // still needed?
     checkConstraint: string;
@@ -46,18 +46,19 @@ interface Store {
     setLastQuery: (query: string) => void;
     getLastParams: () => string | null;
     setLastParams: (params: string) => void;
+    setConnectionUsername: (username: string) => void;
+    setConnectionUrl: (url: string) => void;
 }
 
 export const useStore = create<Store>()(
     devtools(
         persist(
             (set, get) => ({
-                typeDefinitions: "",
-                lastQuery: "",
+                typeDefinitions: DEFAULT_TYPE_DEFS,
+                lastQuery: DEFAULT_QUERY,
                 lastParams: "",
-                login: "",
-                connectionUsername: "",
-                connectionUrl: "",
+                connectionUsername: null,
+                connectionUrl: null,
                 enableDebug: false,
                 enableRegex: "", // still needed?
                 checkConstraint: "",
@@ -77,6 +78,8 @@ export const useStore = create<Store>()(
                 setLastQuery: (query) => set({ lastQuery: JSON.stringify(query) }),
                 getLastParams: () => parseJson(get().lastParams),
                 setLastParams: (params) => set({ lastParams: JSON.stringify(params) }),
+                setConnectionUsername: (username) => set({ connectionUsername: username }),
+                setConnectionUrl: (url) => set({ connectionUrl: url }),
             }),
             {
                 name: "neo4j-graphql-toolbox",
