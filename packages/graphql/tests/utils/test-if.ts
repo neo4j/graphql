@@ -36,6 +36,7 @@ testIf.only = function (condition: boolean, message?: string): jest.It {
     return condition ? test.only : test.only.skip;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 testIf.skip = function (_condition: boolean, _message?: string): jest.It {
     return test.skip;
 };
