@@ -3,13 +3,11 @@ import type {
     ObjectTypeDefinitionNode,
     FieldDefinitionNode,
     DefinitionNode,
-    ConstDirectiveNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeExtensionNode,
     InterfaceTypeExtensionNode,
 } from "graphql";
 import { createAuthorizationDefinitions } from "../../../graphql/directives/type-dependant-directives/authorization";
-
 import type { EnricherContext } from "../EnricherContext";
 import type { Enricher } from "../types";
 
@@ -19,7 +17,7 @@ type PossibleAuthorizationLocation =
     | ObjectTypeExtensionNode
     | InterfaceTypeExtensionNode;
 
-function isAuthorizationDefinition(directive: ConstDirectiveNode): boolean {
+function isAuthorizationDefinition(directive: any): boolean {
     return directive.name.value === "authorization";
 }
 
@@ -40,7 +38,7 @@ function containsAuthorization(object: PossibleAuthorizationLocation): boolean {
     }
 }
 
-function getAuthorizationUsage(currentDirectiveUsage: ConstDirectiveNode, typeName: string): ConstDirectiveNode {
+function getAuthorizationUsage(currentDirectiveUsage: any, typeName: string) {
     return {
         ...currentDirectiveUsage,
         name: {
@@ -58,7 +56,7 @@ function changeAuthorizationUsageOnField(
         (userDefinitionField) => field.name.value === userDefinitionField.name.value
     );
     if (userField) {
-        const userFieldAuthorizationUsage = userField.directives?.find(isAuthorizationDefinition) as ConstDirectiveNode;
+        const userFieldAuthorizationUsage = userField.directives?.find(isAuthorizationDefinition);
         if (userFieldAuthorizationUsage) {
             const fieldAuthorizationUsage = getAuthorizationUsage(
                 userFieldAuthorizationUsage,
@@ -83,7 +81,7 @@ function changeAuthorizationUsageOnObject(
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     userDocumentObject: PossibleAuthorizationLocation
 ): ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode {
-    const userAuthorizationUsage = userDocumentObject.directives?.find(isAuthorizationDefinition) as ConstDirectiveNode;
+    const userAuthorizationUsage = userDocumentObject.directives?.find(isAuthorizationDefinition);
     const fieldsWithNewAuthorizationUsage =
         object.fields && changeAuthorizationUsageOnFields(object.fields, userDocumentObject);
     const newDirectiveUsage =
