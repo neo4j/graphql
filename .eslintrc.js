@@ -78,6 +78,7 @@ module.exports = {
                 "@typescript-eslint/ban-ts-comment": "off",
                 "@typescript-eslint/no-unsafe-assignment": "off",
                 "@typescript-eslint/no-explicit-any": "off",
+                "jest/no-standalone-expect": ["error", { additionalTestBlockFunctions: ["testIf"] }],
                 "jest/expect-expect": ["warn", { assertFunctionNames: ["expect", "expectTypeOf"] }],
             },
         },

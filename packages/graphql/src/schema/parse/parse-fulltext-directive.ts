@@ -47,7 +47,7 @@ function parseFulltextDirective({
         // TODO: remove indexName assignment and undefined check once the name argument has been removed.
         const indexName = index.indexName || index.name;
         if (indexName === undefined) {
-            throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            throw new Error("The name of the fulltext index should be defined using the index argument.");
         }
         if (index.name && !deprecationWarningShown) {
             console.warn(deprecationWarning);
