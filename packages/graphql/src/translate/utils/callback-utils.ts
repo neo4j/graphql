@@ -51,7 +51,7 @@ export const addCallbackAndSetParamCypher = (
     callbackBucket: CallbackBucket,
     operation: "CREATE" | "UPDATE",
     node: Cypher.Node
-): [Cypher.PropertyRef, Cypher.RawCypher] | [] => {
+): [Cypher.Property, Cypher.RawCypher] | [] => {
     if (!field.callback || !field.callback.operations.includes(operation)) {
         return [];
     }
