@@ -34,7 +34,6 @@ import type {
 } from "./tracking-types";
 import { Screen } from "../contexts/screen";
 import { Theme } from "../contexts/theme";
-import { useStore } from "../store";
 
 class Tracking {
     public trackDatabaseIntrospection = (properties: TrackingTBIntrospect) => {
@@ -97,9 +96,8 @@ class Tracking {
     };
 
     private fireTrackingEvent = (eventCategory: string, eventLabel: string, eventProperties = {}) => {
-        const store = useStore();
-
-        if (!store.enableProductUsageTracking) return;
+        // TODO: fix!
+        // if (!this.store?.enableProductUsageTracking) return;
         if (!window.analytics || !window.analytics.track) return;
 
         console.log("TRACKING"); // TODO: remove

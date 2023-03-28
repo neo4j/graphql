@@ -77,9 +77,9 @@ export const useStore = create<Store>()(
             hideProductUsageTrackingMessage: false,
             selectedDatabaseName: "",
             gridState: [123],
-            getTypeDefinitions: () => parseJson(get().typeDefinitions), // TODO: need to JSON stringify? probably not!
+            getTypeDefinitions: () => parseJson(get().typeDefinitions), // TODO: remove JSON parse, it is done automatically!
             setTypeDefinitions: (typeDefs) => set({ typeDefinitions: JSON.stringify(typeDefs) }),
-            getLastQuery: () => parseJson(get().lastQuery),
+            getLastQuery: () => parseJson(get().lastQuery), // TODO: remove JSON parse, it is done automatically!
             setLastQuery: (query) => set({ lastQuery: JSON.stringify(query) }),
             getLastParams: () => parseJson(get().lastParams),
             setLastParams: (params) => set({ lastParams: JSON.stringify(params) }),

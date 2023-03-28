@@ -19,11 +19,7 @@
 
 import React, { useState, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
-import {
-    LOCAL_STATE_HIDE_INTROSPECTION_PROMPT,
-    LOCAL_STATE_SELECTED_DATABASE_NAME,
-    VERIFY_CONNECTION_INTERVAL_MS,
-} from "../constants";
+import { LOCAL_STATE_SELECTED_DATABASE_NAME, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
 import {
     checkDatabaseHasData,
     getDatabases,
@@ -77,10 +73,9 @@ export function AuthProvider(props: any) {
             const selectedDatabaseName = resolveSelectedDatabaseName(databases || []);
 
             let isShowIntrospectionPrompt = false;
-            const storedShowIntrospectionPrompt = Storage.retrieve(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT);
-            if (storedShowIntrospectionPrompt !== "true") {
+            if (!store.hideIntrospectionPrompt) {
                 isShowIntrospectionPrompt = await checkDatabaseHasData(driver, selectedDatabaseName);
-                Storage.store(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT, "true");
+                store.setHideIntrospectionPrompt(true);
             }
 
             store.setConnectionUsername(options.username);
@@ -105,7 +100,7 @@ export function AuthProvider(props: any) {
         logout: () => {
             store.setConnectionUsername(null);
             store.setConnectionUrl(null);
-            Storage.remove(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT);
+            store.setHideIntrospectionPrompt(false);
             if (intervalId) {
                 clearInterval(intervalId);
             }

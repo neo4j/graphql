@@ -18,7 +18,6 @@
  */
 
 export const LOCAL_STATE_SELECTED_DATABASE_NAME = "neo4j.graphql.selectedDatabaseName";
-export const LOCAL_STATE_HIDE_INTROSPECTION_PROMPT = "neo4j.graphql.hideIntrospectionPrompt";
 export const LOCAL_STATE_GRID_STATE = "neo4j.graphql.gridState";
 
 export const SCHEMA_EDITOR_INPUT = "SCHEMA_EDITOR_INPUT";
