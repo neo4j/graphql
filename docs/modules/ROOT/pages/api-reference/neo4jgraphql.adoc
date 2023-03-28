@@ -66,13 +66,6 @@ Accepts all of the options from https://www.graphql-tools.com/docs/generate-sche
  Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-StartupValidationOptions[`StartupValidationOptions`] or `boolean`
 |Whether or not startup validation checks should be run. A boolean can be used to enable/disable all startup checks. Alternatively, a `StartupValidationOptions` object can be used for fine grain controls. If nothing is passed, all checks will be run.
 
-|`skipValidateTypeDefs` +
- +
- Type: `boolean`
-|*`skipValidateTypeDefs` has been deprecated and will be removed in 4.0.0. Please use `startupValidation` instead.* +
- +
-Can be used to disable strict type definition validation if you are encountering unexpected errors.
-
 |===
 
 [[api-reference-neo4jgraphql-input-neo4jgraphqlconfig-driverconfig]]
