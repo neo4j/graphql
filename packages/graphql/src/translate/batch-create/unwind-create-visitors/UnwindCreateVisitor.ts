@@ -36,6 +36,7 @@ import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createAuthPredicates } from "../../create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
+import { createAuthorizationAfterPredicate } from "../../authorization/create-authorization-after-predicate";
 
 type UnwindCreateScopeDefinition = {
     unwindVar: Cypher.Variable;
@@ -214,7 +215,29 @@ export class UnwindCreateVisitor implements Visitor {
     }
 
     private getAuthNodeClause(node: Node, context: Context, nodeRef: Cypher.Node): Cypher.Clause | undefined {
-        if (node.auth) {
+        const authorizationPredicateReturn = createAuthorizationAfterPredicate({
+            context,
+            variable: nodeRef,
+            node,
+            operations: ["CREATE"],
+        });
+
+        if (authorizationPredicateReturn) {
+            const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
+
+            if (predicate) {
+                if (preComputedSubqueries && !preComputedSubqueries.empty) {
+                    return Cypher.concat(
+                        new Cypher.With("*"),
+                        preComputedSubqueries,
+                        new Cypher.With("*").where(predicate)
+                    );
+                }
+
+                return new Cypher.With("*").where(predicate);
+            }
+        } else if (node.auth) {
+            // TODO: Authorization - delete for 4.0.0
             const authExpr = createAuthPredicates({
                 entity: node,
                 operations: "CREATE",

@@ -20,9 +20,10 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createAuthPredicates } from "../create-auth-predicates";
-import type { Context } from "../../types";
+import type { Context, PredicateReturn } from "../../types";
 import type { Node } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
+import { createAuthorizationBeforePredicate } from "../authorization/create-authorization-before-predicate";
 
 export type AggregationAuth = {
     params: Record<string, string>;
@@ -39,20 +40,45 @@ export function createFieldAggregationAuth({
     context: Context;
     subqueryNodeAlias: Cypher.Node;
     nodeFields: Record<string, ResolveTree> | undefined;
-}): Cypher.Predicate | undefined {
-    const allowAuth = getAllowAuth({ node, context, varName: subqueryNodeAlias });
-    const whereAuth = getWhereAuth({ node, context, varName: subqueryNodeAlias });
+}): PredicateReturn | undefined {
+    const authPredicates: Cypher.Predicate[] = [];
+    let preComputedSubqueries: Cypher.CompositeClause | undefined;
+
+    const authorizationPredicateReturn = createAuthorizationBeforePredicate({
+        context,
+        variable: subqueryNodeAlias,
+        node,
+        operations: ["READ"],
+    });
+
+    if (authorizationPredicateReturn) {
+        const { predicate: authorizationPredicate, preComputedSubqueries: authorizationSubqueries } =
+            authorizationPredicateReturn;
+
+        if (authorizationPredicate) {
+            authPredicates.push(authorizationPredicate);
+        }
+
+        if (authorizationSubqueries && !authorizationSubqueries.empty) {
+            preComputedSubqueries = Cypher.concat(preComputedSubqueries, authorizationSubqueries);
+        }
+    } else {
+        // TODO: Authorization - delete for 4.0.0
+        const allowAuth = getAllowAuth({ node, context, varName: subqueryNodeAlias });
+        if (allowAuth) authPredicates.push(allowAuth);
+
+        const whereAuth = getWhereAuth({ node, context, varName: subqueryNodeAlias });
+        if (whereAuth) authPredicates.push(whereAuth);
+    }
+
     const nodeAuth = getFieldAuth({ fields: nodeFields, node, context, varName: subqueryNodeAlias });
 
-    const authPredicates: Cypher.Predicate[] = [];
-
-    if (allowAuth) authPredicates.push(allowAuth);
-    if (whereAuth) authPredicates.push(whereAuth);
     if (nodeAuth) authPredicates.push(nodeAuth);
 
-    return Cypher.and(...authPredicates);
+    return { predicate: Cypher.and(...authPredicates), preComputedSubqueries };
 }
 
+// TODO: Authorization - delete for 4.0.0
 function getAllowAuth({
     node,
     context,
@@ -74,6 +100,7 @@ function getAllowAuth({
     return undefined;
 }
 
+// TODO: Authorization - delete for 4.0.0
 function getWhereAuth({
     node,
     context,

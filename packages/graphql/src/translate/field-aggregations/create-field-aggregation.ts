@@ -67,6 +67,10 @@ export function createFieldAggregation({
 
     const fieldPathBase = `${node.name}${referenceNode.name}${upperFirst(relationAggregationField.fieldName)}`;
     const aggregationFields = getAggregationFields(fieldPathBase, field);
+
+    const predicates: Cypher.Predicate[] = [];
+    let preComputedSubqueries: Cypher.CompositeClause | undefined;
+
     const authData = createFieldAggregationAuth({
         node: referenceNode,
         context,
@@ -74,12 +78,34 @@ export function createFieldAggregation({
         nodeFields: aggregationFields.node,
     });
 
-    const { predicate, preComputedSubqueries } = createWherePredicate({
+    if (authData) {
+        const { predicate: authorizationPredicate, preComputedSubqueries: authorizationPreComputedSubqueries } =
+            authData;
+
+        if (authorizationPredicate) {
+            predicates.push(authorizationPredicate);
+        }
+
+        if (authorizationPreComputedSubqueries && !authorizationPreComputedSubqueries.empty) {
+            preComputedSubqueries = Cypher.concat(preComputedSubqueries, authorizationPreComputedSubqueries);
+        }
+    }
+
+    const { predicate: wherePredicate, preComputedSubqueries: wherePreComputedSubqueries } = createWherePredicate({
         targetElement: targetRef,
         whereInput: (field.args.where as GraphQLWhereArg) || {},
         context,
         element: referenceNode,
     });
+
+    if (wherePredicate) {
+        predicates.push(wherePredicate);
+    }
+
+    if (wherePreComputedSubqueries && !wherePreComputedSubqueries.empty) {
+        preComputedSubqueries = Cypher.concat(preComputedSubqueries, wherePreComputedSubqueries);
+    }
+
     const relationshipDirection = getCypherRelationshipDirection(relationAggregationField, {
         directed: field.args.directed as boolean | undefined,
     });
@@ -90,7 +116,7 @@ export function createFieldAggregation({
         .withDirection(relationshipDirection)
         .to(targetRef);
 
-    const matchWherePattern = createMatchWherePattern(targetPattern, preComputedSubqueries, authData, predicate);
+    const matchWherePattern = createMatchWherePattern(targetPattern, preComputedSubqueries, Cypher.and(...predicates));
     const projectionMap = new Cypher.Map();
 
     let projectionSubqueries: Cypher.Clause | undefined;
