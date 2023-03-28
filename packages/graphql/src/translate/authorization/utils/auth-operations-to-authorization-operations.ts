@@ -27,6 +27,10 @@ export function authOperationsToAuthorizationOperations(
     const operations = asArray(authOperations);
 
     return operations.map((operation) => {
+        if (operation === "SUBSCRIBE") {
+            throw new Error("SUBSCRIBE is not a support authorization operation");
+        }
+
         if (operation === "CONNECT") {
             return "CREATE_RELATIONSHIP";
         }

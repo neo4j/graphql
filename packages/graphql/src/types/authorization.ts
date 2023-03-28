@@ -23,7 +23,6 @@ export type AuthorizationOperation =
     | "UPDATE"
     | "DELETE"
     | "CREATE_RELATIONSHIP"
-    | "DELETE_RELATIONSHIP"
-    | "SUBSCRIBE";
+    | "DELETE_RELATIONSHIP";
 
 export type AuthorizationValidateWhen = "BEFORE" | "AFTER";
