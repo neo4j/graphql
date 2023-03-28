@@ -34,24 +34,28 @@ export interface Store {
     editorTheme: string | null;
     favorites: Favorite[] | null;
     showLintMarkers: boolean;
-    selectedDatabaseName: string;
     hideIntrospectionPrompt: boolean;
-    gridState: number[];
     enableProductUsageTracking: boolean;
     hideProductUsageTrackingMessage: boolean;
+    gridState: number[];
+    selectedDatabaseName: string;
     getTypeDefinitions: () => string | null;
     setTypeDefinitions: (typeDefs: string) => void;
     getLastQuery: () => string | null;
     setLastQuery: (query: string) => void;
     getLastParams: () => string | null;
     setLastParams: (params: string) => void;
-    setConnectionUsername: (username: string | null) => void;
-    setConnectionUrl: (url: string | null) => void;
-    setEnableDebug: (isDebug: boolean) => void;
-    setEnableRegex: (isRegex: boolean) => void;
+    setConnectionUsername: (connectionUsername: string | null) => void;
+    setConnectionUrl: (connectionUrl: string | null) => void;
+    setEnableDebug: (enableDebug: boolean) => void;
+    setEnableRegex: (enableRegex: boolean) => void;
     setConstraint: (constraint: string) => void;
-    setEditorTheme: (theme: string) => void;
+    setEditorTheme: (editorTheme: string) => void;
     setFavorites: (favorites: Favorite[] | null) => void;
+    setShowLintMarkers: (showLintMarkers: boolean) => void;
+    setHideIntrospectionPrompt: (hideIntrospectionPrompt: boolean) => void;
+    setEnableProductUsageTracking: (enableProductUsageTracking: boolean) => void;
+    setHideProductUsageTrackingMessage: (hideProductUsageTrackingMessage: boolean) => void;
 }
 
 export const useStore = create<Store>()(
@@ -68,24 +72,29 @@ export const useStore = create<Store>()(
             editorTheme: null,
             favorites: null,
             showLintMarkers: false,
-            selectedDatabaseName: "",
             hideIntrospectionPrompt: false,
-            gridState: [123],
-            enableProductUsageTracking: false,
+            enableProductUsageTracking: true,
             hideProductUsageTrackingMessage: false,
+            selectedDatabaseName: "",
+            gridState: [123],
             getTypeDefinitions: () => parseJson(get().typeDefinitions), // TODO: need to JSON stringify? probably not!
             setTypeDefinitions: (typeDefs) => set({ typeDefinitions: JSON.stringify(typeDefs) }),
             getLastQuery: () => parseJson(get().lastQuery),
             setLastQuery: (query) => set({ lastQuery: JSON.stringify(query) }),
             getLastParams: () => parseJson(get().lastParams),
             setLastParams: (params) => set({ lastParams: JSON.stringify(params) }),
-            setConnectionUsername: (username) => set({ connectionUsername: username }),
-            setConnectionUrl: (url) => set({ connectionUrl: url }),
-            setEnableDebug: (isDebug) => set({ enableDebug: isDebug }),
-            setEnableRegex: (isRegex) => set({ enableRegex: isRegex }),
+            setConnectionUsername: (connectionUsername) => set({ connectionUsername }),
+            setConnectionUrl: (connectionUrl) => set({ connectionUrl }),
+            setEnableDebug: (enableDebug) => set({ enableDebug }),
+            setEnableRegex: (enableRegex) => set({ enableRegex }),
             setConstraint: (constraint) => set({ constraint }),
-            setEditorTheme: (theme) => set({ editorTheme: theme }),
+            setEditorTheme: (editorTheme) => set({ editorTheme }),
             setFavorites: (favorites: Favorite[] | null) => set({ favorites }),
+            setShowLintMarkers: (showLintMarkers: boolean) => set({ showLintMarkers }),
+            setHideIntrospectionPrompt: (hideIntrospectionPrompt: boolean) => set({ hideIntrospectionPrompt }),
+            setEnableProductUsageTracking: (enableProductUsageTracking: boolean) => set({ enableProductUsageTracking }),
+            setHideProductUsageTrackingMessage: (hideProductUsageTrackingMessage: boolean) =>
+                set({ hideProductUsageTrackingMessage }),
         }),
         {
             name: "neo4j-graphql-toolbox",
