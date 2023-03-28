@@ -25,3 +25,17 @@ export function testIf(condition: boolean, message?: string): jest.It {
 
     return condition ? test : test.skip;
 }
+
+// Hacks to support testIt.only and testIt.skip
+//  - Do not cite the Deep Magic to me, Witch! I was there when it was written.
+testIf.only = function (condition: boolean, message?: string): jest.It {
+    if (!condition && message) {
+        console.log(message);
+    }
+
+    return condition ? test.only : test.only.skip;
+};
+
+testIf.skip = function (_condition: boolean, _message?: string): jest.It {
+    return test.skip;
+};
