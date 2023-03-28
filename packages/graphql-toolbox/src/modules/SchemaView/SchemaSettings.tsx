@@ -22,21 +22,24 @@ import { Checkbox } from "@neo4j-ndl/react";
 import { QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
 import { ProTooltip } from "../../components/ProTooltip";
 import { Storage } from "../../utils/storage";
-import { LOCAL_STATE_CONSTRAINT, LOCAL_STATE_ENABLE_DEBUG, LOCAL_STATE_ENABLE_REGEX } from "../../constants";
+import { LOCAL_STATE_CONSTRAINT } from "../../constants";
 import { ConstraintState } from "../../types";
 import { CustomSelect } from "../../components/CustomSelect";
 import { tracking } from "../../analytics/tracking";
+import type { Store } from "../../store";
 
 interface Props {
-    isRegexChecked: string | null;
-    isDebugChecked: string | null;
+    store: Store;
+    isRegexChecked: boolean;
+    isDebugChecked: boolean;
     constraintState: string | null;
-    setIsRegexChecked: React.Dispatch<React.SetStateAction<string | null>>;
-    setIsDebugChecked: React.Dispatch<React.SetStateAction<string | null>>;
+    setIsRegexChecked: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsDebugChecked: React.Dispatch<React.SetStateAction<boolean>>;
     setConstraintState: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const SchemaSettings = ({
+    store,
     isRegexChecked,
     isDebugChecked,
     constraintState,
@@ -45,17 +48,25 @@ export const SchemaSettings = ({
     setConstraintState,
 }: Props) => {
     const onChangeRegexCheckbox = (): void => {
-        const next = isRegexChecked === "true" ? "false" : "true";
+        const next = !isRegexChecked;
         setIsRegexChecked(next);
-        Storage.store(LOCAL_STATE_ENABLE_REGEX, next);
-        tracking.trackSchemaSettingsCheckbox({ screen: "type definitions", action: next, box: "regex" });
+        store.setEnableDebug(next);
+        tracking.trackSchemaSettingsCheckbox({
+            screen: "type definitions",
+            action: next ? "true" : "false",
+            box: "regex",
+        });
     };
 
     const onChangeDebugCheckbox = (): void => {
-        const next = isDebugChecked === "true" ? "false" : "true";
+        const next = !isDebugChecked;
         setIsDebugChecked(next);
-        Storage.store(LOCAL_STATE_ENABLE_DEBUG, next);
-        tracking.trackSchemaSettingsCheckbox({ screen: "type definitions", action: next, box: "debug" });
+        store.setEnableRegex(next);
+        tracking.trackSchemaSettingsCheckbox({
+            screen: "type definitions",
+            action: next ? "true" : "false",
+            box: "debug",
+        });
     };
 
     const onChangeConstraintState = (nextConstraintState: string): void => {
@@ -88,7 +99,7 @@ export const SchemaSettings = ({
                         className="m-0"
                         aria-label="Enable Regex"
                         label="Enable Regex"
-                        checked={isRegexChecked === "true"}
+                        checked={isRegexChecked}
                         onChange={onChangeRegexCheckbox}
                     />
                     <InfoToolTip
@@ -114,7 +125,7 @@ export const SchemaSettings = ({
                         className="m-0"
                         aria-label="Enable Debug"
                         label="Enable Debug"
-                        checked={isDebugChecked === "true"}
+                        checked={isDebugChecked}
                         onChange={onChangeDebugCheckbox}
                     />
                     <InfoToolTip

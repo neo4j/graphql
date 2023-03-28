@@ -21,14 +21,14 @@ import { create } from "zustand";
 import { persist, createJSONStorage, devtools } from "zustand/middleware";
 import { DEFAULT_TYPE_DEFS, DEFAULT_QUERY } from "./../constants";
 
-interface Store {
+export interface Store {
     typeDefinitions: string;
     lastQuery: string;
     lastParams: string;
     connectionUsername: string | null;
     connectionUrl: string | null;
     enableDebug: boolean;
-    enableRegex: string; // still needed?
+    enableRegex: boolean; // still needed?
     checkConstraint: string;
     createConstraint: string;
     constraint: string;
@@ -46,8 +46,10 @@ interface Store {
     setLastQuery: (query: string) => void;
     getLastParams: () => string | null;
     setLastParams: (params: string) => void;
-    setConnectionUsername: (username: string) => void;
-    setConnectionUrl: (url: string) => void;
+    setConnectionUsername: (username: string | null) => void;
+    setConnectionUrl: (url: string | null) => void;
+    setEnableDebug: (isDebug: boolean) => void;
+    setEnableRegex: (isRegex: boolean) => void;
 }
 
 export const useStore = create<Store>()(
@@ -60,7 +62,7 @@ export const useStore = create<Store>()(
                 connectionUsername: null,
                 connectionUrl: null,
                 enableDebug: false,
-                enableRegex: "", // still needed?
+                enableRegex: false, // still needed?
                 checkConstraint: "",
                 createConstraint: "",
                 constraint: "",
@@ -80,6 +82,8 @@ export const useStore = create<Store>()(
                 setLastParams: (params) => set({ lastParams: JSON.stringify(params) }),
                 setConnectionUsername: (username) => set({ connectionUsername: username }),
                 setConnectionUrl: (url) => set({ connectionUrl: url }),
+                setEnableDebug: (isDebug) => set({ enableDebug: isDebug }),
+                setEnableRegex: (isRegex) => set({ enableRegex: isRegex }),
             }),
             {
                 name: "neo4j-graphql-toolbox",

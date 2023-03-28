@@ -17,12 +17,10 @@
  * limitations under the License.
  */
 
-export const LOCAL_STATE_ENABLE_DEBUG = "neo4j.graphql.debug";
 export const LOCAL_STATE_CHECK_CONSTRAINT = "neo4j.graphql.checkConstraint";
 export const LOCAL_STATE_CREATE_CONSTRAINT = "neo4j.graphql.createConstraint";
 export const LOCAL_STATE_CONSTRAINT = "neo4j.graphql.constraint";
 export const LOCAL_STATE_EDITOR_THEME = "neo4j.graphql.editorTheme";
-export const LOCAL_STATE_ENABLE_REGEX = "neo4j.graphql.enable.regex";
 export const LOCAL_STATE_FAVORITES = "neo4j.graphql.favorites";
 export const LOCAL_STATE_SHOW_LINT_MARKERS = "neo4j.graphql.showLintMarkers";
 export const LOCAL_STATE_SELECTED_DATABASE_NAME = "neo4j.graphql.selectedDatabaseName";

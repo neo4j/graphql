@@ -24,13 +24,7 @@ import { Banner } from "@neo4j-ndl/react";
 import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
 import type { EditorFromTextArea } from "codemirror";
-import {
-    DEFAULT_DATABASE_NAME,
-    LOCAL_STATE_CONSTRAINT,
-    LOCAL_STATE_ENABLE_DEBUG,
-    LOCAL_STATE_ENABLE_REGEX,
-    LOCAL_STATE_FAVORITES,
-} from "../../constants";
+import { DEFAULT_DATABASE_NAME, LOCAL_STATE_CONSTRAINT, LOCAL_STATE_FAVORITES } from "../../constants";
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
@@ -65,8 +59,8 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [isIntrospecting, setIsIntrospecting] = useState<boolean>(false);
     const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
-    const [isDebugChecked, setIsDebugChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_DEBUG));
-    const [isRegexChecked, setIsRegexChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_REGEX));
+    const [isDebugChecked, setIsDebugChecked] = useState<boolean>(store.enableDebug);
+    const [isRegexChecked, setIsRegexChecked] = useState<boolean>(store.enableRegex);
     const [constraintState, setConstraintState] = useState<string | null>(Storage.retrieve(LOCAL_STATE_CONSTRAINT));
     const [favorites, setFavorites] = useState<Favorite[] | null>(Storage.retrieveJSON(LOCAL_STATE_FAVORITES));
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
@@ -118,7 +112,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     driver: auth.driver,
                     features,
                     config: {
-                        enableDebug: isDebugChecked === "true",
+                        enableDebug: isDebugChecked,
                         driverConfig: {
                             database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
                         },
@@ -221,6 +215,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100">
                         <div className="p-6 w-full">
                             <SchemaSettings
+                                store={store}
                                 isRegexChecked={isRegexChecked}
                                 isDebugChecked={isDebugChecked}
                                 constraintState={constraintState}
