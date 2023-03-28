@@ -6,5 +6,5 @@
         "outDir": "dist"
         // "stripInternal": true
     },
-    "include": ["src/**/*", "tests/**/*"]
+    "include": ["src/**/*", "tests/**/*", "global.d.ts"]
 }

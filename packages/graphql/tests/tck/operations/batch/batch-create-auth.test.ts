@@ -55,7 +55,6 @@ describe("Batch Create, Auth", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
@@ -89,7 +88,7 @@ describe("Batch Create, Auth", () => {
                 SET
                     create_this1.id = create_var0.id
                 WITH *
-                CALL apoc.util.validate(NOT (any(create_var3 IN [\\"admin\\"] WHERE any(create_var2 IN $auth.roles WHERE create_var2 = create_var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT (any(create_var3 IN [\\"admin\\"] WHERE any(create_var2 IN $auth.roles WHERE create_var2 = create_var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this1
                 CALL {
                 	WITH create_this1
@@ -180,7 +179,7 @@ describe("Batch Create, Auth", () => {
                     RETURN collect(NULL) AS create_var10
                 }
                 WITH *
-                CALL apoc.util.validate(NOT (any(create_var12 IN [\\"admin\\"] WHERE any(create_var11 IN $auth.roles WHERE create_var11 = create_var12))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT (any(create_var12 IN [\\"admin\\"] WHERE any(create_var11 IN $auth.roles WHERE create_var11 = create_var12))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this0
                 CALL {
                 	WITH create_this0

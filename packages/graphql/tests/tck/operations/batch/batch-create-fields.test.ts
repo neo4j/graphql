@@ -58,7 +58,6 @@ describe("Batch Create, Scalar types", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

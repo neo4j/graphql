@@ -43,7 +43,6 @@ describe("Cypher Aggregations where node with ID", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

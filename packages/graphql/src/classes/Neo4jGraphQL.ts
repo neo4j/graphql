@@ -55,6 +55,11 @@ import { validateUserDefinition } from "../schema/validation/schema-validation";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
+    /**
+     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
+     * Please use features.filters instead. More information can be found at
+     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#features
+     */
     enableRegex?: boolean;
     enableDebug?: boolean;
     /**
@@ -65,6 +70,11 @@ export interface Neo4jGraphQLConfig {
     skipValidateTypeDefs?: boolean;
     startupValidation?: StartupValidationConfig;
     queryOptions?: CypherQueryOptions;
+    /**
+     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
+     * Please use features.populatedBy instead. More information can be found at
+     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby
+     */
     callbacks?: Neo4jGraphQLCallbacks;
 }
 
@@ -239,9 +249,14 @@ class Neo4jGraphQL {
             throw new Error("Schema Model is not defined");
         }
 
+        const config = {
+            ...this.config,
+            callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
+        };
+
         const wrapResolverArgs = {
             driver: this.driver,
-            config: this.config,
+            config,
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: this.schemaModel,
@@ -297,7 +312,7 @@ class Neo4jGraphQL {
                 enableRegex: this.config?.enableRegex,
                 validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
-                callbacks: this.config.callbacks,
+                callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
                 userCustomResolvers: this.schemaDefinition.resolvers,
             });
 
@@ -344,7 +359,7 @@ class Neo4jGraphQL {
             enableRegex: this.config?.enableRegex,
             validateResolvers,
             generateSubscriptions: Boolean(this.plugins?.subscriptions),
-            callbacks: this.config.callbacks,
+            callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
             userCustomResolvers: this.schemaDefinition.resolvers,
             subgraph,
         });

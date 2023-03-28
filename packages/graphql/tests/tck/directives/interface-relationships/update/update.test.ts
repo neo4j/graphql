@@ -58,7 +58,6 @@ describe("Interface Relationships - Update update", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
