@@ -82,8 +82,11 @@ export function createMatchClause({
         const { index: indexName, phrase } = parseFulltextInput(fulltextInput);
         const phraseParam = new Cypher.Param(phrase);
 
+        if (!indexName || !phrase) {
+            throw new Error("Expected index and param for fulltext operation");
+        }
         matchClause = Cypher.db.index.fulltext.queryNodes(indexName, phraseParam).yield(["node", matchNode]);
-
+        indexName;
         whereOperators = node.getLabels(context).map((label) => {
             return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));
         });

@@ -107,6 +107,12 @@ export function augmentFulltextSchema(
         const fulltextWhereDescription = `The input for filtering a fulltext query on an index of ${node.name}`;
         const fulltextSortDescription = `The input for sorting a fulltext query on an index of ${node.name}`;
 
+        // Sets a default index if there is only one index available
+        let defaultIndex = undefined as any;
+        if (indexes.length === 1) {
+            defaultIndex = indexes[0];
+        }
+
         composer.createInputTC({
             name: `${node.name}Fulltext`,
             fields: {
@@ -115,6 +121,7 @@ export function augmentFulltextSchema(
                 },
                 index: {
                     type: indexEnum,
+                    defaultValue: defaultIndex,
                 },
                 ...legacyFields,
             },
