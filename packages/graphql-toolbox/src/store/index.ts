@@ -21,6 +21,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { GridState } from "../modules/EditorView/grid/Grid";
 import type { Favorite } from "../types";
+import { ConstraintState } from "../types";
 import { DEFAULT_TYPE_DEFS, DEFAULT_QUERY } from "./../constants";
 
 export interface Store {
@@ -71,7 +72,7 @@ export const useStore = create<Store>()(
             connectionUrl: null,
             enableDebug: false,
             enableRegex: false, // still needed?
-            constraint: null,
+            constraint: ConstraintState.ignore.toString(),
             editorTheme: null,
             favorites: null,
             showLintMarkers: false,

@@ -18,9 +18,8 @@
  */
 
 import type { Dispatch, SetStateAction } from "react";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useStore } from "../store";
-import { ConstraintState } from "../types";
 
 export interface State {
     showLintMarkers: boolean;
@@ -53,12 +52,6 @@ export function AppSettingsProvider(props: React.PropsWithChildren<any>) {
             setValue((values) => ({ ...values, hideProductUsageMessage: nextState }));
         },
     });
-
-    useEffect(() => {
-        if (!store.constraint) {
-            store.setConstraint(ConstraintState.ignore.toString());
-        }
-    }, []);
 
     return <AppSettingsContext.Provider value={value}>{props.children}</AppSettingsContext.Provider>;
 }

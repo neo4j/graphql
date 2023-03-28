@@ -3257,7 +3257,7 @@ __metadata:
     webpack-cli: 5.0.1
     webpack-dev-server: 4.13.1
     webpack-notifier: 1.15.0
-    zustand: ^4.3.6
+    zustand: 4.3.6
   languageName: unknown
   linkType: soft
 
@@ -24727,7 +24727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zustand@npm:^4.3.6":
+"zustand@npm:4.3.6":
   version: 4.3.6
   resolution: "zustand@npm:4.3.6"
   dependencies:
