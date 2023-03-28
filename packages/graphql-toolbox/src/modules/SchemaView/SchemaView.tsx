@@ -24,7 +24,7 @@ import { Banner } from "@neo4j-ndl/react";
 import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
 import type { EditorFromTextArea } from "codemirror";
-import { DEFAULT_DATABASE_NAME, LOCAL_STATE_CONSTRAINT, LOCAL_STATE_FAVORITES } from "../../constants";
+import { DEFAULT_DATABASE_NAME, LOCAL_STATE_FAVORITES } from "../../constants";
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
@@ -61,7 +61,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
     const [isDebugChecked, setIsDebugChecked] = useState<boolean>(store.enableDebug);
     const [isRegexChecked, setIsRegexChecked] = useState<boolean>(store.enableRegex);
-    const [constraintState, setConstraintState] = useState<string | null>(Storage.retrieve(LOCAL_STATE_CONSTRAINT));
+    const [constraintState, setConstraintState] = useState<string | null>(store.constraint);
     const [favorites, setFavorites] = useState<Favorite[] | null>(Storage.retrieveJSON(LOCAL_STATE_FAVORITES));
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 

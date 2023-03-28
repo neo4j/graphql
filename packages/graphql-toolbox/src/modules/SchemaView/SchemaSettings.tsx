@@ -21,8 +21,6 @@ import React from "react";
 import { Checkbox } from "@neo4j-ndl/react";
 import { QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
 import { ProTooltip } from "../../components/ProTooltip";
-import { Storage } from "../../utils/storage";
-import { LOCAL_STATE_CONSTRAINT } from "../../constants";
 import { ConstraintState } from "../../types";
 import { CustomSelect } from "../../components/CustomSelect";
 import { tracking } from "../../analytics/tracking";
@@ -50,7 +48,7 @@ export const SchemaSettings = ({
     const onChangeRegexCheckbox = (): void => {
         const next = !isRegexChecked;
         setIsRegexChecked(next);
-        store.setEnableDebug(next);
+        store.setEnableRegex(next);
         tracking.trackSchemaSettingsCheckbox({
             screen: "type definitions",
             action: next ? "true" : "false",
@@ -61,7 +59,7 @@ export const SchemaSettings = ({
     const onChangeDebugCheckbox = (): void => {
         const next = !isDebugChecked;
         setIsDebugChecked(next);
-        store.setEnableRegex(next);
+        store.setEnableDebug(next);
         tracking.trackSchemaSettingsCheckbox({
             screen: "type definitions",
             action: next ? "true" : "false",
@@ -71,7 +69,7 @@ export const SchemaSettings = ({
 
     const onChangeConstraintState = (nextConstraintState: string): void => {
         setConstraintState(nextConstraintState);
-        Storage.store(LOCAL_STATE_CONSTRAINT, nextConstraintState);
+        store.setConstraint(nextConstraintState);
         tracking.trackSchemaConstraints({ screen: "type definitions", value: ConstraintState[nextConstraintState] });
     };
 

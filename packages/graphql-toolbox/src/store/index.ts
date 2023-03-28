@@ -18,7 +18,7 @@
  */
 
 import { create } from "zustand";
-import { persist, createJSONStorage, devtools } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { DEFAULT_TYPE_DEFS, DEFAULT_QUERY } from "./../constants";
 
 export interface Store {
@@ -29,9 +29,7 @@ export interface Store {
     connectionUrl: string | null;
     enableDebug: boolean;
     enableRegex: boolean; // still needed?
-    checkConstraint: string;
-    createConstraint: string;
-    constraint: string;
+    constraint: string | null;
     editorTheme: string;
     favorites: string[];
     showLintMarkers: boolean;
@@ -50,46 +48,44 @@ export interface Store {
     setConnectionUrl: (url: string | null) => void;
     setEnableDebug: (isDebug: boolean) => void;
     setEnableRegex: (isRegex: boolean) => void;
+    setConstraint: (constraint: string) => void;
 }
 
 export const useStore = create<Store>()(
-    devtools(
-        persist(
-            (set, get) => ({
-                typeDefinitions: DEFAULT_TYPE_DEFS,
-                lastQuery: DEFAULT_QUERY,
-                lastParams: "",
-                connectionUsername: null,
-                connectionUrl: null,
-                enableDebug: false,
-                enableRegex: false, // still needed?
-                checkConstraint: "",
-                createConstraint: "",
-                constraint: "",
-                editorTheme: "",
-                favorites: [""],
-                showLintMarkers: false,
-                selectedDatabaseName: "",
-                hideIntrospectionPrompt: false,
-                gridState: [123],
-                enableProductUsageTracking: false,
-                hideProductUsageTrackingMessage: false,
-                getTypeDefinitions: () => parseJson(get().typeDefinitions),
-                setTypeDefinitions: (typeDefs) => set({ typeDefinitions: JSON.stringify(typeDefs) }),
-                getLastQuery: () => parseJson(get().lastQuery),
-                setLastQuery: (query) => set({ lastQuery: JSON.stringify(query) }),
-                getLastParams: () => parseJson(get().lastParams),
-                setLastParams: (params) => set({ lastParams: JSON.stringify(params) }),
-                setConnectionUsername: (username) => set({ connectionUsername: username }),
-                setConnectionUrl: (url) => set({ connectionUrl: url }),
-                setEnableDebug: (isDebug) => set({ enableDebug: isDebug }),
-                setEnableRegex: (isRegex) => set({ enableRegex: isRegex }),
-            }),
-            {
-                name: "neo4j-graphql-toolbox",
-                storage: createJSONStorage(() => window.localStorage),
-            }
-        )
+    persist(
+        (set, get) => ({
+            typeDefinitions: DEFAULT_TYPE_DEFS,
+            lastQuery: DEFAULT_QUERY,
+            lastParams: "",
+            connectionUsername: null,
+            connectionUrl: null,
+            enableDebug: false,
+            enableRegex: false, // still needed?
+            constraint: null,
+            editorTheme: "",
+            favorites: [""],
+            showLintMarkers: false,
+            selectedDatabaseName: "",
+            hideIntrospectionPrompt: false,
+            gridState: [123],
+            enableProductUsageTracking: false,
+            hideProductUsageTrackingMessage: false,
+            getTypeDefinitions: () => parseJson(get().typeDefinitions),
+            setTypeDefinitions: (typeDefs) => set({ typeDefinitions: JSON.stringify(typeDefs) }),
+            getLastQuery: () => parseJson(get().lastQuery),
+            setLastQuery: (query) => set({ lastQuery: JSON.stringify(query) }),
+            getLastParams: () => parseJson(get().lastParams),
+            setLastParams: (params) => set({ lastParams: JSON.stringify(params) }),
+            setConnectionUsername: (username) => set({ connectionUsername: username }),
+            setConnectionUrl: (url) => set({ connectionUrl: url }),
+            setEnableDebug: (isDebug) => set({ enableDebug: isDebug }),
+            setEnableRegex: (isRegex) => set({ enableRegex: isRegex }),
+            setConstraint: (constraint) => set({ constraint }),
+        }),
+        {
+            name: "neo4j-graphql-toolbox",
+            storage: createJSONStorage(() => window.localStorage),
+        }
     )
 );
 

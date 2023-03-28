@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import type { Dispatch, SetStateAction} from "react";
+import type { Dispatch, SetStateAction } from "react";
 import React, { useState, useEffect } from "react";
 import {
-    LOCAL_STATE_CONSTRAINT,
     LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING,
     LOCAL_STATE_HIDE_PRODUCT_USAGE_MESSAGE,
     LOCAL_STATE_SHOW_LINT_MARKERS,
 } from "../constants";
+import { useStore } from "../store";
 import { ConstraintState } from "../types";
 import { Storage } from "../utils/storage";
 
@@ -45,6 +45,8 @@ const _resolveValue = (localStateLabel: string, defaultValue: boolean): boolean 
 };
 
 export function AppSettingsProvider(props: React.PropsWithChildren<any>) {
+    const store = useStore();
+
     const [value, setValue]: [value: State | undefined, setValue: Dispatch<SetStateAction<State>>] = useState<State>({
         showLintMarkers: Storage.retrieve(LOCAL_STATE_SHOW_LINT_MARKERS) === "true",
         enableProductUsageTracking: _resolveValue(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING, true),
@@ -64,9 +66,8 @@ export function AppSettingsProvider(props: React.PropsWithChildren<any>) {
     });
 
     useEffect(() => {
-        const constraintState = Storage.retrieve(LOCAL_STATE_CONSTRAINT);
-        if (!constraintState) {
-            Storage.store(LOCAL_STATE_CONSTRAINT, ConstraintState.ignore.toString());
+        if (!store.constraint) {
+            store.setConstraint(ConstraintState.ignore.toString());
         }
 
         // On load of the application, if LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING is not set, set it to true.
