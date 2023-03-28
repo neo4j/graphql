@@ -24,6 +24,7 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
+import { omitFields } from "../utils/utils";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -206,10 +207,11 @@ function parseFulltextInput(input: CompatibleFulltextInput): FulltextInput {
             index: input.index,
         };
     } else {
-        if (Object.entries(input).length > 1) {
+        const legacyInput = omitFields(input, ["phrase", "index"]);
+        if (Object.entries(legacyInput).length > 1) {
             throw new Error("Can only call one search at any given time");
         }
-        const [indexName, indexInput] = Object.entries(input)[0];
+        const [indexName, indexInput] = Object.entries(legacyInput)[0];
         return {
             index: indexName,
             phrase: indexInput.phrase,

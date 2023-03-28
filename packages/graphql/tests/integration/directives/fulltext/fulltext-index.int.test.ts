@@ -81,7 +81,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
@@ -147,7 +147,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                 title: String!
             }
         `;
@@ -209,7 +209,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) @node(labels: ["${label}"]) {
                 title: String! @alias(property: "newTitle")
             }
         `;
@@ -273,7 +273,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
@@ -294,7 +294,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title", "description"] }]) {
                 title: String!
                 description: String!
             }
@@ -329,7 +329,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title", "description"] }]) {
                 title: String!
                 description: String! @alias(property: "${alias}")
             }
@@ -368,7 +368,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
@@ -442,7 +442,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["title", "description"] }]) {
                 title: String!
                 description: String!
             }
@@ -480,7 +480,7 @@ describe("@fulltext directive - indexes constraints", () => {
         const type = new UniqueType("Movie");
 
         const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["id"] }]) {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", fields: ["id"] }]) {
                 id: ID!
             }
         `;

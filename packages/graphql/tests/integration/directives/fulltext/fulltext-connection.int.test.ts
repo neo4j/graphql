@@ -124,7 +124,7 @@ describe("@fulltext directive - connections", () => {
 
     testIf(MULTIDB_SUPPORT)("Query using fulltext index", async () => {
         const typeDefs = gql`
-            type ${Movie} @fulltext(indexes: [{ name: "${testIndexName}", fields: ["title"] }]) {
+            type ${Movie} @fulltext(indexes: [{ indexName: "${testIndexName}", fields: ["title"] }]) {
                 title: String!
             }
         `;
@@ -173,7 +173,7 @@ describe("@fulltext directive - connections", () => {
 
     testIf(MULTIDB_SUPPORT)("should query fulltext using node label", async () => {
         const typeDefs = gql`
-            type Film @fulltext(indexes: [{ name: "${testIndexName}", fields: ["title"] }]) @node(labels: ["${Movie}"]) {
+            type Film @fulltext(indexes: [{ indexName: "${testIndexName}", fields: ["title"] }]) @node(labels: ["${Movie}"]) {
                 title: String!
             }
         `;
@@ -221,7 +221,7 @@ describe("@fulltext directive - connections", () => {
 
     testIf(MULTIDB_SUPPORT)("should query fulltext using field alias", async () => {
         const typeDefs = gql`
-            type Film @fulltext(indexes: [{ name: "${testIndexName}", fields: ["name"] }]) @node(labels: ["${Movie}"]) {
+            type Film @fulltext(indexes: [{ indexName: "${testIndexName}", fields: ["name"] }]) @node(labels: ["${Movie}"]) {
                 name: String! @alias(property: "title")
             }
         `;
@@ -270,7 +270,7 @@ describe("@fulltext directive - connections", () => {
 
     testIf(MULTIDB_SUPPORT)("should query fulltext for ID field", async () => {
         const typeDefs = gql`
-            type ${Movie} @fulltext(indexes: [{ name: "${testIndexName}", fields: ["id"] }]) {
+            type ${Movie} @fulltext(indexes: [{ indexName: "${testIndexName}", fields: ["id"] }]) {
                 id: ID!
                 title: String!
             }
@@ -317,7 +317,7 @@ describe("@fulltext directive - connections", () => {
 
     testIf(MULTIDB_SUPPORT)("Query using fulltext index with multiple fields", async () => {
         const typeDefs = gql`
-            type ${Movie} @fulltext(indexes: [{ name: "${testIndexName}", fields: ["title", "id"] }]) {
+            type ${Movie} @fulltext(indexes: [{ indexName: "${testIndexName}", fields: ["title", "id"] }]) {
                 title: String!
                 id: String!
             }
@@ -363,6 +363,55 @@ describe("@fulltext directive - connections", () => {
                     {
                         node: {
                             title: "another title",
+                        },
+                    },
+                ]),
+            },
+        });
+    });
+
+    testIf(MULTIDB_SUPPORT)("Query using default fulltext index", async () => {
+        const typeDefs = gql`
+            type ${Movie} @fulltext(indexes: [{ indexName: "${testIndexName}", fields: ["title"] }]) {
+                title: String!
+            }
+        `;
+
+        const schema = await createSchemaAndAssertIndexes(typeDefs);
+
+        const query = `
+            query {
+                ${Movie.operations.connection}(fulltext: { phrase: "${partialTitle}" }) {
+                    edges {
+                        node {
+                            title
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                edges: expect.toIncludeSameMembers([
+                    {
+                        node: {
+                            title: testTitle,
+                        },
+                    },
+                    {
+                        node: {
+                            title: partialTitle,
                         },
                     },
                 ]),
