@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { callbacks: { nanoid } },
+            features: { populatedBy: { callbacks: { nanoid } } },
         });
     });
 

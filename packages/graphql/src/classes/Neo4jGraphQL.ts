@@ -30,7 +30,6 @@ import type {
     DriverConfig,
     CypherQueryOptions,
     Neo4jGraphQLPlugins,
-    Neo4jGraphQLCallbacks,
     Neo4jFeaturesSettings,
     StartupValidationConfig,
 } from "../types";
@@ -40,6 +39,7 @@ import type Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
 import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
 import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
+import type { WrapResolverArguments } from "../schema/resolvers/wrapper";
 import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
@@ -63,12 +63,6 @@ export interface Neo4jGraphQLConfig {
     skipValidateTypeDefs?: boolean;
     startupValidation?: StartupValidationConfig;
     queryOptions?: CypherQueryOptions;
-    /**
-     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
-     * Please use features.populatedBy instead. More information can be found at
-     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby
-     */
-    callbacks?: Neo4jGraphQLCallbacks;
 }
 
 export type ValidationConfig = {
@@ -264,16 +258,17 @@ class Neo4jGraphQL {
 
         const config = {
             ...this.config,
-            callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
+            callbacks: this.features?.populatedBy?.callbacks,
         };
 
-        const wrapResolverArgs = {
+        const wrapResolverArgs: WrapResolverArguments = {
             driver: this.driver,
             config,
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: schemaModel,
             plugins: this.plugins,
+            features: this.features,
         };
 
         const resolversComposition = {
@@ -291,13 +286,14 @@ class Neo4jGraphQL {
         resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>,
         schemaModel: Neo4jGraphQLSchemaModel
     ) {
-        const wrapResolverArgs = {
+        const wrapResolverArgs: WrapResolverArguments = {
             driver: this.driver,
             config: this.config,
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: schemaModel,
             plugins: this.plugins,
+            features: this.features,
         };
 
         const resolversComposition = {
@@ -330,7 +326,6 @@ class Neo4jGraphQL {
                 features: this.features,
                 validateResolvers: validationConfig.validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
-                callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
                 userCustomResolvers: this.resolvers,
             });
 
@@ -367,7 +362,6 @@ class Neo4jGraphQL {
             features: this.features,
             validateResolvers: validationConfig.validateResolvers,
             generateSubscriptions: Boolean(this.plugins?.subscriptions),
-            callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
             userCustomResolvers: this.resolvers,
             subgraph,
         });
