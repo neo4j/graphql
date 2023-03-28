@@ -70,10 +70,11 @@ export function translateRead(
     });
 
     if (projection.meta?.authValidatePredicates?.length) {
-        projAuth = Cypher.apoc.util.validate(
-            Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-            AUTH_FORBIDDEN_ERROR,
-            new Cypher.Literal([0])
+        projAuth = new Cypher.With("*").where(
+            Cypher.apoc.util.validatePredicate(
+                Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                AUTH_FORBIDDEN_ERROR
+            )
         );
     }
 
