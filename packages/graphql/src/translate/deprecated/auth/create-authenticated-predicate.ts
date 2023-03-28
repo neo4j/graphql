@@ -22,7 +22,7 @@ import { AUTH_UNAUTHENTICATED_ERROR } from "../../../constants";
 
 export function createAuthenticatedPredicate(
     authenticated: boolean,
-    authenticatedParam: Cypher.Variable | Cypher.PropertyRef
+    authenticatedParam: Cypher.Variable | Cypher.Property
 ): Cypher.Predicate {
     const authenticatedPredicate = Cypher.not(Cypher.eq(authenticatedParam, new Cypher.Literal(authenticated)));
 
