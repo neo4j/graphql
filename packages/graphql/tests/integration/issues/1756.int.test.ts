@@ -56,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
             return `callback_value`;
         };
 
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, config: { callbacks: { nanoid } } });
+        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, features: { populatedBy: { callbacks: { nanoid } } } });
         schema = await neoGraphql.getSchema();
     });
 
