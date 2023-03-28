@@ -21,6 +21,7 @@ import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
 import type { Variable } from "../../references/Variable";
 import { serializeMap } from "../../utils/serialize-map";
+import { isString } from "../../utils/is-string";
 
 /** Represents a Map projection
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/maps/#cypher-map-projection)
@@ -35,17 +36,17 @@ export class MapProjection implements CypherCompilable {
     private variable: Variable;
     private projection: string[];
 
-    constructor(variable: Variable, projection: string[], extraValues: Record<string, Expr> = {}) {
+    constructor(variable: Variable, projection: string[] = [], extraValues: Record<string, Expr> = {}) {
         this.variable = variable;
         this.projection = projection;
         this.extraValues = extraValues;
     }
 
     public set(values: Record<string, Expr> | string): void {
-        if (values instanceof String) {
-            this.projection.push(values as string);
+        if (isString(values)) {
+            this.projection.push(values);
         } else {
-            this.extraValues = { ...this.extraValues, ...(values as Record<string, Expr>) };
+            this.extraValues = { ...this.extraValues, ...values };
         }
     }
 

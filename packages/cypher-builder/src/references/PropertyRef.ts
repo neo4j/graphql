@@ -20,7 +20,6 @@
 import type { CypherEnvironment } from "../Environment";
 import type { CypherCompilable, Expr } from "../types";
 import type { Reference } from "./Reference";
-import type { Variable } from "./Variable";
 
 /** Reference to a variable property
  * @group References
@@ -38,7 +37,7 @@ export class PropertyRef implements CypherCompilable {
         this.propertyPath = properties;
     }
 
-    public get variable(): Variable {
+    public get variable(): Reference {
         return this._variable;
     }
 
