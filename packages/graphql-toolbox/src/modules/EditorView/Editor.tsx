@@ -192,6 +192,7 @@ export const Editor = ({ schema }: Props) => {
                     <div className="w-content-container h-content-container-extended flex justify-start p-4">
                         <div className="flex flex-col w-full">
                             <Grid
+                                store={store}
                                 isRightPanelVisible={showRightPanel}
                                 queryEditor={
                                     schema ? (

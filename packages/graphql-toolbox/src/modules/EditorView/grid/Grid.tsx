@@ -20,26 +20,26 @@
 import { useState, useEffect, useMemo } from "react";
 import { ResizableBox } from "react-resizable";
 import debounce from "lodash.debounce";
-import { Storage } from "../../../utils/storage";
 import { usePrevious } from "../../..//utils/utils";
-import { LOCAL_STATE_GRID_STATE } from "../../../constants";
 // @ts-ignore - SVG Import
 import unionHorizontal from "./union_horizontal.svg";
 // @ts-ignore - SVG Import
 import unionVertical from "./union_vertical.svg";
 import "./grid.css";
+import type { Store } from "../../../store";
 
 const DEBOUNCE_LOCAL_STORE_TIMEOUT = 300;
 const DEBOUNCE_WINDOW_RESIZE_TIMEOUT = 200;
 
 interface Props {
+    store: Store;
     queryEditor: React.ReactNode | null;
     resultView: React.ReactNode;
     parameterEditor: React.ReactNode;
     isRightPanelVisible: boolean;
 }
 
-interface GridState {
+export interface GridState {
     maxWidth: number;
     maxHeight: number;
     leftTop: {
@@ -73,14 +73,14 @@ const initialState: GridState = {
     },
 };
 
-export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVisible }: Props) => {
-    const [values, setValues] = useState<GridState>(Storage.retrieveJSON(LOCAL_STATE_GRID_STATE) || initialState);
+export const Grid = ({ store, queryEditor, parameterEditor, resultView, isRightPanelVisible }: Props) => {
+    const [values, setValues] = useState<GridState>(store.gridState || initialState);
     const prevIsRightPanelVisible = usePrevious(isRightPanelVisible);
 
     const debouncedBoxResize = useMemo(
         () =>
             debounce((nextState: GridState) => {
-                Storage.storeJSON(LOCAL_STATE_GRID_STATE, nextState);
+                store.setGridState(nextState);
             }, DEBOUNCE_LOCAL_STORE_TIMEOUT),
         []
     );
@@ -117,7 +117,7 @@ export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVis
             },
         };
         setValues(nextState);
-        Storage.storeJSON(LOCAL_STATE_GRID_STATE, nextState);
+        store.setGridState(nextState);
     };
 
     useEffect(() => {

@@ -17,9 +17,6 @@
  * limitations under the License.
  */
 
-export const LOCAL_STATE_SELECTED_DATABASE_NAME = "neo4j.graphql.selectedDatabaseName";
-export const LOCAL_STATE_GRID_STATE = "neo4j.graphql.gridState";
-
 export const SCHEMA_EDITOR_INPUT = "SCHEMA_EDITOR_INPUT";
 export const EDITOR_QUERY_INPUT = "EDITOR_QUERY_INPUT";
 export const EDITOR_PARAMS_INPUT = "EDITOR_PARAMS_INPUT";

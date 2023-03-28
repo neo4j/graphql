@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
-import { LOCAL_STATE_SELECTED_DATABASE_NAME, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
+import { VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
 import {
     checkDatabaseHasData,
     getDatabases,
@@ -27,7 +27,6 @@ import {
     resolveSelectedDatabaseName,
 } from "./utils";
 import type { LoginPayload, Neo4jDatabase } from "../types";
-import { Storage } from "../utils/storage";
 import { getURLProtocolFromText } from "../utils/utils";
 import { useStore } from "../store";
 
@@ -70,7 +69,7 @@ export function AuthProvider(props: any) {
             await driver.verifyConnectivity();
 
             const databases = await getDatabases(driver);
-            const selectedDatabaseName = resolveSelectedDatabaseName(databases || []);
+            const selectedDatabaseName = resolveSelectedDatabaseName(databases || [], store);
 
             let isShowIntrospectionPrompt = false;
             if (!store.hideIntrospectionPrompt) {
@@ -114,7 +113,7 @@ export function AuthProvider(props: any) {
             }));
         },
         setSelectedDatabaseName: (databaseName: string) => {
-            Storage.store(LOCAL_STATE_SELECTED_DATABASE_NAME, databaseName);
+            store.setSelectedDatabaseName(databaseName);
             setValue((values) => ({ ...values, selectedDatabaseName: databaseName }));
         },
         setShowIntrospectionPrompt: (nextState: boolean) => {

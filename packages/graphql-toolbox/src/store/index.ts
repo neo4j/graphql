@@ -19,6 +19,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import type { GridState } from "../modules/EditorView/grid/Grid";
 import type { Favorite } from "../types";
 import { DEFAULT_TYPE_DEFS, DEFAULT_QUERY } from "./../constants";
 
@@ -37,8 +38,8 @@ export interface Store {
     hideIntrospectionPrompt: boolean;
     enableProductUsageTracking: boolean;
     hideProductUsageTrackingMessage: boolean;
-    gridState: number[];
-    selectedDatabaseName: string;
+    gridState: GridState | null;
+    selectedDatabaseName: string | null;
     getTypeDefinitions: () => string | null;
     setTypeDefinitions: (typeDefs: string) => void;
     getLastQuery: () => string | null;
@@ -56,6 +57,8 @@ export interface Store {
     setHideIntrospectionPrompt: (hideIntrospectionPrompt: boolean) => void;
     setEnableProductUsageTracking: (enableProductUsageTracking: boolean) => void;
     setHideProductUsageTrackingMessage: (hideProductUsageTrackingMessage: boolean) => void;
+    setSelectedDatabaseName: (selectedDatabaseName: string) => void;
+    setGridState: (gridState: GridState) => void;
 }
 
 export const useStore = create<Store>()(
@@ -75,8 +78,8 @@ export const useStore = create<Store>()(
             hideIntrospectionPrompt: false,
             enableProductUsageTracking: true,
             hideProductUsageTrackingMessage: false,
-            selectedDatabaseName: "",
-            gridState: [123],
+            selectedDatabaseName: null,
+            gridState: null,
             getTypeDefinitions: () => parseJson(get().typeDefinitions), // TODO: remove JSON parse, it is done automatically!
             setTypeDefinitions: (typeDefs) => set({ typeDefinitions: JSON.stringify(typeDefs) }),
             getLastQuery: () => parseJson(get().lastQuery), // TODO: remove JSON parse, it is done automatically!
@@ -95,6 +98,8 @@ export const useStore = create<Store>()(
             setEnableProductUsageTracking: (enableProductUsageTracking: boolean) => set({ enableProductUsageTracking }),
             setHideProductUsageTrackingMessage: (hideProductUsageTrackingMessage: boolean) =>
                 set({ hideProductUsageTrackingMessage }),
+            setSelectedDatabaseName: (selectedDatabaseName: string) => set({ selectedDatabaseName }),
+            setGridState: (gridState: GridState) => set({ gridState }),
         }),
         {
             name: "neo4j-graphql-toolbox",
