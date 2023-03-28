@@ -55,12 +55,6 @@ import { validateDocument } from "../schema/validation";
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
     enableDebug?: boolean;
-    /**
-     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
-     * Please use startupValidation instead. More information can be found at
-     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#startup-validation
-     */
-    skipValidateTypeDefs?: boolean;
     startupValidation?: StartupValidationConfig;
     queryOptions?: CypherQueryOptions;
 }
@@ -403,9 +397,6 @@ class Neo4jGraphQL {
                 validateDuplicateRelationshipFields: false,
             };
         }
-
-        // TODO - remove in 4.0.0 when skipValidateTypeDefs is removed
-        if (this.config?.skipValidateTypeDefs === true) validationConfig.validateTypeDefs = false;
 
         if (typeof this.config?.startupValidation === "object") {
             if (this.config?.startupValidation.typeDefs === false) validationConfig.validateTypeDefs = false;
