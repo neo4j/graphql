@@ -28,7 +28,7 @@ describe("NodeRef", () => {
         expect(node.labels).toIncludeSameMembers(["Movie", "Film"]);
     });
 
-    it("Generates node with labels from iterable", () => {
+    it("Generates node with labels from Set", () => {
         const node = new Cypher.Node({
             labels: new Set(["Movie", "Film", "Movie"]),
         });

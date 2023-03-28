@@ -25,7 +25,7 @@ import { Reference } from "./Reference";
 export type NodeProperties = Record<string, Param<any>>;
 
 type NodeRefOptions = {
-    labels?: Iterable<string>;
+    labels?: Set<string> | Array<string>;
 };
 
 /** Represents a node reference
