@@ -166,9 +166,11 @@ const slugCallback = async (root) => {
 new Neo4jGraphQL({
     typeDefs,
     driver,
-    config: {
-        callbacks: {
-            slug: slugCallback
+    features: { 
+        populatedBy: {
+            callbacks: {
+                slug: slugCallback
+            } 
         }
     }
 })
@@ -199,9 +201,11 @@ const modifiedByCallback = async (_parent, _args, context) => {
 new Neo4jGraphQL({
     typeDefs,
     driver,
-    config: {
-        callbacks: {
-            modifiedBy: modifiedByCallback
+    features: { 
+        populatedBy: {
+            callbacks: {
+                modifiedBy: modifiedByCallback
+            } 
         }
     }
 })
@@ -262,9 +266,11 @@ const slugCallback = async (root) => {
 new Neo4jGraphQL({
     typeDefs,
     driver,
-    config: {
-        callbacks: {
-            slug: slugCallback
+    features: {
+        populatedBy: {
+            callbacks: {
+                slug: slugCallback
+            } 
         }
     }
 })
@@ -295,9 +301,11 @@ const modifiedByCallback = async (_parent, _args, context) => {
 new Neo4jGraphQL({
     typeDefs,
     driver,
-    config: {
-        callbacks: {
-            modifiedBy: modifiedByCallback
+    features: {
+        populatedBy: {
+            callbacks: {
+                modifiedBy: modifiedByCallback
+            } 
         }
     }
 })
