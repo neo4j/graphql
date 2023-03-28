@@ -24,14 +24,13 @@ import { Banner } from "@neo4j-ndl/react";
 import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
 import type { EditorFromTextArea } from "codemirror";
-import { DEFAULT_DATABASE_NAME, LOCAL_STATE_FAVORITES } from "../../constants";
+import { DEFAULT_DATABASE_NAME } from "../../constants";
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
 import { AppSettingsContext } from "../../contexts/appsettings";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
-import { Storage } from "../../utils/storage";
 import { SchemaSettings } from "./SchemaSettings";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { ActionElementsBar } from "./ActionElementsBar";
@@ -62,7 +61,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const [isDebugChecked, setIsDebugChecked] = useState<boolean>(store.enableDebug);
     const [isRegexChecked, setIsRegexChecked] = useState<boolean>(store.enableRegex);
     const [constraintState, setConstraintState] = useState<string | null>(store.constraint);
-    const [favorites, setFavorites] = useState<Favorite[] | null>(Storage.retrieveJSON(LOCAL_STATE_FAVORITES));
+    const [favorites, setFavorites] = useState<Favorite[] | null>(store.favorites);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const formatTheCode = (): void => {
@@ -78,7 +77,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             { id: new Date().getTime().toString(), name: value.substring(0, 24), typeDefs: value },
         ];
         setFavorites(newFavorites);
-        Storage.storeJSON(LOCAL_STATE_FAVORITES, newFavorites);
+        store.setFavorites(newFavorites);
         tracking.trackSaveFavorite({ screen: "type definitions" });
     };
 

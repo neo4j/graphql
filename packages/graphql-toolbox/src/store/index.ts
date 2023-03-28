@@ -19,6 +19,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import type { Favorite } from "../types";
 import { DEFAULT_TYPE_DEFS, DEFAULT_QUERY } from "./../constants";
 
 export interface Store {
@@ -30,8 +31,8 @@ export interface Store {
     enableDebug: boolean;
     enableRegex: boolean; // still needed?
     constraint: string | null;
-    editorTheme: string;
-    favorites: string[];
+    editorTheme: string | null;
+    favorites: Favorite[] | null;
     showLintMarkers: boolean;
     selectedDatabaseName: string;
     hideIntrospectionPrompt: boolean;
@@ -49,6 +50,8 @@ export interface Store {
     setEnableDebug: (isDebug: boolean) => void;
     setEnableRegex: (isRegex: boolean) => void;
     setConstraint: (constraint: string) => void;
+    setEditorTheme: (theme: string) => void;
+    setFavorites: (favorites: Favorite[] | null) => void;
 }
 
 export const useStore = create<Store>()(
@@ -62,15 +65,15 @@ export const useStore = create<Store>()(
             enableDebug: false,
             enableRegex: false, // still needed?
             constraint: null,
-            editorTheme: "",
-            favorites: [""],
+            editorTheme: null,
+            favorites: null,
             showLintMarkers: false,
             selectedDatabaseName: "",
             hideIntrospectionPrompt: false,
             gridState: [123],
             enableProductUsageTracking: false,
             hideProductUsageTrackingMessage: false,
-            getTypeDefinitions: () => parseJson(get().typeDefinitions),
+            getTypeDefinitions: () => parseJson(get().typeDefinitions), // TODO: need to JSON stringify? probably not!
             setTypeDefinitions: (typeDefs) => set({ typeDefinitions: JSON.stringify(typeDefs) }),
             getLastQuery: () => parseJson(get().lastQuery),
             setLastQuery: (query) => set({ lastQuery: JSON.stringify(query) }),
@@ -81,6 +84,8 @@ export const useStore = create<Store>()(
             setEnableDebug: (isDebug) => set({ enableDebug: isDebug }),
             setEnableRegex: (isRegex) => set({ enableRegex: isRegex }),
             setConstraint: (constraint) => set({ constraint }),
+            setEditorTheme: (theme) => set({ editorTheme: theme }),
+            setFavorites: (favorites: Favorite[] | null) => set({ favorites }),
         }),
         {
             name: "neo4j-graphql-toolbox",
@@ -89,7 +94,7 @@ export const useStore = create<Store>()(
     )
 );
 
-function parseJson(data: string): string | null {
+function parseJson(data: string): any | null {
     try {
         return JSON.parse(data) as string;
     } catch (error) {

@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-export const LOCAL_STATE_EDITOR_THEME = "neo4j.graphql.editorTheme";
-export const LOCAL_STATE_FAVORITES = "neo4j.graphql.favorites";
 export const LOCAL_STATE_SHOW_LINT_MARKERS = "neo4j.graphql.showLintMarkers";
 export const LOCAL_STATE_SELECTED_DATABASE_NAME = "neo4j.graphql.selectedDatabaseName";
 export const LOCAL_STATE_HIDE_INTROSPECTION_PROMPT = "neo4j.graphql.hideIntrospectionPrompt";

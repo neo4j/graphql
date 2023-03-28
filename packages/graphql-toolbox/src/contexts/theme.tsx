@@ -18,8 +18,7 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { Storage } from "../utils/storage";
-import { LOCAL_STATE_EDITOR_THEME } from "../constants";
+import { useStore } from "../store";
 
 export enum Theme {
     LIGHT,
@@ -34,10 +33,11 @@ export interface State {
 export const ThemeContext = React.createContext({} as State);
 
 export function ThemeProvider(props: React.PropsWithChildren<any>) {
+    const store = useStore();
+
     const loadEditorTheme = () => {
-        const storedTheme = Storage.retrieve(LOCAL_STATE_EDITOR_THEME);
-        if (storedTheme) {
-            return storedTheme === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
+        if (store.editorTheme) {
+            return store.editorTheme === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
         }
 
         return Theme.DARK;
@@ -54,15 +54,14 @@ export function ThemeProvider(props: React.PropsWithChildren<any>) {
     });
 
     useEffect(() => {
-        const storedTheme = Storage.retrieve(LOCAL_STATE_EDITOR_THEME);
-        if (!storedTheme) {
+        if (!store.editorTheme) {
             window.matchMedia("(prefers-color-scheme: dark)").matches ? _setTheme(Theme.DARK) : _setTheme(Theme.LIGHT);
         }
     }, []);
 
     const _setTheme = (theme: Theme) => {
         setValue((values) => ({ ...values, theme }));
-        Storage.store(LOCAL_STATE_EDITOR_THEME, theme.toString());
+        store.setEditorTheme(theme.toString());
     };
 
     return <ThemeContext.Provider value={value}>{props.children}</ThemeContext.Provider>;
