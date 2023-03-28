@@ -168,6 +168,14 @@ export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string 
         return usedDatabaseName;
     }
 
-    const defaultDatabase = databases?.find((database) => database.default) || undefined;
-    return defaultDatabase?.name || DEFAULT_DATABASE_NAME;
+    const defaultOrHomeDatabase = databases?.find((database) => database.default || database.home);
+    if (defaultOrHomeDatabase) {
+        return defaultOrHomeDatabase.name;
+    }
+
+    if (databases?.length === 1) {
+        return databases[0].name;
+    }
+
+    return DEFAULT_DATABASE_NAME;
 };
