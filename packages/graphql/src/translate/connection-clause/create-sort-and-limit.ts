@@ -38,7 +38,7 @@ export function createSortAndLimitProjection({
 }: {
     resolveTree: ResolveTree;
     relationshipRef: Cypher.Relationship | Cypher.Variable;
-    nodeRef: Cypher.Node | Cypher.Variable | Cypher.PropertyRef;
+    nodeRef: Cypher.Node | Cypher.Variable | Cypher.Property;
     limit: Integer | number | undefined;
     extraFields?: Cypher.Variable[];
     ignoreSkipLimit?: boolean;
