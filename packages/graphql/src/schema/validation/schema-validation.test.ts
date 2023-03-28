@@ -328,8 +328,100 @@ describe("schema-validation", () => {
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
             const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                `"@authorization directive used in ambiguous way, User has already @authorization applied"`
+                `"The directive \\"@UserAuthorization\\" can only be used once at this location."`
             );
+        });
+
+        test("should returns errors when used correctly in both a type field and an extension for the same field", () => {
+            const userDocument = gql`
+                type User {
+                    id: ID!
+                    name: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                }
+
+                type Post {
+                    id: ID!
+                    name: String!
+                }
+                extend type User {
+                    name: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                }
+            `;
+
+            const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                `"The directive \\"@UserAuthorization\\" can only be used once at this location."`
+            );
+        });
+
+        test("should not returns errors when used correctly in both type and an extension field", () => {
+            const userDocument = gql`
+                type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                    id: ID!
+                    name: String!
+                }
+
+                type Post {
+                    id: ID!
+                    name: String!
+                }
+                extend type User {
+                    name: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                }
+            `;
+
+            const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("should not returns errors when used correctly in multiple extension fields", () => {
+            const userDocument = gql`
+                type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                    id: ID!
+                    name: String!
+                }
+
+                type Post {
+                    id: ID!
+                    name: String!
+                }
+                extend type User {
+                    id: ID! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                    name: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                }
+            `;
+
+            const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("should not returns errors when used correctly in different type and field across several extensions", () => {
+            const userDocument = gql`
+                type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                    id: ID!
+                    name: String!
+                }
+
+                type Post {
+                    id: ID!
+                    name: String!
+                }
+
+                extend type User {
+                    name: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                }
+
+                extend type User {
+                    id: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                }
+            `;
+
+            const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            expect(executeValidate).not.toThrow();
         });
 
         test("should returns errors when used correctly in more than one extension", () => {
@@ -351,7 +443,7 @@ describe("schema-validation", () => {
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
             const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                `"@authorization directive used in ambiguous way, User has already @authorization applied"`
+                `"The directive \\"@UserAuthorization\\" can only be used once at this location."`
             );
         });
 
@@ -454,7 +546,7 @@ describe("schema-validation", () => {
                 }
 
                 interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                    id: ID! @deprecated(reason: "name is deprecated")
+                    id: ID!
                 }
                 extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
             `;
@@ -462,9 +554,58 @@ describe("schema-validation", () => {
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
             const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                `"@authorization directive used in ambiguous way, Member has already @authorization applied"`
+                `"The directive \\"@MemberAuthorization\\" can only be used once at this location."`
             );
         });
+
+        test("should returns errors when used correctly in both a interface field and an extension for the same field", () => {
+            const userDocument = gql`
+                type User implements Member {
+                    id: ID!
+                    name: String!
+                }
+
+                interface Member {
+                    id: ID! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                }
+                extend interface Member {
+                    id: ID! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                }
+            `;
+
+            const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                `"The directive \\"@MemberAuthorization\\" can only be used once at this location."`
+            );
+        });
+
+        test("should not returns errors when used correctly in different type and field across several extensions", () => {
+            const userDocument = gql`
+                type User implements Member {
+                    id: ID!
+                    name: String!
+                }
+
+                interface Member {
+                    id: ID!
+                    name: String!
+                }
+
+                extend interface Member {
+                    name: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                }
+
+                extend interface Member {
+                    id: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                }
+            `;
+
+            const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            expect(executeValidate).not.toThrow();
+        });
+
         test("should not returns errors when used correctly in several place", () => {
             const userDocument = gql`
                 type User implements Member {
@@ -532,7 +673,7 @@ describe("schema-validation", () => {
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
             const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                `"@authorization directive used in ambiguous way, Member has already @authorization applied"`
+                `"The directive \\"@MemberAuthorization\\" can only be used once at this location."`
             );
         });
 

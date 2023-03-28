@@ -80,13 +80,9 @@ function changeAuthorizationUsageOnFields(
 }
 
 function changeAuthorizationUsageOnObject(
-    object:
-        | ObjectTypeDefinitionNode
-        | InterfaceTypeDefinitionNode
-        | ObjectTypeExtensionNode
-        | InterfaceTypeExtensionNode,
+    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     userDocumentObject: PossibleAuthorizationLocation
-): PossibleAuthorizationLocation {
+): ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode {
     const userAuthorizationUsage = userDocumentObject.directives?.find(isAuthorizationDefinition) as ConstDirectiveNode;
     const fieldsWithNewAuthorizationUsage =
         object.fields && changeAuthorizationUsageOnFields(object.fields, userDocumentObject);
@@ -117,16 +113,11 @@ export function authorizationDefinitionsEnricher(enricherContext: EnricherContex
                 const userDocumentExtensions = enricherContext.userDefinitionNodeMap[`${typeName}_EXTENSIONS`] as
                     | Array<ObjectTypeExtensionNode | InterfaceTypeExtensionNode>
                     | undefined;
-                if (userDocumentExtensions) {
+                if (!hasAuthorization && userDocumentExtensions) {
                     const extensionAuthorizations = userDocumentExtensions.filter((userDocumentExtension) =>
                         containsAuthorization(userDocumentExtension)
                     );
-                    if (extensionAuthorizations.length > 1 || hasAuthorization) {
-                        throw new Error(
-                            `@authorization directive used in ambiguous way, ${typeName} has already @authorization applied`
-                        );
-                    }
-                    if (extensionAuthorizations.length === 1) {
+                    if (extensionAuthorizations.length >= 1) {
                         const authDefinitions = createAuthorizationDefinitions(
                             typeName,
                             enricherContext.augmentedSchema
@@ -155,28 +146,21 @@ export function authorizationUsageEnricher(enricherContext: EnricherContext): En
                 const userDocumentExtensions = enricherContext.userDefinitionNodeMap[`${typeName}_EXTENSIONS`] as
                     | Array<ObjectTypeExtensionNode | InterfaceTypeExtensionNode>
                     | undefined;
-                if (userDocumentObject && containsAuthorization(userDocumentObject)) {
-                    const newDefinition = changeAuthorizationUsageOnObject(definition, userDocumentObject);
-                    accumulatedDefinitions.push(newDefinition);
-                } else {
-                    const extensionWithAuthorization =
-                        userDocumentExtensions &&
-                        userDocumentExtensions.find(
-                            (userDocumentExtension: ObjectTypeExtensionNode | InterfaceTypeExtensionNode) =>
-                                containsAuthorization(userDocumentExtension)
-                        );
-                    if (extensionWithAuthorization) {
-                        const newDefinition = changeAuthorizationUsageOnObject(definition, extensionWithAuthorization);
-                        accumulatedDefinitions.push(newDefinition);
-                    } else {
-                        accumulatedDefinitions.push(definition);
+                if (userDocumentObject) {
+                    let definitionWithEnrichedAuthorization = containsAuthorization(userDocumentObject)
+                        ? changeAuthorizationUsageOnObject(definition, userDocumentObject)
+                        : definition;
+                    if (userDocumentExtensions) {
+                        definitionWithEnrichedAuthorization = userDocumentExtensions.reduce((prev, curr) => {
+                            return containsAuthorization(curr) ? changeAuthorizationUsageOnObject(prev, curr) : prev;
+                        }, definitionWithEnrichedAuthorization);
                     }
+                    accumulatedDefinitions.push(definitionWithEnrichedAuthorization);
+                    return accumulatedDefinitions;
                 }
-                break;
-            }
-            default:
-                accumulatedDefinitions.push(definition);
+            }   
         }
+        accumulatedDefinitions.push(definition);
         return accumulatedDefinitions;
     };
 }

@@ -26,12 +26,7 @@ export class EnricherContext {
         const definitionNodeMap = {};
         for (const definition of documentNode.definitions) {
             if (isTypeDefinitionNode(definition)) {
-                const jwtPayload = definition.directives?.find((directive) => directive.name.value === "jwtPayload");
-                if (jwtPayload) {
-                    definitionNodeMap["jwtPayload"] = definition;
-                } else {
-                    definitionNodeMap[definition.name.value] = definition;
-                }
+                definitionNodeMap[definition.name.value] = definition;
             }
             if (isTypeExtensionNode(definition)) {
                 const definitionNodeMapKey = `${definition.name.value}_EXTENSIONS`;

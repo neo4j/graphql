@@ -22,7 +22,6 @@ import type {
     DefinitionNode,
     GraphQLDirective,
     GraphQLNamedType,
-    ObjectTypeDefinitionNode,
     GraphQLError,
 } from "graphql";
 import { visit, visitInParallel, specifiedDirectives, GraphQLSchema } from "graphql";
@@ -35,10 +34,8 @@ import type { SDLValidationRule } from "graphql/validation/ValidationContext";
 import { SDLValidationContext } from "graphql/validation/ValidationContext";
 import type { Maybe } from "graphql/jsutils/Maybe";
 
-function getAdditionalDefinitions(enricherContext: EnricherContext): DefinitionNode[] {
-    return getStaticAuthorizationDefinitions(
-        enricherContext.userDefinitionNodeMap["jwtPayload"] as ObjectTypeDefinitionNode
-    );
+function getAdditionalDefinitions(): DefinitionNode[] {
+    return getStaticAuthorizationDefinitions();
 }
 function enrichDocument(
     enrichers: Enricher[],
@@ -61,7 +58,7 @@ function makeValidationDocument(userDocument: DocumentNode, augmentedDocument: D
     const enrichers: Enricher[] = [];
     enrichers.push(authorizationDefinitionsEnricher(enricherContext)); // Add Authorization directive definitions, for instance UserAuthorization
     enrichers.push(authorizationUsageEnricher(enricherContext)); // Apply the previously generated directive definitions to the authorized types
-    const additionalDefinitions = getAdditionalDefinitions(enricherContext);
+    const additionalDefinitions = getAdditionalDefinitions();
     return enrichDocument(enrichers, additionalDefinitions, augmentedDocument);
 }
 
