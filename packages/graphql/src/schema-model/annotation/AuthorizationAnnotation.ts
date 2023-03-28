@@ -68,39 +68,6 @@ export class AuthorizationAnnotation {
     }
 }
 
-class AuthorizationRule {
-    requireAuthentication?: boolean;
-    where: AuthorizationWhere;
-
-    constructor({ requireAuthentication, where }) {
-        this.requireAuthentication = requireAuthentication;
-        this.where = this.parseWhere(where);
-    }
-
-    private parseWhere(where: Record<string, any>): AuthorizationWhere {
-        const parsed: AuthorizationWhere = {};
-
-        Object.entries(where).forEach(([k, v]) => {
-            if (Array.isArray(v)) {
-                parsed[k] = v.map((w) => this.parseWhere(w));
-            } else if (v === null) {
-                parsed[k] = v;
-            } else if (typeof v === "object") {
-                parsed[k] = this.parseWhere(v);
-            } else if (typeof v === "string") {
-                if (v.startsWith("$jwt")) {
-                } else {
-                    parsed[k] = v;
-                }
-            } else {
-                parsed[k] = v;
-            }
-        });
-
-        return parsed;
-    }
-}
-
 export type AuthorizationFilterRuleConstructor = {
     operations?: AuthorizationFilterOperation[];
     requireAuthentication?: boolean;
