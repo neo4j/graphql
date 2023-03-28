@@ -30,7 +30,6 @@ import {
     LOCAL_STATE_ENABLE_DEBUG,
     LOCAL_STATE_ENABLE_REGEX,
     LOCAL_STATE_FAVORITES,
-    LOCAL_STATE_TYPE_DEFS,
 } from "../../constants";
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { AuthContext } from "../../contexts/auth";
@@ -49,6 +48,7 @@ import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
 import { tracking } from "../../analytics/tracking";
 import { rudimentaryTypeDefinitionsAnalytics } from "../../analytics/analytics";
+import { useStore } from "../../store";
 
 export interface Props {
     hasSchema: boolean;
@@ -56,6 +56,7 @@ export interface Props {
 }
 
 export const SchemaView = ({ hasSchema, onChange }: Props) => {
+    const store = useStore();
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const appSettings = useContext(AppSettingsContext);
@@ -97,7 +98,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             try {
                 setLoading(true);
 
-                Storage.storeJSON(LOCAL_STATE_TYPE_DEFS, typeDefs);
+                store.setTypeDefinitions(typeDefs);
 
                 const features = isRegexChecked
                     ? {

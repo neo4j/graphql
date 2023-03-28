@@ -28,13 +28,7 @@ import type { EditorFromTextArea } from "codemirror";
 import debounce from "lodash.debounce";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
-import {
-    EDITOR_PARAMS_INPUT,
-    DEFAULT_QUERY,
-    EDITOR_RESPONSE_OUTPUT,
-    LOCAL_STATE_TYPE_LAST_PARAMS,
-    LOCAL_STATE_TYPE_LAST_QUERY,
-} from "../../constants";
+import { EDITOR_PARAMS_INPUT, DEFAULT_QUERY, EDITOR_RESPONSE_OUTPUT } from "../../constants";
 import { Grid } from "./grid/Grid";
 import { formatCode, safeParse, ParserOptions, calculateQueryComplexity } from "./utils";
 import { Extension } from "../../components/Filename";
@@ -43,9 +37,9 @@ import { SettingsContext } from "../../contexts/settings";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
-import { Storage } from "../../utils/storage";
 import { tracking } from "../../analytics/tracking";
 import { Screen } from "../../contexts/screen";
+import { useStore } from "../../store";
 
 const DEBOUNCE_TIMEOUT = 500;
 
@@ -54,6 +48,7 @@ export interface Props {
 }
 
 export const Editor = ({ schema }: Props) => {
+    const store = useStore();
     const settings = useContext(SettingsContext);
     const [initialLoad, setInitialLoad] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
@@ -65,9 +60,16 @@ export const Editor = ({ schema }: Props) => {
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
-    const debouncedSave = useCallback(
-        debounce((key, value) => {
-            Storage.store(key, value);
+    const debouncedLastQuerySave = useCallback(
+        debounce((value) => {
+            store.setLastQuery(value);
+        }, DEBOUNCE_TIMEOUT),
+        []
+    );
+
+    const debouncedLastParamsSave = useCallback(
+        debounce((value) => {
+            store.setLastParams(value);
         }, DEBOUNCE_TIMEOUT),
         []
     );
@@ -114,8 +116,8 @@ export const Editor = ({ schema }: Props) => {
     );
 
     useEffect(() => {
-        const initQuery = Storage.retrieveJSON(LOCAL_STATE_TYPE_LAST_QUERY) || DEFAULT_QUERY;
-        const initParams = Storage.retrieveJSON(LOCAL_STATE_TYPE_LAST_PARAMS) || "";
+        const initQuery = store.getLastQuery() || DEFAULT_QUERY;
+        const initParams = store.getLastParams() || "";
         setInitialLoad(true);
         setQuery(initQuery);
         setVariableValues(initParams);
@@ -200,7 +202,7 @@ export const Editor = ({ schema }: Props) => {
                                             mirrorRef={refForQueryEditorMirror}
                                             onChangeQuery={(query) => {
                                                 setQuery(query);
-                                                debouncedSave(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
+                                                debouncedLastQuerySave(query);
                                             }}
                                             executeQuery={onSubmit}
                                             buttons={
@@ -246,7 +248,7 @@ export const Editor = ({ schema }: Props) => {
                                         initialValue={initVariableValues}
                                         onChange={(params) => {
                                             setVariableValues(params);
-                                            debouncedSave(LOCAL_STATE_TYPE_LAST_PARAMS, JSON.stringify(params));
+                                            debouncedLastParamsSave(params);
                                         }}
                                     />
                                 }

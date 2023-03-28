@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-export const LOCAL_STATE_TYPE_DEFS = "neo4j.graphql.typeDefs";
 export const LOCAL_STATE_OPTIONS = "neo4j.graphql.options";
 export const LOCAL_STATE_TYPE_LAST_QUERY = "neo4j.graphql.lastQuery";
 export const LOCAL_STATE_TYPE_LAST_PARAMS = "neo4j.graphql.lastParams";
@@ -48,8 +47,7 @@ export const VERIFY_CONNECTION_INTERVAL_MS = 30000;
 export const THEME_EDITOR_LIGHT = "neo";
 export const THEME_EDITOR_DARK = "dracula";
 
-export const DEFAULT_TYPE_DEFS = `
-# Write your own type definition in the editor here or 
+export const DEFAULT_TYPE_DEFS = `# Write your own type definition in the editor here or 
 # generate it automatically from the current Neo4j database (introspection)
 
 # Example type definition:
@@ -58,8 +56,7 @@ type Movie {
 }
 `;
 
-export const DEFAULT_QUERY = `
-# Type queries into this side of the screen, and you will 
+export const DEFAULT_QUERY = `# Type queries into this side of the screen, and you will 
 # see intelligent typeaheads aware of the current GraphQL type schema.
 # Try the Explorer and use the Documentation
 
