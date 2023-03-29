@@ -57,10 +57,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [isIntrospecting, setIsIntrospecting] = useState<boolean>(false);
     const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
-    const [isDebugChecked, setIsDebugChecked] = useState<boolean>(useStore((store) => store.enableDebug));
-    const [isRegexChecked, setIsRegexChecked] = useState<boolean>(useStore((store) => store.enableRegex));
-    const [constraintState, setConstraintState] = useState<string | null>(useStore((store) => store.constraint));
-    const [favorites, setFavorites] = useState<Favorite[] | null>(useStore((store) => store.favorites));
+    const favorites = useStore((store) => store.favorites);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const formatTheCode = (): void => {
@@ -75,7 +72,6 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             ...(favorites || []),
             { id: new Date().getTime().toString(), name: value.substring(0, 24), typeDefs: value },
         ];
-        setFavorites(newFavorites);
         useStore.setState({ favorites: newFavorites });
         tracking.trackSaveFavorite({ screen: "type definitions" });
     };
@@ -92,7 +88,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
 
                 useStore.setState({ typeDefinitions: typeDefs });
 
-                const features = isRegexChecked
+                const features = useStore.getState().enableRegex
                     ? {
                           filters: {
                               String: {
@@ -110,7 +106,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     driver: auth.driver,
                     features,
                     config: {
-                        enableDebug: isDebugChecked,
+                        enableDebug: useStore.getState().enableDebug,
                         driverConfig: {
                             database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
                         },
@@ -121,11 +117,11 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
 
                 const schema = await neoSchema.getSchema();
 
-                if (constraintState === ConstraintState.check.toString()) {
+                if (useStore.getState().constraint === ConstraintState.check.toString()) {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: false } });
                 }
 
-                if (constraintState === ConstraintState.create.toString()) {
+                if (useStore.getState().constraint === ConstraintState.create.toString()) {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: true } });
                 }
 
@@ -139,7 +135,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 setLoading(false);
             }
         },
-        [isDebugChecked, constraintState, isRegexChecked, auth.selectedDatabaseName]
+        [auth.selectedDatabaseName]
     );
 
     const introspect = useCallback(
@@ -212,20 +208,9 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 <div className="flex">
                     <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100">
                         <div className="p-6 w-full">
-                            <SchemaSettings
-                                isRegexChecked={isRegexChecked}
-                                isDebugChecked={isDebugChecked}
-                                constraintState={constraintState}
-                                setIsRegexChecked={setIsRegexChecked}
-                                setIsDebugChecked={setIsDebugChecked}
-                                setConstraintState={setConstraintState}
-                            />
+                            <SchemaSettings />
                             <hr className="my-8" />
-                            <Favorites
-                                favorites={favorites}
-                                setFavorites={setFavorites}
-                                onSelectFavorite={setTypeDefsFromFavorite}
-                            />
+                            <Favorites favorites={favorites} onSelectFavorite={setTypeDefsFromFavorite} />
                         </div>
                     </div>
                     <div className="flex-1 flex justify-start w-full p-4" style={{ height: "86vh" }}>

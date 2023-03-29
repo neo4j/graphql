@@ -31,7 +31,6 @@ interface NameComponentProps {
 
 interface FavoritesProps {
     favorites: Favorite[] | null;
-    setFavorites: (nextState: Favorite[] | null) => void;
     onSelectFavorite: (typeDefs: string) => void;
 }
 
@@ -94,16 +93,14 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
     );
 };
 
-export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: FavoritesProps) => {
+export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
     const deleteFavorite = (id: string): void => {
         const nextFavs = favorites?.filter((fav) => fav.id !== id) || null;
-        setFavorites(nextFavs);
         useStore.setState({ favorites: nextFavs });
     };
 
     const updateName = (newName: string, id: string): void => {
         const nextFavs = favorites?.map((fav) => (fav.id === id ? { ...fav, name: newName } : fav)) || null;
-        setFavorites(nextFavs);
         useStore.setState({ favorites: nextFavs });
     };
 

@@ -26,47 +26,30 @@ import { CustomSelect } from "../../components/CustomSelect";
 import { tracking } from "../../analytics/tracking";
 import { useStore } from "../../store";
 
-interface Props {
-    isRegexChecked: boolean;
-    isDebugChecked: boolean;
-    constraintState: string | null;
-    setIsRegexChecked: React.Dispatch<React.SetStateAction<boolean>>;
-    setIsDebugChecked: React.Dispatch<React.SetStateAction<boolean>>;
-    setConstraintState: React.Dispatch<React.SetStateAction<string | null>>;
-}
+export const SchemaSettings = () => {
+    const enableRegex = useStore((store) => store.enableRegex);
+    const enableDebug = useStore((store) => store.enableDebug);
+    const constraint = useStore((store) => store.constraint);
 
-export const SchemaSettings = ({
-    isRegexChecked,
-    isDebugChecked,
-    constraintState,
-    setIsRegexChecked,
-    setIsDebugChecked,
-    setConstraintState,
-}: Props) => {
     const onChangeRegexCheckbox = (): void => {
-        const next = !isRegexChecked;
-        setIsRegexChecked(next);
-        useStore.setState({ enableRegex: next });
+        useStore.setState({ enableRegex: !enableRegex });
         tracking.trackSchemaSettingsCheckbox({
             screen: "type definitions",
-            action: next ? "true" : "false",
+            action: !enableRegex ? "true" : "false",
             box: "regex",
         });
     };
 
     const onChangeDebugCheckbox = (): void => {
-        const next = !isDebugChecked;
-        setIsDebugChecked(next);
-        useStore.setState({ enableDebug: next });
+        useStore.setState({ enableDebug: !enableDebug });
         tracking.trackSchemaSettingsCheckbox({
             screen: "type definitions",
-            action: next ? "true" : "false",
+            action: !enableDebug ? "true" : "false",
             box: "debug",
         });
     };
 
     const onChangeConstraintState = (nextConstraintState: string): void => {
-        setConstraintState(nextConstraintState);
         useStore.setState({ constraint: nextConstraintState });
         tracking.trackSchemaConstraints({ screen: "type definitions", value: ConstraintState[nextConstraintState] });
     };
@@ -95,7 +78,7 @@ export const SchemaSettings = ({
                         className="m-0"
                         aria-label="Enable Regex"
                         label="Enable Regex"
-                        checked={isRegexChecked}
+                        checked={enableRegex}
                         onChange={onChangeRegexCheckbox}
                     />
                     <InfoToolTip
@@ -121,7 +104,7 @@ export const SchemaSettings = ({
                         className="m-0"
                         aria-label="Enable Debug"
                         label="Enable Debug"
-                        checked={isDebugChecked}
+                        checked={enableDebug}
                         onChange={onChangeDebugCheckbox}
                     />
                     <InfoToolTip
@@ -163,7 +146,7 @@ export const SchemaSettings = ({
                     </div>
                     <div className="mt-2">
                         <CustomSelect
-                            value={constraintState || undefined}
+                            value={constraint || undefined}
                             onChange={(event) => onChangeConstraintState(event.target.value)}
                             testTag="data-test-schema-settings-selection"
                         >
