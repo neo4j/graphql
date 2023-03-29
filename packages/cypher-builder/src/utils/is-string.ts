@@ -17,14 +17,7 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
-import { AUTH_UNAUTHENTICATED_ERROR } from "../../../constants";
-
-export function createAuthenticatedPredicate(
-    authenticated: boolean,
-    authenticatedParam: Cypher.Variable | Cypher.Property
-): Cypher.Predicate {
-    const authenticatedPredicate = Cypher.not(Cypher.eq(authenticatedParam, new Cypher.Literal(authenticated)));
-
-    return Cypher.apoc.util.validatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
+/** Checks if value is string */
+export function isString(value: unknown): value is string {
+    return typeof value === "string";
 }

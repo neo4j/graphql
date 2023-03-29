@@ -17,14 +17,22 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
-import { AUTH_UNAUTHENTICATED_ERROR } from "../../../constants";
+import Cypher from "..";
 
-export function createAuthenticatedPredicate(
-    authenticated: boolean,
-    authenticatedParam: Cypher.Variable | Cypher.Property
-): Cypher.Predicate {
-    const authenticatedPredicate = Cypher.not(Cypher.eq(authenticatedParam, new Cypher.Literal(authenticated)));
+describe("NodeRef", () => {
+    it("Generates node with labels", () => {
+        const node = new Cypher.Node({
+            labels: ["Movie", "Film"],
+        });
 
-    return Cypher.apoc.util.validatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
-}
+        expect(node.labels).toIncludeSameMembers(["Movie", "Film"]);
+    });
+
+    it("Generates node with labels from Set", () => {
+        const node = new Cypher.Node({
+            labels: new Set(["Movie", "Film", "Movie"]),
+        });
+
+        expect(node.labels).toIncludeSameMembers(["Movie", "Film"]);
+    });
+});
