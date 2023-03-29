@@ -23,7 +23,13 @@ import type { AuthContext } from "../types/deprecated/auth/auth-context";
 
 type ContextAuthParams = Pick<Context, "jwt" | "plugins">;
 
-function createAuthParam({ context }: { context: ContextAuthParams }): AuthContext {
+function createAuthParam({
+    context,
+    authRolesPath,
+}: {
+    context: ContextAuthParams;
+    authRolesPath?: string;
+}): AuthContext {
     const { jwt } = context;
     const param: AuthContext = {
         isAuthenticated: false,
@@ -38,7 +44,7 @@ function createAuthParam({ context }: { context: ContextAuthParams }): AuthConte
     // If any role is defined in this parameter, isAuthenticated shall be true
     param.isAuthenticated = true;
 
-    const rolesPath = context?.plugins?.auth?.rolesPath;
+    const rolesPath = authRolesPath || context?.plugins?.auth?.rolesPath;
 
     // Roles added to config come from the role path or a roles array
     if (rolesPath) {

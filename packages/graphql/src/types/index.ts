@@ -22,6 +22,7 @@ import type { EventEmitter } from "events";
 import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
+import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
 import type { Node, Relationship } from "../classes";
 import type { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 import type { RelationshipQueryDirectionOption } from "../constants";
@@ -507,11 +508,31 @@ export interface Neo4jFiltersSettings {
 export interface Neo4jPopulatedBySettings {
     callbacks?: Neo4jGraphQLCallbacks;
 }
+export interface Neo4jAuthorizationSettings {
+    key: Key | ((req: RequestLike) => Key);
+    verify?: boolean;
+    verifyOptions?: JWTVerifyOptions;
+    // TODO: replace me
+    rolesPath?: string;
+}
+export interface RemoteJWKS {
+    url: string | URL;
+    options?: RemoteJWKSetOptions;
+}
+export type Key = string | RemoteJWKS;
+export type RequestLike = {
+    headers?: { authorization?: string; Authorization?: string };
+    rawHeaders?: Array<string>;
+    cookies?: { token?: string };
+};
 
 export interface Neo4jFeaturesSettings {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
+    // TODO: uncomment next line for new authorization constructor
+    // authorization?: Neo4jAuthorizationSettings;
 }
+export { RemoteJWKSetOptions, JWTVerifyOptions } from "jose";
 
 export type PredicateReturn = {
     predicate: Cypher.Predicate | undefined;

@@ -19,16 +19,10 @@
 
 import { IncomingMessage } from "http";
 import Debug from "debug";
-import type { Context } from "../types";
+import type { Context, RequestLike } from "../types";
 import { DEBUG_AUTH } from "../constants";
 
 const debug = Debug(DEBUG_AUTH);
-
-type RequestLike = {
-    headers?: { authorization?: string; Authorization?: string };
-    rawHeaders?: Array<string>;
-    cookies?: { token?: string };
-};
 
 export function getToken(context: Context): string | undefined {
     const req: RequestLike = context instanceof IncomingMessage ? context : context.req || context.request;
