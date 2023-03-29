@@ -21,6 +21,7 @@ import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
 import type { Variable } from "../../references/Variable";
 import { serializeMap } from "../../utils/serialize-map";
+import { MapExpr } from "./MapExpr";
 
 /** Represents a Map projection
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/maps/#cypher-map-projection)
@@ -49,12 +50,35 @@ export class MapProjection implements CypherCompilable {
         }
     }
 
+    /** Converts the Map projection expression into a normal Map expression
+     * @example
+     * Converts
+     * ```cypher
+     * this { .title }
+     * ```
+     * into:
+     * ```cypher
+     * { title: this.title }
+     * ```
+     */
+    public toMap(): MapExpr {
+        const projectionFields = this.projection.reduce((acc: Record<string, Expr>, field) => {
+            acc[field] = this.variable.property(field);
+            return acc;
+        }, {});
+
+        return new MapExpr({
+            ...projectionFields,
+            ...this.extraValues,
+        });
+    }
+
     /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const variableStr = this.variable.getCypher(env);
         const extraValuesStr = serializeMap(env, this.extraValues, true);
 
-        const projectionStr = this.projection.join(", ");
+        const projectionStr = this.projection.map((p) => `.${p}`).join(", ");
 
         const commaStr = extraValuesStr && projectionStr ? ", " : "";
 
