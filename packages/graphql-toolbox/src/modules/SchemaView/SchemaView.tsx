@@ -213,7 +213,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                             <Favorites favorites={favorites} onSelectFavorite={setTypeDefsFromFavorite} />
                         </div>
                     </div>
-                    <div className="flex-1 flex justify-start w-full p-4" style={{ height: "86vh" }}>
+                    <div className="flex-1 flex justify-start w-full p-4" style={{ height: "calc(100% - 3rem)" }}>
                         <div className="flex flex-col w-full h-full">
                             <SchemaErrorDisplay error={error} />
                             <SchemaEditor
