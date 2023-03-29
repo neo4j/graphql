@@ -49,7 +49,6 @@ export interface Props {
 }
 
 export const SchemaView = ({ hasSchema, onChange }: Props) => {
-    const store = useStore();
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const appSettings = useContext(AppSettingsContext);
@@ -58,10 +57,10 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [isIntrospecting, setIsIntrospecting] = useState<boolean>(false);
     const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
-    const [isDebugChecked, setIsDebugChecked] = useState<boolean>(store.enableDebug);
-    const [isRegexChecked, setIsRegexChecked] = useState<boolean>(store.enableRegex);
-    const [constraintState, setConstraintState] = useState<string | null>(store.constraint);
-    const [favorites, setFavorites] = useState<Favorite[] | null>(store.favorites);
+    const [isDebugChecked, setIsDebugChecked] = useState<boolean>(useStore((store) => store.enableDebug));
+    const [isRegexChecked, setIsRegexChecked] = useState<boolean>(useStore((store) => store.enableRegex));
+    const [constraintState, setConstraintState] = useState<string | null>(useStore((store) => store.constraint));
+    const [favorites, setFavorites] = useState<Favorite[] | null>(useStore((store) => store.favorites));
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const formatTheCode = (): void => {
@@ -77,7 +76,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             { id: new Date().getTime().toString(), name: value.substring(0, 24), typeDefs: value },
         ];
         setFavorites(newFavorites);
-        store.setFavorites(newFavorites);
+        useStore.getState().setFavorites(newFavorites);
         tracking.trackSaveFavorite({ screen: "type definitions" });
     };
 
@@ -91,7 +90,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             try {
                 setLoading(true);
 
-                store.setTypeDefinitions(typeDefs);
+                useStore.getState().setTypeDefinitions(typeDefs);
 
                 const features = isRegexChecked
                     ? {
@@ -214,7 +213,6 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100">
                         <div className="p-6 w-full">
                             <SchemaSettings
-                                store={store}
                                 isRegexChecked={isRegexChecked}
                                 isDebugChecked={isDebugChecked}
                                 constraintState={constraintState}

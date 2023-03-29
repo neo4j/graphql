@@ -49,7 +49,6 @@ export const SchemaEditor = ({
     introspect,
     saveAsFavorite,
 }: Props) => {
-    const store = useStore();
     const theme = useContext(ThemeContext);
     const appsettings = useContext(AppSettingsContext);
     const ref = useRef<HTMLTextAreaElement | null>(null);
@@ -122,7 +121,7 @@ export const SchemaEditor = ({
         setMirror(mirror);
         mirrorRef.current = mirror;
 
-        const storedTypeDefs = store.typeDefinitions || DEFAULT_TYPE_DEFS;
+        const storedTypeDefs = useStore.getState().typeDefinitions || DEFAULT_TYPE_DEFS;
         if (storedTypeDefs && ref.current) {
             mirror?.setValue(storedTypeDefs);
             ref.current.value = storedTypeDefs;

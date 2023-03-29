@@ -95,18 +95,16 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
 };
 
 export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: FavoritesProps) => {
-    const store = useStore();
-
     const deleteFavorite = (id: string): void => {
         const nextFavs = favorites?.filter((fav) => fav.id !== id) || null;
         setFavorites(nextFavs);
-        store.setFavorites(nextFavs);
+        useStore.getState().setFavorites(nextFavs);
     };
 
     const updateName = (newName: string, id: string): void => {
         const nextFavs = favorites?.map((fav) => (fav.id === id ? { ...fav, name: newName } : fav)) || null;
         setFavorites(nextFavs);
-        store.setFavorites(nextFavs);
+        useStore.getState().setFavorites(nextFavs);
     };
 
     return (

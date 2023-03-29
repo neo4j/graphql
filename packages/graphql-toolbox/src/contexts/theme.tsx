@@ -33,11 +33,10 @@ export interface State {
 export const ThemeContext = React.createContext({} as State);
 
 export function ThemeProvider(props: React.PropsWithChildren<any>) {
-    const store = useStore();
-
     const loadEditorTheme = () => {
-        if (store.editorTheme) {
-            return store.editorTheme === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
+        const editorTheme = useStore((store) => store.editorTheme);
+        if (editorTheme) {
+            return editorTheme === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
         }
 
         return Theme.DARK;
@@ -54,14 +53,14 @@ export function ThemeProvider(props: React.PropsWithChildren<any>) {
     });
 
     useEffect(() => {
-        if (!store.editorTheme) {
+        if (!useStore.getState().editorTheme) {
             window.matchMedia("(prefers-color-scheme: dark)").matches ? _setTheme(Theme.DARK) : _setTheme(Theme.LIGHT);
         }
     }, []);
 
     const _setTheme = (theme: Theme) => {
         setValue((values) => ({ ...values, theme }));
-        store.setEditorTheme(theme.toString());
+        useStore.getState().setEditorTheme(theme.toString());
     };
 
     return <ThemeContext.Provider value={value}>{props.children}</ThemeContext.Provider>;

@@ -20,7 +20,7 @@
 import type * as neo4j from "neo4j-driver";
 import type { LoginPayload, Neo4jDatabase } from "../types";
 import { CONNECT_URL_PARAM_NAME, DATABASE_PARAM_NAME, DEFAULT_DATABASE_NAME } from "../constants";
-import type { Store } from "../store";
+import { useStore } from "../store";
 
 const isMultiDbUnsupportedError = (e: Error) => {
     if (
@@ -147,15 +147,15 @@ export const getConnectUrlSearchParamValue = (): {
     return { protocol, username, url: `${protocol}://${href}` };
 };
 
-export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[], store: Store): string => {
+export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string => {
     let usedDatabaseName: string | null = null;
 
     const searchParam = getUrlSearchParam(DATABASE_PARAM_NAME as string);
     if (searchParam) {
-        store.setSelectedDatabaseName(searchParam);
+        useStore.getState().setSelectedDatabaseName(searchParam);
         usedDatabaseName = searchParam;
     } else {
-        usedDatabaseName = store.selectedDatabaseName;
+        usedDatabaseName = useStore.getState().selectedDatabaseName;
     }
 
     const isSelectedDatabaseAvailable = databases?.find((database) => database.name === usedDatabaseName);

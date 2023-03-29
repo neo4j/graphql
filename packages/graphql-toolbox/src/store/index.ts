@@ -83,6 +83,7 @@ export const useStore = create<Store>()(
     // TODO
     // - check all functionalities of zustand
     // - check how the migration works
+    // - use, useState and setState?
     //
     persist(
         (set) => ({

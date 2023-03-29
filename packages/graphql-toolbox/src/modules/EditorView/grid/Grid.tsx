@@ -26,13 +26,12 @@ import unionHorizontal from "./union_horizontal.svg";
 // @ts-ignore - SVG Import
 import unionVertical from "./union_vertical.svg";
 import "./grid.css";
-import type { Store } from "../../../store";
+import { useStore } from "../../../store";
 
 const DEBOUNCE_LOCAL_STORE_TIMEOUT = 300;
 const DEBOUNCE_WINDOW_RESIZE_TIMEOUT = 200;
 
 interface Props {
-    store: Store;
     queryEditor: React.ReactNode | null;
     resultView: React.ReactNode;
     parameterEditor: React.ReactNode;
@@ -73,14 +72,14 @@ const initialState: GridState = {
     },
 };
 
-export const Grid = ({ store, queryEditor, parameterEditor, resultView, isRightPanelVisible }: Props) => {
-    const [values, setValues] = useState<GridState>(store.gridState || initialState);
+export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVisible }: Props) => {
+    const [values, setValues] = useState<GridState>(useStore.getState().gridState || initialState);
     const prevIsRightPanelVisible = usePrevious(isRightPanelVisible);
 
     const debouncedBoxResize = useMemo(
         () =>
             debounce((nextState: GridState) => {
-                store.setGridState(nextState);
+                useStore.getState().setGridState(nextState);
             }, DEBOUNCE_LOCAL_STORE_TIMEOUT),
         []
     );
@@ -117,7 +116,7 @@ export const Grid = ({ store, queryEditor, parameterEditor, resultView, isRightP
             },
         };
         setValues(nextState);
-        store.setGridState(nextState);
+        useStore.getState().setGridState(nextState);
     };
 
     useEffect(() => {

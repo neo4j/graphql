@@ -24,10 +24,9 @@ import { ProTooltip } from "../../components/ProTooltip";
 import { ConstraintState } from "../../types";
 import { CustomSelect } from "../../components/CustomSelect";
 import { tracking } from "../../analytics/tracking";
-import type { Store } from "../../store";
+import { useStore } from "../../store";
 
 interface Props {
-    store: Store;
     isRegexChecked: boolean;
     isDebugChecked: boolean;
     constraintState: string | null;
@@ -37,7 +36,6 @@ interface Props {
 }
 
 export const SchemaSettings = ({
-    store,
     isRegexChecked,
     isDebugChecked,
     constraintState,
@@ -48,7 +46,7 @@ export const SchemaSettings = ({
     const onChangeRegexCheckbox = (): void => {
         const next = !isRegexChecked;
         setIsRegexChecked(next);
-        store.setEnableRegex(next);
+        useStore.getState().setEnableRegex(next);
         tracking.trackSchemaSettingsCheckbox({
             screen: "type definitions",
             action: next ? "true" : "false",
@@ -59,7 +57,7 @@ export const SchemaSettings = ({
     const onChangeDebugCheckbox = (): void => {
         const next = !isDebugChecked;
         setIsDebugChecked(next);
-        store.setEnableDebug(next);
+        useStore.getState().setEnableDebug(next);
         tracking.trackSchemaSettingsCheckbox({
             screen: "type definitions",
             action: next ? "true" : "false",
@@ -69,7 +67,7 @@ export const SchemaSettings = ({
 
     const onChangeConstraintState = (nextConstraintState: string): void => {
         setConstraintState(nextConstraintState);
-        store.setConstraint(nextConstraintState);
+        useStore.getState().setConstraint(nextConstraintState);
         tracking.trackSchemaConstraints({ screen: "type definitions", value: ConstraintState[nextConstraintState] });
     };
 

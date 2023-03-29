@@ -33,22 +33,20 @@ export interface State {
 export const AppSettingsContext = React.createContext({} as State);
 
 export function AppSettingsProvider(props: React.PropsWithChildren<any>) {
-    const store = useStore();
-
     const [value, setValue]: [value: State | undefined, setValue: Dispatch<SetStateAction<State>>] = useState<State>({
-        showLintMarkers: store.showLintMarkers,
-        enableProductUsageTracking: store.enableProductUsageTracking,
-        hideProductUsageMessage: store.hideProductUsageTrackingMessage,
+        showLintMarkers: useStore((store) => store.showLintMarkers),
+        enableProductUsageTracking: useStore((store) => store.enableProductUsageTracking),
+        hideProductUsageMessage: useStore((store) => store.hideProductUsageTrackingMessage),
         setShowLintMarkers: (nextState: boolean) => {
-            store.setShowLintMarkers(nextState);
+            useStore.getState().setShowLintMarkers(nextState);
             setValue((values) => ({ ...values, showLintMarkers: nextState }));
         },
         setEnableProductUsageTracking: (nextState: boolean) => {
-            store.setEnableProductUsageTracking(nextState);
+            useStore.getState().setEnableProductUsageTracking(nextState);
             setValue((values) => ({ ...values, enableProductUsageTracking: nextState }));
         },
         setHideProductUsageMessage: (nextState: boolean) => {
-            store.setHideProductUsageTrackingMessage(nextState);
+            useStore.getState().setHideProductUsageTrackingMessage(nextState);
             setValue((values) => ({ ...values, hideProductUsageMessage: nextState }));
         },
     });

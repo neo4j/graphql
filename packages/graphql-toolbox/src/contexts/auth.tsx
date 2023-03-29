@@ -69,7 +69,7 @@ export function AuthProvider(props: any) {
             await driver.verifyConnectivity();
 
             const databases = await getDatabases(driver);
-            const selectedDatabaseName = resolveSelectedDatabaseName(databases || [], store);
+            const selectedDatabaseName = resolveSelectedDatabaseName(databases || []);
 
             let isShowIntrospectionPrompt = false;
             if (!store.hideIntrospectionPrompt) {

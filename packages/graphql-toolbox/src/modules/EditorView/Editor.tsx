@@ -48,7 +48,6 @@ export interface Props {
 }
 
 export const Editor = ({ schema }: Props) => {
-    const store = useStore();
     const settings = useContext(SettingsContext);
     const [initialLoad, setInitialLoad] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
@@ -62,14 +61,14 @@ export const Editor = ({ schema }: Props) => {
 
     const debouncedLastQuerySave = useCallback(
         debounce((value) => {
-            store.setLastQuery(value);
+            useStore.getState().setLastQuery(value);
         }, DEBOUNCE_TIMEOUT),
         []
     );
 
     const debouncedLastParamsSave = useCallback(
         debounce((value) => {
-            store.setLastParams(value);
+            useStore.getState().setLastParams(value);
         }, DEBOUNCE_TIMEOUT),
         []
     );
@@ -116,8 +115,8 @@ export const Editor = ({ schema }: Props) => {
     );
 
     useEffect(() => {
-        const initQuery = store.lastQuery || DEFAULT_QUERY;
-        const initParams = store.lastParams || "";
+        const initQuery = useStore.getState().lastQuery || DEFAULT_QUERY;
+        const initParams = useStore.getState().lastParams || "";
         setInitialLoad(true);
         setQuery(initQuery);
         setVariableValues(initParams);
@@ -192,7 +191,6 @@ export const Editor = ({ schema }: Props) => {
                     <div className="w-content-container h-content-container-extended flex justify-start p-4">
                         <div className="flex flex-col w-full">
                             <Grid
-                                store={store}
                                 isRightPanelVisible={showRightPanel}
                                 queryEditor={
                                     schema ? (
