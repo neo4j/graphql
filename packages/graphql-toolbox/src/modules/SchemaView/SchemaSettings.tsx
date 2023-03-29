@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import React, { useRef } from "react";
+import type React from "react";
+import { useRef } from "react";
 import { Checkbox, SmartTooltip } from "@neo4j-ndl/react";
 import { QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
 import { Storage } from "../../utils/storage";

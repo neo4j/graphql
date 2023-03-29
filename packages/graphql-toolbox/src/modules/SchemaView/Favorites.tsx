@@ -18,82 +18,19 @@
  */
 
 import { IconButton } from "@neo4j-ndl/react";
-import { CheckIconOutline, PencilIconOutline, TrashIconOutline } from "@neo4j-ndl/react/icons";
+import { TrashIconOutline } from "@neo4j-ndl/react/icons";
+import { FavoriteNameEdit } from "./FavoriteNameEdit";
 import { Storage } from "../../utils/storage";
 import type { Favorite } from "../../types";
 import { LOCAL_STATE_FAVORITES } from "../../constants";
-import { useState } from "react";
 
-interface NameComponentProps {
-    name: string;
-    saveName: (newName: string) => void;
-    onSelectFavorite: () => void;
-}
+const ALTERNATE_BG_COLOR = "n-bg-neutral-20";
 
 interface FavoritesProps {
     favorites: Favorite[] | null;
     setFavorites: (nextState: Favorite[] | null) => void;
     onSelectFavorite: (typeDefs: string) => void;
 }
-
-const ALTERNATE_BG_COLOR = "n-bg-neutral-20";
-
-const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps) => {
-    const [editMode, setEditMode] = useState<boolean>(false);
-    const [nameValue, setNameValue] = useState<string>(name);
-
-    const _handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-            setEditMode(false);
-            saveName(nameValue);
-        }
-    };
-
-    return (
-        <>
-            <div
-                className="w-full"
-                onClick={() => onSelectFavorite()}
-                onKeyDown={() => onSelectFavorite()}
-                role="button"
-                tabIndex={0}
-            >
-                {editMode ? (
-                    <input
-                        className="w-60"
-                        value={nameValue}
-                        onChange={(event) => setNameValue(event.currentTarget.value)}
-                        onKeyDown={_handleKeyDown}
-                    />
-                ) : (
-                    <div className="truncate w-60">{name}</div>
-                )}
-            </div>
-            {editMode ? (
-                <IconButton
-                    aria-label="Finish editing favorite name"
-                    className={`border-none h-5 w-5`}
-                    clean
-                    onClick={() => {
-                        setEditMode(false);
-                        saveName(nameValue);
-                    }}
-                >
-                    <CheckIconOutline />
-                </IconButton>
-            ) : (
-                <IconButton
-                    aria-label="Edit favorite name"
-                    className={`border-none h-5 w-5`}
-                    clean
-                    onClick={() => setEditMode(true)}
-                >
-                    <PencilIconOutline />
-                </IconButton>
-            )}
-        </>
-    );
-};
 
 export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: FavoritesProps) => {
     const deleteFavorite = (id: string): void => {
@@ -122,7 +59,7 @@ export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: Favorit
                                     isAlternateBackground ? ALTERNATE_BG_COLOR : ""
                                 }`}
                             >
-                                <NameComponent
+                                <FavoriteNameEdit
                                     name={favorite.name}
                                     saveName={(newName) => updateName(newName, favorite.id)}
                                     onSelectFavorite={() => onSelectFavorite(favorite.typeDefs)}
