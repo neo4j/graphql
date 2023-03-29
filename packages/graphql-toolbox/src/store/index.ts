@@ -45,7 +45,6 @@ export interface Store {
     setConnectionUrl: (connectionUrl: string | null) => void;
     setHideIntrospectionPrompt: (hideIntrospectionPrompt: boolean) => void;
     setSelectedDatabaseName: (selectedDatabaseName: string) => void;
-    setGridState: (gridState: GridState) => void;
 }
 
 const defaultValues = {
@@ -72,28 +71,14 @@ export const useStore = create<Store>()(
     // TODO
     // - check all functionalities of zustand
     // - check how the migration works
-    // - use, useState and setState?
     //
     persist(
         (set) => ({
             ...defaultValues,
-            setTypeDefinitions: (typeDefinitions) => set({ typeDefinitions }),
-            setLastQuery: (lastQuery) => set({ lastQuery }),
-            setLastParams: (lastParams) => set({ lastParams }),
             setConnectionUsername: (connectionUsername) => set({ connectionUsername }),
             setConnectionUrl: (connectionUrl) => set({ connectionUrl }),
-            setEnableDebug: (enableDebug) => set({ enableDebug }),
-            setEnableRegex: (enableRegex) => set({ enableRegex }),
-            setConstraint: (constraint) => set({ constraint }),
-            setEditorTheme: (editorTheme) => set({ editorTheme }),
-            setFavorites: (favorites) => set({ favorites }),
-            setShowLintMarkers: (showLintMarkers) => set({ showLintMarkers }),
             setHideIntrospectionPrompt: (hideIntrospectionPrompt) => set({ hideIntrospectionPrompt }),
-            setEnableProductUsageTracking: (enableProductUsageTracking) => set({ enableProductUsageTracking }),
-            setHideProductUsageTrackingMessage: (hideProductUsageTrackingMessage) =>
-                set({ hideProductUsageTrackingMessage }),
             setSelectedDatabaseName: (selectedDatabaseName) => set({ selectedDatabaseName }),
-            setGridState: (gridState) => set({ gridState }),
         }),
         {
             name: "neo4j-graphql-toolbox", // a unique name

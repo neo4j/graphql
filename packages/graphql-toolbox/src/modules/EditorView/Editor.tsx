@@ -59,16 +59,9 @@ export const Editor = ({ schema }: Props) => {
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
-    const debouncedLastQuerySave = useCallback(
-        debounce((value) => {
-            useStore.setState({ lastQuery: value });
-        }, DEBOUNCE_TIMEOUT),
-        []
-    );
-
-    const debouncedLastParamsSave = useCallback(
-        debounce((value) => {
-            useStore.setState({ lastParams: value });
+    const debouncedSave = useCallback(
+        debounce((nextState) => {
+            useStore.setState(nextState);
         }, DEBOUNCE_TIMEOUT),
         []
     );
@@ -201,7 +194,7 @@ export const Editor = ({ schema }: Props) => {
                                             mirrorRef={refForQueryEditorMirror}
                                             onChangeQuery={(query) => {
                                                 setQuery(query);
-                                                debouncedLastQuerySave(query);
+                                                debouncedSave({ lastQuery: query });
                                             }}
                                             executeQuery={onSubmit}
                                             buttons={
@@ -247,7 +240,7 @@ export const Editor = ({ schema }: Props) => {
                                         initialValue={initVariableValues}
                                         onChange={(params) => {
                                             setVariableValues(params);
-                                            debouncedLastParamsSave(params);
+                                            debouncedSave({ lastParams: params });
                                         }}
                                     />
                                 }
