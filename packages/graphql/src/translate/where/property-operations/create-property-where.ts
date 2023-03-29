@@ -70,7 +70,7 @@ export function createPropertyWhere({
         dbFieldName = `${prefix}${dbFieldName}`;
     }
 
-    let propertyRef: Cypher.PropertyRef | Cypher.Function = targetElement.property(dbFieldName);
+    let propertyRef: Cypher.Property | Cypher.Function = targetElement.property(dbFieldName);
 
     if (element instanceof Node) {
         const node = element;
