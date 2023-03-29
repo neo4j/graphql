@@ -53,6 +53,7 @@ export function translateRead(
         matchClause: topLevelMatch,
         preComputedWhereFieldSubqueries,
         whereClause: topLevelWhereClause,
+        fulltextResult,
     } = createMatchClause({
         matchNode,
         node,
@@ -60,6 +61,8 @@ export function translateRead(
         operation: "READ",
         where,
     });
+
+    const scoreVar = fulltextResult?.score;
 
     const projection = createProjectionAndParams({
         node,
@@ -167,16 +170,39 @@ export function translateRead(
         const edgeVar = new Cypher.NamedVariable("edge");
         const totalCountVar = new Cypher.NamedVariable("totalCount");
 
-        const withCollect = new Cypher.With([Cypher.collect(matchNode), edgesVar]).with(edgesVar, [
+        const collectionEdgeMap = new Cypher.Map({
+            this: matchNode,
+            score: scoreVar,
+        });
+
+        const withCollect = new Cypher.With([Cypher.collect(collectionEdgeMap), edgesVar]).with(edgesVar, [
             Cypher.size(edgesVar),
             totalCountVar,
         ]);
 
-        const unwind = new Cypher.Unwind([edgesVar, matchNode]).with(matchNode, totalCountVar);
+        const unwindVar = new Cypher.Variable();
+
+        const unwind = new Cypher.Unwind([edgesVar, unwindVar]).with(
+            [unwindVar.property("this"), matchNode],
+            totalCountVar
+        );
+
+        if (scoreVar) {
+            unwind.addColumns([unwindVar.property("score"), scoreVar]);
+        }
+
         connectionPreClauses = Cypher.concat(withCollect, unwind);
+
+        let fulltextResult: Cypher.Expr | undefined = undefined;
+        if (scoreVar) {
+            fulltextResult = new Cypher.Map({
+                score: scoreVar,
+            });
+        }
 
         const connectionEdge = new Cypher.Map({
             node: projectionExpression,
+            fulltext: fulltextResult,
         });
 
         const withTotalCount = new Cypher.With([connectionEdge, edgeVar], totalCountVar, matchNode);

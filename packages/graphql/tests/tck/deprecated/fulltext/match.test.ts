@@ -41,7 +41,7 @@ describe("Cypher -> fulltext -> Match", () => {
     test("simple match with single fulltext property", async () => {
         const query = gql`
             query {
-                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
+                movies(fulltext: { index: MovieTitle, phrase: "something AND something" }) {
                     title
                 }
             }
@@ -50,7 +50,7 @@ describe("Cypher -> fulltext -> Match", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score
             WHERE \\"Movie\\" IN labels(this)
             RETURN this { .title } AS this"
         `);
@@ -66,7 +66,7 @@ describe("Cypher -> fulltext -> Match", () => {
         const query = gql`
             query {
                 movies(
-                    fulltext: { MovieTitle: { phrase: "something AND something" } }
+                    fulltext: { index: MovieTitle, phrase: "something AND something" }
                     where: { title: "some-title" }
                 ) {
                     title
@@ -77,7 +77,7 @@ describe("Cypher -> fulltext -> Match", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score
             WHERE (this.title = $param1 AND \\"Movie\\" IN labels(this))
             RETURN this { .title } AS this"
         `);
