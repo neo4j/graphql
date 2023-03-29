@@ -67,11 +67,6 @@ const defaultValues = {
 };
 
 export const useStore = create<Store>()(
-    //
-    // TODO
-    // - check all functionalities of zustand
-    // - check how the migration works
-    //
     persist(
         (set) => ({
             ...defaultValues,
