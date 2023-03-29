@@ -55,6 +55,7 @@ export const AuthContext = React.createContext({} as State);
 
 export function AuthProvider(props: any) {
     let intervalId: number;
+    const store = useStore();
 
     const [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
@@ -71,13 +72,13 @@ export function AuthProvider(props: any) {
             const selectedDatabaseName = resolveSelectedDatabaseName(databases || []);
 
             let isShowIntrospectionPrompt = false;
-            if (!useStore((store) => store.hideIntrospectionPrompt)) {
+            if (!store.hideIntrospectionPrompt) {
                 isShowIntrospectionPrompt = await checkDatabaseHasData(driver, selectedDatabaseName);
-                useStore.setState({ hideIntrospectionPrompt: true });
+                store.setHideIntrospectionPrompt(true);
             }
 
-            useStore.setState({ connectionUsername: options.username });
-            useStore.setState({ connectionUrl: options.url });
+            store.setConnectionUsername(options.username);
+            store.setConnectionUrl(options.url);
 
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             intervalId = window.setInterval(async () => {
@@ -96,9 +97,9 @@ export function AuthProvider(props: any) {
             }));
         },
         logout: () => {
-            useStore.setState({ connectionUsername: null });
-            useStore.setState({ connectionUrl: null });
-            useStore.setState({ hideIntrospectionPrompt: false });
+            store.setConnectionUsername(null);
+            store.setConnectionUrl(null);
+            store.setHideIntrospectionPrompt(false);
             if (intervalId) {
                 clearInterval(intervalId);
             }
@@ -112,7 +113,7 @@ export function AuthProvider(props: any) {
             }));
         },
         setSelectedDatabaseName: (databaseName: string) => {
-            useStore.setState({ selectedDatabaseName: databaseName });
+            store.setSelectedDatabaseName(databaseName);
             setValue((values) => ({ ...values, selectedDatabaseName: databaseName }));
         },
         setShowIntrospectionPrompt: (nextState: boolean) => {
@@ -140,12 +141,10 @@ export function AuthProvider(props: any) {
             loginPayload = loginPayloadFromDesktop;
             setValue((values) => ({ ...values, isNeo4jDesktop: true }));
         } else {
-            const connectionUrl = useStore((store) => store.connectionUrl);
-            const connectionUsername = useStore((store) => store.connectionUsername);
-            if (connectionUrl && connectionUsername) {
+            if (store.connectionUrl && store.connectionUsername) {
                 loginPayload = {
-                    username: connectionUsername,
-                    url: connectionUrl,
+                    username: store.connectionUsername,
+                    url: store.connectionUrl,
                 };
             }
         }

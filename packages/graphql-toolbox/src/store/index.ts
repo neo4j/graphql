@@ -41,20 +41,9 @@ export interface Store {
     hideProductUsageTrackingMessage: boolean;
     gridState: GridState | null;
     selectedDatabaseName: string | null;
-    setTypeDefinitions: (typeDefinitions: string) => void;
-    setLastQuery: (lastQuery: string) => void;
-    setLastParams: (lastParams: string) => void;
     setConnectionUsername: (connectionUsername: string | null) => void;
     setConnectionUrl: (connectionUrl: string | null) => void;
-    setEnableDebug: (enableDebug: boolean) => void;
-    setEnableRegex: (enableRegex: boolean) => void;
-    setConstraint: (constraint: string) => void;
-    setEditorTheme: (editorTheme: string) => void;
-    setFavorites: (favorites: Favorite[] | null) => void;
-    setShowLintMarkers: (showLintMarkers: boolean) => void;
     setHideIntrospectionPrompt: (hideIntrospectionPrompt: boolean) => void;
-    setEnableProductUsageTracking: (enableProductUsageTracking: boolean) => void;
-    setHideProductUsageTrackingMessage: (hideProductUsageTrackingMessage: boolean) => void;
     setSelectedDatabaseName: (selectedDatabaseName: string) => void;
     setGridState: (gridState: GridState) => void;
 }

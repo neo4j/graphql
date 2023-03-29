@@ -73,7 +73,7 @@ const initialState: GridState = {
 };
 
 export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVisible }: Props) => {
-    const [values, setValues] = useState<GridState>(useStore((store) => store.gridState) || initialState);
+    const [values, setValues] = useState<GridState>(useStore.getState().gridState || initialState);
     const prevIsRightPanelVisible = usePrevious(isRightPanelVisible);
 
     const debouncedBoxResize = useMemo(
