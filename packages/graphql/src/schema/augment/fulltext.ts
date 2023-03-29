@@ -41,14 +41,14 @@ const fulltextArgDeprecationMessageInArgument =
     "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.";
 
 function createEnumType(name: string, rawValues: string[]): GraphQLEnumType {
-    const values = rawValues.reduce((acc, value) => {
+    const values = rawValues.reduce((acc: GraphQLEnumValueConfigMap, value) => {
         return {
             ...acc,
             [value]: {
                 value,
             },
         };
-    }, {} as GraphQLEnumValueConfigMap);
+    }, {});
 
     return new GraphQLEnumType({
         name: `${name}FulltextIndexes`,
@@ -108,7 +108,7 @@ export function augmentFulltextSchema(
         const fulltextSortDescription = `The input for sorting a fulltext query on an index of ${node.name}`;
 
         // Sets a default index if there is only one index available
-        let defaultIndex = undefined as any;
+        let defaultIndex: string | undefined = undefined;
         if (indexes.length === 1) {
             defaultIndex = indexes[0];
         }
