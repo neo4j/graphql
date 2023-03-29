@@ -34,9 +34,9 @@ export const AppSettingsContext = React.createContext({} as State);
 
 export function AppSettingsProvider(props: React.PropsWithChildren<any>) {
     const [value, setValue]: [value: State | undefined, setValue: Dispatch<SetStateAction<State>>] = useState<State>({
-        showLintMarkers: useStore((store) => store.showLintMarkers),
-        enableProductUsageTracking: useStore((store) => store.enableProductUsageTracking),
-        hideProductUsageMessage: useStore((store) => store.hideProductUsageTrackingMessage),
+        showLintMarkers: useStore.getState().showLintMarkers,
+        enableProductUsageTracking: useStore.getState().enableProductUsageTracking,
+        hideProductUsageMessage: useStore.getState().hideProductUsageTrackingMessage,
         setShowLintMarkers: (nextState: boolean) => {
             useStore.setState({ showLintMarkers: nextState });
             setValue((values) => ({ ...values, showLintMarkers: nextState }));

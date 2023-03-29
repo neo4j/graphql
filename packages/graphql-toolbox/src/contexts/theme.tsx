@@ -34,7 +34,7 @@ export const ThemeContext = React.createContext({} as State);
 
 export function ThemeProvider(props: React.PropsWithChildren<any>) {
     const loadEditorTheme = () => {
-        const editorTheme = useStore((store) => store.editorTheme);
+        const editorTheme = useStore.getState().editorTheme;
         if (editorTheme) {
             return editorTheme === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
         }
