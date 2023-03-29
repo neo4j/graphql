@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { Dispatch, SetStateAction} from "react";
-import { Fragment, useContext, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useContext, useState } from "react";
 import type { GraphQLSchema } from "graphql";
 import {
     ChatBubbleOvalLeftEllipsisIconOutline,
@@ -103,11 +103,11 @@ const SchemaScreenDrawer = ({
     setShowSubComponent: Dispatch<SetStateAction<boolean>>;
 }) => {
     return (
-        <Fragment>
+        <>
             {showSubComponent ? (
                 <Keybindings onClickClose={onClickClose} onClickBack={() => setShowSubComponent(false)} />
             ) : (
-                <Fragment>
+                <>
                     <div
                         data-test-help-drawer-keybindings-tile-schema-view
                         className="n-bg-neutral-20 p-4 pb-6 mb-8 rounded-2xl cursor-pointer flex text-sm"
@@ -120,9 +120,9 @@ const SchemaScreenDrawer = ({
                         <span>List of keybindings</span>
                     </div>
                     <Resources showSchemaView={true} />
-                </Fragment>
+                </>
             )}
-        </Fragment>
+        </>
     );
 };
 
@@ -152,9 +152,9 @@ const EditorScreenDrawer = ({
     };
 
     return (
-        <Fragment>
+        <>
             {showSubComponent ? (
-                <Fragment>
+                <>
                     {selectedTile === EditorViewTiles.SCHEMA_DOCS.toString() ? (
                         <DocExplorerComponent
                             schema={schema}
@@ -165,17 +165,17 @@ const EditorScreenDrawer = ({
                     {selectedTile === EditorViewTiles.KEYBINDINGS.toString() ? (
                         <Keybindings onClickClose={onClickClose} onClickBack={() => setShowSubComponent(false)} />
                     ) : null}
-                </Fragment>
+                </>
             ) : (
-                <Fragment>
+                <>
                     <EditorScreenTiles
                         onClickShowDocs={handleOnClickSchemaDocTile}
                         onClickShowKeybindings={handleOnClickKeybindingsTile}
                     />
                     <Resources showSchemaView={false} />
-                </Fragment>
+                </>
             )}
-        </Fragment>
+        </>
     );
 };
 
@@ -187,7 +187,7 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
         <div className="p-6 w-full" data-test-help-drawer>
             {!showSubComponent ? (
                 <div className="pb-6 flex justify-between items-center" data-test-help-drawer-title>
-                    <Fragment>
+                    <>
                         <span className="h5">Help &#38; learn</span>
                         <span
                             className="text-lg cursor-pointer"
@@ -199,10 +199,10 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                         >
                             {"\u2715"}
                         </span>
-                    </Fragment>
+                    </>
                 </div>
             ) : null}
-            <Fragment>
+            <>
                 {screen.view === Screen.TYPEDEFS ? (
                     <SchemaScreenDrawer
                         showSubComponent={showSubComponent}
@@ -223,7 +223,7 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                         <CannyFeedbackButton screen={screen.view} />
                     </div>
                 ) : null}
-            </Fragment>
+            </>
         </div>
     );
 };

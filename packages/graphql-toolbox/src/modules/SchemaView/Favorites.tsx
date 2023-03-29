@@ -22,7 +22,7 @@ import { CheckIconOutline, PencilIconOutline, TrashIconOutline } from "@neo4j-nd
 import { Storage } from "../../utils/storage";
 import type { Favorite } from "../../types";
 import { LOCAL_STATE_FAVORITES } from "../../constants";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 
 interface NameComponentProps {
     name: string;
@@ -50,7 +50,7 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
     };
 
     return (
-        <Fragment>
+        <>
             <div
                 className="w-full"
                 onClick={() => onSelectFavorite()}
@@ -91,7 +91,7 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
                     <PencilIconOutline />
                 </IconButton>
             )}
-        </Fragment>
+        </>
     );
 };
 

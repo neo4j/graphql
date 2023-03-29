@@ -24,7 +24,7 @@ import {
     Cog8ToothIconOutline,
     ArrowRightOnRectangleIconOutline,
 } from "@neo4j-ndl/react/icons";
-import { Fragment, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { DEFAULT_BOLT_URL } from "../../constants";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../../assets/neo4j-logo-color.svg";
@@ -98,7 +98,7 @@ export const TopBar = () => {
                     <p className="mr-2">{auth?.isConnected ? greenDot : redDot} </p>
                     <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
                     {auth.databases?.length ? (
-                        <Fragment>
+                        <>
                             <span className="mx-2">/</span>
                             <CustomSelect
                                 value={auth.selectedDatabaseName}
@@ -114,7 +114,7 @@ export const TopBar = () => {
                                     );
                                 })}
                             </CustomSelect>
-                        </Fragment>
+                        </>
                     ) : null}
                 </div>
             </div>

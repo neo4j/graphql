@@ -76,7 +76,7 @@ export const SchemaSettings = ({
     };
 
     return (
-        <React.Fragment>
+        <>
             <span className="h5">Schema settings</span>
             <div className="pt-4">
                 <div className="mb-1 flex items-baseline">
@@ -169,6 +169,6 @@ export const SchemaSettings = ({
                     </div>
                 </div>
             </div>
-        </React.Fragment>
+        </>
     );
 };

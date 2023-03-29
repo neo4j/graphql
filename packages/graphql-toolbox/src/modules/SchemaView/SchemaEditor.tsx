@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import type { EditorFromTextArea } from "codemirror";
 import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
 import { StarIconOutline } from "@neo4j-ndl/react/icons";
@@ -170,7 +170,7 @@ export const SchemaEditor = ({
                 extension={Extension.GRAPHQL}
                 name="type-definitions"
                 buttons={
-                    <Fragment>
+                    <>
                         <Button
                             data-test-schema-editor-introspect-button
                             ref={introspectionTooltipRef}
@@ -225,7 +225,7 @@ export const SchemaEditor = ({
                         <SmartTooltip allowedPlacements={["left"]} style={{ width: "8rem" }} ref={favoritesTooltipRef}>
                             {"Save as Favorite"}
                         </SmartTooltip>
-                    </Fragment>
+                    </>
                 }
             ></FileName>
             <textarea id={SCHEMA_EDITOR_INPUT} ref={ref} style={{ width: "100%", height: "100%" }} />
