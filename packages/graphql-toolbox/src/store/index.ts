@@ -31,7 +31,7 @@ export interface Store {
     connectionUsername: string | null;
     connectionUrl: string | null;
     enableDebug: boolean;
-    enableRegex: boolean; // still needed?
+    enableRegex: boolean;
     constraint: string | null;
     editorTheme: string | null;
     favorites: Favorite[] | null;
@@ -41,12 +41,9 @@ export interface Store {
     hideProductUsageTrackingMessage: boolean;
     gridState: GridState | null;
     selectedDatabaseName: string | null;
-    getTypeDefinitions: () => string | null;
-    setTypeDefinitions: (typeDefs: string) => void;
-    getLastQuery: () => string | null;
-    setLastQuery: (query: string) => void;
-    getLastParams: () => string | null;
-    setLastParams: (params: string) => void;
+    setTypeDefinitions: (typeDefinitions: string) => void;
+    setLastQuery: (lastQuery: string) => void;
+    setLastParams: (lastParams: string) => void;
     setConnectionUsername: (connectionUsername: string | null) => void;
     setConnectionUrl: (connectionUrl: string | null) => void;
     setEnableDebug: (enableDebug: boolean) => void;
@@ -62,58 +59,56 @@ export interface Store {
     setGridState: (gridState: GridState) => void;
 }
 
+const defaultValues = {
+    typeDefinitions: DEFAULT_TYPE_DEFS,
+    lastQuery: DEFAULT_QUERY,
+    lastParams: "",
+    connectionUsername: null,
+    connectionUrl: null,
+    enableDebug: false,
+    enableRegex: false,
+    constraint: ConstraintState.ignore.toString(),
+    editorTheme: null,
+    favorites: null,
+    showLintMarkers: false,
+    hideIntrospectionPrompt: false,
+    enableProductUsageTracking: true,
+    hideProductUsageTrackingMessage: false,
+    selectedDatabaseName: null,
+    gridState: null,
+};
+
 export const useStore = create<Store>()(
+    //
+    // TODO
+    // - check all functionalities of zustand
+    // - check how the migration works
+    //
     persist(
-        (set, get) => ({
-            typeDefinitions: DEFAULT_TYPE_DEFS,
-            lastQuery: DEFAULT_QUERY,
-            lastParams: "",
-            connectionUsername: null,
-            connectionUrl: null,
-            enableDebug: false,
-            enableRegex: false, // still needed?
-            constraint: ConstraintState.ignore.toString(),
-            editorTheme: null,
-            favorites: null,
-            showLintMarkers: false,
-            hideIntrospectionPrompt: false,
-            enableProductUsageTracking: true,
-            hideProductUsageTrackingMessage: false,
-            selectedDatabaseName: null,
-            gridState: null,
-            getTypeDefinitions: () => parseJson(get().typeDefinitions), // TODO: remove JSON parse, it is done automatically!
-            setTypeDefinitions: (typeDefs) => set({ typeDefinitions: JSON.stringify(typeDefs) }),
-            getLastQuery: () => parseJson(get().lastQuery), // TODO: remove JSON parse, it is done automatically!
-            setLastQuery: (query) => set({ lastQuery: JSON.stringify(query) }),
-            getLastParams: () => parseJson(get().lastParams),
-            setLastParams: (params) => set({ lastParams: JSON.stringify(params) }),
+        (set) => ({
+            ...defaultValues,
+            setTypeDefinitions: (typeDefinitions) => set({ typeDefinitions }),
+            setLastQuery: (lastQuery) => set({ lastQuery }),
+            setLastParams: (lastParams) => set({ lastParams }),
             setConnectionUsername: (connectionUsername) => set({ connectionUsername }),
             setConnectionUrl: (connectionUrl) => set({ connectionUrl }),
             setEnableDebug: (enableDebug) => set({ enableDebug }),
             setEnableRegex: (enableRegex) => set({ enableRegex }),
             setConstraint: (constraint) => set({ constraint }),
             setEditorTheme: (editorTheme) => set({ editorTheme }),
-            setFavorites: (favorites: Favorite[] | null) => set({ favorites }),
-            setShowLintMarkers: (showLintMarkers: boolean) => set({ showLintMarkers }),
-            setHideIntrospectionPrompt: (hideIntrospectionPrompt: boolean) => set({ hideIntrospectionPrompt }),
-            setEnableProductUsageTracking: (enableProductUsageTracking: boolean) => set({ enableProductUsageTracking }),
-            setHideProductUsageTrackingMessage: (hideProductUsageTrackingMessage: boolean) =>
+            setFavorites: (favorites) => set({ favorites }),
+            setShowLintMarkers: (showLintMarkers) => set({ showLintMarkers }),
+            setHideIntrospectionPrompt: (hideIntrospectionPrompt) => set({ hideIntrospectionPrompt }),
+            setEnableProductUsageTracking: (enableProductUsageTracking) => set({ enableProductUsageTracking }),
+            setHideProductUsageTrackingMessage: (hideProductUsageTrackingMessage) =>
                 set({ hideProductUsageTrackingMessage }),
-            setSelectedDatabaseName: (selectedDatabaseName: string) => set({ selectedDatabaseName }),
-            setGridState: (gridState: GridState) => set({ gridState }),
+            setSelectedDatabaseName: (selectedDatabaseName) => set({ selectedDatabaseName }),
+            setGridState: (gridState) => set({ gridState }),
         }),
         {
-            name: "neo4j-graphql-toolbox",
-            storage: createJSONStorage(() => window.localStorage),
+            name: "neo4j-graphql-toolbox", // a unique name
+            version: 0, // explicitly setting the version
+            storage: createJSONStorage(() => window.localStorage), // explicitly using localStorage
         }
     )
 );
-
-function parseJson(data: string): any | null {
-    try {
-        return JSON.parse(data) as string;
-    } catch (error) {
-        console.log("parseJson error: ", error);
-        return null;
-    }
-}

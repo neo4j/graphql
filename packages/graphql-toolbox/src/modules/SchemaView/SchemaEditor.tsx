@@ -122,7 +122,7 @@ export const SchemaEditor = ({
         setMirror(mirror);
         mirrorRef.current = mirror;
 
-        const storedTypeDefs = store.getTypeDefinitions() || DEFAULT_TYPE_DEFS;
+        const storedTypeDefs = store.typeDefinitions || DEFAULT_TYPE_DEFS;
         if (storedTypeDefs && ref.current) {
             mirror?.setValue(storedTypeDefs);
             ref.current.value = storedTypeDefs;

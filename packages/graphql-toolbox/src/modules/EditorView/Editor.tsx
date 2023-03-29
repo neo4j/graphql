@@ -116,8 +116,8 @@ export const Editor = ({ schema }: Props) => {
     );
 
     useEffect(() => {
-        const initQuery = store.getLastQuery() || DEFAULT_QUERY;
-        const initParams = store.getLastParams() || "";
+        const initQuery = store.lastQuery || DEFAULT_QUERY;
+        const initParams = store.lastParams || "";
         setInitialLoad(true);
         setQuery(initQuery);
         setVariableValues(initParams);
