@@ -144,7 +144,6 @@ function hydrateRelationships(
     }
 
     const relationshipPropertyInterfaces = getRelationshipPropertiesInterfaces(definitionNodes);
-    if (!entity) throw new Error(`Entity ${name} not found while creating relationships`);
 
     const relationshipFields = (definition.fields || []).map((fieldDefinition) => {
         // TODO: use same relationship for 2 diferent entities if possible
