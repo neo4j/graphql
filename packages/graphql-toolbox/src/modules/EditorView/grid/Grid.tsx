@@ -21,6 +21,7 @@ import { useState, useEffect, useMemo } from "react";
 import { ResizableBox } from "react-resizable";
 import debounce from "lodash.debounce";
 import { useStore } from "../../../store";
+import type { GridState } from "../../../types";
 import { usePrevious } from "../../..//utils/utils";
 // @ts-ignore - SVG Import
 import unionHorizontal from "./union_horizontal.svg";
@@ -36,23 +37,6 @@ interface Props {
     resultView: React.ReactNode;
     parameterEditor: React.ReactNode;
     isRightPanelVisible: boolean;
-}
-
-export interface GridState {
-    maxWidth: number;
-    maxHeight: number;
-    leftTop: {
-        width: number;
-        height: number;
-    };
-    leftBottom: {
-        width: number;
-        height: number;
-    };
-    right: {
-        width: number;
-        height: number;
-    };
 }
 
 const initialState: GridState = {

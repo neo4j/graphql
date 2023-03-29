@@ -19,8 +19,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { GridState } from "../modules/EditorView/grid/Grid";
-import type { Favorite } from "../types";
+import type { Favorite, GridState } from "../types";
 import { ConstraintState } from "../types";
 import { DEFAULT_TYPE_DEFS, DEFAULT_QUERY } from "./../constants";
 
