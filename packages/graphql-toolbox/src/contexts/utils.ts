@@ -152,10 +152,10 @@ export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string 
 
     const searchParam = getUrlSearchParam(DATABASE_PARAM_NAME as string);
     if (searchParam) {
-        useStore.getState().setSelectedDatabaseName(searchParam);
+        useStore.setState({ selectedDatabaseName: searchParam });
         usedDatabaseName = searchParam;
     } else {
-        usedDatabaseName = useStore.getState().selectedDatabaseName;
+        usedDatabaseName = useStore((store) => store.selectedDatabaseName);
     }
 
     const isSelectedDatabaseAvailable = databases?.find((database) => database.name === usedDatabaseName);

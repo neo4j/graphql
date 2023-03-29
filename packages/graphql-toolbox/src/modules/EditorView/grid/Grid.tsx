@@ -20,13 +20,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { ResizableBox } from "react-resizable";
 import debounce from "lodash.debounce";
+import { useStore } from "../../../store";
 import { usePrevious } from "../../..//utils/utils";
 // @ts-ignore - SVG Import
 import unionHorizontal from "./union_horizontal.svg";
 // @ts-ignore - SVG Import
 import unionVertical from "./union_vertical.svg";
 import "./grid.css";
-import { useStore } from "../../../store";
 
 const DEBOUNCE_LOCAL_STORE_TIMEOUT = 300;
 const DEBOUNCE_WINDOW_RESIZE_TIMEOUT = 200;
@@ -73,13 +73,13 @@ const initialState: GridState = {
 };
 
 export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVisible }: Props) => {
-    const [values, setValues] = useState<GridState>(useStore.getState().gridState || initialState);
+    const [values, setValues] = useState<GridState>(useStore((store) => store.gridState) || initialState);
     const prevIsRightPanelVisible = usePrevious(isRightPanelVisible);
 
     const debouncedBoxResize = useMemo(
         () =>
             debounce((nextState: GridState) => {
-                useStore.getState().setGridState(nextState);
+                useStore.setState({ gridState: nextState });
             }, DEBOUNCE_LOCAL_STORE_TIMEOUT),
         []
     );
@@ -116,7 +116,7 @@ export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVis
             },
         };
         setValues(nextState);
-        useStore.getState().setGridState(nextState);
+        useStore.setState({ gridState: nextState });
     };
 
     useEffect(() => {

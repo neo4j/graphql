@@ -46,7 +46,7 @@ export const SchemaSettings = ({
     const onChangeRegexCheckbox = (): void => {
         const next = !isRegexChecked;
         setIsRegexChecked(next);
-        useStore.getState().setEnableRegex(next);
+        useStore.setState({ enableRegex: next });
         tracking.trackSchemaSettingsCheckbox({
             screen: "type definitions",
             action: next ? "true" : "false",
@@ -57,7 +57,7 @@ export const SchemaSettings = ({
     const onChangeDebugCheckbox = (): void => {
         const next = !isDebugChecked;
         setIsDebugChecked(next);
-        useStore.getState().setEnableDebug(next);
+        useStore.setState({ enableDebug: next });
         tracking.trackSchemaSettingsCheckbox({
             screen: "type definitions",
             action: next ? "true" : "false",
@@ -67,7 +67,7 @@ export const SchemaSettings = ({
 
     const onChangeConstraintState = (nextConstraintState: string): void => {
         setConstraintState(nextConstraintState);
-        useStore.getState().setConstraint(nextConstraintState);
+        useStore.setState({ constraint: nextConstraintState });
         tracking.trackSchemaConstraints({ screen: "type definitions", value: ConstraintState[nextConstraintState] });
     };
 

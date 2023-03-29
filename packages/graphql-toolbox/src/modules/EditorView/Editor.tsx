@@ -61,14 +61,14 @@ export const Editor = ({ schema }: Props) => {
 
     const debouncedLastQuerySave = useCallback(
         debounce((value) => {
-            useStore.getState().setLastQuery(value);
+            useStore.setState({ lastQuery: value });
         }, DEBOUNCE_TIMEOUT),
         []
     );
 
     const debouncedLastParamsSave = useCallback(
         debounce((value) => {
-            useStore.getState().setLastParams(value);
+            useStore.setState({ lastParams: value });
         }, DEBOUNCE_TIMEOUT),
         []
     );
@@ -115,8 +115,8 @@ export const Editor = ({ schema }: Props) => {
     );
 
     useEffect(() => {
-        const initQuery = useStore.getState().lastQuery || DEFAULT_QUERY;
-        const initParams = useStore.getState().lastParams || "";
+        const initQuery = useStore((store) => store.lastQuery) || DEFAULT_QUERY;
+        const initParams = useStore((store) => store.lastParams) || "";
         setInitialLoad(true);
         setQuery(initQuery);
         setVariableValues(initParams);

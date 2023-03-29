@@ -76,7 +76,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             { id: new Date().getTime().toString(), name: value.substring(0, 24), typeDefs: value },
         ];
         setFavorites(newFavorites);
-        useStore.getState().setFavorites(newFavorites);
+        useStore.setState({ favorites: newFavorites });
         tracking.trackSaveFavorite({ screen: "type definitions" });
     };
 
@@ -90,7 +90,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             try {
                 setLoading(true);
 
-                useStore.getState().setTypeDefinitions(typeDefs);
+                useStore.setState({ typeDefinitions: typeDefs });
 
                 const features = isRegexChecked
                     ? {

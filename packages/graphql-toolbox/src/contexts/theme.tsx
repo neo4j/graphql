@@ -60,7 +60,7 @@ export function ThemeProvider(props: React.PropsWithChildren<any>) {
 
     const _setTheme = (theme: Theme) => {
         setValue((values) => ({ ...values, theme }));
-        useStore.getState().setEditorTheme(theme.toString());
+        useStore.setState({ editorTheme: theme.toString() });
     };
 
     return <ThemeContext.Provider value={value}>{props.children}</ThemeContext.Provider>;

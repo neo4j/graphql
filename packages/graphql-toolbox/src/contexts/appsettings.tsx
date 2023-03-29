@@ -38,15 +38,15 @@ export function AppSettingsProvider(props: React.PropsWithChildren<any>) {
         enableProductUsageTracking: useStore((store) => store.enableProductUsageTracking),
         hideProductUsageMessage: useStore((store) => store.hideProductUsageTrackingMessage),
         setShowLintMarkers: (nextState: boolean) => {
-            useStore.getState().setShowLintMarkers(nextState);
+            useStore.setState({ showLintMarkers: nextState });
             setValue((values) => ({ ...values, showLintMarkers: nextState }));
         },
         setEnableProductUsageTracking: (nextState: boolean) => {
-            useStore.getState().setEnableProductUsageTracking(nextState);
+            useStore.setState({ enableProductUsageTracking: nextState });
             setValue((values) => ({ ...values, enableProductUsageTracking: nextState }));
         },
         setHideProductUsageMessage: (nextState: boolean) => {
-            useStore.getState().setHideProductUsageTrackingMessage(nextState);
+            useStore.setState({ hideProductUsageTrackingMessage: nextState });
             setValue((values) => ({ ...values, hideProductUsageMessage: nextState }));
         },
     });
