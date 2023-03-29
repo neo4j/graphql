@@ -18,7 +18,7 @@
  */
 
 import type { GraphQLResolveInfo, SelectionSetNode } from "graphql";
-import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { upperFirst } from "graphql-compose";
 import type { PageInfo } from "graphql-relay";
 import { execute } from "../../../utils";
@@ -82,12 +82,32 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
         };
     }
 
-    const rootEdge = composer.createObjectTC({
-        name: `${node.name}Edge`,
-        fields: {
+    function createRootEdgeFields(node: Node, composer: SchemaComposer): Record<string, string | ObjectTypeComposer> {
+        let fulltextFields = {};
+
+        if (node.fulltextDirective) {
+            const fulltextOTC = composer.createObjectTC({
+                name: "Fulltext",
+                fields: {
+                    score: "Float",
+                },
+            });
+
+            fulltextFields = {
+                fulltext: fulltextOTC,
+            };
+        }
+
+        return {
             cursor: "String!",
             node: `${node.name}!`,
-        },
+            ...fulltextFields,
+        };
+    }
+
+    const rootEdge = composer.createObjectTC({
+        name: `${node.name}Edge`,
+        fields: createRootEdgeFields(node, composer),
         directives: graphqlDirectivesToCompose(node.propagatedDirectives),
     });
 

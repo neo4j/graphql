@@ -137,6 +137,9 @@ describe("@fulltext directive - connections", () => {
                     edges {
                         node {
                             title
+                        },
+                        fulltext {
+                            score
                         }
                     }
                 }
@@ -153,6 +156,7 @@ describe("@fulltext directive - connections", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
+
         expect(gqlResult.data).toEqual({
             [Movie.operations.connection]: {
                 edges: expect.toIncludeSameMembers([
@@ -160,10 +164,16 @@ describe("@fulltext directive - connections", () => {
                         node: {
                             title: testTitle,
                         },
+                        fulltext: {
+                            score: expect.toBeNumber(),
+                        },
                     },
                     {
                         node: {
                             title: partialTitle,
+                        },
+                        fulltext: {
+                            score: expect.toBeNumber(),
                         },
                     },
                 ]),

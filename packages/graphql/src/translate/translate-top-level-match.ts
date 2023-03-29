@@ -54,6 +54,9 @@ type CreateMatchClauseReturn = {
     matchClause: Cypher.Match | Cypher.Yield;
     preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
     whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
+    fulltextResult?: {
+        score: Cypher.Variable;
+    };
 };
 
 type FulltextInput = { phrase: string; index: string };
@@ -77,6 +80,7 @@ export function createMatchClause({
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
     let matchClause: Cypher.Match | Cypher.Yield = new Cypher.Match(matchNode);
     let whereOperators: Cypher.Predicate[] = [];
+    let scoreResult: Cypher.Variable | undefined;
 
     // TODO: removed deprecated fulltext translation
     if (Object.entries(fulltextInput).length) {
@@ -86,7 +90,12 @@ export function createMatchClause({
         if (!indexName || !phrase) {
             throw new Error("Expected index and param for fulltext operation");
         }
-        matchClause = Cypher.db.index.fulltext.queryNodes(indexName, phraseParam).yield(["node", matchNode]);
+
+        const scoreVarName = "score";
+        scoreResult = new Cypher.NamedVariable(scoreVarName);
+        matchClause = Cypher.db.index.fulltext
+            .queryNodes(indexName, phraseParam)
+            .yield(["node", matchNode], scoreVarName);
         indexName;
         whereOperators = node.getLabels(context).map((label) => {
             return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));
@@ -145,10 +154,19 @@ export function createMatchClause({
     if (matchClause === whereClause) {
         whereClause = undefined;
     }
+
+    let fulltextResult: { score: Cypher.Variable } | undefined = undefined;
+    if (scoreResult) {
+        fulltextResult = {
+            score: scoreResult,
+        };
+    }
+
     return {
         matchClause,
         preComputedWhereFieldSubqueries,
         whereClause,
+        fulltextResult,
     };
 }
 
