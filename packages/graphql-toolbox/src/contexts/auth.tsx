@@ -19,14 +19,7 @@
 
 import React, { useState, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
-import {
-    LOCAL_STATE_CONNECTION_URL,
-    LOCAL_STATE_CONNECTION_USERNAME,
-    LOCAL_STATE_HIDE_INTROSPECTION_PROMPT,
-    LOCAL_STATE_LOGIN,
-    LOCAL_STATE_SELECTED_DATABASE_NAME,
-    VERIFY_CONNECTION_INTERVAL_MS,
-} from "../constants";
+import { VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
 import {
     checkDatabaseHasData,
     getDatabases,
@@ -34,8 +27,8 @@ import {
     resolveSelectedDatabaseName,
 } from "./utils";
 import type { LoginPayload, Neo4jDatabase } from "../types";
-import { Storage } from "../utils/storage";
 import { getURLProtocolFromText } from "../utils/utils";
+import { useStore } from "../store";
 
 interface LoginOptions {
     username: string;
@@ -62,6 +55,7 @@ export const AuthContext = React.createContext({} as State);
 
 export function AuthProvider(props: any) {
     let intervalId: number;
+    const store = useStore();
 
     const [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
@@ -78,14 +72,13 @@ export function AuthProvider(props: any) {
             const selectedDatabaseName = resolveSelectedDatabaseName(databases || []);
 
             let isShowIntrospectionPrompt = false;
-            const storedShowIntrospectionPrompt = Storage.retrieve(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT);
-            if (storedShowIntrospectionPrompt !== "true") {
+            if (!store.hideIntrospectionPrompt) {
                 isShowIntrospectionPrompt = await checkDatabaseHasData(driver, selectedDatabaseName);
-                Storage.store(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT, "true");
+                store.setHideIntrospectionPrompt(true);
             }
 
-            Storage.store(LOCAL_STATE_CONNECTION_USERNAME, options.username);
-            Storage.store(LOCAL_STATE_CONNECTION_URL, options.url);
+            store.setConnectionUsername(options.username);
+            store.setConnectionUrl(options.url);
 
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             intervalId = window.setInterval(async () => {
@@ -104,10 +97,9 @@ export function AuthProvider(props: any) {
             }));
         },
         logout: () => {
-            Storage.remove(LOCAL_STATE_LOGIN);
-            Storage.remove(LOCAL_STATE_CONNECTION_USERNAME);
-            Storage.remove(LOCAL_STATE_CONNECTION_URL);
-            Storage.remove(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT);
+            store.setConnectionUsername(null);
+            store.setConnectionUrl(null);
+            store.setHideIntrospectionPrompt(false);
             if (intervalId) {
                 clearInterval(intervalId);
             }
@@ -121,7 +113,7 @@ export function AuthProvider(props: any) {
             }));
         },
         setSelectedDatabaseName: (databaseName: string) => {
-            Storage.store(LOCAL_STATE_SELECTED_DATABASE_NAME, databaseName);
+            store.setSelectedDatabaseName(databaseName);
             setValue((values) => ({ ...values, selectedDatabaseName: databaseName }));
         },
         setShowIntrospectionPrompt: (nextState: boolean) => {
@@ -149,12 +141,10 @@ export function AuthProvider(props: any) {
             loginPayload = loginPayloadFromDesktop;
             setValue((values) => ({ ...values, isNeo4jDesktop: true }));
         } else {
-            const storedConnectionUsername = Storage.retrieve(LOCAL_STATE_CONNECTION_USERNAME);
-            const storedConnectionUrl = Storage.retrieve(LOCAL_STATE_CONNECTION_URL);
-            if (storedConnectionUrl && storedConnectionUsername) {
+            if (store.connectionUrl && store.connectionUsername) {
                 loginPayload = {
-                    username: storedConnectionUsername,
-                    url: storedConnectionUrl,
+                    username: store.connectionUsername,
+                    url: store.connectionUrl,
                 };
             }
         }
