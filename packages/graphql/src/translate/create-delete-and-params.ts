@@ -19,7 +19,7 @@
 
 import type { Node, Relationship } from "../classes";
 import type { Context } from "../types";
-import { createAuthAndParams, createAuthPredicates } from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import { createEventMetaObject } from "./subscriptions/create-event-meta";
@@ -27,6 +27,7 @@ import { createConnectionEventMetaObject } from "./subscriptions/create-connecti
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
+import { createAuthPredicates } from "./create-auth-predicates";
 
 interface Res {
     strs: string[];
@@ -46,7 +47,6 @@ function createDeleteAndParams({
     chainStr,
     withVars,
     context,
-    insideDoWhen,
     parameterPrefix,
     recursing,
 }: {
@@ -57,7 +57,6 @@ function createDeleteAndParams({
     node: Node;
     withVars: string[];
     context: Context;
-    insideDoWhen?: boolean;
     parameterPrefix: string;
     recursing?: boolean;
 }): [string, any] {
@@ -151,15 +150,15 @@ function createDeleteAndParams({
                         }
                     }
 
-                    const whereAuth = createAuthAndParams({
+                    const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
                         operations: "DELETE",
                         entity: refNode,
                         context,
                         where: { varName: variableName, node: refNode },
                     });
-                    if (whereAuth[0]) {
-                        whereStrs.push(whereAuth[0]);
-                        res.params = { ...res.params, ...whereAuth[1] };
+                    if (authWhereCypher) {
+                        whereStrs.push(authWhereCypher);
+                        res.params = { ...res.params, ...authWhereParams };
                     }
                     if (whereStrs.length) {
                         const predicate = `${whereStrs.join(" AND ")}`;
@@ -176,25 +175,19 @@ function createDeleteAndParams({
                         }
                     }
 
-                    const allowAuth = createAuthAndParams({
+                    const { cypher: authAllowCypher, params: authAllowParams } = createAuthAndParams({
                         entity: refNode,
                         operations: "DELETE",
                         context,
-                        escapeQuotes: Boolean(insideDoWhen),
-                        allow: { parentNode: refNode, varName: variableName },
+                        allow: { node: refNode, varName: variableName },
                     });
-                    if (allowAuth[0]) {
-                        const quote = insideDoWhen ? `\\"` : `"`;
-                        innerStrs.push(
-                            `WITH ${varsWithoutMeta}${
-                                context.subscriptionsEnabled ? `, ${META_CYPHER_VARIABLE}` : ""
-                            }, ${variableName}, ${relationshipVariable}`
-                        );
-                        innerStrs.push(
-                            `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
-                        );
 
-                        res.params = { ...res.params, ...allowAuth[1] };
+                    if (authAllowCypher) {
+                        innerStrs.push(`WITH ${[...withVars, variableName, relationshipVariable].join(", ")}`);
+                        innerStrs.push(
+                            `CALL apoc.util.validate(NOT (${authAllowCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                        );
+                        res.params = { ...res.params, ...authAllowParams };
                     }
 
                     if (d.delete) {
@@ -473,8 +466,7 @@ function createDeleteAndParamsClauses({
                         entity: refNode,
                         operations: "DELETE",
                         context,
-                        escapeQuotes: Boolean(insideDoWhen),
-                        allow: { parentNode: refNode, varName: variableName },
+                        allow: { node: refNode, varName: variableName },
                     });
                     if (allowAuth) {
                         const quote = insideDoWhen ? `\\"` : `"`;
@@ -489,13 +481,19 @@ function createDeleteAndParamsClauses({
                             );
                         }
                         subqueryClause.concat(
-                            new Cypher.CallProcedure(
-                                new Cypher.apoc.Validate(
-                                    Cypher.not(Cypher.and(allowAuth)),
-                                    `${quote}${AUTH_FORBIDDEN_ERROR}${quote}`,
-                                    new Cypher.Literal([0])
-                                )
+                            Cypher.apoc.util.validate(
+                                Cypher.not(Cypher.and(allowAuth)),
+                                `${quote}${AUTH_FORBIDDEN_ERROR}${quote}`,
+                                new Cypher.Literal([0])
                             )
+
+                            // new Cypher.CallProcedure(
+                            //     new Cypher.apoc.Validate(
+                            //         Cypher.not(Cypher.and(allowAuth)),
+                            //         `${quote}${AUTH_FORBIDDEN_ERROR}${quote}`,
+                            //         new Cypher.Literal([0])
+                            //     )
+                            // )
                         );
                     }
 

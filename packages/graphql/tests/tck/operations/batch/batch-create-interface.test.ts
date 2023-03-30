@@ -65,7 +65,6 @@ describe("Batch Create, Interface", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

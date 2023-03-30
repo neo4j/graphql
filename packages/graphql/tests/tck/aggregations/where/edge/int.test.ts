@@ -46,7 +46,6 @@ describe("Cypher Aggregations where edge with Int", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

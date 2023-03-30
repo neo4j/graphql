@@ -39,13 +39,11 @@ interface Fields {
 function getWhereFields({
     typeName,
     fields,
-    enableRegex,
     isInterface,
     features,
 }: {
     typeName: string;
     fields: Fields;
-    enableRegex?: boolean;
     isInterface?: boolean;
     features?: Neo4jFeaturesSettings;
 }): { [k: string]: string } {
@@ -126,21 +124,25 @@ function getWhereFields({
             }
 
             if (["String", "ID"].includes(f.typeMeta.name)) {
-                if (enableRegex) {
-                    res[`${f.fieldName}_MATCHES`] = { type: "String", directives: deprecatedDirectives };
-                }
-
-                const stringWhereOperators = ["_CONTAINS", "_STARTS_WITH", "_ENDS_WITH"];
+                const stringWhereOperators: Array<{ comparator: string; typeName: string }> = [
+                    { comparator: "_CONTAINS", typeName: f.typeMeta.name },
+                    { comparator: "_STARTS_WITH", typeName: f.typeMeta.name },
+                    { comparator: "_ENDS_WITH", typeName: f.typeMeta.name },
+                ];
 
                 const stringWhereOperatorsNegate = ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"];
 
-                Object.entries(features?.filters?.String || {}).forEach(([key, value]) => {
-                    if (value) {
-                        stringWhereOperators.push(`_${key}`);
+                Object.entries(features?.filters?.[f.typeMeta.name] || {}).forEach(([filter, enabled]) => {
+                    if (enabled) {
+                        if (filter === "MATCHES") {
+                            stringWhereOperators.push({ comparator: `_${filter}`, typeName: "String" });
+                        } else {
+                            stringWhereOperators.push({ comparator: `_${filter}`, typeName: f.typeMeta.name });
+                        }
                     }
                 });
-                stringWhereOperators.forEach((comparator) => {
-                    res[`${f.fieldName}${comparator}`] = { type: f.typeMeta.name, directives: deprecatedDirectives };
+                stringWhereOperators.forEach(({ comparator, typeName }) => {
+                    res[`${f.fieldName}${comparator}`] = { type: typeName, directives: deprecatedDirectives };
                 });
 
                 stringWhereOperatorsNegate.forEach((comparator) => {

@@ -46,7 +46,6 @@ describe("Cypher Aggregations Many while Alias fields", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

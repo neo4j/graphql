@@ -81,14 +81,14 @@ describe("createAuthAndParams", () => {
                 context,
                 entity: node,
                 operations: "READ",
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
-            expect(result[0]).toMatchInlineSnapshot(
+            expect(result.cypher).toMatchInlineSnapshot(
                 `"((this.id IS NOT NULL AND this.id = $thisauth_param0) OR any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)))"`
             );
 
-            expect(result[1]).toMatchObject({
+            expect(result.params).toMatchObject({
                 thisauth_param0: sub,
             });
         });
@@ -155,11 +155,11 @@ describe("createAuthAndParams", () => {
                 where: { node, varName: "this" },
             });
 
-            expect(result[0]).toMatchInlineSnapshot(
+            expect(result.cypher).toMatchInlineSnapshot(
                 `"(any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR (any(auth_var3 IN [\\"member\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)) AND (this.id IS NOT NULL AND this.id = $thisauth_param2)))"`
             );
 
-            expect(result[1]).toMatchObject({
+            expect(result.params).toMatchObject({
                 thisauth_param2: sub,
             });
         });
@@ -220,14 +220,14 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
-            expect(result[0]).toMatchInlineSnapshot(
+            expect(result.cypher).toMatchInlineSnapshot(
                 `"((this.id IS NOT NULL AND this.id = $thisauth_param0) OR any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)))"`
             );
 
-            expect(result[1]).toMatchObject({
+            expect(result.params).toMatchObject({
                 thisauth_param0: sub,
             });
         });
@@ -286,13 +286,13 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
-            expect(result[0]).toMatchInlineSnapshot(
+            expect(result.cypher).toMatchInlineSnapshot(
                 `"(any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $thisauth_param1))"`
             );
-            expect(result[1]).toMatchObject({
+            expect(result.params).toMatchObject({
                 thisauth_param1: sub,
             });
         });
@@ -353,14 +353,14 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
-            expect(result[0]).toMatchInlineSnapshot(
+            expect(result.cypher).toMatchInlineSnapshot(
                 `"((this.id IS NOT NULL AND this.id = $thisauth_param0) AND any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)))"`
             );
 
-            expect(result[1]).toMatchObject({
+            expect(result.params).toMatchObject({
                 thisauth_param0: sub,
             });
         });
@@ -419,13 +419,13 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
-            expect(result[0]).toMatchInlineSnapshot(
+            expect(result.cypher).toMatchInlineSnapshot(
                 `"((this.id IS NOT NULL AND this.id = $thisauth_param0) OR any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)))"`
             );
-            expect(result[1]).toMatchObject({
+            expect(result.params).toMatchObject({
                 thisauth_param0: sub,
             });
         });
@@ -491,14 +491,14 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
-            expect(result[0]).toMatchInlineSnapshot(
+            expect(result.cypher).toMatchInlineSnapshot(
                 `"(any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $thisauth_param1) AND ((this.id IS NOT NULL AND this.id = $thisauth_param2) AND any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3))) AND ((this.id IS NOT NULL AND this.id = $thisauth_param4) OR any(auth_var5 IN [\\"admin\\"] WHERE any(auth_var4 IN $auth.roles WHERE auth_var4 = auth_var5))))"`
             );
 
-            expect(result[1]).toMatchObject({
+            expect(result.params).toMatchObject({
                 thisauth_param1: sub,
                 thisauth_param2: sub,
                 thisauth_param4: sub,
@@ -593,14 +593,14 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
-            expect(result[0]).toMatchInlineSnapshot(
+            expect(result.cypher).toMatchInlineSnapshot(
                 `"((this.id IS NOT NULL AND this.id = $thisauth_param0) AND (this.id IS NOT NULL AND this.id = $thisauth_param1) AND (this.id IS NOT NULL AND this.id = $thisauth_param2))"`
             );
 
-            expect(result[1]).toMatchObject({
+            expect(result.params).toMatchObject({
                 thisauth_param0: sub,
                 thisauth_param1: sub,
                 thisauth_param2: sub,
@@ -693,13 +693,13 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
-            expect(result[0]).toMatchInlineSnapshot(
+            expect(result.cypher).toMatchInlineSnapshot(
                 `"((this.id IS NOT NULL AND this.id = $thisauth_param0) OR (this.id IS NOT NULL AND this.id = $thisauth_param1) OR (this.id IS NOT NULL AND this.id = $thisauth_param2))"`
             );
-            expect(result[1]).toMatchObject({
+            expect(result.params).toMatchObject({
                 thisauth_param0: sub,
                 thisauth_param1: sub,
                 thisauth_param2: sub,
@@ -761,7 +761,7 @@ describe("createAuthAndParams", () => {
                     context,
                     entity: node,
                     operations: "READ",
-                    allow: { parentNode: node, varName: "this" },
+                    allow: { node, varName: "this" },
                 });
             }).toThrow("Unauthenticated");
         });
@@ -819,7 +819,7 @@ describe("createAuthAndParams", () => {
                     context,
                     entity: node,
                     operations: "READ",
-                    allow: { parentNode: node, varName: "this" },
+                    allow: { node, varName: "this" },
                 });
             }).toThrow("Unauthenticated");
         });
@@ -876,13 +876,13 @@ describe("createAuthAndParams", () => {
                 context,
                 entity: node,
                 operations: "READ",
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
-            expect(result[0]).toMatchInlineSnapshot(
+            expect(result.cypher).toMatchInlineSnapshot(
                 `"(false OR any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)))"`
             );
-            expect(result[1]).toEqual({});
+            expect(result.params).toEqual({});
         });
 
         test("should showcase the allowUnauthenticated behavior with undefined $context", () => {
@@ -937,13 +937,13 @@ describe("createAuthAndParams", () => {
                 context,
                 entity: node,
                 operations: "READ",
-                allow: { parentNode: node, varName: "this" },
+                allow: { node, varName: "this" },
             });
 
-            expect(result[0]).toMatchInlineSnapshot(
+            expect(result.cypher).toMatchInlineSnapshot(
                 `"(false OR any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)))"`
             );
-            expect(result[1]).toEqual({});
+            expect(result.params).toEqual({});
         });
     });
 });

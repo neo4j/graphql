@@ -45,7 +45,6 @@ describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

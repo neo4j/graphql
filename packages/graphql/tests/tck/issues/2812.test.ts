@@ -94,11 +94,11 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                         create_this8.id = randomUUID()
                     MERGE (create_this0)<-[create_this9:\`ACTED_IN\`]-(create_this8)
                     WITH *
-                    CALL apoc.util.validate(NOT ((create_var6.fieldA IS NULL OR any(create_var11 IN [\\"role-A\\"] WHERE any(create_var10 IN $auth.roles WHERE create_var10 = create_var11))) AND (create_var6.fieldB IS NULL OR any(create_var13 IN [\\"role-B\\"] WHERE any(create_var12 IN $auth.roles WHERE create_var12 = create_var13)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ((create_var6.fieldA IS NULL OR any(create_var11 IN [\\"role-A\\"] WHERE any(create_var10 IN $auth.roles WHERE create_var10 = create_var11))) AND (create_var6.fieldB IS NULL OR any(create_var13 IN [\\"role-B\\"] WHERE any(create_var12 IN $auth.roles WHERE create_var12 = create_var13)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN collect(NULL) AS create_var14
                 }
                 WITH *
-                CALL apoc.util.validate(NOT (any(create_var16 IN [\\"admin\\"] WHERE any(create_var15 IN $auth.roles WHERE create_var15 = create_var16))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT (any(create_var16 IN [\\"admin\\"] WHERE any(create_var15 IN $auth.roles WHERE create_var15 = create_var16))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this0
             }
             CALL {
@@ -211,11 +211,11 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                         create_this8.id = randomUUID()
                     MERGE (create_this0)<-[create_this9:\`ACTED_IN\`]-(create_this8)
                     WITH *
-                    CALL apoc.util.validate(NOT ((create_var6.fieldA IS NULL OR any(create_var11 IN [\\"role-A\\"] WHERE any(create_var10 IN $auth.roles WHERE create_var10 = create_var11))) AND (create_var6.fieldB IS NULL OR any(create_var13 IN [\\"role-B\\"] WHERE any(create_var12 IN $auth.roles WHERE create_var12 = create_var13)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ((create_var6.fieldA IS NULL OR any(create_var11 IN [\\"role-A\\"] WHERE any(create_var10 IN $auth.roles WHERE create_var10 = create_var11))) AND (create_var6.fieldB IS NULL OR any(create_var13 IN [\\"role-B\\"] WHERE any(create_var12 IN $auth.roles WHERE create_var12 = create_var13)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN collect(NULL) AS create_var14
                 }
                 WITH *
-                CALL apoc.util.validate(NOT (any(create_var16 IN [\\"admin\\"] WHERE any(create_var15 IN $auth.roles WHERE create_var15 = create_var16))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT (any(create_var16 IN [\\"admin\\"] WHERE any(create_var15 IN $auth.roles WHERE create_var15 = create_var16))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this0
             }
             CALL {
@@ -326,7 +326,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                     RETURN collect(NULL) AS create_var10
                 }
                 WITH *
-                CALL apoc.util.validate(NOT (any(create_var12 IN [\\"admin\\"] WHERE any(create_var11 IN $auth.roles WHERE create_var11 = create_var12))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT (any(create_var12 IN [\\"admin\\"] WHERE any(create_var11 IN $auth.roles WHERE create_var11 = create_var12))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this0
             }
             CALL {

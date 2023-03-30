@@ -2,8 +2,6 @@ name: "UI Teardown"
 
 on:
   pull_request_target:
-    branches:
-      - dev
     paths:
       - "packages/graphql/src/**"
       - "packages/graphql-toolbox/**"

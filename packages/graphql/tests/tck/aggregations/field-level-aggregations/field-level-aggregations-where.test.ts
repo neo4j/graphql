@@ -45,7 +45,6 @@ describe("Field Level Aggregations Where", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

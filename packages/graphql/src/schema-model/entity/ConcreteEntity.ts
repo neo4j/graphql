@@ -17,41 +17,83 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLSchemaValidationError } from "../../classes";
+import { annotationToKey } from "../annotation/Annotation";
+import type { Annotation, Annotations } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Entity } from "./Entity";
+import type { Relationship } from "../relationship/Relationship";
+import { setsAreEqual } from "../../utils/sets-are-equal";
 
 export class ConcreteEntity implements Entity {
     public readonly name: string;
     public readonly labels: Set<string>;
-
     public readonly attributes: Map<string, Attribute> = new Map();
+    public readonly relationships: Map<string, Relationship> = new Map();
+    public readonly annotations: Partial<Annotations> = {};
 
-    constructor({ name, labels, attributes = [] }: { name: string; labels: string[]; attributes?: Attribute[] }) {
+    constructor({
+        name,
+        labels,
+        attributes = [],
+        annotations = [],
+        relationships = [],
+    }: {
+        name: string;
+        labels: string[];
+        attributes?: Attribute[];
+        annotations?: Annotation[];
+        relationships?: Relationship[];
+    }) {
         this.name = name;
         this.labels = new Set(labels);
+
         for (const attribute of attributes) {
             this.addAttribute(attribute);
+        }
+
+        for (const annotation of annotations) {
+            this.addAnnotation(annotation);
+        }
+
+        for (const relationship of relationships) {
+            this.addRelationship(relationship);
         }
     }
 
     public matchLabels(labels: string[]) {
-        return this.setsAreEqual(new Set(labels), this.labels);
+        return setsAreEqual(new Set(labels), this.labels);
     }
 
     private addAttribute(attribute: Attribute): void {
         if (this.attributes.has(attribute.name)) {
-            throw new Error(`Attribute ${attribute.name} already exists in ${this.name}`);
+            throw new Neo4jGraphQLSchemaValidationError(`Attribute ${attribute.name} already exists in ${this.name}`);
         }
         this.attributes.set(attribute.name, attribute);
     }
 
-    private setsAreEqual(a: Set<string>, b: Set<string>): boolean {
-        if (a.size !== b.size) {
-            return false;
+    private addAnnotation(annotation: Annotation): void {
+        const annotationKey = annotationToKey(annotation);
+        if (this.annotations[annotationKey]) {
+            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
         }
+        this.annotations[annotationKey] = annotation as any;
+    }
 
-        return Array.from(a).every((element) => {
-            return b.has(element);
-        });
+    public addRelationship(relationship: Relationship): void {
+        if (this.relationships.has(relationship.name)) {
+            throw new Neo4jGraphQLSchemaValidationError(
+                `Attribute ${relationship.name} already exists in ${this.name}`
+            );
+        }
+        this.relationships.set(relationship.name, relationship);
+    }
+
+    public findAttribute(name: string): Attribute | undefined {
+        return this.attributes.get(name);
+    }
+
+    public findRelationship(name: string): Relationship | undefined {
+        return this.relationships.get(name);
     }
 }

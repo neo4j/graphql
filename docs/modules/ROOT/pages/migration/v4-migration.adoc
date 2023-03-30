@@ -19,6 +19,29 @@ npm update @neo4j/graphql
 If you were passing any arguments from https://the-guild.dev/graphql/tools/docs/api/interfaces/schema_src.iexecutableschemadefinition[`IExecutableSchemaDefinition`] into the library
 other than `typeDefs` and `resolvers`, these are no longer supported.
 
+=== config.enableRegex replaced by `MATCHES` in features.filters
+
+`config.enableRegex` has been replaced by `MATCHES` in features.filters. With this change comes more granularity in the feature configuration. You can now enable the `MATCHES` filter on `String` and `ID` fields separately.
+
+A direct replacement of the `enableRegex: true` configuration would be as follows:
+
+[source, javascript, indent=0]
+----
+neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    features: {
+        filters: {
+            String: {
+                MATCHES: true,
+            },
+            ID: {
+                MATCHES: true,
+            },
+        },
+    },
+});
+----
+
 == Updated Directives
 
 We have renamed a number of directives and their arguments, in order to make using `@neo4j/graphql` more intuitive.
@@ -52,7 +75,7 @@ type User {
 }
 ----
 
-Note that before and after these changes, a callback named `nanoid` would need to be defined as below:
+Configuration for callbacks has also been moved as part of this change. Before these changes, a callback named `nanoid` would need to be defined as below:
 
 [source, javascript, indent=0]
 ----
@@ -61,6 +84,22 @@ new Neo4jGraphQL({
   config: {
     callbacks: {
       nanoid: () => { return nanoid(); }
+    }
+  }
+});
+----
+
+This has been changed to use the `features` constructor object:
+
+[source, javascript, indent=0]
+----
+new Neo4jGraphQL({
+  typeDefs,
+  features: {
+    populatedBy: {
+      callbacks: {
+        nanoid: () => { return nanoid(); }
+      }
     }
   }
 });
@@ -560,7 +599,6 @@ const neoSchema = new Neo4jGraphQL({
     },
 });
 ----
-
 
 == Miscellaneous changes
 

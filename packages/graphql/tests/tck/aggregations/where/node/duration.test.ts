@@ -42,7 +42,6 @@ describe("Cypher Aggregations where node with Duration", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

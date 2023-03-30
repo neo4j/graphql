@@ -21,7 +21,6 @@ import type { DirectiveNode, NamedTypeNode } from "graphql";
 import camelcase from "camelcase";
 import pluralize from "pluralize";
 import type {
-    Auth,
     ConnectionField,
     Context,
     CustomEnumField,
@@ -36,6 +35,7 @@ import type {
     TemporalField,
     UnionField,
 } from "../types";
+import type { Auth } from "../types/deprecated/auth/auth";
 import type Exclude from "./Exclude";
 import type { GraphElementConstructor } from "./GraphElement";
 import { GraphElement } from "./GraphElement";
@@ -44,7 +44,7 @@ import type { DecodedGlobalId } from "../utils/global-ids";
 import { fromGlobalId, toGlobalId } from "../utils/global-ids";
 import type { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { upperFirst } from "../utils/upper-first";
-import { NodeAuth } from "./NodeAuth";
+import { NodeAuth } from "./deprecated/NodeAuth";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;

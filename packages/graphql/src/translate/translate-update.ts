@@ -338,8 +338,24 @@ export default async function translateUpdate({
                     const relTypeStr = `[${relationVarName}:${relationField.type}]`;
 
                     if (!relationField.typeMeta.array) {
-                        const validateRelationshipExistence = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        createStrs.push(validateRelationshipExistence);
+                        // const validateRelationshipExistence = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                        // createStrs.push(validateRelationshipExistence);
+                        const singleCardinalityValidationTemplate = (nodeName) =>
+                            `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                        if (relationField.union && relationField.union.nodes) {
+                            const validateRelationshipExistence = relationField.union.nodes.map(
+                                singleCardinalityValidationTemplate
+                            );
+                            createStrs.push(...validateRelationshipExistence);
+                        } else if (relationField.interface && relationField.interface.implementations) {
+                            const validateRelationshipExistence = relationField.interface.implementations.map(
+                                singleCardinalityValidationTemplate
+                            );
+                            createStrs.push(...validateRelationshipExistence);
+                        } else {
+                            const validateRelationshipExistence = singleCardinalityValidationTemplate(refNode.name);
+                            createStrs.push(validateRelationshipExistence);
+                        }
                     }
 
                     const createAndParams = createCreateAndParams({
@@ -408,11 +424,10 @@ export default async function translateUpdate({
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
         if (projection.meta?.authValidatePredicates?.length) {
-            projAuth = new Cypher.CallProcedure(
-                new Cypher.apoc.Validate(
+            projAuth = new Cypher.With("*").where(
+                Cypher.apoc.util.validatePredicate(
                     Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                    AUTH_FORBIDDEN_ERROR,
-                    new Cypher.Literal([0])
+                    AUTH_FORBIDDEN_ERROR
                 )
             );
         }
@@ -442,7 +457,7 @@ export default async function translateUpdate({
                 : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
 
             projectionSubqueryStr,
-            ...(connectionStrs.length || projAuth ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
+            ...(connectionStrs.length ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
             ...(projAuth ? [projAuth.getCypher(env)] : []),
             ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,

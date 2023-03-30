@@ -37,7 +37,6 @@ describe("Cypher LocalTime", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

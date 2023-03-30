@@ -17,14 +17,66 @@
  * limitations under the License.
  */
 
-import type { Annotation } from "../annotation/Annotation";
+import { Neo4jGraphQLSchemaValidationError } from "../../classes/Error";
+import type { Annotation, Annotations } from "../annotation/Annotation";
+import { annotationToKey } from "../annotation/Annotation";
+
+export enum AttributeType {
+    Boolean = "Boolean",
+    ID = "ID",
+    String = "String",
+    Int = "Int",
+    BigInt = "BigInt",
+    Float = "Float",
+    DateTime = "DateTime",
+    LocalDateTime = "LocalDateTime",
+    Time = "Time",
+    LocalTime = "LocalTime",
+    Date = "Date",
+    Duration = "Duration",
+    Point = "Point",
+}
 
 export class Attribute {
     public readonly name: string;
-    public readonly annotations: Annotation[];
+    public readonly annotations: Partial<Annotations> = {};
+    public readonly type: AttributeType;
+    public readonly isArray: boolean;
 
-    constructor({ name, annotations }: { name: string; annotations: Annotation[] }) {
+    constructor({
+        name,
+        annotations,
+        type,
+        isArray,
+    }: {
+        name: string;
+        annotations: Annotation[];
+        type: AttributeType;
+        isArray: boolean;
+    }) {
         this.name = name;
-        this.annotations = annotations;
+        this.type = type;
+        this.isArray = isArray;
+
+        for (const annotation of annotations) {
+            this.addAnnotation(annotation);
+        }
+    }
+
+    public clone(): Attribute {
+        return new Attribute({
+            name: this.name,
+            annotations: Object.values(this.annotations),
+            type: this.type,
+            isArray: this.isArray,
+        });
+    }
+
+    private addAnnotation(annotation: Annotation): void {
+        const annotationKey = annotationToKey(annotation);
+        if (this.annotations[annotationKey]) {
+            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
+        }
+        this.annotations[annotationKey] = annotation as any;
     }
 }

@@ -22,7 +22,7 @@ import { mergeDeep } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import type { GraphQLOptionsArg, GraphQLWhereArg, Context, GraphQLSortArg, CypherFieldReferenceMap } from "../types";
-import { createAuthPredicates } from "./create-auth-and-params";
+import { createAuthPredicates } from "./create-auth-predicates";
 import { createDatetimeExpression } from "./projection/elements/create-datetime-element";
 import { createPointExpression } from "./projection/elements/create-point-element";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -46,15 +46,17 @@ interface Res {
 
 export interface ProjectionMeta {
     authValidatePredicates?: Cypher.Predicate[];
-    cypherSortFields?: string[];
 }
 
 export type ProjectionResult = {
-    projection: Cypher.Expr;
     params: Record<string, any>;
     meta: ProjectionMeta;
-    subqueries: Array<Cypher.Clause>;
+    // Subqueries required for sorting on fields before the projection
     subqueriesBeforeSort: Array<Cypher.Clause>;
+    // Subqueries required for fields in the projection
+    subqueries: Array<Cypher.Clause>;
+    // The map representing the fields being returned in the projection
+    projection: Cypher.Expr;
 };
 
 export default function createProjectionAndParams({
@@ -94,7 +96,7 @@ export default function createProjectionAndParams({
                     operations: "READ",
                     context,
                     allow: {
-                        parentNode: node,
+                        node,
                         varName,
                     },
                 });
@@ -188,9 +190,7 @@ export default function createProjectionAndParams({
                         // The nested projection will be surrounded by brackets, so we want to remove
                         // any linebreaks, and then the first opening and the last closing bracket of the line,
                         // as well as any surrounding whitespace.
-                        const nestedProj = recurse.projection
-                            .getCypher(env)
-                            .replaceAll(/(^\s*{\s*)|(\s*}\s*$)/g, "");
+                        const nestedProj = recurse.projection.getCypher(env).replaceAll(/(^\s*{\s*)|(\s*}\s*$)/g, "");
 
                         return `{ __resolveType: "${refNode.name}", __id: id(${varName.getCypher(env)})${
                             nestedProj && `, ${nestedProj}`

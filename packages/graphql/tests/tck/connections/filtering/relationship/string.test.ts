@@ -55,7 +55,13 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
+            features: {
+                filters: {
+                    String: {
+                        MATCHES: true,
+                    },
+                },
+            },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,

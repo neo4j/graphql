@@ -30,7 +30,6 @@ import type {
     DriverConfig,
     CypherQueryOptions,
     Neo4jGraphQLPlugins,
-    Neo4jGraphQLCallbacks,
     Neo4jFeaturesSettings,
     StartupValidationConfig,
 } from "../types";
@@ -40,6 +39,7 @@ import type Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
 import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
 import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
+import type { WrapResolverArguments } from "../schema/resolvers/wrapper";
 import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
@@ -54,17 +54,9 @@ import { validateDocument } from "../schema/validation";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
-    enableRegex?: boolean;
     enableDebug?: boolean;
-    /**
-     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
-     * Please use startupValidation instead. More information can be found at
-     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#startup-validation
-     */
-    skipValidateTypeDefs?: boolean;
     startupValidation?: StartupValidationConfig;
     queryOptions?: CypherQueryOptions;
-    callbacks?: Neo4jGraphQLCallbacks;
 }
 
 export type ValidationConfig = {
@@ -254,13 +246,23 @@ class Neo4jGraphQL {
         resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>,
         schemaModel: Neo4jGraphQLSchemaModel
     ) {
-        const wrapResolverArgs = {
+        if (!this.schemaModel) {
+            throw new Error("Schema Model is not defined");
+        }
+
+        const config = {
+            ...this.config,
+            callbacks: this.features?.populatedBy?.callbacks,
+        };
+
+        const wrapResolverArgs: WrapResolverArguments = {
             driver: this.driver,
-            config: this.config,
+            config,
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: schemaModel,
             plugins: this.plugins,
+            features: this.features,
         };
 
         const resolversComposition = {
@@ -278,13 +280,14 @@ class Neo4jGraphQL {
         resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>,
         schemaModel: Neo4jGraphQLSchemaModel
     ) {
-        const wrapResolverArgs = {
+        const wrapResolverArgs: WrapResolverArguments = {
             driver: this.driver,
             config: this.config,
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: schemaModel,
             plugins: this.plugins,
+            features: this.features,
         };
 
         const resolversComposition = {
@@ -315,10 +318,8 @@ class Neo4jGraphQL {
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
-                enableRegex: this.config?.enableRegex,
                 validateResolvers: validationConfig.validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
-                callbacks: this.config.callbacks,
                 userCustomResolvers: this.resolvers,
             });
 
@@ -353,10 +354,8 @@ class Neo4jGraphQL {
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
-            enableRegex: this.config?.enableRegex,
             validateResolvers: validationConfig.validateResolvers,
             generateSubscriptions: Boolean(this.plugins?.subscriptions),
-            callbacks: this.config.callbacks,
             userCustomResolvers: this.resolvers,
             subgraph,
         });
@@ -398,9 +397,6 @@ class Neo4jGraphQL {
                 validateDuplicateRelationshipFields: false,
             };
         }
-
-        // TODO - remove in 4.0.0 when skipValidateTypeDefs is removed
-        if (this.config?.skipValidateTypeDefs === true) validationConfig.validateTypeDefs = false;
 
         if (typeof this.config?.startupValidation === "object") {
             if (this.config?.startupValidation.typeDefs === false) validationConfig.validateTypeDefs = false;

@@ -31,13 +31,13 @@ import { UnsupportedUnwindOptimization } from "./batch-create/types";
 type ProjectionAndParamsResult = {
     projection: Cypher.Expr;
     projectionSubqueries: Cypher.Clause;
-    projectionAuth?: Cypher.Clause;
+    authPredicate?: Cypher.Predicate;
 };
 
 type CompositeProjectionAndParamsResult = {
     projectionSubqueriesClause: Cypher.Clause | undefined;
     projectionList: Cypher.Expr[];
-    authCalls: Cypher.Clause | undefined;
+    authPredicates: Cypher.Predicate[];
 };
 
 export default async function translateCreate({
@@ -134,12 +134,9 @@ export default async function translateCreate({
             const projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
 
             if (projection.meta?.authValidatePredicates?.length) {
-                const projAuth = new Cypher.CallProcedure(
-                    new Cypher.apoc.Validate(
-                        Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                        AUTH_FORBIDDEN_ERROR,
-                        new Cypher.Literal([0])
-                    )
+                const projAuth = Cypher.apoc.util.validatePredicate(
+                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                    AUTH_FORBIDDEN_ERROR
                 );
                 return {
                     projection: projectionExpr,
@@ -151,9 +148,9 @@ export default async function translateCreate({
         });
 
         parsedProjection = projectionFromInput.reduce(
-            (acc: CompositeProjectionAndParamsResult, { projection, projectionSubqueries, projectionAuth }) => {
+            (acc: CompositeProjectionAndParamsResult, { projection, projectionSubqueries, authPredicate }) => {
                 return {
-                    authCalls: Cypher.concat(acc.authCalls, projectionAuth),
+                    authPredicates: authPredicate ? [...acc.authPredicates, authPredicate] : acc.authPredicates,
                     projectionSubqueriesClause: Cypher.concat(acc.projectionSubqueriesClause, projectionSubqueries),
                     projectionList: acc.projectionList.concat(projection),
                 };
@@ -161,7 +158,7 @@ export default async function translateCreate({
             {
                 projectionSubqueriesClause: undefined,
                 projectionList: [],
-                authCalls: undefined,
+                authPredicates: [],
             }
         );
     }
@@ -177,7 +174,9 @@ export default async function translateCreate({
         const cypher = filterTruthy([
             `${createStrs.join("\n")}`,
             context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "",
-            parsedProjection?.authCalls?.getCypher(env),
+            parsedProjection?.authPredicates.length
+                ? new Cypher.With("*").where(Cypher.and(...parsedProjection.authPredicates)).getCypher(env)
+                : "",
             projectionSubqueriesStr ? `\n${projectionSubqueriesStr}` : "",
             returnStatement.getCypher(env),
         ])
