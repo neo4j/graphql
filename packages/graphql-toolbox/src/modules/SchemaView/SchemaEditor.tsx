@@ -29,6 +29,7 @@ import { getSchemaForLintAndAutocompletion } from "./utils";
 import { Extension, FileName } from "../../components/Filename";
 import { ThemeContext, Theme } from "../../contexts/theme";
 import { AppSettingsContext } from "../../contexts/appsettings";
+import { useStore } from "../../store";
 
 export interface Props {
     loading: boolean;
