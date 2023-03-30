@@ -37,17 +37,14 @@ export const SchemaScreenDrawer = ({
                 <Keybindings onClickClose={onClickClose} onClickBack={() => setShowSubComponent(false)} />
             ) : (
                 <>
-                    <div
+                    <button
                         data-test-help-drawer-keybindings-tile-schema-view
-                        className="n-bg-neutral-20 p-4 pb-6 mb-8 rounded-2xl cursor-pointer flex text-sm"
+                        className="w-full n-bg-neutral-20 p-4 pb-6 mb-8 rounded-2xl cursor-pointer flex text-sm"
                         onClick={() => setShowSubComponent(true)}
-                        onKeyDown={() => setShowSubComponent(true)}
-                        role="button"
-                        tabIndex={0}
                     >
                         <ComputerDesktopIconOutline className="h-6 w-6 mr-2" />
                         <span>List of keybindings</span>
-                    </div>
+                    </button>
                     <Resources showSchemaView={true} />
                 </>
             )}

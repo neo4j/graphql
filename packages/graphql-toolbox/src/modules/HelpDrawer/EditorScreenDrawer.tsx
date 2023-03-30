@@ -41,29 +41,23 @@ const EditorScreenTiles = ({
 }): JSX.Element => {
     return (
         <div className="pb-8 flex text-sm">
-            <div
+            <button
                 data-test-help-drawer-schema-doc-tile
                 className="n-bg-primary-50 p-4 pb-6 rounded-2xl cursor-pointer text-white w-1/2 mr-2 flex"
                 onClick={onClickShowDocs}
-                onKeyDown={onClickShowDocs}
-                role="button"
-                tabIndex={0}
             >
                 <SwatchIconOutline className="h-6 w-6 mr-2 flex-1" />
                 <span className="flex-1">Current schema documentation</span>
-            </div>
+            </button>
 
-            <div
+            <button
                 data-test-help-drawer-keybindings-tile-editor-view
                 className="n-bg-neutral-20 p-4 pb-6 rounded-2xl cursor-pointer w-1/2 flex"
                 onClick={onClickShowKeybindings}
-                onKeyDown={onClickShowKeybindings}
-                role="button"
-                tabIndex={0}
             >
                 <ComputerDesktopIconOutline className="h-6 w-6 mr-2" />
                 <span>List of keybindings</span>
-            </div>
+            </button>
         </div>
     );
 };
