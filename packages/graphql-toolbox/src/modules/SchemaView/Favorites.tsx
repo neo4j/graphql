@@ -21,6 +21,7 @@ import { IconButton } from "@neo4j-ndl/react";
 import { TrashIconOutline } from "@neo4j-ndl/react/icons";
 import { FavoriteNameEdit } from "./FavoriteNameEdit";
 import type { Favorite } from "../../types";
+import { useStore } from "../../store";
 
 const ALTERNATE_BG_COLOR = "n-bg-neutral-20";
 
@@ -29,7 +30,7 @@ interface FavoritesProps {
     onSelectFavorite: (typeDefs: string) => void;
 }
 
-export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: FavoritesProps) => {
+export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
     const deleteFavorite = (id: string): void => {
         const nextFavs = favorites?.filter((fav) => fav.id !== id) || null;
         useStore.setState({ favorites: nextFavs });
