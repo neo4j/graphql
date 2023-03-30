@@ -55,6 +55,7 @@ export default async function unwindCreate({
     const [rootNodeVariable, createCypher] = unwindCreateVisitor.build() as [Cypher.Node, Cypher.Clause];
 
     const projectionWith: string[] = [];
+    let predicates: Cypher.Predicate[] = [];
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
@@ -77,19 +78,27 @@ export default async function unwindCreate({
         projectionCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
             return `${rootNodeVariable.getCypher(env)} ${projection.projection.getCypher(env)}`;
         });
+        predicates = projection.predicates;
     }
 
     const unwindCreate = Cypher.concat(unwindQuery, createCypher);
     const returnStatement = generateCreateReturnStatementCypher(projectionCypher, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
+    let withWhere: Cypher.With | undefined;
+    if (predicates.length) {
+        withWhere = new Cypher.With("*").where(Cypher.and(...predicates));
+    }
+
     const createQuery = new Cypher.RawCypher((env) => {
         const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
+        const withWhereStr = compileCypherIfExists(withWhere, env);
 
         const cypher = filterTruthy([
             unwindCreate.getCypher(env),
             projectionWithStr,
             projectionSubqueryStr,
+            withWhereStr,
             returnStatement.getCypher(env),
         ])
             .filter(Boolean)

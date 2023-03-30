@@ -35,26 +35,33 @@ import { createProjectionSubquery } from "./projection/subquery/create-projectio
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
+import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 
 interface Res {
     projection: Cypher.Expr[];
     params: any;
+    // TODO: Authorization - delete for 4.0.0
     meta: ProjectionMeta;
     subqueries: Array<Cypher.Clause>;
     subqueriesBeforeSort: Array<Cypher.Clause>;
+    predicates: Cypher.Predicate[];
 }
 
+// TODO: Authorization - delete for 4.0.0
 export interface ProjectionMeta {
     authValidatePredicates?: Cypher.Predicate[];
 }
 
 export type ProjectionResult = {
     params: Record<string, any>;
+    // TODO: Authorization - delete for 4.0.0
     meta: ProjectionMeta;
     // Subqueries required for sorting on fields before the projection
     subqueriesBeforeSort: Array<Cypher.Clause>;
     // Subqueries required for fields in the projection
     subqueries: Array<Cypher.Clause>;
+    // Predicates for filtering data before projection
+    predicates: Cypher.Predicate[];
     // The map representing the fields being returned in the projection
     projection: Cypher.Expr;
 };
@@ -89,8 +96,26 @@ export default function createProjectionAndParams({
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
 
         if (authableField) {
-            // TODO: move this to translate-top-level
-            if (authableField.auth) {
+            const authorizationPredicateReturn = createAuthorizationBeforePredicate({
+                context,
+                variable: varName,
+                node,
+                operations: ["READ"],
+                fieldName: authableField.fieldName,
+            });
+
+            if (authorizationPredicateReturn) {
+                const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
+
+                if (predicate) {
+                    res.predicates.push(predicate);
+                }
+
+                if (preComputedSubqueries && !preComputedSubqueries.empty) {
+                    res.subqueries.push(preComputedSubqueries);
+                }
+            } else if (authableField.auth) {
+                // TODO: Authorization - delete for 4.0.0
                 const allowAndParams = createAuthPredicates({
                     entity: authableField,
                     operations: "READ",
@@ -389,7 +414,9 @@ export default function createProjectionAndParams({
         generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
     ]);
 
-    const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(mergedFields).reduce(reducer, {
+    const { params, meta, subqueriesBeforeSort, subqueries, predicates, projection } = Object.values(
+        mergedFields
+    ).reduce(reducer, {
         projection: resolveType
             ? [
                   new Cypher.RawCypher(`__resolveType: "${node.name}"`),
@@ -400,16 +427,18 @@ export default function createProjectionAndParams({
         meta: {},
         subqueries: [],
         subqueriesBeforeSort: [],
+        predicates: [],
     });
     const projectionCypher = new Cypher.RawCypher((env) => {
         return `{ ${projection.map((proj) => proj.getCypher(env)).join(", ")} }`;
     });
     return {
-        projection: projectionCypher,
         params,
         meta,
-        subqueries,
         subqueriesBeforeSort,
+        subqueries,
+        predicates,
+        projection: projectionCypher,
     };
 }
 
@@ -475,6 +504,7 @@ function createFulltextProjection({
             meta: {},
             subqueries: [],
             subqueriesBeforeSort: [],
+            predicates: [],
         };
     }
 

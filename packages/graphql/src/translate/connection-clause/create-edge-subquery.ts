@@ -147,7 +147,11 @@ export function createEdgeSubquery({
         cypherFieldAliasMap,
     });
 
-    const withReturn = new Cypher.With([projection.projection, returnVariable]);
+    let withReturn = new Cypher.With([projection.projection, returnVariable]);
+
+    if (projection.predicates.length) {
+        withReturn = withReturn.where(Cypher.and(...projection.predicates));
+    }
 
     let withSortClause: Cypher.Clause | undefined;
     if (!ignoreSort) {

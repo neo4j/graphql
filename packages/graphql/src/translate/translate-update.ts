@@ -421,13 +421,22 @@ export default async function translateUpdate({
         projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
+        const predicates: Cypher.Predicate[] = [];
+
+        // TODO: Authorization: delete for 4.0.0
         if (projection.meta?.authValidatePredicates?.length) {
-            projAuth = new Cypher.With("*").where(
+            predicates.push(
                 Cypher.apoc.util.validatePredicate(
                     Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
                     AUTH_FORBIDDEN_ERROR
                 )
             );
+        }
+
+        predicates.push(...projection.predicates);
+
+        if (predicates.length) {
+            projAuth = new Cypher.With("*").where(Cypher.and(...predicates));
         }
     }
 

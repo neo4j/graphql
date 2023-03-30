@@ -49,11 +49,13 @@ export function createEdgeProjection({
     resolveType?: boolean;
     extraFields?: Array<string>;
     cypherFieldAliasMap: CypherFieldReferenceMap;
-}): { projection: Cypher.Map; subqueries: Cypher.Clause[] } {
+}): { projection: Cypher.Map; subqueries: Cypher.Clause[]; predicates: Cypher.Predicate[] } {
     const connection = resolveTree.fieldsByTypeName[field.typeMeta.name];
 
     const edgeProjectionProperties = new Cypher.Map();
     const subqueries: Cypher.Clause[] = [];
+    const predicates: Cypher.Predicate[] = [];
+
     if (connection.edges) {
         const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
         const relationshipFieldsByTypeName = connection.edges.fieldsByTypeName[field.relationshipTypeName];
@@ -91,6 +93,7 @@ export function createEdgeProjection({
             const alias = nodeField.alias;
             edgeProjectionProperties.set(alias, nodeProjection.projection);
             subqueries.push(...nodeProjection.subqueries);
+            predicates.push(...nodeProjection.predicates);
         }
     } else {
         // This ensures that totalCount calculation is accurate if edges are not asked for
@@ -103,10 +106,11 @@ export function createEdgeProjection({
                 }),
             }),
             subqueries,
+            predicates,
         };
     }
 
-    return { projection: edgeProjectionProperties, subqueries };
+    return { projection: edgeProjectionProperties, subqueries, predicates };
 }
 
 function createConnectionNodeProjection({
@@ -125,7 +129,7 @@ function createConnectionNodeProjection({
     resolveType?: boolean;
     resolveTree: ResolveTree; // Global resolve tree
     cypherFieldAliasMap: CypherFieldReferenceMap;
-}): { projection: Cypher.Expr; subqueries: Cypher.Clause[] } {
+}): { projection: Cypher.Expr; subqueries: Cypher.Clause[]; predicates: Cypher.Predicate[] } {
     const selectedFields: Record<string, ResolveTree> = mergeDeep([
         nodeResolveTree.fieldsByTypeName[node.name],
         ...node.interfaces.map((i) => nodeResolveTree?.fieldsByTypeName[i.name.value]),
@@ -174,6 +178,7 @@ function createConnectionNodeProjection({
 
     return {
         subqueries: projectionSubqueries,
+        predicates: nodeProjectionAndParams.predicates,
         projection: nodeProjectionAndParams.projection,
     };
 }

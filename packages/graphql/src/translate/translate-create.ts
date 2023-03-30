@@ -133,17 +133,29 @@ export default async function translateCreate({
             );
             const projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
 
+            const authPredicates: Cypher.Predicate[] = [];
+
+            if (projection.predicates.length) {
+                authPredicates.push(Cypher.and(...projection.predicates));
+            }
+
             if (projection.meta?.authValidatePredicates?.length) {
-                const projAuth = Cypher.apoc.util.validatePredicate(
-                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                    AUTH_FORBIDDEN_ERROR
+                authPredicates.push(
+                    Cypher.apoc.util.validatePredicate(
+                        Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                        AUTH_FORBIDDEN_ERROR
+                    )
                 );
+            }
+
+            if (authPredicates.length) {
                 return {
                     projection: projectionExpr,
                     projectionSubqueries: projectionSubquery,
-                    projectionAuth: projAuth,
+                    projectionAuth: Cypher.and(...authPredicates),
                 };
             }
+
             return { projection: projectionExpr, projectionSubqueries: projectionSubquery };
         });
 

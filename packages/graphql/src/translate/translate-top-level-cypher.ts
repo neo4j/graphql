@@ -55,6 +55,8 @@ export function translateTopLevelCypher({
 
     let projectionStr;
     const projectionAuthStrs: Cypher.Predicate[] = [];
+    const projectionValidatePredicates: Cypher.Predicate[] = [];
+
     const projectionSubqueries: Cypher.Clause[] = [];
 
     const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
@@ -66,6 +68,7 @@ export function translateTopLevelCypher({
             meta,
             subqueries,
             subqueriesBeforeSort,
+            predicates,
         } = createProjectionAndParams({
             resolveTree,
             node: referenceNode,
@@ -79,6 +82,10 @@ export function translateTopLevelCypher({
 
         if (meta.authValidatePredicates?.length) {
             projectionAuthStrs.push(...projectionAuthStrs, Cypher.and(...meta.authValidatePredicates));
+        }
+
+        if (predicates.length) {
+            projectionValidatePredicates.push(...predicates);
         }
     }
 
@@ -111,6 +118,7 @@ export function translateTopLevelCypher({
                         params: p,
                         meta,
                         subqueries,
+                        predicates,
                     } = createProjectionAndParams({
                         resolveTree,
                         node,
@@ -122,6 +130,9 @@ export function translateTopLevelCypher({
                     params = { ...params, ...p };
                     if (meta.authValidatePredicates?.length) {
                         projectionAuthStrs.push(Cypher.and(...meta.authValidatePredicates));
+                    }
+                    if (predicates.length) {
+                        projectionValidatePredicates.push(...predicates);
                     }
                     headStrs.push(
                         new Cypher.RawCypher((env) => {
@@ -191,12 +202,22 @@ export function translateTopLevelCypher({
     const projectionSubquery = Cypher.concat(...projectionSubqueries);
 
     return new Cypher.RawCypher((env) => {
+        const authPredicates: Cypher.Predicate[] = [];
+
+        if (projectionValidatePredicates.length) {
+            authPredicates.push(Cypher.and(...projectionValidatePredicates));
+        }
+
         if (projectionAuthStrs.length) {
             const validatePred = Cypher.apoc.util.validatePredicate(
                 Cypher.not(Cypher.and(...projectionAuthStrs)),
                 AUTH_FORBIDDEN_ERROR
             );
-            cypherStrs.push(`WHERE ${validatePred.getCypher(env)}`);
+            authPredicates.push(validatePred);
+        }
+
+        if (authPredicates.length) {
+            cypherStrs.push(`WHERE ${Cypher.and(...authPredicates).getCypher(env)}`);
         }
 
         const subqueriesStr = projectionSubquery ? `\n${projectionSubquery.getCypher(env)}` : "";
