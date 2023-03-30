@@ -139,7 +139,8 @@ describe("Cypher Auth Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE apoc.util.validatePredicate(NOT (any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT (any(var3 IN [\\"super-admin\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT (any(var3 IN [\\"super-admin\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, .name, .password } AS this"
         `);
 
@@ -180,7 +181,8 @@ describe("Cypher Auth Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE apoc.util.validatePredicate(NOT (any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT (any(var3 IN [\\"super-admin\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT (any(var3 IN [\\"super-admin\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 CALL {
@@ -236,7 +238,7 @@ describe("Cypher Auth Roles", () => {
                 SET
                     create_this1.id = create_var0.id
                 WITH *
-                CALL apoc.util.validate(NOT (any(create_var3 IN [\\"admin\\"] WHERE any(create_var2 IN $auth.roles WHERE create_var2 = create_var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT (any(create_var3 IN [\\"admin\\"] WHERE any(create_var2 IN $auth.roles WHERE create_var2 = create_var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -291,9 +293,9 @@ describe("Cypher Auth Roles", () => {
                     create_this1.id = create_var0.id,
                     create_this1.password = create_var0.password
                 WITH *
-                CALL apoc.util.validate(NOT (any(create_var3 IN [\\"admin\\"] WHERE any(create_var2 IN $auth.roles WHERE create_var2 = create_var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT (any(create_var3 IN [\\"admin\\"] WHERE any(create_var2 IN $auth.roles WHERE create_var2 = create_var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH *
-                CALL apoc.util.validate(NOT (create_var0.password IS NULL OR any(create_var5 IN [\\"super-admin\\"] WHERE any(create_var4 IN $auth.roles WHERE create_var4 = create_var5))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT (create_var0.password IS NULL OR any(create_var5 IN [\\"super-admin\\"] WHERE any(create_var4 IN $auth.roles WHERE create_var4 = create_var5))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"

@@ -424,10 +424,11 @@ export default async function translateUpdate({
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
         if (projection.meta?.authValidatePredicates?.length) {
-            projAuth = Cypher.apoc.util.validate(
-                Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                AUTH_FORBIDDEN_ERROR,
-                new Cypher.Literal([0])
+            projAuth = new Cypher.With("*").where(
+                Cypher.apoc.util.validatePredicate(
+                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                    AUTH_FORBIDDEN_ERROR
+                )
             );
         }
     }
@@ -456,7 +457,7 @@ export default async function translateUpdate({
                 : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
 
             projectionSubqueryStr,
-            ...(connectionStrs.length || projAuth ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
+            ...(connectionStrs.length ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
             ...(projAuth ? [projAuth.getCypher(env)] : []),
             ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,
