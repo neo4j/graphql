@@ -69,7 +69,7 @@ jobs:
     #       password: ${{ needs.ecr-login.outputs.docker_password }}
     #     env:
     #       NEO4J_AUTH: neo4j/password
-    #       NEO4JLABS_PLUGINS: '["apoc"]'
+    #       NEO4JLABS_PLUGINS: '["apoc-core"]'
     #       NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
     #     ports:
     #       - 7687:7687
