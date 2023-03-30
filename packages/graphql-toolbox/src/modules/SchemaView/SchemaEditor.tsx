@@ -23,20 +23,14 @@ import { Button, IconButton } from "@neo4j-ndl/react";
 import { StarIconOutline } from "@neo4j-ndl/react/icons";
 import { tokens } from "@neo4j-ndl/base";
 import { CodeMirror } from "../../utils/utils";
-import {
-    DEFAULT_TYPE_DEFS,
-    LOCAL_STATE_TYPE_DEFS,
-    SCHEMA_EDITOR_INPUT,
-    THEME_EDITOR_DARK,
-    THEME_EDITOR_LIGHT,
-} from "../../constants";
+import { DEFAULT_TYPE_DEFS, SCHEMA_EDITOR_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
 import { formatCode, handleEditorDisableState, ParserOptions } from "../EditorView/utils";
 import { getSchemaForLintAndAutocompletion } from "./utils";
 import { Extension, FileName } from "../../components/Filename";
 import { ThemeContext, Theme } from "../../contexts/theme";
-import { Storage } from "../../utils/storage";
 import { AppSettingsContext } from "../../contexts/appsettings";
 import { ProTooltip } from "../../components/ProTooltip";
+import { useStore } from "../../store";
 
 export interface Props {
     loading: boolean;
@@ -127,7 +121,7 @@ export const SchemaEditor = ({
         setMirror(mirror);
         mirrorRef.current = mirror;
 
-        const storedTypeDefs = Storage.retrieveJSON(LOCAL_STATE_TYPE_DEFS) || DEFAULT_TYPE_DEFS;
+        const storedTypeDefs = useStore.getState().typeDefinitions || DEFAULT_TYPE_DEFS;
         if (storedTypeDefs && ref.current) {
             mirror?.setValue(storedTypeDefs);
             ref.current.value = storedTypeDefs;
