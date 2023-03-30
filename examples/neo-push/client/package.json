@@ -33,7 +33,7 @@
         "showdown": "2.1.0",
         "style-loader": "3.3.2",
         "ts-loader": "9.4.2",
-        "typescript": "5.0.2"
+        "typescript": "5.0.3"
     },
     "devDependencies": {
         "@tsconfig/create-react-app": "1.0.3",

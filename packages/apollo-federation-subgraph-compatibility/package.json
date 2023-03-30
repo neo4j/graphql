@@ -20,7 +20,7 @@
         "fork-ts-checker-webpack-plugin": "8.0.0",
         "ts-loader": "9.4.2",
         "tsconfig-paths-webpack-plugin": "4.0.1",
-        "typescript": "5.0.2",
+        "typescript": "5.0.3",
         "webpack": "5.77.0"
     }
 }
