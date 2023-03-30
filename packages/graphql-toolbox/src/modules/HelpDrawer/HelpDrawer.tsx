@@ -54,43 +54,39 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
         <div className="p-6 w-full" data-test-help-drawer>
             {!showSubComponent ? (
                 <div className="pb-6 flex justify-between items-center" data-test-help-drawer-title>
-                    <>
-                        <span className="h5">Help &#38; learn</span>
-                        <span
-                            className="text-lg cursor-pointer"
-                            data-test-help-drawer-close
-                            onClick={onClickClose}
-                            onKeyDown={onClickClose}
-                            role="button"
-                            tabIndex={0}
-                        >
-                            {"\u2715"}
-                        </span>
-                    </>
+                    <span className="h5">Help &#38; learn</span>
+                    <span
+                        className="text-lg cursor-pointer"
+                        data-test-help-drawer-close
+                        onClick={onClickClose}
+                        onKeyDown={onClickClose}
+                        role="button"
+                        tabIndex={0}
+                    >
+                        {"\u2715"}
+                    </span>
                 </div>
             ) : null}
-            <>
-                {screen.view === Screen.TYPEDEFS ? (
-                    <SchemaScreenDrawer
-                        showSubComponent={showSubComponent}
-                        onClickClose={onClickClose}
-                        setShowSubComponent={setShowSubComponent}
-                    />
-                ) : (
-                    <EditorScreenDrawer
-                        showSubComponent={showSubComponent}
-                        onClickClose={onClickClose}
-                        setShowSubComponent={setShowSubComponent}
-                        schema={schema}
-                        screen={screen.view}
-                    />
-                )}
-                {!showSubComponent ? (
-                    <div className="absolute bottom-8 right-28 n-text-primary-40 font-bold text-sm">
-                        <CannyFeedbackButton screen={screen.view} />
-                    </div>
-                ) : null}
-            </>
+            {screen.view === Screen.TYPEDEFS ? (
+                <SchemaScreenDrawer
+                    showSubComponent={showSubComponent}
+                    onClickClose={onClickClose}
+                    setShowSubComponent={setShowSubComponent}
+                />
+            ) : (
+                <EditorScreenDrawer
+                    showSubComponent={showSubComponent}
+                    onClickClose={onClickClose}
+                    setShowSubComponent={setShowSubComponent}
+                    schema={schema}
+                    screen={screen.view}
+                />
+            )}
+            {!showSubComponent ? (
+                <div className="absolute bottom-8 right-28 n-text-primary-40 font-bold text-sm">
+                    <CannyFeedbackButton screen={screen.view} />
+                </div>
+            ) : null}
         </div>
     );
 };
