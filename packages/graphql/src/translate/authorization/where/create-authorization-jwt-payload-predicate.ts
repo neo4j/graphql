@@ -38,7 +38,7 @@ export function createJwtPayloadWherePredicate({
     fields.forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
             const predicate = createNestedPredicate({
-                key: key as LogicalOperator,
+                key,
                 value: asArray(value),
                 context,
             });

@@ -46,7 +46,7 @@ export function createAuthorizationWherePredicate({
     fields.forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
             const { predicate, preComputedSubqueries } = createNestedPredicate({
-                key: key as LogicalOperator,
+                key,
                 context,
                 value: asArray(value),
                 node,

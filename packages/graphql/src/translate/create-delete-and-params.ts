@@ -27,7 +27,6 @@ import { createConnectionEventMetaObject } from "./subscriptions/create-connecti
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
-import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 
 interface Res {
