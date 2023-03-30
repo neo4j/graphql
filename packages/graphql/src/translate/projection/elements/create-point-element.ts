@@ -90,7 +90,7 @@ function createPointProjectionMap({
     crs,
     point,
 }: {
-    variableOrProperty: Cypher.Variable | Cypher.PropertyRef;
+    variableOrProperty: Cypher.Variable | Cypher.Property;
     crs: unknown;
     point: unknown;
 }): Cypher.Map {
