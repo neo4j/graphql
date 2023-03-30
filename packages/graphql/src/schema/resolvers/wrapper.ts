@@ -34,7 +34,7 @@ import type { SubscriptionConnectionContext, SubscriptionContext } from "./subsc
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { IncomingMessage } from "http";
-import Neo4jGraphQLAuth from "../../classes/Neo4jGraphQLAuth";
+import { Neo4jGraphQLAuthorization } from "../../classes/Neo4jGraphQLAuthorization";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -90,12 +90,9 @@ export const wrapResolver =
         context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions);
         context.callbacks = config.callbacks;
 
-        // TODO:
-        // 1 - global auth equivalent
-        // 2 - replace authorization.rolesPath with proper construct after it's defined
         if (!context.jwt) {
             if (authorization) {
-                const jwt = await new Neo4jGraphQLAuth(authorization).parse(context);
+                const jwt = await new Neo4jGraphQLAuthorization(authorization).parse(context);
                 jwt && (context.jwt = jwt);
             } else {
                 // TODO: remove this else after migrating to new authorization constructor
@@ -113,7 +110,7 @@ export const wrapResolver =
 
         verifyGlobalAuthentication(context, context.plugins?.auth);
 
-        context.auth = createAuthParam({ context, authRolesPath: authorization?.rolesPath });
+        context.auth = createAuthParam({ context });
 
         const executorConstructorParam: ExecutorConstructorParam = {
             executionContext: context.executionContext,
@@ -166,7 +163,9 @@ export const wrapSubscription =
         if (!context?.jwt && contextParams.authorization) {
             const token = parseBearerToken(contextParams.authorization);
             if (resolverArgs.authorization) {
-                subscriptionContext.jwt = new Neo4jGraphQLAuth(resolverArgs.authorization).decodeWithoutVerify(token);
+                subscriptionContext.jwt = new Neo4jGraphQLAuthorization(resolverArgs.authorization).decodeWithoutVerify(
+                    token
+                );
             } else {
                 // TODO: remove this else after migrating to new authorization constructor
                 subscriptionContext.jwt = await decodeToken(token, plugins.auth);

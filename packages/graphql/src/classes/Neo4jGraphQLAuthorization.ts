@@ -28,7 +28,7 @@ import { getToken } from "../utils/get-token";
 
 const debug = Debug(DEBUG_AUTH);
 
-class Neo4jGraphQLAuth {
+export class Neo4jGraphQLAuthorization {
     private authorization: Neo4jAuthorizationSettings;
 
     constructor(authorization: Neo4jAuthorizationSettings) {
@@ -46,7 +46,7 @@ class Neo4jGraphQLAuth {
         return decodeJwt(token);
     }
 
-    private resolveSecret(context: Context): Key {
+    private resolveKey(context: Context): Key {
         if (typeof this.authorization.key === "function") {
             const contextRequest = context.req || context.request;
             return this.authorization.key(context instanceof IncomingMessage ? context : contextRequest);
@@ -61,7 +61,7 @@ class Neo4jGraphQLAuth {
                 debug("Skipping verifying JWT as verify is set to false");
                 return this.decodeWithoutVerify(token);
             }
-            const secret = this.resolveSecret(context);
+            const secret = this.resolveKey(context);
             if (typeof secret === "string") {
                 debug("Verifying JWT using secret");
                 const { payload } = await jwtVerify(token, Buffer.from(secret), this.authorization.verifyOptions);
@@ -82,5 +82,3 @@ class Neo4jGraphQLAuth {
         }
     }
 }
-
-export default Neo4jGraphQLAuth;

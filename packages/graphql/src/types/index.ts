@@ -512,8 +512,6 @@ export interface Neo4jAuthorizationSettings {
     key: Key | ((req: RequestLike) => Key);
     verify?: boolean;
     verifyOptions?: JWTVerifyOptions;
-    // TODO: replace me
-    rolesPath?: string;
 }
 export interface RemoteJWKS {
     url: string | URL;
@@ -529,8 +527,7 @@ export type RequestLike = {
 export interface Neo4jFeaturesSettings {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
-    // TODO: uncomment next line for new authorization constructor
-    // authorization?: Neo4jAuthorizationSettings;
+    authorization?: Neo4jAuthorizationSettings;
 }
 export { RemoteJWKSetOptions, JWTVerifyOptions } from "jose";
 

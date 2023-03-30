@@ -260,8 +260,7 @@ class Neo4jGraphQL {
             relationships: this.relationships,
             schemaModel: this.schemaModel,
             plugins: this.plugins,
-            // TODO: uncomment next line for new authorization constructor
-            // authorization: this.features?.authorization,
+            authorization: this.features?.authorization,
         };
 
         const resolversComposition = {
@@ -287,8 +286,7 @@ class Neo4jGraphQL {
             relationships: this.relationships,
             schemaModel: this.schemaModel,
             plugins: this.plugins,
-            // TODO: uncomment next line for new authorization constructor
-            // authorization: this.features?.authorization,
+            authorization: this.features?.authorization,
         };
 
         const resolversComposition = {
