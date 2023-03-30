@@ -44,6 +44,6 @@ export function getCypherLogicalOperator(
     }
 }
 
-export function isLogicalOperator(key: string): boolean {
+export function isLogicalOperator(key: string): key is LogicalOperator {
     return (LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(key);
 }

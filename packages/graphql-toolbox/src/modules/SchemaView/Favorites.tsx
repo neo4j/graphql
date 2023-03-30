@@ -20,29 +20,24 @@
 import { IconButton } from "@neo4j-ndl/react";
 import { TrashIconOutline } from "@neo4j-ndl/react/icons";
 import { FavoriteNameEdit } from "./FavoriteNameEdit";
-import { Storage } from "../../utils/storage";
 import type { Favorite } from "../../types";
-import { LOCAL_STATE_FAVORITES } from "../../constants";
 
 const ALTERNATE_BG_COLOR = "n-bg-neutral-20";
 
 interface FavoritesProps {
     favorites: Favorite[] | null;
-    setFavorites: (nextState: Favorite[] | null) => void;
     onSelectFavorite: (typeDefs: string) => void;
 }
 
 export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: FavoritesProps) => {
     const deleteFavorite = (id: string): void => {
         const nextFavs = favorites?.filter((fav) => fav.id !== id) || null;
-        setFavorites(nextFavs);
-        Storage.storeJSON(LOCAL_STATE_FAVORITES, nextFavs);
+        useStore.setState({ favorites: nextFavs });
     };
 
     const updateName = (newName: string, id: string): void => {
         const nextFavs = favorites?.map((fav) => (fav.id === id ? { ...fav, name: newName } : fav)) || null;
-        setFavorites(nextFavs);
-        Storage.storeJSON(LOCAL_STATE_FAVORITES, nextFavs);
+        useStore.setState({ favorites: nextFavs });
     };
 
     return (
