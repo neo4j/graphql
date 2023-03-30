@@ -1,7 +1,17 @@
 import type { GraphQLSchema } from "graphql";
+import {
+    DocExplorer,
+    useExplorerContext,
+    SchemaContextProvider,
+    ExplorerContextProvider,
+    EditorContextProvider,
+    useEditorContext,
+    useSchemaContext,
+} from "@graphiql/react";
+import { createGraphiQLFetcher } from "@graphiql/toolkit";
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
-import { DocExplorer } from "../EditorView/docexplorer";
+// import { DocExplorer } from "../EditorView/docexplorer";
 
 interface Props {
     onClickClose: () => void;
@@ -11,33 +21,21 @@ interface Props {
 }
 
 export const DocExplorerComponent = ({ schema, isEmbedded = true, onClickClose, onClickBack }: Props): JSX.Element => {
+    const fetcher = createGraphiQLFetcher({
+        url: "empty",
+    });
+    // useExplorerContext();
+    // useEditorContext();
+    // useSchemaContext();
     return (
         <div className={`${isEmbedded ? "doc-explorer-embedded" : "doc-explorer-regular"}`}>
-            <DocExplorer
-                schema={schema}
-                closeButton={
-                    <button
-                        data-test-doc-explorer-close-button
-                        className="docExplorerCloseIcon"
-                        onClick={onClickClose}
-                        aria-label="Close Documentation Explorer"
-                    >
-                        {"\u2715"}
-                    </button>
-                }
-                titleBarBackButton={
-                    isEmbedded ? (
-                        <button
-                            data-test-doc-explorer-back-button
-                            className="docExplorerCloseIcon"
-                            onClick={() => onClickBack && onClickBack()}
-                            aria-label="Back to Help drawer"
-                        >
-                            <img src={ArrowLeft} alt="arrow left" className="inline w-5 h-5" />
-                        </button>
-                    ) : null
-                }
-            />
+            <SchemaContextProvider schema={schema} fetcher={fetcher}>
+                <ExplorerContextProvider>
+                    <div className="graphiql-container">
+                        <DocExplorer />
+                    </div>
+                </ExplorerContextProvider>
+            </SchemaContextProvider>
         </div>
     );
 };

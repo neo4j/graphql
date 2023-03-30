@@ -19,6 +19,8 @@
 
 import { useContext, useEffect, useState } from "react";
 import type { GraphQLSchema } from "graphql";
+import { SchemaContextProvider, ExplorerContextProvider, EditorContextProvider } from "@graphiql/react";
+import { createGraphiQLFetcher } from "@graphiql/toolkit";
 import { TopBar } from "../TopBar/TopBar";
 import { Login } from "../Login/Login";
 import { SchemaView } from "../SchemaView/SchemaView";
@@ -33,6 +35,10 @@ export const Main = () => {
     const auth = useContext(AuthContext);
     const screen = useContext(ScreenContext);
     const [schema, setSchema] = useState<GraphQLSchema | undefined>(undefined);
+
+    const fetcher = createGraphiQLFetcher({
+        url: "empty",
+    });
 
     useEffect(() => {
         const segmentKey =
@@ -94,21 +100,27 @@ export const Main = () => {
 
     return (
         <div className="flex w-full h-full flex-col">
-            <Banner />
-            <TopBar />
-            <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
-                {screen.view === Screen.TYPEDEFS ? (
-                    <SchemaView
-                        hasSchema={!!schema}
-                        onChange={(schema) => {
-                            setSchema(schema);
-                            screen.setScreen(Screen.EDITOR);
-                        }}
-                    />
-                ) : (
-                    <Editor schema={schema} />
-                )}
-            </div>
+            <EditorContextProvider>
+                {/* <SchemaContextProvider schema={schema} fetcher={fetcher}> */}
+                {/* <ExplorerContextProvider> */}
+                <Banner />
+                <TopBar />
+                <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
+                    {screen.view === Screen.TYPEDEFS ? (
+                        <SchemaView
+                            hasSchema={!!schema}
+                            onChange={(schema) => {
+                                setSchema(schema);
+                                screen.setScreen(Screen.EDITOR);
+                            }}
+                        />
+                    ) : (
+                        <Editor schema={schema} />
+                    )}
+                </div>
+                {/* </ExplorerContextProvider> */}
+                {/* </SchemaContextProvider> */}
+            </EditorContextProvider>
         </div>
     );
 };
