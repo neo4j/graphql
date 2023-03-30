@@ -19,10 +19,9 @@
 
 import { IconButton } from "@neo4j-ndl/react";
 import { CheckIconOutline, PencilIconOutline, TrashIconOutline } from "@neo4j-ndl/react/icons";
-import { Storage } from "../../utils/storage";
 import type { Favorite } from "../../types";
-import { LOCAL_STATE_FAVORITES } from "../../constants";
 import { Fragment, useState } from "react";
+import { useStore } from "../../store";
 
 interface NameComponentProps {
     name: string;
@@ -32,7 +31,6 @@ interface NameComponentProps {
 
 interface FavoritesProps {
     favorites: Favorite[] | null;
-    setFavorites: (nextState: Favorite[] | null) => void;
     onSelectFavorite: (typeDefs: string) => void;
 }
 
@@ -95,17 +93,15 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
     );
 };
 
-export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: FavoritesProps) => {
+export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
     const deleteFavorite = (id: string): void => {
         const nextFavs = favorites?.filter((fav) => fav.id !== id) || null;
-        setFavorites(nextFavs);
-        Storage.storeJSON(LOCAL_STATE_FAVORITES, nextFavs);
+        useStore.setState({ favorites: nextFavs });
     };
 
     const updateName = (newName: string, id: string): void => {
         const nextFavs = favorites?.map((fav) => (fav.id === id ? { ...fav, name: newName } : fav)) || null;
-        setFavorites(nextFavs);
-        Storage.storeJSON(LOCAL_STATE_FAVORITES, nextFavs);
+        useStore.setState({ favorites: nextFavs });
     };
 
     return (
