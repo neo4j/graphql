@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useState, useRef, useEffect, useContext, Fragment } from "react";
+import { useCallback, useState, useRef, useEffect, useContext } from "react";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
@@ -133,7 +133,7 @@ export const Editor = ({ schema }: Props) => {
                     <div className="h-full w-96 bg-white border-t border-gray-100">
                         <div className="h-content-docs-container p-6">
                             {schema && initialLoad ? (
-                                <Fragment>
+                                <>
                                     <div className="flex justify-end">
                                         <Switch
                                             data-test-explorer-show-docs-switch
@@ -166,7 +166,7 @@ export const Editor = ({ schema }: Props) => {
                                             },
                                         }}
                                     />
-                                </Fragment>
+                                </>
                             ) : null}
                         </div>
                     </div>
@@ -198,7 +198,7 @@ export const Editor = ({ schema }: Props) => {
                                             }}
                                             executeQuery={onSubmit}
                                             buttons={
-                                                <Fragment>
+                                                <>
                                                     <Button
                                                         aria-label="Prettify code"
                                                         className="mr-2"
@@ -225,7 +225,7 @@ export const Editor = ({ schema }: Props) => {
                                                             }}
                                                         />
                                                     </IconButton>
-                                                </Fragment>
+                                                </>
                                             }
                                         />
                                     ) : null
