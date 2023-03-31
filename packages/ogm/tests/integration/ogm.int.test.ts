@@ -940,4 +940,54 @@ describe("OGM", () => {
             }
         });
     });
+
+    describe("indexes and constraints", () => {
+        test("should create constraints with `assertIndexesAndConstraints` method", async () => {
+            const session = driver.session();
+
+            const typeDefs = gql`
+                type Book {
+                    isbn: String! @unique
+                    title: String
+                }
+            `;
+
+            const ogm = new OGM({ typeDefs, driver });
+            const Book = ogm.model("Book") as unknown as Model;
+
+            await ogm.init();
+
+            const isbn = generate({ readable: true });
+            const title = generate({ readable: true });
+
+            const createDuplicateBooks = async () =>
+                await Book.create<{ books: any[] }>({ input: [{ isbn, title }, { isbn, title }] });
+
+            try {
+                // ensure the constraint does not exist
+                await session.run(`DROP CONSTRAINT Book_isbn IF EXISTS`);
+
+                // assert
+                await expect(
+                    ogm.assertIndexesAndConstraints()
+                ).rejects.toThrow("Missing constraint for Book.isbn");
+
+                // create
+                await expect(
+                    ogm.assertIndexesAndConstraints({options: {create: true}})
+                ).resolves.not.toThrow();
+
+                // assert again
+                await expect(
+                    ogm.assertIndexesAndConstraints()
+                ).resolves.not.toThrow();
+
+                await expect(createDuplicateBooks()).rejects.toThrow(
+                    "Constraint validation failed"
+                );
+            } finally {
+                await session.close();
+            }
+        });
+    });
 });
