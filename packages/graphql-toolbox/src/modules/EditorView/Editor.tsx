@@ -130,7 +130,7 @@ export const Editor = ({ schema }: Props) => {
                 </div>
 
                 <div className="w-full h-full flex">
-                    <div className="h-full w-96 bg-white graphiql-container border-t border-gray-100">
+                    <div className="h-full w-96 bg-white border-t border-gray-100">
                         <div className="h-content-docs-container p-6">
                             {schema && initialLoad ? (
                                 <Fragment>

@@ -5,6 +5,7 @@
 /* Global settings for ALL CodeMirror editors */
 .CodeMirror {
     height: 100%;
+    position: inherit;
     font-size: 1rem;
     font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
         Courier New;
@@ -37,11 +38,37 @@ li.CodeMirror-hint-active {
     padding-top: 0.2rem;
 }
 
+.doc-explorer-embedded {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.doc-explorer-regular {
+    height: calc(100% - 3rem);
+    margin: 1rem;
+    overflow-y: auto;
+}
+
 .graphiql-explorer-docs-container {
     position: absolute;
     left: 388px;
     margin: 5px 0;
     z-index: 100;
+}
+
+.graphiql-container {
+    --color-primary: 209, 100%, 42% !important; /* primary-50 */
+    --color-secondary: 201, 100%, 74% !important; /* primary-30 */
+    --color-tertiary: 199, 100%, 82% !important; /* primary-20 */
+    --color-info: 208, 100%, 72% !important;
+    --color-success: 157, 43%, 34% !important; /* success-50 */
+    --color-warning: 45, 65%, 57% !important; /* warning-50 */
+    --color-error: 346, 69%, 47% !important; /* danger-50 */
+    --color-neutral: 213, 8%, 12% !important; /* neutral-50 */
+    --color-base: 218, 31%, 95% !important; /* neutral-30 */
+    --alpha-background-heavy: 0.55;
+    --alpha-background-medium: 0.3;
+    --alpha-background-light: 0.17;
 }
 
 .graphiql-container .graphiql-explorer-actions select {
