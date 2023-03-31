@@ -35,22 +35,18 @@ export class Neo4jGraphQLAuthorization {
         this.authorization = authorization;
     }
 
-    public async parseFrom({
-        context,
-        bearerToken,
-    }: {
-        context?: Context;
-        bearerToken?: string;
-    }): Promise<JWTPayload | undefined> {
+    public async decode(context: Context): Promise<JWTPayload | undefined> {
+        const token = getToken(context);
+        if (!token) {
+            return;
+        }
         try {
-            if (context) {
-                debug("Verifying incoming request");
-                return await this.decode(context);
+            if (this.authorization.verify === false) {
+                debug("Skipping verifying JWT as verify is set to false");
+                return decodeJwt(token);
             }
-            if (bearerToken) {
-                debug("Verifying Bearer token");
-                return this.decodeBearerToken(bearerToken);
-            }
+            const secret = this.resolveKey(context);
+            return await this.verify(token, secret);
         } catch (error) {
             debug("%s", error);
             if (error instanceof errors.JWSInvalid) {
@@ -60,20 +56,7 @@ export class Neo4jGraphQLAuthorization {
         }
     }
 
-    private async decode(context: Context): Promise<JWTPayload | undefined> {
-        const token = getToken(context);
-        if (!token) {
-            return;
-        }
-        if (this.authorization.verify === false) {
-            debug("Skipping verifying JWT as verify is set to false");
-            return decodeJwt(token);
-        }
-        const secret = this.resolveKey(context);
-        return this.verify(token, secret);
-    }
-
-    private decodeBearerToken(bearerToken: string): JWTPayload {
+    public decodeBearerToken(bearerToken: string): JWTPayload | undefined {
         const token = parseBearerToken(bearerToken);
         return decodeJwt(token);
     }
@@ -125,15 +108,7 @@ export function getToken(context: Context): string | undefined {
         return;
     }
 
-    const token = authorization.split("Bearer ")[1];
-
-    if (!token) {
-        debug("Authorization header was not in expected format 'Bearer <token>'");
-
-        return token;
-    }
-
-    return token;
+    return parseBearerToken(authorization);
 }
 
 export function parseBearerToken(bearerAuth: string): string {

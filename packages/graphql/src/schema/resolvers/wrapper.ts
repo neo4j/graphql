@@ -91,7 +91,7 @@ export const wrapResolver =
 
         if (!context.jwt) {
             if (authorization) {
-                const jwt = await new Neo4jGraphQLAuthorization(authorization).parseFrom({ context });
+                const jwt = await new Neo4jGraphQLAuthorization(authorization).decode(context);
                 jwt && (context.jwt = jwt);
             } else {
                 // TODO: remove this else after migrating to new authorization constructor
@@ -161,9 +161,9 @@ export const wrapSubscription =
 
         if (!context?.jwt && contextParams.authorization) {
             if (resolverArgs.authorization) {
-                subscriptionContext.jwt = new Neo4jGraphQLAuthorization(resolverArgs.authorization).parseFrom({
-                    bearerToken: contextParams.authorization,
-                });
+                subscriptionContext.jwt = new Neo4jGraphQLAuthorization(resolverArgs.authorization).decodeBearerToken(
+                    contextParams.authorization
+                );
             } else {
                 // TODO: remove this else after migrating to new authorization constructor
                 const token = parseBearerToken(contextParams.authorization);
