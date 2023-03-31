@@ -34,7 +34,7 @@
         "@tsconfig/node16": "1.0.3",
         "@typescript-eslint/eslint-plugin": "5.57.0",
         "@typescript-eslint/parser": "5.57.0",
-        "concurrently": "7.6.0",
+        "concurrently": "8.0.1",
         "dotenv": "16.0.3",
         "eslint": "8.37.0",
         "eslint-config-prettier": "8.8.0",
