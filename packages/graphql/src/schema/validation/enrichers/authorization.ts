@@ -43,10 +43,9 @@ function containsAuthorization(object: ObjectLikeDefinitionNode): boolean {
         case Kind.OBJECT_TYPE_EXTENSION:
         case Kind.INTERFACE_TYPE_DEFINITION:
         case Kind.OBJECT_TYPE_DEFINITION: {
-            const hasFields = !!object.fields;
             return !!(
                 getAuthorizationDirectiveDefinition(object) ||
-                (hasFields && object.fields.some(getAuthorizationDirectiveDefinition))
+                (!!object.fields && object.fields.some(getAuthorizationDirectiveDefinition))
             );
         }
         default:
