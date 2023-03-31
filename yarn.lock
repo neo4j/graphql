@@ -3305,7 +3305,7 @@ __metadata:
     koa-jwt: 4.0.4
     koa-router: 12.0.0
     libnpmsearch: 6.0.2
-    mock-jwks: 1.0.9
+    mock-jwks: 2.0.3
     nock: 13.3.0
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
@@ -16505,9 +16505,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mock-jwks@npm:1.0.9":
-  version: 1.0.9
-  resolution: "mock-jwks@npm:1.0.9"
+"mock-jwks@npm:2.0.3":
+  version: 2.0.3
+  resolution: "mock-jwks@npm:2.0.3"
   dependencies:
     base64-url: ^2.3.3
     jsonwebtoken: ^9.0.0
@@ -16515,7 +16515,7 @@ __metadata:
     node-rsa: ^1.1.1
   peerDependencies:
     nock: ^11 || ^12 || ^13
-  checksum: 9545292a0d8e3bdde301b70a8c15f7432b233a0c04e5fb7f60b4c02abe69e318873b0f6a7e31055e06d02a2ff5588cab00fe818c3298f0ae50aca069d2f079b5
+  checksum: 7bfd967e642ae575988f41cf55f2df5a62ca055adb1de525839fb5613cb83069884291464159a5138b0d652a0a0a7a4e152418f917828c71ff4faaff569c0a50
   languageName: node
   linkType: hard
 
