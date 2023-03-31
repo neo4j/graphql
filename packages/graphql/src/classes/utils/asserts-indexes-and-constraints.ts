@@ -116,7 +116,6 @@ async function createIndexesAndConstraints({
             `IF NOT EXISTS ${dbInfo.gte("4.4") ? "FOR" : "ON"} (n:${constraintToCreate.label})`,
             `${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} n.${constraintToCreate.property} IS UNIQUE`,
         ].join(" ");
-
         debug(`About to execute Cypher: ${cypher}`);
 
         const result = await session.run(cypher);

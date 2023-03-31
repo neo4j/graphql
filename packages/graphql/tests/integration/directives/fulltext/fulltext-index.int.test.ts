@@ -307,9 +307,9 @@ describe("@fulltext directive - indexes constraints", () => {
 
         try {
             await session.run(
-                [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
-                    " "
-                )
+                `CREATE FULLTEXT INDEX ${indexName}
+                IF NOT EXISTS FOR (n:${type.name})
+                ON EACH [n.title]`
             );
         } finally {
             await session.close();
@@ -455,9 +455,9 @@ describe("@fulltext directive - indexes constraints", () => {
 
         try {
             await session.run(
-                [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
-                    " "
-                )
+                `CREATE FULLTEXT INDEX ${indexName}
+                IF NOT EXISTS FOR (n:${type.name})
+                ON EACH [n.title]`
             );
         } finally {
             await session.close();
