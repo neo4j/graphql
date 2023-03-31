@@ -529,7 +529,6 @@ export interface Neo4jFeaturesSettings {
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
 }
-export { RemoteJWKSetOptions, JWTVerifyOptions } from "jose";
 
 export type PredicateReturn = {
     predicate: Cypher.Predicate | undefined;

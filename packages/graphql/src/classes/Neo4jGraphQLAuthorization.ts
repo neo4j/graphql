@@ -24,7 +24,7 @@ import { AUTH_FORBIDDEN_ERROR, DEBUG_AUTH } from "../constants";
 import { createRemoteJWKSet, decodeJwt, jwtVerify, errors } from "jose";
 import type { JWTPayload } from "jose";
 import { IncomingMessage } from "http";
-import { getToken } from "../utils/get-token";
+import { RequestLike } from "../../../plugins/graphql-plugin-auth/src/types";
 
 const debug = Debug(DEBUG_AUTH);
 
@@ -35,14 +35,46 @@ export class Neo4jGraphQLAuthorization {
         this.authorization = authorization;
     }
 
-    async parse(context: Context): Promise<JWTPayload | undefined> {
-        const token = getToken(context);
-        if (token) {
-            return this.decode(context, token);
+    public async parseFrom({
+        context,
+        bearerToken,
+    }: {
+        context?: Context;
+        bearerToken?: string;
+    }): Promise<JWTPayload | undefined> {
+        try {
+            if (context) {
+                debug("Verifying incoming request");
+                return this.decode(context);
+            }
+            if (bearerToken) {
+                debug("Verifying Bearer token");
+                return this.decodeBearerToken(bearerToken);
+            }
+        } catch (error) {
+            debug("%s", error);
+            if (error instanceof errors.JWSInvalid) {
+                throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
+            }
+            throw new Neo4jError("Forbidden", AUTH_FORBIDDEN_ERROR);
         }
     }
 
-    decodeWithoutVerify(token: string): JWTPayload {
+    private decode(context: Context): undefined | JWTPayload | Promise<JWTPayload | undefined> {
+        const token = getToken(context);
+        if (!token) {
+            return;
+        }
+        if (this.authorization.verify === false) {
+            debug("Skipping verifying JWT as verify is set to false");
+            return decodeJwt(token);
+        }
+        const secret = this.resolveKey(context);
+        return this.verify(token, secret);
+    }
+
+    private decodeBearerToken(bearerToken: string): JWTPayload {
+        const token = parseBearerToken(bearerToken);
         return decodeJwt(token);
     }
 
@@ -55,30 +87,59 @@ export class Neo4jGraphQLAuthorization {
         }
     }
 
-    private async decode(context: Context, token: string): Promise<JWTPayload> {
-        try {
-            if (this.authorization.verify === false) {
-                debug("Skipping verifying JWT as verify is set to false");
-                return this.decodeWithoutVerify(token);
-            }
-            const secret = this.resolveKey(context);
-            if (typeof secret === "string") {
-                debug("Verifying JWT using secret");
-                const { payload } = await jwtVerify(token, Buffer.from(secret), this.authorization.verifyOptions);
-                return payload;
-            } else {
-                debug("Verifying JWKS using url");
-                const { url, options } = secret;
-                const JWKS = createRemoteJWKSet(new URL(url), options);
-                const { payload } = await jwtVerify(token, JWKS, this.authorization.verifyOptions);
-                return payload;
-            }
-        } catch (error) {
-            debug("%s", error);
-            if (error instanceof errors.JWSInvalid) {
-                throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
-            }
-            throw new Neo4jError("Forbidden", AUTH_FORBIDDEN_ERROR);
+    private async verify(token: string, secret: Key): Promise<JWTPayload> {
+        if (typeof secret === "string") {
+            debug("Verifying JWT using secret");
+            const { payload } = await jwtVerify(token, Buffer.from(secret), this.authorization.verifyOptions);
+            return payload;
         }
+        debug("Verifying JWKS using url");
+        const { url, options } = secret;
+        const JWKS = createRemoteJWKSet(new URL(url), options);
+        const { payload } = await jwtVerify(token, JWKS, this.authorization.verifyOptions);
+        return payload;
     }
+}
+
+// TODO: make these private class members after migrating to new authorization constructor
+export function getToken(context: Context): string | undefined {
+    const req: RequestLike = context instanceof IncomingMessage ? context : context.req || context.request;
+
+    if (!req) {
+        debug("Could not get .req or .request from context");
+
+        return;
+    }
+
+    if (!req.headers && !req.cookies) {
+        debug(".headers or .cookies not found on req");
+
+        return;
+    }
+
+    const authorization = req?.headers?.authorization || req?.headers?.Authorization || req.cookies?.token;
+
+    if (!authorization) {
+        debug("Could not get .authorization, .Authorization or .cookies.token from req");
+
+        return;
+    }
+
+    const token = authorization.split("Bearer ")[1];
+
+    if (!token) {
+        debug("Authorization header was not in expected format 'Bearer <token>'");
+
+        return token;
+    }
+
+    return token;
+}
+
+export function parseBearerToken(bearerAuth: string): string {
+    const token = bearerAuth.split("Bearer ")[1];
+    if (!token) {
+        debug("Authorization header was not in expected format 'Bearer <token>'");
+    }
+    return token;
 }
