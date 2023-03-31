@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useState, useRef, useEffect, useContext, Fragment } from "react";
+import { useCallback, useState, useRef, useEffect, useContext } from "react";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
@@ -28,13 +28,7 @@ import type { EditorFromTextArea } from "codemirror";
 import debounce from "lodash.debounce";
 import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
-import {
-    EDITOR_PARAMS_INPUT,
-    DEFAULT_QUERY,
-    EDITOR_RESPONSE_OUTPUT,
-    LOCAL_STATE_TYPE_LAST_PARAMS,
-    LOCAL_STATE_TYPE_LAST_QUERY,
-} from "../../constants";
+import { EDITOR_PARAMS_INPUT, DEFAULT_QUERY, EDITOR_RESPONSE_OUTPUT } from "../../constants";
 import { Grid } from "./grid/Grid";
 import { formatCode, safeParse, ParserOptions, calculateQueryComplexity } from "./utils";
 import { Extension } from "../../components/Filename";
@@ -43,9 +37,9 @@ import { SettingsContext } from "../../contexts/settings";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
-import { Storage } from "../../utils/storage";
 import { tracking } from "../../analytics/tracking";
 import { Screen } from "../../contexts/screen";
+import { useStore } from "../../store";
 
 const DEBOUNCE_TIMEOUT = 500;
 
@@ -66,8 +60,8 @@ export const Editor = ({ schema }: Props) => {
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const debouncedSave = useCallback(
-        debounce((key, value) => {
-            Storage.store(key, value);
+        debounce((nextState) => {
+            useStore.setState(nextState);
         }, DEBOUNCE_TIMEOUT),
         []
     );
@@ -114,8 +108,8 @@ export const Editor = ({ schema }: Props) => {
     );
 
     useEffect(() => {
-        const initQuery = Storage.retrieveJSON(LOCAL_STATE_TYPE_LAST_QUERY) || DEFAULT_QUERY;
-        const initParams = Storage.retrieveJSON(LOCAL_STATE_TYPE_LAST_PARAMS) || "";
+        const initQuery = useStore.getState().lastQuery || DEFAULT_QUERY;
+        const initParams = useStore.getState().lastParams || "";
         setInitialLoad(true);
         setQuery(initQuery);
         setVariableValues(initParams);
@@ -139,7 +133,7 @@ export const Editor = ({ schema }: Props) => {
                     <div className="h-full w-96 bg-white graphiql-container border-t border-gray-100">
                         <div className="h-content-docs-container p-6">
                             {schema && initialLoad ? (
-                                <Fragment>
+                                <>
                                     <div className="flex justify-end">
                                         <Switch
                                             data-test-explorer-show-docs-switch
@@ -172,7 +166,7 @@ export const Editor = ({ schema }: Props) => {
                                             },
                                         }}
                                     />
-                                </Fragment>
+                                </>
                             ) : null}
                         </div>
                     </div>
@@ -200,11 +194,11 @@ export const Editor = ({ schema }: Props) => {
                                             mirrorRef={refForQueryEditorMirror}
                                             onChangeQuery={(query) => {
                                                 setQuery(query);
-                                                debouncedSave(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
+                                                debouncedSave({ lastQuery: query });
                                             }}
                                             executeQuery={onSubmit}
                                             buttons={
-                                                <Fragment>
+                                                <>
                                                     <Button
                                                         aria-label="Prettify code"
                                                         className="mr-2"
@@ -231,7 +225,7 @@ export const Editor = ({ schema }: Props) => {
                                                             }}
                                                         />
                                                     </IconButton>
-                                                </Fragment>
+                                                </>
                                             }
                                         />
                                     ) : null
@@ -246,7 +240,7 @@ export const Editor = ({ schema }: Props) => {
                                         initialValue={initVariableValues}
                                         onChange={(params) => {
                                             setVariableValues(params);
-                                            debouncedSave(LOCAL_STATE_TYPE_LAST_PARAMS, JSON.stringify(params));
+                                            debouncedSave({ lastParams: params });
                                         }}
                                     />
                                 }
