@@ -67,10 +67,10 @@ describe("aggregations-top_level-auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -124,10 +124,10 @@ describe("aggregations-top_level-auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -192,10 +192,10 @@ describe("aggregations-top_level-auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -254,10 +254,10 @@ describe("aggregations-top_level-auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -316,10 +316,10 @@ describe("aggregations-top_level-auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -378,10 +378,10 @@ describe("aggregations-top_level-auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -440,10 +440,10 @@ describe("aggregations-top_level-auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -502,10 +502,10 @@ describe("aggregations-top_level-auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -564,10 +564,10 @@ describe("aggregations-top_level-auth", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
 

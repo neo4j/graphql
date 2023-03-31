@@ -45,7 +45,7 @@ export class Neo4jGraphQLAuthorization {
         try {
             if (context) {
                 debug("Verifying incoming request");
-                return this.decode(context);
+                return await this.decode(context);
             }
             if (bearerToken) {
                 debug("Verifying Bearer token");
@@ -60,7 +60,7 @@ export class Neo4jGraphQLAuthorization {
         }
     }
 
-    private decode(context: Context): undefined | JWTPayload | Promise<JWTPayload | undefined> {
+    private async decode(context: Context): Promise<JWTPayload | undefined> {
         const token = getToken(context);
         if (!token) {
             return;

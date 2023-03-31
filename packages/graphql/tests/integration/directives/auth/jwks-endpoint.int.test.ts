@@ -79,10 +79,12 @@ describe("auth/jwks-endpoint", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
-                }),
+            features: {
+                authorization: {
+                    key: {
+                        url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
+                },
             },
         });
 

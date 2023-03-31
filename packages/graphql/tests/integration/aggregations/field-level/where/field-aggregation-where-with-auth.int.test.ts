@@ -69,10 +69,10 @@ describe(`Field Level Auth Where Requests`, () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs: extendedTypeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: "secret",
+                },
             },
         });
 

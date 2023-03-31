@@ -95,10 +95,8 @@ describe("Label cypher injection", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "1234",
-                }),
+            features: {
+                authorization: { key: "1234" },
             },
         });
         schema = await neoGraphql.getSchema();

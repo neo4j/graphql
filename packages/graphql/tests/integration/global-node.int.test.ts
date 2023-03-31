@@ -476,10 +476,10 @@ describe("Global node resolution", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -530,10 +530,10 @@ describe("Global node resolution", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
         try {
@@ -588,10 +588,10 @@ describe("Global node resolution", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
         try {

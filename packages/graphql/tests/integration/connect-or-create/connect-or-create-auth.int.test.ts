@@ -100,10 +100,10 @@ describe("Update -> ConnectOrCreate", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: "secret",
+                },
             },
         });
     });

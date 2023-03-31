@@ -86,10 +86,10 @@ describe("Field Level Aggregations Auth", () => {
 
                 neoSchema = new Neo4jGraphQL({
                     typeDefs: extendedTypeDefs,
-                    plugins: {
-                        auth: new Neo4jGraphQLAuthJWTPlugin({
-                            secret: "secret",
-                        }),
+                    features: {
+                        authorization: {
+                            key: "secret",
+                        },
                     },
                 });
 
@@ -175,10 +175,10 @@ describe("Field Level Aggregations Auth", () => {
 
                 neoSchema = new Neo4jGraphQL({
                     typeDefs: extendedTypeDefs,
-                    plugins: {
-                        auth: new Neo4jGraphQLAuthJWTPlugin({
-                            secret: "secret",
-                        }),
+                    features: {
+                        authorization: {
+                            key: "secret",
+                        },
                     },
                 });
             });

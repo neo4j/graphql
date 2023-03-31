@@ -82,10 +82,10 @@ describe("Interfaces tests", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
         schema = await neoGraphql.getSchema();
