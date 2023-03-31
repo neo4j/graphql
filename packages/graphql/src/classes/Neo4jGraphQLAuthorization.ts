@@ -24,7 +24,7 @@ import { AUTH_FORBIDDEN_ERROR, DEBUG_AUTH } from "../constants";
 import { createRemoteJWKSet, decodeJwt, jwtVerify, errors } from "jose";
 import type { JWTPayload } from "jose";
 import { IncomingMessage } from "http";
-import { RequestLike } from "../../../plugins/graphql-plugin-auth/src/types";
+import { RequestLike } from "../../src/types";
 
 const debug = Debug(DEBUG_AUTH);
 
