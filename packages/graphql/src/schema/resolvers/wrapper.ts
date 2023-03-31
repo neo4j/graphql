@@ -28,12 +28,13 @@ import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import type { Context, Neo4jAuthorizationSettings, Neo4jGraphQLPlugins } from "../../types";
+import type { Context, Neo4jAuthorizationSettings, Neo4jGraphQLPlugins, RequestLike } from "../../types";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { IncomingMessage } from "http";
-import { Neo4jGraphQLAuthorization, getToken, parseBearerToken } from "../../classes/Neo4jGraphQLAuthorization";
+import { Neo4jGraphQLAuthorization } from "../../classes/authorization/Neo4jGraphQLAuthorization";
+import { getToken, parseBearerToken } from "../../classes/authorization/parse-request-token";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -90,9 +91,9 @@ export const wrapResolver =
         context.callbacks = config.callbacks;
 
         if (!context.jwt) {
+            const req: RequestLike = context instanceof IncomingMessage ? context : context.req || context.request;
             if (authorization) {
-                const jwt = await new Neo4jGraphQLAuthorization(authorization).decode(context);
-                jwt && (context.jwt = jwt);
+                context.jwt = await new Neo4jGraphQLAuthorization(authorization).decode(req);
             } else {
                 // TODO: remove this else after migrating to new authorization constructor
                 if (context.plugins.auth) {
@@ -102,7 +103,11 @@ export const wrapResolver =
                         context instanceof IncomingMessage ? context : contextRequest
                     );
                 }
-                const token = getToken(context);
+                let token: string | undefined = undefined;
+                const bearer = getToken(req);
+                if (bearer) {
+                    token = parseBearerToken(bearer);
+                }
                 context.jwt = await decodeToken(token, context.plugins.auth);
             }
         }

@@ -18,13 +18,12 @@
  */
 
 import Debug from "debug";
-import type { Context, Key, Neo4jAuthorizationSettings } from "../types";
+import type { Key, Neo4jAuthorizationSettings, RequestLike } from "../../types";
 import { Neo4jError } from "neo4j-driver";
-import { AUTH_FORBIDDEN_ERROR, DEBUG_AUTH } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, DEBUG_AUTH } from "../../constants";
 import { createRemoteJWKSet, decodeJwt, jwtVerify, errors } from "jose";
 import type { JWTPayload } from "jose";
-import { IncomingMessage } from "http";
-import { RequestLike } from "../../src/types";
+import { getToken, parseBearerToken } from "./parse-request-token";
 
 const debug = Debug(DEBUG_AUTH);
 
@@ -35,17 +34,18 @@ export class Neo4jGraphQLAuthorization {
         this.authorization = authorization;
     }
 
-    public async decode(context: Context): Promise<JWTPayload | undefined> {
-        const token = getToken(context);
-        if (!token) {
+    public async decode(req: RequestLike): Promise<JWTPayload | undefined> {
+        const bearerToken = getToken(req);
+        if (!bearerToken) {
             return;
         }
+        const token = parseBearerToken(bearerToken);
         try {
             if (this.authorization.verify === false) {
                 debug("Skipping verifying JWT as verify is set to false");
                 return decodeJwt(token);
             }
-            const secret = this.resolveKey(context);
+            const secret = this.resolveKey(req);
             return await this.verify(token, secret);
         } catch (error) {
             debug("%s", error);
@@ -61,10 +61,9 @@ export class Neo4jGraphQLAuthorization {
         return decodeJwt(token);
     }
 
-    private resolveKey(context: Context): Key {
+    private resolveKey(req: RequestLike): Key {
         if (typeof this.authorization.key === "function") {
-            const contextRequest = context.req || context.request;
-            return this.authorization.key(context instanceof IncomingMessage ? context : contextRequest);
+            return this.authorization.key(req);
         } else {
             return this.authorization.key;
         }
@@ -82,39 +81,4 @@ export class Neo4jGraphQLAuthorization {
         const { payload } = await jwtVerify(token, JWKS, this.authorization.verifyOptions);
         return payload;
     }
-}
-
-// TODO: make these private class members after migrating to new authorization constructor
-export function getToken(context: Context): string | undefined {
-    const req: RequestLike = context instanceof IncomingMessage ? context : context.req || context.request;
-
-    if (!req) {
-        debug("Could not get .req or .request from context");
-
-        return;
-    }
-
-    if (!req.headers && !req.cookies) {
-        debug(".headers or .cookies not found on req");
-
-        return;
-    }
-
-    const authorization = req?.headers?.authorization || req?.headers?.Authorization || req.cookies?.token;
-
-    if (!authorization) {
-        debug("Could not get .authorization, .Authorization or .cookies.token from req");
-
-        return;
-    }
-
-    return parseBearerToken(authorization);
-}
-
-export function parseBearerToken(bearerAuth: string): string {
-    const token = bearerAuth.split("Bearer ")[1];
-    if (!token) {
-        debug("Authorization header was not in expected format 'Bearer <token>'");
-    }
-    return token;
 }
