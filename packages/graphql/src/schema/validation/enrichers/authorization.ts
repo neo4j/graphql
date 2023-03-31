@@ -29,11 +29,9 @@ import { createAuthorizationDefinitions } from "../../../graphql/directives/type
 import type { EnricherContext } from "../EnricherContext";
 import type { Enricher } from "../types";
 
-type PossibleAuthorizationLocation =
-    | ObjectTypeDefinitionNode
-    | InterfaceTypeDefinitionNode
-    | ObjectTypeExtensionNode
-    | InterfaceTypeExtensionNode;
+type ObjectOrInterfaceDefinitionNode = ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
+type ObjectOrInterfaceExtensionNode = ObjectTypeExtensionNode | InterfaceTypeExtensionNode;
+type PossibleAuthorizationLocation = ObjectOrInterfaceDefinitionNode | ObjectOrInterfaceExtensionNode;
 
 function isAuthorizationDefinition(directive: any): boolean {
     return directive.name.value === "authorization";
@@ -73,42 +71,45 @@ function changeAuthorizationUsageOnField(
     const userField = userDocumentObject.fields?.find(
         (userDefinitionField) => field.name.value === userDefinitionField.name.value
     );
-    if (userField) {
-        const userFieldAuthorizationUsage = userField.directives?.find(isAuthorizationDefinition);
-        if (userFieldAuthorizationUsage) {
-            const fieldAuthorizationUsage = getAuthorizationUsage(
-                userFieldAuthorizationUsage,
-                userDocumentObject.name.value
-            );
-            return { ...field, directives: [...(field?.directives ?? []), fieldAuthorizationUsage] };
-        }
+    const userFieldAuthorizationUsage = userField?.directives?.find(isAuthorizationDefinition);
+    if (!userFieldAuthorizationUsage) {
+        return field;
     }
-    return field;
-}
-
-function changeAuthorizationUsageOnFields(
-    fields: readonly FieldDefinitionNode[],
-    userDocumentObject: PossibleAuthorizationLocation
-): FieldDefinitionNode[] {
-    return fields?.map((field) => {
-        return changeAuthorizationUsageOnField(field, userDocumentObject);
-    });
+    const fieldAuthorizationUsage = getAuthorizationUsage(userFieldAuthorizationUsage, userDocumentObject.name.value);
+    return { ...field, directives: (field.directives ?? []).concat(fieldAuthorizationUsage) };
 }
 
 function changeAuthorizationUsageOnObject(
-    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    object: ObjectOrInterfaceDefinitionNode,
     userDocumentObject: PossibleAuthorizationLocation
-): ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode {
+): ObjectOrInterfaceDefinitionNode {
     const userAuthorizationUsage = userDocumentObject.directives?.find(isAuthorizationDefinition);
-    const fieldsWithNewAuthorizationUsage =
-        object.fields && changeAuthorizationUsageOnFields(object.fields, userDocumentObject);
+    const fieldsWithNewAuthorizationUsage = object.fields?.map((field) =>
+        changeAuthorizationUsageOnField(field, userDocumentObject)
+    );
     const newDirectiveUsage =
         userAuthorizationUsage && getAuthorizationUsage(userAuthorizationUsage, object.name.value);
     return {
         ...object,
-        directives: newDirectiveUsage ? [...(object.directives ?? []), newDirectiveUsage] : object?.directives,
+        directives: newDirectiveUsage ? (object.directives ?? []).concat(newDirectiveUsage) : object.directives,
         fields: fieldsWithNewAuthorizationUsage,
     };
+}
+
+function findAuthorizationUsageByTypeName(typeName: string, enricherContext: EnricherContext): boolean {
+    const userDocumentObject = enricherContext.userDefinitionNodeMap[typeName] as
+        | ObjectOrInterfaceDefinitionNode
+        | undefined;
+    const userDocumentExtensions = enricherContext.userDefinitionNodeMap[
+        `${userDocumentObject?.name.value}_EXTENSIONS`
+    ] as Array<ObjectOrInterfaceExtensionNode> | undefined;
+    if (
+        (userDocumentObject && containsAuthorization(userDocumentObject)) ||
+        (userDocumentExtensions && userDocumentExtensions.find(containsAuthorization))
+    ) {
+        return true;
+    }
+    return false;
 }
 
 export function authorizationDefinitionsEnricher(enricherContext: EnricherContext): Enricher {
@@ -117,29 +118,10 @@ export function authorizationDefinitionsEnricher(enricherContext: EnricherContex
             case Kind.INTERFACE_TYPE_DEFINITION:
             case Kind.OBJECT_TYPE_DEFINITION: {
                 const typeName = definition.name.value;
-                const userDocumentObject = enricherContext.userDefinitionNodeMap[typeName] as
-                    | ObjectTypeDefinitionNode
-                    | InterfaceTypeDefinitionNode
-                    | undefined;
-                const hasAuthorization = userDocumentObject ? containsAuthorization(userDocumentObject) : false;
+                const hasAuthorization = findAuthorizationUsageByTypeName(typeName, enricherContext);
                 if (hasAuthorization) {
                     const authDefinitions = createAuthorizationDefinitions(typeName, enricherContext.augmentedSchema);
                     accumulatedDefinitions.push(...authDefinitions);
-                }
-                const userDocumentExtensions = enricherContext.userDefinitionNodeMap[`${typeName}_EXTENSIONS`] as
-                    | Array<ObjectTypeExtensionNode | InterfaceTypeExtensionNode>
-                    | undefined;
-                if (!hasAuthorization && userDocumentExtensions) {
-                    const extensionAuthorizations = userDocumentExtensions.filter((userDocumentExtension) =>
-                        containsAuthorization(userDocumentExtension)
-                    );
-                    if (extensionAuthorizations.length >= 1) {
-                        const authDefinitions = createAuthorizationDefinitions(
-                            typeName,
-                            enricherContext.augmentedSchema
-                        );
-                        accumulatedDefinitions.push(...authDefinitions);
-                    }
                 }
             }
         }
@@ -155,12 +137,10 @@ export function authorizationUsageEnricher(enricherContext: EnricherContext): En
             case Kind.OBJECT_TYPE_DEFINITION: {
                 const typeName = definition.name.value;
                 const userDocumentObject = enricherContext.userDefinitionNodeMap[typeName] as
-                    | ObjectTypeDefinitionNode
-                    | InterfaceTypeDefinitionNode
+                    | ObjectOrInterfaceDefinitionNode
                     | undefined;
-
                 const userDocumentExtensions = enricherContext.userDefinitionNodeMap[`${typeName}_EXTENSIONS`] as
-                    | Array<ObjectTypeExtensionNode | InterfaceTypeExtensionNode>
+                    | Array<ObjectOrInterfaceExtensionNode>
                     | undefined;
                 if (userDocumentObject) {
                     let definitionWithEnrichedAuthorization = containsAuthorization(userDocumentObject)
@@ -174,7 +154,7 @@ export function authorizationUsageEnricher(enricherContext: EnricherContext): En
                     accumulatedDefinitions.push(definitionWithEnrichedAuthorization);
                     return accumulatedDefinitions;
                 }
-            }   
+            }
         }
         accumulatedDefinitions.push(definition);
         return accumulatedDefinitions;

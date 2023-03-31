@@ -49,9 +49,9 @@ export class EnricherContext {
             }
             if (isTypeExtensionNode(definition)) {
                 const definitionNodeMapKey = `${definition.name.value}_EXTENSIONS`;
-                definitionNodeMap[definitionNodeMapKey] = definitionNodeMap[definitionNodeMapKey]
-                    ? [...definitionNodeMap[definitionNodeMapKey], definition]
-                    : [definition];
+                definitionNodeMap[definitionNodeMapKey] = (definitionNodeMap[definitionNodeMapKey] || []).concat(
+                    definition
+                );
             }
         }
         return definitionNodeMap;

@@ -17,13 +17,7 @@
  * limitations under the License.
  */
 
-import type {
-    DocumentNode,
-    DefinitionNode,
-    GraphQLDirective,
-    GraphQLNamedType,
-    GraphQLError,
-} from "graphql";
+import type { DocumentNode, DefinitionNode, GraphQLDirective, GraphQLNamedType, GraphQLError } from "graphql";
 import { visit, visitInParallel, specifiedDirectives, GraphQLSchema } from "graphql";
 import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/authorization";
 import { authorizationDefinitionsEnricher, authorizationUsageEnricher } from "./enrichers/authorization";
