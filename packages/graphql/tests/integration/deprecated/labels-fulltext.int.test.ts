@@ -1452,11 +1452,6 @@ describe("@fulltext directive", () => {
                         key: secret,
                     },
                 },
-                // plugins: {
-                //     auth: new Neo4jGraphQLAuthJWTPlugin({
-                //         secret,
-                //     }),
-                // },
             });
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
@@ -1527,11 +1522,6 @@ describe("@fulltext directive", () => {
                         key: secret,
                     },
                 },
-                // plugins: {
-                //     auth: new Neo4jGraphQLAuthJWTPlugin({
-                //         secret,
-                //     }),
-                // },
             });
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
@@ -1598,11 +1588,6 @@ describe("@fulltext directive", () => {
                         key: secret,
                     },
                 },
-                // plugins: {
-                //     auth: new Neo4jGraphQLAuthJWTPlugin({
-                //         secret,
-                //     }),
-                // },
             });
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
@@ -1684,11 +1669,6 @@ describe("@fulltext directive", () => {
                         key: secret,
                     },
                 },
-                // plugins: {
-                //     auth: new Neo4jGraphQLAuthJWTPlugin({
-                //         secret,
-                //     }),
-                // },
             });
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
@@ -1754,11 +1734,6 @@ describe("@fulltext directive", () => {
                         key: secret,
                     },
                 },
-                // plugins: {
-                //     auth: new Neo4jGraphQLAuthJWTPlugin({
-                //         secret,
-                //     }),
-                // },
             });
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
@@ -1827,11 +1802,6 @@ describe("@fulltext directive", () => {
                         key: secret,
                     },
                 },
-                // plugins: {
-                //     auth: new Neo4jGraphQLAuthJWTPlugin({
-                //         secret,
-                //     }),
-                // },
             });
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
@@ -1897,11 +1867,6 @@ describe("@fulltext directive", () => {
                         key: secret,
                     },
                 },
-                // plugins: {
-                //     auth: new Neo4jGraphQLAuthJWTPlugin({
-                //         secret,
-                //     }),
-                // },
             });
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
