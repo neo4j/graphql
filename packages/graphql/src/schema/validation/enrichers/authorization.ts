@@ -31,22 +31,22 @@ import type { Enricher } from "../types";
 
 type ObjectOrInterfaceDefinitionNode = ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
 type ObjectOrInterfaceExtensionNode = ObjectTypeExtensionNode | InterfaceTypeExtensionNode;
-type PossibleAuthorizationLocation = ObjectOrInterfaceDefinitionNode | ObjectOrInterfaceExtensionNode;
+type ObjectLikeDefinitionNode = ObjectOrInterfaceDefinitionNode | ObjectOrInterfaceExtensionNode;
 
-function isAuthorizationDefinition(directive: any): boolean {
-    return directive.name.value === "authorization";
+function getAuthorizationDirectiveDefinition(typeDefinitionNode: ObjectLikeDefinitionNode | FieldDefinitionNode) {
+    return typeDefinitionNode.directives?.find((directive) => directive.name.value === "authorization");
 }
 
-function containsAuthorization(object: PossibleAuthorizationLocation): boolean {
+function containsAuthorization(object: ObjectLikeDefinitionNode): boolean {
     switch (object.kind) {
         case Kind.INTERFACE_TYPE_EXTENSION:
         case Kind.OBJECT_TYPE_EXTENSION:
         case Kind.INTERFACE_TYPE_DEFINITION:
         case Kind.OBJECT_TYPE_DEFINITION: {
             const hasFields = !!object.fields;
-            return (
-                object.directives?.some(isAuthorizationDefinition) ||
-                (hasFields && object.fields.some((field) => field.directives?.some(isAuthorizationDefinition)))
+            return !!(
+                getAuthorizationDirectiveDefinition(object) ||
+                (hasFields && object.fields.some(getAuthorizationDirectiveDefinition))
             );
         }
         default:
@@ -66,12 +66,12 @@ function getAuthorizationUsage(currentDirectiveUsage: any, typeName: string) {
 
 function changeAuthorizationUsageOnField(
     field: FieldDefinitionNode,
-    userDocumentObject: PossibleAuthorizationLocation
+    userDocumentObject: ObjectLikeDefinitionNode
 ): FieldDefinitionNode {
     const userField = userDocumentObject.fields?.find(
         (userDefinitionField) => field.name.value === userDefinitionField.name.value
     );
-    const userFieldAuthorizationUsage = userField?.directives?.find(isAuthorizationDefinition);
+    const userFieldAuthorizationUsage = userField && getAuthorizationDirectiveDefinition(userField);
     if (!userFieldAuthorizationUsage) {
         return field;
     }
@@ -81,9 +81,9 @@ function changeAuthorizationUsageOnField(
 
 function changeAuthorizationUsageOnObject(
     object: ObjectOrInterfaceDefinitionNode,
-    userDocumentObject: PossibleAuthorizationLocation
+    userDocumentObject: ObjectLikeDefinitionNode
 ): ObjectOrInterfaceDefinitionNode {
-    const userAuthorizationUsage = userDocumentObject.directives?.find(isAuthorizationDefinition);
+    const userAuthorizationUsage = getAuthorizationDirectiveDefinition(userDocumentObject);
     const fieldsWithNewAuthorizationUsage = object.fields?.map((field) =>
         changeAuthorizationUsageOnField(field, userDocumentObject)
     );
