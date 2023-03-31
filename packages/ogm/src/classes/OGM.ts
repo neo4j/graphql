@@ -57,7 +57,7 @@ class OGM<ModelMap = unknown> {
                 this.neoSchema.assertIndexesAndConstraints({
                     ...input,
                     driver: rest.driver,
-                    ...(rest.config?.driverConfig ? {driverConfig: rest.config.driverConfig} : {}),
+                    ...(rest.config?.driverConfig ? { driverConfig: rest.config.driverConfig } : {}),
                 }).then(() => {
                     resolve();
                 }).catch((err) => {

@@ -37,13 +37,11 @@ describe("OGM", () => {
 
         describe("assertIndexesAndConstraints", () => {
             test("should throw to await ogm.init()", async () => {
-                // @ts-ignore
                 const ogm = new OGM({ typeDefs: "type User {id: ID}" });
 
                 await expect(ogm.assertIndexesAndConstraints()).rejects.toThrow(`You must await \`.init()\` before \`.assertIndexesAndConstraints()\``);
             });
             test("should throw neo4j-driver Driver missing", async () => {
-                // @ts-ignore
                 const ogm = new OGM({ typeDefs: "type User {id: ID}" });
                 await ogm.init();
                 await expect(ogm.assertIndexesAndConstraints()).rejects.toThrow(`neo4j-driver Driver missing`);
