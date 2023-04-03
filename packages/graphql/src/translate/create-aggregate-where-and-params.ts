@@ -260,7 +260,7 @@ function createEntityOperation(
 }
 
 function getAggregateOperation(
-    property: Cypher.PropertyRef | Cypher.Function,
+    property: Cypher.Property | Cypher.Function,
     aggregationOperator: string
 ): Cypher.Function {
     switch (aggregationOperator) {

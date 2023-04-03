@@ -7,5 +7,5 @@
         // "stripInternal": true
         "noUncheckedIndexedAccess": true
     },
-    "include": ["src/**/*", "tests/**/*"]
+    "include": ["src/**/*", "tests/**/*", "global.d.ts"]
 }

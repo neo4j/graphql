@@ -46,15 +46,17 @@ interface Res {
 
 export interface ProjectionMeta {
     authValidatePredicates?: Cypher.Predicate[];
-    cypherSortFields?: string[];
 }
 
 export type ProjectionResult = {
-    projection: Cypher.Expr;
     params: Record<string, any>;
     meta: ProjectionMeta;
-    subqueries: Array<Cypher.Clause>;
+    // Subqueries required for sorting on fields before the projection
     subqueriesBeforeSort: Array<Cypher.Clause>;
+    // Subqueries required for fields in the projection
+    subqueries: Array<Cypher.Clause>;
+    // The map representing the fields being returned in the projection
+    projection: Cypher.Expr;
 };
 
 export default function createProjectionAndParams({

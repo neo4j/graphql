@@ -53,7 +53,7 @@ export function addSortAndLimitOptionsToClause({
     cypherFieldAliasMap,
 }: {
     optionsInput: GraphQLOptionsArg;
-    target: Cypher.Variable | Cypher.PropertyRef;
+    target: Cypher.Variable | Cypher.Property;
     projectionClause: Cypher.Return | Cypher.With;
     nodeField?: string;
     fulltextScoreVariable?: Cypher.Variable;
@@ -88,7 +88,7 @@ function createOrderByParams({
     cypherFieldAliasMap,
 }: {
     optionsInput: GraphQLOptionsArg;
-    target: Cypher.Variable | Cypher.PropertyRef;
+    target: Cypher.Variable | Cypher.Property;
     nodeField?: string;
     fulltextScoreVariable?: Cypher.Variable;
     cypherFields?: CypherField[];
