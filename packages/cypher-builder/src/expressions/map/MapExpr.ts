@@ -19,7 +19,7 @@
 
 import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
-import { serializeMap, serializeObject } from "../../utils/serialize-map";
+import { serializeMap } from "../../utils/serialize-map";
 
 /** Represents a Map
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/maps/)
