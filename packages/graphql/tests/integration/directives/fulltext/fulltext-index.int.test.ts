@@ -25,7 +25,6 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
 import { delay } from "../../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
-import { testIf } from "../../../utils/test-if";
 
 describe("@fulltext directive - indexes constraints", () => {
     let driver: Driver;
@@ -75,7 +74,13 @@ describe("@fulltext directive - indexes constraints", () => {
         await driver.close();
     });
 
-    testIf(MULTIDB_SUPPORT)("should create index if it doesn't exist", async () => {
+    test("should create index if it doesn't exist", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
@@ -141,7 +146,12 @@ describe("@fulltext directive - indexes constraints", () => {
         }
     });
 
-    testIf(MULTIDB_SUPPORT)("should create index if it doesn't exist (using node label)", async () => {
+    test("should create index if it doesn't exist (using node label)", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const label = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
@@ -202,7 +212,12 @@ describe("@fulltext directive - indexes constraints", () => {
         }
     });
 
-    testIf(MULTIDB_SUPPORT)("should create index if it doesn't exist (using field alias)", async () => {
+    test("should create index if it doesn't exist (using field alias)", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const label = generate({ readable: true, charset: "alphabetic" });
@@ -268,7 +283,12 @@ describe("@fulltext directive - indexes constraints", () => {
         }
     });
 
-    testIf(MULTIDB_SUPPORT)("should throw when missing index", async () => {
+    test("should throw when missing index", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
 
@@ -289,7 +309,12 @@ describe("@fulltext directive - indexes constraints", () => {
         ).rejects.toThrow(`Missing @fulltext index '${indexName}' on Node '${type.name}'`);
     });
 
-    testIf(MULTIDB_SUPPORT)("should throw when index is missing fields", async () => {
+    test("should throw when index is missing fields", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
 
@@ -323,7 +348,7 @@ describe("@fulltext directive - indexes constraints", () => {
         ).rejects.toThrow(`@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description'`);
     });
 
-    testIf(MULTIDB_SUPPORT)("should throw when index is missing fields (using field alias)", async () => {
+    test("should throw when index is missing fields (using field alias)", async () => {
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const alias = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
@@ -362,7 +387,13 @@ describe("@fulltext directive - indexes constraints", () => {
         );
     });
 
-    testIf(MULTIDB_SUPPORT)("should create index if it doesn't exist and not throw if it does exist", async () => {
+    test("should create index if it doesn't exist and not throw if it does exist", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
@@ -437,7 +468,13 @@ describe("@fulltext directive - indexes constraints", () => {
         }
     });
 
-    testIf(MULTIDB_SUPPORT)("should throw when index is missing fields when used with create option", async () => {
+    test("should throw when index is missing fields when used with create option", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
 
@@ -474,7 +511,7 @@ describe("@fulltext directive - indexes constraints", () => {
         );
     });
 
-    testIf(MULTIDB_SUPPORT)("should create index for ID field if it doesn't exist", async () => {
+    test("should create index for ID field if it doesn't exist", async () => {
         const id = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
