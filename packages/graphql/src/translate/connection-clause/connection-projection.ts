@@ -50,13 +50,16 @@ export function createEdgeProjection({
     extraFields?: Array<string>;
     cypherFieldAliasMap: CypherFieldReferenceMap;
 }): { projection: Cypher.Map; subqueries: Cypher.Clause[] } {
-    const connection = resolveTree.fieldsByTypeName[field.typeMeta.name];
+    const connection = resolveTree.fieldsByTypeName[field.typeMeta.name] as Record<string, ResolveTree>;
 
     const edgeProjectionProperties = new Cypher.Map();
     const subqueries: Cypher.Clause[] = [];
     if (connection.edges) {
         const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
-        const relationshipFieldsByTypeName = connection.edges.fieldsByTypeName[field.relationshipTypeName];
+        const relationshipFieldsByTypeName = connection.edges.fieldsByTypeName[field.relationshipTypeName] as Record<
+            string,
+            ResolveTree
+        >;
         const relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
         if (relationshipProperties.length || extraFields.length) {
             const relationshipPropertyEntries = relationshipProperties.filter((p) => p.name !== "cursor");

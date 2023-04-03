@@ -141,7 +141,7 @@ export class Subgraph {
                 context,
             });
 
-            return executeResult.records[0].this;
+            return executeResult.records[0]?.this;
         };
         return __resolveReference;
     }

@@ -77,7 +77,7 @@ export default async function translateUpdate({
     const interfaceStrs: string[] = [];
     let updateArgs = {};
 
-    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.update];
+    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.update] || {};
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 

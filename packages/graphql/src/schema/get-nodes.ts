@@ -125,7 +125,7 @@ function getNodes(
 
         let auth: Auth;
         if (authDirective || interfaceAuthDirectives.length) {
-            auth = getAuth(authDirective || interfaceAuthDirectives[0]);
+            auth = getAuth(authDirective || (interfaceAuthDirectives[0] as DirectiveNode));
         }
 
         let exclude: Exclude;

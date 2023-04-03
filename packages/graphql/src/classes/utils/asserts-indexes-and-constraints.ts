@@ -234,11 +234,11 @@ async function getMissingConstraints({
             return record.toObject();
         })
         .forEach((constraint) => {
-            const label = constraint.labelsOrTypes[0];
+            const label = constraint.labelsOrTypes[0] as string;
             const property = constraint.properties[0];
 
             if (existingConstraints[label]) {
-                existingConstraints[label].push(property as string);
+                (existingConstraints[label] as any).push(property as string);
             } else {
                 existingConstraints[label] = [property];
             }

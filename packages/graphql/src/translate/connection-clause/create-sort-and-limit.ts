@@ -26,7 +26,8 @@ import {
     addSortAndLimitOptionsToClause,
     addLimitOrOffsetOptionsToClause,
 } from "../projection/subquery/add-sort-and-limit-to-clause";
-import { getSortFields } from "./get-sort-fields";
+import { getSortFields, SortFields } from "./get-sort-fields";
+import { GraphQLSortArg } from "../../types";
 
 export function createSortAndLimitProjection({
     resolveTree,
@@ -63,8 +64,10 @@ export function createSortAndLimitProjection({
         offset = undefined;
         firstArg = undefined;
     }
-    nodeAndEdgeSortFields.forEach((sortField) => {
-        const [nodeOrEdge, sortKeyAndValue] = Object.entries(sortField)[0];
+    nodeAndEdgeSortFields.forEach((sortField: SortFields) => {
+        const sortFieldEntries = Object.entries(sortField) as [["node" | "edge", GraphQLSortArg]];
+
+        const [nodeOrEdge, sortKeyAndValue] = sortFieldEntries[0];
         addSortAndLimitOptionsToClause({
             optionsInput: { sort: [sortKeyAndValue], limit: firstArg, offset },
             target: nodeOrEdge === "node" ? nodeRef : relationshipRef,

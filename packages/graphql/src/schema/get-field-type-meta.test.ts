@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { ObjectTypeDefinitionNode } from "graphql";
+import type { FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import { parse } from "graphql";
 import getFieldTypeMeta from "./get-field-type-meta";
 
@@ -31,8 +31,7 @@ describe("getFieldTypeMeta", () => {
 
         const node = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
 
-        // @ts-ignore
-        const field = node.fields[0];
+        const field = node.fields?.[0] as FieldDefinitionNode;
 
         expect(() => getFieldTypeMeta(field.type)).toThrow("Matrix arrays not supported");
     });
@@ -46,8 +45,7 @@ describe("getFieldTypeMeta", () => {
 
         const node = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
 
-        // @ts-ignore
-        const field = node.fields[0];
+        const field = node.fields?.[0] as FieldDefinitionNode;
 
         const res = getFieldTypeMeta(field.type);
 
@@ -68,8 +66,7 @@ describe("getFieldTypeMeta", () => {
 
         const node = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
 
-        // @ts-ignore
-        const field = node.fields[0];
+        const field = node.fields?.[0] as FieldDefinitionNode;
 
         const res = getFieldTypeMeta(field.type);
 
@@ -90,8 +87,7 @@ describe("getFieldTypeMeta", () => {
 
         const node = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
 
-        // @ts-ignore
-        const field = node.fields[0];
+        const field = node.fields?.[0] as FieldDefinitionNode;
 
         const res = getFieldTypeMeta(field.type);
 
@@ -112,8 +108,7 @@ describe("getFieldTypeMeta", () => {
 
         const node = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
 
-        // @ts-ignore
-        const field = node.fields[0];
+        const field = node.fields?.[0] as FieldDefinitionNode;
 
         const res = getFieldTypeMeta(field.type);
 
@@ -134,8 +129,7 @@ describe("getFieldTypeMeta", () => {
 
         const node = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
 
-        // @ts-ignore
-        const field = node.fields[0];
+        const field = node.fields?.[0] as FieldDefinitionNode;
 
         const res = getFieldTypeMeta(field.type);
 

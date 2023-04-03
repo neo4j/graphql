@@ -32,7 +32,7 @@ export async function verifyFunctions(sessionFactory: () => Session): Promise<vo
 
     try {
         const result = await session.run(cypher);
-        const record = result.records[0].toObject() as { functions: string[] };
+        const record = (result.records[0] as any).toObject() as { functions: string[] };
 
         const missingFunctions = REQUIRED_APOC_FUNCTIONS.filter((f) => !record.functions.includes(f));
         if (missingFunctions.length) {

@@ -136,7 +136,7 @@ export class Executor {
 
             if (error.message.includes(`Caused by: java.lang.RuntimeException: ${RELATIONSHIP_REQUIREMENT_PREFIX}`)) {
                 const [, message] = error.message.split(RELATIONSHIP_REQUIREMENT_PREFIX);
-                return new Neo4jGraphQLRelationshipValidationError(message);
+                return new Neo4jGraphQLRelationshipValidationError(message || "");
             }
 
             if (error.code === "Neo.ClientError.Schema.ConstraintValidationFailed") {

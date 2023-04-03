@@ -99,9 +99,9 @@ export const parseDuration = (
     const splitMinutesInSeconds = splitComponent(minutes * SECONDS_PER_MINUTE);
     const splitSeconds = splitComponent(seconds);
     // Total seconds by adding splits of hour minute second
-    const [wholeSeconds, remainderSeconds] = splitHoursInSeconds.map(
-        (p, i) => p + splitMinutesInSeconds[i] + splitSeconds[i]
-    );
+
+    const wholeSeconds = splitHoursInSeconds[0] + splitMinutesInSeconds[0] + splitSeconds[0];
+    const remainderSeconds = splitHoursInSeconds[1] + splitMinutesInSeconds[1] + splitSeconds[1];
 
     // Calculate nanoseconds based off of remainder of seconds
     const wholeNanoseconds = +remainderSeconds.toFixed(9) * NANOSECONDS_PER_SECOND;

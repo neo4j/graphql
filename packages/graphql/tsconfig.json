@@ -7,7 +7,8 @@
         "paths": {
             "@neo4j/graphql-plugin-auth": ["../plugins/graphql-plugin-auth/src"],
             "@neo4j/cypher-builder": ["../cypher-builder/src"]
-        }
+        },
+        "noUncheckedIndexedAccess": true
     },
     "include": ["global.d.ts", "package.json", "src/**/*", "tests/**/*"],
     "references": [

@@ -86,7 +86,7 @@ describe("sort", () => {
             title: "B",
             runtime: 300,
         },
-    ];
+    ] as const;
 
     const series = [
         {
@@ -99,7 +99,7 @@ describe("sort", () => {
             title: "D",
             episodes: 100,
         },
-    ];
+    ] as const;
 
     const actors = [
         {
@@ -119,7 +119,7 @@ describe("sort", () => {
                 [movies[1].id]: 1,
             },
         },
-    ];
+    ] as const;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
