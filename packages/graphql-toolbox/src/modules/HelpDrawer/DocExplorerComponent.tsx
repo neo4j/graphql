@@ -1,17 +1,8 @@
 import type { GraphQLSchema } from "graphql";
-import {
-    DocExplorer,
-    useExplorerContext,
-    SchemaContextProvider,
-    ExplorerContextProvider,
-    EditorContextProvider,
-    useEditorContext,
-    useSchemaContext,
-} from "@graphiql/react";
+import { DocExplorer, SchemaContextProvider, ExplorerContextProvider } from "@graphiql/react";
 import { createGraphiQLFetcher } from "@graphiql/toolkit";
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
-// import { DocExplorer } from "../EditorView/docexplorer";
 
 interface Props {
     onClickClose: () => void;
@@ -21,15 +12,32 @@ interface Props {
 }
 
 export const DocExplorerComponent = ({ schema, isEmbedded = true, onClickClose, onClickBack }: Props): JSX.Element => {
-    const fetcher = createGraphiQLFetcher({
+    const dummyFetcher = createGraphiQLFetcher({
         url: "empty",
     });
-    // useExplorerContext();
-    // useEditorContext();
-    // useSchemaContext();
     return (
         <div className={`${isEmbedded ? "doc-explorer-embedded" : "doc-explorer-regular"}`}>
-            <SchemaContextProvider schema={schema} fetcher={fetcher}>
+            {isEmbedded ? (
+                <div className="flex items-center justify-between mb-4">
+                    <button
+                        aria-label="Back to Help drawer"
+                        data-test-help-drawer-keybindings-back
+                        onClick={onClickBack}
+                    >
+                        <img src={ArrowLeft} alt="arrow left" className="inline w-5 h-5 text-lg cursor-pointer" />
+                    </button>
+                    <button
+                        aria-label="Close Help drawer"
+                        className="text-lg"
+                        data-test-help-drawer-keybindings-close
+                        onClick={onClickClose}
+                    >
+                        {"\u2715"}
+                    </button>
+                </div>
+            ) : null}
+            {/* TODO: Move SchemaContextProvider closer to root (Main.tsx) in the future! */}
+            <SchemaContextProvider schema={schema} fetcher={dummyFetcher}>
                 <ExplorerContextProvider>
                     <div className="graphiql-container">
                         <DocExplorer />

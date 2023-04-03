@@ -66,17 +66,20 @@ li.CodeMirror-hint-active {
 /* All GraphiQL v2 components */
 .graphiql-container {
     --color-primary: 209, 100%, 42% !important; /* primary-50 */
-    --color-secondary: 201, 100%, 74% !important; /* primary-30 */
+    --color-secondary: 201, 100%, 55% !important; /* primary-30 */
     --color-tertiary: 199, 100%, 82% !important; /* primary-20 */
-    --color-info: 208, 100%, 72% !important;
+    --color-info: 208, 100%, 51% !important;
     --color-success: 157, 43%, 34% !important; /* success-50 */
-    --color-warning: 45, 65%, 57% !important; /* warning-50 */
+    --color-warning: 45, 65%, 51% !important; /* warning-50 */
     --color-error: 346, 69%, 47% !important; /* danger-50 */
     --color-neutral: 213, 8%, 12% !important; /* neutral-50 */
     --color-base: 218, 31%, 95% !important; /* neutral-30 */
+
+    --alpha-secondary: 0.9;
+    --alpha-tertiary: 1;
     --alpha-background-heavy: 1;
-    --alpha-background-medium: 1;
-    --alpha-background-light: 0.3;
+    --alpha-background-medium: 0.4;
+    --alpha-background-light: 0.1;
 }
 /* ----------------------*/
 
@@ -84,6 +87,11 @@ li.CodeMirror-hint-active {
 .docExplorerWrap {
     overflow-y: auto !important;
     max-height: 92vh;
+    font-size: 16px;
+}
+
+.docExplorerWrap .graphiql-explorer-root {
+    font-size: 14px !important;
 }
 
 .docExplorerWrap .graphiql-explorer-actions select {
