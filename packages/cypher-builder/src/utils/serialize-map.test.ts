@@ -23,10 +23,10 @@ import { serializeMap } from "./serialize-map";
 
 describe("serializeMap", () => {
     const env = new CypherEnvironment();
-    const map = {
-        test1: new Cypher.Literal(10),
-        expr: Cypher.reverse(new Cypher.Literal(1)),
-    };
+    const map = new Map<string, Cypher.Expr>([
+        ["test1", new Cypher.Literal(10)],
+        ["expr", Cypher.reverse(new Cypher.Literal(1))],
+    ]);
 
     test("serialize a map of expressions", () => {
         const result = serializeMap(env, map);

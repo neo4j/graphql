@@ -31,23 +31,31 @@ import { isString } from "../../utils/is-string";
  * this { .title }
  * ```
  */
+
 export class MapProjection implements CypherCompilable {
-    private extraValues: Record<string, Expr>;
+    private extraValues: Map<string, Expr> = new Map();
     private variable: Variable;
     private projection: string[];
 
     constructor(variable: Variable, projection: string[] = [], extraValues: Record<string, Expr> = {}) {
         this.variable = variable;
         this.projection = projection;
-        this.extraValues = extraValues;
+        this.setExtraValues(extraValues);
     }
 
     public set(values: Record<string, Expr> | string): void {
         if (isString(values)) {
             this.projection.push(values);
         } else {
-            this.extraValues = { ...this.extraValues, ...values };
+            this.setExtraValues(values);
         }
+    }
+
+    private setExtraValues(values: Record<string, Expr>): void {
+        Object.entries(values).forEach(([key, value]) => {
+            if (!value) throw new Error(`Missing value on map key ${key}`);
+            this.extraValues.set(key, value);
+        });
     }
 
     /** @internal */
