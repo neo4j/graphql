@@ -111,7 +111,7 @@ describe("Create -> ConnectOrCreate", () => {
             },
         ]);
 
-        const movieTitleAndId = await runAndParseRecords(
+        const movieTitleAndId = await runAndParseRecords<{ title: string; id: Integer }>(
             session,
             `
           MATCH (m:${typeMovie.name} {id: 5})
@@ -168,7 +168,7 @@ describe("Create -> ConnectOrCreate", () => {
             },
         ]);
 
-        const actorsWithMovieCount = await runAndParseRecords(
+        const actorsWithMovieCount = await runAndParseRecords<{ count: Integer }>(
             session,
             `
           MATCH (a:${typeActor.name} {name: "${testActorName}"})-[]->(m:${typeMovie.name} {id: 2222})
@@ -178,7 +178,7 @@ describe("Create -> ConnectOrCreate", () => {
 
         expect(actorsWithMovieCount.count.toInt()).toBe(1);
 
-        const moviesWithIdCount = await runAndParseRecords(
+        const moviesWithIdCount = await runAndParseRecords<{ count: Integer }>(
             session,
             `
           MATCH (m:${typeMovie.name} {id: 2222})
@@ -188,7 +188,7 @@ describe("Create -> ConnectOrCreate", () => {
 
         expect(moviesWithIdCount.count.toInt()).toBe(1);
 
-        const theTerminalMovieCount = await runAndParseRecords(
+        const theTerminalMovieCount = await runAndParseRecords<{ count: Integer }>(
             session,
             `
           MATCH (m:${typeMovie.name} {id: 2222, name: "The Terminal"})
@@ -198,7 +198,7 @@ describe("Create -> ConnectOrCreate", () => {
 
         expect(theTerminalMovieCount.count.toInt()).toBe(0);
 
-        const actedInRelation = await runAndParseRecords(
+        const actedInRelation = await runAndParseRecords<{ screentime: Integer }>(
             session,
             `
             MATCH (:${typeMovie.name} {id: 2222})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${testActorName}"})
@@ -206,9 +206,9 @@ describe("Create -> ConnectOrCreate", () => {
             `
         );
 
-        expect((actedInRelation.screentime as Integer).toNumber()).toBe(105);
+        expect(actedInRelation.screentime.toNumber()).toBe(105);
 
-        const newIdMovieCount = await runAndParseRecords(
+        const newIdMovieCount = await runAndParseRecords<{ count: Integer }>(
             session,
             `
             MATCH (m:${typeMovie.name} {id: 22224})
@@ -255,7 +255,7 @@ describe("Create -> ConnectOrCreate", () => {
             },
         ]);
 
-        const movieTitleAndId = await runAndParseRecords(
+        const movieTitleAndId = await runAndParseRecords<{ title: string; id: Integer }>(
             session,
             `
           MATCH (m:${typeMovie.name} {id: 52})
@@ -264,9 +264,9 @@ describe("Create -> ConnectOrCreate", () => {
         );
 
         expect(movieTitleAndId.title).toBe("The Terminal 2");
-        expect((movieTitleAndId.id as Integer).toNumber()).toBe(52);
+        expect(movieTitleAndId.id.toNumber()).toBe(52);
 
-        const actedInRelation = await runAndParseRecords(
+        const actedInRelation = await runAndParseRecords<{ screentime: Integer }>(
             session,
             `
             MATCH (:${typeMovie.name} {id: 52})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${actorName}"})
@@ -274,7 +274,7 @@ describe("Create -> ConnectOrCreate", () => {
             `
         );
 
-        expect((actedInRelation.screentime as Integer).toNumber()).toBe(105);
+        expect(actedInRelation.screentime.toNumber()).toBe(105);
     });
     test("ConnectOrCreate creates a new node with the correct relationship direction", async () => {
         const query = gql`
@@ -313,7 +313,7 @@ describe("Create -> ConnectOrCreate", () => {
             },
         ]);
 
-        const actorsRelation = await runAndParseRecords(
+        const actorsRelation = await runAndParseRecords<{ screentime: Integer }>(
             session,
             `
         MATCH (:${typeMovie.name} { id: 339 })<-[r:ACTED_IN]-(:${typeActor.name} { name: "Keanu" }) 
@@ -321,6 +321,6 @@ describe("Create -> ConnectOrCreate", () => {
       `
         );
 
-        expect((actorsRelation.screentime as Integer).toNumber()).toBe(105);
+        expect(actorsRelation.screentime.toNumber()).toBe(105);
     });
 });
