@@ -145,7 +145,7 @@ describe("Update -> ConnectOrCreate", () => {
         });
         expect(gqlResult.errors).toBeUndefined();
 
-        const genreCount = await session.run(`
+        const genreCount: any = await session.run(`
           MATCH (m:${typeGenre.name} { name: "Horror" })
           RETURN COUNT(m) as count
         `);
@@ -162,7 +162,7 @@ describe("Update -> ConnectOrCreate", () => {
         });
         expect(gqlResult.errors).toBeUndefined();
 
-        const genreCount = await session.run(`
+        const genreCount: any = await session.run(`
           MATCH (m:${typeGenre.name} { name: "Comedy" })
           RETURN COUNT(m) as count
         `);

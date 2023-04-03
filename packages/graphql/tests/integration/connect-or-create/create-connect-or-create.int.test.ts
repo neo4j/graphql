@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver, Session, Integer } from "neo4j-driver";
+import type { Driver, Session, Integer, QueryResult } from "neo4j-driver";
 import { gql } from "apollo-server";
 import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
@@ -25,6 +25,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
+import { runAndParseRecords } from "../../utils/run-and-parse-records";
 
 describe("Create -> ConnectOrCreate", () => {
     let driver: Driver;
@@ -110,14 +111,16 @@ describe("Create -> ConnectOrCreate", () => {
             },
         ]);
 
-        const movieTitleAndId = await session.run(`
+        const movieTitleAndId = await runAndParseRecords(
+            session,
+            `
           MATCH (m:${typeMovie.name} {id: 5})
           RETURN m.title as title, m.id as id
-        `);
+        `
+        );
 
-        expect(movieTitleAndId.records).toHaveLength(1);
-        expect(movieTitleAndId.records[0].toObject().title).toBe("The Terminal");
-        expect((movieTitleAndId.records[0].toObject().id as Integer).toNumber()).toBe(5);
+        expect(movieTitleAndId.title).toBe("The Terminal");
+        expect(movieTitleAndId.id.toNumber()).toBe(5);
 
         const actedInRelation = await session.run(`
             MATCH (:${typeMovie.name} {id: 5})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks"})
@@ -165,40 +168,54 @@ describe("Create -> ConnectOrCreate", () => {
             },
         ]);
 
-        const actorsWithMovieCount = await session.run(`
+        const actorsWithMovieCount = await runAndParseRecords(
+            session,
+            `
           MATCH (a:${typeActor.name} {name: "${testActorName}"})-[]->(m:${typeMovie.name} {id: 2222})
           RETURN COUNT(a) as count
-        `);
+        `
+        );
 
-        expect(actorsWithMovieCount.records[0].toObject().count.toInt()).toBe(1);
+        expect(actorsWithMovieCount.count.toInt()).toBe(1);
 
-        const moviesWithIdCount = await session.run(`
+        const moviesWithIdCount = await runAndParseRecords(
+            session,
+            `
           MATCH (m:${typeMovie.name} {id: 2222})
           RETURN COUNT(m) as count
-        `);
+        `
+        );
 
-        expect(moviesWithIdCount.records[0].toObject().count.toInt()).toBe(1);
+        expect(moviesWithIdCount.count.toInt()).toBe(1);
 
-        const theTerminalMovieCount = await session.run(`
+        const theTerminalMovieCount = await runAndParseRecords(
+            session,
+            `
           MATCH (m:${typeMovie.name} {id: 2222, name: "The Terminal"})
           RETURN COUNT(m) as count
-        `);
+        `
+        );
 
-        expect(theTerminalMovieCount.records[0].toObject().count.toInt()).toBe(0);
+        expect(theTerminalMovieCount.count.toInt()).toBe(0);
 
-        const actedInRelation = await session.run(`
+        const actedInRelation = await runAndParseRecords(
+            session,
+            `
             MATCH (:${typeMovie.name} {id: 2222})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${testActorName}"})
             RETURN r.screentime as screentime
-            `);
+            `
+        );
 
-        expect(actedInRelation.records).toHaveLength(1);
-        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
+        expect((actedInRelation.screentime as Integer).toNumber()).toBe(105);
 
-        const newIdMovieCount = await session.run(`
+        const newIdMovieCount = await runAndParseRecords(
+            session,
+            `
             MATCH (m:${typeMovie.name} {id: 22224})
             RETURN COUNT(m) as count
-            `);
-        expect(newIdMovieCount.records[0].toObject().count.toInt()).toBe(0);
+            `
+        );
+        expect(newIdMovieCount.count.toInt()).toBe(0);
     });
 
     test("ConnectOrCreate creates new node with edge data", async () => {
@@ -238,22 +255,26 @@ describe("Create -> ConnectOrCreate", () => {
             },
         ]);
 
-        const movieTitleAndId = await session.run(`
+        const movieTitleAndId = await runAndParseRecords(
+            session,
+            `
           MATCH (m:${typeMovie.name} {id: 52})
           RETURN m.title as title, m.id as id
-        `);
+        `
+        );
 
-        expect(movieTitleAndId.records).toHaveLength(1);
-        expect(movieTitleAndId.records[0].toObject().title).toBe("The Terminal 2");
-        expect((movieTitleAndId.records[0].toObject().id as Integer).toNumber()).toBe(52);
+        expect(movieTitleAndId.title).toBe("The Terminal 2");
+        expect((movieTitleAndId.id as Integer).toNumber()).toBe(52);
 
-        const actedInRelation = await session.run(`
+        const actedInRelation = await runAndParseRecords(
+            session,
+            `
             MATCH (:${typeMovie.name} {id: 52})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${actorName}"})
             RETURN r.screentime as screentime
-            `);
+            `
+        );
 
-        expect(actedInRelation.records).toHaveLength(1);
-        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
+        expect((actedInRelation.screentime as Integer).toNumber()).toBe(105);
     });
     test("ConnectOrCreate creates a new node with the correct relationship direction", async () => {
         const query = gql`
@@ -292,12 +313,14 @@ describe("Create -> ConnectOrCreate", () => {
             },
         ]);
 
-        const actorsRelation = await session.run(`
+        const actorsRelation = await runAndParseRecords(
+            session,
+            `
         MATCH (:${typeMovie.name} { id: 339 })<-[r:ACTED_IN]-(:${typeActor.name} { name: "Keanu" }) 
         RETURN r.screentime as screentime
-      `);
+      `
+        );
 
-        expect(actorsRelation.records).toHaveLength(1);
-        expect((actorsRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
+        expect((actorsRelation.screentime as Integer).toNumber()).toBe(105);
     });
 });

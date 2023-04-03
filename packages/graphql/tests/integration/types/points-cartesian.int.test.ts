@@ -96,7 +96,7 @@ describe("[CartesianPoint]", () => {
             `);
 
         expect(
-            (result.records[0].toObject() as any).r.locations
+            (result.records[0]?.toObject() as any).r.locations
                 .map((location) => {
                     expect(location.srid).toEqual(int(7203));
                     return {
@@ -151,7 +151,7 @@ describe("[CartesianPoint]", () => {
             `);
 
         expect(
-            (result.records[0].toObject() as any).r.locations
+            (result.records[0]?.toObject() as any).r.locations
                 .map((location) => {
                     expect(location.srid).toEqual(int(9157));
                     return {
@@ -191,7 +191,7 @@ describe("[CartesianPoint]", () => {
         );
 
         expect(
-            (beforeResult.records[0].toObject() as any).r.locations
+            (beforeResult.records[0]?.toObject() as any).r.locations
                 .map((location) => {
                     expect(location.srid).toEqual(int(7203));
                     return {
@@ -237,7 +237,7 @@ describe("[CartesianPoint]", () => {
             `);
 
         expect(
-            (result.records[0].toObject() as any).r.locations
+            (result.records[0]?.toObject() as any).r.locations
                 .map((location) => {
                     expect(location.srid).toEqual(int(7203));
                     return {
@@ -278,7 +278,7 @@ describe("[CartesianPoint]", () => {
         );
 
         expect(
-            (beforeResult.records[0].toObject() as any).r.locations
+            (beforeResult.records[0]?.toObject() as any).r.locations
                 .map((location) => {
                     expect(location.srid).toEqual(int(9157));
                     return {
@@ -325,7 +325,7 @@ describe("[CartesianPoint]", () => {
             `);
 
         expect(
-            (result.records[0].toObject() as any).r.locations
+            (result.records[0]?.toObject() as any).r.locations
                 .map((location) => {
                     expect(location.srid).toEqual(int(9157));
                     return {

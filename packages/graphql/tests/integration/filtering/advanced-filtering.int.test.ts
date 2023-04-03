@@ -2083,7 +2083,7 @@ describe("Advanced Filtering", () => {
 
                     expect(gqlMovies).toHaveLength(1);
                     expect(gqlMovies).toContainEqual({
-                        id: movies[2].id,
+                        id: movies[2]?.id,
                         actors: [],
                     });
                 });
@@ -2279,7 +2279,7 @@ describe("Advanced Filtering", () => {
 
                     expect(gqlMovies).toHaveLength(1);
                     expect(gqlMovies).toContainEqual({
-                        id: movies[2].id,
+                        id: movies[2]?.id,
                         actors: [],
                     });
                 });
@@ -2377,7 +2377,7 @@ describe("Advanced Filtering", () => {
 
                     expect(gqlMovies).toHaveLength(1);
                     expect(gqlMovies).toContainEqual({
-                        id: movies[2].id,
+                        id: movies[2]?.id,
                         actors: [],
                     });
                 });

@@ -2314,7 +2314,7 @@ describe("@fulltext directive", () => {
             try {
                 const result = await session.run(indexQueryCypher);
 
-                expect(result.records[0].get("result")).toEqual({
+                expect(result.records[0]?.get("result")).toEqual({
                     name: indexName1,
                     type: "FULLTEXT",
                     entityType: "NODE",
@@ -2356,14 +2356,14 @@ describe("@fulltext directive", () => {
             try {
                 const result = await session.run(indexQueryCypher);
 
-                expect(result.records[0].get("result")).toEqual({
+                expect(result.records[0]?.get("result")).toEqual({
                     name: indexName1,
                     type: "FULLTEXT",
                     entityType: "NODE",
                     labelsOrTypes: [type.name],
                     properties: ["title"],
                 });
-                expect(result.records[1].get("result")).toEqual({
+                expect(result.records[1]?.get("result")).toEqual({
                     name: indexName2,
                     type: "FULLTEXT",
                     entityType: "NODE",
@@ -2404,7 +2404,7 @@ describe("@fulltext directive", () => {
             try {
                 const result = await session.run(indexQueryCypher);
 
-                expect(result.records[0].get("result")).toEqual({
+                expect(result.records[0]?.get("result")).toEqual({
                     name: indexName1,
                     type: "FULLTEXT",
                     entityType: "NODE",
@@ -2445,7 +2445,7 @@ describe("@fulltext directive", () => {
             try {
                 const result = await session.run(indexQueryCypher);
 
-                expect(result.records[0].get("result")).toEqual({
+                expect(result.records[0]?.get("result")).toEqual({
                     name: indexName1,
                     type: "FULLTEXT",
                     entityType: "NODE",
@@ -2664,7 +2664,7 @@ describe("@fulltext directive", () => {
             try {
                 const result = await session.run(indexQueryCypher);
 
-                expect(result.records[0].get("result")).toEqual({
+                expect(result.records[0]?.get("result")).toEqual({
                     name: indexName1,
                     type: "FULLTEXT",
                     entityType: "NODE",
