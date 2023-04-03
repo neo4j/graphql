@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* util classes */
+.whitespace-break-spaces {
+    white-space: break-spaces;
+}
+
+.pt-02 {
+    padding-top: 0.2rem;
+}
+/* ----------------------*/
+
 /* Global settings for ALL CodeMirror editors */
 .CodeMirror {
     height: 100%;
@@ -29,15 +39,10 @@ li.CodeMirror-hint-active {
     pointer-events: none;
     opacity: 0.85;
 }
+/* ----------------------*/
 
-.whitespace-break-spaces {
-    white-space: break-spaces;
-}
 
-.pt-02 {
-    padding-top: 0.2rem;
-}
-
+/* Documentation and Query explorer classes */
 .doc-explorer-embedded {
     height: 100%;
     overflow-y: auto;
@@ -55,7 +60,10 @@ li.CodeMirror-hint-active {
     margin: 5px 0;
     z-index: 100;
 }
+/* ----------------------*/
 
+
+/* All GraphiQL v2 components */
 .graphiql-container {
     --color-primary: 209, 100%, 42% !important; /* primary-50 */
     --color-secondary: 201, 100%, 74% !important; /* primary-30 */
@@ -66,22 +74,49 @@ li.CodeMirror-hint-active {
     --color-error: 346, 69%, 47% !important; /* danger-50 */
     --color-neutral: 213, 8%, 12% !important; /* neutral-50 */
     --color-base: 218, 31%, 95% !important; /* neutral-30 */
-    --alpha-background-heavy: 0.55;
-    --alpha-background-medium: 0.3;
-    --alpha-background-light: 0.17;
+    --alpha-background-heavy: 1;
+    --alpha-background-medium: 1;
+    --alpha-background-light: 0.3;
+}
+/* ----------------------*/
+
+/* Query Explorer (OneGraph) */
+.docExplorerWrap {
+    overflow-y: auto !important;
+    max-height: 92vh;
 }
 
-.graphiql-container .graphiql-explorer-actions select {
+.docExplorerWrap .graphiql-explorer-actions select {
     border: 1px solid rgb(var(--colors-neutral-50));
     margin-left: 5px;
     border-radius: 5px;
     padding: 3px;
 }
 
-.graphiql-container .graphiql-explorer-actions > span {
+.docExplorerWrap .graphiql-explorer-actions > span {
     display: none !important;
 }
 
+.docExplorerWrap .doc-explorer-rhs {
+    display: none !important;
+}
+
+.graphiql-explorer-where span,
+.graphiql-explorer-options span,
+.graphiql-explorer-first span,
+.graphiql-explorer-after span,
+.graphiql-explorer-directed span,
+.graphiql-explorer-edge span,
+.graphiql-explorer-node span,
+.graphiql-explorer-input span,
+.graphiql-explorer-sort span {
+    display: inline-flex;
+    align-items: center;
+}
+/* ----------------------*/
+
+
+/* Canny */
 .Canny_BadgeContainer {
     pointer-events: none;
     right: unset !important;
@@ -100,3 +135,4 @@ li.CodeMirror-hint-active {
         padding-bottom: 0.25rem;
     }
 }
+/* ----------------------*/
