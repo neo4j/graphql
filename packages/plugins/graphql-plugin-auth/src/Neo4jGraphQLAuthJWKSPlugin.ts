@@ -18,19 +18,17 @@
  */
 
 import jsonwebtoken from "jsonwebtoken";
-import { JwtPayload } from 'jsonwebtoken'
 import type JwksRsa from "jwks-rsa";
 import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
 import type { RequestLike } from "./types";
-import { type } from "os";
 
 const debug = Debug(DEBUG_PREFIX);
 
 export interface JWKSPluginInput {
     jwksEndpoint: string | ((req: RequestLike) => string);
-    issuer?: string;
+    issuer: string;
     rolesPath?: string;
     globalAuthentication?: boolean;
     bindPredicate?: "all" | "any";
@@ -43,7 +41,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
     options!: JwksRsa.Options;
     bindPredicate: "all" | "any";
     input: JWKSPluginInput;
-    issuer?: string;
+    issuer: string;
     constructor(input: JWKSPluginInput) {
         //We are going to use this input later, so we need to save it here.
         this.input = input;
@@ -125,17 +123,12 @@ class Neo4jGraphQLAuthJWKSPlugin {
                 getKey,
                 {
                     algorithms: ["HS256", "RS256"],
+                    issuer: this.issuer
                 },
                 (err, decoded) => {
                     if (err) {
                         reject(err);
                         return;
-                    }
-                    if (this.issuer && decoded && typeof decoded === "object") {
-                        if (decoded?.iss !== this.issuer) {
-                            reject("Invalid token");
-                            return;
-                        }
                     }
                     resolve(decoded as unknown as T);
                 }

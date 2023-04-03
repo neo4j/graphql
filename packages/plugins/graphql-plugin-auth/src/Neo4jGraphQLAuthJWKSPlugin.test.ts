@@ -23,6 +23,7 @@ describe("Neo4jGraphQLAuthJWKSPlugin", () => {
     test("should construct", () => {
         const plugin = new Neo4jGraphQLAuthJWKSPlugin({
             jwksEndpoint: "endpoint.com",
+            issuer: "issuer.com",
         });
 
         expect(plugin).toBeInstanceOf(Neo4jGraphQLAuthJWKSPlugin);
@@ -33,6 +34,7 @@ describe("Neo4jGraphQLAuthJWKSPlugin", () => {
             jwksEndpoint: () => {
                 return "https://my-dummy-identity:8080/tenant1";
             },
+            issuer: "issuer.com",
         });
         expect(plugin.client).toBeNull();
     });
@@ -42,6 +44,7 @@ describe("Neo4jGraphQLAuthJWKSPlugin", () => {
             jwksEndpoint: () => {
                 return expectedEndpoint;
             },
+            issuer: "issuer.com",
         });
         //How we use the headers or request inside the jwksFunction is not the logic of `tryToResolveKeys` method
         plugin.tryToResolveKeys({
