@@ -349,6 +349,11 @@ describe("@fulltext directive - indexes constraints", () => {
     });
 
     test("should throw when index is missing fields (using field alias)", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const alias = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
@@ -512,6 +517,11 @@ describe("@fulltext directive - indexes constraints", () => {
     });
 
     test("should create index for ID field if it doesn't exist", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
         const id = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
