@@ -11,6 +11,7 @@ module.exports = {
     roots: ["<rootDir>/packages/graphql-toolbox/src/", "<rootDir>/packages/graphql-toolbox/tests/"],
     coverageDirectory: "<rootDir>/packages/graphql-toolbox/coverage/",
     moduleNameMapper: {
+        ...globalConf.moduleNameMapper,
         "jose(.*)$": "<rootDir>/node_modules/jose/dist/node/cjs/$1",
     },
     transform: {
