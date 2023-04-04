@@ -123,7 +123,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
                 getKey,
                 {
                     algorithms: ["HS256", "RS256"],
-                    issuer: this.issuer
+                    issuer: this.issuer,
                 },
                 (err, decoded) => {
                     if (err) {
