@@ -60,7 +60,7 @@
         "zustand": "4.3.7"
     },
     "devDependencies": {
-        "@playwright/test": "1.32.1",
+        "@playwright/test": "1.32.2",
         "@tsconfig/create-react-app": "1.0.3",
         "@types/codemirror": "5.60.7",
         "@types/lodash.debounce": "4.0.7",
