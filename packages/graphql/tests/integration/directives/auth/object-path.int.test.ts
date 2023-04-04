@@ -258,6 +258,7 @@ describe("auth/object-path", () => {
             plugins: {
                 auth: new Neo4jGraphQLAuthJWKSPlugin({
                     jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json",
+                    issuer: "https://YOUR_DOMAIN/",
                 }),
             },
         });
