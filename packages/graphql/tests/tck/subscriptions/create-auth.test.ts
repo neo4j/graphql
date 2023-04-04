@@ -48,7 +48,6 @@ describe("Subscriptions metadata on create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
                 auth: new Neo4jGraphQLAuthJWTPlugin({
@@ -96,9 +95,7 @@ describe("Subscriptions metadata on create", () => {
             RETURN this1, meta AS this1_meta
             }
             WITH this0, this1, this0_meta + this1_meta AS meta
-            RETURN [
-            this0 { .id },
-            this1 { .id }] AS data, meta"
+            RETURN [ this0 { .id }, this1 { .id } ] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

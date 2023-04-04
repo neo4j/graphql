@@ -49,7 +49,6 @@ describe("Cypher directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
@@ -76,18 +75,18 @@ describe("Cypher directive", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-                RETURN m\\", { title: NULL, this: this, auth: $auth }) AS this_movies
+                RETURN m\\", { title: NULL, this: this, auth: $auth }) AS this0
                 CALL {
-                    WITH this_movies
-                    MATCH (this_movies)<-[this_movies_connection_actorsConnectionthis0:ACTED_IN]-(this_movies_Actor:\`Actor\`)
-                    WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                    WITH this0
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:\`Actor\`)
+                    WITH { node: { __resolveType: \\"Actor\\", __id: id(this2) } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS this_movies_actorsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS var3
                 }
-                RETURN collect(this_movies { actorsConnection: this_movies_actorsConnection }) AS this_movies
+                RETURN collect(this0 { actorsConnection: var3 }) AS this0
             }
-            RETURN this { movies: this_movies } AS this"
+            RETURN this { movies: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

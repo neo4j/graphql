@@ -30,9 +30,10 @@ import type {
 import type { Node, Relationship } from "../../../classes";
 import createRelationshipValidationString from "../../create-relationship-validation-string";
 import { filterTruthy } from "../../../utils/utils";
-import Cypher, { Expr, Map, MapProjection } from "@neo4j/cypher-builder";
+import type { Expr, Map, MapProjection } from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import mapToDbProperty from "../../../utils/map-to-db-property";
-import { createAuthAndParams } from "../../create-auth-and-params";
+import { createAuthPredicates } from "../../create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 
@@ -212,29 +213,21 @@ export class UnwindCreateVisitor implements Visitor {
         this.environment[nestedCreate.id].clause = Cypher.concat(outsideWith, callClause);
     }
 
-    private getAuthNodeClause(node: Node, context: Context, nodeRef: Cypher.Node): Cypher.RawCypher | undefined {
+    private getAuthNodeClause(node: Node, context: Context, nodeRef: Cypher.Node): Cypher.Clause | undefined {
         if (node.auth) {
-            return new Cypher.RawCypher((env: Cypher.Environment) => {
-                const [authCypher, authParams] = createAuthAndParams({
-                    entity: node,
-                    operations: "CREATE",
-                    context,
-                    bind: { parentNode: node, varName: env.getReferenceId(nodeRef) },
-                    escapeQuotes: true,
-                });
-                if (authCypher) {
-                    const predicate = Cypher.concat(
-                        new Cypher.With("*"),
-                        new Cypher.CallProcedure(
-                            new Cypher.apoc.Validate(
-                                Cypher.not(new Cypher.RawCypher(() => authCypher)),
-                                AUTH_FORBIDDEN_ERROR
-                            )
-                        )
-                    ).getCypher(env);
-                    return [predicate, authParams];
-                }
+            const authExpr = createAuthPredicates({
+                entity: node,
+                operations: "CREATE",
+                context,
+                bind: { node, varName: nodeRef },
             });
+            if (authExpr) {
+                return Cypher.concat(
+                    new Cypher.With("*").where(
+                        Cypher.apoc.util.validatePredicate(Cypher.not(authExpr), AUTH_FORBIDDEN_ERROR)
+                    )
+                );
+            }
         }
     }
 
@@ -254,36 +247,25 @@ export class UnwindCreateVisitor implements Visitor {
             return new Cypher.RawCypher((env: Cypher.Environment) => {
                 const fieldsPredicates = usedAuthFields
                     .map((field) => {
-                        const [fieldAuthCypher, fieldAuthParam] = createAuthAndParams({
+                        const fieldAuthCypher = createAuthPredicates({
                             entity: field,
                             operations: "CREATE",
                             context,
                             bind: {
-                                parentNode: astNode.node,
-                                varName: env.getReferenceId(nodeRef),
+                                node: astNode.node,
+                                varName: nodeRef,
                             },
-                            escapeQuotes: true,
                         });
                         if (fieldAuthCypher) {
-                            const cypher = Cypher.or(
-                                Cypher.isNull(unwindVar.property(field.fieldName)),
-                                new Cypher.RawCypher(() => fieldAuthCypher)
-                            );
-                            return [cypher, fieldAuthParam];
+                            return Cypher.or(Cypher.isNull(unwindVar.property(field.fieldName)), fieldAuthCypher);
                         }
                     })
-                    .filter((predicate) => predicate !== undefined) as unknown as [
-                    Cypher.BooleanOp,
-                    Record<string, any>
-                ];
+                    .filter((predicate) => predicate !== undefined) as Cypher.BooleanOp[];
                 if (fieldsPredicates.length) {
-                    const predicate = Cypher.not(
-                        Cypher.and(...fieldsPredicates.map((fieldPredicate) => fieldPredicate[0]))
-                    );
+                    const predicate = Cypher.not(Cypher.and(...fieldsPredicates));
 
                     const fieldsAuth = Cypher.concat(
-                        new Cypher.With("*"),
-                        new Cypher.CallProcedure(new Cypher.apoc.Validate(predicate, AUTH_FORBIDDEN_ERROR))
+                        new Cypher.With("*").where(Cypher.apoc.util.validatePredicate(predicate, AUTH_FORBIDDEN_ERROR))
                     ).getCypher(env);
 
                     const fieldsPredicateParams = fieldsPredicates.reduce((prev, next) => {

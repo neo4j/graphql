@@ -20,7 +20,8 @@
 import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { graphql } from "graphql";
-import { Driver, int, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
+import { int } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
@@ -51,7 +52,6 @@ describe("Subscriptions to spatial types", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
             },

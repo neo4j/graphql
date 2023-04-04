@@ -19,8 +19,8 @@
 
 import type { Driver } from "neo4j-driver";
 import type { DocumentNode, GraphQLSchema } from "graphql";
+import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
-import { makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
@@ -30,7 +30,7 @@ import type {
     Neo4jGraphQLPlugins,
     Neo4jGraphQLCallbacks,
     Neo4jFeaturesSettings,
-    StartupValidationConfig
+    StartupValidationConfig,
 } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
@@ -42,15 +42,24 @@ import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
-import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
-import { Executor, ExecutorConstructorParam } from "./Executor";
+import type { Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
+import { getNeo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
+import type { ExecutorConstructorParam } from "./Executor";
+import { Executor } from "./Executor";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
-import { forEachField, TypeSource } from "@graphql-tools/utils";
+import type { TypeSource } from "@graphql-tools/utils";
+import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import { validateDocument } from "../schema/validation";
+import { validateUserDefinition } from "../schema/validation/schema-validation";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
+    /**
+     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
+     * Please use features.filters instead. More information can be found at
+     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#features
+     */
     enableRegex?: boolean;
     enableDebug?: boolean;
     /**
@@ -61,6 +70,11 @@ export interface Neo4jGraphQLConfig {
     skipValidateTypeDefs?: boolean;
     startupValidation?: StartupValidationConfig;
     queryOptions?: CypherQueryOptions;
+    /**
+     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
+     * Please use features.populatedBy instead. More information can be found at
+     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby
+     */
     callbacks?: Neo4jGraphQLCallbacks;
 }
 
@@ -137,10 +151,6 @@ class Neo4jGraphQL {
             "Apollo Federation support is currently experimental. There will be missing functionality, and breaking changes may occur in patch and minor releases. It is not recommended to use it in a production environment."
         );
 
-        if (!this.driver) {
-            throw new Error("Driver must be provided when running in subgraph mode");
-        }
-
         if (!this.subgraphSchema) {
             this.subgraphSchema = this.generateSubgraphSchema();
 
@@ -190,7 +200,7 @@ class Neo4jGraphQL {
             driverConfig,
             nodes: this.nodes,
             options: input.options,
-            dbInfo: this.dbInfo
+            dbInfo: this.dbInfo,
         });
     }
 
@@ -220,7 +230,7 @@ class Neo4jGraphQL {
 
     private async getNeo4jDatabaseInfo(driver: Driver, driverConfig?: DriverConfig): Promise<Neo4jDatabaseInfo> {
         const executorConstructorParam: ExecutorConstructorParam = {
-            executionContext: driver
+            executionContext: driver,
         };
 
         if (driverConfig?.database) {
@@ -239,23 +249,51 @@ class Neo4jGraphQL {
             throw new Error("Schema Model is not defined");
         }
 
+        const config = {
+            ...this.config,
+            callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
+        };
+
+        const wrapResolverArgs = {
+            driver: this.driver,
+            config,
+            nodes: this.nodes,
+            relationships: this.relationships,
+            schemaModel: this.schemaModel,
+            plugins: this.plugins,
+        };
+
+        const resolversComposition = {
+            "Query.*": [wrapResolver(wrapResolverArgs)],
+            "Mutation.*": [wrapResolver(wrapResolverArgs)],
+            "Subscription.*": [wrapSubscription(wrapResolverArgs)],
+        };
+
+        // Merge generated and custom resolvers
+        const mergedResolvers = mergeResolvers([...asArray(resolvers), ...asArray(this.schemaDefinition.resolvers)]);
+        return composeResolvers(mergedResolvers, resolversComposition);
+    }
+
+    private wrapFederationResolvers(resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>) {
+        if (!this.schemaModel) {
+            throw new Error("Schema Model is not defined");
+        }
+
         const wrapResolverArgs = {
             driver: this.driver,
             config: this.config,
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: this.schemaModel,
-            plugins: this.plugins
+            plugins: this.plugins,
         };
 
         const resolversComposition = {
-            "Query.*": [wrapResolver(wrapResolverArgs)],
-            "Mutation.*": [wrapResolver(wrapResolverArgs)],
-            "Subscription.*": [wrapSubscription(wrapResolverArgs)]
+            "Query.{_entities, _service}": [wrapResolver(wrapResolverArgs)],
         };
 
         // Merge generated and custom resolvers
-        const mergedResolvers = mergeResolvers([...asArray(resolvers), ...asArray(this.schemaDefinition.resolvers)]);
+        const mergedResolvers = mergeResolvers([...asArray(resolvers)]);
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
@@ -274,14 +312,20 @@ class Neo4jGraphQL {
                 enableRegex: this.config?.enableRegex,
                 validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
-                callbacks: this.config.callbacks,
-                userCustomResolvers: this.schemaDefinition.resolvers
+                callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
+                userCustomResolvers: this.schemaDefinition.resolvers,
             });
 
-            this.schemaModel = generateModel(document);
+            if (validateTypeDefs) {
+                validateUserDefinition(document, typeDefs);
+            }
 
             this._nodes = nodes;
             this._relationships = relationships;
+
+            if (!this.schemaModel) {
+                this.schemaModel = generateModel(document);
+            }
 
             // Wrap the generated and custom resolvers, which adds a context including the schema to every request
             const wrappedResolvers = this.wrapResolvers(resolvers);
@@ -289,7 +333,7 @@ class Neo4jGraphQL {
             const schema = makeExecutableSchema({
                 ...this.schemaDefinition,
                 typeDefs,
-                resolvers: wrappedResolvers
+                resolvers: wrappedResolvers,
             });
 
             resolve(this.addDefaultFieldResolvers(schema));
@@ -309,29 +353,46 @@ class Neo4jGraphQL {
         if (validateTypeDefs) {
             validateDocument(document, directives, types);
         }
+
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
             enableRegex: this.config?.enableRegex,
             validateResolvers,
             generateSubscriptions: Boolean(this.plugins?.subscriptions),
-            callbacks: this.config.callbacks,
+            callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
             userCustomResolvers: this.schemaDefinition.resolvers,
-            subgraph
+            subgraph,
         });
 
-        this.schemaModel = generateModel(document);
+        if (validateTypeDefs) {
+            validateUserDefinition(document, typeDefs, directives, types);
+        }
 
         this._nodes = nodes;
         this._relationships = relationships;
 
-        const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, this.driver as Driver);
-        const subgraphTypeDefs = subgraph.augmentGeneratedSchemaDefinition(typeDefs);
+        if (!this.schemaModel) {
+            this.schemaModel = generateModel(document);
+        }
+
+        // TODO: Move into makeAugmentedSchema, add resolvers alongside other resolvers
+        const referenceResolvers = subgraph.getReferenceResolvers(this._nodes);
+
         const wrappedResolvers = this.wrapResolvers([resolvers, referenceResolvers]);
 
         const schema = subgraph.buildSchema({
-            typeDefs: subgraphTypeDefs,
-            resolvers: wrappedResolvers as Record<string, any>
+            typeDefs,
+            resolvers: wrappedResolvers as Record<string, any>,
         });
+
+        // Get resolvers from subgraph schema - this will include generated _entities and _service
+        const subgraphResolvers = getResolversFromSchema(schema);
+
+        // Wrap the _entities and _service Query resolvers
+        const wrappedSubgraphResolvers = this.wrapFederationResolvers(subgraphResolvers);
+
+        // Add the wrapped resolvers back to the schema, context will now be populated
+        addResolversToSchema({ schema, resolvers: wrappedSubgraphResolvers, updateResolversInPlace: true });
 
         return this.addDefaultFieldResolvers(schema);
     }
@@ -346,7 +407,7 @@ class Neo4jGraphQL {
         if (this.config?.startupValidation === false) {
             return {
                 validateTypeDefs: false,
-                validateResolvers: false
+                validateResolvers: false,
             };
         }
 
@@ -360,7 +421,7 @@ class Neo4jGraphQL {
 
         return {
             validateTypeDefs,
-            validateResolvers
+            validateResolvers,
         };
     }
 

@@ -46,7 +46,6 @@ describe("Label in Node directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
@@ -99,12 +98,12 @@ describe("Label in Node directive", () => {
             WHERE this.age > $param0
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this_movies:\`Film\`)
-                WHERE this_movies.title = $param1
-                WITH this_movies { .title } AS this_movies
-                RETURN collect(this_movies) AS this_movies
+                MATCH (this)-[this0:ACTED_IN]->(this1:\`Film\`)
+                WHERE this1.title = $param1
+                WITH this1 { .title } AS this1
+                RETURN collect(this1) AS var2
             }
-            RETURN this { .name, movies: this_movies } AS this"
+            RETURN this { .name, movies: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -135,15 +134,15 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Film\`)
+                WITH create_var0
+                CREATE (create_this1:\`Film\`)
                 SET
-                    create_this0.title = create_var1.title
-                RETURN create_this0
+                    create_this1.title = create_var0.title
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .title }) AS data"
+            RETURN collect(create_this1 { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

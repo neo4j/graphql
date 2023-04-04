@@ -20,7 +20,7 @@
 import type { Variable } from "../..";
 import type { CypherEnvironment } from "../../Environment";
 import type { Expr } from "../../types";
-import { CypherFunction } from "./CypherFunction";
+import { CypherFunction } from "./CypherFunctions";
 
 /**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-size)
@@ -29,15 +29,6 @@ import { CypherFunction } from "./CypherFunction";
  */
 export function size(expr: Expr): CypherFunction {
     return new CypherFunction("size", [expr]);
-}
-
-/**
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-collect)
- * @group Expressions
- * @category Cypher Functions
- */
-export function collect(expr: Expr): CypherFunction {
-    return new CypherFunction("collect", [expr]);
 }
 
 /**

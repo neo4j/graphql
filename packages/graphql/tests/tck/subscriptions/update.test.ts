@@ -45,7 +45,6 @@ describe("Subscriptions metadata on update", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
             } as any,
@@ -82,7 +81,8 @@ describe("Subscriptions metadata on update", () => {
             WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH *
             UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
-            RETURN collect(DISTINCT this { .id }) AS data, collect(DISTINCT m) as meta"
+            RETURN collect(DISTINCT this { .id }) AS data
+            , collect(DISTINCT m) as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -146,7 +146,8 @@ describe("Subscriptions metadata on update", () => {
             WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH *
             UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
-            RETURN collect(DISTINCT this { .id }) AS data, collect(DISTINCT m) as meta"
+            RETURN collect(DISTINCT this { .id }) AS data
+            , collect(DISTINCT m) as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

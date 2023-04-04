@@ -10,8 +10,8 @@ import Argument from './Argument';
 import Directive from './Directive';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
-import { GraphQLArgument, DirectiveNode } from 'graphql';
-import { OnClickTypeFunction, FieldType } from './types';
+import type { GraphQLArgument, DirectiveNode } from 'graphql';
+import type { OnClickTypeFunction, FieldType } from './types';
 
 type FieldDocProps = {
   field?: FieldType;
@@ -48,7 +48,7 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
       </div>
     );
     const deprecatedArgs = field.args.filter(arg =>
-      Boolean(arg.deprecationReason),
+      Boolean(arg.deprecationReason)
     );
     if (deprecatedArgs.length > 0) {
       deprecatedArgsDef = (

@@ -18,7 +18,7 @@
  */
 
 import supertest from "supertest";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { GatewayServer } from "./setup/gateway-server";
 import type { Server } from "./setup/server";
 import { TestSubgraph } from "./setup/subgraph";
@@ -38,13 +38,13 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
     let Review: UniqueType;
 
     beforeAll(async () => {
-        Location = generateUniqueType("Location");
-        Review = generateUniqueType("Review");
+        Location = new UniqueType("Location");
+        Review = new UniqueType("Review");
 
         const locations = `
-            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type ${Location} @key(fields: "id") {
+            type ${Location} @key(fields: "id") @shareable {
                 id: ID!
                 "The name of the location"
                 name: String
@@ -56,9 +56,9 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
         `;
 
         const reviews = `
-            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type ${Location} @key(fields: "id") {
+            type ${Location} @key(fields: "id") @shareable {
                 id: ID!
                 "The calculated overall rating based on all reviews"
                 overallRating: Float

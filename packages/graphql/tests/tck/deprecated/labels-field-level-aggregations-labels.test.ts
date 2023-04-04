@@ -47,7 +47,6 @@ describe("Field Level Aggregations Alias", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
@@ -72,17 +71,17 @@ describe("Field Level Aggregations Alias", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`Film\`)
-CALL {
-    WITH this
-    MATCH (this)<-[this_actorsAggregate_this1:ACTED_IN]-(this_actorsAggregate_this0:\`Person\`)
-    WITH this_actorsAggregate_this0
-    ORDER BY size(this_actorsAggregate_this0.name) DESC
-    WITH collect(this_actorsAggregate_this0.name) AS list
-    RETURN { longest: head(list), shortest: last(list) } AS this_actorsAggregate_var2
-}
-RETURN this { actorsAggregate: { node: { name: this_actorsAggregate_var2 } } } AS this"
-`);
+            "MATCH (this:\`Film\`)
+            CALL {
+                WITH this
+                MATCH (this)<-[this1:ACTED_IN]-(this0:\`Person\`)
+                WITH this0
+                ORDER BY size(this0.name) DESC
+                WITH collect(this0.name) AS list
+                RETURN { longest: head(list), shortest: last(list) } AS var2
+            }
+            RETURN this { actorsAggregate: { node: { name: var2 } } } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

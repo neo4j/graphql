@@ -17,9 +17,7 @@
  * limitations under the License.
  */
 
-import { LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING } from "../constants";
-import { Storage } from "../utils/storage";
-import {
+import type {
     TrackingTBBuildSchemaClick,
     TrackingTBCannyChangelogClick,
     TrackingTBChangeDatabase,
@@ -36,6 +34,7 @@ import {
 } from "./tracking-types";
 import { Screen } from "../contexts/screen";
 import { Theme } from "../contexts/theme";
+import { useStore } from "../store";
 
 class Tracking {
     public trackDatabaseIntrospection = (properties: TrackingTBIntrospect) => {
@@ -98,9 +97,7 @@ class Tracking {
     };
 
     private fireTrackingEvent = (eventCategory: string, eventLabel: string, eventProperties = {}) => {
-        const trackingConsent = Storage.retrieve(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING);
-
-        if (trackingConsent !== "true") return;
+        if (!useStore.getState().enableProductUsageTracking) return;
         if (!window.analytics || !window.analytics.track) return;
 
         const enrichedEventProperties = {

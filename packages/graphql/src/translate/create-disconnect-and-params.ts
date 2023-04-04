@@ -42,7 +42,6 @@ function createDisconnectAndParams({
     context,
     labelOverride,
     parentNode,
-    insideDoWhen,
     parameterPrefix,
     isFirstLevel = true,
 }: {
@@ -55,7 +54,6 @@ function createDisconnectAndParams({
     refNodes: Node[];
     labelOverride?: string;
     parentNode: Node;
-    insideDoWhen?: boolean;
     parameterPrefix: string;
     isFirstLevel?: boolean;
 }): [string, any] {
@@ -113,15 +111,15 @@ function createDisconnectAndParams({
         }
 
         if (relatedNode.auth) {
-            const whereAuth = createAuthAndParams({
+            const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
                 operations: "DISCONNECT",
                 entity: relatedNode,
                 context,
                 where: { varName: variableName, node: relatedNode },
             });
-            if (whereAuth[0]) {
-                whereStrs.push(whereAuth[0]);
-                params = { ...params, ...whereAuth[1] };
+            if (authWhereCypher) {
+                whereStrs.push(authWhereCypher);
+                params = { ...params, ...authWhereParams };
             }
         }
 
@@ -148,20 +146,19 @@ function createDisconnectAndParams({
                     return result;
                 }
 
-                const [str, p] = createAuthAndParams({
+                const { cypher, params } = createAuthAndParams({
                     entity: node,
                     operations: "DISCONNECT",
                     context,
-                    escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: name },
+                    allow: { node, varName: name },
                 });
 
-                if (!str) {
+                if (!cypher) {
                     return result;
                 }
 
-                result.disconnects.push(str);
-                result.params = { ...result.params, ...p };
+                result.disconnects.push(cypher);
+                result.params = { ...result.params, ...params };
 
                 return result;
             },
@@ -169,12 +166,9 @@ function createDisconnectAndParams({
         );
 
         if (preAuth.disconnects.length) {
-            const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`WITH ${[...withVars, variableName, relVarName].join(", ")}`);
             subquery.push(
-                `CALL apoc.util.validate(NOT (${preAuth.disconnects.join(
-                    " AND "
-                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                `CALL apoc.util.validate(NOT (${preAuth.disconnects.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
             );
             params = { ...params, ...preAuth.params };
         }
@@ -351,22 +345,21 @@ function createDisconnectAndParams({
                     return result;
                 }
 
-                const [str, p] = createAuthAndParams({
+                const { cypher, params } = createAuthAndParams({
                     entity: node,
                     operations: "DISCONNECT",
                     context,
-                    escapeQuotes: Boolean(insideDoWhen),
                     skipRoles: true,
                     skipIsAuthenticated: true,
-                    bind: { parentNode: node, varName: variableName },
+                    bind: { node, varName: variableName },
                 });
 
-                if (!str) {
+                if (!cypher) {
                     return result;
                 }
 
-                result.disconnects.push(str);
-                result.params = { ...result.params, ...p };
+                result.disconnects.push(cypher);
+                result.params = { ...result.params, ...params };
 
                 return result;
             },
@@ -374,12 +367,9 @@ function createDisconnectAndParams({
         );
 
         if (postAuth.disconnects.length) {
-            const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`WITH ${[...withVars, variableName].join(", ")}`);
             subquery.push(
-                `CALL apoc.util.validate(NOT (${postAuth.disconnects.join(
-                    " AND "
-                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                `CALL apoc.util.validate(NOT (${postAuth.disconnects.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
             );
             params = { ...params, ...postAuth.params };
         }
@@ -396,16 +386,16 @@ function createDisconnectAndParams({
 
     function reducer(res: Res, disconnect: { where: any; disconnect: any }, index: number): Res {
         if (parentNode.auth) {
-            const whereAuth = createAuthAndParams({
+            const { cypher: authCypher, params: authParams } = createAuthAndParams({
                 operations: "DISCONNECT",
                 entity: parentNode,
                 context,
                 where: { varName: parentVar, node: parentNode },
             });
-            if (whereAuth[0]) {
+            if (authCypher) {
                 res.disconnects.push(`WITH ${withVars.join(", ")}`);
-                res.disconnects.push(`WHERE ${whereAuth[0]}`);
-                res.params = { ...res.params, ...whereAuth[1] };
+                res.disconnects.push(`WHERE ${authCypher}`);
+                res.params = { ...res.params, ...authParams };
             }
         }
 

@@ -29,15 +29,15 @@ export default function createPointElement({
 }: {
     resolveTree: ResolveTree;
     field: PointField;
-    variable: string;
-}): string {
+    variable: Cypher.Node | Cypher.Variable;
+}): Cypher.Expr {
     const expression = createPointExpression({ resolveTree, field, variable });
 
     const cypherClause = new Cypher.RawCypher((env) => {
         return expression.getCypher(env);
     });
     const { cypher } = cypherClause.build("p_");
-    return `${resolveTree.alias}: (${cypher})`;
+    return new Cypher.RawCypher(`${resolveTree.alias}: (${cypher})`);
 }
 
 export function createPointExpression({
@@ -47,7 +47,7 @@ export function createPointExpression({
 }: {
     resolveTree: ResolveTree;
     field: PointField;
-    variable: string | Cypher.Variable;
+    variable: Cypher.Variable;
 }): Cypher.Expr {
     const isArray = field.typeMeta.array;
 
@@ -90,7 +90,7 @@ function createPointProjectionMap({
     crs,
     point,
 }: {
-    variableOrProperty: Cypher.Variable | Cypher.PropertyRef;
+    variableOrProperty: Cypher.Variable | Cypher.Property;
     crs: unknown;
     point: unknown;
 }): Cypher.Map {

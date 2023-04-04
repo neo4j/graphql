@@ -47,7 +47,6 @@ describe("Relationship Properties Cypher", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

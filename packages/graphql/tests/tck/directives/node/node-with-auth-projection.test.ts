@@ -48,7 +48,6 @@ describe("Cypher Auth Projection On Connections", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
@@ -83,20 +82,20 @@ describe("Cypher Auth Projection On Connections", () => {
             WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_postsConnectionthis0:HAS_POST]->(this_Post:\`Comment\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_POST]-(:\`Person\`)) AND any(this_connection_postsConnectionthis1 IN [(this_Post)<-[:HAS_POST]-(this_connection_postsConnectionthis1:\`Person\`) | this_connection_postsConnectionthis1] WHERE (this_connection_postsConnectionthis1.id IS NOT NULL AND this_connection_postsConnectionthis1.id = $this_connection_postsConnectionparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH { node: { content: this_Post.content } } AS edge
+                MATCH (this)-[this0:HAS_POST]->(this1:\`Comment\`)
+                WHERE apoc.util.validatePredicate(NOT ((exists((this1)<-[:HAS_POST]-(:\`Person\`)) AND any(this2 IN [(this1)<-[:HAS_POST]-(this2:\`Person\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH { node: { content: this1.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_postsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { .name, postsConnection: this_postsConnection } AS this"
+            RETURN this { .name, postsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"super_admin\\",
-                \\"this_connection_postsConnectionparam0\\": \\"super_admin\\"
+                \\"param1\\": \\"super_admin\\"
             }"
         `);
     });

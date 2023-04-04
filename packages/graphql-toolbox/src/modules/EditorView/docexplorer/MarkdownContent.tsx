@@ -6,7 +6,7 @@
  */
 
 import MD from "markdown-it";
-import { Maybe } from "./types";
+import type { Maybe } from "./types";
 
 const md = new MD({
     // render urls as links, à la github-flavored markdown

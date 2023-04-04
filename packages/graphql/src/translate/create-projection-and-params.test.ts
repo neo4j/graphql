@@ -21,6 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import createProjectionAndParams from "./create-projection-and-params";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import Cypher from "@neo4j/cypher-builder";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -75,9 +76,18 @@ describe("createProjectionAndParams", () => {
             resolveTree,
         }).instance();
 
-        const result = createProjectionAndParams({ resolveTree, node, context, varName: "this" });
-
-        expect(result.projection).toBe(`{ .title }`);
+        const result = createProjectionAndParams({
+            resolveTree,
+            node,
+            context,
+            varName: new Cypher.NamedNode("this"),
+            cypherFieldAliasMap: {},
+        });
+        new Cypher.RawCypher((env) => {
+            expect(result.projection.getCypher(env)).toBe(`{ .title }`);
+            return "";
+        }).build();
+       
         expect(result.params).toMatchObject({});
     });
     test("should return the correct projection when querying for a global with id in the selection set", () => {
@@ -131,7 +141,16 @@ describe("createProjectionAndParams", () => {
             resolveTree,
         }).instance();
 
-        const result = createProjectionAndParams({ resolveTree, node, context, varName: "this" });
-        expect(result.projection).toBe(`{ .title }`);
+        const result = createProjectionAndParams({
+            resolveTree,
+            node,
+            context,
+            varName: new Cypher.NamedNode("this"),
+            cypherFieldAliasMap: {},
+        });
+        new Cypher.RawCypher((env) => {
+            expect(result.projection.getCypher(env)).toBe(`{ .title }`);
+            return "";
+        }).build();
     });
 });

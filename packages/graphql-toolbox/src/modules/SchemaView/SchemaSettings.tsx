@@ -17,69 +17,57 @@
  * limitations under the License.
  */
 
-import React from "react";
-import { Checkbox, HeroIcon } from "@neo4j-ndl/react";
-import { ProTooltip } from "../../components/ProTooltip";
-import { Storage } from "../../utils/storage";
-import { LOCAL_STATE_CONSTRAINT, LOCAL_STATE_ENABLE_DEBUG, LOCAL_STATE_ENABLE_REGEX } from "../../constants";
+import type React from "react";
+import { useRef } from "react";
+import { Checkbox, SmartTooltip } from "@neo4j-ndl/react";
+import { QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
 import { ConstraintState } from "../../types";
 import { CustomSelect } from "../../components/CustomSelect";
 import { tracking } from "../../analytics/tracking";
+import { useStore } from "../../store";
 
-interface Props {
-    isRegexChecked: string | null;
-    isDebugChecked: string | null;
-    constraintState: string | null;
-    setIsRegexChecked: React.Dispatch<React.SetStateAction<string | null>>;
-    setIsDebugChecked: React.Dispatch<React.SetStateAction<string | null>>;
-    setConstraintState: React.Dispatch<React.SetStateAction<string | null>>;
-}
+export const SchemaSettings = () => {
+    const enableRegex = useStore((store) => store.enableRegex);
+    const enableDebug = useStore((store) => store.enableDebug);
+    const constraint = useStore((store) => store.constraint);
 
-export const SchemaSettings = ({
-    isRegexChecked,
-    isDebugChecked,
-    constraintState,
-    setIsRegexChecked,
-    setIsDebugChecked,
-    setConstraintState,
-}: Props) => {
     const onChangeRegexCheckbox = (): void => {
-        const next = isRegexChecked === "true" ? "false" : "true";
-        setIsRegexChecked(next);
-        Storage.store(LOCAL_STATE_ENABLE_REGEX, next);
-        tracking.trackSchemaSettingsCheckbox({ screen: "type definitions", action: next, box: "regex" });
+        useStore.setState({ enableRegex: !enableRegex });
+        tracking.trackSchemaSettingsCheckbox({
+            screen: "type definitions",
+            action: !enableRegex ? "true" : "false",
+            box: "regex",
+        });
     };
 
     const onChangeDebugCheckbox = (): void => {
-        const next = isDebugChecked === "true" ? "false" : "true";
-        setIsDebugChecked(next);
-        Storage.store(LOCAL_STATE_ENABLE_DEBUG, next);
-        tracking.trackSchemaSettingsCheckbox({ screen: "type definitions", action: next, box: "debug" });
+        useStore.setState({ enableDebug: !enableDebug });
+        tracking.trackSchemaSettingsCheckbox({
+            screen: "type definitions",
+            action: !enableDebug ? "true" : "false",
+            box: "debug",
+        });
     };
 
     const onChangeConstraintState = (nextConstraintState: string): void => {
-        setConstraintState(nextConstraintState);
-        Storage.store(LOCAL_STATE_CONSTRAINT, nextConstraintState);
+        useStore.setState({ constraint: nextConstraintState });
         tracking.trackSchemaConstraints({ screen: "type definitions", value: ConstraintState[nextConstraintState] });
     };
 
     const InfoToolTip = ({ text, width }: { text: React.ReactNode; width: number }): JSX.Element => {
+        const tooltipRef = useRef<SVGSVGElement | null>(null);
         return (
-            <ProTooltip
-                tooltipText={text}
-                arrowPositionOverride="left"
-                blockVisibility={false}
-                width={width || 200}
-                left={28}
-                top={-13}
-            >
-                <HeroIcon className="ml-1 h-4 w-4" iconName="QuestionMarkCircleIcon" type="outline" />
-            </ProTooltip>
+            <>
+                <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" ref={tooltipRef} />
+                <SmartTooltip allowedPlacements={["right"]} style={{ width: `${width || 200}px` }} ref={tooltipRef}>
+                    {text}
+                </SmartTooltip>
+            </>
         );
     };
 
     return (
-        <React.Fragment>
+        <>
             <span className="h5">Schema settings</span>
             <div className="pt-4">
                 <div className="mb-1 flex items-baseline">
@@ -87,7 +75,7 @@ export const SchemaSettings = ({
                         className="m-0"
                         aria-label="Enable Regex"
                         label="Enable Regex"
-                        checked={isRegexChecked === "true"}
+                        checked={enableRegex}
                         onChange={onChangeRegexCheckbox}
                     />
                     <InfoToolTip
@@ -104,7 +92,7 @@ export const SchemaSettings = ({
                                 </a>
                             </span>
                         }
-                        width={150}
+                        width={160}
                     />
                 </div>
                 <div className="mb-1 flex items-baseline">
@@ -113,7 +101,7 @@ export const SchemaSettings = ({
                         className="m-0"
                         aria-label="Enable Debug"
                         label="Enable Debug"
-                        checked={isDebugChecked === "true"}
+                        checked={enableDebug}
                         onChange={onChangeDebugCheckbox}
                     />
                     <InfoToolTip
@@ -130,7 +118,7 @@ export const SchemaSettings = ({
                                 </a>
                             </span>
                         }
-                        width={360}
+                        width={370}
                     />
                 </div>
                 <div className="mt-3 flex flex-col">
@@ -150,12 +138,12 @@ export const SchemaSettings = ({
                                     </a>
                                 </span>
                             }
-                            width={150}
+                            width={160}
                         />
                     </div>
                     <div className="mt-2">
                         <CustomSelect
-                            value={constraintState || undefined}
+                            value={constraint || undefined}
                             onChange={(event) => onChangeConstraintState(event.target.value)}
                             testTag="data-test-schema-settings-selection"
                         >
@@ -172,6 +160,6 @@ export const SchemaSettings = ({
                     </div>
                 </div>
             </div>
-        </React.Fragment>
+        </>
     );
 };

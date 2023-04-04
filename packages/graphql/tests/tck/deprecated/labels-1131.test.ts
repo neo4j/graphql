@@ -43,7 +43,6 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
@@ -114,12 +113,12 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:isInPublication]->(this_isInPublication:\`Concept\`:\`Resource\`)
-                WHERE this_isInPublication.uri IN $update_param0
-                WITH this_isInPublication { iri: this_isInPublication.uri, .prefLabel } AS this_isInPublication
-                RETURN collect(this_isInPublication) AS this_isInPublication
+                MATCH (this)-[update_this0:isInPublication]->(update_this1:\`Concept\`:\`Resource\`)
+                WHERE update_this1.uri IN $update_param0
+                WITH update_this1 { iri: update_this1.uri, .prefLabel } AS update_this1
+                RETURN collect(update_this1) AS update_var2
             }
-            RETURN collect(DISTINCT this { iri: this.uri, .prefLabel, isInPublication: this_isInPublication }) AS data"
+            RETURN collect(DISTINCT this { iri: this.uri, .prefLabel, isInPublication: update_var2 }) AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import { Fragment } from "react";
-import { GraphQLError } from "graphql";
+import type { GraphQLError } from "graphql";
 
 interface Props {
     error: string | GraphQLError;
@@ -35,12 +34,12 @@ export const SchemaErrorDisplay = ({ error }: Props) => {
             {typeof error === "string" ? (
                 <span className="block">{error}</span>
             ) : (
-                <Fragment>
+                <>
                     <span className="block">{error.message}</span>
                     {error.locations ? (
                         <span className="block">Locations: {JSON.stringify(error.locations)}</span>
                     ) : null}
-                </Fragment>
+                </>
             )}
         </div>
     );

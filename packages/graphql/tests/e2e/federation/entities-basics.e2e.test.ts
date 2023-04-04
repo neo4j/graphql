@@ -18,7 +18,7 @@
  */
 
 import supertest from "supertest";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { UniqueType } from "../../utils/graphql-types";
 import { GatewayServer } from "./setup/gateway-server";
 import type { Server } from "./setup/server";
 import { TestSubgraph } from "./setup/subgraph";
@@ -38,11 +38,11 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
     let Review: UniqueType;
 
     beforeAll(async () => {
-        Product = generateUniqueType("Product");
-        Review = generateUniqueType("Review");
+        Product = new UniqueType("Product");
+        Review = new UniqueType("Review");
 
         const products = `
-            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
             type ${Product} @key(fields: "id") {
                 id: ID!
@@ -52,11 +52,11 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
         `;
 
         const reviews = `
-            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+            extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
             type ${Product} @key(fields: "id", resolvable: false) {
                 id: ID!
-              }
+            }
 
             type ${Review} {
                 score: Int!

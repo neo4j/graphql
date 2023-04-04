@@ -60,7 +60,6 @@ describe("#583", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
@@ -87,25 +86,28 @@ describe("#583", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this_Movie:\`Movie\`)
-                RETURN { __resolveType: \\"Movie\\", title: this_Movie.title, awardsGiven: this_Movie.awardsGiven } AS this_actedIn
-                UNION
-                WITH this
-                MATCH (this)-[this1:ACTED_IN]->(this_Series:\`Series\`)
-                RETURN { __resolveType: \\"Series\\", title: this_Series.title, awardsGiven: this_Series.awardsGiven } AS this_actedIn
-                UNION
-                WITH this
-                MATCH (this)-[this2:ACTED_IN]->(this_ShortFilm:\`ShortFilm\`)
-                RETURN { __resolveType: \\"ShortFilm\\", title: this_ShortFilm.title } AS this_actedIn
+                CALL {
+                    WITH *
+                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    WITH this1 { __resolveType: \\"Movie\\", __id: id(this), .title, .awardsGiven } AS this1
+                    RETURN this1 AS var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this3:ACTED_IN]->(this4:\`Series\`)
+                    WITH this4 { __resolveType: \\"Series\\", __id: id(this), .title, .awardsGiven } AS this4
+                    RETURN this4 AS var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this5:ACTED_IN]->(this6:\`ShortFilm\`)
+                    WITH this6 { __resolveType: \\"ShortFilm\\", __id: id(this), .title } AS this6
+                    RETURN this6 AS var2
+                }
+                WITH var2
+                RETURN collect(var2) AS var2
             }
-            RETURN collect(this_actedIn) AS this_actedIn
-            }
-            RETURN this { .name, actedIn: this_actedIn } AS this"
+            RETURN this { .name, actedIn: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

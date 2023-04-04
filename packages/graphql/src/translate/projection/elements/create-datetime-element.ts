@@ -30,13 +30,17 @@ export function createDatetimeElement({
 }: {
     resolveTree: ResolveTree;
     field: TemporalField;
-    variable: string;
+    variable: Cypher.Variable | Cypher.Node;
     valueOverride?: string;
-}): string {
+}): Cypher.Expr {
     const dbFieldName = field.dbPropertyName || resolveTree.name;
-    return field.typeMeta.array
-        ? `${resolveTree.alias}: [ dt in ${variable}.${dbFieldName} | ${wrapApocConvertDate("dt")} ]`
-        : `${resolveTree.alias}: ${wrapApocConvertDate(valueOverride || `${variable}.${dbFieldName}`)}`;
+    return new Cypher.RawCypher((env) =>
+        field.typeMeta.array
+            ? `${resolveTree.alias}: [ dt in ${variable.getCypher(env)}.${dbFieldName} | ${wrapApocConvertDate("dt")} ]`
+            : `${resolveTree.alias}: ${wrapApocConvertDate(
+                  valueOverride || `${variable.getCypher(env)}.${dbFieldName}`
+              )}`
+    );
 }
 
 export function wrapApocConvertDate(value: string): string {
@@ -65,6 +69,6 @@ export function createDatetimeExpression({
     return createApocConvertFormat(fieldProperty);
 }
 
-function createApocConvertFormat(variableOrProperty: Cypher.Variable | Cypher.PropertyRef): Cypher.Expr {
+function createApocConvertFormat(variableOrProperty: Cypher.Variable | Cypher.Property): Cypher.Expr {
     return Cypher.apoc.date.convertFormat(variableOrProperty, "iso_zoned_date_time", "iso_offset_date_time");
 }

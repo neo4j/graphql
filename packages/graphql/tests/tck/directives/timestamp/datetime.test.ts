@@ -46,7 +46,6 @@ describe("Cypher TimeStamps On DateTime Fields", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
@@ -67,18 +66,18 @@ describe("Cypher TimeStamps On DateTime Fields", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Movie\`)
+                WITH create_var0
+                CREATE (create_this1:\`Movie\`)
                 SET
-                    create_this0.id = create_var1.id,
-                    create_this0.createdAt = datetime(),
-                    create_this0.interfaceTimestamp = datetime(),
-                    create_this0.overrideTimestamp = datetime()
-                RETURN create_this0
+                    create_this1.id = create_var0.id,
+                    create_this1.createdAt = datetime(),
+                    create_this1.interfaceTimestamp = datetime(),
+                    create_this1.overrideTimestamp = datetime()
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id }) AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

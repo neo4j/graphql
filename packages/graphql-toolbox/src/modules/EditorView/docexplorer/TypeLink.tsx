@@ -5,9 +5,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { GraphQLList, GraphQLNonNull, GraphQLType, GraphQLNamedType } from "graphql";
-import { Fragment } from "react";
-import { OnClickTypeFunction, Maybe } from "./types";
+import type { GraphQLType, GraphQLNamedType } from "graphql";
+import { GraphQLList, GraphQLNonNull } from "graphql";
+import type { OnClickTypeFunction, Maybe } from "./types";
 
 type TypeLinkProps = {
     type?: Maybe<GraphQLType>;
@@ -38,7 +38,7 @@ function renderType(type: Maybe<GraphQLType>, onClick: OnClickTypeFunction) {
         );
     }
     return (
-        <Fragment>
+        <>
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a
                 className="type-name"
@@ -50,6 +50,6 @@ function renderType(type: Maybe<GraphQLType>, onClick: OnClickTypeFunction) {
             >
                 {type?.name}
             </a>
-        </Fragment>
+        </>
     );
 }

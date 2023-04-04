@@ -59,7 +59,6 @@ describe("Cypher sort tests", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
@@ -163,12 +162,12 @@ describe("Cypher sort tests", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
-                RETURN head(collect(this_totalGenres)) AS this_totalGenres
+                RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this0
+                RETURN head(collect(this0)) AS this0
             }
             WITH *
-            ORDER BY this_totalGenres DESC
-            RETURN this { totalGenres: this_totalGenres } AS this"
+            ORDER BY this0 DESC
+            RETURN this { totalGenres: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -273,12 +272,12 @@ describe("Cypher sort tests", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:HAS_GENRE]->(this_genres:\`Genre\`)
-                WITH this_genres { .name } AS this_genres
-                ORDER BY this_genres.name DESC
-                RETURN collect(this_genres) AS this_genres
+                MATCH (this)-[this0:HAS_GENRE]->(this1:\`Genre\`)
+                WITH this1 { .name } AS this1
+                ORDER BY this1.name DESC
+                RETURN collect(this1) AS var2
             }
-            RETURN this { genres: this_genres } AS this"
+            RETURN this { genres: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -304,12 +303,12 @@ describe("Cypher sort tests", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:HAS_GENRE]->(this_genres:\`Genre\`)
-                WITH this_genres { .name } AS this_genres
-                ORDER BY this_genres.name ASC
-                RETURN collect(this_genres) AS this_genres
+                MATCH (this)-[this0:HAS_GENRE]->(this1:\`Genre\`)
+                WITH this1 { .name } AS this1
+                ORDER BY this1.name ASC
+                RETURN collect(this1) AS var2
             }
-            RETURN this { genres: this_genres } AS this"
+            RETURN this { genres: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -336,18 +335,18 @@ describe("Cypher sort tests", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:HAS_GENRE]->(this_genres:\`Genre\`)
+                MATCH (this)-[this0:HAS_GENRE]->(this1:\`Genre\`)
                 CALL {
-                    WITH this_genres
+                    WITH this1
                     UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
-                    RETURN count(DISTINCT movie)\\", { this: this_genres, auth: $auth }) AS this_genres_totalMovies
-                    RETURN head(collect(this_genres_totalMovies)) AS this_genres_totalMovies
+                    RETURN count(DISTINCT movie)\\", { this: this1, auth: $auth }) AS this2
+                    RETURN head(collect(this2)) AS this2
                 }
-                WITH this_genres { .name, totalMovies: this_genres_totalMovies } AS this_genres
-                ORDER BY this_genres.totalMovies ASC
-                RETURN collect(this_genres) AS this_genres
+                WITH this1 { .name, totalMovies: this2 } AS this1
+                ORDER BY this1.totalMovies ASC
+                RETURN collect(this1) AS var3
             }
-            RETURN this { genres: this_genres } AS this"
+            RETURN this { genres: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

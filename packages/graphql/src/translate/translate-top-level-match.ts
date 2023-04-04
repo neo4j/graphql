@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
+import type { Context, GraphQLWhereArg } from "../types";
+import type { AuthOperations } from "../types/deprecated/auth/auth-operations";
 import type { Node } from "../classes";
 import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
@@ -45,17 +46,13 @@ export function translateTopLevelMatch({
         where,
     });
 
-    if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
-        return Cypher.concat(matchClause, preComputedWhereFieldSubqueries, whereClause).build();
-    }
-
-    return matchClause.build();
+    return Cypher.concat(matchClause, preComputedWhereFieldSubqueries, whereClause).build();
 }
 
 type CreateMatchClauseReturn = {
-    matchClause: Cypher.Match | Cypher.db.FullTextQueryNodes;
+    matchClause: Cypher.Match | Cypher.Yield;
     preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
-    whereClause: Cypher.Match | Cypher.db.FullTextQueryNodes | Cypher.With;
+    whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
 };
 
 export function createMatchClause({
@@ -73,7 +70,7 @@ export function createMatchClause({
 }): CreateMatchClauseReturn {
     const { resolveTree } = context;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-    let matchClause: Cypher.Match | Cypher.db.FullTextQueryNodes = new Cypher.Match(matchNode);
+    let matchClause: Cypher.Match | Cypher.Yield = new Cypher.Match(matchNode);
     let whereOperators: Cypher.Predicate[] = [];
 
     // TODO: removed deprecated fulltext translation
@@ -84,7 +81,7 @@ export function createMatchClause({
         const [indexName, indexInput] = Object.entries(fulltextInput)[0];
         const phraseParam = new Cypher.Param(indexInput.phrase);
 
-        matchClause = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
+        matchClause = Cypher.db.index.fulltext.queryNodes(indexName, phraseParam).yield(["node", matchNode]);
 
         whereOperators = node.getLabels(context).map((label) => {
             return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));
@@ -94,7 +91,7 @@ export function createMatchClause({
         where = where?.[node.singular];
     }
 
-    let whereClause: Cypher.Match | Cypher.db.FullTextQueryNodes | Cypher.With = matchClause;
+    let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined = matchClause;
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
     if (where) {
         const { predicate: whereOp, preComputedSubqueries } = createWherePredicate({
@@ -106,10 +103,17 @@ export function createMatchClause({
 
         preComputedWhereFieldSubqueries = preComputedSubqueries;
 
-        whereClause =
-            preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty
-                ? new Cypher.With("*")
-                : matchClause;
+        if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
+            if (
+                preComputedWhereFieldSubqueries.children.length === 1 &&
+                preComputedWhereFieldSubqueries.children[0] instanceof Cypher.Match
+            ) {
+                whereClause = preComputedWhereFieldSubqueries.children[0];
+                preComputedWhereFieldSubqueries = undefined;
+            } else {
+                whereClause = new Cypher.With("*");
+            }
+        }
 
         if (whereOp) whereClause.where(whereOp);
     }
@@ -119,20 +123,23 @@ export function createMatchClause({
         whereClause.where(andChecks);
     }
 
-    const whereAuth = createAuthAndParams({
+    const { cypher: authCypher, params: authParams } = createAuthAndParams({
         operations: operation,
         entity: node,
         context,
         where: { varName: matchNode, node },
     });
-    if (whereAuth[0]) {
+    if (authCypher) {
         const authQuery = new Cypher.RawCypher(() => {
-            return whereAuth;
+            return [authCypher, authParams];
         });
 
         whereClause.where(authQuery);
     }
 
+    if (matchClause === whereClause) {
+        whereClause = undefined;
+    }
     return {
         matchClause,
         preComputedWhereFieldSubqueries,
@@ -146,7 +153,7 @@ function createFulltextMatchClause(
     node: Node,
     context: Context
 ): {
-    matchClause: Cypher.db.FullTextQueryNodes;
+    matchClause: Cypher.Yield;
     whereOperators: Cypher.Predicate[];
 } {
     // TODO: remove indexName assignment and undefined check once the name argument has been removed.
@@ -157,7 +164,9 @@ function createFulltextMatchClause(
     const phraseParam = new Cypher.Param(context.resolveTree.args.phrase);
     const scoreVar = context.fulltextIndex.scoreVariable;
 
-    const matchClause = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam, scoreVar);
+    const matchClause = Cypher.db.index.fulltext
+        .queryNodes(indexName, phraseParam)
+        .yield(["node", matchNode], ["score", scoreVar]);
 
     const expectedLabels = node.getLabels(context);
     const labelsChecks = matchNode.hasLabels(...expectedLabels);

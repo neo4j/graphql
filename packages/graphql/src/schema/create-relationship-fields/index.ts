@@ -19,12 +19,11 @@
 
 import type { Directive, InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
-import pluralize from "pluralize";
 import { Node } from "../../classes";
 import {
     WHERE_AGGREGATION_AVERAGE_TYPES,
     AGGREGATION_COMPARISON_OPERATORS,
-    WHERE_AGGREGATION_TYPES
+    WHERE_AGGREGATION_TYPES,
 } from "../../constants";
 import type { BaseField, RelationField } from "../../types";
 import type { ObjectFields } from "../get-obj-field-meta";
@@ -38,8 +37,9 @@ import { overwrite } from "./fields/overwrite";
 import {
     DEPRECATE_NOT,
     DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS,
-    DEPRECATE_INVALID_AGGREGATION_FILTERS
+    DEPRECATE_INVALID_AGGREGATION_FILTERS,
 } from "../constants";
+import { addRelationshipArrayFilters } from "../augment/add-relationship-array-filters";
 
 function createRelationshipFields({
     relationshipFields,
@@ -49,7 +49,7 @@ function createRelationshipFields({
     sourceName,
     nodes,
     relationshipPropertyFields,
-    subgraph
+    subgraph,
 }: {
     relationshipFields: RelationField[];
     schemaComposer: SchemaComposer;
@@ -73,7 +73,7 @@ function createRelationshipFields({
             "ConnectInput",
             "DeleteInput",
             "DisconnectInput",
-            "RelationInput"
+            "RelationInput",
         ].map((type) => schemaComposer.getOrCreateITC(`${sourceName}${type}`));
     }
 
@@ -96,7 +96,7 @@ function createRelationshipFields({
                     ...relFields.scalarFields,
                     ...relFields.enumFields,
                     ...relFields.temporalFields.filter((field) => !field.timestamps),
-                    ...relFields.pointFields
+                    ...relFields.pointFields,
                 ];
                 hasNonGeneratedProperties = nonGeneratedProperties.length > 0;
                 hasNonNullNonGeneratedProperties = nonGeneratedProperties.some((field) => field.typeMeta.required);
@@ -105,7 +105,7 @@ function createRelationshipFields({
                     ...relFields.scalarFields,
                     ...relFields.enumFields,
                     ...relFields.temporalFields,
-                    ...relFields.pointFields
+                    ...relFields.pointFields,
                 ].some((field) => field.typeMeta.required);
             }
         }
@@ -115,7 +115,7 @@ function createRelationshipFields({
             if (!rel.writeonly) {
                 const baseNodeFieldArgs = {
                     options: `${rel.typeMeta.name}Options`,
-                    where: `${rel.typeMeta.name}Where`
+                    where: `${rel.typeMeta.name}Where`,
                 };
                 const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
 
@@ -124,14 +124,14 @@ function createRelationshipFields({
                         type: rel.typeMeta.pretty,
                         args: nodeFieldArgs,
                         description: rel.description,
-                        directives: graphqlDirectivesToCompose(rel.otherDirectives)
-                    }
+                        directives: graphqlDirectivesToCompose(rel.otherDirectives),
+                    },
                 });
             }
 
             const connectWhere = schemaComposer.getOrCreateITC(`${rel.typeMeta.name}ConnectWhere`, (tc) => {
                 tc.addFields({
-                    node: `${rel.typeMeta.name}Where!`
+                    node: `${rel.typeMeta.name}Where!`,
                 });
             });
 
@@ -142,10 +142,10 @@ function createRelationshipFields({
                         ...(schemaComposer.has(`${rel.typeMeta.name}ConnectInput`)
                             ? { connect: `${rel.typeMeta.name}ConnectInput` }
                             : {}),
-                        ...(rel.properties
+                        ...(hasNonGeneratedProperties
                             ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
-                        where: connectWhere
+                        where: connectWhere,
                     });
                 }
             );
@@ -157,7 +157,7 @@ function createRelationshipFields({
                         ...(schemaComposer.has(`${rel.typeMeta.name}DeleteInput`)
                             ? { delete: `${rel.typeMeta.name}DeleteInput` }
                             : {}),
-                        where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`
+                        where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`,
                     });
                 }
             );
@@ -169,7 +169,7 @@ function createRelationshipFields({
                         ...(schemaComposer.has(`${rel.typeMeta.name}DisconnectInput`)
                             ? { disconnect: `${rel.typeMeta.name}DisconnectInput` }
                             : {}),
-                        where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`
+                        where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`,
                     });
                 }
             );
@@ -178,11 +178,11 @@ function createRelationshipFields({
                 `${sourceName}${upperFirst(rel.fieldName)}CreateFieldInput`,
                 (tc) => {
                     tc.addFields({
-                        node: `${rel.typeMeta.name}CreateInput!`
+                        node: `${rel.typeMeta.name}CreateInput!`,
                     });
-                    if (rel.properties) {
+                    if (hasNonGeneratedProperties) {
                         tc.addFields({
-                            edge: `${rel.properties}CreateInput!`
+                            edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}`,
                         });
                     }
                 }
@@ -190,8 +190,8 @@ function createRelationshipFields({
 
             schemaComposer.getOrCreateITC(`${sourceName}${upperFirst(rel.fieldName)}UpdateConnectionInput`, (tc) => {
                 tc.addFields({
-                    ...(rel.properties ? { edge: `${rel.properties}UpdateInput` } : {}),
-                    node: `${rel.typeMeta.name}UpdateInput`
+                    ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
+                    node: `${rel.typeMeta.name}UpdateInput`,
                 });
             });
 
@@ -212,7 +212,7 @@ function createRelationshipFields({
                             ? `[${sourceName}${upperFirst(rel.fieldName)}DisconnectFieldInput!]`
                             : `${sourceName}${upperFirst(rel.fieldName)}DisconnectFieldInput`,
                         update: `${sourceName}${upperFirst(rel.fieldName)}UpdateConnectionInput`,
-                        where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`
+                        where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`,
                     });
                 }
             );
@@ -222,7 +222,7 @@ function createRelationshipFields({
                 (tc) => {
                     tc.addFields({
                         create: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
-                        connect: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput
+                        connect: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
                     });
                 }
             );
@@ -234,36 +234,38 @@ function createRelationshipFields({
                         name: createName,
                         fields: {
                             node: `${n.name}CreateInput!`,
-                            ...(rel.properties ? { edge: `${rel.properties}CreateInput!` } : {})
-                        }
+                            ...(hasNonGeneratedProperties
+                                ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                                : {}),
+                        },
                     });
                 }
             });
 
             if (!(composeNode instanceof InterfaceTypeComposer)) {
                 nodeCreateInput.addFields({
-                    [rel.fieldName]: nodeFieldInput
+                    [rel.fieldName]: nodeFieldInput,
                 });
             }
 
             nodeConnectInput.addFields({
-                [rel.fieldName]: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput
+                [rel.fieldName]: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
             });
 
             nodeDeleteInput.addFields({
-                [rel.fieldName]: rel.typeMeta.array ? deleteFieldInput.NonNull.List : deleteFieldInput
+                [rel.fieldName]: rel.typeMeta.array ? deleteFieldInput.NonNull.List : deleteFieldInput,
             });
 
             nodeDisconnectInput.addFields({
-                [rel.fieldName]: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput
+                [rel.fieldName]: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
             });
 
             nodeRelationInput.addFields({
-                [rel.fieldName]: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput
+                [rel.fieldName]: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
             });
 
             nodeUpdateInput.addFields({
-                [rel.fieldName]: rel.typeMeta.array ? updateFieldInput.NonNull.List : updateFieldInput
+                [rel.fieldName]: rel.typeMeta.array ? updateFieldInput.NonNull.List : updateFieldInput,
             });
 
             return;
@@ -275,7 +277,7 @@ function createRelationshipFields({
             if (!rel.writeonly) {
                 const baseNodeFieldArgs = {
                     options: "QueryOptions",
-                    where: `${rel.typeMeta.name}Where`
+                    where: `${rel.typeMeta.name}Where`,
                 };
                 const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
 
@@ -284,8 +286,8 @@ function createRelationshipFields({
                         type: rel.typeMeta.pretty,
                         args: nodeFieldArgs,
                         description: rel.description,
-                        directives: graphqlDirectivesToCompose(rel.otherDirectives)
-                    }
+                        directives: graphqlDirectivesToCompose(rel.otherDirectives),
+                    },
                 });
             }
 
@@ -298,17 +300,17 @@ function createRelationshipFields({
                 "Create",
                 "Delete",
                 "Disconnect",
-                "Update"
+                "Update",
             ].map((operation) =>
                 schemaComposer.createInputTC({
                     name: `${typePrefix}${operation}Input`,
-                    fields: {}
+                    fields: {},
                 })
             );
 
             const unionCreateFieldInput = schemaComposer.createInputTC({
                 name: `${typePrefix}CreateFieldInput`,
-                fields: {}
+                fields: {},
             });
 
             refNodes.forEach((n) => {
@@ -334,18 +336,18 @@ function createRelationshipFields({
                             node: `${n.name}CreateInput!`,
                             ...(hasNonGeneratedProperties
                                 ? {
-                                      edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`
+                                      edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
                                   }
-                                : {})
-                        }
+                                : {}),
+                        },
                     });
 
                     unionCreateInput.addFields({
-                        [n.name]: nodeFieldInputName
+                        [n.name]: nodeFieldInputName,
                     });
 
                     unionCreateFieldInput.addFields({
-                        [n.name]: `[${createName}!]`
+                        [n.name]:  rel.typeMeta.array ? `[${createName}!]` : createName,
                     });
                 }
 
@@ -354,8 +356,8 @@ function createRelationshipFields({
                     schemaComposer.createInputTC({
                         name: connectWhereName,
                         fields: {
-                            node: `${n.name}Where!`
-                        }
+                            node: `${n.name}Where!`,
+                        },
                     });
                 }
 
@@ -368,19 +370,19 @@ function createRelationshipFields({
                             where: connectWhereName,
                             ...(n.relationFields.length
                                 ? {
-                                      connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput`
+                                      connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput`,
                                   }
                                 : {}),
                             ...(hasNonGeneratedProperties
                                 ? {
-                                      edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`
+                                      edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
                                   }
-                                : {})
-                        }
+                                : {}),
+                        },
                     });
 
                     unionConnectInput.addFields({
-                        [n.name]: connect
+                        [n.name]: connect,
                     });
                 }
 
@@ -390,7 +392,7 @@ function createRelationshipFields({
                     connect,
                     disconnect: rel.typeMeta.array ? `[${disconnectName}!]` : disconnectName,
                     create,
-                    delete: rel.typeMeta.array ? `[${deleteName}!]` : deleteName
+                    delete: rel.typeMeta.array ? `[${deleteName}!]` : deleteName,
                 };
 
                 const connectOrCreate = createConnectOrCreateField({
@@ -398,7 +400,7 @@ function createRelationshipFields({
                     node: n,
                     schemaComposer,
                     hasNonGeneratedProperties,
-                    hasNonNullNonGeneratedProperties
+                    hasNonNullNonGeneratedProperties,
                 });
 
                 if (connectOrCreate) {
@@ -410,11 +412,11 @@ function createRelationshipFields({
                 if (!schemaComposer.has(updateName)) {
                     schemaComposer.createInputTC({
                         name: updateName,
-                        fields: updateFields
+                        fields: updateFields,
                     });
 
                     unionUpdateInput.addFields({
-                        [n.name]: update
+                        [n.name]: update,
                     });
                 }
 
@@ -422,13 +424,13 @@ function createRelationshipFields({
                     name: connectionUpdateInputName,
                     fields: {
                         ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
-                        node: updateField
-                    }
+                        node: updateField,
+                    },
                 });
 
                 const fieldInputFields = {
                     create,
-                    connect
+                    connect,
                 } as Record<string, string>;
 
                 if (connectOrCreate) {
@@ -437,7 +439,7 @@ function createRelationshipFields({
 
                 schemaComposer.createInputTC({
                     name: nodeFieldInputName,
-                    fields: fieldInputFields
+                    fields: fieldInputFields,
                 });
 
                 schemaComposer.createInputTC({
@@ -446,7 +448,7 @@ function createRelationshipFields({
                         node: `${n.name}Where`,
                         node_NOT: {
                             type: `${n.name}Where`,
-                            directives: [DEPRECATE_NOT]
+                            directives: [DEPRECATE_NOT],
                         },
                         AND: `[${whereName}!]`,
                         OR: `[${whereName}!]`,
@@ -456,11 +458,11 @@ function createRelationshipFields({
                                   edge: `${rel.properties}Where`,
                                   edge_NOT: {
                                       type: `${rel.properties}Where`,
-                                      directives: [DEPRECATE_NOT]
-                                  }
+                                      directives: [DEPRECATE_NOT],
+                                  },
                               }
-                            : {})
-                    }
+                            : {}),
+                    },
                 });
 
                 if (!schemaComposer.has(deleteName)) {
@@ -470,14 +472,14 @@ function createRelationshipFields({
                             where: whereName,
                             ...(n.relationFields.length
                                 ? {
-                                      delete: `${n.name}DeleteInput`
+                                      delete: `${n.name}DeleteInput`,
                                   }
-                                : {})
-                        }
+                                : {}),
+                        },
                     });
 
                     unionDeleteInput.addFields({
-                        [n.name]: deleteField
+                        [n.name]: deleteField,
                     });
                 }
 
@@ -488,14 +490,14 @@ function createRelationshipFields({
                             where: whereName,
                             ...(n.relationFields.length
                                 ? {
-                                      disconnect: `${n.name}DisconnectInput`
+                                      disconnect: `${n.name}DisconnectInput`,
                                   }
-                                : {})
-                        }
+                                : {}),
+                        },
                     });
 
                     unionDisconnectInput.addFields({
-                        [n.name]: disconnect
+                        [n.name]: disconnect,
                     });
                 }
 
@@ -510,7 +512,7 @@ function createRelationshipFields({
                     );
 
                     nodeConnectOrCreateInput.addFields({
-                        [rel.fieldName]: nodeRelationConnectOrCreateInput
+                        [rel.fieldName]: nodeRelationConnectOrCreateInput,
                     });
 
                     const nodeFieldConnectOrCreateInputName = `${sourceName}${upperFirst(rel.fieldName)}${
@@ -520,35 +522,35 @@ function createRelationshipFields({
                     nodeRelationConnectOrCreateInput.addFields({
                         [n.name]: rel.typeMeta.array
                             ? `[${nodeFieldConnectOrCreateInputName}!]`
-                            : nodeFieldConnectOrCreateInputName
+                            : nodeFieldConnectOrCreateInputName,
                     });
                 }
             });
 
             if (!(composeNode instanceof InterfaceTypeComposer)) {
                 nodeCreateInput.addFields({
-                    [rel.fieldName]: unionCreateInput
+                    [rel.fieldName]: unionCreateInput,
                 });
             }
 
             nodeRelationInput.addFields({
-                [rel.fieldName]: unionCreateFieldInput
+                [rel.fieldName]: unionCreateFieldInput,
             });
 
             nodeUpdateInput.addFields({
-                [rel.fieldName]: unionUpdateInput
+                [rel.fieldName]: unionUpdateInput,
             });
 
             nodeConnectInput.addFields({
-                [rel.fieldName]: unionConnectInput
+                [rel.fieldName]: unionConnectInput,
             });
 
             nodeDeleteInput.addFields({
-                [rel.fieldName]: unionDeleteInput
+                [rel.fieldName]: unionDeleteInput,
             });
 
             nodeDisconnectInput.addFields({
-                [rel.fieldName]: unionDisconnectInput
+                [rel.fieldName]: unionDisconnectInput,
             });
 
             return;
@@ -595,8 +597,8 @@ function createRelationshipFields({
                 fields: {
                     AND: `[${name}!]`,
                     OR: `[${name}!]`,
-                    NOT: name
-                }
+                    NOT: name,
+                },
             });
 
             fields.forEach((field) => {
@@ -604,8 +606,8 @@ function createRelationshipFields({
                     aggregationInput.addFields({
                         [`${field.fieldName}_EQUAL`]: {
                             type: `ID`,
-                            directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS]
-                        }
+                            directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                        },
                     });
 
                     return;
@@ -618,23 +620,23 @@ function createRelationshipFields({
                                 ...res,
                                 [`${field.fieldName}_${operator}`]: {
                                     type: `${operator === "EQUAL" ? "String" : "Int"}`,
-                                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS]
+                                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
                                 },
                                 [`${field.fieldName}_AVERAGE_${operator}`]: {
                                     type: "Float",
-                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS]
+                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
                                 },
                                 [`${field.fieldName}_LONGEST_${operator}`]: {
                                     type: "Int",
-                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS]
+                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
                                 },
                                 [`${field.fieldName}_SHORTEST_${operator}`]: {
                                     type: "Int",
-                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS]
+                                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
                                 },
                                 [`${field.fieldName}_AVERAGE_LENGTH_${operator}`]: "Float",
                                 [`${field.fieldName}_LONGEST_LENGTH_${operator}`]: "Int",
-                                [`${field.fieldName}_SHORTEST_LENGTH_${operator}`]: "Int"
+                                [`${field.fieldName}_SHORTEST_LENGTH_${operator}`]: "Int",
                             };
                         }, {})
                     );
@@ -659,14 +661,14 @@ function createRelationshipFields({
                                 ...res,
                                 [`${field.fieldName}_${operator}`]: {
                                     type: field.typeMeta.name,
-                                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS]
+                                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
                                 },
                                 [`${field.fieldName}_AVERAGE_${operator}`]: averageType,
                                 [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
                                 [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
                                 ...(field.typeMeta.name !== "Duration"
                                     ? { [`${field.fieldName}_SUM_${operator}`]: field.typeMeta.name }
-                                    : {})
+                                    : {}),
                             };
                         }, {})
                     );
@@ -680,10 +682,10 @@ function createRelationshipFields({
                             ...res,
                             [`${field.fieldName}_${operator}`]: {
                                 type: field.typeMeta.name,
-                                directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS]
+                                directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
                             },
                             [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
-                            [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name
+                            [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
                         }),
                         {}
                     )
@@ -705,60 +707,35 @@ function createRelationshipFields({
                 OR: `[${relationshipWhereTypeInputName}!]`,
                 NOT: relationshipWhereTypeInputName,
                 ...(nodeWhereAggregationInput ? { node: nodeWhereAggregationInput } : {}),
-                ...(edgeWhereAggregationInput ? { edge: edgeWhereAggregationInput } : {})
-            }
+                ...(edgeWhereAggregationInput ? { edge: edgeWhereAggregationInput } : {}),
+            },
         });
 
         whereInput.addFields({
             ...{
                 [rel.fieldName]: {
                     type: `${n.name}Where`,
-                    directives: [
-                        {
-                            name: "deprecated",
-                            args: {
-                                reason: `Use \`${rel.fieldName}_SOME\` instead.`
-                            }
-                        }
-                    ]
                 },
                 [`${rel.fieldName}_NOT`]: {
                     type: `${n.name}Where`,
-                    directives: [
-                        {
-                            name: "deprecated",
-                            args: {
-                                reason: `Use \`${rel.fieldName}_NONE\` instead.`
-                            }
-                        }
-                    ]
                 },
                 [`${rel.fieldName}Aggregate`]: {
                     type: whereAggregateInput,
-                    directives: deprecatedDirectives
-                }
-            }
+                    directives: deprecatedDirectives,
+                },
+            },
         });
 
         // n..m Relationships
         if (rel.typeMeta.array) {
-            // Add filters for each list predicate
-            whereInput.addFields(
-                (["ALL", "NONE", "SINGLE", "SOME"] as const).reduce(
-                    (acc, filter) => ({
-                        ...acc,
-                        [`${rel.fieldName}_${filter}`]: {
-                            type: `${n.name}Where`,
-                            // e.g. "Return Movies where all of the related Actors match this filter"
-                            description: `Return ${pluralize(sourceName)} where ${
-                                filter !== "SINGLE" ? filter.toLowerCase() : "one"
-                            } of the related ${pluralize(rel.typeMeta.name)} match this filter`,
-                            directives: deprecatedDirectives
-                        }
-                    }),
-                    {}
-                )
-            );
+            addRelationshipArrayFilters({
+                whereInput,
+                fieldName: rel.fieldName,
+                sourceName,
+                relatedType: rel.typeMeta.name,
+                whereType: `${n.name}Where`,
+                directives: deprecatedDirectives,
+            });
         }
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;
@@ -768,14 +745,14 @@ function createRelationshipFields({
                 node: `${n.name}CreateInput!`,
                 ...(hasNonGeneratedProperties
                     ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
-                    : {})
+                    : {}),
             });
         });
 
         const connectWhereName = `${n.name}ConnectWhere`;
         schemaComposer.getOrCreateITC(connectWhereName, (tc) => {
             tc.addFields({
-                node: `${n.name}Where!`
+                node: `${n.name}Where!`,
             });
         });
 
@@ -790,7 +767,7 @@ function createRelationshipFields({
                 ...(hasNonGeneratedProperties
                     ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
                     : {}),
-                overwrite
+                overwrite,
             });
             tc.makeFieldNonNull("overwrite");
         });
@@ -799,7 +776,7 @@ function createRelationshipFields({
             const relationshipField: { type: string; description?: string; directives: Directive[]; args?: any } = {
                 type: rel.typeMeta.pretty,
                 description: rel.description,
-                directives: graphqlDirectivesToCompose(rel.otherDirectives)
+                directives: graphqlDirectivesToCompose(rel.otherDirectives),
             };
 
             let generateRelFieldArgs = true;
@@ -814,14 +791,14 @@ function createRelationshipFields({
             if (generateRelFieldArgs) {
                 const nodeFieldsBaseArgs = {
                     where: `${rel.typeMeta.name}Where`,
-                    options: `${rel.typeMeta.name}Options`
+                    options: `${rel.typeMeta.name}Options`,
                 };
                 const nodeFieldsArgs = addDirectedArgument(nodeFieldsBaseArgs, rel);
                 relationshipField.args = nodeFieldsArgs;
             }
 
             composeNode.addFields({
-                [rel.fieldName]: relationshipField
+                [rel.fieldName]: relationshipField,
             });
 
             if (composeNode instanceof ObjectTypeComposer) {
@@ -835,7 +812,7 @@ function createRelationshipFields({
                 );
 
                 const aggregationFieldsBaseArgs = {
-                    where: `${rel.typeMeta.name}Where`
+                    where: `${rel.typeMeta.name}Where`,
                 };
 
                 const aggregationFieldsArgs = addDirectedArgument(aggregationFieldsBaseArgs, rel);
@@ -844,8 +821,8 @@ function createRelationshipFields({
                     [`${rel.fieldName}Aggregate`]: {
                         type: aggregationTypeObject,
                         args: aggregationFieldsArgs,
-                        directives: deprecatedDirectives
-                    }
+                        directives: deprecatedDirectives,
+                    },
                 });
             }
         }
@@ -853,7 +830,7 @@ function createRelationshipFields({
         schemaComposer.getOrCreateITC(connectionUpdateInputName, (tc) => {
             tc.addFields({
                 node: updateField,
-                ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {})
+                ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
             });
         });
 
@@ -862,7 +839,7 @@ function createRelationshipFields({
             node: n,
             schemaComposer,
             hasNonGeneratedProperties,
-            hasNonNullNonGeneratedProperties
+            hasNonNullNonGeneratedProperties,
         });
 
         const updateFields: Record<string, string> = {
@@ -871,7 +848,7 @@ function createRelationshipFields({
             connect,
             disconnect: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
             create,
-            delete: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName
+            delete: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
         };
 
         if (connectOrCreate) {
@@ -884,7 +861,7 @@ function createRelationshipFields({
 
         const mutationFields: Record<string, string> = {
             create,
-            connect
+            connect,
         };
 
         if (connectOrCreate) {
@@ -900,8 +877,8 @@ function createRelationshipFields({
                 name: nodeFieldDeleteInputName,
                 fields: {
                     where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`,
-                    ...(n.relationFields.length ? { delete: `${n.name}DeleteInput` } : {})
-                }
+                    ...(n.relationFields.length ? { delete: `${n.name}DeleteInput` } : {}),
+                },
             });
         }
 
@@ -910,53 +887,53 @@ function createRelationshipFields({
                 name: nodeFieldDisconnectInputName,
                 fields: {
                     where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`,
-                    ...(n.relationFields.length ? { disconnect: `${n.name}DisconnectInput` } : {})
-                }
+                    ...(n.relationFields.length ? { disconnect: `${n.name}DisconnectInput` } : {}),
+                },
             });
         }
 
         nodeRelationInput.addFields({
             [rel.fieldName]: {
                 type: create,
-                directives: deprecatedDirectives
-            }
+                directives: deprecatedDirectives,
+            },
         });
 
         if (!(composeNode instanceof InterfaceTypeComposer)) {
             nodeCreateInput.addFields({
                 [rel.fieldName]: {
                     type: nodeFieldInputName,
-                    directives: deprecatedDirectives
-                }
+                    directives: deprecatedDirectives,
+                },
             });
         }
 
         nodeUpdateInput.addFields({
             [rel.fieldName]: {
                 type: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}!]` : nodeFieldUpdateInputName,
-                directives: deprecatedDirectives
-            }
+                directives: deprecatedDirectives,
+            },
         });
 
         nodeDeleteInput.addFields({
             [rel.fieldName]: {
                 type: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
-                directives: deprecatedDirectives
-            }
+                directives: deprecatedDirectives,
+            },
         });
 
         nodeConnectInput.addFields({
             [rel.fieldName]: {
                 type: connect,
-                directives: deprecatedDirectives
-            }
+                directives: deprecatedDirectives,
+            },
         });
 
         nodeDisconnectInput.addFields({
             [rel.fieldName]: {
                 type: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
-                directives: deprecatedDirectives
-            }
+                directives: deprecatedDirectives,
+            },
         });
 
         if (n.uniqueFields.length) {
@@ -968,7 +945,7 @@ function createRelationshipFields({
 function createTopLevelConnectOrCreateInput({
     schemaComposer,
     sourceName,
-    rel
+    rel,
 }: {
     schemaComposer: SchemaComposer;
     sourceName: string;
@@ -985,7 +962,7 @@ function createTopLevelConnectOrCreateInput({
     nodeConnectOrCreateInput.addFields({
         [rel.fieldName]: rel.typeMeta.array
             ? `[${nodeFieldConnectOrCreateInputName}!]`
-            : nodeFieldConnectOrCreateInputName
+            : nodeFieldConnectOrCreateInputName,
     });
 }
 

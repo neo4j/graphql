@@ -53,7 +53,13 @@ describe("Cypher coalesce()", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
+            features: {
+                filters: {
+                    String: {
+                        MATCHES: true,
+                    },
+                },
+            },
         });
 
         const query = gql`
@@ -132,7 +138,13 @@ describe("Cypher coalesce()", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
+            features: {
+                filters: {
+                    String: {
+                        MATCHES: true,
+                    },
+                },
+            },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
             },
@@ -183,7 +195,13 @@ describe("Cypher coalesce()", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
+            features: {
+                filters: {
+                    String: {
+                        MATCHES: true,
+                    },
+                },
+            },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
             },
@@ -213,19 +231,83 @@ describe("Cypher coalesce()", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_moviesConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                WHERE coalesce(this_Movie.status, \\"ACTIVE\\") = $this_connection_moviesConnectionparam0
-                WITH { node: { id: this_Movie.id, status: this_Movie.status } } AS edge
+                MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                WHERE coalesce(this1.status, \\"ACTIVE\\") = $param0
+                WITH { node: { id: this1.id, status: this1.status } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_moviesConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { moviesConnection: this_moviesConnection } AS this"
+            RETURN this { moviesConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_moviesConnectionparam0\\": \\"ACTIVE\\"
+                \\"param0\\": \\"ACTIVE\\"
+            }"
+        `);
+    });
+
+    test("Coalesce with enum list in projection", async () => {
+        const typeDefs = gql`
+            enum Status {
+                ACTIVE
+                INACTIVE
+            }
+            type Movie {
+                id: ID
+                statuses: [Status!]! @coalesce(value: [ACTIVE, INACTIVE])
+            }
+
+            type Actor {
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const query = gql`
+            query Actors {
+                actors {
+                    moviesConnection(where: { node: { statuses: [ACTIVE, INACTIVE] } }) {
+                        edges {
+                            node {
+                                id
+                                statuses
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Actor\`)
+            CALL {
+                WITH this
+                MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                WHERE coalesce(this1.statuses, [ \\"ACTIVE\\", \\"INACTIVE\\" ]) = $param0
+                WITH { node: { id: this1.id, statuses: this1.statuses } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var2
+            }
+            RETURN this { moviesConnection: var2 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": [
+                    \\"ACTIVE\\",
+                    \\"INACTIVE\\"
+                ]
             }"
         `);
     });

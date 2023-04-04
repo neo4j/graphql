@@ -22,10 +22,11 @@ import type { GraphElement } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
 // Recursive function
 import { createPropertyWhere } from "./property-operations/create-property-where";
-import { getCypherLogicalOperator, isLogicalOperator, LogicalOperator } from "../utils/logical-operators";
+import type { LogicalOperator } from "../utils/logical-operators";
+import { getCypherLogicalOperator, isLogicalOperator } from "../utils/logical-operators";
 import { asArray } from "../../utils/utils";
 
-/** Translate a target node and GraphQL input into a Cypher operation o valid where expression */
+/** Translate a target node and GraphQL input into a Cypher operation or valid where expression */
 export function createWherePredicate({
     targetElement,
     whereInput,
@@ -43,7 +44,7 @@ export function createWherePredicate({
     whereFields.forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
             const { predicate, preComputedSubqueries } = createNestedPredicate({
-                key: key as LogicalOperator,
+                key: key,
                 element,
                 targetElement,
                 context,

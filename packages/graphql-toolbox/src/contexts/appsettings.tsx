@@ -17,15 +17,9 @@
  * limitations under the License.
  */
 
-import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
-import {
-    LOCAL_STATE_CONSTRAINT,
-    LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING,
-    LOCAL_STATE_HIDE_PRODUCT_USAGE_MESSAGE,
-    LOCAL_STATE_SHOW_LINT_MARKERS,
-} from "../constants";
-import { ConstraintState } from "../types";
-import { Storage } from "../utils/storage";
+import type { Dispatch, SetStateAction } from "react";
+import React, { useState } from "react";
+import { useStore } from "../store";
 
 export interface State {
     showLintMarkers: boolean;
@@ -38,43 +32,24 @@ export interface State {
 
 export const AppSettingsContext = React.createContext({} as State);
 
-const _resolveValue = (localStateLabel: string, defaultValue: boolean): boolean => {
-    const storedState = Storage.retrieve(localStateLabel);
-    return storedState !== null ? storedState === "true" : defaultValue;
-};
-
 export function AppSettingsProvider(props: React.PropsWithChildren<any>) {
     const [value, setValue]: [value: State | undefined, setValue: Dispatch<SetStateAction<State>>] = useState<State>({
-        showLintMarkers: Storage.retrieve(LOCAL_STATE_SHOW_LINT_MARKERS) === "true",
-        enableProductUsageTracking: _resolveValue(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING, true),
-        hideProductUsageMessage: _resolveValue(LOCAL_STATE_HIDE_PRODUCT_USAGE_MESSAGE, false),
+        showLintMarkers: useStore.getState().showLintMarkers,
+        enableProductUsageTracking: useStore.getState().enableProductUsageTracking,
+        hideProductUsageMessage: useStore.getState().hideProductUsageTrackingMessage,
         setShowLintMarkers: (nextState: boolean) => {
-            Storage.store(LOCAL_STATE_SHOW_LINT_MARKERS, String(nextState));
+            useStore.setState({ showLintMarkers: nextState });
             setValue((values) => ({ ...values, showLintMarkers: nextState }));
         },
         setEnableProductUsageTracking: (nextState: boolean) => {
-            Storage.store(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING, String(nextState));
+            useStore.setState({ enableProductUsageTracking: nextState });
             setValue((values) => ({ ...values, enableProductUsageTracking: nextState }));
         },
         setHideProductUsageMessage: (nextState: boolean) => {
-            Storage.store(LOCAL_STATE_HIDE_PRODUCT_USAGE_MESSAGE, String(nextState));
+            useStore.setState({ hideProductUsageTrackingMessage: nextState });
             setValue((values) => ({ ...values, hideProductUsageMessage: nextState }));
         },
     });
-
-    useEffect(() => {
-        const constraintState = Storage.retrieve(LOCAL_STATE_CONSTRAINT);
-        if (!constraintState) {
-            Storage.store(LOCAL_STATE_CONSTRAINT, ConstraintState.ignore.toString());
-        }
-
-        // On load of the application, if LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING is not set, set it to true.
-        // The user can at any point opt out of product usage tracking.
-        const isEnabledProductUsageTracking = Storage.retrieve(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING);
-        if (isEnabledProductUsageTracking === null) {
-            Storage.store(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING, "true");
-        }
-    }, []);
 
     return <AppSettingsContext.Provider value={value}>{props.children}</AppSettingsContext.Provider>;
 }

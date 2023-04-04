@@ -77,7 +77,7 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
         });
     });
 
-    test("Callback - existance", async () => {
+    test("Callback - existence", async () => {
         const typeDefs = gql`
             type Movie {
                 id: ID
@@ -524,10 +524,22 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
               genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
               genresAggregate: MovieGenresAggregateInput
               genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_ALL: MovieGenresConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_NONE: MovieGenresConnectionWhere
               genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_SINGLE: MovieGenresConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_SOME: MovieGenresConnectionWhere
               \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
               genres_ALL: GenreWhere
@@ -1083,10 +1095,22 @@ describe("schema/rfc/autogenerate-properties-rel", () => {
               genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
               genresAggregate: MovieGenresAggregateInput
               genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_ALL: MovieGenresConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_NONE: MovieGenresConnectionWhere
               genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_SINGLE: MovieGenresConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieGenresConnections match this filter
+              \\"\\"\\"
               genresConnection_SOME: MovieGenresConnectionWhere
               \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
               genres_ALL: GenreWhere

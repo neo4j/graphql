@@ -49,7 +49,6 @@ describe("Create or Connect", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -103,8 +102,7 @@ describe("Create or Connect", () => {
                 }
                 RETURN this0
                 }
-                RETURN [
-                this0 { .name }] AS data"
+                RETURN [ this0 { .name } ] AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -208,7 +206,6 @@ describe("Create or Connect", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -264,8 +261,7 @@ describe("Create or Connect", () => {
                 }
                 RETURN this0
                 }
-                RETURN [
-                this0 { .name }] AS data"
+                RETURN [ this0 { .name } ] AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -328,8 +324,7 @@ describe("Create or Connect", () => {
                 }
                 RETURN this0
                 }
-                RETURN [
-                this0 { .name }] AS data"
+                RETURN [ this0 { .name } ] AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -497,7 +492,6 @@ describe("Create or Connect", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
@@ -553,8 +547,7 @@ describe("Create or Connect", () => {
                 }
                 RETURN this0
                 }
-                RETURN [
-                this0 { .name }] AS data"
+                RETURN [ this0 { .name } ] AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`

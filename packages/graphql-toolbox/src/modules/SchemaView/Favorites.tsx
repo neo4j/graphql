@@ -17,83 +17,28 @@
  * limitations under the License.
  */
 
-import { HeroIcon } from "@neo4j-ndl/react";
-import { Storage } from "../../utils/storage";
-import { Favorite } from "../../types";
-import { LOCAL_STATE_FAVORITES } from "../../constants";
-import { Fragment, useState } from "react";
+import { IconButton } from "@neo4j-ndl/react";
+import { TrashIconOutline } from "@neo4j-ndl/react/icons";
+import { FavoriteNameEdit } from "./FavoriteNameEdit";
+import type { Favorite } from "../../types";
+import { useStore } from "../../store";
 
-interface NameComponentProps {
-    name: string;
-    saveName: (newName: string) => void;
-    onSelectFavorite: () => void;
-}
+const ALTERNATE_BG_COLOR = "n-bg-neutral-20";
 
 interface FavoritesProps {
     favorites: Favorite[] | null;
-    setFavorites: (nextState: Favorite[] | null) => void;
     onSelectFavorite: (typeDefs: string) => void;
 }
 
-const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps) => {
-    const [editMode, setEditMode] = useState<boolean>(false);
-    const [nameValue, setNameValue] = useState<string>(name);
-
-    const _handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-            setEditMode(false);
-            saveName(nameValue);
-        }
-    };
-
-    return (
-        <Fragment>
-            <div
-                className="w-full"
-                onClick={() => onSelectFavorite()}
-                onKeyDown={() => onSelectFavorite()}
-                role="button"
-                tabIndex={0}
-            >
-                {editMode ? (
-                    <input
-                        className="w-64"
-                        value={nameValue}
-                        onChange={(event) => setNameValue(event.currentTarget.value)}
-                        onKeyDown={_handleKeyDown}
-                    />
-                ) : (
-                    <div className="truncate w-64">{name}</div>
-                )}
-            </div>
-            {editMode ? (
-                <HeroIcon
-                    className="h-5 w-5"
-                    iconName="CheckIcon"
-                    type="outline"
-                    onClick={() => {
-                        setEditMode(false);
-                        saveName(nameValue);
-                    }}
-                />
-            ) : (
-                <HeroIcon className="h-5 w-5" iconName="PencilIcon" type="outline" onClick={() => setEditMode(true)} />
-            )}
-        </Fragment>
-    );
-};
-
-export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: FavoritesProps) => {
+export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
     const deleteFavorite = (id: string): void => {
         const nextFavs = favorites?.filter((fav) => fav.id !== id) || null;
-        setFavorites(nextFavs);
-        Storage.storeJSON(LOCAL_STATE_FAVORITES, nextFavs);
+        useStore.setState({ favorites: nextFavs });
     };
 
     const updateName = (newName: string, id: string): void => {
         const nextFavs = favorites?.map((fav) => (fav.id === id ? { ...fav, name: newName } : fav)) || null;
-        setFavorites(nextFavs);
-        Storage.storeJSON(LOCAL_STATE_FAVORITES, nextFavs);
+        useStore.setState({ favorites: nextFavs });
     };
 
     return (
@@ -102,25 +47,28 @@ export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: Favorit
             {favorites?.length ? (
                 <ul className="pt-3 h-favorite overflow-y-scroll">
                     {favorites.map((favorite, idx) => {
+                        const isAlternateBackground = idx % 2 === 1;
                         return (
                             <li
                                 key={favorite.id}
                                 className={`flex justify-between items-center p-2 mb-1 cursor-pointer hover:n-bg-neutral-40 rounded ${
-                                    idx % 2 === 1 ? "n-bg-neutral-20" : ""
+                                    isAlternateBackground ? ALTERNATE_BG_COLOR : ""
                                 }`}
                             >
-                                <NameComponent
+                                <FavoriteNameEdit
                                     name={favorite.name}
                                     saveName={(newName) => updateName(newName, favorite.id)}
                                     onSelectFavorite={() => onSelectFavorite(favorite.typeDefs)}
                                 />
 
-                                <HeroIcon
-                                    className="h-5 w-5 n-text-danger-30 ml-3"
-                                    iconName="TrashIcon"
-                                    type="outline"
+                                <IconButton
+                                    aria-label="Delete favorite"
+                                    className="border-none h-5 w-5 n-text-danger-30 ml-3"
+                                    clean
                                     onClick={() => deleteFavorite(favorite.id)}
-                                />
+                                >
+                                    <TrashIconOutline />
+                                </IconButton>
                             </li>
                         );
                     })}

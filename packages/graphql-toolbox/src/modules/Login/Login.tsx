@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
+import { Button, SmartTooltip } from "@neo4j-ndl/react";
+import { ExclamationTriangleIconOutline } from "@neo4j-ndl/react/icons";
 import { FormInput } from "./FormInput";
-import { Button, HeroIcon } from "@neo4j-ndl/react";
 import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
 import { getConnectUrlSearchParamValue } from "../../contexts/utils";
-import { ProTooltip } from "../../components/ProTooltip";
 import { getURLProtocolFromText } from "../../utils/utils";
 
 export const Login = () => {
@@ -62,17 +62,14 @@ export const Login = () => {
     );
 
     const WarningToolTip = ({ text }: { text: React.ReactNode }): JSX.Element => {
+        const tooltipRef = useRef<SVGSVGElement | null>(null);
         return (
-            <ProTooltip
-                tooltipText={text}
-                arrowPositionOverride="left"
-                blockVisibility={false}
-                width={320}
-                left={36}
-                top={-58}
-            >
-                <HeroIcon className="n-text-warning-50" iconName="ExclamationIcon" type="outline" />
-            </ProTooltip>
+            <>
+                <ExclamationTriangleIconOutline className="n-text-warning-50" ref={tooltipRef} />
+                <SmartTooltip allowedPlacements={["right"]} style={{ width: "20rem" }} ref={tooltipRef}>
+                    {text}
+                </SmartTooltip>
+            </>
         );
     };
 

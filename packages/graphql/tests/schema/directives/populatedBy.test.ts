@@ -62,7 +62,7 @@ describe("@populatedBy tests", () => {
             });
         });
 
-        test("PopulatedBy - existance", async () => {
+        test("PopulatedBy - existence", async () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
@@ -95,11 +95,13 @@ describe("@populatedBy tests", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    callbacks: {
-                        callback1,
-                        callback2,
-                        callback3,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
                     },
                 },
             });
@@ -296,11 +298,13 @@ describe("@populatedBy tests", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    callbacks: {
-                        callback1,
-                        callback2,
-                        callback3,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
                     },
                 },
             });
@@ -534,7 +538,7 @@ describe("@populatedBy tests", () => {
             });
         });
 
-        test("PopulatedBy - existance", async () => {
+        test("PopulatedBy - existence", async () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
@@ -584,11 +588,13 @@ describe("@populatedBy tests", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    callbacks: {
-                        callback1,
-                        callback2,
-                        callback3,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
                     },
                 },
             });
@@ -983,10 +989,22 @@ describe("@populatedBy tests", () => {
                   genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
                   genresAggregate: MovieGenresAggregateInput
                   genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_ALL: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_NONE: MovieGenresConnectionWhere
                   genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_SINGLE: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_SOME: MovieGenresConnectionWhere
                   \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
                   genres_ALL: GenreWhere
@@ -1166,11 +1184,13 @@ describe("@populatedBy tests", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    callbacks: {
-                        callback1,
-                        callback2,
-                        callback3,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
                     },
                 },
             });
@@ -1542,10 +1562,22 @@ describe("@populatedBy tests", () => {
                   genres: GenreWhere @deprecated(reason: \\"Use \`genres_SOME\` instead.\\")
                   genresAggregate: MovieGenresAggregateInput
                   genresConnection: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_SOME\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_ALL: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_NONE: MovieGenresConnectionWhere
                   genresConnection_NOT: MovieGenresConnectionWhere @deprecated(reason: \\"Use \`genresConnection_NONE\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_SINGLE: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
                   genresConnection_SOME: MovieGenresConnectionWhere
                   \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
                   genres_ALL: GenreWhere

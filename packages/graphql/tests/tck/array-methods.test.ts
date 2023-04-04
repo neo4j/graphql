@@ -34,7 +34,6 @@ describe("Arrays Methods", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
@@ -86,7 +85,6 @@ describe("Arrays Methods", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
@@ -142,7 +140,6 @@ describe("Arrays Methods", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
@@ -181,10 +178,10 @@ describe("Arrays Methods", () => {
             "MATCH (this:\`Movie\`)
             CALL apoc.util.validate(this.filmingLocations IS NULL, \\"Property %s cannot be NULL\\", ['filmingLocations'])
             SET this.filmingLocations = this.filmingLocations + [p in $this_update_filmingLocations_PUSH | point(p)]
-            RETURN collect(DISTINCT this { .title, filmingLocations: (CASE
-                WHEN this.filmingLocations IS NOT NULL THEN [p_var0 IN this.filmingLocations | { point: p_var0 }]
+            RETURN collect(DISTINCT this { .title, filmingLocations: CASE
+                WHEN this.filmingLocations IS NOT NULL THEN [update_var0 IN this.filmingLocations | { point: update_var0 }]
                 ELSE NULL
-            END) }) AS data"
+            END }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -211,7 +208,6 @@ describe("Arrays Methods", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
@@ -271,7 +267,6 @@ describe("Arrays Methods", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
@@ -324,7 +319,6 @@ describe("Arrays Methods", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
@@ -382,7 +376,6 @@ describe("Arrays Methods", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
@@ -444,7 +437,6 @@ describe("Arrays Methods", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
@@ -511,7 +503,6 @@ describe("Arrays Methods", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
@@ -555,19 +546,19 @@ describe("Arrays Methods", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(this_actedIn:\`Movie\`)
-                WITH this_actedIn { .title } AS this_actedIn
-                RETURN collect(this_actedIn) AS this_actedIn
+                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                WITH update_this1 { .title } AS update_this1
+                RETURN collect(update_this1) AS update_var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                WITH { pay: this_connection_actedInConnectionthis0.pay } AS edge
+                MATCH (this)-[update_this3:ACTED_IN]->(update_this4:\`Movie\`)
+                WITH { pay: update_this3.pay } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS update_var5
             }
-            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: this_actedInConnection }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: update_var2, actedInConnection: update_var5 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -615,7 +606,6 @@ describe("Arrays Methods", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
@@ -659,19 +649,19 @@ describe("Arrays Methods", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:ACTED_IN]->(this_actedIn:\`Movie\`)
-                WITH this_actedIn { .title } AS this_actedIn
-                RETURN collect(this_actedIn) AS this_actedIn
+                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:\`Movie\`)
+                WITH update_this1 { .title } AS update_this1
+                RETURN collect(update_this1) AS update_var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                WITH { pay: this_connection_actedInConnectionthis0.pay } AS edge
+                MATCH (this)-[update_this3:ACTED_IN]->(update_this4:\`Movie\`)
+                WITH { pay: update_this3.pay } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS update_var5
             }
-            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: this_actedInConnection }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: update_var2, actedInConnection: update_var5 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

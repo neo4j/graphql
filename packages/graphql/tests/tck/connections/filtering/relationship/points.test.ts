@@ -49,7 +49,6 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
@@ -99,22 +98,22 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WHERE distance(this_connection_actorsConnectionthis0.location, point($this_connection_actorsConnectionparam0.point)) = $this_connection_actorsConnectionparam0.distance
-                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, location: CASE
-                    WHEN this_connection_actorsConnectionthis0.location IS NOT NULL THEN { point: this_connection_actorsConnectionthis0.location }
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE distance(this0.location, point($param0.point)) = $param0.distance
+                WITH { screenTime: this0.screenTime, location: CASE
+                    WHEN this0.location IS NOT NULL THEN { point: this0.location }
                     ELSE NULL
-                END, node: { name: this_Actor.name } } AS edge
+                END, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_actorsConnectionparam0\\": {
+                \\"param0\\": {
                     \\"point\\": {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2

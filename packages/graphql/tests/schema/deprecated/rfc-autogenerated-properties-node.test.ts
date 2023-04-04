@@ -59,7 +59,7 @@ describe("schema/rfc/autogenerate-properties-node", () => {
         });
     });
 
-    test("Callback - existance", async () => {
+    test("Callback - existence", async () => {
         const typeDefs = gql`
             type Movie {
                 id: ID

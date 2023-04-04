@@ -5,12 +5,13 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ReactNode } from "react";
-import { GraphQLSchema, GraphQLNamedType } from "graphql";
+import type { ReactNode } from "react";
+import React from "react";
+import type { GraphQLSchema, GraphQLNamedType } from "graphql";
 
 import Argument from "./Argument";
 import TypeLink from "./TypeLink";
-import { OnClickFieldFunction, OnClickTypeFunction } from "./types";
+import type { OnClickFieldFunction, OnClickTypeFunction } from "./types";
 
 type SearchResultsProps = {
     schema: GraphQLSchema;

@@ -77,7 +77,6 @@ describe("Cypher Auth Where", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
@@ -163,23 +162,25 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
-            WITH *
-            CALL {
-            WITH *
             CALL {
                 WITH this
-                MATCH (this)-[this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                WHERE (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this1 IN [(this_Comment)<-[:HAS_CONTENT]-(this1:\`User\`) | this1] WHERE (this1.id IS NOT NULL AND this1.id = $param1)))
-                RETURN { __resolveType: \\"Comment\\" } AS this_content
-                UNION
-                WITH this
-                MATCH (this)-[this2:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this3 IN [(this_Post)<-[:HAS_CONTENT]-(this3:\`User\`) | this3] WHERE (this3.id IS NOT NULL AND this3.id = $param2)))
-                RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS this_content
+                CALL {
+                    WITH *
+                    MATCH (this)-[this0:HAS_CONTENT]->(this1:\`Comment\`)
+                    WHERE (exists((this1)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this2 IN [(this1)<-[:HAS_CONTENT]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))
+                    WITH this1 { __resolveType: \\"Comment\\", __id: id(this) } AS this1
+                    RETURN this1 AS var3
+                    UNION
+                    WITH *
+                    MATCH (this)-[this4:HAS_CONTENT]->(this5:\`Post\`)
+                    WHERE (exists((this5)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this6 IN [(this5)<-[:HAS_CONTENT]-(this6:\`User\`) | this6] WHERE (this6.id IS NOT NULL AND this6.id = $param2)))
+                    WITH this5 { __resolveType: \\"Post\\", __id: id(this), .id } AS this5
+                    RETURN this5 AS var3
+                }
+                WITH var3
+                RETURN collect(var3) AS var3
             }
-            RETURN collect(this_content) AS this_content
-            }
-            RETURN this { .id, content: this_content } AS this"
+            RETURN this { .id, content: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -221,29 +222,29 @@ describe("Cypher Auth Where", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this_connection_contentConnectionthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                    WHERE (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis1 IN [(this_Comment)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis1:\`User\`) | this_connection_contentConnectionthis1] WHERE (this_connection_contentConnectionthis1.id IS NOT NULL AND this_connection_contentConnectionthis1.id = $this_connection_contentConnectionparam0)))
-                    WITH { node: { __resolveType: \\"Comment\\" } } AS edge
+                    MATCH (this)-[this0:HAS_CONTENT]->(this1:\`Comment\`)
+                    WHERE (exists((this1)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this2 IN [(this1)<-[:HAS_CONTENT]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))
+                    WITH { node: { __resolveType: \\"Comment\\", __id: id(this1) } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this_connection_contentConnectionthis2:HAS_CONTENT]->(this_Post:\`Post\`)
-                    WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis3 IN [(this_Post)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis3:\`User\`) | this_connection_contentConnectionthis3] WHERE (this_connection_contentConnectionthis3.id IS NOT NULL AND this_connection_contentConnectionthis3.id = $this_connection_contentConnectionparam1)))
-                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    MATCH (this)-[this3:HAS_CONTENT]->(this4:\`Post\`)
+                    WHERE (exists((this4)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this5 IN [(this4)<-[:HAS_CONTENT]-(this5:\`User\`) | this5] WHERE (this5.id IS NOT NULL AND this5.id = $param2)))
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this4), id: this4.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_contentConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var6
             }
-            RETURN this { .id, contentConnection: this_contentConnection } AS this"
+            RETURN this { .id, contentConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"auth_param0\\": \\"id-01\\",
-                \\"this_connection_contentConnectionparam0\\": \\"id-01\\",
-                \\"this_connection_contentConnectionparam1\\": \\"id-01\\"
+                \\"param1\\": \\"id-01\\",
+                \\"param2\\": \\"id-01\\"
             }"
         `);
     });
@@ -278,31 +279,31 @@ describe("Cypher Auth Where", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this_connection_contentConnectionthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                    WHERE (this_Comment.id = $this_connection_contentConnectionparam0 AND (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis1 IN [(this_Comment)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis1:\`User\`) | this_connection_contentConnectionthis1] WHERE (this_connection_contentConnectionthis1.id IS NOT NULL AND this_connection_contentConnectionthis1.id = $this_connection_contentConnectionparam1))))
-                    WITH { node: { __resolveType: \\"Comment\\" } } AS edge
+                    MATCH (this)-[this0:HAS_CONTENT]->(this1:\`Comment\`)
+                    WHERE (this1.id = $param1 AND (exists((this1)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this2 IN [(this1)<-[:HAS_CONTENT]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param2))))
+                    WITH { node: { __resolveType: \\"Comment\\", __id: id(this1) } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this_connection_contentConnectionthis2:HAS_CONTENT]->(this_Post:\`Post\`)
-                    WHERE (this_Post.id = $this_connection_contentConnectionparam2 AND (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis3 IN [(this_Post)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis3:\`User\`) | this_connection_contentConnectionthis3] WHERE (this_connection_contentConnectionthis3.id IS NOT NULL AND this_connection_contentConnectionthis3.id = $this_connection_contentConnectionparam3))))
-                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    MATCH (this)-[this3:HAS_CONTENT]->(this4:\`Post\`)
+                    WHERE (this4.id = $param3 AND (exists((this4)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this5 IN [(this4)<-[:HAS_CONTENT]-(this5:\`User\`) | this5] WHERE (this5.id IS NOT NULL AND this5.id = $param4))))
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this4), id: this4.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this_contentConnection
+                RETURN { edges: edges, totalCount: totalCount } AS var6
             }
-            RETURN this { .id, contentConnection: this_contentConnection } AS this"
+            RETURN this { .id, contentConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"auth_param0\\": \\"id-01\\",
-                \\"this_connection_contentConnectionparam0\\": \\"some-id\\",
-                \\"this_connection_contentConnectionparam1\\": \\"id-01\\",
-                \\"this_connection_contentConnectionparam2\\": \\"some-id\\",
-                \\"this_connection_contentConnectionparam3\\": \\"id-01\\"
+                \\"param1\\": \\"some-id\\",
+                \\"param2\\": \\"id-01\\",
+                \\"param3\\": \\"some-id\\",
+                \\"param4\\": \\"id-01\\"
             }"
         `);
     });
@@ -632,8 +633,7 @@ describe("Cypher Auth Where", () => {
             }
             RETURN this0
             }
-            RETURN [
-            this0 { .id }] AS data"
+            RETURN [ this0 { .id } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -720,8 +720,7 @@ describe("Cypher Auth Where", () => {
             }
             RETURN this0
             }
-            RETURN [
-            this0 { .id }] AS data"
+            RETURN [ this0 { .id } ] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

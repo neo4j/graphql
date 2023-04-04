@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { TemporalField } from "../../../types";
 import { createDatetimeElement } from "./create-datetime-element";
@@ -40,12 +41,14 @@ describe("createDatetimeElement", () => {
         const element = createDatetimeElement({
             resolveTree,
             field,
-            variable: "this",
+            variable: new Cypher.NamedVariable("this"),
         });
-
-        expect(element).toBe(
-            'datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time")'
-        );
+        new Cypher.RawCypher((env) => {
+            expect(element.getCypher(env)).toBe(
+                'datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time")'
+            );
+            return "";
+        }).build();
     });
 
     test("returns projection element for array of datetime values", () => {
@@ -67,11 +70,13 @@ describe("createDatetimeElement", () => {
         const element = createDatetimeElement({
             resolveTree,
             field,
-            variable: "this",
+            variable: new Cypher.NamedVariable("this"),
         });
-
-        expect(element).toBe(
-            'datetimes: [ dt in this.datetimes | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]'
-        );
+        new Cypher.RawCypher((env) => {
+            expect(element.getCypher(env)).toBe(
+                'datetimes: [ dt in this.datetimes | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]'
+            );
+            return "";
+        }).build();
     });
 });

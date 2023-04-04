@@ -26,34 +26,60 @@ import { Clause } from "../Clause";
  * @group Clauses
  */
 export class CompositeClause extends Clause {
-    private children: CypherASTNode[];
+    private _children: CypherASTNode[];
 
     /**
      * @hidden
      */
     constructor(children: Array<Clause | undefined>, private separator: string) {
         super();
-        this.children = [];
+        this._children = [];
         this.concat(...children);
     }
 
     public concat(...clauses: Array<Clause | undefined>): this {
-        const childrenRoots = filterTruthy(clauses).map((c) => c.getRoot());
-        this.addChildren(...childrenRoots);
-        this.children = [...this.children, ...childrenRoots];
+        const filteredChildren = this.filterClauses(clauses);
+        this.addChildren(...filteredChildren);
+        this._children = [...this._children, ...filteredChildren];
         return this;
     }
 
     public get empty(): boolean {
-        return this.children.length === 0;
+        return this._children.length === 0;
     }
 
-    /**
-     * @hidden
-     */
+    public get children(): Array<CypherASTNode> {
+        return this._children;
+    }
+
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
-        const childrenStrs = this.children.map((c) => c.getCypher(env));
+        const childrenStrs = this._children.map((c) => c.getCypher(env));
         return childrenStrs.join(this.separator);
+    }
+
+    private filterClauses(clauses: Array<Clause | undefined>): CypherASTNode[] {
+        const childrenRoots = filterTruthy(clauses).map((c) => c.getRoot());
+
+        return this.filterEmptyComposite(childrenRoots).map((c) => {
+            if (c instanceof CompositeClause) {
+                return this.unwrapComposite(c);
+            }
+            return c;
+        });
+    }
+
+    private filterEmptyComposite(children: Array<CypherASTNode>): Array<CypherASTNode> {
+        return children.filter((c) => {
+            if (c instanceof CompositeClause && c.empty) return false;
+            return true;
+        });
+    }
+
+    private unwrapComposite(clause: CompositeClause): CypherASTNode {
+        if (clause.children.length === 1) {
+            return clause.children[0];
+        } else return clause;
     }
 }
 

@@ -18,7 +18,7 @@
  */
 
 import type { PropertyRef } from "./references/PropertyRef";
-import type { CypherFunction } from "./expressions/functions/CypherFunction";
+import type { CypherFunction } from "./expressions/functions/CypherFunctions";
 import type { Literal } from "./references/Literal";
 import type { Exists } from "./expressions/Exists";
 import type { CypherEnvironment } from "./Environment";
@@ -35,8 +35,9 @@ import type { ListExpr } from "./expressions/list/ListExpr";
 import type { MapProjection } from "./expressions/map/MapProjection";
 import type { HasLabel } from "./expressions/HasLabel";
 import type { Reference } from "./references/Reference";
-import type { ApocFunction, ApocPredicate, ApocProcedure } from "./apoc/types";
+import type { ApocFunction } from "./apoc/types";
 import type { ListIndex } from "./expressions/list/ListIndex";
+import type { Path } from "./references/Path";
 
 export type Operation = BooleanOp | ComparisonOp | MathOp;
 
@@ -57,7 +58,8 @@ export type Expr =
     | ListExpr
     | ListIndex
     | ApocFunction
-    | Case<ComparisonOp>;
+    | Case<ComparisonOp>
+    | Path;
 
 /** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */
 export type Predicate =
@@ -66,13 +68,9 @@ export type Predicate =
     | RawCypher
     | Exists
     | PredicateFunction
-    | ApocPredicate
     | Literal<boolean>
     | Case
     | HasLabel;
-
-/** Represents a procedure, invocable with the CALL statement */
-export type Procedure = ApocProcedure;
 
 export type CypherResult = {
     cypher: string;

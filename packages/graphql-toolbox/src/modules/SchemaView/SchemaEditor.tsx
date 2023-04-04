@@ -17,25 +17,19 @@
  * limitations under the License.
  */
 
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { EditorFromTextArea } from "codemirror";
-import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
-import tokens from "@neo4j-ndl/base/lib/tokens/js/tokens";
+import { useContext, useEffect, useRef, useState } from "react";
+import type { EditorFromTextArea } from "codemirror";
+import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
+import { StarIconOutline } from "@neo4j-ndl/react/icons";
+import { tokens } from "@neo4j-ndl/base";
 import { CodeMirror } from "../../utils/utils";
-import {
-    DEFAULT_TYPE_DEFS,
-    LOCAL_STATE_TYPE_DEFS,
-    SCHEMA_EDITOR_INPUT,
-    THEME_EDITOR_DARK,
-    THEME_EDITOR_LIGHT,
-} from "../../constants";
+import { DEFAULT_TYPE_DEFS, SCHEMA_EDITOR_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
 import { formatCode, handleEditorDisableState, ParserOptions } from "../EditorView/utils";
 import { getSchemaForLintAndAutocompletion } from "./utils";
 import { Extension, FileName } from "../../components/Filename";
 import { ThemeContext, Theme } from "../../contexts/theme";
-import { Storage } from "../../utils/storage";
 import { AppSettingsContext } from "../../contexts/appsettings";
-import { ProTooltip } from "../../components/ProTooltip";
+import { useStore } from "../../store";
 
 export interface Props {
     loading: boolean;
@@ -57,6 +51,8 @@ export const SchemaEditor = ({
     const theme = useContext(ThemeContext);
     const appsettings = useContext(AppSettingsContext);
     const ref = useRef<HTMLTextAreaElement | null>(null);
+    const favoritesTooltipRef = useRef<HTMLButtonElement | null>(null);
+    const introspectionTooltipRef = useRef<HTMLButtonElement | null>(null);
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
 
     useEffect(() => {
@@ -126,7 +122,7 @@ export const SchemaEditor = ({
         setMirror(mirror);
         mirrorRef.current = mirror;
 
-        const storedTypeDefs = Storage.retrieveJSON(LOCAL_STATE_TYPE_DEFS) || DEFAULT_TYPE_DEFS;
+        const storedTypeDefs = useStore.getState().typeDefinitions || DEFAULT_TYPE_DEFS;
         if (storedTypeDefs && ref.current) {
             mirror?.setValue(storedTypeDefs);
             ref.current.value = storedTypeDefs;
@@ -168,28 +164,29 @@ export const SchemaEditor = ({
                 extension={Extension.GRAPHQL}
                 name="type-definitions"
                 buttons={
-                    <Fragment>
-                        <ProTooltip
-                            tooltipText="This will overwrite your current type definitions!"
-                            width={290}
-                            left={-99}
-                            top={39}
+                    <>
+                        <Button
+                            data-test-schema-editor-introspect-button
+                            ref={introspectionTooltipRef}
+                            aria-label="Generate type definitions"
+                            className="mr-2"
+                            color="primary"
+                            fill="outlined"
+                            size="small"
+                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                            onClick={introspect}
+                            disabled={loading}
+                            loading={isIntrospecting}
                         >
-                            <Button
-                                data-test-schema-editor-introspect-button
-                                aria-label="Generate type definitions"
-                                className="mr-2"
-                                color="primary"
-                                fill="outlined"
-                                buttonSize="small"
-                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                onClick={introspect}
-                                disabled={loading}
-                                loading={isIntrospecting}
-                            >
-                                Introspect
-                            </Button>
-                        </ProTooltip>
+                            Introspect
+                        </Button>
+                        <SmartTooltip
+                            allowedPlacements={["bottom"]}
+                            style={{ width: "19rem" }}
+                            ref={introspectionTooltipRef}
+                        >
+                            {"This will overwrite your current type definitions!"}
+                        </SmartTooltip>
 
                         <Button
                             data-test-schema-editor-prettify-button
@@ -197,38 +194,32 @@ export const SchemaEditor = ({
                             className="mr-2"
                             color="neutral"
                             fill="outlined"
-                            buttonSize="small"
+                            size="small"
                             onClick={formatTheCode}
                             disabled={loading}
                         >
                             Prettify
                         </Button>
 
-                        <ProTooltip
-                            tooltipText="Save as Favorite"
-                            arrowPositionOverride="top-right"
-                            width={110}
-                            left={-71}
-                            top={42}
+                        <IconButton
+                            data-test-schema-editor-favourite-button
+                            ref={favoritesTooltipRef}
+                            aria-label="Save as favorite"
+                            size="small"
+                            color="neutral"
+                            onClick={saveAsFavorite}
+                            disabled={loading}
                         >
-                            <IconButton
-                                data-test-schema-editor-favourite-button
-                                aria-label="Save as favorite"
-                                buttonSize="small"
-                                color="neutral"
-                                onClick={saveAsFavorite}
-                                disabled={loading}
-                            >
-                                <HeroIcon
-                                    style={{
-                                        color: tokens.colors.neutral[80],
-                                    }}
-                                    iconName="StarIcon"
-                                    type="outline"
-                                />
-                            </IconButton>
-                        </ProTooltip>
-                    </Fragment>
+                            <StarIconOutline
+                                style={{
+                                    color: tokens.colors.neutral[80],
+                                }}
+                            />
+                        </IconButton>
+                        <SmartTooltip allowedPlacements={["left"]} style={{ width: "8rem" }} ref={favoritesTooltipRef}>
+                            {"Save as Favorite"}
+                        </SmartTooltip>
+                    </>
                 }
             ></FileName>
             <textarea id={SCHEMA_EDITOR_INPUT} ref={ref} style={{ width: "100%", height: "100%" }} />

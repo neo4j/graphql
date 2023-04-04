@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { Button, HeroIcon } from "@neo4j-ndl/react";
-import tokens from "@neo4j-ndl/base/lib/tokens/js/tokens";
-import { ProTooltip } from "../../components/ProTooltip";
+import { useRef } from "react";
+import { Button, SmartTooltip } from "@neo4j-ndl/react";
+import { PlayIconOutline } from "@neo4j-ndl/react/icons";
+import { tokens } from "@neo4j-ndl/base";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 
 interface Props {
@@ -29,23 +30,20 @@ interface Props {
 }
 
 export const ActionElementsBar = ({ hasSchema, loading, onSubmit }: Props) => {
+    const tooltipRef = useRef<HTMLDivElement | null>(null);
     return (
         <div className="flex items-center h-12 w-full px-6">
-            <div className="justify-start">
-                <ProTooltip
-                    tooltipText="Build the schema to use the editor"
-                    arrowPositionOverride="left"
-                    blockVisibility={hasSchema}
-                    width={210}
-                    left={253}
-                    top={-3}
-                >
-                    <ViewSelectorComponent
-                        key="schema-editor-view-selector"
-                        elementKey="schema-editor-view-selector"
-                        isEditorDisabled={!hasSchema}
-                    />
-                </ProTooltip>
+            <div className="justify-start" ref={tooltipRef}>
+                <ViewSelectorComponent
+                    key="schema-editor-view-selector"
+                    elementKey="schema-editor-view-selector"
+                    isEditorDisabled={!hasSchema}
+                />
+                {!hasSchema ? (
+                    <SmartTooltip allowedPlacements={["right"]} style={{ width: "14rem" }} ref={tooltipRef}>
+                        {"Build the schema to use the editor"}
+                    </SmartTooltip>
+                ) : null}
             </div>
             <div className="flex-1 flex justify-end">
                 <Button
@@ -55,7 +53,7 @@ export const ActionElementsBar = ({ hasSchema, loading, onSubmit }: Props) => {
                     onClick={onSubmit}
                     disabled={loading}
                 >
-                    <HeroIcon iconName="PlayIcon" className="h-5 w-5 pr-1" />
+                    <PlayIconOutline className="h-5 w-5 pr-1" />
                     Build schema
                 </Button>
             </div>

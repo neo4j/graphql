@@ -18,7 +18,8 @@
  */
 
 import pluralize from "pluralize";
-import { Neo4jGraphQLError, Node, Relationship } from "../classes";
+import type { Node, Relationship } from "../classes";
+import { Neo4jGraphQLError } from "../classes";
 import type { BaseField, Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
@@ -138,6 +139,45 @@ export default function createUpdateAndParams({
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                     const variableName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
 
+                    if (update.delete) {
+                        const innerVarName = `${variableName}_delete`;
+
+                        const deleteAndParams = createDeleteAndParams({
+                            context,
+                            node,
+                            deleteInput: { [key]: update.delete }, // OBJECT ENTIERS key reused twice
+                            varName: innerVarName,
+                            chainStr: innerVarName,
+                            parentVar,
+                            withVars,
+                            parameterPrefix: `${parameterPrefix}.${key}${
+                                relationField.typeMeta.array ? `[${index}]` : ``
+                            }.delete`, // its use here
+                            recursing: true,
+                        });
+                        subquery.push(deleteAndParams[0]);
+                        res.params = { ...res.params, ...deleteAndParams[1] };
+                    }
+
+                    if (update.disconnect) {
+                        const disconnectAndParams = createDisconnectAndParams({
+                            context,
+                            refNodes: [refNode],
+                            value: update.disconnect,
+                            varName: `${variableName}_disconnect`,
+                            withVars,
+                            parentVar,
+                            relationField,
+                            labelOverride: relationField.union ? refNode.name : "",
+                            parentNode: node,
+                            parameterPrefix: `${parameterPrefix}.${key}${
+                                relationField.union ? `.${refNode.name}` : ""
+                            }${relationField.typeMeta.array ? `[${index}]` : ""}.disconnect`,
+                        });
+                        subquery.push(disconnectAndParams[0]);
+                        res.params = { ...res.params, ...disconnectAndParams[1] };
+                    }
+
                     if (update.update) {
                         const whereStrs: string[] = [];
                         const delayedSubquery: string[] = [];
@@ -185,15 +225,15 @@ export default function createUpdateAndParams({
                         innerUpdate.push(...delayedSubquery);
 
                         if (node.auth) {
-                            const whereAuth = createAuthAndParams({
+                            const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
                                 operations: "UPDATE",
                                 entity: refNode,
                                 context,
                                 where: { varName: variableName, node: refNode },
                             });
-                            if (whereAuth[0]) {
-                                whereStrs.push(whereAuth[0]);
-                                res.params = { ...res.params, ...whereAuth[1] };
+                            if (authWhereCypher) {
+                                whereStrs.push(authWhereCypher);
+                                res.params = { ...res.params, ...authWhereParams };
                             }
                         }
                         if (whereStrs.length) {
@@ -308,25 +348,6 @@ export default function createUpdateAndParams({
                         }
                     }
 
-                    if (update.disconnect) {
-                        const disconnectAndParams = createDisconnectAndParams({
-                            context,
-                            refNodes: [refNode],
-                            value: update.disconnect,
-                            varName: `${variableName}_disconnect`,
-                            withVars,
-                            parentVar,
-                            relationField,
-                            labelOverride: relationField.union ? refNode.name : "",
-                            parentNode: node,
-                            parameterPrefix: `${parameterPrefix}.${key}${
-                                relationField.union ? `.${refNode.name}` : ""
-                            }${relationField.typeMeta.array ? `[${index}]` : ""}.disconnect`,
-                        });
-                        subquery.push(disconnectAndParams[0]);
-                        res.params = { ...res.params, ...disconnectAndParams[1] };
-                    }
-
                     if (update.connect) {
                         const connectAndParams = createConnectAndParams({
                             context,
@@ -362,26 +383,6 @@ export default function createUpdateAndParams({
                         });
                         subquery.push(cypher);
                         res.params = { ...res.params, ...params };
-                    }
-
-                    if (update.delete) {
-                        const innerVarName = `${variableName}_delete`;
-
-                        const deleteAndParams = createDeleteAndParams({
-                            context,
-                            node,
-                            deleteInput: { [key]: update.delete }, // OBJECT ENTIERS key reused twice
-                            varName: innerVarName,
-                            chainStr: innerVarName,
-                            parentVar,
-                            withVars,
-                            parameterPrefix: `${parameterPrefix}.${key}${
-                                relationField.typeMeta.array ? `[${index}]` : ``
-                            }.delete`, // its use here
-                            recursing: true,
-                        });
-                        subquery.push(deleteAndParams[0]);
-                        res.params = { ...res.params, ...deleteAndParams[1] };
                     }
 
                     if (update.create) {
@@ -558,33 +559,33 @@ export default function createUpdateAndParams({
 
         if (authableField) {
             if (authableField.auth) {
-                const preAuth = createAuthAndParams({
+                const { cypher: preAuthCypher, params: preAuthParams } = createAuthAndParams({
                     entity: authableField,
                     operations: "UPDATE",
                     context,
-                    allow: { varName, parentNode: node },
+                    allow: { varName, node },
                 });
-                const postAuth = createAuthAndParams({
+                const { cypher: postAuthCypher, params: postAuthParams } = createAuthAndParams({
                     entity: authableField,
                     operations: "UPDATE",
                     skipRoles: true,
                     skipIsAuthenticated: true,
                     context,
-                    bind: { parentNode: node, varName },
+                    bind: { node, varName },
                 });
 
                 if (!res.meta) {
                     res.meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] };
                 }
 
-                if (preAuth[0]) {
-                    res.meta.preAuthStrs.push(preAuth[0]);
-                    res.params = { ...res.params, ...preAuth[1] };
+                if (preAuthCypher) {
+                    res.meta.preAuthStrs.push(preAuthCypher);
+                    res.params = { ...res.params, ...preAuthParams };
                 }
 
-                if (postAuth[0]) {
-                    res.meta.postAuthStrs.push(postAuth[0]);
-                    res.params = { ...res.params, ...postAuth[1] };
+                if (postAuthCypher) {
+                    res.meta.postAuthStrs.push(postAuthCypher);
+                    res.params = { ...res.params, ...postAuthParams };
                 }
             }
         }
@@ -646,28 +647,28 @@ export default function createUpdateAndParams({
     let postAuthStrs: string[] = [];
     const withStr = `WITH ${withVars.join(", ")}`;
 
-    const preAuth = createAuthAndParams({
+    const { cypher: preAuthCypher, params: preAuthParams } = createAuthAndParams({
         entity: node,
         context,
-        allow: { parentNode: node, varName },
+        allow: { node, varName },
         operations: "UPDATE",
     });
-    if (preAuth[0]) {
-        preAuthStrs.push(preAuth[0]);
-        params = { ...params, ...preAuth[1] };
+    if (preAuthCypher) {
+        preAuthStrs.push(preAuthCypher);
+        params = { ...params, ...preAuthParams };
     }
 
-    const postAuth = createAuthAndParams({
+    const { cypher: postAuthCypher, params: postAuthParams } = createAuthAndParams({
         entity: node,
         context,
         skipIsAuthenticated: true,
         skipRoles: true,
         operations: "UPDATE",
-        bind: { parentNode: node, varName },
+        bind: { node, varName },
     });
-    if (postAuth[0]) {
-        postAuthStrs.push(postAuth[0]);
-        params = { ...params, ...postAuth[1] };
+    if (postAuthCypher) {
+        postAuthStrs.push(postAuthCypher);
+        params = { ...params, ...postAuthParams };
     }
 
     if (meta) {

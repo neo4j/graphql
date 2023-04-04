@@ -43,7 +43,6 @@ describe("Cypher Auth Projection", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
@@ -74,12 +73,13 @@ describe("Cypher Auth Projection", () => {
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
             WITH *
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $update_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"update_param0\\": \\"super_admin\\",
                 \\"this_update_id\\": \\"new-id\\",
                 \\"thisauth_param0\\": \\"super_admin\\",
                 \\"resolvedCallbacks\\": {}
@@ -104,15 +104,15 @@ describe("Cypher Auth Projection", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`User\`)
+                WITH create_var0
+                CREATE (create_this1:\`User\`)
                 SET
-                    create_this0.id = create_var1.id
-                RETURN create_this0
+                    create_this1.id = create_var0.id
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .id }) AS data"
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -125,7 +125,6 @@ describe("Cypher Auth Projection", () => {
                         \\"id\\": \\"id-2\\"
                     }
                 ],
-                \\"projectionauth_param0\\": \\"super_admin\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

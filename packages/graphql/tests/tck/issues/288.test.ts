@@ -42,7 +42,6 @@ describe("#288", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
@@ -64,16 +63,16 @@ describe("#288", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`USER\`)
+                WITH create_var0
+                CREATE (create_this1:\`USER\`)
                 SET
-                    create_this0.USERID = create_var1.USERID,
-                    create_this0.COMPANYID = create_var1.COMPANYID
-                RETURN create_this0
+                    create_this1.USERID = create_var0.USERID,
+                    create_this1.COMPANYID = create_var0.COMPANYID
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .USERID, .COMPANYID }) AS data"
+            RETURN collect(create_this1 { .USERID, .COMPANYID }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

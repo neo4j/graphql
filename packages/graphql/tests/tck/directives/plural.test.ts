@@ -38,7 +38,6 @@ describe("Plural directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
@@ -108,15 +107,15 @@ describe("Plural directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:\`Tech\`)
+                WITH create_var0
+                CREATE (create_this1:\`Tech\`)
                 SET
-                    create_this0.name = create_var1.name
-                RETURN create_this0
+                    create_this1.name = create_var0.name
+                RETURN create_this1
             }
-            RETURN collect(create_this0 { .name }) AS data"
+            RETURN collect(create_this1 { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

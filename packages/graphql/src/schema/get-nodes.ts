@@ -19,11 +19,13 @@
 
 import type { IResolvers } from "@graphql-tools/utils";
 import type { DirectiveNode, NamedTypeNode } from "graphql";
+import { Kind } from "graphql";
 import type { Exclude } from "../classes";
 import { Node } from "../classes";
 import type { NodeDirective } from "../classes/NodeDirective";
 import type { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
-import type { Auth, FullText, Neo4jGraphQLCallbacks } from "../types";
+import type { FullText, Neo4jGraphQLCallbacks } from "../types";
+import type { Auth } from "../types/deprecated/auth/auth";
 import getObjFieldMeta from "./get-obj-field-meta";
 import parsePluralDirective from "./parse/parse-plural-directive";
 import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
@@ -58,10 +60,22 @@ function getNodes(
     const relationshipPropertyInterfaceNames = new Set<string>();
     const interfaceRelationshipNames = new Set<string>();
 
-    const nodes = definitionNodes.objectTypes.map((definition) => {
+    const nodes = definitionNodes.objectTypes.map((definition) => {       
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node", "fulltext", "queryOptions", "plural"].includes(x.name.value)
+            (x) =>
+                !["auth", "authorization", "exclude", "node", "fulltext", "queryOptions", "plural", "shareable", "deprecated"].includes(
+                    x.name.value
+                )
         );
+        const propagatedDirectives = (definition.directives || []).filter((x) =>
+            ["deprecated", "shareable"].includes(x.name.value)
+        );
+        let resolvable = true;
+        const keyDirective = (definition.directives || []).find((x) => x.name.value === "key");
+        const resolvableArgument = (keyDirective?.arguments || []).find((x) => x.name.value === "resolvable");
+        if (resolvableArgument?.value.kind === Kind.BOOLEAN && resolvableArgument.value.value === false) {
+            resolvable = false;
+        }
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
@@ -238,6 +252,7 @@ function getNodes(
             name: definition.name.value,
             interfaces: nodeInterfaces,
             otherDirectives,
+            propagatedDirectives,
             ...nodeFields,
             // @ts-ignore we can be sure it's defined
             auth,
@@ -253,11 +268,11 @@ function getNodes(
             globalIdField: globalIdField?.fieldName,
             globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
             plural: parsePluralDirective(pluralDirectiveDefinition),
+            federationResolvable: resolvable,
         });
 
         return node;
     });
-
     return {
         nodes,
         pointInTypeDefs,

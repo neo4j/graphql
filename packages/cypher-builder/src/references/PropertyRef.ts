@@ -20,22 +20,24 @@
 import type { CypherEnvironment } from "../Environment";
 import type { CypherCompilable, Expr } from "../types";
 import type { Reference } from "./Reference";
-import type { Variable } from "./Variable";
 
 /** Reference to a variable property
  * @group References
  * @example new Node({labels: ["Movie"]}).property("title")
  */
 export class PropertyRef implements CypherCompilable {
-    private _variable: Variable;
+    private _variable: Reference;
     private propertyPath: Array<string | Expr>;
 
+    /**
+     * @internal
+     */
     constructor(variable: Reference, ...properties: Array<string | Expr>) {
         this._variable = variable;
         this.propertyPath = properties;
     }
 
-    public get variable(): Variable {
+    public get variable(): Reference {
         return this._variable;
     }
 
@@ -44,9 +46,7 @@ export class PropertyRef implements CypherCompilable {
         return new PropertyRef(this._variable, ...this.propertyPath, prop);
     }
 
-    /**
-     * @hidden
-     */
+    /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const variableStr = this.variable.getCypher(env);
 

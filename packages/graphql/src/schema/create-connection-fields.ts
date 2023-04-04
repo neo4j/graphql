@@ -28,17 +28,20 @@ import { addDirectedArgument } from "./directed-argument";
 import { connectionFieldResolver } from "./pagination";
 import { graphqlDirectivesToCompose } from "./to-compose";
 import { DEPRECATE_NOT } from "./constants";
+import { addRelationshipArrayFilters } from "./augment/add-relationship-array-filters";
 
 function createConnectionFields({
     connectionFields,
     schemaComposer,
     composeNode,
+    sourceName,
     nodes,
     relationshipPropertyFields,
 }: {
     connectionFields: ConnectionField[];
     schemaComposer: SchemaComposer;
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
+    sourceName: string;
     nodes: Node[];
     relationshipPropertyFields: Map<string, ObjectFields>;
 }): Relationship[] {
@@ -95,35 +98,18 @@ function createConnectionFields({
             [connectionField.fieldName]: connectionWhere,
             [`${connectionField.fieldName}_NOT`]: {
                 type: connectionWhere,
-                directives: [
-                    {
-                        name: "deprecated",
-                        args: {
-                            reason: `Use \`${connectionField.fieldName}_NONE\` instead.`,
-                        },
-                    },
-                ],
             },
         });
 
         // n..m Relationships
         if (connectionField.relationship.typeMeta.array) {
-            // Add filters for each list predicate
-            whereInput.addFields(
-                (["ALL", "NONE", "SINGLE", "SOME"] as const).reduce(
-                    (acc, filter) => ({
-                        ...acc,
-                        [`${connectionField.fieldName}_${filter}`]: {
-                            type: connectionWhere,
-                            directives: deprecatedDirectives,
-                        },
-                    }),
-                    {}
-                )
-            );
-
-            whereInput.setFieldDirectiveByName(connectionField.fieldName, "deprecated", {
-                reason: `Use \`${connectionField.fieldName}_SOME\` instead.`,
+            addRelationshipArrayFilters({
+                whereInput,
+                fieldName: connectionField.fieldName,
+                sourceName: sourceName,
+                relatedType: connectionField.typeMeta.name,
+                whereType: connectionWhere,
+                directives: deprecatedDirectives,
             });
         }
 

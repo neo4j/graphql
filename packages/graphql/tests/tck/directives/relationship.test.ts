@@ -50,7 +50,6 @@ describe("Cypher relationship", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 
@@ -75,11 +74,11 @@ describe("Cypher relationship", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:TOP_ACTOR]->(this_topActor:\`Actor\`)
-                WITH this_topActor { .name } AS this_topActor
-                RETURN head(collect(this_topActor)) AS this_topActor
+                MATCH (this)-[this0:TOP_ACTOR]->(this1:\`Actor\`)
+                WITH this1 { .name } AS this1
+                RETURN head(collect(this1)) AS var2
             }
-            RETURN this { .title, topActor: this_topActor } AS this"
+            RETURN this { .title, topActor: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -106,11 +105,11 @@ describe("Cypher relationship", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this_actors:\`Actor\`)
-                WITH this_actors { .name } AS this_actors
-                RETURN collect(this_actors) AS this_actors
+                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WITH this1 { .name } AS this1
+                RETURN collect(this1) AS var2
             }
-            RETURN this { .title, actors: this_actors } AS this"
+            RETURN this { .title, actors: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -140,17 +139,17 @@ describe("Cypher relationship", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[this0:TOP_ACTOR]->(this_topActor:\`Actor\`)
+                MATCH (this)-[this0:TOP_ACTOR]->(this1:\`Actor\`)
                 CALL {
-                    WITH this_topActor
-                    MATCH (this_topActor)-[this1:ACTED_IN]->(this_topActor_movies:\`Movie\`)
-                    WITH this_topActor_movies { .title } AS this_topActor_movies
-                    RETURN collect(this_topActor_movies) AS this_topActor_movies
+                    WITH this1
+                    MATCH (this1)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    WITH this3 { .title } AS this3
+                    RETURN collect(this3) AS var4
                 }
-                WITH this_topActor { .name, movies: this_topActor_movies } AS this_topActor
-                RETURN head(collect(this_topActor)) AS this_topActor
+                WITH this1 { .name, movies: var4 } AS this1
+                RETURN head(collect(this1)) AS var5
             }
-            RETURN this { .title, topActor: this_topActor } AS this"
+            RETURN this { .title, topActor: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -181,19 +180,19 @@ describe("Cypher relationship", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)-[this0:TOP_ACTOR]->(this_topActor:\`Actor\`)
-                WHERE this_topActor.name = $param1
+                MATCH (this)-[this0:TOP_ACTOR]->(this1:\`Actor\`)
+                WHERE this1.name = $param1
                 CALL {
-                    WITH this_topActor
-                    MATCH (this_topActor)-[this1:ACTED_IN]->(this_topActor_movies:\`Movie\`)
-                    WHERE this_topActor_movies.title = $param2
-                    WITH this_topActor_movies { .title } AS this_topActor_movies
-                    RETURN collect(this_topActor_movies) AS this_topActor_movies
+                    WITH this1
+                    MATCH (this1)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    WHERE this3.title = $param2
+                    WITH this3 { .title } AS this3
+                    RETURN collect(this3) AS var4
                 }
-                WITH this_topActor { .name, movies: this_topActor_movies } AS this_topActor
-                RETURN head(collect(this_topActor)) AS this_topActor
+                WITH this1 { .name, movies: var4 } AS this1
+                RETURN head(collect(this1)) AS var5
             }
-            RETURN this { .title, topActor: this_topActor } AS this"
+            RETURN this { .title, topActor: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
