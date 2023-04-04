@@ -31,9 +31,6 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
     let neo4j: Neo4j;
 
     const secret = "secret";
-    const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
-        secret: "secret",
-    });
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -91,7 +88,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
@@ -135,7 +132,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
@@ -179,7 +176,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
@@ -221,7 +218,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
@@ -457,7 +454,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -489,7 +486,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -512,7 +509,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -544,7 +541,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -567,7 +564,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -599,7 +596,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -622,7 +619,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -654,7 +651,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -688,7 +685,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -713,7 +710,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -747,7 +744,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -772,7 +769,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -806,7 +803,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
@@ -831,7 +828,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: { auth: jwtPlugin },
+                features: { authorization: { key: secret } },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
