@@ -252,7 +252,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
@@ -333,7 +335,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await delay(4);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
@@ -388,7 +390,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(2);
+        await wsClient2.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -508,7 +512,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -589,7 +594,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -715,7 +721,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(2);
+        await wsClient2.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -890,6 +898,8 @@ subscription SubscriptionPerson {
             .expect(200);
 
         await delay(2);
+        await wsClient2.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1051,6 +1061,8 @@ subscription SubscriptionPerson {
             .expect(200);
 
         await delay(2);
+        await wsClient2.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1152,7 +1164,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1267,7 +1281,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(2);
+        await wsClient2.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1559,8 +1575,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        // TODO: avoid this
-        await delay(50);
+        await wsClient2.waitForEvents(7);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(7);
@@ -1897,7 +1914,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(2);
+        await wsClient2.waitForEvents(5);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
@@ -2089,7 +2108,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(1);
@@ -2202,6 +2223,8 @@ subscription SubscriptionPerson {
             .expect(200);
 
         await delay(2);
+        await wsClient2.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(1);
@@ -2294,6 +2317,8 @@ subscription SubscriptionPerson {
             .expect(200);
 
         await delay(2);
+        await wsClient2.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(1);
@@ -2394,6 +2419,8 @@ subscription SubscriptionPerson {
             .expect(200);
 
         await delay(2);
+        await wsClient2.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(2);
@@ -2512,6 +2539,8 @@ subscription SubscriptionPerson {
             .expect(200);
 
         await delay(2);
+        await wsClient2.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(1);
@@ -2655,7 +2684,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(3);
@@ -2787,6 +2818,8 @@ subscription SubscriptionPerson {
             .expect(200);
 
         await delay(2);
+        await wsClient2.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(2);
@@ -2927,6 +2960,8 @@ subscription SubscriptionPerson {
             .expect(200);
 
         await delay(2);
+        await wsClient2.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(2);
@@ -3076,7 +3111,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(2);
@@ -3264,7 +3301,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(3);
@@ -3462,7 +3501,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(2);
+        await wsClient2.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(3);
@@ -3739,7 +3780,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(2);
+        await wsClient2.waitForEvents(5);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(5);
@@ -4017,6 +4060,8 @@ subscription SubscriptionPerson {
             .expect(200);
 
         await delay(3);
+        await wsClient2.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(0);
@@ -4249,7 +4294,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(2);
@@ -4357,7 +4404,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
@@ -4471,7 +4520,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(3);
+        await wsClient2.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(3);
@@ -4648,6 +4699,8 @@ subscription SubscriptionPerson {
             .expect(200);
 
         await delay(2);
+        await wsClient2.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
@@ -4784,7 +4837,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(2);
+        await wsClient2.waitForEvents(4);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
@@ -5011,7 +5066,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
@@ -5304,7 +5361,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
@@ -5450,7 +5509,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
@@ -5629,7 +5690,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(2);
+        await wsClient2.waitForEvents(4);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
@@ -5856,7 +5919,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);

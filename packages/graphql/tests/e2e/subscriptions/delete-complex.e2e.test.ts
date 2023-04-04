@@ -213,7 +213,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient2.waitForEvents(1);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -352,7 +354,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient2.waitForEvents(2);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -518,7 +522,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient2.waitForEvents(1);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -730,7 +736,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient2.waitForEvents(3);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -874,7 +882,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient2.waitForEvents(1);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1034,7 +1044,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient2.waitForEvents(3);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1189,7 +1201,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient2.waitForEvents(1);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1386,7 +1400,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient2.waitForEvents(4);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1629,6 +1645,8 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             .expect(200);
 
         await delay(3);
+        await wsClient2.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1912,7 +1930,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(4);
+        await wsClient2.waitForEvents(6);
+        await wsClient.waitForEvents(4);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2123,7 +2143,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient2.waitForEvents(1);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2317,7 +2339,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient2.waitForEvents(3);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2629,7 +2653,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient2.waitForEvents(5);
+        await wsClient.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2960,7 +2986,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient2.waitForEvents(5);
+        await wsClient.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -3290,7 +3318,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(4);
+        await wsClient2.waitForEvents(2);
+        await wsClient.waitForEvents(4);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -3732,7 +3762,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
-        await delay(4);
+        await wsClient2.waitForEvents(7);
+        await wsClient.waitForEvents(5);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 

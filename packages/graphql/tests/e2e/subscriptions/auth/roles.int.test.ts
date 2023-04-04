@@ -93,6 +93,8 @@ describe("Subscription auth roles", () => {
 
         const result = await createMovie("movie1", server);
 
+        await wsClient.waitForEvents(1);
+
         expect(result.body.errors).toBeUndefined();
         expect(wsClient.events).toEqual([
             {

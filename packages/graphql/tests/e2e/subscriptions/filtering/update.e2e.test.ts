@@ -27,6 +27,7 @@ import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
+import { delay } from "../../../../src/utils/utils";
 
 describe("Update Subscriptions", () => {
     let neo4j: Neo4j;
@@ -95,6 +96,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie5", "movie7");
         await updateMovie("title", "movie6", "movie8");
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -120,6 +123,8 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("title", "movie5", "movie7");
         await updateMovie("title", "movie6", "movie8");
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -150,6 +155,7 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("title", "movie5", "movie7");
 
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
@@ -170,6 +176,8 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("title", "movie1", "movie1.1");
         await updateMovie("title", "movie2", "movie1.2");
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -203,6 +211,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie1", "movie1.3");
         await updateMovie("title", "movie2", "movie1.4");
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
@@ -229,6 +239,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie1", "movie1.5");
         await updateMovie("title", "movie2", "movie1.6");
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
@@ -254,6 +266,8 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("title", "movie1", "movie1.7");
         await updateMovie("title", "movie2", "movie1.8");
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -288,6 +302,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie2", "movie5");
         await updateMovie("title", "movie3", "movie6");
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
@@ -316,6 +332,7 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie2", "movie5");
         await updateMovie("title", "movie3", "movie6");
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
@@ -341,6 +358,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie3", "movie7");
         await updateMovie("title", "movie4", "movie8");
         await updateMovie("title", "dummy-movie", "movie9");
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -377,6 +396,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie5", "movie10");
         await updateMovie("title", "moviee1", "movie11");
         await updateMovie("title", "moviee2", "movie12");
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -437,6 +458,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie1", "movie3");
         await updateMovie("title", "movie2", "movie4");
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
@@ -463,6 +486,7 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie3", "movie5");
         await updateMovie("title", "movie2", "movie4");
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([]);
     });
@@ -490,6 +514,8 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("title", "movie1", "movie3");
         await updateMovie("title", "movie2", "movie4");
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -526,6 +552,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie1", "movie3");
         await updateMovie("releasedIn", 2000, 2222);
         await updateMovie("releasedIn", 2002, 2422);
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -568,6 +596,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("releasedIn", 2000, 2222);
         await updateMovie("releasedIn", 2002, 2422);
 
+        await wsClient.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
@@ -606,6 +636,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "abc", "abcd");
         await updateMovie("title", "something", "abc");
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -632,6 +664,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("id", "id1", "id2");
         await updateMovie("id", "id111", "id222");
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -657,6 +691,8 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("id", 420, 421);
         await updateMovie("id", 42, 420);
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -689,6 +725,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("releasedIn", 2020, 2022);
         await updateMovie("releasedIn", 2022, 2020);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -715,6 +753,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("averageRating", 4.2, 5);
         await updateMovie("averageRating", 10, 4.2);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -740,6 +780,8 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("fileSize", "922372036854775608", "922372036854775607");
         await updateMovie("fileSize", "100", "101");
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -768,6 +810,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "abcd", "abc");
         await updateMovie("title", "some_movie", "sth");
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -793,6 +837,8 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("id", "id11", "id33");
         await updateMovie("id", "id1", "id3");
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -820,6 +866,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("id", 4, 41);
         await updateMovie("id", 42, 421);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -845,6 +893,8 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("releasedIn", 2001, 2000);
         await updateMovie("releasedIn", 2000, 2021);
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -872,6 +922,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("averageRating", 4.21, 4.2);
         await updateMovie("averageRating", 9.2, 9);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -897,6 +949,8 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("fileSize", "922372036854775608", "922372036854775607");
         await updateMovie("fileSize", "100", "101");
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -1022,6 +1076,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie5", "movie7");
         await updateMovie("title", "movie6", "movie8");
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -1047,6 +1103,8 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("title", "movie5", "movie7");
         await updateMovie("title", "movie6", "movie8");
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1081,6 +1139,7 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie2", "movie5");
         await updateMovie("title", "movie3", "movie6");
 
+        await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });

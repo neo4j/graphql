@@ -102,6 +102,7 @@ describe("Subscription authentication", () => {
             const result = await createMovie("movie1", server);
 
             expect(result.body.errors).toBeUndefined();
+            await wsClient.waitForEvents(1);
             expect(wsClient.events).toEqual([
                 {
                     [typeMovie.operations.subscribe.created]: {

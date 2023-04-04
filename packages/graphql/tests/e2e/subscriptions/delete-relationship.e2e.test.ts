@@ -287,7 +287,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -433,7 +435,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
+        await delay(4);
+        await wsClient2.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -559,7 +563,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -713,7 +719,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -911,7 +918,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+        await wsClient2.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1153,7 +1162,9 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+        await wsClient2.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1391,6 +1402,7 @@ subscription SubscriptionPerson {
             .expect(200);
 
         await delay(3);
+        await wsClient2.waitForEvents(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1617,7 +1629,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -1853,7 +1866,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2137,7 +2151,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(4);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2466,7 +2481,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+        await wsClient2.waitForEvents(4);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -2765,7 +2781,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -3054,7 +3071,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(4);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -3376,8 +3394,8 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
-        await delay(3);
-        await delay(3);
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(6);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 

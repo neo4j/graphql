@@ -218,7 +218,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -287,7 +288,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -422,7 +424,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -508,7 +511,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -602,7 +606,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -713,7 +718,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -807,7 +813,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -992,7 +999,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1077,7 +1085,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1164,7 +1173,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1233,7 +1243,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1302,7 +1313,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1371,7 +1383,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1440,7 +1453,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1576,7 +1590,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1645,7 +1660,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1732,7 +1748,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1801,7 +1818,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -1910,7 +1928,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
