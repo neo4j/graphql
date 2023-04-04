@@ -47,13 +47,13 @@ describe("math operators", () => {
               `);
     });
 
-    test("add", () => {
+    test("plus", () => {
         const add = Cypher.plus(literal1, literal2);
         const { cypher } = new TestClause(add).build();
         expect(cypher).toMatchInlineSnapshot(`"10 + 3"`);
     });
 
-    test("subtract", () => {
+    test("minus", () => {
         const subtract = Cypher.minus(literal1, literal2);
         const { cypher } = new TestClause(subtract).build();
         expect(cypher).toMatchInlineSnapshot(`"10 - 3"`);
