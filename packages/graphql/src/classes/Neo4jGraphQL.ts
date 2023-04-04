@@ -51,6 +51,7 @@ import { Executor } from "./Executor";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { validateDocument } from "../schema/validation";
+import { validateUserDefinition } from "../schema/validation/schema-validation";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -323,10 +324,16 @@ class Neo4jGraphQL {
                 userCustomResolvers: this.resolvers,
             });
 
+            if (validateTypeDefs) {
+                validateUserDefinition(document, typeDefs);
+            }
+
             this._nodes = nodes;
             this._relationships = relationships;
 
-            const schemaModel = this.generateSchemaModel(document);
+            if (!this.schemaModel) {
+                this.schemaModel = generateModel(document);
+            }
 
             // Wrap the generated and custom resolvers, which adds a context including the schema to every request
             const wrappedResolvers = this.wrapResolvers(resolvers, schemaModel);
@@ -360,8 +367,16 @@ class Neo4jGraphQL {
             subgraph,
         });
 
+        if (validateTypeDefs) {
+            validateUserDefinition(document, typeDefs, directives, types);
+        }
+
         this._nodes = nodes;
         this._relationships = relationships;
+
+        if (!this.schemaModel) {
+            this.schemaModel = generateModel(document);
+        }
 
         // TODO: Move into makeAugmentedSchema, add resolvers alongside other resolvers
         const referenceResolvers = subgraph.getReferenceResolvers(this._nodes);

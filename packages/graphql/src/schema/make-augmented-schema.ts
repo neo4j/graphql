@@ -182,7 +182,7 @@ function makeAugmentedSchema(
     const interfaceCommonFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
-        const authDirective = (relationship.directives || []).find((x) => x.name.value === "auth");
+        const authDirective = (relationship.directives || []).find((x) => ["auth", "authoization"].includes(x.name.value));
         if (authDirective) {
             throw new Error("Cannot have @auth directive on relationship properties interface");
         }
@@ -194,7 +194,7 @@ function makeAugmentedSchema(
                 }
             });
 
-            const forbiddenDirectives = ["auth", "relationship", "cypher"];
+            const forbiddenDirectives = ["auth", "authorization", "relationship", "cypher"];
             forbiddenDirectives.forEach((directive) => {
                 const found = (field.directives || []).find((x) => x.name.value === directive);
                 if (found) {
@@ -538,6 +538,7 @@ function makeAugmentedSchema(
     }
 
     nodes.forEach((node) => {
+        
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
             ...node.cypherFields,
@@ -892,7 +893,7 @@ function makeAugmentedSchema(
             description: inter.description?.value,
             fields: objectComposeFields,
             directives: graphqlDirectivesToCompose(
-                (inter.directives || []).filter((x) => !["auth", "exclude"].includes(x.name.value))
+                (inter.directives || []).filter((x) => !["auth", "authorization", "exclude"].includes(x.name.value))
             ),
         });
     });
