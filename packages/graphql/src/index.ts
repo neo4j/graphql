@@ -48,8 +48,6 @@ export {
     Neo4jGraphQLForbiddenError,
 } from "./classes";
 
-export { RemoteJWKSetOptions, JWTVerifyOptions } from "./types/external";
-
 export { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "./classes/Neo4jGraphQLSubscriptionsSingleInstancePlugin";
 
 export * as directives from "./graphql/directives";
