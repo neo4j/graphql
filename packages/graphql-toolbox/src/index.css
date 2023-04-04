@@ -91,7 +91,18 @@ li.CodeMirror-hint-active {
 }
 
 .docExplorerWrap .graphiql-explorer-root {
-    font-size: 14px !important;
+    font-size: 15px !important;
+}
+
+.docExplorerWrap .doc-explorer-title-bar {
+    display: flex;
+    justify-content: center;
+    line-height: 22px;
+    padding: 8px;
+}
+
+.docExplorerWrap .doc-explorer-contents {
+    border-top: 1px solid #d6d6d6;
 }
 
 .docExplorerWrap .graphiql-explorer-actions select {
