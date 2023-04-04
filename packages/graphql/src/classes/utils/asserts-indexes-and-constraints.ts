@@ -109,6 +109,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
             `IF NOT EXISTS FOR (n:${constraintToCreate.label})`,
             `REQUIRE n.${constraintToCreate.property} IS UNIQUE`,
         ].join(" ");
+
         debug(`About to execute Cypher: ${cypher}`);
 
         const result = await session.run(cypher);
