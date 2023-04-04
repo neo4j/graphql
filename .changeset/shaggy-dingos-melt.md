@@ -1,5 +1,5 @@
 ---
-"@neo4j/cypher-builder": minor
+"@neo4j/cypher-builder": patch
 ---
 
-Adds `divide`, `multiply`, `remainder`, `pow` to the Math Operators.
+Adds `divide`, `multiply`, `modulo`, `pow` to the Math Operators.

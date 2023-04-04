@@ -21,16 +21,13 @@ import Cypher from "../..";
 import { TestClause } from "../../utils/TestClause";
 
 describe("math operators", () => {
-    const literal1 = new Cypher.Literal(10);
-    const literal2 = new Cypher.Literal(3);
-
     test("Match node with mathematical operator", () => {
         const yearParam = new Cypher.Param(2000);
         const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
         const matchQuery = new Cypher.Match(movieNode)
-            .where(Cypher.eq(movieNode.property("released"), Cypher.plus(literal1, yearParam)))
+            .where(Cypher.eq(movieNode.property("released"), Cypher.plus(new Cypher.Literal(10), yearParam)))
             .return(movieNode);
 
         const queryResult = matchQuery.build();
@@ -48,38 +45,48 @@ describe("math operators", () => {
     });
 
     test("plus", () => {
-        const add = Cypher.plus(literal1, literal2);
+        const add = Cypher.plus(new Cypher.Literal(10), new Cypher.Literal(3));
         const { cypher } = new TestClause(add).build();
         expect(cypher).toMatchInlineSnapshot(`"10 + 3"`);
     });
 
     test("minus", () => {
-        const subtract = Cypher.minus(literal1, literal2);
+        const subtract = Cypher.minus(new Cypher.Literal(10), new Cypher.Literal(3));
         const { cypher } = new TestClause(subtract).build();
         expect(cypher).toMatchInlineSnapshot(`"10 - 3"`);
     });
 
     test("divide", () => {
-        const divide = Cypher.divide(literal1, literal2);
+        const divide = Cypher.divide(new Cypher.Literal(10), new Cypher.Literal(3));
         const { cypher } = new TestClause(divide).build();
         expect(cypher).toMatchInlineSnapshot(`"10 / 3"`);
     });
 
     test("multiply", () => {
-        const multiply = Cypher.multiply(literal1, literal2);
+        const multiply = Cypher.multiply(new Cypher.Literal(10), new Cypher.Literal(3));
         const { cypher } = new TestClause(multiply).build();
         expect(cypher).toMatchInlineSnapshot(`"10 * 3"`);
     });
 
-    test("remainder", () => {
-        const remainder = Cypher.remainder(literal1, literal2);
-        const { cypher } = new TestClause(remainder).build();
+    test("modulo", () => {
+        const modulo = Cypher.modulo(new Cypher.Literal(10), new Cypher.Literal(3));
+        const { cypher } = new TestClause(modulo).build();
         expect(cypher).toMatchInlineSnapshot(`"10 % 3"`);
     });
 
     test("pow", () => {
-        const pow = Cypher.pow(literal1, literal2);
+        const pow = Cypher.pow(new Cypher.Literal(10), new Cypher.Literal(3));
         const { cypher } = new TestClause(pow).build();
         expect(cypher).toMatchInlineSnapshot(`"10 ^ 3"`);
+    });
+
+    test("complex expression", () => {
+        const add = Cypher.plus(new Cypher.Literal(10), new Cypher.Literal(3), new Cypher.Literal(5));
+        const minus = Cypher.minus(add, new Cypher.Literal(3));
+        const divide = Cypher.divide(minus, new Cypher.Literal(2));
+        const multiply = Cypher.multiply(divide, new Cypher.Literal(3));
+        const pow = Cypher.pow(multiply, new Cypher.Literal(3));
+        const { cypher } = new TestClause(pow).build();
+        expect(cypher).toMatchInlineSnapshot(`"10 + 3 + 5 - 3 / 2 * 3 ^ 3"`);
     });
 });

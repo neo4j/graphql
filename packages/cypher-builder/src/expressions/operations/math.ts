@@ -90,7 +90,7 @@ export function divide(leftExpr: Expr, rightExpr: Expr): MathOp {
  * @group Expressions
  * @category Operators
  */
-export function remainder(leftExpr: Expr, rightExpr: Expr): MathOp {
+export function modulo(leftExpr: Expr, rightExpr: Expr): MathOp {
     return createOp("%", [leftExpr, rightExpr]);
 }
 
