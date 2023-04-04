@@ -64,6 +64,7 @@ export { MapProjection } from "./expressions/map/MapProjection";
 export { or, and, not, xor } from "./expressions/operations/boolean";
 export {
     eq,
+    neq,
     gt,
     gte,
     lt,
