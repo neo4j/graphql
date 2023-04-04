@@ -68,9 +68,9 @@ describe("math operators", () => {
         expect(cypher).toMatchInlineSnapshot(`"10 * 3"`);
     });
 
-    test("modulo", () => {
-        const modulo = Cypher.modulo(new Cypher.Literal(10), new Cypher.Literal(3));
-        const { cypher } = new TestClause(modulo).build();
+    test("mod", () => {
+        const mod = Cypher.mod(new Cypher.Literal(10), new Cypher.Literal(3));
+        const { cypher } = new TestClause(mod).build();
         expect(cypher).toMatchInlineSnapshot(`"10 % 3"`);
     });
 
