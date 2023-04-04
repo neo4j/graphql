@@ -26,7 +26,7 @@ function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []): 
         auth: ["computed", "customResolver"],
         callback: ["id", "default", "relationship"],
         coalesce: [],
-        computed: ["alias", "auth", "id", "readonly", "relationship", "writeonly"],
+        computed: ["alias", "auth", "authorization", "id", "readonly", "relationship", "writeonly"],
         cypher: [],
         default: [],
         id: ["cypher", "computed", "customResolver", "relationship", "timestamp", "unique"],
