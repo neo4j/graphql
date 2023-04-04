@@ -51,6 +51,7 @@ import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchema
 import type { TypeSource } from "@graphql-tools/utils";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import { validateDocument } from "../schema/validation";
+import { validateUserDefinition } from "../schema/validation/schema-validation";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -308,10 +309,6 @@ class Neo4jGraphQL {
                 validateDocument(document);
             }
 
-            if (!this.schemaModel) {
-                this.schemaModel = generateModel(document);
-            }
-
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
@@ -321,8 +318,16 @@ class Neo4jGraphQL {
                 userCustomResolvers: this.schemaDefinition.resolvers,
             });
 
+            if (validateTypeDefs) {
+                validateUserDefinition(document, typeDefs);
+            }
+
             this._nodes = nodes;
             this._relationships = relationships;
+
+            if (!this.schemaModel) {
+                this.schemaModel = generateModel(document);
+            }
 
             // Wrap the generated and custom resolvers, which adds a context including the schema to every request
             const wrappedResolvers = this.wrapResolvers(resolvers);
@@ -351,10 +356,6 @@ class Neo4jGraphQL {
             validateDocument(document, directives, types);
         }
 
-        if (!this.schemaModel) {
-            this.schemaModel = generateModel(document);
-        }
-
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
             enableRegex: this.config?.enableRegex,
@@ -365,8 +366,16 @@ class Neo4jGraphQL {
             subgraph,
         });
 
+        if (validateTypeDefs) {
+            validateUserDefinition(document, typeDefs, directives, types);
+        }
+
         this._nodes = nodes;
         this._relationships = relationships;
+
+        if (!this.schemaModel) {
+            this.schemaModel = generateModel(document);
+        }
 
         // TODO: Move into makeAugmentedSchema, add resolvers alongside other resolvers
         const referenceResolvers = subgraph.getReferenceResolvers(this._nodes);
