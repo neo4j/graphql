@@ -27,11 +27,11 @@
     font-size: 1rem;
     font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
         Courier New;
-    color: rgb(var(--colors-neutral-90));
+    color: rgb(var(--colors-neutral-50));
 }
 
 li.CodeMirror-hint-active {
-    background-color: rgb(var(--colors-neutral-90));
+    background-color: rgb(var(--colors-neutral-50));
     color: rgb(var(--colors-neutral-10));
 }
 
