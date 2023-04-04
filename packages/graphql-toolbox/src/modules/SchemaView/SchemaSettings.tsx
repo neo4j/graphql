@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import React from "react";
-import { Checkbox } from "@neo4j-ndl/react";
+import type React from "react";
+import { useRef } from "react";
+import { Checkbox, SmartTooltip } from "@neo4j-ndl/react";
 import { QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
-import { ProTooltip } from "../../components/ProTooltip";
 import { ConstraintState } from "../../types";
 import { CustomSelect } from "../../components/CustomSelect";
 import { tracking } from "../../analytics/tracking";
@@ -55,22 +55,19 @@ export const SchemaSettings = () => {
     };
 
     const InfoToolTip = ({ text, width }: { text: React.ReactNode; width: number }): JSX.Element => {
+        const tooltipRef = useRef<SVGSVGElement | null>(null);
         return (
-            <ProTooltip
-                tooltipText={text}
-                arrowPositionOverride="left"
-                blockVisibility={false}
-                width={width || 200}
-                left={28}
-                top={-13}
-            >
-                <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" />
-            </ProTooltip>
+            <>
+                <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" ref={tooltipRef} />
+                <SmartTooltip allowedPlacements={["right"]} style={{ width: `${width || 200}px` }} ref={tooltipRef}>
+                    {text}
+                </SmartTooltip>
+            </>
         );
     };
 
     return (
-        <React.Fragment>
+        <>
             <span className="h5">Schema settings</span>
             <div className="pt-4">
                 <div className="mb-1 flex items-baseline">
@@ -163,6 +160,6 @@ export const SchemaSettings = () => {
                     </div>
                 </div>
             </div>
-        </React.Fragment>
+        </>
     );
 };

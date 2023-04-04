@@ -23,14 +23,14 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import Neo4j from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import { upperFirst } from "../../../src/utils/upper-first";
-import { delay } from "../../../src/utils/utils";
-import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
-import { createJwtRequest } from "../../utils/create-jwt-request";
-import { SCORE_FIELD } from "../../../src/graphql/directives/fulltext";
+import Neo4j from "../../neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import { UniqueType } from "../../../utils/graphql-types";
+import { upperFirst } from "../../../../src/utils/upper-first";
+import { delay } from "../../../../src/utils/utils";
+import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { SCORE_FIELD } from "../../../../src/graphql/directives/fulltext";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
