@@ -163,7 +163,7 @@ describe("Cypher Auth Allow", () => {
                         RETURN collect(NULL) AS create_var12
                     }
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ((exists((create_this5)<-[:HAS_POST]-(:\`User\`)) AND all(create_this13 IN [(create_this5)<-[:HAS_POST]-(create_this13:\`User\`) | create_this13] WHERE (create_this13.id IS NOT NULL AND create_this13.id = $create_param2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ((exists((create_this5)<-[:\`HAS_POST\`]-(:\`User\`)) AND all(create_this13 IN [(create_this5)<-[:\`HAS_POST\`]-(create_this13:\`User\`) | create_this13] WHERE (create_this13.id IS NOT NULL AND create_this13.id = $create_param2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH create_this5
                     CALL {
                     	WITH create_this5
