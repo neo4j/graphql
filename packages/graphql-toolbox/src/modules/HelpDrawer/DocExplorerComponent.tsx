@@ -19,17 +19,13 @@ export const DocExplorerComponent = ({ schema, isEmbedded = true, onClickClose, 
         <div className={`${isEmbedded ? "doc-explorer-embedded" : "doc-explorer-regular"}`}>
             {isEmbedded ? (
                 <div className="flex items-center justify-between mb-4">
-                    <button
-                        aria-label="Back to Help drawer"
-                        data-test-help-drawer-keybindings-back
-                        onClick={onClickBack}
-                    >
+                    <button data-test-doc-explorer-back-button aria-label="Back to Help drawer" onClick={onClickBack}>
                         <img src={ArrowLeft} alt="arrow left" className="inline w-5 h-5 text-lg cursor-pointer" />
                     </button>
                     <button
+                        data-test-doc-explorer-close-button
                         aria-label="Close Help drawer"
                         className="text-lg"
-                        data-test-help-drawer-keybindings-close
                         onClick={onClickClose}
                     >
                         {"\u2715"}
