@@ -18,28 +18,68 @@
  */
 
 import Cypher from "../..";
+import { TestClause } from "../../utils/TestClause";
 
-test("Match node with mathematical operator", () => {
-    const yearParam = new Cypher.Param(2000);
+describe("math operators", () => {
+    const literal1 = new Cypher.Literal(10);
+    const literal2 = new Cypher.Literal(3);
 
-    const movieNode = new Cypher.Node({
-        labels: ["Movie"],
+    test("Match node with mathematical operator", () => {
+        const yearParam = new Cypher.Param(2000);
+        const movieNode = new Cypher.Node({
+            labels: ["Movie"],
+        });
+        const matchQuery = new Cypher.Match(movieNode)
+            .where(Cypher.eq(movieNode.property("released"), Cypher.plus(literal1, yearParam)))
+            .return(movieNode);
+
+        const queryResult = matchQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+                  "MATCH (this0:\`Movie\`)
+                  WHERE this0.released = 10 + $param0
+                  RETURN this0"
+              `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+                  Object {
+                    "param0": 2000,
+                  }
+              `);
     });
 
-    const matchQuery = new Cypher.Match(movieNode)
-        .where(Cypher.eq(movieNode.property("released"), Cypher.plus(new Cypher.Literal(10), yearParam)))
-        .return(movieNode);
+    test("add", () => {
+        const add = Cypher.plus(literal1, literal2);
+        const { cypher } = new TestClause(add).build();
+        expect(cypher).toMatchInlineSnapshot(`"10 + 3"`);
+    });
 
-    const queryResult = matchQuery.build();
-    expect(queryResult.cypher).toMatchInlineSnapshot(`
-        "MATCH (this0:\`Movie\`)
-        WHERE this0.released = 10 + $param0
-        RETURN this0"
-    `);
+    test("subtract", () => {
+        const subtract = Cypher.minus(literal1, literal2);
+        const { cypher } = new TestClause(subtract).build();
+        expect(cypher).toMatchInlineSnapshot(`"10 - 3"`);
+    });
 
-    expect(queryResult.params).toMatchInlineSnapshot(`
-        Object {
-          "param0": 2000,
-        }
-    `);
+    test("divide", () => {
+        const divide = Cypher.divide(literal1, literal2);
+        const { cypher } = new TestClause(divide).build();
+        expect(cypher).toMatchInlineSnapshot(`"10 / 3"`);
+    });
+
+    test("multiply", () => {
+        const multiply = Cypher.multiply(literal1, literal2);
+        const { cypher } = new TestClause(multiply).build();
+        expect(cypher).toMatchInlineSnapshot(`"10 * 3"`);
+    });
+
+    test("remainder", () => {
+        const remainder = Cypher.remainder(literal1, literal2);
+        const { cypher } = new TestClause(remainder).build();
+        expect(cypher).toMatchInlineSnapshot(`"10 % 3"`);
+    });
+
+    test("pow", () => {
+        const pow = Cypher.pow(literal1, literal2);
+        const { cypher } = new TestClause(pow).build();
+        expect(cypher).toMatchInlineSnapshot(`"10 ^ 3"`);
+    });
 });

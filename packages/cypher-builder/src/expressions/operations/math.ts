@@ -21,7 +21,7 @@ import type { Expr } from "../../types";
 import type { CypherEnvironment } from "../../Environment";
 import { CypherASTNode } from "../../CypherASTNode";
 
-type MathOperator = "+" | "-";
+type MathOperator = "+" | "-" | "*" | "/" | "%" | "^";
 
 export class MathOp extends CypherASTNode {
     private operator: MathOperator;
@@ -38,7 +38,6 @@ export class MathOp extends CypherASTNode {
      */
     public getCypher(env: CypherEnvironment): string {
         const exprs = this.exprs.map((e) => e.getCypher(env));
-
         return exprs.join(` ${this.operator} `);
     }
 }
@@ -66,4 +65,40 @@ export function plus(...exprs: Expr[]): MathOp {
  */
 export function minus(leftExpr: Expr, rightExpr: Expr): MathOp {
     return createOp("-", [leftExpr, rightExpr]);
+}
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-mathematical)
+ * @group Expressions
+ * @category Operators
+ */
+export function multiply(leftExpr: Expr, rightExpr: Expr): MathOp {
+    return createOp("*", [leftExpr, rightExpr]);
+}
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-mathematical)
+ * @group Expressions
+ * @category Operators
+ */
+export function divide(leftExpr: Expr, rightExpr: Expr): MathOp {
+    return createOp("/", [leftExpr, rightExpr]);
+}
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-mathematical)
+ * @group Expressions
+ * @category Operators
+ */
+export function remainder(leftExpr: Expr, rightExpr: Expr): MathOp {
+    return createOp("%", [leftExpr, rightExpr]);
+}
+
+/**
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-mathematical)
+ * @group Expressions
+ * @category Operators
+ */
+export function pow(leftExpr: Expr, rightExpr: Expr): MathOp {
+    return createOp("^", [leftExpr, rightExpr]);
 }
