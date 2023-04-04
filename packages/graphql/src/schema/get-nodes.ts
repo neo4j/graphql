@@ -60,10 +60,10 @@ function getNodes(
     const relationshipPropertyInterfaceNames = new Set<string>();
     const interfaceRelationshipNames = new Set<string>();
 
-    const nodes = definitionNodes.objectTypes.map((definition) => {
+    const nodes = definitionNodes.objectTypes.map((definition) => {       
         const otherDirectives = (definition.directives || []).filter(
             (x) =>
-                !["auth", "exclude", "node", "fulltext", "queryOptions", "plural", "shareable", "deprecated"].includes(
+                !["auth", "authorization", "exclude", "node", "fulltext", "queryOptions", "plural", "shareable", "deprecated"].includes(
                     x.name.value
                 )
         );
@@ -273,7 +273,6 @@ function getNodes(
 
         return node;
     });
-
     return {
         nodes,
         pointInTypeDefs,
