@@ -117,8 +117,8 @@ describe("Create -> ConnectOrCreate", () => {
         `);
 
         expect(movieTitleAndId.records).toHaveLength(1);
-        expect(movieTitleAndId.records[0].toObject().title).toBe("The Terminal");
-        expect((movieTitleAndId.records[0].toObject().id as Integer).toNumber()).toBe(5);
+        expect(movieTitleAndId.records[0]?.toObject().title).toBe("The Terminal");
+        expect((movieTitleAndId.records[0]?.toObject().id as Integer).toNumber()).toBe(5);
 
         const actedInRelation = await session.run(`
             MATCH (:${typeMovie.name} {id: 5})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks"})

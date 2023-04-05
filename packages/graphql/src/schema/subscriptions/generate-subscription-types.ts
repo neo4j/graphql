@@ -64,7 +64,7 @@ export function generateSubscriptionTypes({
 
     const nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>> = new Map();
     nodesWithSubscriptionOperation.forEach((node) => {
-        const eventPayload = nodeNameToEventPayloadTypes[node.name];
+        const eventPayload = nodeNameToEventPayloadTypes[node.name] as ObjectTypeComposer;
         const where = generateSubscriptionWhereType(node, schemaComposer);
         const { subscriptionEventTypeNames, subscriptionEventPayloadFieldNames, rootTypeFieldNames } = node;
         const { subscribe: subscribeOperation } = rootTypeFieldNames;

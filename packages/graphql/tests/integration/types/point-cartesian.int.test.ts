@@ -98,9 +98,9 @@ describe("CartesianPoint", () => {
                 RETURN p { .serial, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(y);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(7203));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(y);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(7203));
     });
 
     test("enables creation of a node with a cartesian-3d point", async () => {
@@ -148,10 +148,10 @@ describe("CartesianPoint", () => {
                 RETURN p { .serial, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(y);
-        expect((result.records[0].toObject() as any).p.location.z).toEqual(z);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(9157));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(y);
+        expect((result.records[0]?.toObject() as any).p.location.z).toEqual(z);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(9157));
     });
 
     test("enables update of a node with a cartesian point", async () => {
@@ -172,8 +172,8 @@ describe("CartesianPoint", () => {
             p { .serial, .location } AS p
         `);
 
-        expect((beforeResult.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((beforeResult.records[0].toObject() as any).p.location.y).toEqual(y);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.y).toEqual(y);
 
         const update = `
             mutation UpdateParts($serial: String!, $x: Float!, $y: Float!) {
@@ -214,9 +214,9 @@ describe("CartesianPoint", () => {
                 RETURN p { .serial, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(newY);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(7203));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(newY);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(7203));
     });
 
     test("enables update of a node with a cartesian-3d point", async () => {
@@ -238,9 +238,9 @@ describe("CartesianPoint", () => {
             p { .serial, .location } AS p
         `);
 
-        expect((beforeResult.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((beforeResult.records[0].toObject() as any).p.location.y).toEqual(y);
-        expect((beforeResult.records[0].toObject() as any).p.location.z).toEqual(z);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.y).toEqual(y);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.z).toEqual(z);
 
         const update = `
             mutation UpdateParts($serial: String!, $x: Float!, $y: Float!, $z: Float!) {
@@ -281,10 +281,10 @@ describe("CartesianPoint", () => {
                 RETURN p { .serial, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(newY);
-        expect((result.records[0].toObject() as any).p.location.z).toEqual(z);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(9157));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(newY);
+        expect((result.records[0]?.toObject() as any).p.location.z).toEqual(z);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(9157));
     });
 
     test("enables query of a node with a cartesian point", async () => {
@@ -304,8 +304,8 @@ describe("CartesianPoint", () => {
             p { .id, .location } AS p
         `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(y);
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(y);
 
         const partsQuery = `
             query Parts($serial: String!) {
@@ -358,9 +358,9 @@ describe("CartesianPoint", () => {
             p { .id, .location } AS p
         `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(y);
-        expect((result.records[0].toObject() as any).p.location.z).toEqual(z);
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(y);
+        expect((result.records[0]?.toObject() as any).p.location.z).toEqual(z);
 
         const partsQuery = `
             query Parts($serial: String!) {

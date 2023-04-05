@@ -114,9 +114,9 @@ describe("Point", () => {
                 RETURN p { .id, .size, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(latitude);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(4326));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(latitude);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(4326));
     });
 
     test("enables creation of a node with a wgs-84-3d point", async () => {
@@ -181,10 +181,10 @@ describe("Point", () => {
                 RETURN p { .id, .size, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(latitude);
-        expect((result.records[0].toObject() as any).p.location.z).toEqual(height);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(4979));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(latitude);
+        expect((result.records[0]?.toObject() as any).p.location.z).toEqual(height);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(4979));
     });
 
     test("enables update of a node with a wgs-84 point", async () => {
@@ -207,8 +207,8 @@ describe("Point", () => {
             p { .id, .size, .location } AS p
         `);
 
-        expect((beforeResult.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((beforeResult.records[0].toObject() as any).p.location.y).toEqual(latitude);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.y).toEqual(latitude);
 
         const update = `
             mutation UpdatePhotographs($id: String!, $longitude: Float!, $latitude: Float!) {
@@ -254,9 +254,9 @@ describe("Point", () => {
                 RETURN p { .id, .size, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(newLatitude);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(4326));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(newLatitude);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(4326));
     });
 
     test("enables update of a node with a wgs-84-3d point", async () => {
@@ -280,9 +280,9 @@ describe("Point", () => {
             p { .id, .size, .location } AS p
         `);
 
-        expect((beforeResult.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((beforeResult.records[0].toObject() as any).p.location.y).toEqual(latitude);
-        expect((beforeResult.records[0].toObject() as any).p.location.z).toEqual(height);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.y).toEqual(latitude);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.z).toEqual(height);
 
         const update = `
             mutation UpdatePhotographs($id: String!, $longitude: Float!, $latitude: Float!, $height: Float!) {
@@ -328,10 +328,10 @@ describe("Point", () => {
                 RETURN p { .id, .size, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(newLatitude);
-        expect((result.records[0].toObject() as any).p.location.z).toEqual(height);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(4979));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(newLatitude);
+        expect((result.records[0]?.toObject() as any).p.location.z).toEqual(height);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(4979));
     });
 
     test("enables query of a node with a wgs-84 point", async () => {
@@ -354,8 +354,8 @@ describe("Point", () => {
             p { .id, .size, .location } AS p
         `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(latitude);
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(latitude);
 
         // Test equality
         const photographsEqualsQuery = `
@@ -576,9 +576,9 @@ describe("Point", () => {
             p { .id, .size, .location } AS p
         `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(latitude);
-        expect((result.records[0].toObject() as any).p.location.z).toEqual(height);
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(latitude);
+        expect((result.records[0]?.toObject() as any).p.location.z).toEqual(height);
 
         const photographsQuery = `
             query Photographs($longitude: Float!, $latitude: Float!, $height: Float) {

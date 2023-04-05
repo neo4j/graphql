@@ -19,7 +19,7 @@
 
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import type { Neo4jGraphQL } from "../classes";
-import type { Context } from "../types";
+import type { Context, RelationField } from "../types";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { RelationshipQueryDirectionOption } from "../constants";
 import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
@@ -96,7 +96,7 @@ describe("createDisconnectAndParams", () => {
                 },
             ],
             varName: "this",
-            relationField: node.relationFields[0],
+            relationField: node.relationFields[0] as RelationField,
             parentVar: "this",
             context,
             refNodes: [node],

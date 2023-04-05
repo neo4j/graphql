@@ -40,7 +40,7 @@ export function getToken(req: RequestLike): string | undefined {
     return authorization;
 }
 
-export function parseBearerToken(bearerAuth: string): string {
+export function parseBearerToken(bearerAuth: string): string | undefined {
     const token = bearerAuth.split("Bearer ")[1];
     if (!token) {
         debug("Authorization header was not in expected format 'Bearer <token>'");

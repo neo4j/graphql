@@ -122,21 +122,23 @@ describe("@fulltext directive - indexes constraints", () => {
         `;
 
         try {
-            const result = await session.run(cypher);
+            const result = await session.run<{
+                result: {
+                    name: string;
+                    type: string;
+                    entityType: string;
+                    labelsOrTypes: string[];
+                    properties: string[];
+                };
+            }>(cypher);
 
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+            const record = result.records[0]?.get("result");
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([type.name]);
-            expect(record.properties).toEqual(["title"]);
+            expect(record?.name).toEqual(indexName);
+            expect(record?.type).toBe("FULLTEXT");
+            expect(record?.entityType).toBe("NODE");
+            expect(record?.labelsOrTypes).toEqual([type.name]);
+            expect(record?.properties).toEqual(["title"]);
 
             await session.run(`
                 CREATE (:${type.name} { title: "${title}" })
@@ -192,21 +194,23 @@ describe("@fulltext directive - indexes constraints", () => {
         `;
 
         try {
-            const result = await session.run(cypher);
+            const result = await session.run<{
+                result: {
+                    name: string;
+                    type: string;
+                    entityType: string;
+                    labelsOrTypes: string[];
+                    properties: string[];
+                };
+            }>(cypher);
 
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+            const record = result.records[0]?.get("result");
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([label]);
-            expect(record.properties).toEqual(["title"]);
+            expect(record?.name).toEqual(indexName);
+            expect(record?.type).toBe("FULLTEXT");
+            expect(record?.entityType).toBe("NODE");
+            expect(record?.labelsOrTypes).toEqual([label]);
+            expect(record?.properties).toEqual(["title"]);
         } finally {
             await session.close();
         }
@@ -259,21 +263,23 @@ describe("@fulltext directive - indexes constraints", () => {
         `;
 
         try {
-            const result = await session.run(cypher);
+            const result = await session.run<{
+                result: {
+                    name: string;
+                    type: string;
+                    entityType: string;
+                    labelsOrTypes: string[];
+                    properties: string[];
+                };
+            }>(cypher);
 
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+            const record = result.records[0]?.get("result");
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([label]);
-            expect(record.properties).toEqual(["newTitle"]);
+            expect(record?.name).toEqual(indexName);
+            expect(record?.type).toBe("FULLTEXT");
+            expect(record?.entityType).toBe("NODE");
+            expect(record?.labelsOrTypes).toEqual([label]);
+            expect(record?.properties).toEqual(["newTitle"]);
 
             await session.run(`
                 CREATE (:${label} { newTitle: "${title}" })
@@ -449,21 +455,23 @@ describe("@fulltext directive - indexes constraints", () => {
         `;
 
         try {
-            const result = await session.run(cypher);
+            const result = await session.run<{
+                result: {
+                    name: string;
+                    type: string;
+                    entityType: string;
+                    labelsOrTypes: string[];
+                    properties: string[];
+                };
+            }>(cypher);
 
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+            const record = result.records[0]?.get("result");
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([type.name]);
-            expect(record.properties).toEqual(["title"]);
+            expect(record?.name).toEqual(indexName);
+            expect(record?.type).toBe("FULLTEXT");
+            expect(record?.entityType).toBe("NODE");
+            expect(record?.labelsOrTypes).toEqual([type.name]);
+            expect(record?.properties).toEqual(["title"]);
 
             await session.run(`
                 CREATE (:${type.name} { title: "${title}" })
@@ -563,21 +571,23 @@ describe("@fulltext directive - indexes constraints", () => {
         `;
 
         try {
-            const result = await session.run(cypher);
+            const result = await session.run<{
+                result: {
+                    name: string;
+                    type: string;
+                    entityType: string;
+                    labelsOrTypes: string[];
+                    properties: string[];
+                };
+            }>(cypher);
 
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+            const record = result.records[0]?.get("result");
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([type.name]);
-            expect(record.properties).toEqual(["id"]);
+            expect(record?.name).toEqual(indexName);
+            expect(record?.type).toBe("FULLTEXT");
+            expect(record?.entityType).toBe("NODE");
+            expect(record?.labelsOrTypes).toEqual([type.name]);
+            expect(record?.properties).toEqual(["id"]);
 
             await session.run(`
                 CREATE (:${type.name} { id: "${id}" })

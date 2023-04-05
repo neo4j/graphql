@@ -423,7 +423,7 @@ function createDisconnectAndParams({
                 }
             }
         } else {
-            const subquery = createSubqueryContents(refNodes[0], disconnect, index);
+            const subquery = createSubqueryContents(refNodes[0] as Node, disconnect, index);
             inner.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
         }

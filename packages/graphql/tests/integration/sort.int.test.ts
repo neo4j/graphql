@@ -87,7 +87,7 @@ describe("sort", () => {
             title: "B",
             runtime: 300,
         },
-    ];
+    ] as const;
 
     const series = [
         {
@@ -100,7 +100,7 @@ describe("sort", () => {
             title: "D",
             episodes: 100,
         },
-    ];
+    ] as const;
 
     const actors = [
         {
@@ -120,7 +120,7 @@ describe("sort", () => {
                 [movies[1].id]: 1,
             },
         },
-    ];
+    ] as const;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -320,10 +320,10 @@ describe("sort", () => {
                         movieType.plural
                     ];
 
-                    expect(gqlMovies[0].id).toBe(movies[0].id);
-                    expect(gqlMovies[0].numberOfActors).toBe(1);
-                    expect(gqlMovies[1].id).toBe(movies[1].id);
-                    expect(gqlMovies[1].numberOfActors).toBe(2);
+                    expect(gqlMovies[0]?.id).toBe(movies[0].id);
+                    expect(gqlMovies[0]?.numberOfActors).toBe(1);
+                    expect(gqlMovies[1]?.id).toBe(movies[1].id);
+                    expect(gqlMovies[1]?.numberOfActors).toBe(2);
                 });
                 test("DESC", async () => {
                     const gqlResult = await gqlResultByType("DESC");
@@ -334,10 +334,10 @@ describe("sort", () => {
                         movieType.plural
                     ];
 
-                    expect(gqlMovies[0].id).toBe(movies[1].id);
-                    expect(gqlMovies[0].numberOfActors).toBe(2);
-                    expect(gqlMovies[1].id).toBe(movies[0].id);
-                    expect(gqlMovies[1].numberOfActors).toBe(1);
+                    expect(gqlMovies[0]?.id).toBe(movies[1].id);
+                    expect(gqlMovies[0]?.numberOfActors).toBe(2);
+                    expect(gqlMovies[1]?.id).toBe(movies[0].id);
+                    expect(gqlMovies[1]?.numberOfActors).toBe(1);
                 });
             });
 
@@ -365,10 +365,10 @@ describe("sort", () => {
                         movieType.plural
                     ];
 
-                    expect(gqlMovies[0].id).toBe(movies[0].id);
-                    expect(gqlMovies[0].aliased).toBe(1);
-                    expect(gqlMovies[1].id).toBe(movies[1].id);
-                    expect(gqlMovies[1].aliased).toBe(2);
+                    expect(gqlMovies[0]?.id).toBe(movies[0].id);
+                    expect(gqlMovies[0]?.aliased).toBe(1);
+                    expect(gqlMovies[1]?.id).toBe(movies[1].id);
+                    expect(gqlMovies[1]?.aliased).toBe(2);
                 });
                 test("DESC", async () => {
                     const gqlResult = await gqlResultByType("DESC");
@@ -379,10 +379,10 @@ describe("sort", () => {
                         movieType.plural
                     ];
 
-                    expect(gqlMovies[0].id).toBe(movies[1].id);
-                    expect(gqlMovies[0].aliased).toBe(2);
-                    expect(gqlMovies[1].id).toBe(movies[0].id);
-                    expect(gqlMovies[1].aliased).toBe(1);
+                    expect(gqlMovies[0]?.id).toBe(movies[1].id);
+                    expect(gqlMovies[0]?.aliased).toBe(2);
+                    expect(gqlMovies[1]?.id).toBe(movies[0].id);
+                    expect(gqlMovies[1]?.aliased).toBe(1);
                 });
             });
 
@@ -496,8 +496,8 @@ describe("sort", () => {
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
-                    expect(gqlMovie.actors[0].id).toBe(actors[0].id);
-                    expect(gqlMovie.actors[1].id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[0]?.id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[1]?.id).toBe(actors[1].id);
                 });
                 test("DESC", async () => {
                     const gqlResult = await gqlResultByType("DESC");
@@ -510,8 +510,8 @@ describe("sort", () => {
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
-                    expect(gqlMovie.actors[0].id).toBe(actors[1].id);
-                    expect(gqlMovie.actors[1].id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[0]?.id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[1]?.id).toBe(actors[0].id);
                 });
             });
 
@@ -540,8 +540,8 @@ describe("sort", () => {
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
-                    expect(gqlMovie.actors[0].id).toBe(actors[0].id);
-                    expect(gqlMovie.actors[1].id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[0]?.id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[1]?.id).toBe(actors[1].id);
                 });
                 test("DESC", async () => {
                     const gqlResult = await gqlResultByType("DESC");
@@ -554,8 +554,8 @@ describe("sort", () => {
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
-                    expect(gqlMovie.actors[0].id).toBe(actors[1].id);
-                    expect(gqlMovie.actors[1].id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[0]?.id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[1]?.id).toBe(actors[0].id);
                 });
             });
 
@@ -582,8 +582,8 @@ describe("sort", () => {
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
-                    expect(gqlMovie.actors[0].id).toBe(actors[0].id);
-                    expect(gqlMovie.actors[1].id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[0]?.id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[1]?.id).toBe(actors[1].id);
                 });
                 test("DESC", async () => {
                     const gqlResult = await gqlResultByType("DESC");
@@ -596,8 +596,8 @@ describe("sort", () => {
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
-                    expect(gqlMovie.actors[0].id).toBe(actors[1].id);
-                    expect(gqlMovie.actors[1].id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[0]?.id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[1]?.id).toBe(actors[0].id);
                 });
             });
         });
@@ -629,10 +629,10 @@ describe("sort", () => {
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
-                    expect(gqlMovie.actors[0].id).toBe(actors[1].id);
-                    expect(gqlMovie.actors[0].totalScreenTime).toBe(1);
-                    expect(gqlMovie.actors[1].id).toBe(actors[0].id);
-                    expect(gqlMovie.actors[1].totalScreenTime).toBe(3);
+                    expect(gqlMovie.actors[0]?.id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[0]?.totalScreenTime).toBe(1);
+                    expect(gqlMovie.actors[1]?.id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[1]?.totalScreenTime).toBe(3);
                 });
 
                 test("DESC", async () => {
@@ -646,10 +646,10 @@ describe("sort", () => {
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
-                    expect(gqlMovie.actors[0].id).toBe(actors[0].id);
-                    expect(gqlMovie.actors[0].totalScreenTime).toBe(3);
-                    expect(gqlMovie.actors[1].id).toBe(actors[1].id);
-                    expect(gqlMovie.actors[1].totalScreenTime).toBe(1);
+                    expect(gqlMovie.actors[0]?.id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[0]?.totalScreenTime).toBe(3);
+                    expect(gqlMovie.actors[1]?.id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[1]?.totalScreenTime).toBe(1);
                 });
             });
 
@@ -677,10 +677,10 @@ describe("sort", () => {
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
-                    expect(gqlMovie.actors[0].id).toBe(actors[1].id);
-                    expect(gqlMovie.actors[0].aliased).toBe(1);
-                    expect(gqlMovie.actors[1].id).toBe(actors[0].id);
-                    expect(gqlMovie.actors[1].aliased).toBe(3);
+                    expect(gqlMovie.actors[0]?.id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[0]?.aliased).toBe(1);
+                    expect(gqlMovie.actors[1]?.id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[1]?.aliased).toBe(3);
                 });
                 test("DESC", async () => {
                     const gqlResult = await gqlResultByType("DESC");
@@ -693,10 +693,10 @@ describe("sort", () => {
                     expect(gqlMovie).toBeDefined();
 
                     expect(gqlMovie.id).toBe(movies[1].id);
-                    expect(gqlMovie.actors[0].id).toBe(actors[0].id);
-                    expect(gqlMovie.actors[0].aliased).toBe(3);
-                    expect(gqlMovie.actors[1].id).toBe(actors[1].id);
-                    expect(gqlMovie.actors[1].aliased).toBe(1);
+                    expect(gqlMovie.actors[0]?.id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[0]?.aliased).toBe(3);
+                    expect(gqlMovie.actors[1]?.id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[1]?.aliased).toBe(1);
                 });
             });
 
@@ -724,9 +724,9 @@ describe("sort", () => {
 
                     expect(gqlMovie.id).toBe(movies[1].id);
                     // Actor 2 has 1 totalScreenTime
-                    expect(gqlMovie.actors[0].id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[0]?.id).toBe(actors[1].id);
                     // Actor 1 has 3 totalScreenTime
-                    expect(gqlMovie.actors[1].id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[1]?.id).toBe(actors[0].id);
                 });
                 test("DESC", async () => {
                     const gqlResult = await gqlResultByType("DESC");
@@ -740,9 +740,9 @@ describe("sort", () => {
 
                     expect(gqlMovie.id).toBe(movies[1].id);
                     // Actor 1 has 3 totalScreenTime
-                    expect(gqlMovie.actors[0].id).toBe(actors[0].id);
+                    expect(gqlMovie.actors[0]?.id).toBe(actors[0].id);
                     // Actor 2 has 1 totalScreenTime
-                    expect(gqlMovie.actors[1].id).toBe(actors[1].id);
+                    expect(gqlMovie.actors[1]?.id).toBe(actors[1].id);
                 });
             });
         });

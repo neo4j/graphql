@@ -97,7 +97,7 @@ describe("Duration", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; duration: object } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; duration: object } = neo4jResult.records[0]?.toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jDriver.isDuration(neo4jMovie.duration)).toBe(true);
@@ -166,7 +166,7 @@ describe("Duration", () => {
                 );
 
                 const neo4jMovie: { id: string; durations: { toString(): string }[] } =
-                    neo4jResult.records[0].toObject().movie;
+                    neo4jResult.records[0]?.toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jMovie.durations).toHaveLength(durations.length);
@@ -248,7 +248,7 @@ describe("Duration", () => {
                 );
 
                 const neo4jMovie: { id: string; duration: { toString(): string } } =
-                    neo4jResult.records[0].toObject().movie;
+                    neo4jResult.records[0]?.toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jDriver.isDuration(neo4jMovie.duration)).toBe(true);
@@ -405,32 +405,32 @@ describe("Duration", () => {
                         /* eslint-disable jest/no-conditional-expect */
                         if (filter === "LT") {
                             expect(graphqlMovies).toHaveLength(1);
-                            expect(graphqlMovies[0].id).toBe(shortId);
-                            expect(parseDuration(graphqlMovies[0].duration)).toStrictEqual(parsedShort);
+                            expect(graphqlMovies[0]?.id).toBe(shortId);
+                            expect(parseDuration(graphqlMovies[0]?.duration as string)).toStrictEqual(parsedShort);
                         }
 
                         if (filter === "LTE") {
                             expect(graphqlMovies).toHaveLength(2);
-                            expect(graphqlMovies[0].id).toBe(shortId);
-                            expect(parseDuration(graphqlMovies[0].duration)).toStrictEqual(parsedShort);
+                            expect(graphqlMovies[0]?.id).toBe(shortId);
+                            expect(parseDuration(graphqlMovies[0]?.duration as string)).toStrictEqual(parsedShort);
 
-                            expect(graphqlMovies[1].id).toBe(mediumId);
-                            expect(parseDuration(graphqlMovies[1].duration)).toStrictEqual(parsedMedium);
+                            expect(graphqlMovies[1]?.id).toBe(mediumId);
+                            expect(parseDuration(graphqlMovies[1]?.duration as string)).toStrictEqual(parsedMedium);
                         }
 
                         if (filter === "GT") {
                             expect(graphqlMovies).toHaveLength(1);
-                            expect(graphqlMovies[0].id).toBe(longId);
-                            expect(parseDuration(graphqlMovies[0].duration)).toStrictEqual(parsedLong);
+                            expect(graphqlMovies[0]?.id).toBe(longId);
+                            expect(parseDuration(graphqlMovies[0]?.duration as string)).toStrictEqual(parsedLong);
                         }
 
                         if (filter === "GTE") {
                             expect(graphqlMovies).toHaveLength(2);
-                            expect(graphqlMovies[0].id).toBe(mediumId);
-                            expect(parseDuration(graphqlMovies[0].duration)).toStrictEqual(parsedMedium);
+                            expect(graphqlMovies[0]?.id).toBe(mediumId);
+                            expect(parseDuration(graphqlMovies[0]?.duration as string)).toStrictEqual(parsedMedium);
 
-                            expect(graphqlMovies[1].id).toBe(longId);
-                            expect(parseDuration(graphqlMovies[1].duration)).toStrictEqual(parsedLong);
+                            expect(graphqlMovies[1]?.id).toBe(longId);
+                            expect(parseDuration(graphqlMovies[1]?.duration as string)).toStrictEqual(parsedLong);
                         }
                         /* eslint-enable jest/no-conditional-expect */
                     } finally {
