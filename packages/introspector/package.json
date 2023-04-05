@@ -42,7 +42,7 @@
         "typescript": "5.0.3"
     },
     "dependencies": {
-        "camelcase": "^6.3.0",
+        "camelcase": "^7.0.0",
         "debug": "^4.3.4",
         "pluralize": "^8.0.0"
     },
