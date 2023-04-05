@@ -267,7 +267,10 @@ function getObjFieldMeta({
                 let connectionPrefix = obj.name.value;
 
                 if (obj.interfaces && obj.interfaces.length) {
-                    const firstInterface = obj.interfaces[0] as NamedTypeNode;
+                    const firstInterface = obj.interfaces[0];
+                    if (!firstInterface) {
+                        throw new Error("Cannot get interface in getObjFieldMeta");
+                    }
 
                     const inter = interfaces.find(
                         (i) => i.name.value === firstInterface.name.value

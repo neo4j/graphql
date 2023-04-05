@@ -31,8 +31,9 @@ export async function verifyProcedures(sessionFactory: () => Session): Promise<v
     `;
 
     try {
-        const result = await session.run(cypher);
-        const record = result.records[0]?.toObject() as { procedures: string[] };
+        const result = await session.run<{ procedures: string[] }>(cypher);
+        const record = result.records[0]?.toObject();
+        if (!record) throw new Error("verifyProcedures failed to get functions");
 
         const missingProcedures = REQUIRED_APOC_PROCEDURES.filter((f) => !record.procedures.includes(f));
         if (missingProcedures.length) {

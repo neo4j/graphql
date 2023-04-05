@@ -60,12 +60,20 @@ function getNodes(
     const relationshipPropertyInterfaceNames = new Set<string>();
     const interfaceRelationshipNames = new Set<string>();
 
-    const nodes = definitionNodes.objectTypes.map((definition) => {       
+    const nodes = definitionNodes.objectTypes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
             (x) =>
-                !["auth", "authorization", "exclude", "node", "fulltext", "queryOptions", "plural", "shareable", "deprecated"].includes(
-                    x.name.value
-                )
+                ![
+                    "auth",
+                    "authorization",
+                    "exclude",
+                    "node",
+                    "fulltext",
+                    "queryOptions",
+                    "plural",
+                    "shareable",
+                    "deprecated",
+                ].includes(x.name.value)
         );
         const propagatedDirectives = (definition.directives || []).filter((x) =>
             ["deprecated", "shareable"].includes(x.name.value)
@@ -125,7 +133,9 @@ function getNodes(
 
         let auth: Auth;
         if (authDirective || interfaceAuthDirectives.length) {
-            auth = getAuth(authDirective || (interfaceAuthDirectives[0] as DirectiveNode));
+            const authData = authDirective || interfaceAuthDirectives[0];
+            if (!authData) throw new Error("authData not found in getNodes");
+            auth = getAuth(authData);
         }
 
         let exclude: Exclude;
