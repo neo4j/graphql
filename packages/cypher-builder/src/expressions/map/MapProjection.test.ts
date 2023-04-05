@@ -50,7 +50,7 @@ describe("Map Projection", () => {
     test("Project map with properties in projection and extra values", () => {
         const node = new Cypher.Node({});
 
-        const mapProjection = new Cypher.MapProjection(new Cypher.Variable(), [".title", ".name"], {
+        const mapProjection = new Cypher.MapProjection(new Cypher.Variable(), ["title", "name"], {
             namedValue: Cypher.count(node),
         });
         const queryResult = new TestClause(mapProjection).build();
@@ -64,7 +64,7 @@ describe("Map Projection", () => {
         const mapVar = new Cypher.Variable();
         const node = new Cypher.Node({});
 
-        const mapProjection = new Cypher.MapProjection(mapVar, [".title", ".name"], {
+        const mapProjection = new Cypher.MapProjection(mapVar, ["title", "name"], {
             namedValue: Cypher.count(node),
         });
 
@@ -72,6 +72,21 @@ describe("Map Projection", () => {
 
         expect(queryResult.cypher).toMatchInlineSnapshot(
             `"RETURN var0 { .title, .name, namedValue: count(this1) } AS var0"`
+        );
+
+        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+    });
+
+    test("Convert to map with properties in projection and extra values", () => {
+        const node = new Cypher.Node({});
+
+        const mapProjection = new Cypher.MapProjection(new Cypher.Variable(), ["title", "name"], {
+            namedValue: Cypher.count(node),
+        });
+        const queryResult = new TestClause(mapProjection.toMap()).build();
+
+        expect(queryResult.cypher).toMatchInlineSnapshot(
+            `"{ title: var0.title, name: var0.name, namedValue: count(this1) }"`
         );
 
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);

@@ -18,7 +18,6 @@
  */
 
 import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
@@ -87,10 +86,10 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
     });
