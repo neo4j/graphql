@@ -56,7 +56,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         cypherParams = { ...cypherParams, ...nodeAuthParams };
     }
 
-    const selections = fieldsByTypeName[node.aggregateTypeNames.selection];
+    const selections = fieldsByTypeName[node.aggregateTypeNames.selection] || {};
     const projections: Cypher.Map = new Cypher.Map();
     const authStrs: string[] = [];
 
@@ -108,7 +108,8 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             const thisProjections: Cypher.Expr[] = [];
             const aggregateFields =
                 selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNullable`] ||
-                selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`];
+                selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`] ||
+                {};
 
             Object.entries(aggregateFields).forEach((entry) => {
                 // "min" | "max" | "average" | "sum" | "shortest" | "longest"

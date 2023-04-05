@@ -152,8 +152,8 @@ describe("583", () => {
             gqlResult?.data as any
         )?.actors;
         expect(gqlActors[0]).toBeDefined();
-        expect(gqlActors[0].actedIn).toContainEqual(movie);
-        expect(gqlActors[0].actedIn).toContainEqual(series);
-        expect(gqlActors[0].actedIn).toContainEqual(shortFilm);
+        expect(gqlActors[0]?.actedIn).toContainEqual(movie);
+        expect(gqlActors[0]?.actedIn).toContainEqual(series);
+        expect(gqlActors[0]?.actedIn).toContainEqual(shortFilm);
     });
 });

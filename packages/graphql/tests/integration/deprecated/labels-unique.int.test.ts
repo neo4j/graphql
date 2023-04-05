@@ -168,7 +168,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         });
 
         expect(errorResult.errors).toHaveLength(1);
-        expect(errorResult.errors?.[0].message).toBe("Constraint validation failed");
+        expect(errorResult.errors?.[0]?.message).toBe("Constraint validation failed");
     });
 
     describe("@unique", () => {

@@ -118,6 +118,6 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
           MATCH (m:${testBlogpost.name} { slug: "myslug" })
           RETURN COUNT(m) as count
         `);
-        expect((blogPostCount.records[0].toObject().count as Integer).toNumber()).toBe(1);
+        expect((blogPostCount.records[0]?.toObject().count as Integer).toNumber()).toBe(1);
     });
 });

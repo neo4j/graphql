@@ -40,6 +40,9 @@ export class Neo4jGraphQLAuthorization {
             return;
         }
         const token = parseBearerToken(bearerToken);
+        if (!token) {
+            throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
+        }
         try {
             if (this.authorization.verify === false) {
                 debug("Skipping verifying JWT as verify is set to false");
@@ -58,6 +61,7 @@ export class Neo4jGraphQLAuthorization {
 
     public decodeBearerToken(bearerToken: string): JWTPayload | undefined {
         const token = parseBearerToken(bearerToken);
+        if (!token) throw new Error();
         return decodeJwt(token);
     }
 
