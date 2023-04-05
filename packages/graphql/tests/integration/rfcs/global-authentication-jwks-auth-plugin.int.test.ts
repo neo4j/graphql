@@ -27,6 +27,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import type { Neo4jGraphQLAuthenticationError } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 
+// TODO: fix this file with global auth
 describe("Global authentication - Auth JWKS plugin", () => {
     let jwksMock: JWKSMock;
     let driver: Driver;

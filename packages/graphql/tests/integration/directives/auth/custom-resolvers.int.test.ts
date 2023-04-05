@@ -73,7 +73,11 @@ describe("auth/custom-resolvers", () => {
                         me: (_, __, ctx) => ({ id: ctx.auth.jwt.sub }),
                     },
                 },
-                plugins: { auth: jwtPlugin },
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
             });
 
             const req = createJwtRequest(secret, { sub: userId });
@@ -114,7 +118,11 @@ describe("auth/custom-resolvers", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 resolvers: { Mutation: { me: (_, __, ctx) => ({ id: ctx.auth.jwt.sub }) } },
-                plugins: { auth: jwtPlugin },
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
             });
 
             const req = createJwtRequest(secret, { sub: userId });
@@ -158,7 +166,11 @@ describe("auth/custom-resolvers", () => {
                     Query: { me: () => ({}) },
                     User: { customId: (_, __, ctx) => ctx.auth.jwt.sub },
                 },
-                plugins: { auth: jwtPlugin },
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
             });
 
             const req = createJwtRequest(secret, { sub: userId });

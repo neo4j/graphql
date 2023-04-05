@@ -75,6 +75,15 @@ export function eq(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("=", leftExpr, rightExpr);
 }
 
+/** Generates an inequality (<>) operator between the 2 expressions
+ * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
+ * @group Expressions
+ * @category Operators
+ */
+export function neq(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
+    return createOp("<>", leftExpr, rightExpr);
+}
+
 /**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/operators/#query-operators-comparison)
  * @group Expressions

@@ -47,7 +47,7 @@ const EditorScreenTiles = ({
                 onClick={onClickShowDocs}
             >
                 <SwatchIconOutline className="h-6 w-6 mr-2 flex-1" />
-                <span className="flex-1">Current schema documentation</span>
+                <span className="flex-1 text-left">Current schema documentation</span>
             </button>
 
             <button
@@ -56,7 +56,7 @@ const EditorScreenTiles = ({
                 onClick={onClickShowKeybindings}
             >
                 <ComputerDesktopIconOutline className="h-6 w-6 mr-2" />
-                <span>List of keybindings</span>
+                <span className="text-left">List of keybindings</span>
             </button>
         </div>
     );
