@@ -72,10 +72,10 @@ describe("auth/object-path", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: "secret",
+                },
             },
         });
 
@@ -143,10 +143,10 @@ describe("auth/object-path", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: "secret",
+                },
             },
         });
 
@@ -255,10 +255,12 @@ describe("auth/object-path", () => {
         // Pass the well-known JWKS Endpoint
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json",
-                }),
+            features: {
+                authorization: {
+                    key: {
+                        url: "https://www.YOUR_DOMAIN.com/.well-known/jwks.json",
+                    },
+                },
             },
         });
 
