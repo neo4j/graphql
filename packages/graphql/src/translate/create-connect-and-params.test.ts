@@ -23,7 +23,7 @@ import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { RelationshipQueryDirectionOption } from "../constants";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
-import { RelationField } from "../types";
+import type { RelationField } from "../types";
 
 describe("createConnectAndParams", () => {
     test("should return the correct connection", () => {

@@ -26,8 +26,9 @@ import {
     addSortAndLimitOptionsToClause,
     addLimitOrOffsetOptionsToClause,
 } from "../projection/subquery/add-sort-and-limit-to-clause";
-import { getSortFields, SortFields } from "./get-sort-fields";
-import { GraphQLSortArg } from "../../types";
+import type { SortFields } from "./get-sort-fields";
+import { getSortFields } from "./get-sort-fields";
+import type { GraphQLSortArg } from "../../types";
 
 export function createSortAndLimitProjection({
     resolveTree,

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver, Session, Integer, QueryResult } from "neo4j-driver";
+import type { Driver, Session, Integer } from "neo4j-driver";
 import { gql } from "apollo-server";
 import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";

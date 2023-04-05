@@ -39,9 +39,3 @@ export function fromGlobalId(id: string, isInt?: boolean): DecodedGlobalId {
         id: isInt ? parseInt(rest[0], 10) : rest.join(":"),
     };
 }
-
-const x: Record<string, string> = {
-    foo: "bar",
-};
-
-const y = x["dsa"]; // This is type string
