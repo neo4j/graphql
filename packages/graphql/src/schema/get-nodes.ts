@@ -281,7 +281,6 @@ function getNodes(
 
         return node;
     });
-
     return {
         nodes,
         pointInTypeDefs,

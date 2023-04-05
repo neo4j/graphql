@@ -35,12 +35,13 @@
         "test": "cross-env NODE_ENV=test playwright test",
         "test:debug": "cross-env NODE_ENV=test playwright test --headed --project=chromium",
         "test:inspector-mode": "cross-env NODE_ENV=test PWDEBUG=1 playwright test --project=chromium",
-        "test:unit": "cross-env NODE_ENV=test jest src"
+        "test:unit": "cross-env NODE_ENV=test jest --runInBand src"
     },
     "author": "Neo4j",
     "dependencies": {
-        "@neo4j-ndl/base": "1.0.2",
-        "@neo4j-ndl/react": "1.0.6",
+        "@graphiql/react": "0.17.1",
+        "@neo4j-ndl/base": "1.0.3",
+        "@neo4j-ndl/react": "1.0.7",
         "@neo4j/graphql": "3.17.2",
         "@neo4j/introspector": "1.0.3",
         "codemirror": "5.65.12",
@@ -51,16 +52,16 @@
         "graphql-query-complexity": "0.12.0",
         "lodash.debounce": "4.0.8",
         "markdown-it": "13.0.1",
-        "neo4j-driver": "5.6.0",
+        "neo4j-driver": "5.7.0",
         "prettier": "2.8.7",
         "process": "0.11.10",
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "react-resizable": "3.0.5",
-        "zustand": "4.3.6"
+        "zustand": "4.3.7"
     },
     "devDependencies": {
-        "@playwright/test": "1.32.1",
+        "@playwright/test": "1.32.2",
         "@tsconfig/create-react-app": "1.0.3",
         "@types/codemirror": "5.60.7",
         "@types/lodash.debounce": "4.0.7",
@@ -82,19 +83,19 @@
         "node-polyfill-webpack-plugin": "2.0.1",
         "parse5": "7.1.2",
         "postcss": "8.4.21",
-        "postcss-loader": "7.1.0",
+        "postcss-loader": "7.2.4",
         "randomstring": "1.2.3",
         "style-loader": "3.3.2",
-        "tailwindcss": "3.2.7",
+        "tailwindcss": "3.3.1",
         "terser-webpack-plugin": "5.3.7",
-        "ts-jest": "29.0.5",
+        "ts-jest": "29.1.0",
         "ts-loader": "9.4.2",
         "ts-node": "10.9.1",
         "tsconfig-paths-webpack-plugin": "4.0.1",
-        "typescript": "5.0.2",
-        "webpack": "5.76.3",
+        "typescript": "5.0.3",
+        "webpack": "5.77.0",
         "webpack-cli": "5.0.1",
-        "webpack-dev-server": "4.13.1",
+        "webpack-dev-server": "4.13.2",
         "webpack-notifier": "1.15.0"
     }
 }

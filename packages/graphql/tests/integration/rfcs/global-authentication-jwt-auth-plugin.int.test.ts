@@ -26,6 +26,7 @@ import type { Neo4jGraphQLAuthenticationError } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
+// TODO: fix this file with global auth
 describe("Global authentication - Auth JWT plugin", () => {
     let driver: Driver;
     let neo4j: Neo4j;

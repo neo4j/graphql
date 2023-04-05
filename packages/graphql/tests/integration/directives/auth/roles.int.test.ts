@@ -94,10 +94,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -136,10 +136,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -193,10 +193,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -255,10 +255,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -304,10 +304,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -351,10 +351,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -398,10 +398,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -447,10 +447,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -494,10 +494,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -567,10 +567,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -663,10 +663,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -741,10 +741,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -837,10 +837,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -888,10 +888,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -947,10 +947,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
             try {
@@ -998,10 +998,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -1044,10 +1044,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -1094,10 +1094,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -1164,10 +1164,10 @@ describe("auth/roles", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 

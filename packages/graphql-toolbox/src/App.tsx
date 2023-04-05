@@ -24,6 +24,7 @@ import { ThemeProvider } from "./contexts/theme";
 import { SettingsProvider } from "./contexts/settings";
 import { AppSettingsProvider } from "./contexts/appsettings";
 import "@neo4j-ndl/base/lib/neo4j-ds-styles.css";
+import "@graphiql/react/dist/style.css";
 import "./index.css";
 
 export const App = () => {
