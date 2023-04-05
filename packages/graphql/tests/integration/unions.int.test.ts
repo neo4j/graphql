@@ -775,7 +775,7 @@ describe("unions", () => {
                 union Search = ${MovieType} | ${GenreType}
 
 
-                type ${GenreType} @auth(rules: [{ operations: [READ], allow: { name: "$jwt.jwtAllowedNamesExample" } }]) {
+                type ${GenreType} @authorization(validate: [{ operations: [READ], when: BEFORE, where: { node: { name: "$jwt.jwtAllowedNamesExample" } } }]) {
                     name: String
                 }
 

@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const testTarget = new UniqueType("Target");
 
             const typeDefs = gql`
-                type ${testSource.name} @auth(rules: [{ operations: [CONNECT], allow: { id: "$jwt.sub" } }]) {
+                type ${testSource.name} @authorization(validate: [{ when: BEFORE, operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!
                     targets: [${testTarget.name}!]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
@@ -110,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const testTarget = new UniqueType("Target");
 
             const typeDefs = gql`
-                type ${testSource.name} @auth(rules: [{ operations: [CONNECT], allow: { id: "$jwt.sub" } }]) {
+                type ${testSource.name} @authorization(validate: [{ when: BEFORE, operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!
                     targets: [${testTarget.name}!]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
@@ -187,7 +187,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                     targets: [${testTarget.name}!]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
             
-                type ${testTarget.name} @auth(rules: [{ operations: [DISCONNECT], allow: { id: "$jwt.sub" } }]) {
+                type ${testTarget.name} @authorization(validate: [{ when: BEFORE, operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!
                 }
             `;
@@ -246,7 +246,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                     targets: [${testTarget.name}!]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
             
-                type ${testTarget.name} @auth(rules: [{ operations: [DISCONNECT], allow: { id: "$jwt.sub" } }]) {
+                type ${testTarget.name} @authorization(validate: [{ when: BEFORE, operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!
                 }
             `;

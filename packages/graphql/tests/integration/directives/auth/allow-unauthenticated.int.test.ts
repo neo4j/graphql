@@ -58,12 +58,13 @@ describe("auth/allow-unauthenticated", () => {
                     published: Boolean!
                 }
 
-                extend type ${Post} @auth(rules: [
-                    { allow: { OR: [
+                extend type ${Post} @authorization(validate: [{ 
+                    when: BEFORE, 
+                    requireAuthentication: false, 
+                    where: { node: { OR: [
                         { publisher: "$jwt.sub" },
-                        { published: true },
-                    ] }, allowUnauthenticated: true }
-                ])
+                        { published: true }
+                    ] } } }])
             `;
 
             const postId = generate({ charset: "alphabetic" });
@@ -114,12 +115,13 @@ describe("auth/allow-unauthenticated", () => {
                     published: Boolean!
                 }
 
-                extend type ${Post} @auth(rules: [
-                    { allow: { OR: [
+                extend type ${Post} @authorization(validate: [{ 
+                    when: BEFORE, 
+                    requireAuthentication: false, 
+                    where: { node: { OR: [
                         { publisher: "$jwt.sub" },
-                        { published: true },
-                    ] }, allowUnauthenticated: true }
-                ])
+                        { published: true }
+                    ] } } }])
             `;
 
             const postId = generate({ charset: "alphabetic" });
@@ -171,12 +173,13 @@ describe("auth/allow-unauthenticated", () => {
                     published: Boolean!
                 }
 
-                extend type ${Post} @auth(rules: [
-                    { allow: { OR: [
+                extend type ${Post} @authorization(validate: [{ 
+                    when: BEFORE, 
+                    requireAuthentication: false, 
+                    where: { node: { OR: [
                         { publisher: "$jwt.sub" },
-                        { published: true },
-                    ] }, allowUnauthenticated: true }
-                ])
+                        { published: true }
+                    ] } } }])
             `;
 
             const postId = generate({ charset: "alphabetic" });
@@ -232,12 +235,13 @@ describe("auth/allow-unauthenticated", () => {
                     published: Boolean!
                 }
 
-                extend type ${Post} @auth(rules: [
-                    { where: { OR: [
+                extend type ${Post} @authorization(validate: [{ 
+                    when: BEFORE, 
+                    requireAuthentication: false, 
+                    where: { node: { OR: [
                         { publisher: "$jwt.sub" },
-                        { published: true },
-                    ] }, allowUnauthenticated: true }
-                ])
+                        { published: true }
+                    ] } } }])
             `;
 
             const postId = generate({ charset: "alphabetic" });
@@ -288,12 +292,12 @@ describe("auth/allow-unauthenticated", () => {
                     published: Boolean!
                 }
 
-                extend type ${Post} @auth(rules: [
-                    { where: { OR: [
+                extend type ${Post} @authorization(filter: [{
+                    requireAuthentication: false, 
+                    where: { node: { OR: [
                         { publisher: "$jwt.sub" },
-                        { published: true },
-                    ] }, allowUnauthenticated: true }
-                ])
+                        { published: true }
+                    ] } } }])
             `;
 
             const postId = generate({ charset: "alphabetic" });
@@ -344,12 +348,12 @@ describe("auth/allow-unauthenticated", () => {
                     published: Boolean!
                 }
 
-                extend type ${Post} @auth(rules: [
-                    { where: { OR: [
+                extend type ${Post} @authorization(validate: [{
+                    requireAuthentication: false, 
+                    where: { node: { OR: [
                         { publisher: "$jwt.sub" },
-                        { published: true },
-                    ] }, allowUnauthenticated: true }
-                ])
+                        { published: true }
+                    ] } } }])
             `;
 
             const postId = generate({ charset: "alphabetic" });
@@ -405,11 +409,10 @@ describe("auth/allow-unauthenticated", () => {
                     id: ID
                 }
 
-                extend type ${User} @auth(rules: [{
-                    operations: [CREATE],
-                    bind: { id: "$jwt.sub" },
-                    allowUnauthenticated: true
-                }])
+                extend type ${User} @authorization(validate: [{ 
+                    when: AFTER, 
+                    requireAuthentication: false, 
+                    where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const query = `

@@ -51,7 +51,7 @@ describe("auth/where", () => {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
+                extend type User @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -112,7 +112,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type Post @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
+                extend type Post @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -187,7 +187,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type Post @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
+                extend type Post @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -275,8 +275,8 @@ describe("auth/where", () => {
                         creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                     }
 
-                    extend type Post @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
-                    extend type User @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
+                    extend type Post @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                    extend type User @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
                 `;
 
                 const userId = generate({
@@ -356,8 +356,8 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 }
 
-                extend type Post @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
-                extend type User @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
+                extend type Post @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type User @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -437,7 +437,7 @@ describe("auth/where", () => {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{ operations: [UPDATE], where: { id: "$jwt.sub" } }])
+                extend type User @authorization(filter: [{ operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -497,7 +497,7 @@ describe("auth/where", () => {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{ operations: [DELETE], where: { id: "$jwt.sub" } }])
+                extend type User @authorization(filter: [{ operations: [DELETE], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -563,7 +563,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @auth(rules: [{ operations: [CONNECT], where: { id: "$jwt.sub" } }])
+                extend type User @authorization(filter: [{ operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -630,7 +630,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @auth(rules: [{ operations: [CONNECT], where: { id: "$jwt.sub" } }])
+                extend type User @authorization(filter: [{ operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -699,7 +699,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @auth(rules: [{ operations: [DISCONNECT], where: { id: "$jwt.sub" } }])
+                extend type User @authorization(filter: [{ operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -770,7 +770,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @auth(rules: [{ operations: [DISCONNECT], where: { id: "$jwt.sub" } }])
+                extend type User @authorization(filter: [{ operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
