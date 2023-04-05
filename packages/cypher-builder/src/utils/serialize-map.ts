@@ -20,11 +20,7 @@
 import type { Expr } from "../types";
 import type { CypherEnvironment } from "../Environment";
 
-export function serializeMap(
-    env: CypherEnvironment,
-    map: Map<string, Expr | undefined>,
-    omitCurlyBraces = false
-): string {
+export function serializeMap(env: CypherEnvironment, map: Map<string, Expr>, omitCurlyBraces = false): string {
     const serializedFields: string[] = [];
 
     for (const [key, value] of map.entries()) {

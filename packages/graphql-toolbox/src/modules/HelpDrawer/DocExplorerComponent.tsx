@@ -1,7 +1,8 @@
 import type { GraphQLSchema } from "graphql";
+import { DocExplorer, SchemaContextProvider, ExplorerContextProvider } from "@graphiql/react";
+import { createGraphiQLFetcher } from "@graphiql/toolkit";
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
-import { DocExplorer } from "../EditorView/docexplorer";
 
 interface Props {
     onClickClose: () => void;
@@ -11,33 +12,34 @@ interface Props {
 }
 
 export const DocExplorerComponent = ({ schema, isEmbedded = true, onClickClose, onClickBack }: Props): JSX.Element => {
+    const dummyFetcher = createGraphiQLFetcher({
+        url: "empty",
+    });
     return (
         <div className={`${isEmbedded ? "doc-explorer-embedded" : "doc-explorer-regular"}`}>
-            <DocExplorer
-                schema={schema}
-                closeButton={
+            {isEmbedded ? (
+                <div className="flex items-center justify-between mb-4">
+                    <button data-test-doc-explorer-back-button aria-label="Back to Help drawer" onClick={onClickBack}>
+                        <img src={ArrowLeft} alt="arrow left" className="inline w-5 h-5 text-lg cursor-pointer" />
+                    </button>
                     <button
                         data-test-doc-explorer-close-button
-                        className="docExplorerCloseIcon"
+                        aria-label="Close Help drawer"
+                        className="text-lg"
                         onClick={onClickClose}
-                        aria-label="Close Documentation Explorer"
                     >
                         {"\u2715"}
                     </button>
-                }
-                titleBarBackButton={
-                    isEmbedded ? (
-                        <button
-                            data-test-doc-explorer-back-button
-                            className="docExplorerCloseIcon"
-                            onClick={() => onClickBack && onClickBack()}
-                            aria-label="Back to Help drawer"
-                        >
-                            <img src={ArrowLeft} alt="arrow left" className="inline w-5 h-5" />
-                        </button>
-                    ) : null
-                }
-            />
+                </div>
+            ) : null}
+            {/* TODO: Move SchemaContextProvider closer to root (Main.tsx) in the future! */}
+            <SchemaContextProvider schema={schema} fetcher={dummyFetcher}>
+                <ExplorerContextProvider>
+                    <div className="graphiql-container">
+                        <DocExplorer />
+                    </div>
+                </ExplorerContextProvider>
+            </SchemaContextProvider>
         </div>
     );
 };
