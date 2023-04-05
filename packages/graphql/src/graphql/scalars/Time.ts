@@ -24,6 +24,16 @@ import neo4j, { isTime } from "neo4j-driver";
 export const TIME_REGEX =
     /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d)(:(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?((?:[Zz])|((?<offsetDirection>[-|+])(?<offsetHour>[01]\d|2[0-3]):(?<offsetMinute>[0-5]\d)))?)?$/;
 
+type TimeRegexMatchGroups = {
+    hour: string;
+    minute: string;
+    second: string;
+    fraction: string;
+    offsetDirection: string;
+    offsetHour: string;
+    offsetMinute: string;
+};
+
 type ParsedTime = {
     hour: number;
     minute: number;
@@ -43,8 +53,8 @@ export const parseTime = (value: unknown): ParsedTime => {
         throw new TypeError(`Value must be formatted as Time: ${value}`);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { hour, minute, second, fraction, offsetDirection, offsetHour, offsetMinute } = match.groups!;
+    const { hour, minute, second, fraction, offsetDirection, offsetHour, offsetMinute } =
+        match.groups as TimeRegexMatchGroups;
     // Calculate the number of nanoseconds by padding the fraction of seconds with zeroes to nine digits
     let nanosecond = 0;
     if (fraction) {

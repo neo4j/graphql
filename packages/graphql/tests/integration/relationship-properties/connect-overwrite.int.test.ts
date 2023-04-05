@@ -175,7 +175,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, directorName, year: 2011, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
             expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
@@ -266,7 +266,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, directorName, year, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
             expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
@@ -449,7 +449,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
             expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
@@ -507,7 +507,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
             expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
@@ -626,7 +626,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
                 `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`
             );
             expect(gqlResultUpdate.data).toBeFalsy();
@@ -830,7 +830,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
             expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
@@ -895,7 +895,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
                 `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`
             );
             expect(gqlResultUpdate.data).toBeFalsy();
@@ -1097,7 +1097,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
             expect(gqlResultUpdate.data).toBeFalsy();
 
             const neo4jResultInitial = await session.run(cypher, { movieTitle, screenTime, actorName });
@@ -1226,7 +1226,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, screenTimeOther },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
                 `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`
             );
             expect(gqlResultUpdate.data).toBeFalsy();
@@ -1313,7 +1313,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     movieOtherTitle,
                 },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
                 `${typeActor.name}.movies required exactly once for a specific ${typeMovie.name}`
             );
             expect(gqlResultUpdate.data).toBeFalsy();
@@ -1429,7 +1429,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
                 `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`
             );
             expect(gqlResultUpdate.data).toBeFalsy();
@@ -1622,7 +1622,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
                 `${typeActor.name}.directed required exactly once for a specific ${typeMovie.name}`
             );
             expect(gqlResultUpdate.data).toBeFalsy();
@@ -1697,7 +1697,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, year, yearOther, actorName: actorNameOther },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
                 `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`
             );
             expect(gqlResultUpdate.data).toBeFalsy();
@@ -1848,7 +1848,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, movieOtherTitle, year: yearOther, actorName },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
                 `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`
             );
             expect(gqlResultUpdate.data).toBeFalsy();
@@ -1997,7 +1997,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
                 `${typeActor.name}.directed required exactly once for a specific ${typeMovie.name}`
             );
             expect(gqlResultUpdate.data).toBeFalsy();
@@ -2069,7 +2069,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
-            expect(gqlResultUpdate.errors?.[0].toString()).toInclude(
+            expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
                 `${typeMovie.name}.directors required exactly once for a specific ${typeActor.name}`
             );
             expect(gqlResultUpdate.data).toBeFalsy();

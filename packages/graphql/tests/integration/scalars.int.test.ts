@@ -112,7 +112,7 @@ describe("scalars", () => {
                 RETURN m {.id, .name} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({ id, name: expectedName });
+            expect((result.records[0]?.toObject() as any).m).toEqual({ id, name: expectedName });
         } finally {
             await session.close();
         }

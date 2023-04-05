@@ -149,7 +149,7 @@ describe("Update -> ConnectOrCreate", () => {
           MATCH (m:${typeGenre.name} { name: "Horror" })
           RETURN COUNT(m) as count
         `);
-        expect((genreCount.records[0].toObject().count as Integer).toNumber()).toBe(1);
+        expect((genreCount.records[0]?.toObject().count as Integer).toNumber()).toBe(1);
     });
 
     test("create with ConnectOrCreate auth", async () => {
@@ -166,6 +166,6 @@ describe("Update -> ConnectOrCreate", () => {
           MATCH (m:${typeGenre.name} { name: "Comedy" })
           RETURN COUNT(m) as count
         `);
-        expect((genreCount.records[0].toObject().count as Integer).toNumber()).toBe(1);
+        expect((genreCount.records[0]?.toObject().count as Integer).toNumber()).toBe(1);
     });
 });

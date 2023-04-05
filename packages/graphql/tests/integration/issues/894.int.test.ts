@@ -131,6 +131,6 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             `);
 
         expect(userOrgs.records).toHaveLength(1);
-        expect(userOrgs.records[0].toObject().orgName as string).toBe("The Empire");
+        expect(userOrgs.records[0]?.toObject().orgName as string).toBe("The Empire");
     });
 });
