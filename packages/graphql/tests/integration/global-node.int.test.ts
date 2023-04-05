@@ -81,7 +81,7 @@ describe("Global node resolution", () => {
 
             const createdMovie = mutationResult.data[typeFilm.operations.create]?.[typeFilm.plural]?.[0];
 
-            const expectedId = toGlobalId({ typeName: typeFilm.name, field: "dbId", id: createdMovie?.dbId as string });
+            const expectedId = toGlobalId({ typeName: typeFilm.name, field: "dbId", id: createdMovie?.dbId || "" });
 
             expect(createdMovie?.id).toEqual(expectedId);
         } finally {
