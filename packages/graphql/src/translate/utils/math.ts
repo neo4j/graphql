@@ -40,6 +40,11 @@ function mathOperatorToSymbol(mathOperator: string): string {
 export const MATH_FIELD_REGX =
     /(?<propertyName>\w*)(?<operatorName>_INCREMENT|_DECREMENT|_ADD|_SUBTRACT|_DIVIDE|_MULTIPLY)\b/;
 
+type MatchRegexMatchGroups = {
+    propertyName: string;
+    operatorName: "_INCREMENT" | "_DECREMENT" | "_ADD" | "_SUBTRACT" | "_DIVIDE" | "_MULTIPLY";
+};
+
 interface MathDescriptor {
     dbName: string;
     graphQLType: string;
@@ -58,7 +63,7 @@ interface MathMatch {
 export function matchMathField(graphQLFieldName: string): MathMatch {
     const mathFieldMatch = graphQLFieldName.match(MATH_FIELD_REGX);
     if (mathFieldMatch && mathFieldMatch.groups) {
-        const { operatorName, propertyName } = mathFieldMatch.groups;
+        const { operatorName, propertyName } = mathFieldMatch.groups as MatchRegexMatchGroups;
         const hasMatched = Boolean(mathFieldMatch && mathFieldMatch.length > 2 && operatorName && propertyName);
         return {
             hasMatched,

@@ -96,7 +96,7 @@ describe("[Point]", () => {
             `);
 
         expect(
-            (result.records[0].toObject() as any).r.waypoints
+            (result.records[0]?.toObject() as any).r.waypoints
                 .map((waypoint) => {
                     expect(waypoint.srid).toEqual(int(4326));
                     return {
@@ -151,7 +151,7 @@ describe("[Point]", () => {
             `);
 
         expect(
-            (result.records[0].toObject() as any).r.waypoints
+            (result.records[0]?.toObject() as any).r.waypoints
                 .map((waypoint) => {
                     expect(waypoint.srid).toEqual(int(4979));
                     return {
@@ -191,7 +191,7 @@ describe("[Point]", () => {
         );
 
         expect(
-            (beforeResult.records[0].toObject() as any).r.waypoints
+            (beforeResult.records[0]?.toObject() as any).r.waypoints
                 .map((waypoint) => {
                     expect(waypoint.srid).toEqual(int(4326));
                     return {
@@ -237,7 +237,7 @@ describe("[Point]", () => {
             `);
 
         expect(
-            (result.records[0].toObject() as any).r.waypoints
+            (result.records[0]?.toObject() as any).r.waypoints
                 .map((waypoint) => {
                     expect(waypoint.srid).toEqual(int(4326));
                     return {
@@ -278,7 +278,7 @@ describe("[Point]", () => {
         );
 
         expect(
-            (beforeResult.records[0].toObject() as any).r.waypoints
+            (beforeResult.records[0]?.toObject() as any).r.waypoints
                 .map((waypoint) => {
                     expect(waypoint.srid).toEqual(int(4979));
                     return {
@@ -325,7 +325,7 @@ describe("[Point]", () => {
             `);
 
         expect(
-            (result.records[0].toObject() as any).r.waypoints
+            (result.records[0]?.toObject() as any).r.waypoints
                 .map((waypoint) => {
                     expect(waypoint.srid).toEqual(int(4979));
                     return {

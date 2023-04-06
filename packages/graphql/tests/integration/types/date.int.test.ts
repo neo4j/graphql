@@ -86,7 +86,7 @@ describe("Date", () => {
                 const movie: {
                     id: string;
                     date: typeof neo4jDriver.types.Date;
-                } = (result.records[0].toObject() as any).m;
+                } = (result.records[0]?.toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
                 expect(movie.date.toString()).toEqual(date.toISOString().split("T")[0]);
@@ -145,7 +145,7 @@ describe("Date", () => {
                 const movie: {
                     id: string;
                     dates: (typeof neo4jDriver.types.Date)[];
-                } = (result.records[0].toObject() as any).m;
+                } = (result.records[0]?.toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
 
@@ -264,7 +264,7 @@ describe("Date", () => {
                 const movie: {
                     id: string;
                     date: typeof neo4jDriver.types.Date;
-                } = (result.records[0].toObject() as any).m;
+                } = (result.records[0]?.toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
                 expect(movie.date.toString()).toEqual(date.toISOString().split("T")[0]);

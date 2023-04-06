@@ -308,13 +308,13 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
         const userIds = Array(2)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string];
         const workspaceIds = Array(2)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string];
         const pageIds = Array(4)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string, string, string];
 
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
@@ -391,13 +391,13 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
         const userIds = Array(2)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string];
         const workspaceIds = Array(2)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string];
         const pageIds = Array(4)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string, string, string];
 
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
@@ -474,13 +474,13 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
         const userIds = Array(2)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string];
         const workspaceIds = Array(2)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string];
         const pageIds = Array(4)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string, string, string];
 
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
@@ -557,13 +557,13 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
         const userIds = Array(2)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string];
         const workspaceIds = Array(2)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string];
         const pageIds = Array(4)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string, string, string];
 
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
@@ -639,13 +639,13 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
         const userIds = Array(2)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string];
         const workspaceIds = Array(2)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string];
         const pageIds = Array(4)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string, string, string];
 
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
@@ -722,13 +722,13 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
         const userIds = Array(2)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string];
         const workspaceIds = Array(2)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string];
         const pageIds = Array(4)
             .fill(0)
-            .map(() => generate({ charset: "alphabetic" }));
+            .map(() => generate({ charset: "alphabetic" })) as [string, string, string, string];
 
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub

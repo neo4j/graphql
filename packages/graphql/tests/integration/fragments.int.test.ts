@@ -143,7 +143,7 @@ describe("fragments", () => {
         const graphqlActor: Array<{ name: string }> = (graphqlResult.data as any)?.actors;
 
         expect(graphqlActor).toHaveLength(1);
-        expect(graphqlActor[0].name).toBe(actorName);
+        expect(graphqlActor[0]?.name).toBe(actorName);
     });
 
     test("should be able project fragment on interface", async () => {
@@ -175,8 +175,8 @@ describe("fragments", () => {
             ?.actors;
 
         expect(graphqlActors).toHaveLength(1);
-        expect(graphqlActors[0].name).toBe(actorName);
-        expect(graphqlActors[0].actedIn).toEqual(
+        expect(graphqlActors[0]?.name).toBe(actorName);
+        expect(graphqlActors[0]?.actedIn).toEqual(
             expect.toIncludeSameMembers([{ title: movieTitle }, { title: seriesTitle }])
         );
     });
@@ -218,8 +218,8 @@ describe("fragments", () => {
         )?.actors;
 
         expect(graphqlActors).toHaveLength(1);
-        expect(graphqlActors[0].name).toBe(actorName);
-        expect(graphqlActors[0].actedIn).toEqual(
+        expect(graphqlActors[0]?.name).toBe(actorName);
+        expect(graphqlActors[0]?.actedIn).toEqual(
             expect.toIncludeSameMembers([
                 { title: movieTitle, runtime: movieRuntime },
                 { title: seriesTitle, runtime: seriesRuntime },

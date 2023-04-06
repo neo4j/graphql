@@ -35,22 +35,29 @@ export async function collectTests(rootPath: string): Promise<Array<Performance.
             rawMutations.shift();
             // TODO: remove duplicate
             const queries = rawQueries.map((query: string): Performance.TestInfo => {
-                const name = query.split(" {")[0].trim();
+                const name = query.split(" {")[0]?.trim();
+                const filename = path.basename(filePath).split(path.extname(filePath))[0];
+                if (!name || !filename) throw new Error("Cannot find name or filename collecting perf. tests");
+
                 if (name.match(onlyRegex)) onlyFilter = true;
                 return {
                     query: `query ${query}`,
                     name,
-                    filename: path.basename(filePath).split(path.extname(filePath))[0],
+                    filename,
                     type: "query",
                 };
             });
             const mutations = rawMutations.map((query: string): Performance.TestInfo => {
-                const name = query.split(" {")[0].trim();
+                const name = query.split(" {")[0]?.trim();
+                const filename = path.basename(filePath).split(path.extname(filePath))[0];
+
+                if (!name || !filename) throw new Error("Cannot find name or filename collecting mutation perf. tests");
+
                 if (name.match(onlyRegex)) onlyFilter = true;
                 return {
                     query: `mutation ${query}`,
                     name,
-                    filename: path.basename(filePath).split(path.extname(filePath))[0],
+                    filename,
                     type: "mutation",
                 };
             });
@@ -82,10 +89,13 @@ export async function collectCypherTests(rootPath: string): Promise<Array<Perfor
                 const name = tokens.shift()?.trim() as string;
                 if (name.match(onlyRegex)) onlyFilter = true;
                 const cypher = tokens.join("\n");
+                const filename = path.basename(filePath).split(path.extname(filePath))[0];
+                if (!filename) throw new Error("Filename not found in collectCypherTests");
+
                 return {
                     query: cypher,
                     name,
-                    filename: path.basename(filePath).split(path.extname(filePath))[0],
+                    filename,
                     type: "cypher",
                 };
             });

@@ -91,7 +91,7 @@ describe("connections sort", () => {
             title: "E",
             runtime: 300,
         },
-    ];
+    ] as const;
 
     const series = [
         {
@@ -104,7 +104,7 @@ describe("connections sort", () => {
             title: "D",
             episodes: 100,
         },
-    ];
+    ] as const;
 
     const actors = [
         {
@@ -357,7 +357,7 @@ describe("connections sort", () => {
                 schema,
                 source,
                 contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
-                variableValues: { actorId: actors[0].id, direction },
+                variableValues: { actorId: actors[0]?.id, direction },
             });
         describe("node", () => {
             describe("field in selection set", () => {
@@ -385,7 +385,7 @@ describe("connections sort", () => {
 
                     const [gqlActor] = gqlResult.data?.[Actor.plural] as any[];
 
-                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.id).toEqual(actors[0]?.id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
                     expect(gqlActor.actedInConnection.edges[0].node.id).toBe(movies[0].id);
                     expect(gqlActor.actedInConnection.edges[1].node.id).toBe(movies[1].id);
@@ -400,7 +400,7 @@ describe("connections sort", () => {
 
                     const [gqlActor] = gqlResult.data?.[Actor.plural] as any[];
 
-                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.id).toEqual(actors[0]?.id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
                     expect(gqlActor.actedInConnection.edges[0].node.id).toBe(series[1].id);
                     expect(gqlActor.actedInConnection.edges[1].node.id).toBe(series[0].id);
@@ -434,7 +434,7 @@ describe("connections sort", () => {
 
                     const [gqlActor] = gqlResult.data?.[Actor.plural] as any[];
 
-                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.id).toEqual(actors[0]?.id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
                     expect(gqlActor.actedInConnection.edges[0].node.id).toBe(movies[0].id);
                     expect(gqlActor.actedInConnection.edges[1].node.id).toBe(movies[1].id);
@@ -449,7 +449,7 @@ describe("connections sort", () => {
 
                     const [gqlActor] = gqlResult.data?.[Actor.plural] as any[];
 
-                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.id).toEqual(actors[0]?.id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
                     expect(gqlActor.actedInConnection.edges[0].node.id).toBe(series[1].id);
                     expect(gqlActor.actedInConnection.edges[1].node.id).toBe(series[0].id);
@@ -482,7 +482,7 @@ describe("connections sort", () => {
 
                     const [gqlActor] = gqlResult.data?.[Actor.plural] as any[];
 
-                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.id).toEqual(actors[0]?.id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
                     expect(gqlActor.actedInConnection.edges[0].node.id).toBe(movies[0].id);
                     expect(gqlActor.actedInConnection.edges[1].node.id).toBe(movies[1].id);
@@ -497,7 +497,7 @@ describe("connections sort", () => {
 
                     const [gqlActor] = gqlResult.data?.[Actor.plural] as any[];
 
-                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.id).toEqual(actors[0]?.id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
                     expect(gqlActor.actedInConnection.edges[0].node.id).toBe(series[1].id);
                     expect(gqlActor.actedInConnection.edges[1].node.id).toBe(series[0].id);
@@ -533,7 +533,7 @@ describe("connections sort", () => {
 
                     const [gqlActor] = gqlResult.data?.[Actor.plural] as any[];
 
-                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.id).toEqual(actors[0]?.id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
                     expect(gqlActor.actedInConnection.edges[0].node.id).toBe(movies[1].id);
                     expect(gqlActor.actedInConnection.edges[1].node.id).toBe(movies[0].id);
@@ -548,7 +548,7 @@ describe("connections sort", () => {
 
                     const [gqlActor] = gqlResult.data?.[Actor.plural] as any[];
 
-                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.id).toEqual(actors[0]?.id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
                     expect(gqlActor.actedInConnection.edges[0].node.id).toBe(series[0].id);
                     expect(gqlActor.actedInConnection.edges[1].node.id).toBe(series[1].id);
@@ -583,7 +583,7 @@ describe("connections sort", () => {
 
                     const [gqlActor] = gqlResult.data?.[Actor.plural] as any[];
 
-                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.id).toEqual(actors[0]?.id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
                     expect(gqlActor.actedInConnection.edges[0].node.id).toBe(movies[1].id);
                     expect(gqlActor.actedInConnection.edges[1].node.id).toBe(movies[0].id);
@@ -598,7 +598,7 @@ describe("connections sort", () => {
 
                     const [gqlActor] = gqlResult.data?.[Actor.plural] as any[];
 
-                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.id).toEqual(actors[0]?.id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
                     expect(gqlActor.actedInConnection.edges[0].node.id).toBe(series[0].id);
                     expect(gqlActor.actedInConnection.edges[1].node.id).toBe(series[1].id);
@@ -631,7 +631,7 @@ describe("connections sort", () => {
 
                     const [gqlActor] = gqlResult.data?.[Actor.plural] as any[];
 
-                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.id).toEqual(actors[0]?.id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
                     expect(gqlActor.actedInConnection.edges[0].node.id).toBe(movies[1].id);
                     expect(gqlActor.actedInConnection.edges[1].node.id).toBe(movies[0].id);
@@ -646,7 +646,7 @@ describe("connections sort", () => {
 
                     const [gqlActor] = gqlResult.data?.[Actor.plural] as any[];
 
-                    expect(gqlActor.id).toEqual(actors[0].id);
+                    expect(gqlActor.id).toEqual(actors[0]?.id);
                     expect(gqlActor.actedInConnection.edges).toHaveLength(4);
                     expect(gqlActor.actedInConnection.edges[0].node.id).toBe(series[0].id);
                     expect(gqlActor.actedInConnection.edges[1].node.id).toBe(series[1].id);

@@ -27,7 +27,7 @@ import {
 } from "./resolveTree";
 
 describe("resolveTree", () => {
-    const names = ["field1", "field2", "field3"];
+    const names = ["field1", "field2", "field3"] as const;
     const aliasMap = new Map();
     names.forEach((name) => aliasMap.set(name, generate({ charset: "alphabetic" })));
 

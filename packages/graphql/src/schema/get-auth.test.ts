@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { ObjectTypeDefinitionNode} from "graphql";
+import type { ConstDirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import { parse } from "graphql";
 import getAuth from "./get-auth";
 
@@ -31,8 +31,7 @@ describe("getAuth", () => {
 
         const parsed = parse(typeDefs);
 
-        // @ts-ignore
-        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives?.[0] as ConstDirectiveNode;
 
         expect(() => getAuth(directive)).toThrow("auth rules required");
     });
@@ -45,9 +44,7 @@ describe("getAuth", () => {
         `;
 
         const parsed = parse(typeDefs);
-
-        // @ts-ignore
-        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives?.[0] as ConstDirectiveNode;
 
         expect(() => getAuth(directive)).toThrow("auth rules must be a ListValue");
     });
@@ -60,9 +57,7 @@ describe("getAuth", () => {
         `;
 
         const parsed = parse(typeDefs);
-
-        // @ts-ignore
-        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives?.[0] as ConstDirectiveNode;
 
         expect(() => getAuth(directive)).toThrow("auth rules rule invalid field banana");
     });
@@ -75,9 +70,7 @@ describe("getAuth", () => {
         `;
 
         const parsed = parse(typeDefs);
-
-        // @ts-ignore
-        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives?.[0] as ConstDirectiveNode;
 
         expect(() => getAuth(directive)).toThrow("auth rules rule operations operation should be a EnumValue");
     });
@@ -90,9 +83,7 @@ describe("getAuth", () => {
         `;
 
         const parsed = parse(typeDefs);
-
-        // @ts-ignore
-        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives?.[0] as ConstDirectiveNode;
 
         expect(() => getAuth(directive)).toThrow("auth rules rule operations operation invalid INVALID");
     });
@@ -128,7 +119,7 @@ describe("getAuth", () => {
         const directive = (parsed.definitions.find((x) => x.name.value === "Movie") as ObjectTypeDefinitionNode)
             .directives[0];
 
-        const auth = getAuth(directive);
+        const auth = getAuth(directive as ConstDirectiveNode);
 
         expect(auth).toMatchObject({
             rules: [

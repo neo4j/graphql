@@ -195,7 +195,7 @@ describe("Mathematical operations tests", () => {
                     id,
                 }
             );
-            expect(storedValue.records[0].get("viewers")).toEqual(initialValue);
+            expect(storedValue.records[0]?.get("viewers")).toEqual(initialValue);
         }
     );
 
@@ -257,7 +257,7 @@ describe("Mathematical operations tests", () => {
                 id,
             }
         );
-        expect(storedValue.records[0].get("viewers")).toEqual(initialViewers);
+        expect(storedValue.records[0]?.get("viewers")).toEqual(initialViewers);
     });
 
     test("Should be possible to do multiple operations in the same mutation", async () => {
@@ -318,8 +318,8 @@ describe("Mathematical operations tests", () => {
                 id,
             }
         );
-        expect(storedValue.records[0].get("viewers")).toEqual(int(110));
-        expect(storedValue.records[0].get("length")).toEqual(int(90));
+        expect(storedValue.records[0]?.get("viewers")).toEqual(int(110));
+        expect(storedValue.records[0]?.get("length")).toEqual(int(90));
     });
 
     test("Should be possible to update nested nodes", async () => {
@@ -398,8 +398,8 @@ describe("Mathematical operations tests", () => {
                 id,
             }
         );
-        expect(storedValue.records[0].get("viewers")).toEqual(int(110));
-        expect(storedValue.records[0].get("name")).toBe(name);
+        expect(storedValue.records[0]?.get("viewers")).toEqual(int(110));
+        expect(storedValue.records[0]?.get("name")).toBe(name);
     });
 
     test("Should be possible to update nested nodes using interfaces", async () => {
@@ -483,8 +483,8 @@ describe("Mathematical operations tests", () => {
                 id,
             }
         );
-        expect(storedValue.records[0].get("viewers")).toEqual(int(110));
-        expect(storedValue.records[0].get("name")).toBe(name);
+        expect(storedValue.records[0]?.get("viewers")).toEqual(int(110));
+        expect(storedValue.records[0]?.get("name")).toBe(name);
     });
 
     test("Should be possible to update nested nodes using interface implementations", async () => {
@@ -573,8 +573,8 @@ describe("Mathematical operations tests", () => {
                 id,
             }
         );
-        expect(storedValue.records[0].get("viewers")).toEqual(int(110));
-        expect(storedValue.records[0].get("name")).toBe(name);
+        expect(storedValue.records[0]?.get("viewers")).toEqual(int(110));
+        expect(storedValue.records[0]?.get("name")).toBe(name);
     });
 
     test("Should throws an error if the property holds Nan values", async () => {
@@ -635,7 +635,7 @@ describe("Mathematical operations tests", () => {
                 id,
             }
         );
-        expect(storedValue.records[0].get("viewers")).toBeNull();
+        expect(storedValue.records[0]?.get("viewers")).toBeNull();
     });
 
     test("Should be possible to update relationship properties", async () => {
@@ -721,7 +721,7 @@ describe("Mathematical operations tests", () => {
                 id,
             }
         );
-        expect(storedValue.records[0].get("pay")).toEqual(initialPay + payIncrement);
+        expect(storedValue.records[0]?.get("pay")).toEqual(initialPay + payIncrement);
     });
 
     test("Should raise in case of ambiguous properties on relationships", async () => {
@@ -815,6 +815,6 @@ describe("Mathematical operations tests", () => {
                 id,
             }
         );
-        expect(storedValue.records[0].get("pay")).toEqual(initialPay);
+        expect(storedValue.records[0]?.get("pay")).toEqual(initialPay);
     });
 });

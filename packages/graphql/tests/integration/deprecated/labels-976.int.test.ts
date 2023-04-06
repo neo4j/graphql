@@ -145,8 +145,8 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
         `);
 
         expect(bibRefRes.records).toHaveLength(1);
-        expect(bibRefRes.records[0].toObject().bibRefUri as string).toBe("urn:myiri2");
-        expect(bibRefRes.records[0].toObject().conceptUri as string).toBe("new-e");
+        expect(bibRefRes.records[0]?.toObject().bibRefUri as string).toBe("urn:myiri2");
+        expect(bibRefRes.records[0]?.toObject().conceptUri as string).toBe("new-e");
 
         const updateBibRefResult = await graphqlQuery(updateBibRefQuery);
         expect(updateBibRefResult.errors).toBeUndefined();
@@ -175,7 +175,7 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
         `);
 
         expect(conceptCount.records).toHaveLength(1);
-        expect(conceptCount.records[0].toObject().bibRefUri as string).toBe("urn:myiri2");
-        expect((conceptCount.records[0].toObject().conceptCount as Integer).toNumber()).toBe(2);
+        expect(conceptCount.records[0]?.toObject().bibRefUri as string).toBe("urn:myiri2");
+        expect((conceptCount.records[0]?.toObject().conceptCount as Integer).toNumber()).toBe(2);
     });
 });

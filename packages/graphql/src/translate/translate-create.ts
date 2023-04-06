@@ -27,6 +27,7 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
 import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 
 type ProjectionAndParamsResult = {
     projection: Cypher.Expr;
@@ -61,7 +62,10 @@ export default async function translateCreate({
     const projectionWith: string[] = [];
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
 
-    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
+    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create] as Record<
+        string,
+        ResolveTree
+    >;
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
@@ -72,7 +76,7 @@ export default async function translateCreate({
 
     const { createStrs, params } = mutationInputs.reduce(
         (res, input, index) => {
-            const varName = varNameStrs[index];
+            const varName = varNameStrs[index] as string;
             const create = [`CALL {`];
             const withVars = [varName];
             projectionWith.push(varName);
