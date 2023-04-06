@@ -35,8 +35,6 @@ export interface JWKSPluginInput {
     audience?: string | RegExp | (string | RegExp)[];
 }
 
-// TODO: update docs!
-
 class Neo4jGraphQLAuthJWKSPlugin {
     rolesPath?: string;
     isGlobalAuthenticationEnabled?: boolean;
