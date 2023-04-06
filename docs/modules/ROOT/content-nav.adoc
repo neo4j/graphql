@@ -8,14 +8,12 @@
 *** xref:queries-aggregations/aggregations.adoc[]
 *** xref:queries-aggregations/filtering.adoc[]
 *** xref:queries-aggregations/sorting.adoc[]
-*** xref:queries-aggregations/mathematical-operators.adoc[]
 
 ** xref:mutations/index.adoc[]
 *** xref:mutations/create.adoc[]
 *** xref:mutations/update.adoc[]
 *** xref:mutations/delete.adoc[]
-
-** xref:custom-resolvers.adoc[]
+*** xref:mutations/mathematical-operators.adoc[]
 
 ** xref:subscriptions/index.adoc[]
 *** xref:subscriptions/getting-started.adoc[Getting Started]
@@ -23,6 +21,8 @@
 *** xref:subscriptions/filtering.adoc[]
 *** xref:subscriptions/scaling.adoc[]
 *** xref:subscriptions/plugins.adoc[Plugins]
+
+** xref:custom-resolvers.adoc[]
 
 ** xref:pagination/index.adoc[]
 *** xref:pagination/offset-based.adoc[]
@@ -46,6 +46,13 @@
 *** xref:migration/v3-migration.adoc[]
 *** xref:migration/v4-migration.adoc[]
 
+** xref:ogm/index.adoc[]
+*** xref:ogm/examples.adoc[]
+*** xref:ogm/private.adoc[]
+*** xref:ogm/selection-set.adoc[]
+*** xref:ogm/type-generation.adoc[]
+*** xref:ogm/reference.adoc[]
+
 ** Reference
 *** xref:api-reference/index.adoc[]
 **** xref:api-reference/ogm.adoc[]
@@ -63,13 +70,6 @@
 **** xref:reference/directives/cypher.adoc[]
 **** xref:reference/directives/default-values.adoc[]
 **** xref:reference/directives/database-mapping.adoc[]
-
-*** xref:reference/ogm/index.adoc[]
-**** xref:reference/ogm/examples.adoc[]
-**** xref:reference/ogm/private.adoc[]
-**** xref:reference/ogm/selection-set.adoc[]
-**** xref:reference/ogm/type-generation.adoc[]
-**** xref:reference/ogm/reference.adoc[]
 
 *** xref:reference/driver-configuration.adoc[]
 
