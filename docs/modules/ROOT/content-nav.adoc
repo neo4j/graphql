@@ -24,20 +24,6 @@
 *** xref:subscriptions/scaling.adoc[]
 *** xref:subscriptions/plugins.adoc[Plugins]
 
-** xref:type-definitions/index.adoc[]
-*** xref:type-definitions/basics.adoc[]
-*** xref:type-definitions/types.adoc[]
-*** xref:type-definitions/unions.adoc[]
-*** xref:type-definitions/interfaces.adoc[]
-*** xref:type-definitions/custom-directives.adoc[]
-*** xref:type-definitions/relationships.adoc[]
-*** xref:type-definitions/access-control.adoc[]
-*** xref:type-definitions/autogeneration.adoc[]
-*** xref:type-definitions/cypher.adoc[]
-*** xref:type-definitions/default-values.adoc[]
-*** xref:type-definitions/database-mapping.adoc[]
-*** xref:type-definitions/indexes-and-constraints.adoc[]
-
 ** xref:pagination/index.adoc[]
 *** xref:pagination/offset-based.adoc[]
 *** xref:pagination/cursor-based.adoc[]
@@ -54,12 +40,15 @@
 
 ** xref:introspector.adoc[Introspector]
 
-** xref:migration/index.adoc[Migration from `neo4j-graphql-js`]
+** Migration Guides
+*** xref:migration/index.adoc[Migration from `neo4j-graphql-js`]
 *** xref:migration/v2-migration.adoc[]
 *** xref:migration/v3-migration.adoc[]
 *** xref:migration/v4-migration.adoc[]
 
 ** Reference
+*** xref:api-reference/index.adoc[]
+**** xref:api-reference/ogm.adoc[]
 *** xref:reference/type-definitions/index.adoc[]
 **** xref:reference/type-definitions/indexes-and-constraints.adoc[]
 **** xref:reference/type-definitions/interfaces.adoc[]
