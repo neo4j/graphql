@@ -360,7 +360,8 @@ describe("auth/jwks-endpoint", () => {
                 }),
             });
 
-            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.users).toHaveLength(1);
         } finally {
             await session.close();
         }
@@ -422,6 +423,68 @@ describe("auth/jwks-endpoint", () => {
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should verify the audience in the JWT token against the provided audience in the Neo4jGraphQLAuthJWKSPlugin", async () => {
+        const session = await neo4j.getSession();
+
+        const typeDefs = `
+            type User {
+                id: ID
+            }
+            extend type User @auth(rules: [{ isAuthenticated: true }])
+        `;
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            {
+                users(where: {id: "${userId}"}) {
+                    id
+                }
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWKSPlugin({
+                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    audience: "urn:user",
+                }),
+            },
+        });
+
+        try {
+            // Start the JWKS Mock Server Application
+            jwksMock.start();
+
+            await session.run(`
+                CREATE (:User {id: "${userId}"})
+            `);
+
+            const accessToken = jwksMock.token({
+                iat: 1600000000,
+                aud: "urn:user",
+            });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                    request: {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    },
+                }),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.users).toHaveLength(1);
         } finally {
             await session.close();
         }
