@@ -59,11 +59,9 @@ directive @jwtClaim(
 ) on FIELD_DEFINITION
 ```
 
-This is a directive purely for flagging which type should be used as the representation of the JWT payload structure, and it can only be used once.
-
 These directives are for flagging the structure for the representation of the JWT payload structure.
 
-The `@jwtPayload` directive can be used once in a user's type definitions, and flags the object representing the payload.
+The `@jwtPayload` directive can be used only once in a user's type definitions, and flags the object representing the payload.
 
 The `@jwtClaim` directive can only be used within the type flagged with the `@jwtPayload` directive. It only needs to be used if the GraphQL fieldname isn't a direct map to the JWT claim.
 
