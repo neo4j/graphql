@@ -55,7 +55,7 @@ export default async function unwindCreate({
     const [rootNodeVariable, createCypher] = unwindCreateVisitor.build() as [Cypher.Node, Cypher.Clause];
 
     const projectionWith: string[] = [];
-    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
+    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create] || {};
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
     let projectionCypher: Cypher.Expr | undefined;

@@ -26,11 +26,9 @@ import type {
     SelectionSetNode,
     TypeNode,
     UnionTypeDefinitionNode,
-    FieldNode} from "graphql";
-import {
-    Kind,
-    parse,
+    FieldNode,
 } from "graphql";
+import { Kind, parse } from "graphql";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { generateResolveTree } from "../translate/utils/resolveTree";
 
@@ -114,7 +112,7 @@ function selectionSetToResolveTree(
     }
 
     const selectionSetDocument = document.definitions[0];
-    if (selectionSetDocument.kind !== Kind.OPERATION_DEFINITION) {
+    if (!selectionSetDocument || selectionSetDocument.kind !== Kind.OPERATION_DEFINITION) {
         throw new Error(INVALID_SELECTION_SET_ERROR);
     }
 

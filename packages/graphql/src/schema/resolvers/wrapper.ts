@@ -28,12 +28,13 @@ import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import type { Context, Neo4jFeaturesSettings, Neo4jGraphQLPlugins } from "../../types";
-import { getToken, parseBearerToken } from "../../utils/get-token";
+import type { Context, Neo4jFeaturesSettings, Neo4jGraphQLPlugins, RequestLike } from "../../types";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { IncomingMessage } from "http";
+import { Neo4jGraphQLAuthorization } from "../../classes/authorization/Neo4jGraphQLAuthorization";
+import { getToken, parseBearerToken } from "../../classes/authorization/parse-request-token";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -56,6 +57,7 @@ export const wrapResolver =
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const { driverConfig } = config;
         const callbacks = features?.populatedBy?.callbacks;
+        const authorization = features?.authorization;
 
         if (debug.enabled) {
             const query = print(info.operation);
@@ -91,13 +93,25 @@ export const wrapResolver =
         context.callbacks = callbacks;
 
         if (!context.jwt) {
-            if (context.plugins.auth) {
-                // Here we will try to compute the generic Secret or the generic jwksEndpoint
-                const contextRequest = context.req || context.request;
-                context.plugins.auth.tryToResolveKeys(context instanceof IncomingMessage ? context : contextRequest);
+            const req: RequestLike = context instanceof IncomingMessage ? context : context.req || context.request;
+            if (authorization) {
+                context.jwt = await new Neo4jGraphQLAuthorization(authorization).decode(req);
+            } else {
+                // TODO: remove this else after migrating to new authorization constructor
+                if (context.plugins.auth) {
+                    // Here we will try to compute the generic Secret or the generic jwksEndpoint
+                    const contextRequest = context.req || context.request;
+                    context.plugins.auth.tryToResolveKeys(
+                        context instanceof IncomingMessage ? context : contextRequest
+                    );
+                }
+                let token: string | undefined = undefined;
+                const bearer = getToken(req);
+                if (bearer) {
+                    token = parseBearerToken(bearer);
+                }
+                context.jwt = await decodeToken(token, context.plugins.auth);
             }
-            const token = getToken(context);
-            context.jwt = await decodeToken(token, context.plugins.auth);
         }
 
         verifyGlobalAuthentication(context, context.plugins?.auth);
@@ -153,8 +167,15 @@ export const wrapSubscription =
         };
 
         if (!context?.jwt && contextParams.authorization) {
-            const token = parseBearerToken(contextParams.authorization);
-            subscriptionContext.jwt = await decodeToken(token, plugins.auth);
+            if (resolverArgs.features?.authorization) {
+                subscriptionContext.jwt = new Neo4jGraphQLAuthorization(
+                    resolverArgs.features.authorization
+                ).decodeBearerToken(contextParams.authorization);
+            } else {
+                // TODO: remove this else after migrating to new authorization constructor
+                const token = parseBearerToken(contextParams.authorization);
+                subscriptionContext.jwt = await decodeToken(token, plugins.auth);
+            }
         }
 
         verifyGlobalAuthentication(subscriptionContext, plugins.auth);

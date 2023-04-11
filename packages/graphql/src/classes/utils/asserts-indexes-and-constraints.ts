@@ -224,18 +224,21 @@ async function getMissingConstraints({
 
     const constraintsCypher = "SHOW UNIQUE CONSTRAINTS";
     debug(`About to execute Cypher: ${constraintsCypher}`);
-    const constraintsResult = await session.run(constraintsCypher);
+    const constraintsResult = await session.run<{ labelsOrTypes: string[]; properties: string[] }>(constraintsCypher);
 
     constraintsResult.records
         .map((record) => {
             return record.toObject();
         })
         .forEach((constraint) => {
-            const label = constraint.labelsOrTypes[0];
-            const property = constraint.properties[0];
+            // These will always be defined.
+            const label = constraint.labelsOrTypes[0] as string;
+            const property = constraint.properties[0] as string;
 
-            if (existingConstraints[label]) {
-                existingConstraints[label].push(property as string);
+            const existingConstraint = existingConstraints[label];
+
+            if (existingConstraint) {
+                existingConstraint.push(property);
             } else {
                 existingConstraints[label] = [property];
             }

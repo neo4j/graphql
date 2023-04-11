@@ -52,9 +52,9 @@ describe("array-pop", () => {
 
     const dateTime = new Date().toISOString();
     const date = dateTime.split("T")[0];
-    const time = faker.date.past().toISOString().split("T")[1];
+    const time = faker.date.past().toISOString().split("T")[1] as string;
     const initialTimeValue = `${time.slice(0, -1)}000000Z`;
-    const initialLocalTimeValue = `${faker.date.past().toISOString().split("T")[1].split("Z")[0]}000000`;
+    const initialLocalTimeValue = `${faker.date.past().toISOString().split("T")[1]?.split("Z")[0]}000000`;
     const initialLocalDateTimeValue = `${faker.date.past().toISOString().split("Z")[0]}000000`;
 
     test.each<ArrayPopTest>([
@@ -190,7 +190,7 @@ describe("array-pop", () => {
         {
             inputType: "Date",
             initialValue: `["${date}", "${date}"]`,
-            expectedOutputValue: [date],
+            expectedOutputValue: [date as string],
         },
         {
             inputType: "Time",
@@ -806,7 +806,7 @@ describe("array-pop", () => {
                 id,
             }
         );
-        expect(storedValue.records[0].get("pay")).toEqual([]);
+        expect(storedValue.records[0]?.get("pay")).toEqual([]);
     });
 
     test("should be possible to update Point relationship properties", async () => {

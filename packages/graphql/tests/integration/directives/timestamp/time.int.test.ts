@@ -82,7 +82,7 @@ describe("timestamp/time", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0]?.toObject().movie;
 
                 expect(neo4jMovie.id).toEqual(id);
                 expect(isTime(neo4jMovie.createdAt)).toBe(true);
@@ -158,7 +158,7 @@ describe("timestamp/time", () => {
                 );
 
                 const neo4jRelationship: { createdAt: Date; screenTime: Integer } =
-                    neo4jResult.records[0].toObject().relationship;
+                    neo4jResult.records[0]?.toObject().relationship;
 
                 expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
                 expect(isTime(neo4jRelationship.createdAt)).toBe(true);
@@ -204,7 +204,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: create,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
                     variableValues: { id },
                 });
 
@@ -215,7 +215,7 @@ describe("timestamp/time", () => {
                         RETURN m {.id, .updatedAt} as m
                     `);
 
-                const neo4jMovie: { id: string; updatedAt: Date } = neo4jResult.records[0].toObject().m;
+                const neo4jMovie: { id: string; updatedAt: Date } = neo4jResult.records[0]?.toObject().m;
 
                 expect(neo4jMovie.id).toEqual(id);
                 expect(isTime(neo4jMovie.updatedAt)).toBe(true);
@@ -297,7 +297,7 @@ describe("timestamp/time", () => {
                 );
 
                 const neo4jRelationship: { updatedAt: Date; screenTime: Integer } =
-                    neo4jResult.records[0].toObject().relationship;
+                    neo4jResult.records[0]?.toObject().relationship;
 
                 expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
                 expect(isTime(neo4jRelationship.updatedAt)).toBe(true);
@@ -349,7 +349,7 @@ describe("timestamp/time", () => {
                         RETURN m {.id, .createdAt} as movie
                     `);
 
-                const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0]?.toObject().movie;
 
                 expect(neo4jMovie.id).toEqual(id);
                 expect(isTime(neo4jMovie.createdAt)).toBe(true);
@@ -425,7 +425,7 @@ describe("timestamp/time", () => {
                 );
 
                 const neo4jRelationship: { createdAt: Date; screenTime: Integer } =
-                    neo4jResult.records[0].toObject().relationship;
+                    neo4jResult.records[0]?.toObject().relationship;
 
                 expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
                 expect(isTime(neo4jRelationship.createdAt)).toBe(true);
@@ -507,7 +507,7 @@ describe("timestamp/time", () => {
                 );
 
                 const neo4jRelationship: { updatedAt: Date; screenTime: Integer } =
-                    neo4jResult.records[0].toObject().relationship;
+                    neo4jResult.records[0]?.toObject().relationship;
 
                 expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
                 expect(isTime(neo4jRelationship.updatedAt)).toBe(true);
@@ -562,7 +562,7 @@ describe("timestamp/time", () => {
                         RETURN m {.id, .updatedAt} as movie
                     `);
 
-                const neo4jMovie: { id: string; updatedAt: Date } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; updatedAt: Date } = neo4jResult.records[0]?.toObject().movie;
 
                 expect(neo4jMovie.id).toEqual(id);
                 expect(isTime(neo4jMovie.updatedAt)).toBe(true);
@@ -604,7 +604,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: create,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
                 });
 
                 expect(graphqlResult.errors).toBeFalsy();
@@ -614,7 +614,7 @@ describe("timestamp/time", () => {
                         RETURN m { .id, .createdAt } as movie
                     `);
 
-                const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; createdAt: Date } = neo4jResult.records[0]?.toObject().movie;
 
                 expect(neo4jMovie.id).toEqual(id);
                 expect(isTime(neo4jMovie.createdAt)).toBe(true);
@@ -689,7 +689,7 @@ describe("timestamp/time", () => {
                 );
 
                 const neo4jRelationship: { createdAt: Date; screenTime: Integer } =
-                    neo4jResult.records[0].toObject().relationship;
+                    neo4jResult.records[0]?.toObject().relationship;
 
                 expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
                 expect(isTime(neo4jRelationship.createdAt)).toBe(true);
@@ -771,7 +771,7 @@ describe("timestamp/time", () => {
                 );
 
                 const neo4jRelationship: { updatedAt: Date; screenTime: Integer } =
-                    neo4jResult.records[0].toObject().relationship;
+                    neo4jResult.records[0]?.toObject().relationship;
 
                 expect(neo4jRelationship.screenTime.toInt()).toBe(screenTime);
                 expect(isTime(neo4jRelationship.updatedAt)).toBe(true);
@@ -826,7 +826,7 @@ describe("timestamp/time", () => {
                         RETURN m { .id, .updatedAt } as movie
                     `);
 
-                const neo4jMovie: { id: string; updatedAt: Date } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; updatedAt: Date } = neo4jResult.records[0]?.toObject().movie;
 
                 expect(neo4jMovie.id).toEqual(id);
                 expect(isTime(neo4jMovie.updatedAt)).toBe(true);

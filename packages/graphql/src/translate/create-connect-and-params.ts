@@ -530,7 +530,7 @@ function createConnectAndParams({
                 }
             }
         } else {
-            const subquery = createSubqueryContents(refNodes[0], connect, index);
+            const subquery = createSubqueryContents(refNodes[0] as Node, connect, index);
             inner.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
         }

@@ -217,6 +217,6 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
         });
 
         expect(errorResult.errors).toHaveLength(1);
-        expect(errorResult.errors?.[0].message).toBe("Constraint validation failed");
+        expect(errorResult.errors?.[0]?.message).toBe("Constraint validation failed");
     });
 });

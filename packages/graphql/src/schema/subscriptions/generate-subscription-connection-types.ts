@@ -23,6 +23,7 @@ import { objectFieldsToComposeFields } from "../to-compose";
 import { upperFirst } from "../../utils/upper-first";
 import type { BaseField, RelationField } from "../../types";
 import type { ObjectFields } from "../get-obj-field-meta";
+import { filterTruthy } from "../../utils/utils";
 
 function buildRelationshipDestinationUnionNodeType({
     unionNodes,
@@ -58,7 +59,7 @@ function buildRelationshipDestinationInterfaceNodeType({
     const connectionFields = [...relevantInterface.relationFields, ...relevantInterface.connectionFields];
     const [interfaceComposeFields, interfaceConnectionComposeFields] = [allFields, connectionFields].map(
         objectFieldsToComposeFields
-    );
+    ) as [any, any];
     const nodeTo = schemaComposer.createInterfaceTC({
         name: `${relationNodeTypeName}EventPayload`,
         fields: interfaceComposeFields,
@@ -85,15 +86,15 @@ function buildRelationshipDestinationAbstractType({
 }) {
     const unionNodeTypes = relationField.union?.nodes;
     if (unionNodeTypes) {
-        const unionNodes = unionNodeTypes?.map((typeName) => nodeNameToEventPayloadTypes[typeName]).filter(Boolean);
+        const unionNodes = filterTruthy(unionNodeTypes?.map((typeName) => nodeNameToEventPayloadTypes[typeName]));
         return buildRelationshipDestinationUnionNodeType({ unionNodes, relationNodeTypeName, schemaComposer });
     }
     const interfaceNodeTypeNames = relationField.interface?.implementations;
     if (interfaceNodeTypeNames) {
         const relevantInterfaceFields = interfaceCommonFields.get(relationNodeTypeName) || ({} as ObjectFields);
-        const interfaceNodes = interfaceNodeTypeNames
-            .map((name: string) => nodeNameToEventPayloadTypes[name])
-            .filter(Boolean);
+        const interfaceNodes = filterTruthy(
+            interfaceNodeTypeNames.map((name: string) => nodeNameToEventPayloadTypes[name])
+        );
         return buildRelationshipDestinationInterfaceNodeType({
             schemaComposer,
             relevantInterface: relevantInterfaceFields,

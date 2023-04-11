@@ -27,7 +27,7 @@ import type {
     ObjectTypeDefinitionNode,
 } from "graphql";
 import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
-import type { ObjectTypeComposer } from "graphql-compose";
+import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import type { BaseField, Neo4jFeaturesSettings } from "../types";
@@ -385,7 +385,7 @@ function makeAugmentedSchema(
                 name: `${interfaceRelationship.name.value}Implementations${suffix}`,
                 fields: {},
             })
-        );
+        ) as [InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer];
 
         composer.createInputTC({
             name: `${interfaceRelationship.name.value}Where`,

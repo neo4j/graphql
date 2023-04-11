@@ -78,7 +78,7 @@ export class CompositeClause extends Clause {
 
     private unwrapComposite(clause: CompositeClause): CypherASTNode {
         if (clause.children.length === 1) {
-            return clause.children[0];
+            return clause.children[0] as CypherASTNode;
         } else return clause;
     }
 }

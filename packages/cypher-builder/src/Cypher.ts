@@ -64,6 +64,7 @@ export { MapProjection } from "./expressions/map/MapProjection";
 export { or, and, not, xor } from "./expressions/operations/boolean";
 export {
     eq,
+    neq,
     gt,
     gte,
     lt,
@@ -76,7 +77,7 @@ export {
     endsWith,
     matches,
 } from "./expressions/operations/comparison";
-export { plus, minus } from "./expressions/operations/math";
+export { plus, minus, divide, multiply, mod, pow } from "./expressions/operations/math";
 
 // --Functions
 export { CypherFunction as Function } from "./expressions/functions/CypherFunctions";

@@ -92,7 +92,7 @@ describe("LocalDateTime", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; localDT: any } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; localDT: any } = neo4jResult.records[0]?.toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jDriver.isLocalDateTime(neo4jMovie.localDT)).toBe(true);
@@ -162,7 +162,7 @@ describe("LocalDateTime", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; localDTs: any[] } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; localDTs: any[] } = neo4jResult.records[0]?.toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jMovie.localDTs).toHaveLength(localDTs.length);
@@ -245,7 +245,7 @@ describe("LocalDateTime", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; localDT: any } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; localDT: any } = neo4jResult.records[0]?.toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jDriver.isLocalDateTime(neo4jMovie.localDT)).toBe(true);
@@ -411,32 +411,32 @@ describe("LocalDateTime", () => {
                         /* eslint-disable jest/no-conditional-expect */
                         if (filter === "LT") {
                             expect(graphqlMovies).toHaveLength(1);
-                            expect(graphqlMovies[0].id).toBe(pastId);
-                            expect(parseLocalDateTime(graphqlMovies[0].localDT)).toStrictEqual(parsedPast);
+                            expect(graphqlMovies[0]?.id).toBe(pastId);
+                            expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedPast);
                         }
 
                         if (filter === "LTE") {
                             expect(graphqlMovies).toHaveLength(2);
-                            expect(graphqlMovies[0].id).toBe(pastId);
-                            expect(parseLocalDateTime(graphqlMovies[0].localDT)).toStrictEqual(parsedPast);
+                            expect(graphqlMovies[0]?.id).toBe(pastId);
+                            expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedPast);
 
-                            expect(graphqlMovies[1].id).toBe(presentId);
-                            expect(parseLocalDateTime(graphqlMovies[1].localDT)).toStrictEqual(parsedPresent);
+                            expect(graphqlMovies[1]?.id).toBe(presentId);
+                            expect(parseLocalDateTime(graphqlMovies[1]?.localDT)).toStrictEqual(parsedPresent);
                         }
 
                         if (filter === "GT") {
                             expect(graphqlMovies).toHaveLength(1);
-                            expect(graphqlMovies[0].id).toBe(futureId);
-                            expect(parseLocalDateTime(graphqlMovies[0].localDT)).toStrictEqual(parsedFuture);
+                            expect(graphqlMovies[0]?.id).toBe(futureId);
+                            expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedFuture);
                         }
 
                         if (filter === "GTE") {
                             expect(graphqlMovies).toHaveLength(2);
-                            expect(graphqlMovies[0].id).toBe(presentId);
-                            expect(parseLocalDateTime(graphqlMovies[0].localDT)).toStrictEqual(parsedPresent);
+                            expect(graphqlMovies[0]?.id).toBe(presentId);
+                            expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedPresent);
 
-                            expect(graphqlMovies[1].id).toBe(futureId);
-                            expect(parseLocalDateTime(graphqlMovies[1].localDT)).toStrictEqual(parsedFuture);
+                            expect(graphqlMovies[1]?.id).toBe(futureId);
+                            expect(parseLocalDateTime(graphqlMovies[1]?.localDT)).toStrictEqual(parsedFuture);
                         }
                         /* eslint-enable jest/no-conditional-expect */
                     } finally {
@@ -550,25 +550,25 @@ describe("LocalDateTime", () => {
 
                         /* eslint-disable jest/no-conditional-expect */
                         if (sort === "ASC") {
-                            expect(graphqlMovies[0].id).toBe(pastId);
-                            expect(parseLocalDateTime(graphqlMovies[0].localDT)).toStrictEqual(parsedPast);
+                            expect(graphqlMovies[0]?.id).toBe(pastId);
+                            expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedPast);
 
-                            expect(graphqlMovies[1].id).toBe(presentId);
-                            expect(parseLocalDateTime(graphqlMovies[1].localDT)).toStrictEqual(parsedPresent);
+                            expect(graphqlMovies[1]?.id).toBe(presentId);
+                            expect(parseLocalDateTime(graphqlMovies[1]?.localDT)).toStrictEqual(parsedPresent);
 
-                            expect(graphqlMovies[2].id).toBe(futureId);
-                            expect(parseLocalDateTime(graphqlMovies[2].localDT)).toStrictEqual(parsedFuture);
+                            expect(graphqlMovies[2]?.id).toBe(futureId);
+                            expect(parseLocalDateTime(graphqlMovies[2]?.localDT)).toStrictEqual(parsedFuture);
                         }
 
                         if (sort === "DESC") {
-                            expect(graphqlMovies[0].id).toBe(futureId);
-                            expect(parseLocalDateTime(graphqlMovies[0].localDT)).toStrictEqual(parsedFuture);
+                            expect(graphqlMovies[0]?.id).toBe(futureId);
+                            expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedFuture);
 
-                            expect(graphqlMovies[1].id).toBe(presentId);
-                            expect(parseLocalDateTime(graphqlMovies[1].localDT)).toStrictEqual(parsedPresent);
+                            expect(graphqlMovies[1]?.id).toBe(presentId);
+                            expect(parseLocalDateTime(graphqlMovies[1]?.localDT)).toStrictEqual(parsedPresent);
 
-                            expect(graphqlMovies[2].id).toBe(pastId);
-                            expect(parseLocalDateTime(graphqlMovies[2].localDT)).toStrictEqual(parsedPast);
+                            expect(graphqlMovies[2]?.id).toBe(pastId);
+                            expect(parseLocalDateTime(graphqlMovies[2]?.localDT)).toStrictEqual(parsedPast);
                         }
                         /* eslint-enable jest/no-conditional-expect */
                     } finally {

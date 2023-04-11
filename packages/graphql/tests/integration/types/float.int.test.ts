@@ -91,7 +91,7 @@ describe("Float", () => {
                 RETURN m {.id, .imdbRating_float, .imdbRating_int} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({
+            expect((result.records[0]?.toObject() as any).m).toEqual({
                 id,
                 imdbRating_float: imdbRatingFloat,
                 imdbRating_int: int(imdbRatingInt),
@@ -157,7 +157,7 @@ describe("Float", () => {
                 RETURN m {.id, .imdbRating_float, .imdbRating_int} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({
+            expect((result.records[0]?.toObject() as any).m).toEqual({
                 id,
                 imdbRating_float: imdbRatingFloat,
                 imdbRating_int: int(imdbRatingInt),
@@ -225,7 +225,7 @@ describe("Float", () => {
                 RETURN m {.id, .float, .floats} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({
+            expect((result.records[0]?.toObject() as any).m).toEqual({
                 id,
                 float,
                 floats,
