@@ -94,8 +94,8 @@ It is also possible to pass in JWTs which have already been decoded, in which ca
 
 ==== Optional Constructor Arguments
 
-Additionally, for both the `Neo4jGraphQLAuthJWTPlugin` and the `Neo4jGraphQLAuthJWKSPlugin` one may optionally specify an `issuer` and an `audience` argument. These reference to the `iss` and the `aud` claim in a JWT token, see https://www.rfc-editor.org/rfc/rfc7519#page-9[JWT RFC].
-If the `issuer` and/or the `audience` values are provided, they will be checked as part of the token verification.
+Additionally, for both the `Neo4jGraphQLAuthJWTPlugin` and the `Neo4jGraphQLAuthJWKSPlugin` one may optionally specify an `issuer` and an `audience` constructor argument. These reference to the `iss` and the `aud` claim respectively in a JWT token, see https://www.rfc-editor.org/rfc/rfc7519#page-9[JWT RFC].
+If the `issuer` and/or the `audience` arguments are provided, they will be checked as part of the token verification.
 
 An example on how to provide an `issuer` for the `Neo4jGraphQLAuthJWKSPlugin` is shown below. In this case, any JWT token must contain the `iss` claim `"https://YOUR_DOMAIN"` for the token validation to be successful.
 [source, javascript, indent=0]
