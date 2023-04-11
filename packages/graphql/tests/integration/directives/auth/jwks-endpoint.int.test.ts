@@ -243,6 +243,252 @@ describe("auth/jwks-endpoint", () => {
             await session.close();
         }
     });
+
+    test("should throw Unauthenticated if the issuer in the JWT token does not match the issuer provided in the Neo4jGraphQLAuthJWKSPlugin", async () => {
+        const session = await neo4j.getSession();
+
+        const typeDefs = `
+            type User {
+                id: ID
+            }
+            extend type User @auth(rules: [{ isAuthenticated: true }])
+        `;
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            {
+                users(where: {id: "${userId}"}) {
+                    id
+                }
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWKSPlugin({
+                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    issuer: "https://testcompany.com",
+                }),
+            },
+        });
+
+        try {
+            // Start the JWKS Mock Server Application
+            jwksMock.start();
+
+            await session.run(`
+                CREATE (:User {id: "${userId}"})
+            `);
+
+            const accessToken = jwksMock.token({
+                iat: 1600000000,
+                iss: "https://anothercompany.com",
+            });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                    request: {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    },
+                }),
+            });
+
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should verify the issuer in the JWT token against the provided issuer in the Neo4jGraphQLAuthJWKSPlugin", async () => {
+        const session = await neo4j.getSession();
+
+        const typeDefs = `
+            type User {
+                id: ID
+            }
+            extend type User @auth(rules: [{ isAuthenticated: true }])
+        `;
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            {
+                users(where: {id: "${userId}"}) {
+                    id
+                }
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWKSPlugin({
+                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    issuer: "https://company.com",
+                }),
+            },
+        });
+
+        try {
+            // Start the JWKS Mock Server Application
+            jwksMock.start();
+
+            await session.run(`
+                CREATE (:User {id: "${userId}"})
+            `);
+
+            const accessToken = jwksMock.token({
+                iat: 1600000000,
+                iss: "https://company.com",
+            });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                    request: {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    },
+                }),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.users).toHaveLength(1);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should throw Unauthenticated if the audience in the JWT token does not match the audience provided in the Neo4jGraphQLAuthJWKSPlugin", async () => {
+        const session = await neo4j.getSession();
+
+        const typeDefs = `
+            type User {
+                id: ID
+            }
+            extend type User @auth(rules: [{ isAuthenticated: true }])
+        `;
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            {
+                users(where: {id: "${userId}"}) {
+                    id
+                }
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWKSPlugin({
+                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    audience: "urn:user",
+                }),
+            },
+        });
+
+        try {
+            // Start the JWKS Mock Server Application
+            jwksMock.start();
+
+            await session.run(`
+                CREATE (:User {id: "${userId}"})
+            `);
+
+            const accessToken = jwksMock.token({
+                iat: 1600000000,
+                aud: "urn:anotheruser",
+            });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                    request: {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    },
+                }),
+            });
+
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should verify the audience in the JWT token against the provided audience in the Neo4jGraphQLAuthJWKSPlugin", async () => {
+        const session = await neo4j.getSession();
+
+        const typeDefs = `
+            type User {
+                id: ID
+            }
+            extend type User @auth(rules: [{ isAuthenticated: true }])
+        `;
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            {
+                users(where: {id: "${userId}"}) {
+                    id
+                }
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWKSPlugin({
+                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    audience: "urn:user",
+                }),
+            },
+        });
+
+        try {
+            // Start the JWKS Mock Server Application
+            jwksMock.start();
+
+            await session.run(`
+                CREATE (:User {id: "${userId}"})
+            `);
+
+            const accessToken = jwksMock.token({
+                iat: 1600000000,
+                aud: "urn:user",
+            });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                    request: {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    },
+                }),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.users).toHaveLength(1);
+        } finally {
+            await session.close();
+        }
+    });
 });
 
 const createContext = () => {
