@@ -92,7 +92,7 @@ interface Neo4jGraphQLAuthPlugin {
 
 It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This is covered in the section xref::auth/setup.adoc#auth-setup-passing-in[Passing in JWTs] below. Note that the plugin's base decode method only supports HS256 and RS256 algorithms.
 
-==== Optional Constructor Arguments
+=== Optional Constructor Arguments
 
 Additionally, for both the `Neo4jGraphQLAuthJWTPlugin` and the `Neo4jGraphQLAuthJWKSPlugin` one may optionally specify an `issuer` and an `audience` constructor argument. These reference to the `iss` and the `aud` claim respectively in a JWT token, see https://www.rfc-editor.org/rfc/rfc7519#page-9[JWT RFC].
 If the `issuer` and/or the `audience` arguments are provided, they will be checked as part of the token verification.
