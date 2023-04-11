@@ -21,6 +21,9 @@
         "dist/**/*.js",
         "dist/**/*.js.map"
     ],
+    "engines": {
+        "node": ">=16.0.0"
+    },
     "scripts": {
         "build": "tsc --build tsconfig.production.json",
         "test": "jest",

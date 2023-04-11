@@ -21,6 +21,9 @@
         "dist/**/*.js",
         "dist/**/*.js.map"
     ],
+    "engines": {
+        "node": ">=16.0.0"
+    },
     "scripts": {
         "clean": "cd src/ && tsc --build --clean",
         "test": "jest",
