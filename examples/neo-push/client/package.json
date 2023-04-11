@@ -33,13 +33,13 @@
         "showdown": "2.1.0",
         "style-loader": "3.3.2",
         "ts-loader": "9.4.2",
-        "typescript": "5.0.3"
+        "typescript": "5.0.4"
     },
     "devDependencies": {
         "@tsconfig/create-react-app": "1.0.3",
         "@webpack-cli/serve": "2.0.1",
         "html-webpack-plugin": "5.5.0",
-        "webpack": "5.77.0",
+        "webpack": "5.78.0",
         "webpack-cli": "5.0.1",
         "webpack-dev-server": "4.13.2"
     }
