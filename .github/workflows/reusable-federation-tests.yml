@@ -27,7 +27,7 @@ jobs:
           # [Required] Path to the GraphQL schema file
           schema: "packages/apollo-federation-subgraph-compatibility/schema.graphql"
           # Boolean flag to indicate whether any failing test should fail the script
-          failOnWarning: false
+          failOnWarning: true
           # Boolean flag to indicate whether any failing required functionality test should fail the script
           failOnRequired: true
       - name: Save PR number
