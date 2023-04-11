@@ -395,6 +395,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await deleteMovie("allRatings", [6, 5.4]);
         await deleteMovie("allRatings", [5.4]);
 
+        // forcing a delay to ensure events do not exist
         await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);

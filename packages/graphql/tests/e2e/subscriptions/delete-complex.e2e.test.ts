@@ -1644,6 +1644,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             })
             .expect(200);
 
+        // forcing a delay to ensure events do not exist
         await delay(3);
         await wsClient2.waitForEvents(1);
 

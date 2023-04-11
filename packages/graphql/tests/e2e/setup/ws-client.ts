@@ -46,10 +46,6 @@ export class WebSocketTestClient {
         });
     }
 
-    public waitForNextEvent(): Promise<void> {
-        return this.waitForEvents(1);
-    }
-
     public waitForEvents(count = 1): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             if (this.counter >= count) {

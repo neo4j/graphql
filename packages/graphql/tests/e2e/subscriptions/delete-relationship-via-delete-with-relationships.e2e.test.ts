@@ -114,7 +114,6 @@ describe("Delete Subscriptions when relationships are targeted- with interfaces,
     });
 
     afterEach(async () => {
-        console.log("after each fking up?");
         await wsClient.close();
         await wsClient2.close();
 
@@ -622,6 +621,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        // forcing a delay to ensure events do not exist
         await delay(4);
         await wsClient2.waitForEvents(4);
 

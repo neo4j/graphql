@@ -155,6 +155,7 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("title", "movie5", "movie7");
 
+        // forcing a delay to ensure events do not exist
         await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
@@ -332,6 +333,7 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie2", "movie5");
         await updateMovie("title", "movie3", "movie6");
 
+        // forcing a delay to ensure events do not exist
         await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
@@ -486,6 +488,7 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie3", "movie5");
         await updateMovie("title", "movie2", "movie4");
 
+        // forcing a delay to ensure events do not exist
         await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([]);
@@ -1139,6 +1142,7 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "movie2", "movie5");
         await updateMovie("title", "movie3", "movie6");
 
+        // forcing a delay to ensure events do not exist
         await delay(3);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);

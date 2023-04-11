@@ -146,7 +146,7 @@ describe("Subscription authentication", () => {
                         }
                         `);
 
-            await wsClient.waitForNextEvent();
+            await wsClient.waitForEvents(1);
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
         });
@@ -163,7 +163,7 @@ describe("Subscription authentication", () => {
                                 }
                             }
                             `);
-            await wsClient.waitForNextEvent();
+            await wsClient.waitForEvents(1);
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
         });

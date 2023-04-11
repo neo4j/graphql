@@ -393,6 +393,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await updateMovie("allRatings", [6, 5.4], [6, 54]);
         await updateMovie("allRatings", [5.4], [5]);
 
+        // forcing a delay to ensure events do not exist
         await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);

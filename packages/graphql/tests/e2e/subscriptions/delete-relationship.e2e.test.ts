@@ -435,6 +435,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        // forcing a delay to ensure events do not exist
         await delay(4);
         await wsClient2.waitForEvents(2);
 
@@ -1401,6 +1402,7 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        // forcing a delay to ensure events do not exist
         await delay(3);
         await wsClient2.waitForEvents(3);
         expect(wsClient.errors).toEqual([]);

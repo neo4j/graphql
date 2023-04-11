@@ -257,6 +257,7 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
+        // forcing a delay to ensure events do not exist
         await delay(4);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(0);
@@ -396,6 +397,7 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
+        // forcing a delay to ensure events do not exist
         await delay(4);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(0);
@@ -515,6 +517,7 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
+        // forcing a delay to ensure events do not exist
         await delay(4);
 
         expect(wsClient.errors).toEqual([]);
@@ -651,6 +654,7 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
+        // forcing a delay to ensure events do not exist
         await delay(4);
 
         expect(wsClient.errors).toEqual([]);

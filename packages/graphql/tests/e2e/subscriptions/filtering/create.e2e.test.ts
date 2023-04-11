@@ -147,6 +147,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ title: "movie1" });
 
+        // forcing a delay to ensure events do not exist
         await delay(2);
 
         expect(wsClient.errors).toEqual([]);
@@ -303,6 +304,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
         await createMovie({ title: "movie3", releasedIn: 2001 });
+
+        // forcing a delay to ensure events do not exist
         await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
@@ -749,6 +752,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ averageRating: 5.9 });
         await createMovie({ averageRating: 7 });
+
+        // forcing a delay to ensure events do not exist
         await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
@@ -957,6 +962,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ title: "movie1" });
 
+        // forcing a delay to ensure events do not exist
         await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
