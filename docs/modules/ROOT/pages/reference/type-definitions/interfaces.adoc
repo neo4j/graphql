@@ -155,7 +155,7 @@ query GetMoviesStartingWithThe {
 }
 ----
 
-This is to prevent overfetching, and you can find an explanation of this xref::appendix/preventing-overfetching.adoc[here].
+This is to prevent overfetching, and you can find an explanation of this xref::troubleshooting.adoc#appendix-preventing-overfetching[here].
 
 Alternatively, these implementation specific filters can be used to override filtering for a specific implementation. For example, if you wanted all productions with title starting with "The ", but movies with title starting with "A ", you could achieve this using the following:
 

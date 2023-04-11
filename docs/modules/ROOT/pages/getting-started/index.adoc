@@ -53,7 +53,7 @@ Additionally, you will need to install a GraphQL server package which will host 
 npm install @neo4j/graphql graphql neo4j-driver apollo-server
 ----
 
-Make sure the database fulfills the requirements stated xref::introduction.adoc#introduction-requirements[here], including the necessary plugins.
+Make sure the database fulfills the requirements stated xref::index.adoc#introduction-requirements[here], including the necessary plugins.
 
 == Define your GraphQL type definitions
 

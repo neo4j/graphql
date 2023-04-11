@@ -50,7 +50,7 @@ type Mutation {
 }
 ----
 
-> The `id` field not be update-able as the xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-id[`@id`] directive has been used.
+> The `id` field not be update-able as the xref::reference/directives/autogeneration.adoc#type-definitions-autogeneration-id[`@id`] directive has been used.
 
 == Single update
 
@@ -409,7 +409,7 @@ mutation {
 
 Mathematical operators are a handy way to update numerical fields based on their original values in a single DB transaction.
 
-Specific operators are available on different numerical types (`Int`, `Float`, xref::type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`]).
+Specific operators are available on different numerical types (`Int`, `Float`, xref::reference/type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`]).
 
 
 Mathematical operators are supported in Update Mutations within these entities:

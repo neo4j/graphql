@@ -4,11 +4,11 @@
 Most applications won't just expose a single GraphQL API. There may also be scheduled jobs, authentication and migrations keeping an application ticking over. The OGM (Object Graph Mapper) can be used to programmatically interact with your Neo4j GraphQL API, which may help with achieving these goals.
 
 - xref::ogm/installation.adoc[Installation]
-- xref::ogm/examples/index.adoc[Examples]
+- xref::ogm/examples.adoc[Examples]
 - xref::ogm/private.adoc[`@private` Directive]
 - xref::ogm/selection-set.adoc[Selection Set]
 - xref::ogm/type-generation.adoc[TypeScript Type Generation]
-- xref::ogm/api-reference/index.adoc[API Reference]
+- xref::ogm/reference.adoc[API Reference]
 
 > Before diving into the OGM, it's important to have a good understanding of the Neo4j GraphQL Library first. It's recommended to at least work through the xref::getting-started/index.adoc[Getting Started] guide.
 
@@ -47,5 +47,5 @@ To use the OGM, it will need to be imported wherever you want to use it:
 const { OGM } = require("@neo4j/graphql-ogm");
 ----
 
-It's recommended to check out the xref::ogm/examples/index.adoc[Examples] to see where you might go from here.
+It's recommended to check out the xref::ogm/examples.adoc[Examples] to see where you might go from here.
 

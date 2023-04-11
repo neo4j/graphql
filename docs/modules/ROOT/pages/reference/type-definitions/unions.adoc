@@ -61,7 +61,7 @@ query GetUsersWithAllContent {
 }
 ----
 
-This is to prevent overfetching, and you can find an explanation of this xref::appendix/preventing-overfetching.adoc[here].
+This is to prevent overfetching, and you can find an explanation of this xref::troubleshooting.adoc#appendix-preventing-overfetching[here].
 
 == Creating a union
 

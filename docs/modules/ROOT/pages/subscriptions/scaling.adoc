@@ -24,11 +24,11 @@ In this case, _Client B_ is subscribed to one server, however, when _Client A_ t
 The change happens successfully in the database, and any client connected to the same server will receive the subscription event, however, _Client A_
 will **not** receive any update, as the server it's connected to will not get notified of any mutation.
 
-This is the behaviour of the xref::subscriptions/plugins/single-instance.adoc[single instance plugin] provided by the library, so it is not suitable for use in a horizontally scaled environment.
+This is the behaviour of the xref::subscriptions/plugins.adoc#single-instance[single instance plugin] provided by the library, so it is not suitable for use in a horizontally scaled environment.
 
 ## Using PubSub
 One solution to this problem, and how `@neo4j/graphql` is intended to work, is to use a PubSub pattern with an external broker to broadcast events through multiple
-instances. This can be achieved through xref::subscriptions/plugins/index.adoc[subscription plugins].
+instances. This can be achieved through xref::subscriptions/plugins.adoc[subscription plugins].
 
 Following the previous example, using an intermediate broker to broadcast the events across all instances, the infrastructure would look like:
 
@@ -42,4 +42,4 @@ In this example, the events are as follow:
 4. The broker will then notify every server (broadcast), including the server that originally triggered the event.
 5. Both servers will receive the notification and will trigger any event to their subscribed clients.
 
-NOTE: You can find examples of usage with supported brokers in xref::subscriptions/plugins/index.adoc[plugins].
+NOTE: You can find examples of usage with supported brokers in xref::subscriptions/plugins.adoc[plugins].

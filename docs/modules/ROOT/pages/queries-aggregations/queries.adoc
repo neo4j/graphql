@@ -46,8 +46,8 @@ type Query {
 
 Each field for querying data accepts two arguments:
 
-- `where` - used for xref::filtering.adoc[Filtering] data
-- `options` - used to specify xref::sorting.adoc[Sorting] and xref::pagination/index.adoc[Pagination] options
+- `where` - used for xref::queries-aggregations/filtering.adoc[Filtering] data
+- `options` - used to specify xref::queries-aggregations/sorting.adoc[Sorting] and xref::pagination/index.adoc[Pagination] options
 
 === Querying for all User nodes
 
@@ -82,7 +82,7 @@ query {
 
 === Undirected Queries
 
-All xref:type-definitions/relationships.adoc[relationships] are created with a _direction_ from one **node** to another.
+All xref:reference/type-definitions/relationships.adoc[relationships] are created with a _direction_ from one **node** to another.
 By default, all queries follow the direction defined in the relationship, however, in some cases we may need to query for
 all related nodes, regardless of the direction of the relationship. This can be achieved with the argument `directed: false`.
 
@@ -121,7 +121,7 @@ query Query {
 
 Note that _undirected relationships_ are only supported in queries.
 
-The xref:type-definitions/relationships.adoc#_querydirection[type definitions] for a relationship may define
+The xref:reference/type-definitions/relationships.adoc#_querydirection[type definitions] for a relationship may define
 a different behaviour, so the `directed` option may not be available in some cases.
 
 [[queries-aggregate]]
@@ -158,7 +158,7 @@ The rest will only expose:
 2. `max`
 
 
-Aggregation queries accepts a `where` argument for xref::filtering.adoc[filtering] data.
+Aggregation queries accepts a `where` argument for xref::queries-aggregations/filtering.adoc[filtering] data.
 
 === Counting Using aggregation
 
@@ -273,7 +273,7 @@ query {
 === Undirected aggregation queries
 
 When performing an aggregation on related nodes, the query against the relationship
-can be defined as an xref::queries.adoc#_undirected_queries[undirected] using the argument `directed: false`:
+can be defined as an xref::queries-aggregations/queries.adoc#_undirected_queries[undirected] using the argument `directed: false`:
 
 [source, graphql, indent=0]
 ----

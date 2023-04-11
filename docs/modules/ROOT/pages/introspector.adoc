@@ -21,7 +21,7 @@ If an element property has mixed types through out your graph, that property wil
 generated type definitions. The reason for this is that your GraphQL server will throw an error if it
 finds data that doesn't match the specified type.
 
-If any properties are skipped, there will be output in the xref::troubleshooting/index.adoc[Debug Logging].
+If any properties are skipped, there will be output in the xref::troubleshooting.adoc[Debug Logging].
 
 == Usage examples
 

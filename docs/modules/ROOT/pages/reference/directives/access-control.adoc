@@ -3,7 +3,7 @@
 
 This page addresses controlling schema generation output through the inclusion/exclusion of fields.
 
-For fine-grained and role-based access control, see xref::auth/index.adoc[Auth].
+For fine-grained and role-based access control, see xref::auth/index.adoc[Authentication and Authorization].
 
 [[type-definitions-access-control-exclude]]
 == `@exclude`

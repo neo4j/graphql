@@ -46,6 +46,7 @@
 *** xref:migration/v4-migration.adoc[]
 
 ** xref:ogm/index.adoc[]
+*** xref:ogm/installation.adoc[]
 *** xref:ogm/examples.adoc[]
 *** xref:ogm/private.adoc[]
 *** xref:ogm/selection-set.adoc[]
@@ -53,8 +54,9 @@
 *** xref:ogm/reference.adoc[]
 
 ** Reference
-*** xref:api-reference/index.adoc[]
-**** xref:api-reference/ogm.adoc[]
+*** xref:reference/api-reference/index.adoc[]
+**** xref:reference/api-reference/neo4jgraphql.adoc[]
+**** xref:reference/api-reference/ogm.adoc[]
 *** xref:reference/type-definitions/index.adoc[]
 **** xref:reference/type-definitions/indexes-and-constraints.adoc[]
 **** xref:reference/type-definitions/interfaces.adoc[]
@@ -62,9 +64,10 @@
 **** xref:reference/type-definitions/types.adoc[]
 **** xref:reference/type-definitions/unions.adoc[]
 
-*** xref:directives.adoc[]
+*** xref:reference/directives/index.adoc[]
 **** xref:reference/directives/access-control.adoc[]
 **** xref:reference/directives/autogeneration.adoc[]
+**** xref:reference/directives/basics.adoc[]
 **** xref:reference/directives/custom-directives.adoc[]
 **** xref:reference/directives/cypher.adoc[]
 **** xref:reference/directives/default-values.adoc[]
@@ -72,8 +75,7 @@
 
 *** xref:reference/driver-configuration.adoc[]
 
-** How-to Guides
-
+** xref:guides/index.adoc[]
 *** xref:guides/apollo-federation.adoc[]
 *** xref:guides/frameworks/nextjs.adoc[]
 

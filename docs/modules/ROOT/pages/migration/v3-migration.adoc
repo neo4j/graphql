@@ -71,7 +71,7 @@ query {
 }
 ----
 
-The same operation, can now be achieved with a xref::queries#_counting_using_aggregation[count aggregation] query:
+The same operation, can now be achieved with a xref::queries-aggregations/queries.adoc#_counting_using_aggregation[count aggregation] query:
 
 [source, graphql, indent=0]
 ----
@@ -125,7 +125,7 @@ rename this directive in your schema.
 
 == Auth plugin system
 Auth setup now relies on _plugins_ to setup the configuration. You'll need to install `@neo4j/graphql-plugin-auth` or a custom plugin
-as shown in the xref::auth/setup.adoc[auth setup page].
+as shown in the xref::auth/getting-started.adoc[auth setup page].
 
 === JWT auth
 For JWT authorization, instead of the previous configuration:
@@ -192,19 +192,19 @@ const neoSchema = new Neo4jGraphQL({
 });
 ----
 
-NOTE: Please, refer to xref::auth/setup.adoc[auth setup] before setting up auth.
+NOTE: Please, refer to xref::auth/getting-started.adoc[auth setup] before setting up auth.
 
 == Types plurals changes
 To improve consistency, some automatically generated plurals (e.g. `createActors`) have changed. This may cause issues if
 your types use conventions such as `snake_case`.
 
 Because of this, you may find generated queries and mutations may have different names. If you encounter this problem,
-please update your clients to use the new query names or use the `plural` option in the xref::type-definitions/database-mapping.adoc#_plural[@node directive]
+please update your clients to use the new query names or use the `plural` option in the xref::reference/directives/database-mapping.adoc#type-definitions-node[@node directive]
 to force a custom plural value.
 
 == Custom Directives
 Defining and applying custom directives has changed significantly, if you are using or plan to use custom directives, make
-sure to check the up-to-date documentation on xref::type-definitions/custom-directives.adoc[custom directives].
+sure to check the up-to-date documentation on xref::reference/directives/custom-directives.adoc[custom directives].
 
 == Types changes
 Some automatically generated types have changed to improve consistency.

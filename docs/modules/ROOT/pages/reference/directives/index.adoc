@@ -5,19 +5,19 @@
 
 The `@alias` directive will map a GraphQL schema field to a Neo4j property on a node or relationship.
 
-Reference: xref::type-definitions/database-mapping.adoc#type-definitions-alias[`@alias`]
+Reference: xref::reference/directives/database-mapping.adoc#type-definitions-alias[`@alias`]
 
 == `@auth`
 
 The `@auth` directive is used to define complex fine-grained and role-based access control for object types and fields.
 
-Reference: xref::auth/auth-directive.adoc[`@auth` directive]
+Reference: xref::auth/auth-directive-subs.adoc[`@auth` directive]
 
 == `@coalesce`
 
 The `@coalesce` directive exposes a mechanism for querying against non-existent, `null` values on a node.
 
-Reference: xref::type-definitions/default-values.adoc#type-definitions-default-values-coalesce[`@coalesce`]
+Reference: xref::reference/directives/default-values.adoc#type-definitions-default-values-coalesce[`@coalesce`]
 
 [[custom-resolver-directive]]
 == `@customResolver`
@@ -31,37 +31,37 @@ Reference: xref::custom-resolvers.adoc#custom-resolver-directive[`@customResolve
 
 The `@cypher` directive overrides field resolution (including `Query` and `Mutation` fields), instead resolving with the specified Cypher.
 
-Reference: xref::type-definitions/cypher.adoc[`@cypher` directive]
+Reference: xref::reference/directives/cypher.adoc[`@cypher` directive]
 
 == `@default`
 
 The `@default` directive allows for the setting of a default value for a field on object creation.
 
-Reference: xref::type-definitions/default-values.adoc#type-definitions-default-values-default[`@default`]
+Reference: xref::reference/directives/default-values.adoc#type-definitions-default-values-default[`@default`]
 
 == `@exclude`
 
 The `@exclude` directive is used on object types to instruct them to be skipped during Query, Mutation and Subscription generation.
 
-Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-exclude[`@exclude`]
+Reference: xref::reference/directives/access-control.adoc#type-definitions-access-control-exclude[`@exclude`]
 
 == `@fulltext`
 
 The `@fulltext` directive indicates that there should be a Fulltext index inserted into the database for the specified Node and its properties.
 
-Reference: xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-fulltext[Fulltext indexes]
+Reference: xref::reference/type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-fulltext[Fulltext indexes]
 
 == `@id`
 
 The `@id` directive marks a field as the unique ID for an object type, and allows for autogeneration of IDs.
 
-Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-id[`@id`]
+Reference: xref::reference/directives/autogeneration.adoc#type-definitions-autogeneration-id[`@id`]
 
 == `@node`
 
 The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
 
-Reference: xref::type-definitions/database-mapping.adoc#type-definitions-node[`@node`]
+Reference: xref::reference/directives/database-mapping.adoc#type-definitions-node[`@node`]
 
 [[plural-directive]]
 == `@plural`
@@ -69,7 +69,7 @@ Reference: xref::type-definitions/database-mapping.adoc#type-definitions-node[`@
 The `@plural` directive redefines how to compose the plural of the type for the generated operations.
 This is particularly useful for types that are not correctly pluralized or are non-English words.
 
-Reference: xref::type-definitions/database-mapping.adoc#type-definitions-plural[`@plural`]
+Reference: xref::reference/directives/database-mapping.adoc#type-definitions-plural[`@plural`]
 
 [[populated-by-directive]]
 == `@populatedBy`
@@ -77,7 +77,7 @@ Reference: xref::type-definitions/database-mapping.adoc#type-definitions-plural[
 The `@populatedBy` directive is used to specify a callback function that gets executed during GraphQL query parsing,
 to populate fields which have not been provided within the input.
 
-Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-populated-by[`@populatedBy`]
+Reference: xref::reference/directives/autogeneration.adoc#type-definitions-autogeneration-populated-by[`@populatedBy`]
 
 == `@private`
 
@@ -89,19 +89,19 @@ Reference: xref::ogm/private.adoc[`@private` Directive]
 
 The `@queryOptions` is to be used on nodes, where applied will inject values into a query such as the `limit`.
 
-Reference: xref::type-definitions/default-values.adoc#type-definitions-default-values-queryoptions[`@queryOptions`]
+Reference: xref::reference/directives/default-values.adoc#type-definitions-default-values-queryoptions[`@queryOptions`]
 
 == `@readonly`
 
 The `@readonly` directive marks fields as read-only.
 
-Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-readonly[`@readonly`]
+Reference: xref::reference/directives/access-control.adoc#type-definitions-access-control-readonly[`@readonly`]
 
 == `@relationship`
 
 The `@relationship` directive is used to configure relationships between object types.
 
-Reference: xref::type-definitions/relationships.adoc[Relationships]
+Reference: xref::reference/type-definitions/relationships.adoc[Relationships]
 
 == `@relationshipProperties`
 
@@ -119,16 +119,16 @@ directive @relationshipProperties on INTERFACE
 
 The `@timestamp` directive flags fields to be used to store timestamps on create/update events.
 
-Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-timestamp[`@timestamp`]
+Reference: xref::reference/directives/autogeneration.adoc#type-definitions-autogeneration-timestamp[`@timestamp`]
 
 == `@unique`
 
 The `@unique` directive indicates that there should be a uniqueness constraint in the database for the fields that it is applied to.
 
-Reference: xref::type-definitions/indexes-and-constraints.adoc#type-definitions-constraints-unique[Unique node property constraints]
+Reference: xref::reference/type-definitions/indexes-and-constraints.adoc#type-definitions-constraints-unique[Unique node property constraints]
 
 == `@writeonly`
 
 The `@writeonly` directive marks fields as write-only.
 
-Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-writeonly[`@writeonly`]
+Reference: xref::reference/directives/access-control.adoc#type-definitions-access-control-writeonly[`@writeonly`]

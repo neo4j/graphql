@@ -1,7 +1,7 @@
 [[troubleshooting]]
 = Troubleshooting
 
-This chapter contains common troubleshooting steps. Additionally, there is a section for xref::troubleshooting/faqs.adoc[FAQs] (Frequently Asked Questions) where you might find answers to your problems.
+This chapter contains common troubleshooting steps. Additionally, there is a section for xref::troubleshooting.adoc#troubleshooting-faqs[FAQs] (Frequently Asked Questions) where you might find answers to your problems.
 
 [[troubleshooting-debug-logging]]
 == Debug Logging
@@ -38,7 +38,7 @@ Read more about the xref::introspector.adoc[introspector].
 
 Hopefully you won't need to perform any query tuning, but if you do, the Neo4j GraphQL Library allows you to set the full array of query options on construction of the library.
 
-You can read more about the available query options at https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/#cypher-query-options.
+You can read more about the available query options at https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/#cypher-query-options[Cypher Manual -> Query Options].
 
 _Please only set these options if you know what you are doing._
 
@@ -104,7 +104,7 @@ RETURN m
 
 If you use a causal cluster or an Aura Professional instance, there is a chance that the created data is not yet present on the server which gets connected to on the next GraphQL query.
 
-You can ensure that the data is available to query by passing a bookmark into your request - see xref::driver-configuration.adoc[Specifying Neo4j Bookmarks] for more information.
+You can ensure that the data is available to query by passing a bookmark into your request - see xref::reference/driver-configuration.adoc#driver-configuration-bookmarks[Specifying Neo4j Bookmarks] for more information.
 
 === What is `_emptyInput` in my update and create inputs?
 
@@ -182,7 +182,7 @@ This section describes security considerations and known issues.
 
 === Authorization not triggered for empty match
 
-If a query yields no results, the xref::auth/auth-directive.adoc[Authorization] process will not be triggered.
+If a query yields no results, the xref::auth/authorization/index.adoc[Authorization] process will not be triggered.
 This means that the result will be empty, instead of throwing an authentication error. Unauthorized users may
 then discern whether or not a certain type exists in the database, even if data itself cannot be accessed.
 

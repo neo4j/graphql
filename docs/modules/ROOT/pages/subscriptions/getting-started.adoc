@@ -92,7 +92,7 @@ async function main() {
 main();
 ```
 
-NOTE: The example above uses the **xref::subscriptions/plugins/single-instance.adoc[single instance plugin]** and cannot scale horizontally.
+NOTE: The example above uses the **xref::subscriptions/plugins.adoc#single-instance[single instance plugin]** and cannot scale horizontally.
 
 === GraphQL subscriptions
 With the previous server running, we have subscriptions available for `Movie` and `Actor`. We can subscribe to new movies created with the following statement:

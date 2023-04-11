@@ -15,9 +15,9 @@ directive @unique(
 ) on FIELD_DEFINITION
 ----
 
-Additionally, the usage of the xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-id[`@id`] directive by default implies that there should be a unique node property constraint in the database for that property.
+Additionally, the usage of the xref::reference/directives/autogeneration.adoc#type-definitions-autogeneration-id[`@id`] directive by default implies that there should be a unique node property constraint in the database for that property.
 
-Using this directive does not automatically ensure the existence of these constraints, and you will need to run a function on server startup. See the section xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-and-constraints-asserting[Asserting constraints] below for details.
+Using this directive does not automatically ensure the existence of these constraints, and you will need to run a function on server startup. See the section xref::reference/type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-and-constraints-asserting[Asserting constraints] below for details.
 
 === `@unique` directive usage
 
@@ -80,7 +80,7 @@ Informs @neo4j/graphql that there should be a fulltext index in the database, al
 directive @fulltext(indexes: [FullTextInput]!) on OBJECT
 ----
 
-Using this directive does not automatically ensure the existence of these indexes, and you will need to run a function on server startup. See the section xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-and-constraints-asserting[Asserting constraints] below for details.
+Using this directive does not automatically ensure the existence of these indexes, and you will need to run a function on server startup. See the section xref::reference/type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-and-constraints-asserting[Asserting constraints] below for details.
 
 === Specifying the `@fulltext` directive
 
@@ -94,7 +94,7 @@ type Product @fulltext(indexes: [{ indexName: "ProductName", fields: ["name"] }]
 }
 ----
 
-When you run xref::type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-and-constraints-asserting[Asserting constraints] this shall do the index creation like so:
+When you run xref::reference/type-definitions/indexes-and-constraints.adoc#type-definitions-indexes-and-constraints-asserting[Asserting constraints] this shall do the index creation like so:
 
 [source, cypher, indent=0]
 ----
@@ -244,7 +244,7 @@ query {
 [[type-definitions-indexes-and-constraints-asserting]]
 == Asserting constraints
 
-In order to ensure that the specified constraints exist in the database, you will need to run the function `assertIndexesAndConstraints`, the full details of which can be found in the xref::api-reference/neo4jgraphql.adoc#api-reference-assertconstraints[API reference]. A simple example to create the necessary constraints might look like the following, assuming a valid driver instance in the variable `driver`. This will create two constraints, one for each field decorated with `@id`,  `@unique` and apply the indexes specified in `@fulltext`:
+In order to ensure that the specified constraints exist in the database, you will need to run the function `assertIndexesAndConstraints`, the full details of which can be found in the xref::reference/api-reference/neo4jgraphql.adoc#api-reference-assertconstraints[API reference]. A simple example to create the necessary constraints might look like the following, assuming a valid driver instance in the variable `driver`. This will create two constraints, one for each field decorated with `@id`,  `@unique` and apply the indexes specified in `@fulltext`:
 
 [source, javascript, indent=0]
 ----

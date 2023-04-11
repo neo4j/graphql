@@ -83,7 +83,7 @@ interface ActedIn @relationshipProperties {
 ----
 
 === QueryDirection
-All relationships have a direction, however, when querying it is possible to perform xref:queries.adoc#_undirected_queries[undirected queries].
+All relationships have a direction, however, when querying it is possible to perform xref::queries-aggregations/queries.adoc#_undirected_queries[undirected queries].
 When defining a relationship you can define the default behaviour when performing queries over this relationship with the argument `queryDirection`:
 
 [source, graphql, indent=0]

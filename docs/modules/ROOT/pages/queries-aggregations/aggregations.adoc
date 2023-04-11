@@ -32,7 +32,7 @@ The rest will only expose:
 2. `max`
 
 
-Aggregation queries accepts a `where` argument for xref::filtering.adoc[filtering] data.
+Aggregation queries accepts a `where` argument for xref::queries-aggregations/filtering.adoc[filtering] data.
 
 == Counting Using aggregation
 
@@ -147,7 +147,7 @@ query {
 === Undirected aggregation queries
 
 When performing an aggregation on related nodes, the query against the relationship
-can be defined as an xref::queries.adoc#_undirected_queries[undirected] using the argument `directed: false`:
+can be defined as an xref::queries-aggregations/queries.adoc#_undirected_queries[undirected] using the argument `directed: false`:
 
 [source, graphql, indent=0]
 ----

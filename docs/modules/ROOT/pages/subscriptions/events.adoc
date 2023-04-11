@@ -148,7 +148,7 @@ A subscription to a type can be made with the top-level subscription `[type]Rela
 * `relationshipFieldName`: The field name of the newly created relationship, as part of the node target to the subscription.
 * `createdRelationship`: An object having as keys all field names of the node target to the subscription which represent its relationships. For any given event, all field names except the one corresponding to `relationshipFieldName` will be null. The field name equal to `relationshipFieldName` will contain the relationship properties if defined, and a `node` key containing the properties of the node on the other side of the relationship. Only top-level properties, without relationships, are available. Note these are the properties before the operation that triggered the `CREATE_RELATIONSHIP` took place.
 
-NOTE: Irrespective of the relationship direction in the database, the `CREATE_RELATIONSHIP` event is bound to the type targeted for the subscription. The consequence is that - given a relationship between types A and B that is not reciprocal (that is, in the GraphQL schema type A defines a relationship to B but B does **not** define a relationship to A) and a GraphQL operation that creates the relationship between them - even though the two nodes will be connected in the database, the `CREATE_RELATIONSHIP` event will only be returned to the subscription to type A. Check out the xref:subscriptions/events/create_relationship.adoc#non-reciprocal-relationships[Non-reciprocal Relationships] section below for more details.
+NOTE: Irrespective of the relationship direction in the database, the `CREATE_RELATIONSHIP` event is bound to the type targeted for the subscription. The consequence is that - given a relationship between types A and B that is not reciprocal (that is, in the GraphQL schema type A defines a relationship to B but B does **not** define a relationship to A) and a GraphQL operation that creates the relationship between them - even though the two nodes will be connected in the database, the `CREATE_RELATIONSHIP` event will only be returned to the subscription to type A. Check out the xref:subscriptions/events.adoc#create-non-reciprocal-relationships[Non-reciprocal Relationships] section below for more details.
 
 For example, considering the following type definitions:
 ```graphql
@@ -383,7 +383,7 @@ subscription {
 }
 ```
 
-[[non-reciprocal-relationships]]
+[[create-non-reciprocal-relationships]]
 ==== Non-reciprocal relationships
 
 Considering the following type definitions:
@@ -945,7 +945,7 @@ A subscription to a type can be made with the top-level subscription `[type]Rela
 * `relationshipFieldName`: The field name of the deleted relationship, as part of the node target to the subscription.
 * `deletedRelationship`: An object having as keys all field names of the node target to the subscription which represent its relationships. For any given event, all field names except the one corresponding to `relationshipFieldName` will be null. The field name equal to `relationshipFieldName` will contain the relationship properties if defined, and a `node` key containing the properties of the node on the other side of the relationship. Only top-level properties, without relationships, are available. Note these are the properties before the operation that triggered the `DELETE_RELATIONSHIP` took place.
 
-NOTE: Irrespective of the relationship direction in the database, the `DELETE_RELATIONSHIP` event is bound to the type targeted for the subscription. The consequence is that - given a relationship between types A and B that is not reciprocal (that is, in the GraphQL schema type A defines a relationship to B but B does **not** define a relationship to A) and a GraphQL operation that deletes the relationship between them - even though the two nodes will be disconnected in the database, the `DELETE_RELATIONSHIP` event will only be returned to the subscription to type A. Check out the xref:subscriptions/events/delete_relationship.adoc#non-reciprocal-relationships[Non-reciprocal Relationships] section below for more details.
+NOTE: Irrespective of the relationship direction in the database, the `DELETE_RELATIONSHIP` event is bound to the type targeted for the subscription. The consequence is that - given a relationship between types A and B that is not reciprocal (that is, in the GraphQL schema type A defines a relationship to B but B does **not** define a relationship to A) and a GraphQL operation that deletes the relationship between them - even though the two nodes will be disconnected in the database, the `DELETE_RELATIONSHIP` event will only be returned to the subscription to type A. Check out the xref:subscriptions/events.adoc#delete-non-reciprocal-relationships[Non-reciprocal Relationships] section below for more details.
 
 For example, considering the following type definitions:
 ```graphql
@@ -956,7 +956,7 @@ type Movie {
     reviewers: [Reviewer] @relationship(type: "REVIEWED", direction: IN, properties: "Reviewed")
 }
 
-type Actor {
+type Actor {s
     name: String
 }
 
@@ -1180,7 +1180,7 @@ subscription {
 }
 ```
 
-[[non-reciprocal-relationships]]
+[[delete-non-reciprocal-relationships]]
 ==== Non-reciprocal relationships
 
 Considering the following type definitions:

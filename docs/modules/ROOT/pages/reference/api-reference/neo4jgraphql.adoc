@@ -31,17 +31,17 @@ Accepts all of the options from https://www.graphql-tools.com/docs/generate-sche
 
 |`config` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig[`Neo4jGraphQLConfig`]
+ Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig[`Neo4jGraphQLConfig`]
 |Additional Neo4j GraphQL configuration options.
 
 |`features` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jfeaturessettings[`Neo4jFeaturesSettings`]
+ Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jfeaturessettings[`Neo4jFeaturesSettings`]
 |Could be used for configure/enable/disable specific features. 
 
 |`plugins` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlplugins[`Neo4jGraphQLPlugins`]
+ Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlplugins[`Neo4jGraphQLPlugins`]
 |Plugins for the Neo4j GraphQL Library.
 |===
 
@@ -53,17 +53,17 @@ Accepts all of the options from https://www.graphql-tools.com/docs/generate-sche
 
 |`driverConfig` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-driverconfig[`DriverConfig`]
+ Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-driverconfig[`DriverConfig`]
 |Additional driver configuration options.
 
 |`queryOptions` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-cypherqueryoptions[`CypherQueryOptions`]
+ Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-cypherqueryoptions[`CypherQueryOptions`]
 |Cypher query options, see xref::troubleshooting/index.adoc#troubleshooting-query-tuning[Query Tuning] for more information.
 
 |`startupValidation` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-StartupValidationOptions[`StartupValidationOptions`] or `boolean`
+ Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-StartupValidationOptions[`StartupValidationOptions`] or `boolean`
 |Whether or not startup validation checks should be run. A boolean can be used to enable/disable all startup checks. Alternatively, a `StartupValidationOptions` object can be used for fine grain controls. If nothing is passed, all checks will be run.
 
 |===
@@ -195,7 +195,7 @@ const { CypherRuntime } = require("@neo4j/graphql");
 
 |`filters` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jfilterssettings[`Neo4jFiltersSettings`]
+ Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jfilterssettings[`Neo4jFiltersSettings`]
 |Additional configuration for filters.
 |===
 
@@ -207,11 +207,11 @@ const { CypherRuntime } = require("@neo4j/graphql");
 
 |`String` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jstringfilterssettings[`Neo4jStringFiltersSettings`]
+ Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jstringfilterssettings[`Neo4jStringFiltersSettings`]
 |Additional configuration for String filters.
 |`ID` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jidfilterssettings[`Neo4jIDFiltersSettings`]
+ Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jidfilterssettings[`Neo4jIDFiltersSettings`]
 |Additional configuration for String filters.
 |===
 
@@ -310,7 +310,7 @@ Accepts the arguments below:
 
 |`driverConfig` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-checkneo4jcompat-input-driverconfig[`DriverConfig`]
+ Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-checkneo4jcompat-input-driverconfig[`DriverConfig`]
 |Additional driver configuration options.
 |===
 
@@ -386,12 +386,12 @@ Accepts the arguments below:
 
 |`driverConfig` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-assertconstraints-input-driverconfig[`DriverConfig`]
+ Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-assertconstraints-input-driverconfig[`DriverConfig`]
 |Additional driver configuration options.
 
 |`options` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc#api-reference-assertconstraints-input-assertconstraintsoptions[`AssertConstraintsOptions`]
+ Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-assertconstraints-input-assertconstraintsoptions[`AssertConstraintsOptions`]
 |Options for the execution of `assertIndexesAndConstraints`.
 |===
 

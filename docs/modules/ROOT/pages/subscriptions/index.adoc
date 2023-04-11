@@ -9,8 +9,8 @@ Events are fired on the creation or deletion of nodes and relationships, and on 
 
 [NOTE]
 ====
-Only changes made through `@neo4j/graphql` will trigger events. Changes made directly to the database or using the xref::type-definitions/cypher.adoc[`@cypher` directive] will **not** trigger any event.
+Only changes made through `@neo4j/graphql` will trigger events. Changes made directly to the database or using the xref::reference/directives/cypher.adoc[`@cypher` directive] will **not** trigger any event.
 ====
 
 == Subscriptions with Auth
-Some `auth` clauses can be used with subscriptions. How these work is documented xref::auth/subscriptions.adoc[here].
+Some `auth` clauses can be used with subscriptions. How these work is documented xref::auth/auth-directive-subs.adoc#subscriptions[here].
