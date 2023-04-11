@@ -1,5 +1,18 @@
 # @neo4j/graphql
 
+## 3.18.0
+
+### Minor Changes
+
+-   [#3076](https://github.com/neo4j/graphql/pull/3076) [`7a2f2acc4`](https://github.com/neo4j/graphql/commit/7a2f2acc434d1996a4b3785416acb0c46ad7f199) Thanks [@mjfwebb](https://github.com/mjfwebb)! - enableRegex has been deprecated and replaced with MATCHES filters in the features configuration object.
+
+-   [#3085](https://github.com/neo4j/graphql/pull/3085) [`ce5fb9eb3`](https://github.com/neo4j/graphql/commit/ce5fb9eb36a08dde95de605b49f842876b1c1515) Thanks [@mjfwebb](https://github.com/mjfwebb)! - config.callbacks has been deprecated and replaced with features.populatedBy.callbacks. See https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby for more information.
+
+### Patch Changes
+
+-   Updated dependencies [[`2bc2c7019`](https://github.com/neo4j/graphql/commit/2bc2c70196c084f850aaf5b17838b0a66eaca79c), [`0d7a140ae`](https://github.com/neo4j/graphql/commit/0d7a140aea93eca94c03bcd49fda9ee9dfa5ae2b), [`d47624ea1`](https://github.com/neo4j/graphql/commit/d47624ea1b1b79401c59d326b4d0e31e64a1545d), [`bfae63097`](https://github.com/neo4j/graphql/commit/bfae6309717ab936768cab7e5e2a1a20bbff60da), [`b276bbae2`](https://github.com/neo4j/graphql/commit/b276bbae29ead5b110f28984cc77914755ac4c22), [`a04ef4469`](https://github.com/neo4j/graphql/commit/a04ef44692e744e3154a74c5ac2c73f323732fc7)]:
+    -   @neo4j/cypher-builder@0.4.0
+
 ## 3.17.2
 
 ### Patch Changes

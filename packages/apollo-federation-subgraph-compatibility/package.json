@@ -10,7 +10,7 @@
     "dependencies": {
         "@apollo/server": "^4.4.0",
         "@graphql-tools/wrap": "^9.3.6",
-        "@neo4j/graphql": "^3.17.2",
+        "@neo4j/graphql": "^3.18.0",
         "graphql": "16.6.0",
         "graphql-tag": "^2.12.6",
         "neo4j-driver": "^5.5.0"

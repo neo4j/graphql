@@ -3331,7 +3331,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/cypher-builder@workspace:packages/cypher-builder, @neo4j/cypher-builder@~0.3.0":
+"@neo4j/cypher-builder@workspace:packages/cypher-builder, @neo4j/cypher-builder@~0.4.0":
   version: 0.0.0-use.local
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
@@ -3354,8 +3354,8 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^4.0.0
     "@graphql-codegen/typescript": ^3.0.0
     "@graphql-tools/merge": ^8.3.3
-    "@neo4j/graphql": ^3.17.2
-    "@neo4j/graphql-plugin-auth": ^2.1.0
+    "@neo4j/graphql": ^3.18.0
+    "@neo4j/graphql-plugin-auth": ^2.2.0
     "@types/jest": 29.5.0
     "@types/node": 18.15.1
     camelcase: 6.3.0
@@ -3376,7 +3376,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql-plugin-auth@^2.0.0, @neo4j/graphql-plugin-auth@^2.1.0, @neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth":
+"@neo4j/graphql-plugin-auth@^2.0.0, @neo4j/graphql-plugin-auth@^2.1.0, @neo4j/graphql-plugin-auth@^2.2.0, @neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth"
   dependencies:
@@ -3427,7 +3427,7 @@ __metadata:
     "@graphiql/react": 0.17.1
     "@neo4j-ndl/base": 1.1.0
     "@neo4j-ndl/react": 1.1.1
-    "@neo4j/graphql": 3.17.2
+    "@neo4j/graphql": 3.18.0
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.32.2
     "@tsconfig/create-react-app": 1.0.3
@@ -3483,7 +3483,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@3.17.2, @neo4j/graphql@^3.13.0, @neo4j/graphql@^3.15.0, @neo4j/graphql@^3.16.0, @neo4j/graphql@^3.17.2, @neo4j/graphql@^3.5.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@3.18.0, @neo4j/graphql@^3.13.0, @neo4j/graphql@^3.15.0, @neo4j/graphql@^3.16.0, @neo4j/graphql@^3.18.0, @neo4j/graphql@^3.5.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -3495,8 +3495,8 @@ __metadata:
     "@graphql-tools/resolvers-composition": ^6.5.3
     "@graphql-tools/schema": 9.0.17
     "@graphql-tools/utils": ^9.0.0
-    "@neo4j/cypher-builder": ~0.3.0
-    "@neo4j/graphql-plugin-auth": ^2.1.0
+    "@neo4j/cypher-builder": ~0.4.0
+    "@neo4j/graphql-plugin-auth": ^2.2.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
     "@types/jest": 29.5.0
@@ -6731,7 +6731,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": 1.2.1
     "@apollo/server": ^4.4.0
     "@graphql-tools/wrap": ^9.3.6
-    "@neo4j/graphql": ^3.17.2
+    "@neo4j/graphql": ^3.18.0
     fork-ts-checker-webpack-plugin: 8.0.0
     graphql: 16.6.0
     graphql-tag: ^2.12.6
@@ -16791,7 +16791,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "migration@workspace:examples/migration"
   dependencies:
-    "@neo4j/graphql": ^3.17.2
+    "@neo4j/graphql": ^3.18.0
     apollo-server: 3.12.0
     graphql: 16.6.0
     neo4j-driver: 5.7.0
