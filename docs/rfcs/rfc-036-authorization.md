@@ -78,7 +78,7 @@ type JWTPayload @jwtPayload {
 
 This will be used for the generation of filters later down the line.
 
-We will automatically map the following JWT payload fields:
+We will automatically map the Registered Claim Names according to the JWT specification (https://www.rfc-editor.org/rfc/rfc7519#section-4.1):
 
 * `iss`
 * `sub`
@@ -86,6 +86,7 @@ We will automatically map the following JWT payload fields:
 * `exp`
 * `nbf`
 * `iat`
+* `jti`
 
 ## Directive
 
