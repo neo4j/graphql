@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver} from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { int } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -91,7 +91,7 @@ describe("Float", () => {
                 RETURN m {.id, .imdbRating_float, .imdbRating_int} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({
+            expect((result.records[0]?.toObject() as any).m).toEqual({
                 id,
                 imdbRating_float: imdbRatingFloat,
                 imdbRating_int: int(imdbRatingInt),
@@ -157,7 +157,7 @@ describe("Float", () => {
                 RETURN m {.id, .imdbRating_float, .imdbRating_int} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({
+            expect((result.records[0]?.toObject() as any).m).toEqual({
                 id,
                 imdbRating_float: imdbRatingFloat,
                 imdbRating_int: int(imdbRatingInt),
@@ -224,7 +224,7 @@ describe("Float", () => {
                 RETURN m {.id, .float, .floats} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({
+            expect((result.records[0]?.toObject() as any).m).toEqual({
                 id,
                 float,
                 floats,

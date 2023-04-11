@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "version": "3.17.2",
+    "version": "3.18.0",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -21,6 +21,9 @@
         "dist/**/*.js",
         "dist/**/*.js.map"
     ],
+    "engines": {
+        "node": ">=16.0.0"
+    },
     "scripts": {
         "clean": "cd src/ && tsc --build --clean",
         "test": "jest",
@@ -50,7 +53,7 @@
         "@apollo/gateway": "2.3.4",
         "@apollo/server": "4.5.0",
         "@faker-js/faker": "7.6.0",
-        "@neo4j/graphql-plugin-auth": "^2.1.0",
+        "@neo4j/graphql-plugin-auth": "^2.2.0",
         "@types/deep-equal": "1.0.1",
         "@types/is-uuid": "1.0.0",
         "@types/jest": "29.5.0",
@@ -78,11 +81,11 @@
         "nock": "13.3.0",
         "npm-run-all": "4.1.5",
         "randomstring": "1.2.3",
-        "rimraf": "4.4.1",
+        "rimraf": "5.0.0",
         "supertest": "6.3.3",
         "ts-jest": "29.1.0",
         "ts-node": "10.9.1",
-        "typescript": "5.0.3",
+        "typescript": "5.0.4",
         "ws": "8.13.0"
     },
     "dependencies": {
@@ -91,7 +94,7 @@
         "@graphql-tools/resolvers-composition": "^6.5.3",
         "@graphql-tools/schema": "9.0.17",
         "@graphql-tools/utils": "^9.0.0",
-        "@neo4j/cypher-builder": "~0.3.0",
+        "@neo4j/cypher-builder": "~0.4.0",
         "camelcase": "^6.3.0",
         "debug": "^4.3.4",
         "deep-equal": "^2.0.5",
@@ -99,6 +102,7 @@
         "graphql-compose": "^9.0.8",
         "graphql-parse-resolve-info": "^4.12.3",
         "graphql-relay": "^0.10.0",
+        "jose": "^4.13.1",
         "pluralize": "^8.0.0",
         "semver": "^7.3.7",
         "uuid": "^9.0.0"

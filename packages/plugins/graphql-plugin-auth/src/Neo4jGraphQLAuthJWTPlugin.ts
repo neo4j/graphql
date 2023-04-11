@@ -31,6 +31,8 @@ export interface JWTPluginInput {
     globalAuthentication?: boolean;
     rolesPath?: string;
     bindPredicate?: "all" | "any";
+    issuer?: string | string[];
+    audience?: string | RegExp | (string | RegExp)[];
 }
 
 class Neo4jGraphQLAuthJWTPlugin {
@@ -80,6 +82,8 @@ class Neo4jGraphQLAuthJWTPlugin {
 
                 result = jsonwebtoken.verify(token, this.secret, {
                     algorithms: ["HS256", "RS256"],
+                    issuer: this.input.issuer,
+                    audience: this.input.audience,
                 }) as unknown as T;
             } else if (typeof this.input.secret === "function" && !this.secret) {
                 debug("'secret' should not be null, make sure the 'tryToResolveKeys' is ran before the decode method.");

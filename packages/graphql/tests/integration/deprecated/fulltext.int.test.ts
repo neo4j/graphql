@@ -125,7 +125,7 @@ describe("@fulltext directive", () => {
         try {
             const result = await session.run(cypher);
 
-            const record = result.records[0].get("result") as {
+            const record = result.records[0]?.get("result") as {
                 name: string;
                 type: string;
                 entityType: string;
@@ -217,7 +217,7 @@ describe("@fulltext directive", () => {
             },
         });
 
-        expect(gqlResult.errors && gqlResult.errors[0].message).toBe("Can only call one search at any given time");
+        expect(gqlResult.errors && gqlResult.errors[0]?.message).toBe("Can only call one search at any given time");
     });
 
     test("should create index if it doesn't exist (using node label) and then query using the index", async () => {
@@ -272,7 +272,7 @@ describe("@fulltext directive", () => {
         try {
             const result = await session.run(cypher);
 
-            const record = result.records[0].get("result") as {
+            const record = result.records[0]?.get("result") as {
                 name: string;
                 type: string;
                 entityType: string;
@@ -369,7 +369,7 @@ describe("@fulltext directive", () => {
         try {
             const result = await session.run(cypher);
 
-            const record = result.records[0].get("result") as {
+            const record = result.records[0]?.get("result") as {
                 name: string;
                 type: string;
                 entityType: string;
@@ -585,7 +585,7 @@ describe("@fulltext directive", () => {
         try {
             const result = await session.run(cypher);
 
-            const record = result.records[0].get("result") as {
+            const record = result.records[0]?.get("result") as {
                 name: string;
                 type: string;
                 entityType: string;
@@ -700,7 +700,7 @@ describe("@fulltext directive", () => {
         try {
             const result = await session.run(cypher);
 
-            const record = result.records[0].get("result") as {
+            const record = result.records[0]?.get("result") as {
                 name: string;
                 type: string;
                 entityType: string;

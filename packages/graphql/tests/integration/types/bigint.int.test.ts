@@ -81,7 +81,7 @@ describe("BigInt", () => {
                     RETURN f {.name, .size} as f
                 `);
 
-                expect((result.records[0].toObject() as any).f).toEqual({
+                expect((result.records[0]?.toObject() as any).f).toEqual({
                     name,
                     size: {
                         high: 2147483647,

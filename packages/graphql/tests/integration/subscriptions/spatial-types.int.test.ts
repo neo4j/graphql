@@ -136,14 +136,14 @@ describe("Subscriptions to spatial types", () => {
                 RETURN m { .title, .filmedIn } as m
             `);
 
-        expect((result.records[0].toObject() as any).m.filmedIn.x).toEqual(longitude1);
-        expect((result.records[0].toObject() as any).m.filmedIn.y).toEqual(latitude1);
-        expect((result.records[0].toObject() as any).m.filmedIn.z).toEqual(height1);
-        expect((result.records[0].toObject() as any).m.filmedIn.srid).toEqual(int(4979));
-        expect((result.records[1].toObject() as any).m.filmedIn.x).toEqual(longitude2);
-        expect((result.records[1].toObject() as any).m.filmedIn.y).toEqual(latitude2);
-        expect((result.records[1].toObject() as any).m.filmedIn.z).toEqual(height2);
-        expect((result.records[1].toObject() as any).m.filmedIn.srid).toEqual(int(4979));
+        expect((result.records[0]?.toObject() as any).m.filmedIn.x).toEqual(longitude1);
+        expect((result.records[0]?.toObject() as any).m.filmedIn.y).toEqual(latitude1);
+        expect((result.records[0]?.toObject() as any).m.filmedIn.z).toEqual(height1);
+        expect((result.records[0]?.toObject() as any).m.filmedIn.srid).toEqual(int(4979));
+        expect((result.records[1]?.toObject() as any).m.filmedIn.x).toEqual(longitude2);
+        expect((result.records[1]?.toObject() as any).m.filmedIn.y).toEqual(latitude2);
+        expect((result.records[1]?.toObject() as any).m.filmedIn.z).toEqual(height2);
+        expect((result.records[1]?.toObject() as any).m.filmedIn.srid).toEqual(int(4979));
 
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
@@ -237,10 +237,10 @@ describe("Subscriptions to spatial types", () => {
                 WHERE m.title = "As good as it gets"
                 RETURN m { .title, .filmedIn } as m
             `);
-        expect((result.records[0].toObject() as any).m.filmedIn.x).toEqual(longitude1);
-        expect((result.records[0].toObject() as any).m.filmedIn.y).toEqual(newLatitude);
-        expect((result.records[0].toObject() as any).m.filmedIn.z).toEqual(height1);
-        expect((result.records[0].toObject() as any).m.filmedIn.srid).toEqual(int(4979));
+        expect((result.records[0]?.toObject() as any).m.filmedIn.x).toEqual(longitude1);
+        expect((result.records[0]?.toObject() as any).m.filmedIn.y).toEqual(newLatitude);
+        expect((result.records[0]?.toObject() as any).m.filmedIn.z).toEqual(height1);
+        expect((result.records[0]?.toObject() as any).m.filmedIn.srid).toEqual(int(4979));
 
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
@@ -466,14 +466,14 @@ describe("Subscriptions to spatial types", () => {
                 RETURN m { .title, .location } as m
             `);
 
-        expect((result.records[0].toObject() as any).m.location.x).toEqual(x1);
-        expect((result.records[0].toObject() as any).m.location.y).toEqual(y1);
-        expect((result.records[0].toObject() as any).m.location.z).toBeUndefined();
-        expect((result.records[0].toObject() as any).m.location.srid).toEqual(int(7203));
-        expect((result.records[1].toObject() as any).m.location.x).toEqual(x2);
-        expect((result.records[1].toObject() as any).m.location.y).toEqual(y2);
-        expect((result.records[1].toObject() as any).m.location.z).toBeUndefined();
-        expect((result.records[1].toObject() as any).m.location.srid).toEqual(int(7203));
+        expect((result.records[0]?.toObject() as any).m.location.x).toEqual(x1);
+        expect((result.records[0]?.toObject() as any).m.location.y).toEqual(y1);
+        expect((result.records[0]?.toObject() as any).m.location.z).toBeUndefined();
+        expect((result.records[0]?.toObject() as any).m.location.srid).toEqual(int(7203));
+        expect((result.records[1]?.toObject() as any).m.location.x).toEqual(x2);
+        expect((result.records[1]?.toObject() as any).m.location.y).toEqual(y2);
+        expect((result.records[1]?.toObject() as any).m.location.z).toBeUndefined();
+        expect((result.records[1]?.toObject() as any).m.location.srid).toEqual(int(7203));
 
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
@@ -567,10 +567,10 @@ describe("Subscriptions to spatial types", () => {
                 RETURN m { .title, .location } as m
             `);
 
-        expect((result.records[0].toObject() as any).m.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).m.location.y).toEqual(newY);
-        expect((result.records[0].toObject() as any).m.location.z).toBeUndefined();
-        expect((result.records[0].toObject() as any).m.location.srid).toEqual(int(7203));
+        expect((result.records[0]?.toObject() as any).m.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).m.location.y).toEqual(newY);
+        expect((result.records[0]?.toObject() as any).m.location.z).toBeUndefined();
+        expect((result.records[0]?.toObject() as any).m.location.srid).toEqual(int(7203));
 
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([

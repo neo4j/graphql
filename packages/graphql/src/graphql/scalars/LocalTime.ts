@@ -24,6 +24,13 @@ import neo4j, { isLocalTime } from "neo4j-driver";
 export const LOCAL_TIME_REGEX =
     /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?$/;
 
+type LocalTimeMatchGroups = {
+    hour: string;
+    minute: string;
+    second: string;
+    fraction: string | undefined;
+};
+
 export const parseLocalTime = (
     value: unknown
 ): {
@@ -42,8 +49,7 @@ export const parseLocalTime = (
         throw new TypeError(`Value must be formatted as LocalTime: ${value}`);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { hour, minute, second, fraction } = match.groups!;
+    const { hour, minute, second, fraction } = match.groups as LocalTimeMatchGroups;
 
     // Calculate the number of nanoseconds by padding the fraction of seconds with zeroes to nine digits
     let nanosecond = 0;
