@@ -58,7 +58,6 @@ describe("Interface Relationships - Delete delete", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

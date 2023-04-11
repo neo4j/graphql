@@ -45,7 +45,6 @@ describe("Subscriptions Single Instance Plugin", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
             },

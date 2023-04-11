@@ -30,7 +30,7 @@ import { createFieldAggregation } from "./field-aggregations/create-field-aggreg
 import { addGlobalIdField } from "../utils/global-node-projection";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
-import { removeDuplicates } from "../utils/utils";
+import { filterTruthy, removeDuplicates } from "../utils/utils";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
@@ -46,15 +46,17 @@ interface Res {
 
 export interface ProjectionMeta {
     authValidatePredicates?: Cypher.Predicate[];
-    cypherSortFields?: string[];
 }
 
 export type ProjectionResult = {
-    projection: Cypher.Expr;
     params: Record<string, any>;
     meta: ProjectionMeta;
-    subqueries: Array<Cypher.Clause>;
+    // Subqueries required for sorting on fields before the projection
     subqueriesBeforeSort: Array<Cypher.Clause>;
+    // Subqueries required for fields in the projection
+    subqueries: Array<Cypher.Clause>;
+    // The map representing the fields being returned in the projection
+    projection: Cypher.Expr;
 };
 
 export default function createProjectionAndParams({
@@ -85,7 +87,7 @@ export default function createProjectionAndParams({
         const pointField = node.pointFields.find((x) => x.fieldName === field.name);
         const temporalField = node.temporalFields.find((x) => x.fieldName === field.name);
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
-        
+
         if (authableField) {
             // TODO: move this to translate-top-level
             if (authableField.auth) {
@@ -376,7 +378,7 @@ export default function createProjectionAndParams({
     // cf. https://github.com/neo4j/graphql/issues/476
     const mergedSelectedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
         nodeFields,
-        ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value]),
+        ...filterTruthy(node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value])),
     ]);
 
     // Merge fields for final projection to account for multiple fragments
@@ -466,7 +468,10 @@ function createFulltextProjection({
     resolveType?: boolean;
     cypherFieldAliasMap: CypherFieldReferenceMap;
 }): ProjectionResult {
-    if (!resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.singular]) {
+    const fieldResolveTree = resolveTree.fieldsByTypeName[node.fulltextTypeNames.result];
+    const nodeResolveTree = fieldResolveTree?.[node.singular];
+
+    if (!nodeResolveTree) {
         return {
             projection: new Cypher.Map(),
             params: {},
@@ -475,8 +480,6 @@ function createFulltextProjection({
             subqueriesBeforeSort: [],
         };
     }
-
-    const nodeResolveTree = resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.singular];
 
     const nodeContext = { ...context, fulltextIndex: false };
 

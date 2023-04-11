@@ -48,7 +48,6 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,

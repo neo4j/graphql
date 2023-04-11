@@ -71,7 +71,9 @@ export class UnwindCreateVisitor implements Visitor {
                 children.accept(this);
                 return children.id;
             });
-            return childrenRefs.map((childrenRef) => this.environment[childrenRef].clause);
+            return childrenRefs.map(
+                (childrenRef) => (this.environment[childrenRef] as UnwindCreateScopeDefinition).clause
+            );
         }
         return [];
     }
@@ -123,8 +125,8 @@ export class UnwindCreateVisitor implements Visitor {
     }
 
     visitNestedCreate(nestedCreate: INestedCreateAST): void {
-        const parentVar = this.environment[nestedCreate.id].parentVar;
-        const unwindVar = this.environment[nestedCreate.id].unwindVar;
+        const parentVar = (this.environment[nestedCreate.id] as UnwindCreateScopeDefinition).parentVar;
+        const unwindVar = (this.environment[nestedCreate.id] as UnwindCreateScopeDefinition).unwindVar;
         const { node, relationship, relationshipPropertyPath } = nestedCreate;
         const blockWith = new Cypher.With(parentVar, unwindVar);
         const createUnwindVar = new Cypher.Variable();
@@ -210,7 +212,11 @@ export class UnwindCreateVisitor implements Visitor {
         const subQuery = Cypher.concat(...subQueryStatements);
         const callClause = new Cypher.Call(subQuery);
         const outsideWith = new Cypher.With(parentVar, unwindVar);
-        this.environment[nestedCreate.id].clause = Cypher.concat(outsideWith, callClause);
+
+        (this.environment[nestedCreate.id] as UnwindCreateScopeDefinition).clause = Cypher.concat(
+            outsideWith,
+            callClause
+        );
     }
 
     private getAuthNodeClause(node: Node, context: Context, nodeRef: Cypher.Node): Cypher.Clause | undefined {
@@ -220,12 +226,12 @@ export class UnwindCreateVisitor implements Visitor {
                 operations: "CREATE",
                 context,
                 bind: { node, varName: nodeRef },
-                escapeQuotes: true,
             });
             if (authExpr) {
                 return Cypher.concat(
-                    new Cypher.With("*"),
-                    Cypher.apoc.util.validate(Cypher.not(authExpr), AUTH_FORBIDDEN_ERROR)
+                    new Cypher.With("*").where(
+                        Cypher.apoc.util.validatePredicate(Cypher.not(authExpr), AUTH_FORBIDDEN_ERROR)
+                    )
                 );
             }
         }
@@ -255,7 +261,6 @@ export class UnwindCreateVisitor implements Visitor {
                                 node: astNode.node,
                                 varName: nodeRef,
                             },
-                            escapeQuotes: true,
                         });
                         if (fieldAuthCypher) {
                             return Cypher.or(Cypher.isNull(unwindVar.property(field.fieldName)), fieldAuthCypher);
@@ -266,8 +271,7 @@ export class UnwindCreateVisitor implements Visitor {
                     const predicate = Cypher.not(Cypher.and(...fieldsPredicates));
 
                     const fieldsAuth = Cypher.concat(
-                        new Cypher.With("*"),
-                        Cypher.apoc.util.validate(predicate, AUTH_FORBIDDEN_ERROR)
+                        new Cypher.With("*").where(Cypher.apoc.util.validatePredicate(predicate, AUTH_FORBIDDEN_ERROR))
                     ).getCypher(env);
 
                     const fieldsPredicateParams = fieldsPredicates.reduce((prev, next) => {

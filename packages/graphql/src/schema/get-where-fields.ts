@@ -126,7 +126,13 @@ function getWhereFields({
             }
 
             if (["String", "ID"].includes(f.typeMeta.name)) {
-                if (enableRegex) {
+                const matchesSetting: boolean | undefined = features?.filters?.[f.typeMeta.name]?.MATCHES;
+                if (matchesSetting !== undefined) {
+                    if (matchesSetting === true) {
+                        res[`${f.fieldName}_MATCHES`] = { type: "String", directives: deprecatedDirectives };
+                    }
+                } else if (enableRegex) {
+                    // TODO: This is deprecated. To be removed in 4.0.0.
                     res[`${f.fieldName}_MATCHES`] = { type: "String", directives: deprecatedDirectives };
                 }
 
@@ -134,9 +140,12 @@ function getWhereFields({
 
                 const stringWhereOperatorsNegate = ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"];
 
-                Object.entries(features?.filters?.String || {}).forEach(([key, value]) => {
-                    if (value) {
-                        stringWhereOperators.push(`_${key}`);
+                Object.entries(features?.filters?.String || {}).forEach(([filter, enabled]) => {
+                    if (filter === "MATCHES") {
+                        return;
+                    }
+                    if (enabled) {
+                        stringWhereOperators.push(`_${filter}`);
                     }
                 });
                 stringWhereOperators.forEach((comparator) => {

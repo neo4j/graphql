@@ -22,7 +22,6 @@ import type { Driver, Session } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
@@ -1447,10 +1446,10 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -1517,10 +1516,10 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -1583,10 +1582,10 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -1664,10 +1663,10 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -1729,10 +1728,10 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -1797,10 +1796,10 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -1862,10 +1861,10 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -2314,7 +2313,7 @@ describe("@fulltext directive", () => {
             try {
                 const result = await session.run(indexQueryCypher);
 
-                expect(result.records[0].get("result")).toEqual({
+                expect(result.records[0]?.get("result")).toEqual({
                     name: indexName1,
                     type: "FULLTEXT",
                     entityType: "NODE",
@@ -2356,14 +2355,14 @@ describe("@fulltext directive", () => {
             try {
                 const result = await session.run(indexQueryCypher);
 
-                expect(result.records[0].get("result")).toEqual({
+                expect(result.records[0]?.get("result")).toEqual({
                     name: indexName1,
                     type: "FULLTEXT",
                     entityType: "NODE",
                     labelsOrTypes: [type.name],
                     properties: ["title"],
                 });
-                expect(result.records[1].get("result")).toEqual({
+                expect(result.records[1]?.get("result")).toEqual({
                     name: indexName2,
                     type: "FULLTEXT",
                     entityType: "NODE",
@@ -2404,7 +2403,7 @@ describe("@fulltext directive", () => {
             try {
                 const result = await session.run(indexQueryCypher);
 
-                expect(result.records[0].get("result")).toEqual({
+                expect(result.records[0]?.get("result")).toEqual({
                     name: indexName1,
                     type: "FULLTEXT",
                     entityType: "NODE",
@@ -2445,7 +2444,7 @@ describe("@fulltext directive", () => {
             try {
                 const result = await session.run(indexQueryCypher);
 
-                expect(result.records[0].get("result")).toEqual({
+                expect(result.records[0]?.get("result")).toEqual({
                     name: indexName1,
                     type: "FULLTEXT",
                     entityType: "NODE",
@@ -2664,7 +2663,7 @@ describe("@fulltext directive", () => {
             try {
                 const result = await session.run(indexQueryCypher);
 
-                expect(result.records[0].get("result")).toEqual({
+                expect(result.records[0]?.get("result")).toEqual({
                     name: indexName1,
                     type: "FULLTEXT",
                     entityType: "NODE",

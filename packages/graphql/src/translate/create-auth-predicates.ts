@@ -33,7 +33,6 @@ export function createAuthPredicates({
     skipIsAuthenticated,
     allow,
     context,
-    escapeQuotes,
     bind,
     where,
 }: {
@@ -43,7 +42,6 @@ export function createAuthPredicates({
     skipIsAuthenticated?: boolean;
     allow?: Rule;
     context: Context;
-    escapeQuotes?: boolean;
     bind?: Rule;
     where?: Rule;
 }): Cypher.Predicate | undefined {
@@ -68,7 +66,6 @@ export function createAuthPredicates({
             skipIsAuthenticated,
             allow,
             context,
-            escapeQuotes,
             bind,
             where,
         });

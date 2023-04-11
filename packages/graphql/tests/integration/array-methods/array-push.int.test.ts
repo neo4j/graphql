@@ -52,9 +52,9 @@ describe("array-push", () => {
 
     const date = new Date().toISOString();
     const expectedDateOutput = date.split("T")[0];
-    const time = faker.date.past().toISOString().split("T")[1];
+    const time = faker.date.past().toISOString().split("T")[1] as string;
     const expectedTimeOutput = `${time.slice(0, -1)}000000Z`;
-    const localTime = `${faker.date.past().toISOString().split("T")[1].split("Z")[0]}`;
+    const localTime = `${faker.date.past().toISOString().split("T")[1]?.split("Z")[0]}`;
     const localDateTime = `${faker.date.past().toISOString().split("Z")[0]}`;
     // Expected localTime and localDateTime may cause flakiness with the ms precision.
     const expectedLocalTime = expect.stringContaining(localTime);
@@ -650,7 +650,7 @@ describe("array-push", () => {
                 id,
             }
         );
-        expect(storedValue.records[0].get("pay")).toEqual([initialPay, payIncrement]);
+        expect(storedValue.records[0]?.get("pay")).toEqual([initialPay, payIncrement]);
     });
 
     test("should be possible to update Point relationship properties", async () => {

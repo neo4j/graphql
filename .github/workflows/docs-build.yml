@@ -2,9 +2,6 @@ name: "Documentation Build"
 
 on:
   pull_request:
-    branches:
-      - dev
-      - master
     paths:
       - docs/antora.yml
       - docs/package.json

@@ -21,6 +21,9 @@
         "dist/**/*.js",
         "dist/**/*.js.map"
     ],
+    "engines": {
+        "node": ">=16.0.0"
+    },
     "scripts": {
         "clean": "cd src/ && tsc --build --clean",
         "test": "jest",
@@ -38,8 +41,8 @@
         "@types/node": "18.15.1",
         "@types/pluralize": "0.0.29",
         "jest": "29.5.0",
-        "ts-jest": "29.0.5",
-        "typescript": "5.0.2"
+        "ts-jest": "29.1.0",
+        "typescript": "5.0.4"
     },
     "dependencies": {
         "camelcase": "^6.3.0",

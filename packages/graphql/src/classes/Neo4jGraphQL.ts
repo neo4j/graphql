@@ -51,9 +51,15 @@ import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchema
 import type { TypeSource } from "@graphql-tools/utils";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import { validateDocument } from "../schema/validation";
+import { validateUserDefinition } from "../schema/validation/schema-validation";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
+    /**
+     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
+     * Please use features.filters instead. More information can be found at
+     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#features
+     */
     enableRegex?: boolean;
     enableDebug?: boolean;
     /**
@@ -64,6 +70,11 @@ export interface Neo4jGraphQLConfig {
     skipValidateTypeDefs?: boolean;
     startupValidation?: StartupValidationConfig;
     queryOptions?: CypherQueryOptions;
+    /**
+     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
+     * Please use features.populatedBy instead. More information can be found at
+     * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby
+     */
     callbacks?: Neo4jGraphQLCallbacks;
 }
 
@@ -238,13 +249,19 @@ class Neo4jGraphQL {
             throw new Error("Schema Model is not defined");
         }
 
+        const config = {
+            ...this.config,
+            callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
+        };
+
         const wrapResolverArgs = {
             driver: this.driver,
-            config: this.config,
+            config,
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: this.schemaModel,
             plugins: this.plugins,
+            authorization: this.features?.authorization,
         };
 
         const resolversComposition = {
@@ -270,6 +287,7 @@ class Neo4jGraphQL {
             relationships: this.relationships,
             schemaModel: this.schemaModel,
             plugins: this.plugins,
+            authorization: this.features?.authorization,
         };
 
         const resolversComposition = {
@@ -291,21 +309,25 @@ class Neo4jGraphQL {
                 validateDocument(document);
             }
 
-            if (!this.schemaModel) {
-                this.schemaModel = generateModel(document);
-            }
-
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
                 validateResolvers,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
-                callbacks: this.config.callbacks,
+                callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
                 userCustomResolvers: this.schemaDefinition.resolvers,
             });
 
+            if (validateTypeDefs) {
+                validateUserDefinition(document, typeDefs);
+            }
+
             this._nodes = nodes;
             this._relationships = relationships;
+
+            if (!this.schemaModel) {
+                this.schemaModel = generateModel(document);
+            }
 
             // Wrap the generated and custom resolvers, which adds a context including the schema to every request
             const wrappedResolvers = this.wrapResolvers(resolvers);
@@ -334,22 +356,26 @@ class Neo4jGraphQL {
             validateDocument(document, directives, types);
         }
 
-        if (!this.schemaModel) {
-            this.schemaModel = generateModel(document);
-        }
-
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
             enableRegex: this.config?.enableRegex,
             validateResolvers,
             generateSubscriptions: Boolean(this.plugins?.subscriptions),
-            callbacks: this.config.callbacks,
+            callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
             userCustomResolvers: this.schemaDefinition.resolvers,
             subgraph,
         });
 
+        if (validateTypeDefs) {
+            validateUserDefinition(document, typeDefs, directives, types);
+        }
+
         this._nodes = nodes;
         this._relationships = relationships;
+
+        if (!this.schemaModel) {
+            this.schemaModel = generateModel(document);
+        }
 
         // TODO: Move into makeAugmentedSchema, add resolvers alongside other resolvers
         const referenceResolvers = subgraph.getReferenceResolvers(this._nodes);

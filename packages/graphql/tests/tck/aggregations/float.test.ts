@@ -36,7 +36,6 @@ describe("Cypher Aggregations Float", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

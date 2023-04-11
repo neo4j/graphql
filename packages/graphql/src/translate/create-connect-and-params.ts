@@ -47,7 +47,6 @@ function createConnectAndParams({
     labelOverride,
     parentNode,
     fromCreate,
-    insideDoWhen,
     includeRelationshipValidation,
     isFirstLevel = true,
 }: {
@@ -62,7 +61,6 @@ function createConnectAndParams({
     labelOverride?: string;
     parentNode: Node;
     fromCreate?: boolean;
-    insideDoWhen?: boolean;
     includeRelationshipValidation?: boolean;
     isFirstLevel?: boolean;
 }): [string, any] {
@@ -167,15 +165,15 @@ function createConnectAndParams({
         }
 
         if (relatedNode.auth) {
-            const whereAuth = createAuthAndParams({
+            const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
                 operations: "CONNECT",
                 entity: relatedNode,
                 context,
                 where: { varName: nodeName, node: relatedNode },
             });
-            if (whereAuth[0]) {
-                whereStrs.push(whereAuth[0]);
-                params = { ...params, ...whereAuth[1] };
+            if (authWhereCypher) {
+                whereStrs.push(authWhereCypher);
+                params = { ...params, ...authWhereParams };
             }
         }
 
@@ -200,20 +198,19 @@ function createConnectAndParams({
                     return result;
                 }
 
-                const [str, p] = createAuthAndParams({
+                const { cypher, params } = createAuthAndParams({
                     entity: node,
                     operations: "CONNECT",
                     context,
-                    escapeQuotes: Boolean(insideDoWhen),
                     allow: { node, varName: name },
                 });
 
-                if (!str) {
+                if (!cypher) {
                     return result;
                 }
 
-                result.connects.push(str);
-                result.params = { ...result.params, ...p };
+                result.connects.push(cypher);
+                result.params = { ...result.params, ...params };
 
                 return result;
             },
@@ -221,12 +218,9 @@ function createConnectAndParams({
         );
 
         if (preAuth.connects.length) {
-            const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
             subquery.push(
-                `\tCALL apoc.util.validate(NOT (${preAuth.connects.join(
-                    " AND "
-                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                `\tCALL apoc.util.validate(NOT (${preAuth.connects.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
             );
             params = { ...params, ...preAuth.params };
         }
@@ -462,22 +456,21 @@ function createConnectAndParams({
                     return result;
                 }
 
-                const [str, p] = createAuthAndParams({
+                const { cypher, params } = createAuthAndParams({
                     entity: node,
                     operations: "CONNECT",
                     context,
-                    escapeQuotes: Boolean(insideDoWhen),
                     skipIsAuthenticated: true,
                     skipRoles: true,
                     bind: { node, varName: nodeName },
                 });
 
-                if (!str) {
+                if (!cypher) {
                     return result;
                 }
 
-                result.connects.push(str);
-                result.params = { ...result.params, ...p };
+                result.connects.push(cypher);
+                result.params = { ...result.params, ...params };
 
                 return result;
             },
@@ -485,12 +478,9 @@ function createConnectAndParams({
         );
 
         if (postAuth.connects.length) {
-            const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
             subquery.push(
-                `\tCALL apoc.util.validate(NOT (${postAuth.connects.join(
-                    " AND "
-                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                `\tCALL apoc.util.validate(NOT (${postAuth.connects.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
             );
             params = { ...params, ...postAuth.params };
         }
@@ -507,16 +497,16 @@ function createConnectAndParams({
 
     function reducer(res: Res, connect: any, index: number): Res {
         if (parentNode.auth && !fromCreate) {
-            const whereAuth = createAuthAndParams({
+            const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
                 operations: "CONNECT",
                 entity: parentNode,
                 context,
                 where: { varName: parentVar, node: parentNode },
             });
-            if (whereAuth[0]) {
+            if (authWhereCypher) {
                 res.connects.push(`WITH ${withVars.join(", ")}`);
-                res.connects.push(`WHERE ${whereAuth[0]}`);
-                res.params = { ...res.params, ...whereAuth[1] };
+                res.connects.push(`WHERE ${authWhereCypher}`);
+                res.params = { ...res.params, ...authWhereParams };
             }
         }
 
@@ -545,7 +535,7 @@ function createConnectAndParams({
                 }
             }
         } else {
-            const subquery = createSubqueryContents(refNodes[0], connect, index);
+            const subquery = createSubqueryContents(refNodes[0] as Node, connect, index);
             inner.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
         }

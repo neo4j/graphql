@@ -82,7 +82,7 @@ export function inputTreeToCypherMap(
                         value.map((GraphQLCreateInput: GraphQLCreateInput) =>
                             inputTreeToCypherMap(
                                 GraphQLCreateInput,
-                                relationField ? relatedNodes[0] : node,
+                                relationField ? (relatedNodes[0] as Node) : node,
                                 context,
                                 key,
                                 relationship
@@ -93,7 +93,7 @@ export function inputTreeToCypherMap(
                 }
                 obj[key] = inputTreeToCypherMap(
                     value as GraphQLCreateInput[] | GraphQLCreateInput,
-                    relationField ? relatedNodes[0] : node,
+                    relationField ? (relatedNodes[0] as Node) : node,
                     context,
                     key,
                     relationship
@@ -212,7 +212,7 @@ function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNo
                         parentASTNode.addChildren(
                             parseNestedCreate(
                                 description,
-                                relatedNodes[0],
+                                relatedNodes[0] as Node,
                                 context,
                                 node,
                                 key,
@@ -284,7 +284,7 @@ function parseNestedCreate(
     relationship: [RelationField | undefined, Node[]],
     edge?: Relationship
 ) {
-    const nodeProperties = input.children.node.properties;
+    const nodeProperties = (input.children.node as TreeDescriptor).properties;
     const edgeProperties = input.children.edge ? input.children.edge.properties : [];
     raiseOnNotSupportedProperty(node);
     raiseAttributeAmbiguity(nodeProperties, node);

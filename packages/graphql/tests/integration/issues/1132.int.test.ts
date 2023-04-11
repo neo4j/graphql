@@ -21,7 +21,6 @@ import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { UniqueType } from "../../utils/graphql-types";
@@ -67,10 +66,10 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const neoGraphql = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
             const schema = await neoGraphql.getSchema();
@@ -123,10 +122,10 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const neoGraphql = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
             const schema = await neoGraphql.getSchema();
@@ -195,10 +194,10 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const neoGraphql = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
             const schema = await neoGraphql.getSchema();
@@ -254,10 +253,10 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const neoGraphql = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
             const schema = await neoGraphql.getSchema();

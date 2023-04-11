@@ -139,7 +139,7 @@ describe("Create -> ConnectOrCreate Union", () => {
         `);
 
         expect(movieTitle.records).toHaveLength(1);
-        expect(movieTitle.records[0].toObject().title).toBe("Forrest Gump");
+        expect(movieTitle.records[0]?.toObject().title).toBe("Forrest Gump");
 
         const movieActedInRelation = await session.run(`
             MATCH (:${typeMovie.name} {isan: "${movieIsan}"})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks"})
@@ -147,7 +147,7 @@ describe("Create -> ConnectOrCreate Union", () => {
             `);
 
         expect(movieActedInRelation.records).toHaveLength(1);
-        expect((movieActedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
+        expect((movieActedInRelation.records[0]?.toObject().screentime as Integer).toNumber()).toBe(105);
 
         const seriesTitle = await session.run(`
           MATCH (m:${typeSeries.name} {isan: "${seriesIsan}"})
@@ -155,7 +155,7 @@ describe("Create -> ConnectOrCreate Union", () => {
         `);
 
         expect(seriesTitle.records).toHaveLength(1);
-        expect(seriesTitle.records[0].toObject().title).toBe("Band of Brothers");
+        expect(seriesTitle.records[0]?.toObject().title).toBe("Band of Brothers");
 
         const seriesActedInRelation = await session.run(`
             MATCH (:${typeSeries.name} {isan: "${seriesIsan}"})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks"})
@@ -163,7 +163,7 @@ describe("Create -> ConnectOrCreate Union", () => {
             `);
 
         expect(seriesActedInRelation.records).toHaveLength(1);
-        expect((seriesActedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(126);
+        expect((seriesActedInRelation.records[0]?.toObject().screentime as Integer).toNumber()).toBe(126);
     });
 
     test("ConnectOrCreate on existing node", async () => {
@@ -228,14 +228,14 @@ describe("Create -> ConnectOrCreate Union", () => {
               RETURN COUNT(a) as count
             `);
 
-        expect(actorsWithMovieCount.records[0].toObject().count.toInt()).toBe(1);
+        expect(actorsWithMovieCount.records[0]?.toObject().count.toInt()).toBe(1);
 
         const actorsWithSeriesCount = await session.run(`
               MATCH (a:${typeActor.name} {name:"${actorName}"})-[]->(:${typeSeries.name} {isan:"${seriesIsan}"})
               RETURN COUNT(a) as count
             `);
 
-        expect(actorsWithSeriesCount.records[0].toObject().count.toInt()).toBe(1);
+        expect(actorsWithSeriesCount.records[0]?.toObject().count.toInt()).toBe(1);
 
         const movieActedInRelation = await session.run(`
             MATCH (:${typeMovie.name} {isan: "${movieIsan}"})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${actorName}"})
@@ -243,7 +243,7 @@ describe("Create -> ConnectOrCreate Union", () => {
             `);
 
         expect(movieActedInRelation.records).toHaveLength(1);
-        expect((movieActedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(105);
+        expect((movieActedInRelation.records[0]?.toObject().screentime as Integer).toNumber()).toBe(105);
 
         const seriesActedInRelation = await session.run(`
             MATCH (:${typeSeries.name} {isan: "${seriesIsan}"})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${actorName}"})
@@ -251,6 +251,6 @@ describe("Create -> ConnectOrCreate Union", () => {
             `);
 
         expect(seriesActedInRelation.records).toHaveLength(1);
-        expect((seriesActedInRelation.records[0].toObject().screentime as Integer).toNumber()).toBe(126);
+        expect((seriesActedInRelation.records[0]?.toObject().screentime as Integer).toNumber()).toBe(126);
     });
 });

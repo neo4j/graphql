@@ -51,7 +51,6 @@ describe("Cypher Auth Allow", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
@@ -85,7 +84,7 @@ describe("Cypher Auth Allow", () => {
                     create_this1.id = create_var0.id,
                     create_this1.name = create_var0.name
                 WITH *
-                CALL apoc.util.validate(NOT ((create_this1.id IS NOT NULL AND create_this1.id = $create_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ((create_this1.id IS NOT NULL AND create_this1.id = $create_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -160,11 +159,11 @@ describe("Cypher Auth Allow", () => {
                             create_this10.id = create_var8.id
                         MERGE (create_this5)<-[create_this11:HAS_POST]-(create_this10)
                         WITH *
-                        CALL apoc.util.validate(NOT ((create_this10.id IS NOT NULL AND create_this10.id = $create_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                        WHERE apoc.util.validatePredicate(NOT ((create_this10.id IS NOT NULL AND create_this10.id = $create_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         RETURN collect(NULL) AS create_var12
                     }
                     WITH *
-                    CALL apoc.util.validate(NOT ((exists((create_this5)<-[:HAS_POST]-(:\`User\`)) AND all(create_this13 IN [(create_this5)<-[:HAS_POST]-(create_this13:\`User\`) | create_this13] WHERE (create_this13.id IS NOT NULL AND create_this13.id = $create_param2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ((exists((create_this5)<-[:HAS_POST]-(:\`User\`)) AND all(create_this13 IN [(create_this5)<-[:HAS_POST]-(create_this13:\`User\`) | create_this13] WHERE (create_this13.id IS NOT NULL AND create_this13.id = $create_param2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH create_this5
                     CALL {
                     	WITH create_this5
@@ -176,7 +175,7 @@ describe("Cypher Auth Allow", () => {
                     RETURN collect(NULL) AS create_var14
                 }
                 WITH *
-                CALL apoc.util.validate(NOT ((create_this1.id IS NOT NULL AND create_this1.id = $create_param3)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ((create_this1.id IS NOT NULL AND create_this1.id = $create_param3)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"

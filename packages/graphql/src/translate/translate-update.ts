@@ -77,7 +77,7 @@ export default async function translateUpdate({
     const interfaceStrs: string[] = [];
     let updateArgs = {};
 
-    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.update];
+    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.update] || {};
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 
@@ -208,8 +208,8 @@ export default async function translateUpdate({
                     const inStr = relationField.direction === "IN" ? "<-" : "-";
                     const outStr = relationField.direction === "OUT" ? "->" : "-";
                     refNodes.forEach((refNode) => {
-                        const validateRelationshipExistance = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        connectStrs.push(validateRelationshipExistance);
+                        const validateRelationshipExistence = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                        connectStrs.push(validateRelationshipExistence);
                     });
                 }
 
@@ -422,10 +422,11 @@ export default async function translateUpdate({
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
         if (projection.meta?.authValidatePredicates?.length) {
-            projAuth = Cypher.apoc.util.validate(
-                Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                AUTH_FORBIDDEN_ERROR,
-                new Cypher.Literal([0])
+            projAuth = new Cypher.With("*").where(
+                Cypher.apoc.util.validatePredicate(
+                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
+                    AUTH_FORBIDDEN_ERROR
+                )
             );
         }
     }
@@ -454,7 +455,7 @@ export default async function translateUpdate({
                 : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
 
             projectionSubqueryStr,
-            ...(connectionStrs.length || projAuth ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
+            ...(connectionStrs.length ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
             ...(projAuth ? [projAuth.getCypher(env)] : []),
             ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,

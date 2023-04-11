@@ -27,7 +27,7 @@ import type {
     ObjectTypeDefinitionNode,
 } from "graphql";
 import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
-import type { ObjectTypeComposer } from "graphql-compose";
+import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import type { BaseField, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings } from "../types";
@@ -185,7 +185,7 @@ function makeAugmentedSchema(
     const interfaceCommonFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
-        const authDirective = (relationship.directives || []).find((x) => x.name.value === "auth");
+        const authDirective = (relationship.directives || []).find((x) => ["auth", "authoization"].includes(x.name.value));
         if (authDirective) {
             throw new Error("Cannot have @auth directive on relationship properties interface");
         }
@@ -197,7 +197,7 @@ function makeAugmentedSchema(
                 }
             });
 
-            const forbiddenDirectives = ["auth", "relationship", "cypher"];
+            const forbiddenDirectives = ["auth", "authorization", "relationship", "cypher"];
             forbiddenDirectives.forEach((directive) => {
                 const found = (field.directives || []).find((x) => x.name.value === directive);
                 if (found) {
@@ -390,7 +390,7 @@ function makeAugmentedSchema(
                 name: `${interfaceRelationship.name.value}Implementations${suffix}`,
                 fields: {},
             })
-        );
+        ) as [InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer];
 
         composer.createInputTC({
             name: `${interfaceRelationship.name.value}Where`,
@@ -543,6 +543,7 @@ function makeAugmentedSchema(
     }
 
     nodes.forEach((node) => {
+        
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
             ...node.cypherFields,
@@ -898,7 +899,7 @@ function makeAugmentedSchema(
             description: inter.description?.value,
             fields: objectComposeFields,
             directives: graphqlDirectivesToCompose(
-                (inter.directives || []).filter((x) => !["auth", "exclude"].includes(x.name.value))
+                (inter.directives || []).filter((x) => !["auth", "authorization", "exclude"].includes(x.name.value))
             ),
         });
     });
