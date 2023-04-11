@@ -1,6 +1,7 @@
 import {
     createClient,
-    defaultExchanges,
+    cacheExchange,
+    fetchExchange,
     subscriptionExchange,
     gql
 } from "urql";
@@ -112,7 +113,8 @@ module.exports = class GraphQLServerApi {
         this.client = createClient({
             url: this.url,
             exchanges: [
-                ...defaultExchanges,
+                cacheExchange,
+                fetchExchange,
                 subscriptionExchange({
                     forwardSubscription: (operation) => ({
                         subscribe: (sink) => ({
