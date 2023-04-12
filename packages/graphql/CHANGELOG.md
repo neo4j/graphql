@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 3.18.1
+
+### Patch Changes
+
+-   [#3183](https://github.com/neo4j/graphql/pull/3183) [`cbc15970c`](https://github.com/neo4j/graphql/commit/cbc15970cd87e5cdcfbae40ce5bacf1fb819ade8) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix query by edge property on union type
+
 ## 3.18.0
 
 ### Minor Changes
