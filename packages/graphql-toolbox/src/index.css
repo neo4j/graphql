@@ -30,6 +30,11 @@
     color: rgb(var(--colors-neutral-50));
 }
 
+.CodeMirror-selected {
+    background: #d9d9d9;
+    opacity: 0.5;
+}
+
 li.CodeMirror-hint-active {
     background-color: rgb(var(--colors-neutral-50));
     color: rgb(var(--colors-neutral-10));
