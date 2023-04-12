@@ -216,7 +216,8 @@ function createSimpleRelationshipPredicate({
             const isArray = relationField.typeMeta.array;
             const isRequired = relationField.typeMeta.required;
 
-            if (isArray || !isRequired) {
+            const isUnionField = Boolean(relationField.union);
+            if (isArray || !isRequired || isUnionField) {
                 const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(
                     innerOperation
                 );
@@ -224,6 +225,7 @@ function createSimpleRelationshipPredicate({
             }
 
             const matchStatement = new Cypher.Match(matchPattern);
+
             return {
                 predicate: innerOperation,
                 preComputedSubqueries: Cypher.concat(matchStatement),
