@@ -125,4 +125,72 @@ describe("Neo4jGraphQLAuthJWTPlugin", () => {
             "Neo4jGraphQLAuthJWTPlugin, noVerify and globalAuthentication can not both be enabled simultaneously."
         );
     });
+
+    test("should decode token and verify issuer", async () => {
+        const payload = {
+            sub: "my-id",
+            iss: "https://testcompany.com",
+        };
+        const encoded = jsonwebtoken.sign(payload, secret);
+
+        const plugin = new Neo4jGraphQLAuthJWTPlugin({
+            secret,
+            issuer: "https://testcompany.com",
+        });
+
+        const decoded = await plugin.decode(encoded);
+
+        expect(decoded).toMatchObject(payload);
+    });
+
+    test("decode function should return undefined if token contains a different issuer than specified in Neo4jGraphQLAuthJWTPlugin", async () => {
+        const payload = {
+            sub: "my-id",
+            iss: "https://testcompany.com",
+        };
+        const encoded = jsonwebtoken.sign(payload, secret);
+
+        const plugin = new Neo4jGraphQLAuthJWTPlugin({
+            secret,
+            issuer: "https://anothercomapny.com",
+        });
+
+        const decoded = await plugin.decode(encoded);
+
+        expect(decoded).toBeUndefined();
+    });
+
+    test("should decode token and verify audience", async () => {
+        const payload = {
+            sub: "my-id",
+            aud: "urn:user",
+        };
+        const encoded = jsonwebtoken.sign(payload, secret);
+
+        const plugin = new Neo4jGraphQLAuthJWTPlugin({
+            secret,
+            audience: "urn:user",
+        });
+
+        const decoded = await plugin.decode(encoded);
+
+        expect(decoded).toMatchObject(payload);
+    });
+
+    test("decode function should return undefined if token contains a different audience than specified in Neo4jGraphQLAuthJWTPlugin", async () => {
+        const payload = {
+            sub: "my-id",
+            aud: "urn:user",
+        };
+        const encoded = jsonwebtoken.sign(payload, secret);
+
+        const plugin = new Neo4jGraphQLAuthJWTPlugin({
+            secret,
+            audience: "urn:otheruser",
+        });
+
+        const decoded = await plugin.decode(encoded);
+
+        expect(decoded).toBeUndefined();
+    });
 });
