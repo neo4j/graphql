@@ -3299,21 +3299,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.1.0, @neo4j-ndl/base@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@neo4j-ndl/base@npm:1.1.0"
-  checksum: 4b3229be8de48fa0b98ca99f62275992035b6a32140dd0319f721e8ce1dd9183c35f1addeee9b2664427e44e06e61c93e21c20cf90f1321e953904ad4719c2de
+"@neo4j-ndl/base@npm:1.1.1, @neo4j-ndl/base@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@neo4j-ndl/base@npm:1.1.1"
+  checksum: 415f1b6195c371bc2f88e57057089b0135e15e9adc433a69ad1ca73df684a7ec3d4d1240f75907f4f3da1385576803f85785df530660f7f102edf825ac6489bc
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.1.1":
-  version: 1.1.1
-  resolution: "@neo4j-ndl/react@npm:1.1.1"
+"@neo4j-ndl/react@npm:1.1.2":
+  version: 1.1.2
+  resolution: "@neo4j-ndl/react@npm:1.1.2"
   dependencies:
     "@floating-ui/react-dom-interactions": ^0.12.0
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^1.1.0
+    "@neo4j-ndl/base": ^1.1.1
     "@react-aria/focus": ^3.10.1
     "@tanstack/react-table": ^8.5.22
     classnames: ^2.3.1
@@ -3327,7 +3327,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: 17.x
-  checksum: a0173f044751ce1cd7bf42a9c8a7e06f7a06d9cf42ab4c6728a67c1125d2e91979a04f09cac77dd679a702e43cf73b0a7bf24c6ecc311aa723f3ac2de2ddfa20
+  checksum: 3c68f695c8a0a7760a316efdc180b06997cc00ef72b3a8529695ff823cdf048dfc87b1bd1b1b61636a8e525d521d5c48904964ab48b4345bcb848cc9877640c6
   languageName: node
   linkType: hard
 
@@ -3425,8 +3425,8 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@graphiql/react": 0.17.1
-    "@neo4j-ndl/base": 1.1.0
-    "@neo4j-ndl/react": 1.1.1
+    "@neo4j-ndl/base": 1.1.1
+    "@neo4j-ndl/react": 1.1.2
     "@neo4j/graphql": 3.18.0
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.32.3
