@@ -5,6 +5,18 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@0no-co/graphql.web@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@0no-co/graphql.web@npm:1.0.0"
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+  peerDependenciesMeta:
+    graphql:
+      optional: true
+  checksum: 54e5651dd1c3806ced064b6e0bba5b6bc958b69898a1c3fbe0c96c5a0fb7189de9f479946159dd2e20d39a1b3b655de11da0b8b2dc92761132b61949872c7277
+  languageName: node
+  linkType: hard
+
 "@acuminous/bitsyntax@npm:^0.1.2":
   version: 0.1.2
   resolution: "@acuminous/bitsyntax@npm:0.1.2"
@@ -6028,14 +6040,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@urql/core@npm:^3.0.3":
-  version: 3.2.0
-  resolution: "@urql/core@npm:3.2.0"
+"@urql/core@npm:^4.0.0":
+  version: 4.0.4
+  resolution: "@urql/core@npm:4.0.4"
   dependencies:
-    wonka: ^6.1.2
-  peerDependencies:
-    graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: 525a66304dc2424d38cfaefc2952849805c567a9dc849de4decb34e949466d672ff26510d73ae8dbed575d69da9084e66901d950009441ba54562a0cfef7d947
+    "@0no-co/graphql.web": ^1.0.0
+    wonka: ^6.3.0
+  checksum: 35b2bfe9c8516a600028465f6a1cd40c3b2cba5b497a3550410ce563de2017d4e875d0627bb8ba284179f0c03eb4ed6d69313c66e5f482e14ee17d8e65a304a3
   languageName: node
   linkType: hard
 
@@ -17337,7 +17348,7 @@ __metadata:
     neo4j-driver: ^5.4.0
     parcel: 2.8.3
     rimraf: ^5.0.0
-    urql: ^3.0.3
+    urql: ^4.0.0
     wonka: ^6.1.1
     ws: ^8.11.0
   languageName: unknown
@@ -24119,16 +24130,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"urql@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "urql@npm:3.0.3"
+"urql@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "urql@npm:4.0.0"
   dependencies:
-    "@urql/core": ^3.0.3
-    wonka: ^6.0.0
+    "@urql/core": ^4.0.0
+    wonka: ^6.3.0
   peerDependencies:
-    graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
     react: ">= 16.8.0"
-  checksum: 0376873d95b28a7593c9c791da2df54fbbd079caa283ef0225b51bd169d87108744dc47d3d14417e51f7079439e4dd28427bc7f4d74b22b7c5de36a0dea06855
+  checksum: 81b3dbefb523c4ed4a9b8da74fea8bfa9e9f47e426eac045d9cbdd1c3465133913a228e81967723cb10aadea54c6c9fe6d32e076dacad2e837287d5e553debe4
   languageName: node
   linkType: hard
 
@@ -25037,10 +25047,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wonka@npm:^6.0.0, wonka@npm:^6.1.1, wonka@npm:^6.1.2":
+"wonka@npm:^6.1.1":
   version: 6.2.3
   resolution: "wonka@npm:6.2.3"
   checksum: 3cbe0048ba461068ec6e7ef875952d3ad148ae671c070f50f9fddafd01c6e23fa83fe638cbc22688db2bcff9c1c75e1f8c7cd178e00644f31dbd8acdc8d76ba1
+  languageName: node
+  linkType: hard
+
+"wonka@npm:^6.3.0":
+  version: 6.3.1
+  resolution: "wonka@npm:6.3.1"
+  checksum: 8748d5c8ce5ff4cdb69d61ce64ed19bd007a7c65d46dbb11ddd2271091c51c7241cb36642a2c32dd31bfcf5841f4c370a81b3be746b118c26bb30ba21b2b8c29
   languageName: node
   linkType: hard
 
