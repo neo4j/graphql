@@ -25,7 +25,6 @@ type AuthConfig = {
   verify: boolean;
   // https://github.com/panva/jose/blob/main/docs/interfaces/jwt_verify.JWTVerifyOptions.md
   verifyOptions: JWTVerifyOptions;
-  globalAuthentication: boolean;
 }
 ```
 
