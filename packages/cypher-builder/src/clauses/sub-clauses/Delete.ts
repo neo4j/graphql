@@ -19,9 +19,11 @@
 
 import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
+import type { NodeRef } from "../../references/NodeRef";
+import type { RelationshipRef } from "../../references/RelationshipRef";
 import type { Variable } from "../../references/Variable";
 
-export type DeleteInput = Array<Variable>;
+export type DeleteInput = Array<NodeRef | RelationshipRef | Variable>;
 
 export class DeleteClause extends CypherASTNode {
     private deleteInput: DeleteInput;
