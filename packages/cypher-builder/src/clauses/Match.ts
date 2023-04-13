@@ -26,23 +26,21 @@ import { WithWhere } from "./mixins/WithWhere";
 import { WithSet } from "./mixins/WithSet";
 import { WithWith } from "./mixins/WithWith";
 import { WithPathAssign } from "./mixins/WithPathAssign";
-import type { DeleteInput } from "./sub-clauses/Delete";
-import { DeleteClause } from "./sub-clauses/Delete";
 import type { PropertyRef } from "../references/PropertyRef";
 import { RemoveClause } from "./sub-clauses/Remove";
 import type { CypherEnvironment } from "../Environment";
 import type { NodeRef } from "../references/NodeRef";
+import { WithDelete } from "./mixins/WithDelete";
 
-export interface Match extends WithReturn, WithWhere, WithSet, WithWith, WithPathAssign {}
+export interface Match extends WithReturn, WithWhere, WithSet, WithWith, WithPathAssign, WithDelete {}
 
 /**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/match/)
  * @group Clauses
  */
-@mixin(WithReturn, WithWhere, WithSet, WithWith, WithPathAssign)
+@mixin(WithReturn, WithWhere, WithSet, WithWith, WithPathAssign, WithDelete)
 export class Match extends Clause {
     private pattern: Pattern;
-    private deleteClause: DeleteClause | undefined;
     private removeClause: RemoveClause | undefined;
     private _optional = false;
 
@@ -53,23 +51,6 @@ export class Match extends Clause {
         } else {
             this.pattern = new Pattern(pattern);
         }
-    }
-
-    /** Attach a DELETE subclause
-     * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/delete/)
-     */
-    public delete(...deleteInput: DeleteInput): this {
-        this.createDeleteClause(deleteInput);
-        return this;
-    }
-
-    /** Attach a DETACH DELETE subclause
-     * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/delete/)
-     */
-    public detachDelete(...deleteInput: DeleteInput): this {
-        const deleteClause = this.createDeleteClause(deleteInput);
-        deleteClause.detach();
-        return this;
     }
 
     public remove(...properties: PropertyRef[]): this {
@@ -108,11 +89,6 @@ export class Match extends Clause {
         const optionalMatch = this._optional ? "OPTIONAL " : "";
 
         return `${optionalMatch}MATCH ${pathAssignStr}${patternCypher}${whereCypher}${setCypher}${removeCypher}${deleteCypher}${withCypher}${returnCypher}`;
-    }
-
-    private createDeleteClause(deleteInput: DeleteInput): DeleteClause {
-        this.deleteClause = new DeleteClause(this, deleteInput);
-        return this.deleteClause;
     }
 }
 
