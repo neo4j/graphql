@@ -24,7 +24,7 @@ import { cleanNodes } from "../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../src";
 import { UniqueType } from "../utils/graphql-types";
 import Neo4j from "./neo4j";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 
 describe("Mass Delete", () => {
     let driver: Driver;
