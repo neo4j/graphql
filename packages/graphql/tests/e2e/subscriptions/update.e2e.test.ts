@@ -94,6 +94,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("movie1", "movie3");
         await updateMovie("movie2", "movie4");
 
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -131,6 +133,8 @@ describe("Update Subscriptions", () => {
         await updateMovie("movie5", "movie7");
         await updateMovie("movie6", "movie8");
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -157,6 +161,8 @@ describe("Update Subscriptions", () => {
 
         await updateMovie("movie10", "movie20");
         await updateMovie("movie20", "movie20");
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
