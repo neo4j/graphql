@@ -109,7 +109,7 @@ describe("Subscriptions to spatial types", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data[typeMovie.operations.create][typeMovie.plural]).toEqual([
+        expect(gqlResult.data[typeMovie.operations.create][typeMovie.plural]).toIncludeSameMembers([
             {
                 title: "As good as it gets",
                 filmedIn: {

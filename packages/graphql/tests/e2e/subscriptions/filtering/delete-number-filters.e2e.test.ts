@@ -95,6 +95,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("releasedIn", 2000);
         await deleteMovie("releasedIn", 1999);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -122,6 +124,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("releasedIn", 2000);
         await deleteMovie("releasedIn", 1999);
         await deleteMovie("releasedIn", 2999);
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -154,6 +158,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("releasedIn", 2020);
         await deleteMovie("releasedIn", 2000);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -181,6 +187,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("releasedIn", 1920);
         await deleteMovie("releasedIn", 2000);
         await deleteMovie("releasedIn", 2030);
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -214,6 +222,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("averageRating", 8);
         await deleteMovie("averageRating", 5);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -241,6 +251,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("averageRating", 6.7);
         await deleteMovie("averageRating", 7);
         await deleteMovie("averageRating", 7.1);
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -273,6 +285,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("averageRating", 8);
         await deleteMovie("averageRating", 2.9);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -300,6 +314,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("averageRating", 4.1);
         await deleteMovie("averageRating", 5.3);
         await deleteMovie("averageRating", 6.2);
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -333,6 +349,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("averageRating", 4.1);
         await deleteMovie("averageRating", 5);
         await deleteMovie("averageRating", 6.2);
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -371,6 +389,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("fileSize", bigInts.m);
         await deleteMovie("fileSize", bigInts.s);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -403,6 +423,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("fileSize", bigInts.s);
         await deleteMovie("fileSize", bigInts.m);
         await deleteMovie("fileSize", bigInts.l);
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -439,6 +461,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("fileSize", bigInts.l);
         await deleteMovie("fileSize", bigInts.m);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -471,6 +495,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("fileSize", bigInts.s);
         await deleteMovie("fileSize", bigInts.m);
         await deleteMovie("fileSize", bigInts.l);
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([

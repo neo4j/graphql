@@ -252,6 +252,7 @@ describe("Subscription global authentication", () => {
 
             const result = await createMovie("movie1", server, jwtToken);
 
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([
                 {
