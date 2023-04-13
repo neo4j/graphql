@@ -66,6 +66,8 @@ export const wrapResolver =
             );
         }
 
+        context.info = info;
+
         if (!context?.executionContext) {
             if (context?.driver) {
                 context.executionContext = context.driver;
