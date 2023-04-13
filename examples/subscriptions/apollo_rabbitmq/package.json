@@ -1,5 +1,5 @@
 {
-    "name": "apollo-suscriptions-server",
+    "name": "apollo-subscriptions-server",
     "version": "1.0.1",
     "description": "",
     "main": "server.js",

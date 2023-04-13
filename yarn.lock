@@ -6711,9 +6711,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"apollo-suscriptions-server@workspace:examples/subscriptions/apollo_rabbitmq":
+"apollo-subscriptions-server@workspace:examples/subscriptions/apollo_rabbitmq":
   version: 0.0.0-use.local
-  resolution: "apollo-suscriptions-server@workspace:examples/subscriptions/apollo_rabbitmq"
+  resolution: "apollo-subscriptions-server@workspace:examples/subscriptions/apollo_rabbitmq"
   dependencies:
     "@apollo/server": ^4.7.0
     "@neo4j/graphql": ^3.15.0
