@@ -21,6 +21,6 @@
         "ts-loader": "9.4.2",
         "tsconfig-paths-webpack-plugin": "4.0.1",
         "typescript": "5.0.4",
-        "webpack": "5.78.0"
+        "webpack": "5.79.0"
     }
 }
