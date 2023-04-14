@@ -66,8 +66,6 @@ export const wrapResolver =
             );
         }
 
-        context.info = info;
-
         if (!context?.executionContext) {
             if (context?.driver) {
                 context.executionContext = context.driver;
@@ -80,6 +78,8 @@ export const wrapResolver =
                 context.executionContext = driver;
             }
         }
+
+        context.info = info;
 
         if (!context?.driverConfig) {
             context.driverConfig = driverConfig;
