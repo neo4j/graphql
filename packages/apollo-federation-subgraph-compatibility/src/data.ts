@@ -28,7 +28,7 @@ export async function createData(driver: Driver): Promise<void> {
 
             CREATE (user:User { email: "support@apollographql.com", name: "Jane Smith", totalProductsCreated: 1337, yearsOfEmployment: 10 })
 
-            CREATE (:DeprecatedProduct { sku: "apollo-federation-v1", package: "@apollo/federation-v1", reason: "Migrate to Federation V2" })-[:CREATED_BY]->(user)
+            CREATE (deprecatedProduct:DeprecatedProduct { sku: "apollo-federation-v1", package: "@apollo/federation-v1", reason: "Migrate to Federation V2" })-[:CREATED_BY]->(user)
 
             CREATE (p1:Product { id: "apollo-federation", sku: "federation", package: "@apollo/federation" })
             CREATE (p1)-[:HAS_VARIATION]->(:ProductVariation { id: "OSS" })
@@ -41,6 +41,8 @@ export async function createData(driver: Driver): Promise<void> {
             CREATE (p2)-[:HAS_DIMENSIONS]->(dimension)
             CREATE (p2)-[:HAS_RESEARCH]->(:ProductResearch)-[:HAS_STUDY]->(:CaseStudy { caseNumber: "1235", description: "Studio Study" })
             CREATE (p2)-[:CREATED_BY]->(user)
+
+            CREATE (inventory:Inventory { id: "apollo-oss" })-[:HAS_DEPRECATED_PRODUCT]->(deprecatedProduct)
         `)
     );
 

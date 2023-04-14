@@ -92,6 +92,28 @@ interface Neo4jGraphQLAuthPlugin {
 
 It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This is covered in the section xref::auth/getting-started.adoc#auth-setup-passing-in[Passing in JWTs] below. Note that the plugin's base decode method only supports HS256 and RS256 algorithms.
 
+=== Optional Constructor Arguments
+
+Additionally, for both the `Neo4jGraphQLAuthJWTPlugin` and the `Neo4jGraphQLAuthJWKSPlugin` one may optionally specify an `issuer` and an `audience` constructor argument. These reference to the `iss` and the `aud` claim respectively in a JWT token, see https://www.rfc-editor.org/rfc/rfc7519#page-9[JWT RFC].
+If the `issuer` and/or the `audience` arguments are provided, they will be checked as part of the token verification.
+
+An example on how to provide an `issuer` for the `Neo4jGraphQLAuthJWKSPlugin` is shown below. In this case, any JWT token must contain the `iss` claim `"https://YOUR_DOMAIN"` for the token validation to be successful.
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
+            jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
+            issuer: "https://YOUR_DOMAIN"
+        }),
+    },
+});
+----
+
 === Auth Roles Object Paths
 
 If you are using a 3rd party auth provider such as Auth0 you may find your roles property being nested inside an object:
