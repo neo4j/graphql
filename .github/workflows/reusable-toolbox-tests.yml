@@ -38,3 +38,10 @@ jobs:
           NEO_USER: neo4j
           NEO_PASSWORD: password
           NEO_URL: bolt://localhost:7687
+      - name: Upload playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 3
