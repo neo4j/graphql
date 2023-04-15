@@ -3489,7 +3489,7 @@ __metadata:
     graphql-query-complexity: 0.12.0
     html-inline-script-webpack-plugin: 3.1.0
     html-webpack-inline-source-plugin: 0.0.10
-    html-webpack-plugin: 5.5.0
+    html-webpack-plugin: 5.5.1
     jest: 29.5.0
     jest-environment-jsdom: 29.5.0
     lodash.debounce: 4.0.8
@@ -13077,9 +13077,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-webpack-plugin@npm:5.5.0":
-  version: 5.5.0
-  resolution: "html-webpack-plugin@npm:5.5.0"
+"html-webpack-plugin@npm:5.5.1":
+  version: 5.5.1
+  resolution: "html-webpack-plugin@npm:5.5.1"
   dependencies:
     "@types/html-minifier-terser": ^6.0.0
     html-minifier-terser: ^6.0.2
@@ -13088,7 +13088,7 @@ __metadata:
     tapable: ^2.0.0
   peerDependencies:
     webpack: ^5.20.0
-  checksum: f3d84d0df71fe2f5bac533cc74dce41ab058558cdcc6ff767d166a2abf1cf6fb8491d54d60ddbb34e95c00394e379ba52e0468e0284d1d0cc6a42987056e8219
+  checksum: f4b43271171e6374b10a49b5231bbab94610a344d58f4f7d95cd130520feb474f98006e1ab71ea102c57fe5a107b273ff7c19e7e1bc2314d611dbb791fcc0a98
   languageName: node
   linkType: hard
 
@@ -17403,7 +17403,7 @@ __metadata:
     css-loader: 6.7.3
     dotenv-webpack: 8.0.1
     graphql: 16.6.0
-    html-webpack-plugin: 5.5.0
+    html-webpack-plugin: 5.5.1
     react: 18.2.0
     react-bootstrap: 2.7.4
     react-dom: 18.2.0
