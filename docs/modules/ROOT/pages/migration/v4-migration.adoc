@@ -1,0 +1,664 @@
+[[v4-migration]]
+
+= 4.0.0 Migration
+
+NOTE: Version 4.0.0 of the library has not yet been released. However, we recommend making these changes early in order to avoid issues in the future.
+
+This document lists all breaking changes from version 3.x.y to 4.0.0 and how to update.
+
+== How to upgrade
+Simply update `@neo4j/graphql` using npm or your package manager of choice:
+
+[source, bash, indent=0]
+----
+npm update @neo4j/graphql
+----
+
+== Constructor arguments
+
+If you were passing any arguments from https://the-guild.dev/graphql/tools/docs/api/interfaces/schema_src.iexecutableschemadefinition[`IExecutableSchemaDefinition`] into the library
+other than `typeDefs` and `resolvers`, these are no longer supported.
+
+=== config.enableRegex replaced by `MATCHES` in features.filters
+
+`config.enableRegex` has been replaced by `MATCHES` in features.filters. With this change comes more granularity in the feature configuration. You can now enable the `MATCHES` filter on `String` and `ID` fields separately.
+
+A direct replacement of the `enableRegex: true` configuration would be as follows:
+
+[source, javascript, indent=0]
+----
+neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    features: {
+        filters: {
+            String: {
+                MATCHES: true,
+            },
+            ID: {
+                MATCHES: true,
+            },
+        },
+    },
+});
+----
+
+== Updated Directives
+
+We have renamed a number of directives and their arguments, in order to make using `@neo4j/graphql` more intuitive.
+
+[populatedBy-migration]
+=== `@callback` renamed to `@populatedBy`
+
+Previously, there was ambiguity over the behaviour of `@callback`. As the directive is used to populate a value on input, it has been renamed `@populatedBy` to reflect this.
+Additionally, the `name` argument was previously used to specify the callback used to populate the field's value.
+This has been renamed to `callback` to make it clear that it refers to a callback.
+
+Therefore, the following usage of the directive would be invalid:
+
+[source, graphql, indent=0]
+----
+type User {
+  id: ID! @callback(name: "nanoid", operations: [CREATE])
+  firstName: String!
+  surname: String!
+}
+----
+
+It would instead need to be updated to use the new directive and argument as below:
+
+[source, graphql, indent=0]
+----
+type User {
+  id: ID! @populatedBy(callback: "nanoid", operations: [CREATE])
+  firstName: String!
+  surname: String!
+}
+----
+
+Configuration for callbacks has also been moved as part of this change. Before these changes, a callback named `nanoid` would need to be defined as below:
+
+[source, javascript, indent=0]
+----
+new Neo4jGraphQL({
+  typeDefs,
+  config: {
+    callbacks: {
+      nanoid: () => { return nanoid(); }
+    }
+  }
+});
+----
+
+This has been changed to use the `features` constructor object:
+
+[source, javascript, indent=0]
+----
+new Neo4jGraphQL({
+  typeDefs,
+  features: {
+    populatedBy: {
+      callbacks: {
+        nanoid: () => { return nanoid(); }
+      }
+    }
+  }
+});
+----
+
+[customResolver-migration]
+=== `@computed` renamed to `@customResolver`
+
+Previously, there was ambiguity over the behaviour of `@computed` and it wasn't clear that it was intended to be used with a custom resolver. In order to make this clear, `@computed` has been renamed to `@customResolver`.
+Furthermore, the behaviour of the `from` argument was not clear. The argument is used to specify which fields other fields are required by the custom resolver. As a result, `from` has been renamed to `requires`.
+
+These changes mean that the following type definition is invalid in version 4.0.0:
+
+[source, graphql, indent=0]
+----
+type User {
+  firstName: String!
+  lastName: String!
+  fullName: String! @computed(from: ["firstName", "lastName"])
+}
+----
+
+Instead, it would need to be updated to use the new directive and argument as below:
+
+[source, graphql, indent=0]
+----
+type User {
+  firstName: String!
+  lastName: String!
+  fullName: String! @customResolver(requires: ["firstName", "lastName"])
+}
+----
+
+Note that before and after these changes, a custom resolver would need to be defined as below:
+
+[source, javascript, indent=0]
+----
+new Neo4jGraphQL({
+  typeDefs,
+  resolvers: {
+    User: {
+      fullName: ({ firstName, lastName }, args, context, info) => (`${firstName} ${lastName}`),
+    }
+  }
+});
+----
+
+[[customResolver-checks]]
+==== Checks for custom resolvers
+
+Previously, if no custom resolver was specified for a `@computed` field when creating an instance of Neo4jGraphQL, no errors would be thrown when generating the schema.
+However, it is likely that the lack of a custom resolver would lead to errors at runtime. It is preferable to fail fast in this case as it is easier to debug and makes it less likely that bugs will make it into production.
+
+As a result, checks are now performed to ensure that every `@customResolver` field has a custom resolver provided. If not the library will throw an error during schema generation.
+
+These checks may not always be required or desirable. If this is the case, they can be disabled using the new xref::migration/v4-migration.adoc#startup-validation[`startupValidation`] config option:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+          resolvers: false
+        },
+    },
+})
+----
+
+==== `requires` changes
+
+In version 4.0.0, it is now possible to require non-scalar fields. This means it is also possible to require fields on related type.
+To make this possible, the `requires` argument now accept a graphql selection set instead of a list of strings.
+
+Therefore, the following type definitions:
+
+[source, graphql, indent=0]
+----
+type User {
+    firstName: String!
+    lastName: String!
+    fullName: String! @customResolver(requires: ["firstName", "lastName"])
+}
+----
+
+Would need to be modified to use a selection set as below:
+
+[source, graphql, indent=0]
+----
+type User {
+    firstName: String!
+    lastName: String!
+    fullName: String! @customResolver(requires: "firstName lastName")
+}
+----
+
+Below is a more advanced example showing what the selection set is capable of:
+
+[source, graphql, indent=0]
+----
+interface Publication {
+    publicationYear: Int!
+}
+
+type Author {
+    name: String!
+    publications: [Publication!]! @relationship(type: "WROTE", direction: OUT)
+    publicationsWithAuthor: [String!]!
+        @customResolver(
+            requires: "name publications { publicationYear ...on Book { title } ... on Journal { subject } }"
+        )
+}
+
+type Book implements Publication {
+    title: String!
+    publicationYear: Int!
+    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+}
+
+type Journal implements Publication {
+    subject: String!
+    publicationYear: Int!
+    author: [Author!]! @relationship(type: "WROTE", direction: IN)
+}
+----
+
+Additionally, the requires argument also validates the required selection set against your type definitions.
+Therefore, as there is no field called `someFieldThatDoesNotExist`, an error would be thrown on startup if you tried to use the following type definitions:
+
+[source, graphql, indent=0]
+----
+type User {
+    firstName: String!
+    lastName: String!
+    fullName: String! @customResolver(requires: "firstName someFieldThatDoesNotExist")
+}
+----
+
+[plural-migration]
+=== `plural` argument removed from `@node` and replaced with `@plural`
+
+How a type name is pluralised has nothing to do with nodes in the database. As a result, having a `plural` argument on the `@node` directive did not make sense.
+As a result, the `plural` argument of `@node` has been removed and replaced with a new `@plural` directive. The `@plural` directive takes the pluralised type name using the `value` argument.
+
+This means that the following type definition is invalid:
+
+[source, graphql, indent=0]
+----
+type Tech @node(label: "TechDB", plural: "Techs") {
+  name: String
+}
+----
+
+It would need to be updated to use the new directive as below:
+
+[source, graphql, indent=0]
+----
+type Tech @node(label: "TechDB") @plural(value: "Techs") {
+  name: String
+}
+----
+
+[label-migration]
+=== `label` and `additionalLabels` arguments removed from `@node` and replaced with new argument `labels`
+
+There is no concept of a "main label" in the Neo4j database. As such, keeping these two separate arguments causes a disconnect between the database and the GraphQL library.
+As a result, the `label` and `additionalLabels` arguments have been condensed into a single argument `labels` which will accept a list of string labels that used when a node of the given GraphQL type is created.
+Please note that defining `labels` means you take control of the database labels of the node. Indexes and constraints in Neo4j only support a single label, for which the first element of the `labels` argument will be used.
+
+The equivalent of using just the `label` argument is now a list with a single value:
+
+[source, graphql, indent=0]
+----
+type Tech @node(label: "TechDB") {
+  name: String
+}
+# becomes
+type Tech @node(labels: ["TechDB"]) {
+  name: String
+}
+----
+
+When creating the equivalent of using just the `additionalLabels` argument now requires the first value in the list to be the GraphQL type name:
+
+[source, graphql, indent=0]
+----
+type Tech @node(additionalLabels: ["TechDB"]) {
+  name: String
+}
+# becomes
+type Tech @node(labels: ["Tech", "TechDB"]) {
+  name: String
+}
+----
+
+The equivalent of using both deprecated arguments is a list with all the values concatenated:
+
+[source, graphql, indent=0]
+----
+type Tech @node(label: "TechDB", additionalLabels: ["AwesomeTech"]) {
+  name: String
+}
+# becomes
+type Tech @node(labels: ["TechDB", "AwesomeTech"]) {
+  name: String
+}
+----
+
+As before, providing none of these arguments results in the node label being the same as the GraphQL type name. 
+
+Please note the implications on constraints.
+In the following example, a unique constraint will be asserted for the label `Tech` and the property `name`:
+
+[source, graphql, indent=0]
+----
+type Tech @node(labels: ["Tech", "TechDB"]) {
+  name: String @unique
+}
+----
+
+[full-text-migration]
+=== `@fulltext` changes
+
+In version 4.0.0, a number of improvements have been made to full-text queries. These include the ability to return the full-text score, filter by the score and sorting by the score.
+
+However, these improvements required a number of breaking changes.
+
+==== Query changes
+
+Full-text queries now need to be performed using a top-level query, instead of being performed using an argument on a node query.
+
+As a result, the following query is now invalid:
+
+[source, graphql, indent=0]
+----
+query {
+  movies(fulltext: { movieTitleIndex: { phrase: "Some Title" } }) {
+    title
+  }
+}
+----
+
+The new top-level queries can be used to return the full-text score, which indicates the confidence of a match, as well as the nodes that have been matched.
+
+.The new top-level queries accept the following arguments:
+* `phrase` which specifies the string to search for in the full-text index.
+* `where` which accepts a min/max score as well as the normal filters available on a node.
+* `sort` which can be used to sort using the score and node attributes.
+* `limit` which is used to limit the number of results to the given integer.
+* `offset` which is used to offset by the given number of results.
+
+The new top-level queries means that for the following type definition:
+
+[source, graphql, indent=0]
+----
+type Movie @fulltext(indexes: [{ indexName: "MovieTitle", fields: ["title"] }]) { # Note that indexName is the new name for the name argument. More about this below.
+  title: String!
+}
+----
+
+The following top-level query and type definitions would be generated by the library:
+
+[source, graphql, indent=0]
+----
+type Query {
+  movieFulltextMovieTitle(phrase: String!, where: MovieFulltextWhere, sort: [MovieFulltextSort!], limit: Int, offset: Int): [MovieFulltextResult!]!
+}
+
+"""The result of a fulltext search on an index of Movie"""
+type MovieFulltextResult {
+  score: Float
+  movies: Movie
+}
+
+"""The input for filtering a fulltext query on an index of Movie"""
+input MovieFulltextWhere {
+  score: FloatWhere
+  movie: MovieWhere
+}
+
+"""The input for sorting a fulltext query on an index of Movie"""
+input MovieFulltextSort {
+  score: SortDirection
+  movie: MovieSort
+}
+
+"""The input for filtering the score of a fulltext search"""
+input FloatWhere {
+  min: Float
+  max: Float
+}
+----
+
+This query can be used to perform a full-text query as below:
+
+[source, graphql, indent=0]
+----
+query {
+  movieFulltextMovieTitle(
+    phrase: "Full Metal Jacket",
+    where: { score: min: 0.4 },
+    sort: [{ movie: { title: ASC } }],
+    limit: 5,
+    offset: 10
+  ) {
+    score
+    movies {
+      title
+    }
+  }
+}
+----
+
+The above query would be expected to return results in the following format:
+
+[source, json, indent=0]
+----
+{
+  "data": {
+    "movieFulltextMovieTitle": [
+      {
+        "score": 0.44524085521698,
+        "movie": {
+          "title": "Full Moon High"
+        }
+      },
+      {
+        "score": 1.411118507385254,
+        "movie": {
+          "title": "Full Metal Jacket"
+        }
+      }
+    ]
+  }
+}
+----
+
+==== Argument changes
+
+.The following changes have been made to `@fulltext` arguments:
+* `queryName` has been added to specify a custom name for the top-level query that is generated.
+* `name` has been renamed to `indexName` to avoid ambiguity with the new `queryName` argument.
+
+These changes means that the following type definition is now invalid:
+
+[source, graphql, indent=0]
+----
+type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) {
+  title: String!
+}
+----
+
+The `name` argument would need to be replaced with `indexName` as below:
+
+[source, graphql, indent=0]
+----
+type Movie @fulltext(indexes: [{ indexName: "MovieTitle", fields: ["title"] }]) {
+  title: String!
+}
+----
+
+The `queryName` argument can be used as below:
+
+[source, graphql, indent=0]
+----
+type Movie @fulltext(indexes: [{ queryName: "moviesByTitle", indexName: "MovieTitle", fields: ["title"] }]) {
+  title: String!
+}
+----
+
+This means the top-level query would now be `moviesByTitle` instead of `movieFulltextMovieTitle`:
+
+[source, graphql, indent=0]
+----
+type Query {
+  moviesByTitle(phrase: String!, where: MovieFulltextWhere, sort: [MovieFulltextSort!], limit: Int, offset: Int): [MovieFulltextResult!]!
+}
+----
+
+=== `@cypher` changes
+The default behaviour of the `@cypher` directive regarding the translation will change: Instead of using https://neo4j.com/labs/apoc/4.0/overview/apoc.cypher/apoc.cypher.runFirstColumnMany/[apoc.cypher.runFirstColumnMany] it will directly wrap the query within a `CALL { }` subquery. This behvaiour has proven to be much more performant for the same queries, however, it may lead to unexpected changes, mainly when using Neo4j 5.x, where the subqueries need to be _aliased_.
+
+On top of that, to improve performance, it is recommended to pass the returned alias in the property `columnName`, to ensure the subquery is properly integrated into the larger query.
+
+For example:
+
+The graphql query:
+[source, graphql, indent=0]
+----
+type query {
+    test: String! @cypher(statement: "RETURN 'hello'")
+}
+----
+
+Would get translated to:
+[source,cypher, indent=0]
+----
+CALL {
+    RETURN 'hello'
+}
+WITH 'hello' AS this
+RETURN this
+----
+
+Which is invalid in Neo4j 5.x.
+
+To fix it we just need to ensure the `RETURN` elements are aliased:
+[source, graphql, indent=0]
+----
+type query {
+    test: String! @cypher(statement: "RETURN 'hello' as result")
+}
+----
+
+This will be a breaking change, but this new behaviour can be used, as an experimental option with the `columnName` flag in the `@cypher` directive:
+
+[source, graphql, indent=0]
+----
+type query {
+    test: String! @cypher(statement: "RETURN 'hello' as result", columnName: "result")
+}
+----
+
+Additionally, escaping strings is no longer needed.
+
+=== Mandatory `@relationshipProperties`
+
+Upcoming changes to interfaces require us to distinguish between interfaces that are used to specify relationship properties, and others. Therefore, the `@relationshipProperties` directive is now required on all relationship property interfaces.
+If it is not included, an error will be thrown.
+
+As a result, in version 4.0.0, the following type definitions are invalid:
+
+=== Relationship types are now automatically escaped
+
+Relationship types are now automatically escaped. If you have previously escaped your relationship types, you should now remove the escape strings as this is covered by the library.
+
+[source, graphql, indent=0]
+----
+type Person {
+  name: String!
+  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+}
+
+type Movie {
+  title: String!
+  actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+}
+
+interface ActedIn {
+  screenTime: Int!
+}
+----
+
+=== Properties in the alias directive are now automatically escaped
+
+Properties in the alias directive automatically escaped using backticks. If you were using backticks in the `property` argument of your `@alias` directives, you should now remove the escape strings as this is covered by the library.
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID! @id
+    username: String! @alias(property: "dbUserName")
+}
+----
+
+=== Duplicate relationship fields are now checked for
+
+It was possible to define schemas with types that have multiple relationship fields connected by the same type of relationships. Instances of this scenario are now detected during schema generation and an error is thrown so developers are informed to remedy the type definitions.
+
+An example of what is now considered invalid with these checks:
+
+[source, graphql, indent=0]
+----
+type Team {
+    player1: Person! @relationship(type: "PLAYS_IN", direction: IN)
+    player2: Person! @relationship(type: "PLAYS_IN", direction: IN)
+    backupPlayers: [Person!]! @relationship(type: "PLAYS_IN", direction: IN)
+}
+
+type Person {
+    teams: [Team!]! @relationship(type: "PLAYS_IN", direction: OUT)
+}
+----
+
+In this example, there are multiple fields in the `Team` type which have the same `Person` type, the same `@relationship` type and ("PLAYS_IN") direction (IN). This is an issue when returning data from the database, as there would be no difference between `player1`, `player2` and `backupPlayers`. Selecting these fields would then return the same data.
+
+To disable checks for duplicate relationship fields, the `noDuplicateRelationshipFields` config option should be used:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+            noDuplicateRelationshipFields: false,
+        },
+    },
+});
+----
+
+== Miscellaneous changes
+
+[[startup-validation]]
+=== Startup validation
+
+In version 4.0.0, startup xref::migration/v4-migration.adoc#customResolver-checks[checks for custom resolvers], and checks for duplicate relationship fields have been added. As a result, a new configuration option has been added that can disable these checks.
+This new option has been combined with the option to `skipValidateTypeDefs`. As a result, `skipValidateTypeDefs` will be removed and replaced by `startupValidation`.
+
+To only disable strict type definition validation, the following config option should be used:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+          typeDefs: false
+        },
+    },
+})
+----
+
+To only disable checks for custom resolvers, the following config option should be used:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+          resolvers: false
+        },
+    },
+})
+----
+
+To only disable checks for duplicate relationship fields, the following config option should be used:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+            noDuplicateRelationshipFields: false
+        },
+    },
+})
+----
+
+
+To disable all startup checks, the following config option should be used:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: false,
+    },
+})
+----

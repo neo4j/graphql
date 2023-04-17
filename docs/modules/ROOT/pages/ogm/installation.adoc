@@ -19,4 +19,4 @@ To use the OGM, it will need to be imported wherever you want to use it:
 const { OGM } = require("@neo4j/graphql-ogm");
 ----
 
-It's recommended to check out the xref::ogm/examples/index.adoc[Examples] to see where you might go from here.
+It's recommended to check out the xref::ogm/examples.adoc[Examples] to see where you might go from here.

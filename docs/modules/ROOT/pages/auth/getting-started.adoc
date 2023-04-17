@@ -1,0 +1,290 @@
+[[auth-getting-started]]
+= Getting Started
+
+== Configuration
+
+To get started with auth you need an instance of an auth plugin for the Neo4j GraphQL Library. For most use cases you will only need to use our provided plugins at `@neo4j/graphql-plugin-auth`. Below is a basic example using the `Neo4jGraphQLAuthJWTPlugin` class:
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: "super-secret"
+        })
+    }
+});
+----
+
+Or you can initiate the secret with a function which will run to retrieve the secret when the request comes in.
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: (req) => {
+                return "super-secret";
+            },
+        })
+    }
+});
+----
+
+If you would like to use JWKS decoding then use the `Neo4jGraphQLAuthJWKSPlugin` class:
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
+            jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
+        })
+    }
+});
+----
+
+Or you can pass a function as `jskwsEndpoint` to compute the endpoint when the request comes in.
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
+            jwksEndpoint: (req) => {
+                let url = "https://YOUR_DOMAIN/well-known/{file}.json";
+                const fileHeader = req.headers["file"];
+                url = url.replace("{file}", fileHeader);
+                return url;
+            },
+        }),
+    }
+});
+----
+
+If you need to create your own auth plugin then ensure it adheres to the following interface:
+
+[source, javascript, indent=0]
+----
+interface Neo4jGraphQLAuthPlugin {
+    rolesPath?: string;
+    isGlobalAuthenticationEnabled?: boolean;
+
+    decode<T>(token: string | any): Promise<T | undefined>;
+}
+----
+
+It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This is covered in the section xref::auth/getting-started.adoc#auth-setup-passing-in[Passing in JWTs] below. Note that the plugin's base decode method only supports HS256 and RS256 algorithms.
+
+=== Optional Constructor Arguments
+
+Additionally, for both the `Neo4jGraphQLAuthJWTPlugin` and the `Neo4jGraphQLAuthJWKSPlugin` one may optionally specify an `issuer` and an `audience` constructor argument. These reference to the `iss` and the `aud` claim respectively in a JWT token, see https://www.rfc-editor.org/rfc/rfc7519#page-9[JWT RFC].
+If the `issuer` and/or the `audience` arguments are provided, they will be checked as part of the token verification.
+
+An example on how to provide an `issuer` for the `Neo4jGraphQLAuthJWKSPlugin` is shown below. In this case, any JWT token must contain the `iss` claim `"https://YOUR_DOMAIN"` for the token validation to be successful.
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
+            jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
+            issuer: "https://YOUR_DOMAIN"
+        }),
+    },
+});
+----
+
+=== Auth Roles Object Paths
+
+If you are using a 3rd party auth provider such as Auth0 you may find your roles property being nested inside an object:
+
+[source, json, indent=0]
+----
+{
+    "https://auth0.mysite.com/claims": {
+        "https://auth0.mysite.com/claims/roles": ["admin"]
+    }
+}
+----
+
+In order to make use of this, you must pass it in as a "dot path" into the `rolesPath` option:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
+            jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
+            rolesPath: "https://auth0\\.mysite\\.com/claims.https://auth0\\.mysite\\.com/claims/roles"
+        })
+    }
+});
+----
+
+Note that `.` characters within a key of the JWT must be escaped with `\\`, whilst a `.` character indicating traversal into a value must not be escaped.
+
+=== Cypher predicate used to evaluate `bind` rules
+
+By default, `bind` rules are evaluated using an `all` predicate in Cypher, which can lead to rules not being satisfied when they perhaps should, for instance only one related user matching the current JWT, rather than all of them.
+
+To avoid a breaking change to a security-critical feature like authorization, a flag, `bindPredicate`, has been exposed to switch this predicate to `any`, which can be used as follows:
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: "super-secret",
+            bindPredicate: "any"
+        })
+    }
+});
+----
+
+In the next major release, this will become the default behaviour when evaluating `bind` rules.
+
+[[auth-setup-passing-in]]
+== Passing in JWTs
+
+If you wish to pass in an encoded JWT, this must be included in the `authorization` header of your requests, in the format:
+
+[source]
+----
+POST / HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlcyI6WyJ1c2VyX2FkbWluIiwicG9zdF9hZG1pbiIsImdyb3VwX2FkbWluIl19.IY0LWqgHcjEtOsOw60mqKazhuRFKroSXFQkpCtWpgQI
+content-type: application/json
+----
+
+Note the string "Bearer" before the inclusion of the JWT.
+
+Then, using Apollo Server as an example, you must include the request in the GraphQL context, as follows (using the `neoSchema` instance from the example above):
+
+[source, javascript, indent=0]
+----
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req }),
+    });
+});
+----
+
+Note that the request key `req` is appropriate for Express servers, but different middlewares use different keys for request objects. You can more details at https://www.apollographql.com/docs/apollo-server/api/apollo-server/#middleware-specific-context-fields.
+
+=== Decoded JWTs
+
+Alternatively, you can pass a key `jwt` of type `JwtPayload` into the context, which has the following definition:
+
+[source, typescript, indent=0]
+----
+// standard claims https://datatracker.ietf.org/doc/html/rfc7519#section-4.1
+interface JwtPayload {
+    [key: string]: any;
+    iss?: string | undefined;
+    sub?: string | undefined;
+    aud?: string | string[] | undefined;
+    exp?: number | undefined;
+    nbf?: number | undefined;
+    iat?: number | undefined;
+    jti?: string | undefined;
+}
+----
+
+_Do not_ pass in the header or the signature.
+
+For example, you might have a function `decodeJWT` which returns a decoded JWT:
+
+[source, javascript, indent=0]
+----
+const decodedJWT = decodeJWT(encodedJWT)
+
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema,
+        context: { jwt: decodedJWT.payload },
+    });
+});
+----
+
+== Auth and Custom Resolvers
+
+You can't use the `@auth` directive on custom resolvers, however, an auth parameter is injected into the context for use in them. It will be available under the `auth` property. For example, the following custom resolver returns the `sub` field from the JWT:
+
+[source, javascript, indent=0]
+----
+const typeDefs = `
+    type Query {
+        myId: ID!
+    }
+`;
+
+const resolvers = {
+    Query: {
+        myId(_source, _args, context) {
+            return context.auth.jwt.sub
+        }
+    }
+};
+----
+
+== Auth and `@cypher` fields
+
+You can put the `@auth` directive on a field alongside the `@cypher` directive. Functionality like `allow` and `bind` will not work but you can still utilize `isAuthenticated` and `roles`. Additionally, you don't need to specify `operations` for `@auth` directives on `@cypher` fields.
+
+The following example uses the `isAuthenticated` rule to ensure a user is authenticated, before returning the `User` associated with the JWT:
+
+[source, graphql, indent=0]
+----
+type User @exclude {
+    id: ID
+    name: String
+}
+
+type Query {
+    me: User
+        @cypher(statement: "MATCH (u:User { id: $auth.jwt.sub }) RETURN u")
+        @auth(rules: [{ isAuthenticated: true }])
+}
+----
+
+In the following example, the current user must have role "admin" in order to query the `history` field on the type `User`:
+
+[source, graphql, indent=0]
+----
+type History @exclude {
+    website: String!
+}
+
+type User {
+    id: ID
+    name: String
+    history: [History]
+        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
+        @auth(rules: [{ roles: ["admin"] }])
+}
+----

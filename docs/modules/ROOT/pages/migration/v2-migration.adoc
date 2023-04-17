@@ -1,0 +1,604 @@
+[[v2-migration]]
+= 2.0.0 Migration
+
+Version 2.0.0 of `@neo4j/graphql` adds support for relationship properties, with some breaking changes to facilitate these new features. All of the required changes will be on the client side, and this guide will walk through what has changed.
+
+== How to Upgrade
+
+Simply update `@neo4j/graphql` using npm or your package manager of choice:
+
+[source, bash, indent=0]
+----
+npm update @neo4j/graphql
+----
+
+From this point on, it is primarily Mutations which will form the bulk of the migration.
+
+[[v2-migration-mutations]]
+== Mutations
+
+The most broadly affected area of functionality by the 2.0.0 upgrade are the nested operations of Mutations, to facilitate the mutation of and filtering on relationship properties.
+
+The examples in this section will be based off the following type definitions:
+
+[source, graphql, indent=0]
+----
+type Actor {
+    name: String!
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+}
+
+type Movie {
+    title: String!
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+}
+----
+
+The theme that you will notice during this section is that as a general rule of thumb, a `node` field will need adding to your inputs where it will also be possible to filter on relationship properties.
+
+[[v2-migration-mutations-create]]
+=== Create
+
+Focussing on the `createMovies` Mutation, notice that the definition of the `createMovies` Mutation is unchanged:
+
+[source, graphql, indent=0]
+----
+input MovieCreateInput {
+    title: String!
+    actors: MovieActorsFieldInput
+}
+
+type Mutation {
+    createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+}
+----
+
+There are no changes to any of the arguments or types at this level. However, within its nested operations, type modifications have taken place to allow for relationship properties.
+
+In practice, take a Mutation that creates the film "The Dark Knight" and then:
+
+* Creates a new actor "Heath Ledger"
+* Connects to the existing actor "Christian Bale"
+
+In the previous version of the library, this would have looked like this:
+
+[source, graphql, indent=0]
+----
+mutation {
+    createMovies(
+        input: [
+            {
+                title: "The Dark Knight"
+                actors: {
+                    create: [
+                        {
+                            name: "Heath Ledger"
+                        }
+                    ]
+                    connect: [
+                        {
+                            where: {
+                                name: "Christian Bale"
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    ) {
+        movies {
+            title
+        }
+    }
+}
+----
+
+This will now have to look like this in order to function in the same way:
+
+[source, graphql, indent=0]
+----
+mutation {
+    createMovies(
+        input: [
+            {
+                title: "The Dark Knight"
+                actors: {
+                    create: [
+                        {
+                            node: {
+                                name: "Heath Ledger"
+                            }
+                        }
+                    ]
+                    connect: [
+                        {
+                            where: {
+                                node: {
+                                    name: "Christian Bale"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    ) {
+        movies {
+            title
+        }
+    }
+}
+----
+
+Note the additional level "node" before specifying the actor name for the create operation and in the connect where. This additional level allows for the setting of relationship properties for the new relationship, and filtering on existing relationship properties when looking for the node to connect to. See the page xref::mutations/index.adoc[Mutations] for details on this.
+
+=== Update
+
+Focussing on the `updateMovies` Mutation, notice that the definition of the `updateMovies` Mutation is unchanged:
+
+[source, graphql, indent=0]
+----
+type Mutation {
+    updateMovies(
+        where: MovieWhere
+        update: MovieUpdateInput
+        connect: MovieConnectInput
+        disconnect: MovieDisconnectInput
+        create: MovieRelationInput
+        delete: MovieDeleteInput
+    ): UpdateMoviesMutationResponse!
+}
+----
+
+The `create` and `connect` nested operations are primarily the same as in the `createMovies` Mutation, so please see the <<v2-migration-mutations-create>> section for the difference for these operations.
+
+The `delete` nested operation is primarily the same as in the `deleteMovies` Mutation, so please see the <<v2-migration-mutations-delete>> section for that.
+
+==== Update
+
+For example, say that you accidentally misspelt Christian Bale's surname and wanted to fix that. In the previous version, you might have achieved that by:
+
+[source, graphql, indent=0]
+----
+mutation {
+    updateMovies(
+        where: {
+            title: "The Dark Knight"
+        }
+        update: {
+            actors: [
+                {
+                    where: {
+                        name_ENDS_WITH: "Bail"
+                    }
+                    update: {
+                        name: "Christian Bale"
+                    }
+                }
+            ]
+        }
+    ) {
+        movies {
+            title
+            actors {
+                name
+            }
+        }
+    }
+}
+----
+
+This will now have to look like this in order to function in the same way:
+
+[source, graphql, indent=0]
+----
+mutation {
+    updateMovies(
+        where: {
+            title: "The Dark Knight"
+        }
+        update: {
+            actors: [
+                {
+                    where: {
+                        node: {
+                            name_ENDS_WITH: "Bail"
+                        }
+                    }
+                    update: {
+                        node: {
+                            name: "Christian Bale"
+                        }
+                    }
+                }
+            ]
+        }
+    ) {
+        movies {
+            title
+            actors {
+                name
+            }
+        }
+    }
+}
+----
+
+Note the added layer of abstraction of `node` in both the `where` and `update` clauses.
+
+==== Disconnect
+
+For example, say you mistakenly put Ben Affleck as playing the role of Batman in "The Dark Knight", and you wanted to disconnect those nodes. In the previous version, this would have looked like:
+
+[source, graphql, indent=0]
+----
+mutation {
+    updateMovies(
+        where: {
+            title: "The Dark Knight"
+        }
+        disconnect: {
+            actors: [
+                {
+                    where: {
+                        name: "Ben Affleck"
+                    }
+                }
+            ]
+        }
+    ) {
+        movies {
+            title
+            actors {
+                name
+            }
+        }
+    }
+}
+----
+
+This will now have to look like this in order to function in the same way:
+
+[source, graphql, indent=0]
+----
+mutation {
+    updateMovies(
+        where: {
+            title: "The Dark Knight"
+        }
+        disconnect: {
+            actors: [
+                {
+                    where: {
+                        node: {
+                            name: "Ben Affleck"
+                        }
+                    }
+                }
+            ]
+        }
+    ) {
+        movies {
+            title
+            actors {
+                name
+            }
+        }
+    }
+}
+----
+
+[[v2-migration-mutations-delete]]
+=== Delete
+
+Focussing on the `deleteMovies` Mutation, notice that the definition of the `deleteMovies` Mutation is unchanged:
+
+[source, graphql, indent=0]
+----
+input MovieDeleteInput {
+    actors: [MovieActorsDeleteFieldInput!]
+}
+
+type Mutation {
+    deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
+}
+----
+
+There are no changes to any of the arguments or types at this level, but there are some details to note in the `MovieActorsDeleteFieldInput` type.
+
+Previously, you would have expected this to look like:
+
+[source, graphql, indent=0]
+----
+input MovieActorsDeleteFieldInput {
+    delete: ActorDeleteInput
+    where: ActorWhere
+}
+----
+
+This allowed you to filter on fields of the `Actor` type and delete based on that. However, following this upgrade, you will find:
+
+[source, graphql, indent=0]
+----
+input MovieActorsDeleteFieldInput {
+    delete: ActorDeleteInput
+    where: MovieActorsConnectionWhere
+}
+----
+
+This means that not only can you filter on node properties, but also relationship properties, in order to find and delete `Actor` nodes.
+
+In practice, a Mutation that deletes the film "The Dark Knight" and the related actor "Christian Bale" would have previously looked like this:
+
+[source, graphql, indent=0]
+----
+mutation {
+    deleteMovies(
+        where: {
+            title: "The Dark Knight"
+        }
+        delete: {
+            actors: {
+                where: {
+                    name: "Christian Bale"
+                }
+            }
+        }
+    ) {
+        nodesDeleted
+        relationshipsDeleted
+    }
+}
+----
+
+This will now have to look like this in order to function in the same way:
+
+[source, graphql, indent=0]
+----
+mutation {
+    deleteMovies(
+        where: {
+            title: "The Dark Knight"
+        }
+        delete: {
+            actors: {
+                where: {
+                    node: {
+                        name: "Christian Bale"
+                    }
+                }
+            }
+        }
+    ) {
+        nodesDeleted
+        relationshipsDeleted
+    }
+}
+----
+
+Note the additional level "node" before specifying the actor name.
+
+[[v2-migration-unions]]
+== Unions
+
+In this release, the decision was made to take the opportunity to overhaul the existing support for unions on relationship fields, laying down the foundations for adding top-level union support in the future.
+
+All examples in this section will be based off the following type definitions:
+
+[source, graphql, indent=0]
+----
+type Actor {
+    name: String!
+    actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
+}
+
+type Movie {
+    title: String!
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+}
+
+type Series {
+    title: String!
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+}
+
+union Production = Movie | Series
+----
+
+=== Input types
+
+The structure of input types for union queries and mutations have been changed for user friendliness, and a more consistent API.
+
+Essentially, field names which were previously of template `<unionFieldName>_<concreteType>` (for example, "actedIn_Movie") are now an object, with the field name at the top, and the member types under it.
+
+For example, a Mutation which would have previously been:
+
+[source, graphql, indent=0]
+----
+mutation {
+    createActors(
+        input: [
+            {
+                name: "Tom Hiddleston"
+                actedIn_Movie: {
+                    create: [
+                        {
+                            title: "The Avengers"
+                        }
+                    ]
+                }
+                actedIn_Series: {
+                    create: [
+                        {
+                            title: "Loki"
+                        }
+                    ]
+                }
+            }
+        ]
+    )
+}
+----
+
+Will now be:
+
+[source, graphql, indent=0]
+----
+mutation {
+    createActors(
+        input: [
+            {
+                name: "Tom Hiddleston"
+                actedIn: {
+                    Movie: {
+                        create: [
+                            {
+                                node: {
+                                    title: "The Avengers"
+                                }
+                            }
+                        ]
+                    }
+                    Series: {
+                        create: [
+                            {
+                                node: {
+                                    title: "Loki"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    )
+}
+----
+
+Note the change in structure for union input, but also the additional `node` level which enables the use of relationship properties. These changes are consistent across all operations, including `where`.
+
+=== Filtering union fields
+
+There has been a slight change to how you filter union fields, adding a `where` level above each union member. For example, for a query which would have used to have looked like:
+
+[source, graphql, indent=0]
+----
+query {
+    actors {
+        name
+        actedIn(Movie: { "The Avengers" }) {
+            ... on Movie {
+                title
+            }
+        }
+    }
+}
+----
+
+This will now be written like:
+
+[source, graphql, indent=0]
+----
+query {
+    actors {
+        name
+        actedIn(where: { Movie: { "The Avengers" }}) {
+            ... on Movie {
+                title
+            }
+        }
+    }
+}
+----
+
+Furthermore, the where argument used now dictates which union members are returned from the database, to prevent overfetching. Please see xref::troubleshooting.adoc#appendix-preventing-overfetching[this page] for background and explanation of this decision.
+
+[[v2-migration-miscellaneous]]
+== Miscellaneous
+
+=== `skip` renamed to `offset`
+
+In the release of Apollo Client 3.0, it became a bit more opinionated about pagination, favouring `offset` and `limit` over `skip` and `limit`. Acknowledging that the majority of users will be using Apollo Client 3.0, the page-based pagination arguments have been updated to align with this change.
+
+For example, fetching page 3 of pages of 10 movies would have looked like the following in version `1.x`:
+
+[source, graphql, indent=0]
+----
+query {
+    movies(options: { skip: 20, limit: 10 }) {
+        title
+    }
+}
+----
+
+This will now need to queried as follows:
+
+[source, graphql, indent=0]
+----
+query {
+    movies(options: { offset: 20, limit: 10 }) {
+        title
+    }
+}
+----
+
+=== Count queries
+
+Whilst not a necessary migration step, if you are using page-based pagination, it's important to note the addition of count queries in version 2.0.0. These will allow you to calculate the total number of pages for a particular filter, allowing you to implement much more effective pagination.
+
+== Schema validation
+
+In version 2.0.0, there are greater levels of schema validation. However, upon upgrading, you might find that validation is too strict (for example if using certain generated types in your definitions). You can temporarily disable this new validation on construction:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        skipValidateTypeDefs: true,
+    },
+})
+----
+
+If you need to do this, please report the scenario as an issue on GitHub.
+
+=== `_IN` and `_NOT_IN` filters on relationships removed
+
+There were previously `_IN` and `_NOT_IN` filters for one-to-many and one-to-one relationships, but these were surplus to requirements, and didn't match for all cardinalities (many-to-many relationships don't have `_INCLUDES` and `_NOT_INCLUDES`). These may be added back in the future if and when we look more holistically at distinguishing between different relationship cardinalities.
+
+You can still achieve identical filters through different routes. For example, if you had the following schema:
+
+[source, graphql, indent=0]
+----
+type Movie {
+    title: String!
+    director: Director! @relationship(type: "DIRECTED", direction: IN)
+}
+
+type Director {
+    name: String!
+    movies: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
+}
+----
+
+You would have been able to run the following query:
+
+[source, graphql, indent=0]
+----
+query {
+    movies(where: { director_IN: [{ name: "A" }, { name: "B" }] }) {
+        title
+    }
+}
+----
+
+You can still achieve exactly the same filter with the following:
+
+[source, graphql, indent=0]
+----
+query {
+    movies(where: { director: { OR: [{ name: "A" }, { name: "B" }]} }) {
+        title
+    }
+}
+----

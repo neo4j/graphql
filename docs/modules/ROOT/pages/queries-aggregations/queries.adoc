@@ -1,0 +1,288 @@
+[[queries]]
+= Queries
+
+Each node defined in type definitions will have two Query fields generated for it:
+
+1. One for querying data
+2. One for aggregating data
+
+The examples in this chapter will use the following type definitions:
+
+[source, graphql, indent=0]
+----
+type Post {
+    id: ID! @id
+    content: String!
+    creator: User! @relationship(type: "HAS_POST", direction: IN, properties: "PostedAt")
+    createdAt: DateTime!
+}
+
+type User {
+    id: ID! @id
+    name: String!
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "PostedAt")
+    friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
+}
+
+interface PostedAt @relationshipProperties {
+    date: DateTime
+}
+----
+
+For which the following Query fields will be generated:
+
+[source, graphql, indent=0]
+----
+type Query {
+    posts(where: PostWhere, options: PostOptions): [Post!]!
+    postsAggregate(where: PostWhere): PostAggregationSelection!
+
+    users(where: UserWhere, options: UserOptions): [User!]!
+    usersAggregate(where: UserWhere): UserAggregationSelection!
+}
+----
+
+== Query
+
+Each field for querying data accepts two arguments:
+
+- `where` - used for xref::queries-aggregations/filtering.adoc[Filtering] data
+- `options` - used to specify xref::queries-aggregations/sorting.adoc[Sorting] and xref::pagination/index.adoc[Pagination] options
+
+=== Querying for all User nodes
+
+The following Query will return all User nodes, returning their ID and name.
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        id
+        name
+    }
+}
+----
+
+=== Query for user with name "Jane Smith" and their posts
+
+The following Query will return all Users, returning the content which they have posted.
+
+[source, graphql, indent=0]
+----
+query {
+    users(where: { name: "Jane Smith" }) {
+        id
+        name
+        posts {
+            content
+        }
+    }
+}
+----
+
+=== Undirected Queries
+
+All xref:reference/type-definitions/relationships.adoc[relationships] are created with a _direction_ from one **node** to another.
+By default, all queries follow the direction defined in the relationship, however, in some cases we may need to query for
+all related nodes, regardless of the direction of the relationship. This can be achieved with the argument `directed: false`.
+
+For example, the following query:
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        name
+        friends: friends(directed: false) {
+            name
+        }
+    }
+}
+----
+
+Will return all user friends, regardless on the direction of the relationship `"FRIENDS_WITH"`.
+
+Undirected relationships can also be used in the same fashion with connections:
+
+[source, graphql, indent=0]
+----
+query Query {
+  users {
+    friendsConnection(directed: false) {
+      edges {
+        node {
+          name
+        }
+      }
+    }
+  }
+}
+----
+
+Note that _undirected relationships_ are only supported in queries.
+
+The xref:reference/type-definitions/relationships.adoc#_querydirection[type definitions] for a relationship may define
+a different behaviour, so the `directed` option may not be available in some cases.
+
+[[queries-aggregate]]
+== Aggregate
+
+Neo4j GraphQL supports aggregations on fields with type:
+
+1. `ID`- String
+2. `String` - String
+3. `Int` - Numerical
+4. `Float` - Numerical
+5. `BigInt` - Numerical
+6. `DateTime`
+7. `Time`
+8. `LocalTime`
+9. `LocalDateTime`
+10. `Duration`
+
+Numerical Fields will expose the following aggregation selections:
+
+1. `min`
+2. `max`
+3. `average`
+4. `sum`
+
+String fields will expose:
+
+1. `shortest`
+2. `longest`
+
+The rest will only expose:
+
+1. `min`
+2. `max`
+
+
+Aggregation queries accepts a `where` argument for xref::queries-aggregations/filtering.adoc[filtering] data.
+
+=== Counting Using aggregation
+
+The following Query will count all User nodes:
+
+[source, graphql, indent=0]
+----
+query {
+    usersAggregate {
+        count
+    }
+}
+----
+
+=== Counting User nodes where name starts with "J"
+
+[source, graphql, indent=0]
+----
+query {
+    usersAggregate(where: { name_STARTS_WITH: "J" }) {
+        count
+    }
+}
+----
+
+=== Querying for the longest User name
+
+[source, graphql, indent=0]
+----
+query {
+    usersAggregate {
+        name {
+            longest
+        }
+    }
+}
+----
+
+=== Querying for first Post date
+
+[source, graphql, indent=0]
+----
+query {
+    postsAggregate {
+        createdAt {
+            min
+        }
+    }
+}
+----
+
+[[queries-aggregate-related-nodes]]
+== Aggregate related nodes
+
+Related nodes can also be aggregated within a query by accessing the aggregation fields in the node.
+In these fields, you can **count**, aggregate the **nodes** or **edges** fields.
+
+The same selections and types as before are available in relationship aggregations.
+
+=== Counting all posts per users
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        id
+        postsAggregate {
+            count
+        }
+    }
+}
+----
+
+=== Finding longest post per user
+By using the `node` field, related nodes properties can be aggregated.
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        name
+        postsAggregate {
+            node {
+                content {
+                  longest
+                }
+            }
+        }
+    }
+}
+----
+
+=== Aggregate relationships
+Relationship properties can be aggregated as well by using the `edge` field.
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        name
+        postsAggregate {
+            edge {
+              date {
+                max
+              }
+            }
+        }
+    }
+}
+----
+
+=== Undirected aggregation queries
+
+When performing an aggregation on related nodes, the query against the relationship
+can be defined as an xref::queries-aggregations/queries.adoc#_undirected_queries[undirected] using the argument `directed: false`:
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        id
+        postsAggregate(directed: false) {
+            count
+        }
+    }
+}
+----

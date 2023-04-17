@@ -1,0 +1,156 @@
+[[plugins]]
+= Subscription Plugins
+
+Plugins are used to enable subscriptions in `@neo4j/graphql` and to allow easy connection to different message brokers. This is required to run a production
+system with xref::subscriptions/scaling.adoc[horizontal scaling].
+
+
+== Official plugins
+The following plugins are supported officially by `@neo4j/graphql`:
+
+* **xref::subscriptions/plugins.adoc#single-instance[Single Instance]** - A plugin for use within a single instance of the GraphQL library, exported directly from the library.
+* **xref::subscriptions/plugins.adoc#amqp[AMQP]** - Connect to AMQP brokers such as link:https://www.rabbitmq.com/[RabbitMQ].
+
+== Create a custom plugin
+If none of the existing plugins is valid for your use case, you can create a new plugin to connect to any broker you may need. To do this
+you need to create a new class defining your plugin. This class needs to contain the following:
+
+* An `EventEmitter` property called `events` that should emit an event everytime the broker sends a message.
+* A `publish` method that will publish a new event to the broker.
+* Optionally, a `init` method returning a promise, that will be called on `getSchema`. This is useful for setting up the connection to a broker.
+
+For instance, if we wanted to subscribe using link:https://redis.io/[redis]:
+
+```javascript
+// Note: This is an example of a custom plugin and not a production ready redis plugin
+class CustomRedisPlugin {
+    constructor(redisClient) {
+        this.client = redisClient;
+        this.events = new EventEmitter();
+    }
+
+    // This method connects to Redis and sends messages to the eventEmitter when receiving events.
+    async init(){
+        await this.client.connect();
+        this.subscriber = this.client.duplicate()
+        this.publisher = this.client.duplicate();
+        await this.subscriber.connect();
+        await this.publisher.connect();
+
+        await this.subscriber.subscribe("graphql-subscriptions", (message) => {
+          const eventMeta = JSON.parse(message);
+          this.events.emit(eventMeta.event, eventMeta); // Emits a new event when receiving a new message from redis
+        });
+    }
+
+    async publish(eventMeta) {
+        await this.publisher.publish("graphql-subscriptions", JSON.stringify(eventMeta)); // Sends a message to redis
+    }
+}
+
+const client = createClient(); // From https://www.npmjs.com/package/redis
+const redisSubscriptions = new CustomRedisPlugin(client)
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    plugins: {
+        subscriptions: redisSubscriptions,
+    },
+});
+```
+
+Note that, like in the previous example, extra properties and methods are often needed to handle the connection to the broker. As long as the messages
+are sent to the broker in the `publish` method and that these messages are received and then emitted through the `events` property, the subscriptions
+will be properly handled.
+
+== Using Typescript
+If using Typescript, you may import the interface `Neo4jGraphQLSubscriptionsPlugin` to implement your own plugin:
+
+```typescript
+class CustomRedisPlugin implements Neo4jGraphQLSubscriptionsPlugin {}
+```
+
+== Note about event orders
+Events are sent to the plugin in order, however, order is not guaranteed once these events have been broadcasted through a broker.
+For cases when ordering is important, the subscriptions payload contains a field `timestamp`.
+
+
+[[amqp]]
+== AMQP Plugin
+
+The `@neo4j/graphql-plugin-subscriptions-amqp` plugin connects to brokers through `AMQP 0-9-1` protocol such as:
+
+* link:https://www.rabbitmq.com/[RabbitMQ]
+* link:https://qpid.apache.org/[Apache Qpid]
+* link:https://activemq.apache.org/[Apache ActiveMQ]
+
+It can be installed with npm:
+
+```sh
+npm install @neo4j/graphql-plugin-subscriptions-amqp
+```
+
+NOTE: AMQP 1.0 is **not** supported by this plugin.
+
+=== Usage
+
+```javascript
+const { Neo4jGraphQLSubscriptionsAMQPPlugin } = require("@neo4j/graphql-plugin-subscriptions-amqp");
+
+const plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
+    connection: {
+        hostname: "localhost",
+        username: "guest",
+        password: "guest",
+    }
+});
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    plugins: {
+        subscriptions: plugin,
+    },
+});
+```
+
+=== API
+The following options can be passed to the contructor:
+
+* connection: An AMQP uri as a string or a configuration object:
+    * hostname: Hostname to be used, defaults to `localhost`.
+    * username: defaults to `guest`.
+    * password: defaults to `guest`.
+    * port: Port of the AMQP broker, defaults to `5672`.
+* exchange: The exchange to be used in the broker. Defaults to `neo4j.graphql.subscriptions.fx`.
+* version: The AMQP version to be used. Currently only `0-9-1` is supported.
+
+Additionally, any option supported by link:https://www.npmjs.com/package/amqplib[amqplib] can be passed to `connection`.
+
+
+==== close(): Promise<void>
+Closes the connection and channel created and unbinds the event emitter.
+
+
+[[single-instance]]
+== Single Instance Plugin
+
+The `@neo4j/graphql` library provides a zero-dependency plugin to be used during development to quickly deploy a subscriptions server locally in a single instance.
+If can be imported directly:
+
+```javascript
+const { Neo4jGraphQL, Neo4jGraphQLSubscriptionsSingleInstancePlugin } = require('@neo4j/graphql');
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    plugins: {
+        subscriptions: new Neo4jGraphQLSubscriptionsSingleInstancePlugin(),
+    },
+});
+```
+
+For a full example, check the xref::subscriptions/getting-started.adoc[Getting started] guide.
+
+WARNING: This plugin is not recommended for production environments unless running a single instance.

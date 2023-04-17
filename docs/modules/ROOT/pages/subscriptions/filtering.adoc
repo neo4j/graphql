@@ -20,14 +20,14 @@ All types can be tested for either equality or non-equality. For the `Boolean` t
 [[filtering-numerical-operators]]
 === Numerical operators
 
-The following comparison operators are available for numeric types (`Int`, `Float`, xref::type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`])
+The following comparison operators are available for numeric types (`Int`, `Float`, xref::reference/type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`])
 
 * `_LT`
 * `_LTE`
 * `_GTE`
 * `_GT`
 
-NOTE: Filtering on xref::type-definitions/types.adoc#type-definitions-types-temporal[Temporal Types] and xref::type-definitions/types.adoc#type-definitions-types-spatial[Spatial Types]: is not yet supported.
+NOTE: Filtering on xref::reference/type-definitions/types.adoc#type-definitions-types-temporal[Temporal Types] and xref::reference/type-definitions/types.adoc#type-definitions-types-spatial[Spatial Types]: is not yet supported.
 
 === String comparison
 

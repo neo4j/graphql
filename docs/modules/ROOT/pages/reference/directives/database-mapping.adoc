@@ -1,0 +1,211 @@
+[[type-definitions-database-mapping]]
+= Database Mapping
+
+[[type-definitions-alias]]
+== `@alias`
+
+This directive maps a GraphQL field to a Neo4j property on a node or relationship.
+
+This can be used on any fields that are not `@cypher` or `@relationship` fields.
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+"""Indicates that the field is to be mapped to the underlying Neo4j under a different property name."""
+directive @alias(property: String!) on FIELD_DEFINITION
+----
+
+=== Usage
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID! @id @alias(property: "dbId")
+    username: String!
+}
+----
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID! @id
+    username: String! @alias(property: "dbUserName")
+    livesIn: [City!]! @relationship(direction: OUT, type: "LIVES_IN", properties: "UserLivesInProperties")
+}
+
+type City {
+    name: String
+}
+
+interface UserLivesInProperties @relationshipProperties {
+    since: DateTime @alias(property: "moveInDate")
+}
+----
+
+==== Properties are automatically escaped
+
+The property in aliases are automatically escaped (wrapped with backticks ``), so there's no need to add escape characters around them.
+
+[[type-definitions-plural]]
+== `@plural`
+
+The `@plural` directive redefines how to compose the plural of the type for the generated operations.
+This is particularly useful for types that are not correctly pluralized or are non-English words.
+
+[source, graphql, indent=0]
+----
+type Tech @plural(value: "Techs") {
+  name: String
+}
+----
+
+This way, instead of the wrongly generated `teches`, the type is properly written as `techs`:
+
+[source, graphql, indent=0]
+----
+{
+  techs {
+    title
+  }
+}
+----
+
+The same is applied to other operations such as `createTechs`. Note that database labels will not change.
+
+[[type-definitions-node]]
+== `@node`
+
+The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+"""Informs @neo4j/graphql of node metadata"""
+directive @node(
+    """Map the GraphQL type to match Neo4j node labels"""
+    labels: [String]
+) on OBJECT
+----
+
+=== Usage
+`@node` can be used with the following optional parameters.
+
+==== `labels`
+The parameter `labels` defines the list of label to be used in Neo4j instead of the GraphQL type name:
+
+[source, graphql, indent=0]
+----
+type Dog @node(labels: ["K9"]) {
+    name: String!
+}
+----
+
+This way, the following query:
+
+[source, graphql, indent=0]
+----
+{
+  dogs {
+    name
+  }
+}
+----
+
+Generates the cypher query:
+
+[source, cypher, indent=0]
+----
+MATCH (this: K9)
+RETURN this { .name } as name
+----
+
+If the GraphQL type name should still be used as a label, it needs to be specified as well:
+
+[source, graphql, indent=0]
+----
+type Dog @node(labels: ["Dog", "K9"]) {
+    name: String!
+}
+----
+
+This way, the following query:
+
+[source, graphql, indent=0]
+----
+{
+  dogs {
+    name
+  }
+}
+----
+
+Generates the cypher query:
+
+[source, cypher, indent=0]
+----
+MATCH (this:Dog:K9)
+RETURN this { .name } as this
+----
+
+Please note that defining `labels` means you take control of the database labels of the node. Indexes and constraints in Neo4j only support a single label, for which the first element of the `labels` argument will be used.
+
+The following example results in a unique constraint be asserted for the label `K9` and the property `name`:
+
+[source, graphql, indent=0]
+----
+type Dog @node(labels: ["K9", "Dog"]) {
+    name: String! @unique
+}
+----
+
+===== Using `$jwt` and `$context`
+In some cases, we may want to generate dynamic labels depending on the user requesting. In these cases, we can use the variable `$jwt` to define a custom label define in the JWT (similarly to how it is used in the xref::auth/auth-directive-subs.adoc[`@auth` directive]):
+
+[source, graphql, indent=0]
+----
+type User @node(labels: ["$jwt.username"]) {
+    name: String!
+}
+----
+
+The following query will yield a different cypher query depending on the user JWT:
+
+[source, graphql, indent=0]
+----
+{
+  users {
+    name
+  }
+}
+----
+
+Assuming an user with the value `"username": "arthur"` in JWT, the Cypher query will look like:
+
+[source, cypher, indent=0]
+----
+MATCH (this:arthur)
+RETURN this { .name } as this
+----
+
+Similarly, context values can be passed directly:
+
+[source, graphql, indent=0]
+----
+type User @node(label: ["$context.appId"]) {
+    name: String!
+}
+----
+
+When running the server with Apollo:
+
+[source, js, indent=0]
+----
+neoSchema.getSchema().then((schema) => {
+    new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req, appId: "myApp" }),
+    });
+})
+----
