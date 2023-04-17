@@ -43,5 +43,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: playwright-report
-          path: tests/artifacts
+          path: packages/graphql-toolbox/tests/artifacts
           retention-days: 3
