@@ -26,7 +26,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      # To fail fast, build the Toolbox to see if any errors occur. A common error is when building referenced projects like the introspector.
+      # To fail fast, build the Toolbox to see if any errors occur. A common error is f.e. building referenced projects like the introspector.
       - name: Build the GraphQL Toolbox
         run: yarn build
         working-directory: packages/graphql-toolbox
@@ -46,6 +46,6 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: playwright-report
+          name: playwright-test-failure-report
           path: packages/graphql-toolbox/tests/artifacts
-          retention-days: 3
+          retention-days: 4
