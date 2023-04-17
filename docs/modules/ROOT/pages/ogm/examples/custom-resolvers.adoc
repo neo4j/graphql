@@ -155,7 +155,11 @@ export function comparePassword(plainText, hash) {
 }
 ----
 
-NOTE: The above code for the util functions `createJWT` and `comparePassword` are just example implementations! You'll likely need to adjust this code to suit your use case.
+[NOTE]
+==== 
+This code for the util functions `createJWT` and `comparePassword` is an example. 
+You will likely need to adjust it to suit your use case.
+====
 
 Back in the command line, run the following command to start your server:
 
