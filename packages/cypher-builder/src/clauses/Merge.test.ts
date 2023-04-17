@@ -137,4 +137,19 @@ describe("CypherBuilder Merge", () => {
             }
         `);
     });
+
+    test("Merge node and delete", () => {
+        const node = new Cypher.Node({
+            labels: ["MyLabel"],
+        });
+
+        const query = new Cypher.Merge(node).delete(node);
+
+        const queryResult = query.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "MERGE (this0:\`MyLabel\`)
+            DELETE this0"
+        `);
+        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+    });
 });
