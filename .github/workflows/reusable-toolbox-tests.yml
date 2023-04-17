@@ -26,7 +26,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      # To fail fast, build the Toolbox to see if any errors occur. A common error is f.e. building referenced projects like the introspector.
+      # To fail fast, build the Toolbox to see if any errors occur. For example, a common error is building referenced projects like the introspector.
       - name: Build the GraphQL Toolbox
         run: yarn build
         working-directory: packages/graphql-toolbox
