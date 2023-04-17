@@ -130,7 +130,7 @@ Additionally, an example implementation for the util functions `createJWT` and `
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-export function createJWT({ sub }) {
+export function createJWT(data) {
     return new Promise((resolve, reject) => {
         jwt.sign(data, "<insert your JWT secret here!>", (err, token) => {
             if (err) {
