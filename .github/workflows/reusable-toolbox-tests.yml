@@ -26,6 +26,10 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      # To fail fast, build the Toolbox to see if any errors occur. For example, a common error is building referenced projects like the introspector.
+      - name: Build the GraphQL Toolbox
+        run: yarn build
+        working-directory: packages/graphql-toolbox
       - name: Install Playwright
         run: npx playwright install --with-deps
       - name: Run @neo4j/graphql-toolbox unit tests
@@ -38,3 +42,10 @@ jobs:
           NEO_USER: neo4j
           NEO_PASSWORD: password
           NEO_URL: bolt://localhost:7687
+      - name: Upload playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-test-failure-report
+          path: packages/graphql-toolbox/tests/artifacts
+          retention-days: 4
