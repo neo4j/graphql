@@ -20,6 +20,7 @@
 const ESCAPE_SYMBOL_REGEX = /`/g;
 
 export function escapeLabel(label: string): string {
+    // TODO: only escape when needed
     return escapeString(label);
 }
 
@@ -44,7 +45,8 @@ function normalizeString(str: string): string {
 }
 
 function needsEscape(str: string): boolean {
-    return ESCAPE_SYMBOL_REGEX.test(str);
+    const validCharacter = /^[a-z0-9_]*$/i;
+    return !validCharacter.test(str);
 }
 
 function escapeString(str: string): string {
