@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { escapeLabel } from "./escape-label";
+import { escapeLabel } from "./escape";
 
 describe("CypherBuilder Utils", () => {
     describe("escapeLabel", () => {
