@@ -19,7 +19,7 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import type { EventEmitter } from "events";
-import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
+import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema, GraphQLResolveInfo } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
@@ -44,6 +44,7 @@ export interface Context {
     driver?: Driver;
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
+    info: GraphQLResolveInfo;
     neo4jDatabaseInfo: Neo4jDatabaseInfo;
     nodes: Node[];
     relationships: Relationship[];

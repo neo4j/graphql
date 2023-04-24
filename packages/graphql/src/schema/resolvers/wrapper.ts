@@ -79,6 +79,8 @@ export const wrapResolver =
             }
         }
 
+        context.info = info;
+
         if (!context?.driverConfig) {
             context.driverConfig = driverConfig;
         }

@@ -36,6 +36,8 @@ import {
 import type { CypherQueryOptions } from "../types";
 import type { AuthContext } from "../types/deprecated/auth/auth-context";
 import createAuthParam from "../translate/create-auth-param";
+import type { GraphQLResolveInfo } from "graphql";
+import { print } from "graphql";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -68,6 +70,10 @@ type TransactionConfig = {
         app: string;
         // Possible values from https://neo4j.com/docs/operations-manual/current/monitoring/logging/#attach-metadata-tx (will only be user-transpiled for @neo4j/graphql)
         type: "system" | "user-direct" | "user-action" | "user-transpiled";
+        source?: {
+            query: string;
+            params: Record<string, unknown>;
+        };
     };
 };
 
@@ -105,17 +111,22 @@ export class Executor {
         this.bookmarks = bookmarks;
     }
 
-    public async execute(query: string, parameters: unknown, defaultAccessMode: SessionMode): Promise<QueryResult> {
+    public async execute(
+        query: string,
+        parameters: unknown,
+        defaultAccessMode: SessionMode,
+        info?: GraphQLResolveInfo
+    ): Promise<QueryResult> {
         try {
             if (isDriverLike(this.executionContext)) {
                 const session = this.executionContext.session(this.getSessionParam(defaultAccessMode));
-                const result = await this.sessionRun(query, parameters, defaultAccessMode, session);
+                const result = await this.sessionRun(query, parameters, defaultAccessMode, session, info);
                 await session.close();
                 return result;
             }
 
             if (isSessionLike(this.executionContext)) {
-                return await this.sessionRun(query, parameters, defaultAccessMode, this.executionContext);
+                return await this.sessionRun(query, parameters, defaultAccessMode, this.executionContext, info);
             }
 
             return await this.transactionRun(query, parameters, this.executionContext);
@@ -184,27 +195,39 @@ export class Executor {
         return sessionParam;
     }
 
-    private getTransactionConfig(): TransactionConfig {
+    private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {
         const app = `${environment.NPM_PACKAGE_NAME}@${environment.NPM_PACKAGE_VERSION}`;
 
-        return {
+        const transactionConfig: TransactionConfig = {
             metadata: {
                 app,
                 type: "user-transpiled",
             },
         };
+
+        if (info) {
+            const source = {
+                query: print(info.operation),
+                params: info.variableValues,
+            };
+
+            transactionConfig.metadata.source = source;
+        }
+
+        return transactionConfig;
     }
 
     private async sessionRun(
         query: string,
         parameters: unknown,
         defaultAccessMode: string,
-        session: Session
+        session: Session,
+        info?: GraphQLResolveInfo
     ): Promise<QueryResult> {
         const transactionType = `${defaultAccessMode.toLowerCase()}Transaction`;
         const result = await session[transactionType]((transaction: Transaction) => {
             return this.transactionRun(query, parameters, transaction);
-        }, this.getTransactionConfig());
+        }, this.getTransactionConfig(info));
         const lastBookmark = session.lastBookmark();
         if (Array.isArray(lastBookmark) && lastBookmark[0]) {
             this.lastBookmark = lastBookmark[0];

@@ -18,7 +18,10 @@
  */
 
 import * as base from "@playwright/test";
+import * as dotenv from "dotenv";
 import { test } from "./utils/pagemodel";
+
+dotenv.config();
 
 base.test.describe("drawer", () => {
     const typeDefs = `

@@ -96,6 +96,8 @@ describe("Delete Subscription", () => {
         await deleteMovie("movie1");
         await deleteMovie("movie2");
 
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -130,6 +132,8 @@ describe("Delete Subscription", () => {
 
         await deleteMovie("movie3");
         await deleteMovie("movie4");
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
