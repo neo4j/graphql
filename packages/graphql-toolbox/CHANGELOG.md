@@ -1,5 +1,14 @@
 # @neo4j/graphql-toolbox
 
+## 1.5.2
+
+### Patch Changes
+
+-   [#3189](https://github.com/neo4j/graphql/pull/3189) [`75c05b80d`](https://github.com/neo4j/graphql/commit/75c05b80d2353a581a56f34f7f492737a6bdf536) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: Toolbox, Codemirror text selection visibility
+
+-   Updated dependencies [[`a8aabfeca`](https://github.com/neo4j/graphql/commit/a8aabfecad39b371fa82d16ea00e1e45d4044d05), [`8657dff82`](https://github.com/neo4j/graphql/commit/8657dff8274ea3d3a4a42c18c8e81232748cbeff)]:
+    -   @neo4j/graphql@3.18.2
+
 ## 1.5.1
 
 ### Patch Changes
