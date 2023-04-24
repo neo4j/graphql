@@ -25,7 +25,7 @@ import type { WhereOperator } from "../types";
 
 import { createWherePredicate } from "../create-where-predicate";
 import { asArray, filterTruthy } from "../../../utils/utils";
-import { getCypherLogicalOperator, isLogicalOperator } from "../../utils/logical-operators";
+import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
 import { createRelationPredicate } from "./create-relationship-operation";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 
@@ -141,8 +141,9 @@ export function createConnectionWherePropertyOperation({
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
                     preComputedSubqueriesResult.push(preComputedSubqueries);
             });
-            const cypherLogicalOperator = getCypherLogicalOperator(key);
-            params.push(cypherLogicalOperator(...filterTruthy(subOperations)));
+
+            const logicalPredicate = getLogicalPredicate(key, filterTruthy(subOperations));
+            params.push(logicalPredicate);
             return;
         }
 
