@@ -3552,7 +3552,7 @@ __metadata:
     debug: ^4.3.4
     dedent: 0.7.0
     deep-equal: ^2.0.5
-    dot-prop: ^6.0.1
+    dot-prop: ^8.0.0
     graphql-compose: ^9.0.8
     graphql-middleware: 6.1.33
     graphql-parse-resolve-info: ^4.12.3
@@ -10488,6 +10488,15 @@ __metadata:
   dependencies:
     is-obj: ^2.0.0
   checksum: 0f47600a4b93e1dc37261da4e6909652c008832a5d3684b5bf9a9a0d3f4c67ea949a86dceed9b72f5733ed8e8e6383cc5958df3bbd0799ee317fd181f2ece700
+  languageName: node
+  linkType: hard
+
+"dot-prop@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "dot-prop@npm:8.0.0"
+  dependencies:
+    type-fest: ^3.8.0
+  checksum: 438a54cdbda061f9c8f8ed3e46e513f4d9929f39eab8e30852e4f22459c8c0fa5104472cf498a63f25f9d5a3b2890c1370a588fd2f73e0ee9523ca1a9446aec4
   languageName: node
   linkType: hard
 
@@ -23929,6 +23938,13 @@ __metadata:
   version: 2.19.0
   resolution: "type-fest@npm:2.19.0"
   checksum: a4ef07ece297c9fba78fc1bd6d85dff4472fe043ede98bd4710d2615d15776902b595abf62bd78339ed6278f021235fb28a96361f8be86ed754f778973a0d278
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:^3.8.0":
+  version: 3.8.0
+  resolution: "type-fest@npm:3.8.0"
+  checksum: f9a9ef00378dddd6af2be5cbb67ce4c3a61f6696c5f3ae88815c98266865766118343d928faec8a0efc012efe1d080f59bf62d8fdc382bf285f45d02dbc8fb66
   languageName: node
   linkType: hard
 
