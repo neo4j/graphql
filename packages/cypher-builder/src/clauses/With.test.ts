@@ -84,6 +84,21 @@ describe("CypherBuilder With", () => {
                 }
             `);
         });
+
+        test("With alias and delete", () => {
+            const node = new Cypher.Node({
+                labels: ["Movie"],
+            });
+            const alias = new Cypher.Variable();
+            const withQuery = new Cypher.With([node, alias]).detachDelete(alias);
+
+            const queryResult = withQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "WITH this0 AS var1
+                DETACH DELETE var1"
+            `);
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
     });
 
     describe("With delete", () => {

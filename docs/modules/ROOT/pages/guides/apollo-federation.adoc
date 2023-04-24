@@ -48,11 +48,11 @@ const typeDefs = gql`
   type Location @key(fields: "id") @shareable {
     id: ID!
     "The name of the location"
-    name: String!
+    name: String
     "A short description about the location"
-    description: String!
+    description: String
     "The location's main photo as a URL"
-    photo: String!
+    photo: String
   }
 `;
 
@@ -68,11 +68,10 @@ const neo4jgraphql = new Neo4jGraphQL({
 
 neo4jgraphql.getSubgraphSchema().then((schema) => {
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
   });
 
-  startStandaloneServer(server, { listen: { port: 4001 } }).then((url) => {
+  startStandaloneServer(server, { listen: { port: 4001 } }).then(({ url }) => {
     console.log(`🚀  Server ready at ${url}`);
   });
 });
@@ -128,11 +127,10 @@ const neo4jgraphql = new Neo4jGraphQL({
 
 neo4jgraphql.getSubgraphSchema().then((schema) => {
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
   });
 
-  startStandaloneServer(server, { listen: { port: 4002 } }).then((url) => {
+  startStandaloneServer(server, { listen: { port: 4002 } }).then(({ url }) => {
     console.log(`🚀  Server ready at ${url}`);
   });
 });
@@ -159,6 +157,9 @@ subgraphs:
 ----
 
 In the same directory, execute the following command to generate the supergraph schema:
+
+NOTE: The first time you run this command with a Federation 2 YAML configuration, Rover installs a separate plugin and prompts you to accept the terms and conditions of the ELv2 license.
+Find more information in the https://www.apollographql.com/docs/federation/quickstart/local-composition/#2-perform-composition[Apollo Federation docs].
 
 [source, bash, indent=0]
 ----

@@ -1,5 +1,13 @@
 # @neo4j/cypher-builder
 
+## 0.4.1
+
+### Patch Changes
+
+-   [#3191](https://github.com/neo4j/graphql/pull/3191) [`f0d6d45b0`](https://github.com/neo4j/graphql/commit/f0d6d45b07cc65081ede71ce98efc916ce506977) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix Unwind parameters
+
+-   [#3191](https://github.com/neo4j/graphql/pull/3191) [`f0d6d45b0`](https://github.com/neo4j/graphql/commit/f0d6d45b07cc65081ede71ce98efc916ce506977) Thanks [@angrykoala](https://github.com/angrykoala)! - Add .delete chain methods to With, Unwind and Merge
+
 ## 0.4.0
 
 ### Minor Changes

@@ -42,7 +42,7 @@ async function execute({
     defaultAccessMode: SessionMode;
     context: Context;
 }): Promise<ExecuteResult> {
-    const result = await context.executor.execute(cypher, params, defaultAccessMode);
+    const result = await context.executor.execute(cypher, params, defaultAccessMode, context.info);
 
     if (!result) {
         throw new Error("Unable to execute query against Neo4j database");

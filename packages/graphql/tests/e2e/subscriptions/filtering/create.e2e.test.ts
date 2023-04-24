@@ -27,6 +27,7 @@ import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
+import { delay } from "../../../../src/utils/utils";
 
 describe("Create Subscription with optional filters valid for all types", () => {
     let neo4j: Neo4j;
@@ -92,6 +93,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -114,6 +117,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -142,6 +147,9 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ title: "movie1" });
 
+        // forcing a delay to ensure events do not exist
+        await delay(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
@@ -158,6 +166,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -188,6 +198,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
@@ -211,6 +223,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
@@ -233,6 +247,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -263,6 +279,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie2", releasedIn: 2000 });
         await createMovie({ title: "movie3", releasedIn: 2001 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
@@ -287,6 +305,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie2", releasedIn: 2000 });
         await createMovie({ title: "movie3", releasedIn: 2001 });
 
+        // forcing a delay to ensure events do not exist
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
@@ -306,6 +326,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie3", releasedIn: 2000 });
         await createMovie({ title: "movie4", releasedIn: 1000 });
         await createMovie({ title: "dummy-movie", releasedIn: 2001 });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -334,6 +356,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie5", releasedIn: 2001 });
         await createMovie({ title: "moviee1", releasedIn: 2001 });
         await createMovie({ title: "moviee2", releasedIn: 2021 });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -384,6 +408,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
@@ -432,6 +458,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
@@ -463,6 +491,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
         await createMovie({ title: "movie2", releasedIn: 2002 });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -501,6 +531,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie2", releasedIn: 2000 });
         await createMovie({ title: "movie2", releasedIn: 2002 });
 
+        await wsClient.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
@@ -536,6 +568,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -559,6 +593,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -581,6 +617,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ id: "1", title: "movie1" });
         await createMovie({ id: "12", title: "movie2" });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -610,6 +648,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ id: 42, title: "movie1" });
         await createMovie({ id: 2, title: "movie2" });
 
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -638,6 +678,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie1", releasedIn: 2019 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -660,6 +702,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ releasedIn: 2019 });
         await createMovie({ releasedIn: 2000 });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -684,6 +728,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ averageRating: 5.9 });
         await createMovie({ averageRating: 7.1 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -707,6 +753,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ averageRating: 5.9 });
         await createMovie({ averageRating: 7 });
 
+        // forcing a delay to ensure events do not exist
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
@@ -723,6 +771,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ fileSize: "9223372036854775508" });
         await createMovie({ fileSize: "1234" });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -746,6 +796,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ fileSize: "9223372036854775508" });
         await createMovie({ fileSize: "1234" });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -855,6 +907,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -878,6 +932,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -906,6 +962,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ title: "movie1" });
 
+        // forcing a delay to ensure events do not exist
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
@@ -925,6 +983,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie3", releasedIn: 2000 });
         await createMovie({ title: "movie4", releasedIn: 1000 });
         await createMovie({ title: "dummy-movie", releasedIn: 2001 });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -956,6 +1016,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
         await createMovie({ title: "movie2", releasedIn: 2002 });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
