@@ -46,7 +46,7 @@ The AMQP plugin should be instanced and passed to the `subscription` field in fe
 ```javascript
 const { Neo4jGraphQLSubscriptionsAMQPPlugin } = require("@neo4j/graphql-plugin-subscriptions-amqp");
 
-const plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
+const amqpSubscription = new Neo4jGraphQLSubscriptionsAMQPPlugin({
     connection: {
         hostname: "localhost",
         username: "guest",
@@ -58,7 +58,7 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
     features: {
-        subscriptions: plugin,
+        subscriptions: amqpSubscription,
     },
 });
 ```
@@ -80,9 +80,10 @@ Additionally, any option supported by link:https://www.npmjs.com/package/amqplib
 
 * **close(): Promise<void>** Closes the connection and channel created and unbinds the event emitter.
 
-== Custom mechanism
-If none of the existing mechanisms is valid for your use case, you can create a new plugin to connect to any broker you may need. To do this
-you need to create a new class defining your plugin. This class needs to contain the following:
+[[custom-subscription]]
+== Custom Subscription Mechanism
+If none of the existing mechanisms is valid for your use case, you can create a new mechanism to connect to any broker you may need. To do this
+you need to create a new class defining your messaging behaviour. This class needs to contain the following:
 
 * An `EventEmitter` property called `events` that should emit an event everytime the broker sends a message.
 * A `publish` method that will publish a new event to the broker.
@@ -91,8 +92,8 @@ you need to create a new class defining your plugin. This class needs to contain
 For instance, if we wanted to handle subscriptions using link:https://redis.io/[redis]:
 
 ```javascript
-// Note: This is an example of a custom plugin and not a production ready redis plugin
-class CustomRedisPlugin {
+// Note: This is an example of a custom subscription behaviour and not a production ready redis implementation
+class CustomRedisSubscriptionMechanism {
     constructor(redisClient) {
         this.client = redisClient;
         this.events = new EventEmitter();
@@ -118,12 +119,12 @@ class CustomRedisPlugin {
 }
 
 const client = createClient(); // From https://www.npmjs.com/package/redis
-const redisSubscriptions = new CustomRedisPlugin(client)
+const redisSubscriptions = new CustomRedisSubscriptionMechanism(client)
 
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
-    plugins: {
+    features: {
         subscriptions: redisSubscriptions,
     },
 });
@@ -134,12 +135,12 @@ are sent to the broker in the `publish` method and that these messages are recei
 will be properly handled.
 
 === Using Typescript
-If using Typescript, you may import the interface `Neo4jGraphQLSubscriptionsPlugin` to implement your own plugin, ensuring the API is correctly defined:
+If using Typescript, you may import the interface `Neo4jGraphQLSubscriptionsMechanism` to implement your own class, ensuring the API is correctly defined:
 
 ```typescript
-class CustomRedisPlugin implements Neo4jGraphQLSubscriptionsPlugin {}
+class CustomRedisMechanism implements Neo4jGraphQLSubscriptionsMechanism {}
 ```
 
-== Note about event orders
-Events are sent to the plugin in order, however, order is not guaranteed once these events have been broadcasted through a broker.
+=== Note about event orders
+Events are sent to the class in order, however, order is not guaranteed once these events have been broadcasted through a broker.
 For cases when ordering is important, the subscriptions payload contains a field `timestamp`.

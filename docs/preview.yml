@@ -5,15 +5,15 @@ site:
 
 content:
   sources:
-  - url: ../
-    start_path: docs
-    branches: HEAD
-    edit_url: https://github.com/neo4j/graphql/tree/{refname}/{path}
-    include: docs/
-    exclude:
-    - '!**/_includes/*'
-    - '!**/readme.adoc'
-    - '!**/README.adoc'
+    - url: ../
+      start_path: docs
+      branches: HEAD
+      edit_url: https://github.com/neo4j/graphql/tree/{refname}/{path}
+      include: docs/
+      exclude:
+        - "!**/_includes/*"
+        - "!**/readme.adoc"
+        - "!**/README.adoc"
 ui:
   bundle:
     url: https://s3-eu-west-1.amazonaws.com/static-content.neo4j.com/build/ui-bundle-latest.zip
@@ -25,15 +25,15 @@ urls:
 
 antora:
   extensions:
-  - require: "@neo4j-antora/antora-modify-sitemaps"
-    sitemap_version: '3.0'
-    sitemap_loc_version: 'current'
-    move_sitemaps_to_components: true
+    - require: "@neo4j-antora/antora-modify-sitemaps"
+      sitemap_version: "4.0"
+      sitemap_loc_version: "current"
+      move_sitemaps_to_components: true
 
 asciidoc:
   extensions:
-  - "@neo4j-documentation/remote-include"
-  - "@neo4j-documentation/macros"
+    - "@neo4j-documentation/remote-include"
+    - "@neo4j-documentation/macros"
   # - "@neo4j-antora/antora-add-notes"
   attributes:
     page-theme: docs
@@ -50,7 +50,7 @@ asciidoc:
     # page-add-notes-tags: example@
     includePDF: false
     nonhtmloutput: ""
-    experimental: ''
+    experimental: ""
     copyright: 2022
     common-license-page-uri: https://neo4j.com/docs/license/
     neo4j-base-uri: https://neo4j.com

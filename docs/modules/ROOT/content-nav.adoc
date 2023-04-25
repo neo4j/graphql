@@ -19,7 +19,7 @@
 *** xref:subscriptions/events.adoc[Events]
 *** xref:subscriptions/filtering.adoc[]
 *** xref:subscriptions/scaling.adoc[]
-*** xref:subscriptions/subscription-mechanisms.adoc[Subscription Mechanisms]
+*** xref:subscriptions/mechanisms.adoc[Subscription Mechanisms]
 
 ** xref:custom-resolvers.adoc[]
 

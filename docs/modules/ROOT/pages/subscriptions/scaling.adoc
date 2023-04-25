@@ -28,7 +28,7 @@ This is the default behaviour of the subscription mechanism provided by the libr
 
 == Using PubSub
 One solution to this problem, and how `@neo4j/graphql` is intended to work, is to use a PubSub pattern with an external broker to broadcast events through multiple
-instances. This can be achieved through different xref::subscriptions/subscription-mechanisms.adoc[subscription mechanisms].
+instances. This can be achieved through different xref::subscriptions/mechanisms.adoc[subscription mechanisms].
 
 Following the previous example, using an intermediate broker to broadcast the events across all instances, the infrastructure would look like this:
 
@@ -42,4 +42,4 @@ The events are as follow:
 4. The broker will then notify every server (broadcast), including the server that originally triggered the event.
 5. Both servers will receive the notification and will trigger any event to their subscribed clients.
 
-NOTE: You can find examples of this pattern with `@neo4j/graphql` xref::subscriptions/subscription-mechanisms.adoc[here].
+NOTE: You can find examples of this pattern with `@neo4j/graphql` xref::subscriptions/mechanisms.adoc[here].

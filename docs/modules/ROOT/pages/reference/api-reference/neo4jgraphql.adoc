@@ -59,7 +59,7 @@ Accepts all of the options from https://www.graphql-tools.com/docs/generate-sche
 |`queryOptions` +
  +
  Type: xref::reference/api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-cypherqueryoptions[`CypherQueryOptions`]
-|Cypher query options, see xref::troubleshooting/index.adoc#troubleshooting-query-tuning[Query Tuning] for more information.
+|Cypher query options, see xref::troubleshooting#troubleshooting-query-tuning[Query Tuning] for more information.
 
 |`startupValidation` +
  +
