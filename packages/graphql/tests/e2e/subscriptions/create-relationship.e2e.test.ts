@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
 import { cleanNodes } from "../../utils/clean-nodes";
@@ -109,7 +109,7 @@ describe("Create Relationship Subscription", () => {
                 },
             },
             features: {
-                subscriptions: new TestSubscriptionsPlugin(),
+                subscriptions: new TestSubscriptionsMechanism(),
             },
         });
         server = new ApolloTestServer(neoSchema);

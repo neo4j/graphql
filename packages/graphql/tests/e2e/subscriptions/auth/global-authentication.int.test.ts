@@ -24,7 +24,7 @@ import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
 import { createJwtHeader } from "../../../utils/create-jwt-request";
@@ -68,7 +68,7 @@ describe("Subscription global authentication", () => {
                     },
                 },
                 features: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsMechanism(),
                 },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
@@ -145,7 +145,7 @@ describe("Subscription global authentication", () => {
                     },
                 },
                 features: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsMechanism(),
                 },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
@@ -222,7 +222,7 @@ describe("Subscription global authentication", () => {
                     },
                 },
                 features: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsMechanism(),
                 },
                 plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({

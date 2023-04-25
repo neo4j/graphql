@@ -24,7 +24,7 @@ import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 
@@ -32,7 +32,7 @@ describe("auth/allow", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
-    let plugin: TestSubscriptionsPlugin;
+    let plugin: TestSubscriptionsMechanism;
     const secret = "secret";
 
     let userType: UniqueType;
@@ -54,7 +54,7 @@ describe("auth/allow", () => {
         commentType = new UniqueType("Comment");
 
         session = await neo4j.getSession();
-        plugin = new TestSubscriptionsPlugin();
+        plugin = new TestSubscriptionsMechanism();
     });
 
     afterEach(async () => {

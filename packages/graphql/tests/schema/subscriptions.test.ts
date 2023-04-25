@@ -21,13 +21,13 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
-import { TestSubscriptionsPlugin } from "../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../utils/TestSubscriptionsMechanism";
 
 describe("Subscriptions", () => {
-    let plugin: TestSubscriptionsPlugin;
+    let plugin: TestSubscriptionsMechanism;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsPlugin();
+        plugin = new TestSubscriptionsMechanism();
     });
 
     test("Subscriptions", async () => {

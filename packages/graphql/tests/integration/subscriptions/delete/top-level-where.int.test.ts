@@ -21,7 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { UniqueType } from "../../../utils/graphql-types";
-import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import Neo4j from "../../neo4j";
 
@@ -30,7 +30,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
     let session: Session;
-    let plugin: TestSubscriptionsPlugin;
+    let plugin: TestSubscriptionsMechanism;
 
     let userType: UniqueType;
     let postType: UniqueType;
@@ -56,7 +56,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         postType = new UniqueType("Post");
 
         session = await neo4j.getSession();
-        plugin = new TestSubscriptionsPlugin();
+        plugin = new TestSubscriptionsMechanism();
 
         const typeDefs = `
             type ${userType.name} {
