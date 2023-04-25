@@ -42,7 +42,7 @@ neoSchema = new Neo4jGraphQL({
 });
 ----
 
-
+[subscriptions-options]
 === Subscription options
 Subscriptions are no longer set as plugins, but as features.
 
