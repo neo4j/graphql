@@ -92,6 +92,8 @@ describe("auth/bind", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });

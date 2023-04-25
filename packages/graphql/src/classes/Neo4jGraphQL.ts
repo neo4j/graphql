@@ -320,7 +320,7 @@ class Neo4jGraphQL {
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 validateResolvers: validationConfig.validateResolvers,
-                generateSubscriptions: Boolean(this.plugins?.subscriptions),
+                generateSubscriptions: Boolean(this.features?.subscriptions),
                 userCustomResolvers: this.resolvers,
             });
 
@@ -360,7 +360,7 @@ class Neo4jGraphQL {
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
             validateResolvers: validationConfig.validateResolvers,
-            generateSubscriptions: Boolean(this.plugins?.subscriptions),
+            generateSubscriptions: Boolean(this.features?.subscriptions),
             userCustomResolvers: this.resolvers,
             subgraph,
         });
@@ -427,7 +427,7 @@ class Neo4jGraphQL {
         }
 
         const setup = async () => {
-            const subscriptionsPlugin = this.plugins?.subscriptions;
+            const subscriptionsPlugin = this.features?.subscriptions;
             if (subscriptionsPlugin) {
                 subscriptionsPlugin.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
                 if (subscriptionsPlugin.init) {

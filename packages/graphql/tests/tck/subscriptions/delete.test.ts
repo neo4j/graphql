@@ -45,9 +45,9 @@ describe("Subscriptions metadata on delete", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
     });
 

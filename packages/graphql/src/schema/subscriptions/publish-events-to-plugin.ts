@@ -45,6 +45,7 @@ export function publishEventsToPlugin(
             "delete",
             "create_relationship"
         );
+
         for (const subscriptionsEvent of serializedEventsWithoutDuplicates) {
             try {
                 const publishPromise = plugin.publish(subscriptionsEvent); // Not using await to avoid blocking

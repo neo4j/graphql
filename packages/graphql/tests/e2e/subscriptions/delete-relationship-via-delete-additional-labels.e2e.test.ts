@@ -100,7 +100,7 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },
-            plugins: {
+            features: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
         });

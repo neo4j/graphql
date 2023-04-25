@@ -74,7 +74,7 @@ describe("Connect Subscription with optional filters valid for all types", () =>
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },
-            plugins: {
+            features: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
         });

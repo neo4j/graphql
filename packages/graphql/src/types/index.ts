@@ -53,6 +53,7 @@ export interface Context {
     auth?: AuthContext;
     callbacks?: Neo4jGraphQLCallbacks;
     plugins?: Neo4jGraphQLPlugins;
+    features?: Neo4jFeaturesSettings;
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
     executionContext: Driver | Session | Transaction;
@@ -479,7 +480,6 @@ export interface Neo4jGraphQLSubscriptionsPlugin {
 
 export interface Neo4jGraphQLPlugins {
     auth?: Neo4jGraphQLAuthPlugin;
-    subscriptions?: Neo4jGraphQLSubscriptionsPlugin;
 }
 
 export type CallbackReturnValue = string | number | boolean | undefined | null;
@@ -532,6 +532,7 @@ export interface Neo4jFeaturesSettings {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
+    subscriptions?: Neo4jGraphQLSubscriptionsPlugin;
 }
 
 export type PredicateReturn = {

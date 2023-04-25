@@ -67,8 +67,10 @@ describe("Subscription global authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
-                plugins: {
+                features: {
                     subscriptions: new TestSubscriptionsPlugin(),
+                },
+                plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
                         globalAuthentication: true,
@@ -142,8 +144,10 @@ describe("Subscription global authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
-                plugins: {
+                features: {
                     subscriptions: new TestSubscriptionsPlugin(),
+                },
+                plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
                         globalAuthentication: true,
@@ -217,8 +221,10 @@ describe("Subscription global authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
-                plugins: {
+                features: {
                     subscriptions: new TestSubscriptionsPlugin(),
+                },
+                plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
                         globalAuthentication: true,

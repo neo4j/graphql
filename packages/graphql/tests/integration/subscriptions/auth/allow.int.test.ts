@@ -91,8 +91,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -147,8 +145,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -214,8 +210,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -285,8 +279,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -354,8 +346,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -427,8 +417,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -510,8 +498,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -569,8 +555,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -628,8 +612,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -697,8 +679,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -768,8 +748,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -826,8 +804,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -902,8 +878,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -973,8 +947,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -1063,8 +1035,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -1136,8 +1106,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });
@@ -1227,8 +1195,6 @@ describe("auth/allow", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });

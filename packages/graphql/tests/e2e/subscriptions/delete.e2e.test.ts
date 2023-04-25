@@ -59,7 +59,7 @@ describe("Delete Subscription", () => {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },
-            plugins: {
+            features: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
         });

@@ -58,8 +58,10 @@ describe("Subscription auth roles", () => {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },
-            plugins: {
+            features: {
                 subscriptions: new TestSubscriptionsPlugin(),
+            },
+            plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
                 }),

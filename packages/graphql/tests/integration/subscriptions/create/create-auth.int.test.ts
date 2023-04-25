@@ -91,8 +91,6 @@ describe("auth/bind", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
                     subscriptions: plugin,
                 },
             });

@@ -60,7 +60,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },
-            plugins: {
+            features: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
         });

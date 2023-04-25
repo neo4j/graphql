@@ -65,7 +65,7 @@ describe("Subscriptions update", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
             },
         });
@@ -97,7 +97,7 @@ describe("Subscriptions update", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
             },
         });

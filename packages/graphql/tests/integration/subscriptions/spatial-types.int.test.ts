@@ -52,7 +52,7 @@ describe("Subscriptions to spatial types", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
             },
         });

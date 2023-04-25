@@ -65,7 +65,7 @@ describe("Create -> ConnectOrCreate", () => {
     beforeEach(async () => {
         session = await neo4j.getSession();
         plugin = new TestSubscriptionsPlugin();
-        neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: plugin } });
+        neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: plugin } });
     });
 
     afterEach(async () => {

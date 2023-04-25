@@ -102,7 +102,7 @@ describe("Delete Subscriptions when relationships are targeted- with interfaces,
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },
-            plugins: {
+            features: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
         });

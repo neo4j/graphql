@@ -43,7 +43,7 @@ export function createResolver({ node }: { node: Node }) {
         ) as FieldNode;
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
 
-        publishEventsToPlugin(executeResult, context.plugins?.subscriptions, context.schemaModel);
+        publishEventsToPlugin(executeResult, context.features?.subscriptions, context.schemaModel);
 
         return {
             info: {

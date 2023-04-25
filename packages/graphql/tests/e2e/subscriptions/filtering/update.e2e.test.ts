@@ -62,7 +62,7 @@ describe("Update Subscriptions", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
+            features: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
         });

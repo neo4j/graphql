@@ -188,7 +188,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
+            features: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
         });

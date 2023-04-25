@@ -45,7 +45,7 @@ describe("Subscriptions Single Instance Plugin", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
             },
         });

@@ -76,6 +76,8 @@ describe("Subscriptions delete", () => {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
                 }),
+            },
+            features: {
                 subscriptions: plugin,
             },
         });

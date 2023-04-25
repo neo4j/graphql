@@ -91,8 +91,9 @@ export const wrapResolver =
         context.relationships = relationships;
         context.schemaModel = schemaModel;
         context.plugins = plugins || {};
-        context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions);
+        context.subscriptionsEnabled = Boolean(features?.subscriptions);
         context.callbacks = callbacks;
+        context.features = features;
 
         if (!context.jwt) {
             const req: RequestLike = context instanceof IncomingMessage ? context : context.req || context.request;
@@ -157,15 +158,16 @@ export const wrapSubscription =
     (next) =>
     async (root: any, args: any, context: SubscriptionConnectionContext | undefined, info: GraphQLResolveInfo) => {
         const plugins = resolverArgs?.plugins || {};
+        const subscriptionsConfig = resolverArgs?.features?.subscriptions;
         const contextParams = context?.connectionParams || {};
 
-        if (!plugins.subscriptions) {
+        if (!subscriptionsConfig) {
             debug("Subscription Plugin not set");
             return next(root, args, context, info);
         }
 
         const subscriptionContext: SubscriptionContext = {
-            plugin: plugins.subscriptions,
+            plugin: subscriptionsConfig,
         };
 
         if (!context?.jwt && contextParams.authorization) {

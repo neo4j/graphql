@@ -92,6 +92,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -146,6 +148,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -211,6 +215,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -280,6 +286,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -347,6 +355,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -418,6 +428,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -499,6 +511,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -556,6 +570,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -613,6 +629,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -680,6 +698,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -749,6 +769,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -805,6 +827,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -879,6 +903,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -948,6 +974,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -1036,6 +1064,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -1107,6 +1137,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -1196,6 +1228,8 @@ describe("auth/allow", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });

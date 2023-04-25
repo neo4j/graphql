@@ -77,7 +77,7 @@ describe("interface relationships", () => {
         subscriptionsPlugin = new TestSubscriptionsPlugin();
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: subscriptionsPlugin,
             },
         });

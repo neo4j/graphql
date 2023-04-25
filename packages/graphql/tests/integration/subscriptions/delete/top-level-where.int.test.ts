@@ -85,7 +85,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
+            features: {
                 subscriptions: plugin,
             },
         });

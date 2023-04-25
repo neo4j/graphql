@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
+            features: {
                 subscriptions: new Neo4jGraphQLSubscriptionsSingleInstancePlugin(),
             },
         });

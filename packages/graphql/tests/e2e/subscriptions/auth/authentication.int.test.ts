@@ -67,8 +67,10 @@ describe("Subscription authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
-                plugins: {
+                features: {
                     subscriptions: new TestSubscriptionsPlugin(),
+                },
+                plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
@@ -190,8 +192,10 @@ describe("Subscription authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
-                plugins: {
+                features: {
                     subscriptions: new TestSubscriptionsPlugin(),
+                },
+                plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
@@ -330,8 +334,10 @@ describe("Subscription authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
-                plugins: {
+                features: {
                     subscriptions: new TestSubscriptionsPlugin(),
+                },
+                plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
@@ -671,8 +677,10 @@ describe("Subscription authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
-                plugins: {
+                features: {
                     subscriptions: new TestSubscriptionsPlugin(),
+                },
+                plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
@@ -759,8 +767,10 @@ describe("Subscription authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
-                plugins: {
+                features: {
                     subscriptions: new TestSubscriptionsPlugin(),
+                },
+                plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
@@ -828,8 +838,10 @@ describe("Subscription authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
-                plugins: {
+                features: {
                     subscriptions: new TestSubscriptionsPlugin(),
+                },
+                plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
@@ -916,8 +928,10 @@ describe("Subscription authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
-                plugins: {
+                features: {
                     subscriptions: new TestSubscriptionsPlugin(),
+                },
+                plugins: {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),

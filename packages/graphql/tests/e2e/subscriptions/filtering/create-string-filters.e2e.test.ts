@@ -60,7 +60,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },
-            plugins: {
+            features: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
         });

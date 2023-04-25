@@ -102,7 +102,7 @@ describe("Subscriptions connect with delete", () => {
         `;
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
             },
         });
