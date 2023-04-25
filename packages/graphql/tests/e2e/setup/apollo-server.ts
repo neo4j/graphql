@@ -17,14 +17,17 @@
  * limitations under the License.
  */
 
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import bodyParser from "body-parser";
+import cors from "cors";
+import express from "express";
+import { useServer } from "graphql-ws/lib/use/ws";
 import type { Server } from "http";
 import { createServer } from "http";
 import type { AddressInfo } from "ws";
 import { WebSocketServer } from "ws";
-import { ApolloServer } from "apollo-server-express";
-import express from "express";
-import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
-import { useServer } from "graphql-ws/lib/use/ws";
 import type { Neo4jGraphQL } from "../../../src";
 
 export interface TestGraphQLServer {
@@ -77,7 +80,6 @@ export class ApolloTestServer implements TestGraphQLServer {
         );
         const server = new ApolloServer({
             schema,
-            context: ({ req }) => ({ req }),
             plugins: [
                 ApolloServerPluginDrainHttpServer({ httpServer }),
                 {
@@ -92,16 +94,24 @@ export class ApolloTestServer implements TestGraphQLServer {
             ],
         });
         await server.start();
-        server.applyMiddleware({ app });
 
-        return new Promise<void>((resolve) => {
-            const port = 0; // Automatically assigns a free port
-            httpServer.listen(port, () => {
+        app.use(
+            "/graphql",
+            cors(),
+            bodyParser.json(),
+            expressMiddleware(server, {
+                // eslint-disable-next-line @typescript-eslint/require-await
+                context: async ({ req }) => ({ req }),
+            })
+        );
+
+        return new Promise<void>((resolve) =>
+            httpServer.listen({ port: 0 }, () => {
                 const serverAddress = httpServer.address() as AddressInfo;
-                this._path = `http://localhost:${serverAddress.port}${server.graphqlPath}`;
+                this._path = `http://localhost:${serverAddress.port}/graphql`;
                 resolve();
-            });
-        });
+            })
+        );
     }
 
     async close(): Promise<void> {
