@@ -18,12 +18,13 @@
  */
 
 import { EventEmitter } from "events";
-import { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "./Neo4jGraphQLSubscriptionsSingleInstancePlugin";
+import type { Neo4jGraphQLSubscriptionsMechanism, SubscriptionsEvent } from "../types";
 
-describe("Neo4jGraphQLSubscriptionsSingleInstancePlugin", () => {
-    test("should construct without arguments", () => {
-        const plugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
-        expect(plugin).toBeInstanceOf(Neo4jGraphQLSubscriptionsSingleInstancePlugin);
-        expect(plugin.events).toBeInstanceOf(EventEmitter);
-    });
-});
+/** Default subscriptions plugin for debug */
+export class Neo4jGraphQLSubscriptionsDefaultMechanism implements Neo4jGraphQLSubscriptionsMechanism {
+    public events: EventEmitter = new EventEmitter();
+
+    publish(eventMeta: SubscriptionsEvent): void | Promise<void> {
+        this.events.emit(eventMeta.event, eventMeta);
+    }
+}

@@ -36,7 +36,7 @@ export {
     Neo4jGraphQLAuthPlugin,
     CypherUpdateStrategy,
     Node,
-    Neo4jGraphQLSubscriptionsPlugin,
+    Neo4jGraphQLSubscriptionsMechanism,
     EventMeta,
     SubscriptionsEvent,
     RelationField,
@@ -47,8 +47,6 @@ export {
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLForbiddenError,
 } from "./classes";
-
-export { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "./classes/Neo4jGraphQLSubscriptionsSingleInstancePlugin";
 
 export * as directives from "./graphql/directives";
 export * as scalars from "./graphql/scalars";

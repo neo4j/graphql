@@ -25,14 +25,14 @@ import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
-import { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "../../../src";
 import { delay } from "../../../src/utils/utils";
 import { UniqueType } from "../../utils/graphql-types";
+import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "../../../src/classes/Neo4jGraphQLSubscriptionsDefaultMechanism";
 
 describe("Single instance Subscription", () => {
     let neo4j: Neo4j;
     let driver: Driver;
-    let plugin: Neo4jGraphQLSubscriptionsSingleInstancePlugin;
+    let plugin: Neo4jGraphQLSubscriptionsDefaultMechanism;
 
     const typeMovie = new UniqueType("Movie");
 
@@ -52,7 +52,7 @@ describe("Single instance Subscription", () => {
     let wsClient2: WebSocketTestClient;
 
     beforeAll(async () => {
-        plugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
+        plugin = new Neo4jGraphQLSubscriptionsDefaultMechanism();
         const typeDefs = `
          type ${typeMovie} {
              title: String

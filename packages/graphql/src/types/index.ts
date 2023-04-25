@@ -469,7 +469,8 @@ export type RelationshipSubscriptionsEvent =
 /** Serialized subscription event */
 export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
 
-export interface Neo4jGraphQLSubscriptionsPlugin {
+/** Defines a custom mechanism to transport subscription events internally between servers */
+export interface Neo4jGraphQLSubscriptionsMechanism {
     events: EventEmitter;
 
     publish(eventMeta: SubscriptionsEvent): Promise<void> | void;
@@ -533,7 +534,7 @@ export type Neo4jFeaturesSettings = {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
-    subscriptions?: Neo4jGraphQLSubscriptionsPlugin | boolean;
+    subscriptions?: Neo4jGraphQLSubscriptionsMechanism | boolean;
 };
 
 /** Parsed features used in context */
@@ -541,7 +542,7 @@ export type ContextFeatures = {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
-    subscriptions?: Neo4jGraphQLSubscriptionsPlugin;
+    subscriptions?: Neo4jGraphQLSubscriptionsMechanism;
 };
 
 export type PredicateReturn = {

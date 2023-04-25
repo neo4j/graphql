@@ -18,7 +18,7 @@
  */
 
 import { EventEmitter } from "events";
-import type { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "@neo4j/graphql";
+import type { Neo4jGraphQLSubscriptionsMechanism, SubscriptionsEvent } from "@neo4j/graphql";
 import type { ConnectionOptions } from "./amqp-0-9-1-api";
 import { AmqpApi } from "./amqp-0-9-1-api";
 
@@ -37,7 +37,7 @@ export type Neo4jGraphQLSubscriptionsAMQPPluginConstructorOptions = {
     log?: boolean;
 };
 
-export class Neo4jGraphQLSubscriptionsAMQPPlugin implements Neo4jGraphQLSubscriptionsPlugin {
+export class Neo4jGraphQLSubscriptionsAMQPPlugin implements Neo4jGraphQLSubscriptionsMechanism {
     public events: EventEmitter;
     private amqpApi: AmqpApi<SubscriptionsEvent>;
     private connectionOptions: ConnectionOptions;
