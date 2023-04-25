@@ -25,14 +25,11 @@ import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
-import { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "../../../src";
-import { delay } from "../../../src/utils/utils";
 import { UniqueType } from "../../utils/graphql-types";
 
-describe("Single instance Subscription", () => {
+describe("Default single instance Subscription", () => {
     let neo4j: Neo4j;
     let driver: Driver;
-    let plugin: Neo4jGraphQLSubscriptionsSingleInstancePlugin;
 
     const typeMovie = new UniqueType("Movie");
 
@@ -52,7 +49,6 @@ describe("Single instance Subscription", () => {
     let wsClient2: WebSocketTestClient;
 
     beforeAll(async () => {
-        plugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
         const typeDefs = `
          type ${typeMovie} {
              title: String
@@ -71,7 +67,7 @@ describe("Single instance Subscription", () => {
                 },
             },
             features: {
-                subscriptions: plugin,
+                subscriptions: true,
             },
         });
 
@@ -94,23 +90,7 @@ describe("Single instance Subscription", () => {
         await driver.close();
     });
 
-    // NOTE: This test **may** be flaky, if so, feel free to remove it
-    test("listeners are properly triggered and cleaned up", async () => {
-        expect(plugin.events.getMaxListeners()).toBe(0);
-        expect(plugin.events.listenerCount("create")).toBe(0);
-
-        await wsClient.subscribe(subscriptionQuery);
-        await wsClient2.subscribe(subscriptionQuery);
-
-        await delay(50); // Sorry listener count takes a bit to update
-        expect(plugin.events.listenerCount("create")).toBe(2);
-
-        await wsClient2.close();
-        await delay(50); // Sorry listener count takes a bit to update
-        expect(plugin.events.listenerCount("create")).toBe(1);
-    });
-
-    test("multiple listeners attached to local event plugin", async () => {
+    test("multiple listeners attached to default plugin", async () => {
         await wsClient.subscribe(subscriptionQuery);
         await wsClient2.subscribe(subscriptionQuery);
 

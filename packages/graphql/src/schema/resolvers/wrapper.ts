@@ -28,7 +28,7 @@ import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import type { Context, Neo4jFeaturesSettings, Neo4jGraphQLPlugins, RequestLike } from "../../types";
+import type { Context, ContextFeatures, Neo4jGraphQLPlugins, RequestLike } from "../../types";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
@@ -46,7 +46,7 @@ export type WrapResolverArguments = {
     schemaModel: Neo4jGraphQLSchemaModel;
     plugins?: Neo4jGraphQLPlugins;
     dbInfo?: Neo4jDatabaseInfo;
-    features?: Neo4jFeaturesSettings;
+    features: ContextFeatures;
 };
 
 let neo4jDatabaseInfo: Neo4jDatabaseInfo;
@@ -56,8 +56,8 @@ export const wrapResolver =
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const { driverConfig } = config;
-        const callbacks = features?.populatedBy?.callbacks;
-        const authorization = features?.authorization;
+        const callbacks = features.populatedBy?.callbacks;
+        const authorization = features.authorization;
 
         if (debug.enabled) {
             const query = print(info.operation);
@@ -91,7 +91,7 @@ export const wrapResolver =
         context.relationships = relationships;
         context.schemaModel = schemaModel;
         context.plugins = plugins || {};
-        context.subscriptionsEnabled = Boolean(features?.subscriptions);
+        context.subscriptionsEnabled = Boolean(features.subscriptions);
         context.callbacks = callbacks;
         context.features = features;
 
@@ -158,7 +158,7 @@ export const wrapSubscription =
     (next) =>
     async (root: any, args: any, context: SubscriptionConnectionContext | undefined, info: GraphQLResolveInfo) => {
         const plugins = resolverArgs?.plugins || {};
-        const subscriptionsConfig = resolverArgs?.features?.subscriptions;
+        const subscriptionsConfig = resolverArgs?.features.subscriptions;
         const contextParams = context?.connectionParams || {};
 
         if (!subscriptionsConfig) {
@@ -171,7 +171,7 @@ export const wrapSubscription =
         };
 
         if (!context?.jwt && contextParams.authorization) {
-            if (resolverArgs.features?.authorization) {
+            if (resolverArgs.features.authorization) {
                 subscriptionContext.jwt = new Neo4jGraphQLAuthorization(
                     resolverArgs.features.authorization
                 ).decodeBearerToken(contextParams.authorization);

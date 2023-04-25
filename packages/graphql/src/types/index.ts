@@ -53,7 +53,7 @@ export interface Context {
     auth?: AuthContext;
     callbacks?: Neo4jGraphQLCallbacks;
     plugins?: Neo4jGraphQLPlugins;
-    features?: Neo4jFeaturesSettings;
+    features: ContextFeatures;
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
     executionContext: Driver | Session | Transaction;
@@ -528,12 +528,21 @@ export type RequestLike = {
     cookies?: { token?: string };
 };
 
-export interface Neo4jFeaturesSettings {
+/** Options to enable extra capabilities on @neo4j/graphql API */
+export type Neo4jFeaturesSettings = {
+    filters?: Neo4jFiltersSettings;
+    populatedBy?: Neo4jPopulatedBySettings;
+    authorization?: Neo4jAuthorizationSettings;
+    subscriptions?: Neo4jGraphQLSubscriptionsPlugin | boolean;
+};
+
+/** Parsed features used in context */
+export type ContextFeatures = {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
     subscriptions?: Neo4jGraphQLSubscriptionsPlugin;
-}
+};
 
 export type PredicateReturn = {
     predicate: Cypher.Predicate | undefined;

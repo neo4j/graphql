@@ -32,6 +32,8 @@ import type {
     Neo4jGraphQLPlugins,
     Neo4jFeaturesSettings,
     StartupValidationConfig,
+    ContextFeatures,
+    Neo4jGraphQLSubscriptionsPlugin,
 } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
@@ -52,6 +54,7 @@ import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
+import { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "./Neo4jGraphQLSubscriptionsSingleInstancePlugin";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -87,7 +90,7 @@ class Neo4jGraphQL {
 
     private config: Neo4jGraphQLConfig;
     private driver?: Driver;
-    private features?: Neo4jFeaturesSettings;
+    private features: ContextFeatures;
 
     private _nodes?: Node[];
     private _relationships?: Relationship[];
@@ -108,7 +111,7 @@ class Neo4jGraphQL {
         this.driver = driver;
         this.config = config;
         this.plugins = plugins;
-        this.features = features;
+        this.features = this.parseNeo4jFeatures(features);
 
         this.typeDefs = typeDefs;
         this.resolvers = resolvers;
@@ -298,6 +301,20 @@ class Neo4jGraphQL {
         // Merge generated and custom resolvers
         const mergedResolvers = mergeResolvers([...asArray(resolvers)]);
         return composeResolvers(mergedResolvers, resolversComposition);
+    }
+
+    private parseNeo4jFeatures(features: Neo4jFeaturesSettings | undefined): ContextFeatures {
+        let subscriptionPlugin: Neo4jGraphQLSubscriptionsPlugin | undefined;
+        if (features?.subscriptions === true) {
+            subscriptionPlugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
+        } else {
+            subscriptionPlugin = features?.subscriptions || undefined;
+        }
+
+        return {
+            ...features,
+            subscriptions: subscriptionPlugin,
+        };
     }
 
     private generateSchemaModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
