@@ -18,6 +18,7 @@
  */
 
 import { ApolloServer } from "@apollo/server";
+import type { ExpressMiddlewareOptions } from "@apollo/server/express4";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import bodyParser from "body-parser";
@@ -37,14 +38,18 @@ export interface TestGraphQLServer {
     close(): Promise<void>;
 }
 
+type CustomContext = ExpressMiddlewareOptions<any>["context"];
+
 export class ApolloTestServer implements TestGraphQLServer {
     private schema: Neo4jGraphQL;
     private server?: Server;
     private _path?: string;
     private wsServer?: WebSocketServer;
+    private customContext?: CustomContext;
 
-    constructor(schema: Neo4jGraphQL) {
+    constructor(schema: Neo4jGraphQL, customContext?: CustomContext) {
         this.schema = schema;
+        this.customContext = customContext;
     }
 
     public get path(): string {
@@ -101,7 +106,7 @@ export class ApolloTestServer implements TestGraphQLServer {
             bodyParser.json(),
             expressMiddleware(server, {
                 // eslint-disable-next-line @typescript-eslint/require-await
-                context: async ({ req }) => ({ req }),
+                context: this.customContext ? this.customContext : async (req) => ({ req }),
             })
         );
 
