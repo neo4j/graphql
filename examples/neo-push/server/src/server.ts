@@ -3,7 +3,7 @@ import rateLimit from "express-rate-limit";
 import * as path from "path";
 import * as config from "./config";
 import createDebug from "./debugger";
-import { getServer } from "./gql";
+import { startServer } from "./gql";
 
 export async function start(): Promise<void> {
     const app = express();
@@ -29,11 +29,7 @@ export async function start(): Promise<void> {
         });
     }
 
-    const server = await getServer();
-
-    await server.start();
-
-    server.applyMiddleware({ app });
+    await startServer();
 
     debug(`Starting on PORT ${config.HTTP_PORT}`);
 }
