@@ -50,7 +50,7 @@ export function createEdgeProjection({
     extraFields?: Array<string>;
     cypherFieldAliasMap: CypherFieldReferenceMap;
 }): { projection: Cypher.Map; subqueries: Cypher.Clause[]; predicates: Cypher.Predicate[] } {
-    const connection = resolveTree.fieldsByTypeName[field.typeMeta.name];
+    const connection = resolveTree.fieldsByTypeName[field.typeMeta.name] as Record<string, ResolveTree>;
 
     const edgeProjectionProperties = new Cypher.Map();
     const subqueries: Cypher.Clause[] = [];

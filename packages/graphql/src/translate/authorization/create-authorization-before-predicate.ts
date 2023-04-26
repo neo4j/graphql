@@ -23,6 +23,7 @@ import type { Node, Context, PredicateReturn } from "../../types";
 import type { AuthorizationOperation } from "../../types/authorization";
 import { createAuthorizationFilterPredicate } from "./rules/create-authorization-filter-predicate";
 import { createAuthorizationValidatePredicate } from "./rules/create-authorization-validate-predicate";
+import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 
 export function createAuthorizationBeforePredicate({
     context,
@@ -43,7 +44,7 @@ export function createAuthorizationBeforePredicate({
         throw new Error("Couldn't match entity");
     }
 
-    const concreteEntity = concreteEntities[0];
+    const concreteEntity = concreteEntities[0] as ConcreteEntity;
     let annotation: AuthorizationAnnotation | undefined;
 
     if (fieldName) {

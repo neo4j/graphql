@@ -23,7 +23,7 @@ import type { AuthorizationWhere } from "../../../schema-model/annotation/Author
 import type { Context, GraphQLWhereArg, PredicateReturn } from "../../../types";
 import { asArray } from "../../../utils/utils";
 import type { LogicalOperator } from "../../utils/logical-operators";
-import { isLogicalOperator, getCypherLogicalOperator } from "../../utils/logical-operators";
+import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
 import { createWherePredicate } from "../../where/create-where-predicate";
 import { createJwtPayloadWherePredicate } from "./create-authorization-jwt-payload-predicate";
 import { populateWhereParams } from "../utils/populate-where-params";
@@ -157,6 +157,5 @@ function createNestedPredicate({
         }
     });
 
-    const logicalOperator = getCypherLogicalOperator(key);
-    return { predicate: logicalOperator(...nested), preComputedSubqueries: subqueries };
+    return { predicate: getLogicalPredicate(key, nested), preComputedSubqueries: subqueries };
 }

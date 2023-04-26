@@ -22,7 +22,7 @@ import type { Context, GraphQLWhereArg } from "../../../types";
 import { asArray } from "../../../utils/utils";
 import { getOrCreateCypherVariable } from "../../utils/get-or-create-cypher-variable";
 import type { LogicalOperator } from "../../utils/logical-operators";
-import { getCypherLogicalOperator, isLogicalOperator } from "../../utils/logical-operators";
+import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
 import { createParameterWhere } from "../../where/create-parameter-where";
 
 export function createJwtPayloadWherePredicate({
@@ -83,6 +83,5 @@ function createNestedPredicate({
         }
     });
 
-    const logicalOperator = getCypherLogicalOperator(key);
-    return logicalOperator(...nested);
+    return getLogicalPredicate(key, nested);
 }
