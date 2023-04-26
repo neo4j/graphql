@@ -146,7 +146,7 @@ describe("Patterns", () => {
 
             const query = new TestClause(new Cypher.Pattern(a).related(rel).to(b));
             const queryResult = query.build();
-            expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0)-[this1:\`ACTE\`\`D_IN\`]->(this2)"`);
+            expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0)-[this1:ACTE\`D_IN]->(this2)"`);
 
             expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
         });
