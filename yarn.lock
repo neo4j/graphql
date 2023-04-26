@@ -3386,7 +3386,7 @@ __metadata:
     jest: 29.5.0
     jest-extended: 3.2.4
     ts-jest: 29.1.0
-    typedoc: 0.24.5
+    typedoc: 0.24.6
     typescript: 5.0.4
   languageName: unknown
   linkType: soft
@@ -23995,9 +23995,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc@npm:0.24.5":
-  version: 0.24.5
-  resolution: "typedoc@npm:0.24.5"
+"typedoc@npm:0.24.6":
+  version: 0.24.6
+  resolution: "typedoc@npm:0.24.6"
   dependencies:
     lunr: ^2.3.9
     marked: ^4.3.0
@@ -24007,7 +24007,7 @@ __metadata:
     typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x
   bin:
     typedoc: bin/typedoc
-  checksum: f6cc0585d92eda2c9eeb1ad000df89e2c5a386fa3a82dc259a7c3c54f3f97b86ca5ede5b07dbc9c16f983aac2547fb3c4793dd74a2f0601ffccda916c62b0f06
+  checksum: 3911ef6a7736ce6655a4b22fabc5be6df8812412e209d730fd168bfa7797847897f05fed797bc16558f11ce647b20746453748ff8afe85b1375c3efe2d7b57df
   languageName: node
   linkType: hard
 
