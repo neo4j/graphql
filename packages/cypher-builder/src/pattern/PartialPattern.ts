@@ -23,7 +23,6 @@ import { NodeRef } from "../references/NodeRef";
 import { Pattern } from "./Pattern";
 import { PatternElement } from "./PatternElement";
 import type { Param } from "../references/Param";
-import { escapeType } from "../utils/escape";
 
 type LengthOption =
     | number
