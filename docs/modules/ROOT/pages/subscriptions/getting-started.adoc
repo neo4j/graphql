@@ -27,7 +27,6 @@ import { Neo4jGraphQL, Neo4jGraphQLSubscriptionsSingleInstancePlugin } from '@ne
 import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import express from 'express';
-import  { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 
 const typeDefs = `
@@ -51,7 +50,7 @@ const neoSchema = new Neo4jGraphQL({
 });
 
 async function main() {
-    // apollo-server-express server setup with WebSockets
+    // Apollo server setup with WebSockets
     const app = express();
     const httpServer = createServer(app);
     const wsServer = new WebSocketServer({
