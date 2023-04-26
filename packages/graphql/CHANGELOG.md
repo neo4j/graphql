@@ -1,5 +1,16 @@
 # @neo4j/graphql
 
+## 3.18.2
+
+### Patch Changes
+
+-   [#3216](https://github.com/neo4j/graphql/pull/3216) [`a8aabfeca`](https://github.com/neo4j/graphql/commit/a8aabfecad39b371fa82d16ea00e1e45d4044d05) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix error in logical operations on optional parameters #3215
+
+-   [#3192](https://github.com/neo4j/graphql/pull/3192) [`8657dff82`](https://github.com/neo4j/graphql/commit/8657dff8274ea3d3a4a42c18c8e81232748cbeff) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Source query and params are added to driver transaction config to aid with debugging the library from database query logs.
+
+-   Updated dependencies [[`f0d6d45b0`](https://github.com/neo4j/graphql/commit/f0d6d45b07cc65081ede71ce98efc916ce506977), [`f0d6d45b0`](https://github.com/neo4j/graphql/commit/f0d6d45b07cc65081ede71ce98efc916ce506977)]:
+    -   @neo4j/cypher-builder@0.4.1
+
 ## 3.18.1
 
 ### Patch Changes
