@@ -2,39 +2,40 @@
 = Horizontal Scaling
 
 == The Problem
-Horizontal scaling of any real time system can be tricky. Especially when dealing with long lived connections such as WebSockets.
+Horizontally scaling any real time system can be tricky, especially when dealing with long lived connections such as WebSockets.
 Consider the following example, in which _Client A_ is subscribed to a certain event, that is triggered by _Client B_:
 
 image::subscriptions/diagram1.png[title="Simple subscriptions setup"]
 
 
-In the previous example, the server running the GraphQL service, will do the following:
+The server running the GraphQL service will do the following:
 
 1. Receive the _mutation_ by _Client B_.
 2. Run the Cypher Query on Neo4j.
 3. Trigger the subscription event to _Client A_.
 
-This setup works fine for a single instance of `@neo4j/graphql`. However, when trying to scale horizontally, by adding more GraphQL servers,
-we may encounter the following situation:
+This setup works fine for a single instance of a `@neo4j/graphql` server. 
+However, when trying to scale horizontally by adding more GraphQL servers, you may encounter the following situation:
 
 image::subscriptions/diagram2.png[title="Subscriptions with 2 servers"]
 
-In this case, _Client B_ is subscribed to one server, however, when _Client A_ triggers the mutation, it queries a different server.
+In this case, _Client B_ is subscribed to one server. 
+However, when _Client A_ triggers the mutation, it may query a different server.
 
 The change happens successfully in the database, and any client connected to the same server will receive the subscription event, however, _Client A_
 will **not** receive any update, as the server it's connected to will not get notified of any mutation.
 
-This is the behaviour of the xref::subscriptions/plugins.adoc#single-instance[single instance plugin] provided by the library, so it is not suitable for use in a horizontally scaled environment.
+This is the default behavior of the subscription mechanism provided by the library, making it unsuitable for use in an horizontally scaled environment.
 
-## Using PubSub
-One solution to this problem, and how `@neo4j/graphql` is intended to work, is to use a PubSub pattern with an external broker to broadcast events through multiple
-instances. This can be achieved through xref::subscriptions/plugins.adoc[subscription plugins].
+== Using PubSub
+One solution to this problem (as well as how `@neo4j/graphql` is intended to work) is to use a PubSub pattern with an external broker to broadcast events through multiple instances. 
+This can be achieved through different xref::subscriptions/mechanisms.adoc[Subscription Mechanisms].
 
-Following the previous example, using an intermediate broker to broadcast the events across all instances, the infrastructure would look like:
+Following the previous example, using an intermediate broker to broadcast the events across all instances, the infrastructure would look like this:
 
 image::subscriptions/diagram3.png[title="Subscriptions with 2 servers and message broker"]
 
-In this example, the events are as follow:
+The events are as follow:
 
 1. _Client B_ will query the first server.
 2. The server performs the mutation in the database.
@@ -42,4 +43,7 @@ In this example, the events are as follow:
 4. The broker will then notify every server (broadcast), including the server that originally triggered the event.
 5. Both servers will receive the notification and will trigger any event to their subscribed clients.
 
-NOTE: You can find examples of usage with supported brokers in xref::subscriptions/plugins.adoc[plugins].
+[NOTE]
+====
+You can find examples of this pattern with `@neo4j/graphql` on xref::subscriptions/mechanisms.adoc[Subscription Mechanisms].
+====
