@@ -1,5 +1,5 @@
 [[subscription-mechanisms]]
-= Subscription Mechanisms
+= Mechanisms
 
 There are different ways to how a GraphQL subscription may be set along with `@neo4j/graphql` server.
 
