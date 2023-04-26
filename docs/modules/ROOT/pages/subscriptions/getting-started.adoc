@@ -27,7 +27,6 @@ import { Neo4jGraphQL, Neo4jGraphQLSubscriptionsSingleInstancePlugin } from '@ne
 import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import express from 'express';
-import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 
 const typeDefs = `
     type Movie {
