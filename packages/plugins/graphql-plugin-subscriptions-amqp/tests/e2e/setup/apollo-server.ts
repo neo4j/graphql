@@ -17,15 +17,18 @@
  * limitations under the License.
  */
 
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import type { Neo4jGraphQL } from "@neo4j/graphql";
+import bodyParser from "body-parser";
+import cors from "cors";
+import express from "express";
+import { useServer } from "graphql-ws/lib/use/ws";
 import type { Server } from "http";
 import { createServer } from "http";
 import type { AddressInfo } from "ws";
 import { WebSocketServer } from "ws";
-import { ApolloServer } from "apollo-server-express";
-import express from "express";
-import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
-import { useServer } from "graphql-ws/lib/use/ws";
-import type { Neo4jGraphQL } from "@neo4j/graphql";
 
 export interface TestGraphQLServer {
     path: string;
@@ -66,7 +69,16 @@ export class ApolloTestServer implements TestGraphQLServer {
 
         const schema = await this.schema.getSchema();
 
-        const serverCleanup = useServer({ schema }, wsServer);
+        const serverCleanup = useServer(
+            {
+                schema,
+                context: (ctx) => {
+                    return ctx;
+                },
+            },
+            wsServer
+        );
+
         const server = new ApolloServer({
             schema,
             plugins: [
@@ -83,13 +95,22 @@ export class ApolloTestServer implements TestGraphQLServer {
             ],
         });
         await server.start();
-        server.applyMiddleware({ app });
+
+        app.use(
+            "/graphql",
+            cors(),
+            bodyParser.json(),
+            expressMiddleware(server, {
+                // eslint-disable-next-line @typescript-eslint/require-await
+                context: async (req) => ({ req }),
+            })
+        );
 
         return new Promise<void>((resolve) => {
             const port = 0; // Automatically assigns a free port
             httpServer.listen(port, () => {
                 const serverAddress = httpServer.address() as AddressInfo;
-                this._path = `http://localhost:${serverAddress.port}${server.graphqlPath}`;
+                this._path = `http://localhost:${serverAddress.port}/graphql`;
                 resolve();
             });
         });

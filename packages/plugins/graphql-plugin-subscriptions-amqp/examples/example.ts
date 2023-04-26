@@ -21,12 +21,15 @@
 // Requires a running AMQP 0-9 broker
 //  - Example RabbitMQ: 'docker-compose up rabbitmq'
 
-import { ApolloServer } from "apollo-server-express";
-import { createServer } from "http";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import bodyParser from "body-parser";
+import cors from "cors";
 import express from "express";
-import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
-import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
+import { createServer } from "http";
+import { WebSocketServer } from "ws";
 
 // Change the following line:
 //  import { Neo4jGraphQL } from "@neo4j/graphql";
@@ -103,9 +106,6 @@ async function runApolloServer() {
     // Set up ApolloServer.
     const server = new ApolloServer({
         schema,
-        context: ({ req }) => {
-            return { driverConfig: { database: "neo4j" }, req };
-        },
         plugins: [
             // Proper shutdown for the HTTP server.
             ApolloServerPluginDrainHttpServer({ httpServer }),
@@ -123,11 +123,19 @@ async function runApolloServer() {
         ],
     });
     await server.start();
-    server.applyMiddleware({ app });
+
+    app.use(
+        "/graphql",
+        cors(),
+        bodyParser.json(),
+        expressMiddleware(server, {
+            context: async (req) => ({ req, driverConfig: { database: "neo4j" } }),
+        })
+    );
 
     // Now that our HTTP server is fully set up, we can listen to it.
     httpServer.listen(PORT, () => {
-        console.log(`Server is now running on http://localhost:${PORT}${server.graphqlPath}`);
+        console.log(`Server is now running on http://localhost:${PORT}/graphql`);
     });
 }
 
