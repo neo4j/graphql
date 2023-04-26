@@ -1,5 +1,31 @@
 # @neo4j/cypher-builder
 
+## 0.4.1
+
+### Patch Changes
+
+-   [#3191](https://github.com/neo4j/graphql/pull/3191) [`f0d6d45b0`](https://github.com/neo4j/graphql/commit/f0d6d45b07cc65081ede71ce98efc916ce506977) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix Unwind parameters
+
+-   [#3191](https://github.com/neo4j/graphql/pull/3191) [`f0d6d45b0`](https://github.com/neo4j/graphql/commit/f0d6d45b07cc65081ede71ce98efc916ce506977) Thanks [@angrykoala](https://github.com/angrykoala)! - Add .delete chain methods to With, Unwind and Merge
+
+## 0.4.0
+
+### Minor Changes
+
+-   [#3147](https://github.com/neo4j/graphql/pull/3147) [`2bc2c7019`](https://github.com/neo4j/graphql/commit/2bc2c70196c084f850aaf5b17838b0a66eaca79c) Thanks [@angrykoala](https://github.com/angrykoala)! - Refactor Cypher.Map to use a Map internally, include .size method and remove support for undefined fields
+
+-   [#3106](https://github.com/neo4j/graphql/pull/3106) [`bfae63097`](https://github.com/neo4j/graphql/commit/bfae6309717ab936768cab7e5e2a1a20bbff60da) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The type `Cypher.PropertyRef` is now fully exported under `Cypher.Property` for use with utilities such as `instanceof`. However, it maintains the current behaviour of not being directly instantiable.
+
+-   [#3115](https://github.com/neo4j/graphql/pull/3115) [`a04ef4469`](https://github.com/neo4j/graphql/commit/a04ef44692e744e3154a74c5ac2c73f323732fc7) Thanks [@angrykoala](https://github.com/angrykoala)! - Map projections inject the leading dot (.) in the map fields automatically.
+
+### Patch Changes
+
+-   [#3091](https://github.com/neo4j/graphql/pull/3091) [`0d7a140ae`](https://github.com/neo4j/graphql/commit/0d7a140aea93eca94c03bcd49fda9ee9dfa5ae2b) Thanks [@angrykoala](https://github.com/angrykoala)! - Add support for using sets when defining the labels of a Node
+
+-   [#3153](https://github.com/neo4j/graphql/pull/3153) [`d47624ea1`](https://github.com/neo4j/graphql/commit/d47624ea1b1b79401c59d326b4d0e31e64a1545d) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Adds `divide`, `multiply`, `mod`, `pow` to the Math Operators.
+
+-   [#3154](https://github.com/neo4j/graphql/pull/3154) [`b276bbae2`](https://github.com/neo4j/graphql/commit/b276bbae29ead5b110f28984cc77914755ac4c22) Thanks [@angrykoala](https://github.com/angrykoala)! - Add inequality operator (<>) with Cypher.neq
+
 ## 0.3.0
 
 ### Minor Changes

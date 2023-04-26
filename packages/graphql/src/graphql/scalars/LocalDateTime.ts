@@ -25,6 +25,16 @@ import neo4j, { isLocalDateTime } from "neo4j-driver";
 const LOCAL_DATE_TIME_REGEX =
     /^(?<year>\d{4})-(?<month>[0]\d|1[0-2])-(?<day>[0-2]\d|3[01])T(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d+))?$/;
 
+type LocalDateTimeMatchGroups = {
+    year: string;
+    month: string;
+    day: string;
+    hour: string;
+    minute: string;
+    second: string;
+    fraction: string | undefined;
+};
+
 export const parseLocalDateTime = (
     value: unknown
 ): {
@@ -46,11 +56,10 @@ export const parseLocalDateTime = (
         throw new TypeError(`Value must be formatted as LocalDateTime: ${value}`);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { year, month, day, hour, minute, second, fraction = 0 } = match.groups!;
+    const { year, month, day, hour, minute, second, fraction = "0" } = match.groups as LocalDateTimeMatchGroups;
 
     // Take first nine digits if received more
-    let nanosecond = `${fraction}`.substring(0, 9);
+    let nanosecond = fraction.substring(0, 9);
     // Pad with zeros to reach nine digits if received less
     while (nanosecond.toString().length < 9) {
         nanosecond = `${nanosecond}0`;

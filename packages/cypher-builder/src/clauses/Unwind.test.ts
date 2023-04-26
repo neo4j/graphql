@@ -19,8 +19,8 @@
 
 import * as Cypher from "../Cypher";
 
-describe("CypherBuilder UNWIND", () => {
-    test("UNWIND Movies", () => {
+describe("CypherBuilder Unwind", () => {
+    test("Unwind Movies", () => {
         const matrix = new Cypher.Map({ title: new Cypher.Literal("Matrix") });
         const matrix2 = new Cypher.Map({ title: new Cypher.Literal("Matrix 2") });
         const moviesList = new Cypher.List([matrix, matrix2]);
@@ -29,6 +29,17 @@ describe("CypherBuilder UNWIND", () => {
         expect(queryResult.cypher).toMatchInlineSnapshot(
             `"UNWIND [ { title: \\"Matrix\\" }, { title: \\"Matrix 2\\" } ] AS batch"`
         );
+        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+    });
+
+    test("Unwind and delete", () => {
+        const variable = new Cypher.Variable();
+        const unwindQuery = new Cypher.Unwind([new Cypher.Variable(), variable]).delete(variable);
+        const queryResult = unwindQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "UNWIND var0 AS var1
+            DELETE var1"
+        `);
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
 });

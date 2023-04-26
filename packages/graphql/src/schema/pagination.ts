@@ -43,7 +43,7 @@ export function connectionFieldResolver({
     args: ConnectionQueryArgs;
     info: GraphQLResolveInfo;
 }) {
-    const firstField = info.fieldNodes[0];
+    const firstField = info.fieldNodes[0] as FieldNode;
     const { selectionSet } = firstField;
 
     let value = source[connectionField.fieldName];

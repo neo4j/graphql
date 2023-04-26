@@ -206,7 +206,10 @@ function getAggregationProjectionAndSubqueries({
 }
 
 function getAggregationFields(fieldPathBase: string, field: ResolveTree): AggregationFields {
-    const aggregationFields = field.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.field}`];
+    const aggregationFields = field.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.field}`] as Record<
+        string,
+        ResolveTree
+    >;
     const node: Record<string, ResolveTree> | undefined = getFieldByName("node", aggregationFields)?.fieldsByTypeName[
         `${fieldPathBase}${FieldAggregationSchemaTypes.node}`
     ];

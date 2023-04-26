@@ -267,12 +267,17 @@ function getObjFieldMeta({
                 let connectionPrefix = obj.name.value;
 
                 if (obj.interfaces && obj.interfaces.length) {
+                    const firstInterface = obj.interfaces[0];
+                    if (!firstInterface) {
+                        throw new Error("Cannot get interface in getObjFieldMeta");
+                    }
+
                     const inter = interfaces.find(
-                        (i) => i.name.value === (obj.interfaces as NamedTypeNode[])[0].name.value
+                        (i) => i.name.value === firstInterface.name.value
                     ) as InterfaceTypeDefinitionNode;
 
                     if (inter.fields?.some((f) => f.name.value === baseField.fieldName)) {
-                        connectionPrefix = obj.interfaces[0].name.value;
+                        connectionPrefix = firstInterface.name.value;
                         relationField.inherited = true;
                     }
                 }

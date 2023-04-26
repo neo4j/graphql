@@ -1,5 +1,38 @@
 # @neo4j/graphql-toolbox
 
+## 1.5.2
+
+### Patch Changes
+
+-   [#3189](https://github.com/neo4j/graphql/pull/3189) [`75c05b80d`](https://github.com/neo4j/graphql/commit/75c05b80d2353a581a56f34f7f492737a6bdf536) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: Toolbox, Codemirror text selection visibility
+
+-   Updated dependencies [[`a8aabfeca`](https://github.com/neo4j/graphql/commit/a8aabfecad39b371fa82d16ea00e1e45d4044d05), [`8657dff82`](https://github.com/neo4j/graphql/commit/8657dff8274ea3d3a4a42c18c8e81232748cbeff)]:
+    -   @neo4j/graphql@3.18.2
+
+## 1.5.1
+
+### Patch Changes
+
+-   Updated dependencies [[`cbc15970c`](https://github.com/neo4j/graphql/commit/cbc15970cd87e5cdcfbae40ce5bacf1fb819ade8)]:
+    -   @neo4j/graphql@3.18.1
+
+## 1.5.0
+
+### Minor Changes
+
+-   [#3150](https://github.com/neo4j/graphql/pull/3150) [`98dd592a9`](https://github.com/neo4j/graphql/commit/98dd592a90c134605b88e8a28eeeccf0334f321e) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox, Docs explorer GraphiQL v2 component
+
+### Patch Changes
+
+-   [#3112](https://github.com/neo4j/graphql/pull/3112) [`4ec6e274a`](https://github.com/neo4j/graphql/commit/4ec6e274a58c50ce4bf674c84360c8eb53762956) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox, persistent store refactor
+
+-   [#3128](https://github.com/neo4j/graphql/pull/3128) [`fb2497e24`](https://github.com/neo4j/graphql/commit/fb2497e24805898e89f0c640cb98a8fa614372bc) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox, cleanup components and use new NDL tooltip component
+
+-   [#3086](https://github.com/neo4j/graphql/pull/3086) [`299ca1ec8`](https://github.com/neo4j/graphql/commit/299ca1ec847d742c3d21c6f5c8b5a745d6684fe9) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: Toolbox, on load selection of database
+
+-   Updated dependencies [[`7a2f2acc4`](https://github.com/neo4j/graphql/commit/7a2f2acc434d1996a4b3785416acb0c46ad7f199), [`ce5fb9eb3`](https://github.com/neo4j/graphql/commit/ce5fb9eb36a08dde95de605b49f842876b1c1515)]:
+    -   @neo4j/graphql@3.18.0
+
 ## 1.4.13
 
 ### Patch Changes

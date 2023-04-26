@@ -86,7 +86,7 @@ describe("DateTime", () => {
                 const movie: {
                     id: string;
                     datetime: typeof neo4jDriver.types.DateTime;
-                } = (result.records[0].toObject() as any).m;
+                } = (result.records[0]?.toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
                 expect(new Date(movie.datetime.toString()).toISOString()).toEqual(date.toISOString());
@@ -142,7 +142,7 @@ describe("DateTime", () => {
                 const movie: {
                     id: string;
                     datetimes: (typeof neo4jDriver.types.DateTime)[];
-                } = (result.records[0].toObject() as any).m;
+                } = (result.records[0]?.toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
 
@@ -305,7 +305,7 @@ describe("DateTime", () => {
                 const movie: {
                     id: string;
                     datetime: typeof neo4jDriver.types.DateTime;
-                } = (result.records[0].toObject() as any).m;
+                } = (result.records[0]?.toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
                 expect(new Date(movie.datetime.toString()).toISOString()).toEqual(date.toISOString());

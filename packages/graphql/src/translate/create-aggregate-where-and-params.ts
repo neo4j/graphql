@@ -28,7 +28,7 @@ import {
 } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
 import type { LogicalOperator } from "./utils/logical-operators";
-import { getCypherLogicalOperator, isLogicalOperator } from "./utils/logical-operators";
+import { isLogicalOperator, getLogicalPredicate } from "./utils/logical-operators";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { asArray } from "../utils/utils";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
@@ -126,7 +126,6 @@ function aggregateWhere(
             returnProjections.push(...innerReturnProjections);
             returnPredicates.push(...predicates);
         } else if (isLogicalOperator(key)) {
-            const cypherBuilderFunction = getCypherLogicalOperator(key);
             const logicalPredicates: Cypher.Predicate[] = [];
             asArray(value).forEach((whereInput) => {
                 const { returnProjections: innerReturnProjections, predicates } = aggregateWhere(
@@ -140,7 +139,12 @@ function aggregateWhere(
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...predicates);
             });
-            returnPredicates.push(cypherBuilderFunction(...logicalPredicates));
+
+            const logicalPredicate = getLogicalPredicate(key, logicalPredicates);
+
+            if (logicalPredicate) {
+                returnPredicates.push(logicalPredicate);
+            }
         }
     });
     return {
@@ -183,7 +187,6 @@ function aggregateEntityWhere(
     const predicates: Cypher.Predicate[] = [];
     Object.entries(aggregateEntityWhereInput).forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
-            const cypherBuilderFunction = getCypherLogicalOperator(key);
             const logicalPredicates: Cypher.Predicate[] = [];
             asArray(value).forEach((whereInput) => {
                 const { returnProjections: innerReturnProjections, predicates: innerPredicates } = aggregateEntityWhere(
@@ -195,7 +198,12 @@ function aggregateEntityWhere(
                 returnProjections.push(...innerReturnProjections);
                 logicalPredicates.push(...innerPredicates);
             });
-            predicates.push(cypherBuilderFunction(...logicalPredicates));
+
+            const logicalPredicate = getLogicalPredicate(key, logicalPredicates);
+
+            if (logicalPredicate) {
+                predicates.push(logicalPredicate);
+            }
         } else {
             const operation = createEntityOperation(refNodeOrRelation, target, key, value, context);
             const operationVar = new Cypher.Variable();

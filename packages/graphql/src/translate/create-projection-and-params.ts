@@ -30,7 +30,7 @@ import { createFieldAggregation } from "./field-aggregations/create-field-aggreg
 import { addGlobalIdField } from "../utils/global-node-projection";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
-import { removeDuplicates } from "../utils/utils";
+import { filterTruthy, removeDuplicates } from "../utils/utils";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
@@ -403,7 +403,7 @@ export default function createProjectionAndParams({
     // cf. https://github.com/neo4j/graphql/issues/476
     const mergedSelectedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
         nodeFields,
-        ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value]),
+        ...filterTruthy(node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value])),
     ]);
 
     // Merge fields for final projection to account for multiple fragments
@@ -497,7 +497,10 @@ function createFulltextProjection({
     resolveType?: boolean;
     cypherFieldAliasMap: CypherFieldReferenceMap;
 }): ProjectionResult {
-    if (!resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.singular]) {
+    const fieldResolveTree = resolveTree.fieldsByTypeName[node.fulltextTypeNames.result];
+    const nodeResolveTree = fieldResolveTree?.[node.singular];
+
+    if (!nodeResolveTree) {
         return {
             projection: new Cypher.Map(),
             params: {},
@@ -507,8 +510,6 @@ function createFulltextProjection({
             predicates: [],
         };
     }
-
-    const nodeResolveTree = resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.singular];
 
     const nodeContext = { ...context, fulltextIndex: false };
 

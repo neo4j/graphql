@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
@@ -25,6 +24,7 @@ import * as neo4jDriver from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("@alias directive", () => {
     let driver: Driver;
@@ -37,6 +37,10 @@ describe("@alias directive", () => {
     const year = neo4jDriver.int(2015);
     const secret = "secret";
 
+    const AliasDirectiveTestUser = new UniqueType("AliasDirectiveTestUser");
+    const AliasDirectiveTestMovie = new UniqueType("AliasDirectiveTestMovie");
+    const ProtectedUser = new UniqueType("ProtectedUser");
+
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
@@ -46,14 +50,14 @@ describe("@alias directive", () => {
                 name: String! @alias(property: "toBeOverridden")
             }
 
-            type AliasDirectiveTestUser implements AliasInterface {
+            type ${AliasDirectiveTestUser} implements AliasInterface {
                 id: ID! @id
                 name: String! @alias(property: "dbName")
-                likes: [AliasDirectiveTestMovie!]! @relationship(direction: OUT, type: "LIKES", properties: "AliasDirectiveTestLikesProps")
+                likes: [${AliasDirectiveTestMovie}!]! @relationship(direction: OUT, type: "LIKES", properties: "AliasDirectiveTestLikesProps")
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 
-            type AliasDirectiveTestMovie {
+            type ${AliasDirectiveTestMovie} {
                 title: String! @alias(property: "dbTitle")
                 titleAuth: String @alias(property: "dbTitle") @auth(rules: [{roles: ["reader"]}])
                 year: Int
@@ -65,7 +69,7 @@ describe("@alias directive", () => {
                 relationshipCreatedAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 
-            type ProtectedUser @auth(rules: [{ allow: { name: "$jwt.sub" } }]) {
+            type ${ProtectedUser} @auth(rules: [{ allow: { name: "$jwt.sub" } }]) {
                 name: String! @alias(property: "dbName")
             }
         `;
@@ -82,17 +86,17 @@ describe("@alias directive", () => {
 
     beforeEach(async () => {
         session = await neo4j.getSession();
-        await session.run(`MATCH (n:AliasDirectiveTestUser)-[]-(m:AliasDirectiveTestMovie) DETACH DELETE n, m`);
+        await session.run(`MATCH (n:${AliasDirectiveTestUser})-[]-(m:${AliasDirectiveTestMovie}) DETACH DELETE n, m`);
         await session.run(
-            `CREATE (:AliasDirectiveTestUser {dbName: $dbName, dbId: "stringId", dbCreatedAt: "1970-01-02"})-[:LIKES {dbComment: $dbComment, dbCreatedAt: "1970-01-02"}]->(:AliasDirectiveTestMovie {dbTitle: $dbTitle, year: $year, dbCreatedAt: "1970-01-02"})
-            CREATE (:ProtectedUser {dbName: $dbName})`,
+            `CREATE (:${AliasDirectiveTestUser} {dbName: $dbName, dbId: "stringId", dbCreatedAt: "1970-01-02"})-[:LIKES {dbComment: $dbComment, dbCreatedAt: "1970-01-02"}]->(:${AliasDirectiveTestMovie} {dbTitle: $dbTitle, year: $year, dbCreatedAt: "1970-01-02"})
+            CREATE (:${ProtectedUser} {dbName: $dbName})`,
             { dbName, dbComment, dbTitle, year }
         );
     });
 
     afterEach(async () => {
         await session.run(
-            `MATCH (n:AliasDirectiveTestUser), (m:AliasDirectiveTestMovie), (o:ProtectedUser) DETACH DELETE n, m, o`
+            `MATCH (n:${AliasDirectiveTestUser}), (m:${AliasDirectiveTestMovie}), (o:${ProtectedUser}) DETACH DELETE n, m, o`
         );
         await session.close();
     });
@@ -104,7 +108,7 @@ describe("@alias directive", () => {
     test("Aliased fields on nodes through simple relationships (using STARTS_WITH filter)", async () => {
         const usersQuery = `
             query UsersLikesMovies {
-                aliasDirectiveTestUsers(where: {name_STARTS_WITH: "${dbName.substring(0, 6)}"}) {
+                ${AliasDirectiveTestUser.plural}(where: {name_STARTS_WITH: "${dbName.substring(0, 6)}"}) {
                     id
                     name
                     likes {
@@ -127,7 +131,7 @@ describe("@alias directive", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect((gqlResult.data as any).aliasDirectiveTestUsers[0]).toEqual({
+        expect((gqlResult.data as any)[AliasDirectiveTestUser.plural][0]).toEqual({
             name: dbName,
             id: expect.any(String),
             likes: [
@@ -139,10 +143,11 @@ describe("@alias directive", () => {
             ],
         });
     });
+
     test("Works with type level auth", async () => {
         const protectedUsersQuery = `
             query ProtectedUsersQ {
-                protectedUsers {
+                ${ProtectedUser.plural} {
                     name
                 }
             }
@@ -159,12 +164,12 @@ describe("@alias directive", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).protectedUsers[0]).toEqual({ name: dbName });
+        expect((gqlResult.data as any)[ProtectedUser.plural][0]).toEqual({ name: dbName });
     });
     test("Aliased fields on nodes through connections (incl. rel props)", async () => {
         const usersQuery = `
             query UsersLikesMovies {
-                aliasDirectiveTestUsers {
+                ${AliasDirectiveTestUser.plural} {
                     name
                     likesConnection {
                         edges {
@@ -187,7 +192,7 @@ describe("@alias directive", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect((gqlResult.data as any).aliasDirectiveTestUsers[0]).toEqual({
+        expect((gqlResult.data as any)[AliasDirectiveTestUser.plural][0]).toEqual({
             name: dbName,
             likesConnection: {
                 edges: [
@@ -202,10 +207,11 @@ describe("@alias directive", () => {
             },
         });
     });
+
     test("Using GraphQL query alias with @alias (using CONTAINS filter)", async () => {
         const usersQuery = `
             query UsersLikesMovies {
-                aliasDirectiveTestUsers(where: {name_CONTAINS: "${dbName.substring(0, 6)}"}) {
+                ${AliasDirectiveTestUser.plural}(where: {name_CONTAINS: "${dbName.substring(0, 6)}"}) {
                     myName: name
                     likesConnection {
                         edges {
@@ -224,21 +230,22 @@ describe("@alias directive", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect((gqlResult.data as any).aliasDirectiveTestUsers[0]).toEqual({
+        expect((gqlResult.data as any)[AliasDirectiveTestUser.plural][0]).toEqual({
             myName: dbName,
             likesConnection: { edges: [{ myComment: dbComment }] },
         });
     });
+
     test("E2E with create mutation with @alias", async () => {
         const name = "Stella";
         const title = "Interstellar";
         const comment = "Yes!";
         const userMutation = `
         mutation CreateUser {
-            createAliasDirectiveTestUsers(
+            ${AliasDirectiveTestUser.operations.create}(
                 input: [{ name: "${name}", likes: { create: { edge: {comment: "${comment}"}, node: { title: "${title}", year: ${year} } } } }]
             ) {
-                aliasDirectiveTestUsers {
+                ${AliasDirectiveTestUser.plural} {
                     name
                     createdAt
                     likes {
@@ -269,7 +276,9 @@ describe("@alias directive", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect((gqlResult.data as any).createAliasDirectiveTestUsers.aliasDirectiveTestUsers[0]).toEqual({
+        expect(
+            (gqlResult.data as any)[AliasDirectiveTestUser.operations.create][AliasDirectiveTestUser.plural][0]
+        ).toEqual({
             name,
             createdAt: expect.any(String),
             likes: [
@@ -298,14 +307,14 @@ describe("@alias directive", () => {
         const title = "Interstellar 2";
         const comment = "Yes!";
         await session.run(
-            `CREATE (m:AliasDirectiveTestMovie {dbTitle: "${title}", year: toInteger(2015), dbCreatedAt: "2021-08-25"})`
+            `CREATE (m:${AliasDirectiveTestMovie} {dbTitle: "${title}", year: toInteger(2015), dbCreatedAt: "2021-08-25"})`
         );
         const userMutation = `
         mutation CreateUserConnectMovie {
-            createAliasDirectiveTestUsers(
+            ${AliasDirectiveTestUser.operations.create}(
                 input: [{ name: "${name}", likes: { connect: { where: {node: {title: "${title}"}}, edge: {comment: "${comment}"} } } }]
             ) {
-                aliasDirectiveTestUsers {
+                ${AliasDirectiveTestUser.plural} {
                     id
                     name
                     likes {
@@ -333,8 +342,9 @@ describe("@alias directive", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-
-        expect((gqlResult.data as any).createAliasDirectiveTestUsers.aliasDirectiveTestUsers[0]).toEqual({
+        expect(
+            (gqlResult.data as any)[AliasDirectiveTestUser.operations.create][AliasDirectiveTestUser.plural][0]
+        ).toEqual({
             id: expect.any(String),
             name,
             likes: [
@@ -367,10 +377,10 @@ describe("@alias directive", () => {
 
         const create = `
         mutation CreateGraph {
-            createAliasDirectiveTestUsers(
+            ${AliasDirectiveTestUser.operations.create}(
                 input: [{ name: "${name}", likes: { create: { edge: {comment: "${comment}"}, node: { title: "${title}", year: ${year} } } } }]
             ) {
-                aliasDirectiveTestUsers {
+                ${AliasDirectiveTestUser.plural} {
                     id
                 }
                 info {
@@ -385,15 +395,15 @@ describe("@alias directive", () => {
             source: create,
             contextValue: neo4j.getContextValues(),
         });
-        const { bookmark } = (createResult.data as any).createAliasDirectiveTestUsers.info;
+        const { bookmark } = (createResult.data as any)[AliasDirectiveTestUser.operations.create].info;
 
         const update = `
         mutation UpdateAll {
-            updateAliasDirectiveTestUsers(
+            ${AliasDirectiveTestUser.operations.update}(
                 where: {name_CONTAINS: "${name}"}
                 update: {name: "${newName}", likes: {update: {edge: {comment: "${newComment}"}, node: {title: "${newTitle}", year: ${newYear}}}}}
             ) {
-                aliasDirectiveTestUsers {
+                ${AliasDirectiveTestUser.plural} {
                     id
                     name
                     likes {
@@ -421,7 +431,9 @@ describe("@alias directive", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect((gqlResult.data as any).updateAliasDirectiveTestUsers.aliasDirectiveTestUsers[0]).toEqual({
+        expect(
+            (gqlResult.data as any)[AliasDirectiveTestUser.operations.update][AliasDirectiveTestUser.plural][0]
+        ).toEqual({
             id: expect.any(String),
             name: newName,
             likes: [

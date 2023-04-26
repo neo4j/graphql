@@ -133,7 +133,9 @@ function getNodes(
 
         let auth: Auth;
         if (authDirective || interfaceAuthDirectives.length) {
-            auth = getAuth(authDirective || interfaceAuthDirectives[0]);
+            const authData = authDirective || interfaceAuthDirectives[0];
+            if (!authData) throw new Error("authData not found in getNodes");
+            auth = getAuth(authData);
         }
 
         let exclude: Exclude;

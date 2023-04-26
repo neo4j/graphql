@@ -20,7 +20,7 @@ type RemoteJWKS = {
 
 type Key = string | RemoteJWKS
 
-type AuthorizationConfig = {
+type AuthConfig = {
   key: Key | ((req: RequestLike) => Key);
   verify: boolean;
   // https://github.com/panva/jose/blob/main/docs/interfaces/jwt_verify.JWTVerifyOptions.md
@@ -28,11 +28,11 @@ type AuthorizationConfig = {
 }
 ```
 
-`AuthorizationConfig.key` will assume symmetric type if passed a string, or other types by passing in different objects. This will allow us to use the same configuration for a variety of secret types. `jose` also supports SPKI encoded RSA keys. This can also be a function executed using the request context to return the same object.
+`AuthConfig.key` will assume symmetric type if passed a string, or other types by passing in different objects. This will allow us to use the same configuration for a variety of secret types. `jose` also supports SPKI encoded RSA keys. This can also be a function executed using the request context to return the same object.
 
-`AuthorizationConfig.verify` will be `true` by default, but can be set to `false` if the desired behaviour is to decode only.
+`AuthConfig.verify` will be `true` by default, but can be set to `false` if the desired behaviour is to decode only.
 
-`AuthorizationConfig.verifyOptions` allows configuration of the JWT verify options in `jose`. It will simply passthrough the types used directly by `jose`. The `JWTVerifyOptions` and also the `RemoteJWKSetOptions` will need to be re-exported for TypeScript users.
+`AuthConfig.verifyOptions` allows configuration of the JWT verify options in `jose`. It will simply passthrough the types used directly by `jose`. The `JWTVerifyOptions` and also the `RemoteJWKSetOptions` will need to be re-exported for TypeScript users.
 
 To configure auth with a symmetric secret "secret", the following can be executed:
 
@@ -40,7 +40,7 @@ To configure auth with a symmetric secret "secret", the following can be execute
 new Neo4jGraphQL({
   typeDefs,
   features: {
-    authorization: {
+    auth: {
       key: "secret",
     }
   }
@@ -49,24 +49,41 @@ new Neo4jGraphQL({
 
 ## JWT Payload
 
-As part of this proposal, users will be able to define the structure of their JWT payload using a GraphQL directive:
+As part of this proposal, users will be able to define the structure of their JWT payload using two GraphQL directives:
 
 ```gql
 directive @jwtPayload on OBJECT
+directive @jwtClaim(
+  path: String!
+) on FIELD_DEFINITION
 ```
 
-This is a directive purely for flagging which type should be used as the representation of the JWT payload structure, and it can only be used once.
+These directives are for flagging the structure for the representation of the JWT payload structure.
+
+The `@jwtPayload` directive can be used only once in a user's type definitions, and flags the object representing the payload. The type decorated with `@jwtPayload` will only be allowed to contain fields of primitive types, or their list variants.
+
+The `@jwtClaim` directive can only be used within the type flagged with the `@jwtPayload` directive. It only needs to be used if the GraphQL fieldname isn't a direct map to the JWT claim.
 
 Then a type such as the following can be included in users' type definitions:
 
 ```gql
 type JWTPayload @jwtPayload {
-  sub: String!
   roles: [String!]!
+  application1Groups: [String!]! @jwtClaim(path: "applications[0].groups")
 }
 ```
 
 This will be used for the generation of filters later down the line.
+
+We will automatically map the Registered Claim Names according to the JWT specification (https://www.rfc-editor.org/rfc/rfc7519#section-4.1):
+
+* `iss`
+* `sub`
+* `aud`
+* `exp`
+* `nbf`
+* `iat`
+* `jti`
 
 ## Directive
 
@@ -279,8 +296,8 @@ The generated types for the directive will depend on the type labelled with `@jw
 
 ```gql
 type JWTPayload @jwtPayload {
-  sub: String!
   roles: [String!]!
+  application1Groups: [String!]! @jwtClaim(path: "applications[0].groups")
 }
 ```
 
@@ -291,13 +308,48 @@ input JWTPayloadWhere {
     AND: [JWTPayloadWhere!]
     NOT: JWTPayloadWhere
     OR: [JWTPayloadWhere!]
+    iss: String
+    iss_CONTAINS: String
+    iss_ENDS_WITH: String
+    iss_IN: [String!]
+    iss_STARTS_WITH: String
     sub: String
     sub_CONTAINS: String
     sub_ENDS_WITH: String
     sub_IN: [String!]
     sub_STARTS_WITH: String
+    aud: String
+    aud_CONTAINS: String
+    aud_ENDS_WITH: String
+    aud_IN: [String!]
+    aud_STARTS_WITH: String
+    exp: Int
+    exp_LT: Int
+    exp_GT: Int
+    exp_LTE: Int
+    exp_GTE: Int
+    exp_IN: [Int!]
+    nbf: Int
+    nbf_LT: Int
+    nbf_GT: Int
+    nbf_LTE: Int
+    nbf_GTE: Int
+    nbf_IN: [Int!]
+    iat: Int
+    iat_LT: Int
+    iat_GT: Int
+    iat_LTE: Int
+    iat_GTE: Int
+    iat_IN: [Int!]
+    jti: String
+    jti_CONTAINS: String
+    jti_ENDS_WITH: String
+    jti_IN: [String!]
+    jti_STARTS_WITH: String
     roles: [String!]
     roles_INCLUDES: String
+    application1Groups: [String!]
+    application1Groups_INCLUDES: String
 }
 ```
 

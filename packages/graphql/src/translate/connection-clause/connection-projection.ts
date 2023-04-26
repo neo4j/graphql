@@ -58,7 +58,10 @@ export function createEdgeProjection({
 
     if (connection.edges) {
         const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
-        const relationshipFieldsByTypeName = connection.edges.fieldsByTypeName[field.relationshipTypeName];
+        const relationshipFieldsByTypeName = connection.edges.fieldsByTypeName[field.relationshipTypeName] as Record<
+            string,
+            ResolveTree
+        >;
         const relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
         if (relationshipProperties.length || extraFields.length) {
             const relationshipPropertyEntries = relationshipProperties.filter((p) => p.name !== "cursor");
