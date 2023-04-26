@@ -19,7 +19,7 @@
 
 import { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
-import { escapeLabel } from "../utils/escape-label";
+import { escapeLabel } from "../utils/escape";
 import type { NodeRef } from "../references/NodeRef";
 
 /** Generates a predicate to check if a node has a label
