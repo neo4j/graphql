@@ -23,14 +23,14 @@ import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
 import Neo4j from "../neo4j";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("Subscriptions delete", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let plugin: TestSubscriptionsPlugin;
+    let plugin: TestSubscriptionsMechanism;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -38,7 +38,7 @@ describe("Subscriptions delete", () => {
     });
 
     beforeEach(() => {
-        plugin = new TestSubscriptionsPlugin();
+        plugin = new TestSubscriptionsMechanism();
     });
 
     afterAll(async () => {
@@ -76,6 +76,8 @@ describe("Subscriptions delete", () => {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
                 }),
+            },
+            features: {
                 subscriptions: plugin,
             },
         });

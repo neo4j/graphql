@@ -57,7 +57,7 @@ describe("Apollo and RabbitMQ Subscription", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
+            features: {
                 subscriptions: plugin,
             },
         });

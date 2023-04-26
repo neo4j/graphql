@@ -24,7 +24,7 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
 
@@ -60,8 +60,8 @@ describe("Delete Subscription", () => {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },
-            plugins: {
-                subscriptions: new TestSubscriptionsPlugin(),
+            features: {
+                subscriptions: new TestSubscriptionsMechanism(),
             },
         });
 

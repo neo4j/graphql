@@ -21,7 +21,6 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/2261", () => {
@@ -66,8 +65,8 @@ describe("https://github.com/neo4j/graphql/issues/2261", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
-                subscriptions: new Neo4jGraphQLSubscriptionsSingleInstancePlugin(),
+            features: {
+                subscriptions: true,
             },
         });
     });

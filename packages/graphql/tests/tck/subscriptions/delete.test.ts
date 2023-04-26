@@ -19,7 +19,7 @@
 
 import { gql } from "apollo-server";
 import type { DocumentNode } from "graphql";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -27,10 +27,10 @@ import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-ut
 describe("Subscriptions metadata on delete", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
-    let plugin: TestSubscriptionsPlugin;
+    let plugin: TestSubscriptionsMechanism;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsPlugin();
+        plugin = new TestSubscriptionsMechanism();
         typeDefs = gql`
             type Actor {
                 name: String!
@@ -45,9 +45,9 @@ describe("Subscriptions metadata on delete", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
     });
 

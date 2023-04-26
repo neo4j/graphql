@@ -23,7 +23,7 @@ import { execute } from "../../../utils";
 import { translateDelete } from "../../../translate";
 import type { Context } from "../../../types";
 import type { Node } from "../../../classes";
-import { publishEventsToPlugin } from "../../subscriptions/publish-events-to-plugin";
+import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
 
 export function deleteResolver({ node }: { node: Node }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
@@ -37,7 +37,7 @@ export function deleteResolver({ node }: { node: Node }) {
             context,
         });
 
-        publishEventsToPlugin(executeResult, context.plugins?.subscriptions, context.schemaModel);
+        publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);
 
         return { bookmark: executeResult.bookmark, ...executeResult.statistics };
     }

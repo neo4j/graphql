@@ -63,6 +63,7 @@ describe("wrapper test", () => {
             relationships: [],
             schema: {} as GraphQLSchema,
             plugins: {},
+            features: {},
         };
     });
 

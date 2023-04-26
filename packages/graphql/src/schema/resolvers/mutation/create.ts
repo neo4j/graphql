@@ -23,7 +23,7 @@ import { translateCreate } from "../../../translate";
 import type { Node } from "../../../classes";
 import type { Context } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
-import { publishEventsToPlugin } from "../../subscriptions/publish-events-to-plugin";
+import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
 
 export function createResolver({ node }: { node: Node }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
@@ -43,7 +43,7 @@ export function createResolver({ node }: { node: Node }) {
         ) as FieldNode;
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
 
-        publishEventsToPlugin(executeResult, context.plugins?.subscriptions, context.schemaModel);
+        publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);
 
         return {
             info: {

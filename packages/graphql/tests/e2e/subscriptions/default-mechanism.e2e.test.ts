@@ -21,31 +21,41 @@ import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
+import { delay } from "../../../src/utils/utils";
+import { UniqueType } from "../../utils/graphql-types";
+import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "../../../src/classes/Neo4jGraphQLSubscriptionsDefaultMechanism";
 
-describe("Create Subscription", () => {
+describe("Single instance Subscription", () => {
     let neo4j: Neo4j;
     let driver: Driver;
-    let server: TestGraphQLServer;
-    let wsClient: WebSocketTestClient;
-    let typeMovie: UniqueType;
-    let typeActor: UniqueType;
+    let plugin: Neo4jGraphQLSubscriptionsDefaultMechanism;
 
-    beforeEach(async () => {
-        typeMovie = new UniqueType("Movie");
-        typeActor = new UniqueType("Actor");
+    const typeMovie = new UniqueType("Movie");
+
+    const subscriptionQuery = `subscription {
+                            ${typeMovie.operations.subscribe.created} {
+                                ${typeMovie.operations.subscribe.payload.created} {
+                                    title
+                                }
+                                event
+                                timestamp
+                            }
+                        }`;
+
+    let server: TestGraphQLServer;
+
+    let wsClient: WebSocketTestClient;
+    let wsClient2: WebSocketTestClient;
+
+    beforeAll(async () => {
+        plugin = new Neo4jGraphQLSubscriptionsDefaultMechanism();
         const typeDefs = `
          type ${typeMovie} {
              title: String
-             actors: [${typeActor}]
-         }
-         type ${typeActor} @exclude(operations: [SUBSCRIBE]) {
-            name: String
          }
          `;
 
@@ -61,34 +71,78 @@ describe("Create Subscription", () => {
                 },
             },
             features: {
-                subscriptions: new TestSubscriptionsMechanism(),
+                subscriptions: plugin,
             },
         });
+
         server = new ApolloTestServer(neoSchema);
         await server.start();
+    });
 
+    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
+        wsClient2 = new WebSocketTestClient(server.wsPath);
     });
 
     afterEach(async () => {
         await wsClient.close();
+        await wsClient2.close();
+    });
 
+    afterAll(async () => {
         await server.close();
         await driver.close();
     });
 
-    test("create subscription", async () => {
-        await wsClient.subscribe(`
-                            subscription {
-                                ${typeMovie.operations.subscribe.created} {
-                                    ${typeMovie.operations.subscribe.payload.created} {
-                                        title
-                                    }
-                                    event
-                                    timestamp
-                                }
-                            }
-                            `);
+    // NOTE: This test **may** be flaky, if so, feel free to remove it
+    test("listeners are properly triggered and cleaned up", async () => {
+        expect(plugin.events.getMaxListeners()).toBe(0);
+        expect(plugin.events.listenerCount("create")).toBe(0);
+
+        await wsClient.subscribe(subscriptionQuery);
+        await wsClient2.subscribe(subscriptionQuery);
+
+        await delay(50); // Sorry listener count takes a bit to update
+        expect(plugin.events.listenerCount("create")).toBe(2);
+
+        await wsClient2.close();
+        await delay(50); // Sorry listener count takes a bit to update
+        expect(plugin.events.listenerCount("create")).toBe(1);
+    });
+
+    test("multiple listeners attached to local event plugin", async () => {
+        await wsClient.subscribe(subscriptionQuery);
+        await wsClient2.subscribe(subscriptionQuery);
+
+        await createMovie("movie1");
+
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(1);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                    event: "CREATE",
+                    timestamp: expect.any(Number),
+                },
+            },
+        ]);
+        expect(wsClient2.errors).toEqual([]);
+        expect(wsClient2.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                    event: "CREATE",
+                    timestamp: expect.any(Number),
+                },
+            },
+        ]);
+    });
+
+    test("create and triggers subscription", async () => {
+        await wsClient.subscribe(subscriptionQuery);
 
         await createMovie("movie1");
         await createMovie("movie2");
@@ -113,50 +167,6 @@ describe("Create Subscription", () => {
             },
         ]);
     });
-    test("create subscription with where", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title: "movie1" }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
-                        title
-                    }
-                }
-            }
-        `);
-
-        await createMovie("movie1");
-        await createMovie("movie2");
-
-        await wsClient.waitForEvents(1);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                },
-            },
-        ]);
-    });
-
-    test("create subscription on excluded type", async () => {
-        const onReturnError = jest.fn();
-        await wsClient.subscribe(
-            `
-            subscription {
-                ${typeActor.operations.subscribe.created}(where: { name: "Keanu" }) {
-                    ${typeActor.operations.subscribe.payload.created} {
-                        name
-                    }
-                }
-            }
-        `,
-            onReturnError
-        );
-        await createActor("Keanu");
-        expect(onReturnError).toHaveBeenCalled();
-        expect(wsClient.events).toEqual([]);
-    });
 
     async function createMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
@@ -167,24 +177,6 @@ describe("Create Subscription", () => {
                         ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
                             ${typeMovie.plural} {
                                 title
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-        return result;
-    }
-
-    async function createActor(name: string): Promise<Response> {
-        const result = await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeActor.operations.create}(input: [{ name: "${name}" }]) {
-                            ${typeActor.plural} {
-                                name
                             }
                         }
                     }

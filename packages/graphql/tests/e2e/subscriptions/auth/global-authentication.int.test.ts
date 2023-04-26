@@ -24,7 +24,7 @@ import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
 import { createJwtHeader } from "../../../utils/create-jwt-request";
@@ -67,8 +67,10 @@ describe("Subscription global authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
+                features: {
+                    subscriptions: new TestSubscriptionsMechanism(),
+                },
                 plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
                         globalAuthentication: true,
@@ -142,8 +144,10 @@ describe("Subscription global authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
+                features: {
+                    subscriptions: new TestSubscriptionsMechanism(),
+                },
                 plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
                         globalAuthentication: true,
@@ -217,8 +221,10 @@ describe("Subscription global authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
+                features: {
+                    subscriptions: new TestSubscriptionsMechanism(),
+                },
                 plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret,
                         globalAuthentication: true,

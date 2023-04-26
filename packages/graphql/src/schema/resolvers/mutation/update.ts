@@ -24,7 +24,7 @@ import { translateUpdate } from "../../../translate";
 import type { Node } from "../../../classes";
 import type { Context } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
-import { publishEventsToPlugin } from "../../subscriptions/publish-events-to-plugin";
+import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
 
 export function updateResolver({ node, schemaComposer }: { node: Node; schemaComposer: SchemaComposer }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
@@ -38,7 +38,7 @@ export function updateResolver({ node, schemaComposer }: { node: Node; schemaCom
             context,
         });
 
-        publishEventsToPlugin(executeResult, context.plugins?.subscriptions, context.schemaModel);
+        publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);
 
         const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(
             (selection) => selection.kind === "Field" && selection.name.value === node.plural

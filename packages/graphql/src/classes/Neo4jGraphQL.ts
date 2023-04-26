@@ -32,6 +32,8 @@ import type {
     Neo4jGraphQLPlugins,
     Neo4jFeaturesSettings,
     StartupValidationConfig,
+    ContextFeatures,
+    Neo4jGraphQLSubscriptionsMechanism,
 } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
@@ -52,6 +54,7 @@ import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
+import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -87,7 +90,7 @@ class Neo4jGraphQL {
 
     private config: Neo4jGraphQLConfig;
     private driver?: Driver;
-    private features?: Neo4jFeaturesSettings;
+    private features: ContextFeatures;
 
     private _nodes?: Node[];
     private _relationships?: Relationship[];
@@ -98,7 +101,8 @@ class Neo4jGraphQL {
     private executableSchema?: Promise<GraphQLSchema>;
     private subgraphSchema?: Promise<GraphQLSchema>;
 
-    private pluginsInit?: Promise<void>;
+    // This promise ensures that subscription init only happens once
+    private subscriptionInit?: Promise<void>;
 
     private dbInfo?: Neo4jDatabaseInfo;
 
@@ -108,7 +112,7 @@ class Neo4jGraphQL {
         this.driver = driver;
         this.config = config;
         this.plugins = plugins;
-        this.features = features;
+        this.features = this.parseNeo4jFeatures(features);
 
         this.typeDefs = typeDefs;
         this.resolvers = resolvers;
@@ -140,7 +144,7 @@ class Neo4jGraphQL {
         if (!this.executableSchema) {
             this.executableSchema = this.generateExecutableSchema();
 
-            await this.pluginsSetup();
+            await this.subscriptionMechanismSetup();
         }
 
         return this.executableSchema;
@@ -154,7 +158,7 @@ class Neo4jGraphQL {
         if (!this.subgraphSchema) {
             this.subgraphSchema = this.generateSubgraphSchema();
 
-            await this.pluginsSetup();
+            await this.subscriptionMechanismSetup();
         }
 
         return this.subgraphSchema;
@@ -300,6 +304,20 @@ class Neo4jGraphQL {
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
+    private parseNeo4jFeatures(features: Neo4jFeaturesSettings | undefined): ContextFeatures {
+        let subscriptionPlugin: Neo4jGraphQLSubscriptionsMechanism | undefined;
+        if (features?.subscriptions === true) {
+            subscriptionPlugin = new Neo4jGraphQLSubscriptionsDefaultMechanism();
+        } else {
+            subscriptionPlugin = features?.subscriptions || undefined;
+        }
+
+        return {
+            ...features,
+            subscriptions: subscriptionPlugin,
+        };
+    }
+
     private generateSchemaModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         // This can be run several times but it will always be the same result,
         // so we memoize the schemaModel.
@@ -320,7 +338,7 @@ class Neo4jGraphQL {
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 validateResolvers: validationConfig.validateResolvers,
-                generateSubscriptions: Boolean(this.plugins?.subscriptions),
+                generateSubscriptions: Boolean(this.features?.subscriptions),
                 userCustomResolvers: this.resolvers,
             });
 
@@ -360,7 +378,7 @@ class Neo4jGraphQL {
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
             validateResolvers: validationConfig.validateResolvers,
-            generateSubscriptions: Boolean(this.plugins?.subscriptions),
+            generateSubscriptions: Boolean(this.features?.subscriptions),
             userCustomResolvers: this.resolvers,
             subgraph,
         });
@@ -421,24 +439,24 @@ class Neo4jGraphQL {
         return validationConfig;
     }
 
-    private pluginsSetup(): Promise<void> {
-        if (this.pluginsInit) {
-            return this.pluginsInit;
+    private subscriptionMechanismSetup(): Promise<void> {
+        if (this.subscriptionInit) {
+            return this.subscriptionInit;
         }
 
         const setup = async () => {
-            const subscriptionsPlugin = this.plugins?.subscriptions;
-            if (subscriptionsPlugin) {
-                subscriptionsPlugin.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
-                if (subscriptionsPlugin.init) {
-                    await subscriptionsPlugin.init();
+            const subscriptionsMechanism = this.features?.subscriptions;
+            if (subscriptionsMechanism) {
+                subscriptionsMechanism.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
+                if (subscriptionsMechanism.init) {
+                    await subscriptionsMechanism.init();
                 }
             }
         };
 
-        this.pluginsInit = setup();
+        this.subscriptionInit = setup();
 
-        return this.pluginsInit;
+        return this.subscriptionInit;
     }
 }
 

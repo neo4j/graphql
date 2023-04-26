@@ -53,6 +53,7 @@ export interface Context {
     auth?: AuthContext;
     callbacks?: Neo4jGraphQLCallbacks;
     plugins?: Neo4jGraphQLPlugins;
+    features: ContextFeatures;
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
     executionContext: Driver | Session | Transaction;
@@ -468,7 +469,8 @@ export type RelationshipSubscriptionsEvent =
 /** Serialized subscription event */
 export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
 
-export interface Neo4jGraphQLSubscriptionsPlugin {
+/** Defines a custom mechanism to transport subscription events internally between servers */
+export interface Neo4jGraphQLSubscriptionsMechanism {
     events: EventEmitter;
 
     publish(eventMeta: SubscriptionsEvent): Promise<void> | void;
@@ -479,7 +481,6 @@ export interface Neo4jGraphQLSubscriptionsPlugin {
 
 export interface Neo4jGraphQLPlugins {
     auth?: Neo4jGraphQLAuthPlugin;
-    subscriptions?: Neo4jGraphQLSubscriptionsPlugin;
 }
 
 export type CallbackReturnValue = string | number | boolean | undefined | null;
@@ -528,11 +529,21 @@ export type RequestLike = {
     cookies?: { token?: string };
 };
 
-export interface Neo4jFeaturesSettings {
+/** Options to enable extra capabilities on @neo4j/graphql API */
+export type Neo4jFeaturesSettings = {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
-}
+    subscriptions?: Neo4jGraphQLSubscriptionsMechanism | boolean;
+};
+
+/** Parsed features used in context */
+export type ContextFeatures = {
+    filters?: Neo4jFiltersSettings;
+    populatedBy?: Neo4jPopulatedBySettings;
+    authorization?: Neo4jAuthorizationSettings;
+    subscriptions?: Neo4jGraphQLSubscriptionsMechanism;
+};
 
 export type PredicateReturn = {
     predicate: Cypher.Predicate | undefined;

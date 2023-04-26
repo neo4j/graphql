@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
 import Neo4j from "../neo4j";
 
 describe("auth/bind", () => {
@@ -84,7 +84,7 @@ describe("auth/bind", () => {
                 }
             `;
 
-            const plugin = new TestSubscriptionsPlugin();
+            const plugin = new TestSubscriptionsMechanism();
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
@@ -92,6 +92,8 @@ describe("auth/bind", () => {
                     auth: new Neo4jGraphQLAuthJWTPlugin({
                         secret: "secret",
                     }),
+                },
+                features: {
                     subscriptions: plugin,
                 },
             });

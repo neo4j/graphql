@@ -20,7 +20,7 @@
 import { gql } from "apollo-server";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -28,10 +28,10 @@ import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-ut
 describe("Subscriptions metadata on create", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
-    let plugin: TestSubscriptionsPlugin;
+    let plugin: TestSubscriptionsMechanism;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsPlugin();
+        plugin = new TestSubscriptionsMechanism();
         typeDefs = gql`
             type Actor {
                 id: String!
@@ -48,12 +48,14 @@ describe("Subscriptions metadata on create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
+            },
+            plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret: "secret",
                 }),
-            } as any,
+            },
         });
     });
 

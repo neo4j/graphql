@@ -21,7 +21,7 @@ import type { ExecuteResult } from "../../utils/execute";
 import { serializeNeo4jValue } from "../../utils/neo4j-serializers";
 import type {
     EventMeta,
-    Neo4jGraphQLSubscriptionsPlugin,
+    Neo4jGraphQLSubscriptionsMechanism,
     NodeSubscriptionMeta,
     RelationshipSubscriptionMeta,
     RelationshipSubscriptionMetaLabelsParameters,
@@ -30,9 +30,9 @@ import type {
 } from "../../types";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 
-export function publishEventsToPlugin(
+export function publishEventsToSubscriptionMechanism(
     executeResult: ExecuteResult,
-    plugin: Neo4jGraphQLSubscriptionsPlugin | undefined,
+    plugin: Neo4jGraphQLSubscriptionsMechanism | undefined,
     schemaModel: Neo4jGraphQLSchemaModel
 ): void {
     if (plugin) {
@@ -45,6 +45,7 @@ export function publishEventsToPlugin(
             "delete",
             "create_relationship"
         );
+
         for (const subscriptionsEvent of serializedEventsWithoutDuplicates) {
             try {
                 const publishPromise = plugin.publish(subscriptionsEvent); // Not using await to avoid blocking

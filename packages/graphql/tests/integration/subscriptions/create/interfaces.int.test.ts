@@ -25,13 +25,13 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
 
 describe("interface relationships", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
-    let subscriptionsPlugin: TestSubscriptionsPlugin;
+    let subscriptionsPlugin: TestSubscriptionsMechanism;
     let typeDefs: DocumentNode;
     let session: Session;
 
@@ -74,10 +74,10 @@ describe("interface relationships", () => {
     });
 
     beforeEach(() => {
-        subscriptionsPlugin = new TestSubscriptionsPlugin();
+        subscriptionsPlugin = new TestSubscriptionsMechanism();
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: subscriptionsPlugin,
             },
         });
