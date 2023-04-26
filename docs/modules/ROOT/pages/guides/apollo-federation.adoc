@@ -69,7 +69,6 @@ const schema = neoSchema.getSubgraphSchema();
 
 const server = new ApolloServer({
   schema,
-  resolvers,
 });
 
 const { url } = startStandaloneServer(server, { listen: { port: 4001 } });
