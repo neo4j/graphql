@@ -1,11 +1,11 @@
 [[subscription-mechanisms]]
 = Subscription Mechanisms
 
-There are different ways in how a GraphQL subscription may be set along with `@neo4j/graphql` server.
+There are different ways to how a GraphQL subscription may be set along with `@neo4j/graphql` server.
 
 
 == Default
-The default behaviour is automatically set if the `subscriptions` feature is set to true, as described in xref::subscriptions/getting-started.adoc[Getting Started]:
+The default behavior is automatically set if the `subscriptions` feature is set to `true`, as described in xref::subscriptions/getting-started.adoc[Getting Started]:
 
 ```javascript
 new Neo4jGraphQL({
@@ -17,13 +17,15 @@ new Neo4jGraphQL({
 });
 ```
 
-This behaviour enables a simple subscription system that will work on a single instance, which is ideal for development, testing, and servers that do not require horizontal scaling.
+This behavior enables a simple subscription system that will work on a single instance, which is ideal for development, testing, and servers that do not require horizontal scaling.
 
 [[amqp]]
 == AMQP
-Using subscriptions on a server with multiple instances can be tricky, as described in xref::subscriptions/scaling.adoc[Scaling]. For this, the recommended approach is to use a PubSub system, which can be achieved with an AMQP broker such as link:https://www.rabbitmq.com/[RabbitMQ]. This is supported through the link:https://www.npmjs.com/package/@neo4j/graphql-plugin-subscriptions-amqp[@neo4j/graphql-plugin-subscriptions-amqp] package.
+Using subscriptions on a server with multiple instances can be tricky, as described in xref::subscriptions/scaling.adoc[Horizontal Scaling]. 
+Therefore, the recommended approach is to use a PubSub system, which can be achieved with an AMQP broker such as link:https://www.rabbitmq.com/[RabbitMQ]. 
+This is supported by the link:https://www.npmjs.com/package/@neo4j/graphql-plugin-subscriptions-amqp[@neo4j/graphql-plugin-subscriptions-amqp] package.
 
-The `@neo4j/graphql-plugin-subscriptions-amqp` plugin connects to message brokers through `AMQP 0-9-1` protocol to distribute subscription events across all server instances. 
+The `@neo4j/graphql-plugin-subscriptions-amqp` plugin connects to message brokers through the `AMQP 0-9-1` protocol to distribute subscription events across all server instances. 
 
 Some brokers supporting this protocol are:
 
@@ -31,7 +33,7 @@ Some brokers supporting this protocol are:
 * link:https://qpid.apache.org/[Apache Qpid]
 * link:https://activemq.apache.org/[Apache ActiveMQ]
 
-It can be installed with npm:
+The plugin can be installed with `npm`:
 
 ```sh
 npm install @neo4j/graphql-plugin-subscriptions-amqp
@@ -41,7 +43,8 @@ NOTE: AMQP 1.0 is **not** supported by this plugin.
 
 === Usage
 
-The AMQP plugin should be instanced and passed to the `subscription` field in features, this will automatically enable the subscriptions with the AMQP broker as a message queue:
+The AMQP plugin should be instanced and passed to the `subscription` field in features.
+This will automatically enable the subscriptions with the AMQP broker as a message queue:
 
 ```javascript
 const { Neo4jGraphQLSubscriptionsAMQPPlugin } = require("@neo4j/graphql-plugin-subscriptions-amqp");
@@ -66,7 +69,7 @@ const neoSchema = new Neo4jGraphQL({
 === API
 The following options can be passed to the constructor:
 
-* **connection**: An AMQP uri as a string or a configuration object:
+* **connection**: An AMQP uri as a string or a configuration object.
 ** **hostname**: Hostname to be used, defaults to `localhost`.
 ** **username**: defaults to `guest`.
 ** **password**: defaults to `guest`.
@@ -78,21 +81,22 @@ Additionally, any option supported by link:https://www.npmjs.com/package/amqplib
 
 ==== Methods
 
-* **close(): Promise<void>** Closes the connection and channel created and unbinds the event emitter.
+* **close(): Promise<void>**: Closes the connection and channel created, and unbinds the event emitter.
 
 [[custom-subscription]]
 == Custom Subscription Mechanism
-If none of the existing mechanisms is valid for your use case, you can create a new mechanism to connect to any broker you may need. To do this
-you need to create a new class defining your messaging behaviour. This class needs to contain the following:
+If none of the existing mechanisms is valid for your use case, you can create a new mechanism to connect to any broker you may need. 
+For that, you need to create a new class defining your messaging behavior and it must contain:
 
-* An `EventEmitter` property called `events` that should emit an event everytime the broker sends a message.
+* An `EventEmitter` property called `events` that should emit an event every time the broker sends a message.
 * A `publish` method that will publish a new event to the broker.
-* Optionally, a `init` method returning a promise, that will be called on `getSchema`. This is useful for setting up the connection to a broker.
+* Optionally, an `init` method returning a promise that will be called on `getSchema`. 
+This is useful for setting up the connection to a broker.
 
-For instance, if we wanted to handle subscriptions using link:https://redis.io/[redis]:
+In case you want to handle subscriptions using link:https://redis.io/[redis]:
 
 ```javascript
-// Note: This is an example of a custom subscription behaviour and not a production ready redis implementation
+// Note: This is an example of a custom subscription behavior and not a production ready redis implementation.
 class CustomRedisSubscriptionMechanism {
     constructor(redisClient) {
         this.client = redisClient;
@@ -130,17 +134,19 @@ const neoSchema = new Neo4jGraphQL({
 });
 ```
 
-Note that extra properties and methods are often needed to handle the connection to the broker. As long as the messages
-are sent to the broker in the `publish` method and that these messages are received and then emitted through the `events` property, the subscriptions
-will be properly handled.
+Note that extra properties and methods are often needed to handle the connection to the broker.
+As long as the messages are sent to the broker in the `publish` method and that these messages are received and then emitted through the `events` property, the subscriptions will be properly handled.
 
 === Using Typescript
-If using Typescript, you may import the interface `Neo4jGraphQLSubscriptionsMechanism` to implement your own class, ensuring the API is correctly defined:
+If using Typescript, you may import the interface `Neo4jGraphQLSubscriptionsMechanism` to implement your own class.
+Ensure the API is correctly defined:
 
 ```typescript
 class CustomRedisMechanism implements Neo4jGraphQLSubscriptionsMechanism {}
 ```
 
-=== Note about event orders
+[NOTE]
+====
 Events are sent to the class in order, however, order is not guaranteed once these events have been broadcasted through a broker.
-For cases when ordering is important, the subscriptions payload contains a field `timestamp`.
+For cases when ordering is important, you must set up the field `timestamp` in the subscriptions payload.
+====

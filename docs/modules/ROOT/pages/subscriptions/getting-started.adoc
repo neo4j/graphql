@@ -1,7 +1,8 @@
 [[getting-started]]
 = Getting Started with Subscriptions
 
-To get started with subscriptions you need a GraphQL server with subscription capabilities. You can enable them by passing the `subscriptions` feature to `Neo4jGraphQL`:
+To get started with subscriptions you need a GraphQL server with subscription capabilities. 
+You can enable them by passing the `subscriptions` feature to `Neo4jGraphQL`:
 
 ```javascript
 new Neo4jGraphQL({
@@ -102,7 +103,11 @@ async function main() {
 main();
 ```
 
-NOTE: This setup will use the default subscriptions mechanism suitable only for development, testing and single instance servers. If you need to scale horizontally for a production ready application, follow the guide on xref::subscriptions/scaling.adoc[Horizontal scaling].
+[NOTE]
+====
+This setup will use the default subscriptions mechanism suitable only for development, testing and single instance servers. 
+If you need to scale horizontally for a production-ready application, see xref::subscriptions/scaling.adoc[Horizontal scaling].
+====
 
 === GraphQL subscriptions
 With the previous server running, we have subscriptions available for `Movie` and `Actor`. We can subscribe to new movies created with the following statement:
