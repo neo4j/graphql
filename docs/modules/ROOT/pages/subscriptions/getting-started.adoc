@@ -94,7 +94,7 @@ async function main() {
         cors(),
         bodyParser.json(),
         expressMiddleware(server, {
-            context: async (req) => ({ req }),
+            context: async ({ req }) => ({ req }),
         })
     );
 

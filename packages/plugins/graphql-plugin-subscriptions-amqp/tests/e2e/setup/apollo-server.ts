@@ -102,7 +102,7 @@ export class ApolloTestServer implements TestGraphQLServer {
             bodyParser.json(),
             expressMiddleware(server, {
                 // eslint-disable-next-line @typescript-eslint/require-await
-                context: async (req) => ({ req }),
+                context: async ({ req }) => ({ req }),
             })
         );
 

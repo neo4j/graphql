@@ -129,7 +129,7 @@ async function runApolloServer() {
         cors(),
         bodyParser.json(),
         expressMiddleware(server, {
-            context: async (req) => ({ req, driverConfig: { database: "neo4j" } }),
+            context: async ({ req }) => ({ req, driverConfig: { database: "neo4j" } }),
         })
     );
 
