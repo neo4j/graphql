@@ -1,7 +1,18 @@
 [[getting-started]]
 = Getting Started with Subscriptions
 
-To get started with subscriptions you need a GraphQL server with subscription capabilities.
+To get started with subscriptions you need a GraphQL server with subscription capabilities. 
+You can enable them by passing the `subscriptions` feature to `Neo4jGraphQL`:
+
+```javascript
+new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    features: {
+        subscriptions: true
+    },
+});
+```
 
 == Example using Apollo and WebSockets
 For this example, we will use link:https://www.apollographql.com/[Apollo] and link:https://github.com/enisdenjo/graphql-ws[graphql-ws].
@@ -41,8 +52,8 @@ const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
-    plugins: {
-        subscriptions: new Neo4jGraphQLSubscriptionsSingleInstancePlugin(),
+    features: {
+        subscriptions: true
     },
 });
 
@@ -92,7 +103,11 @@ async function main() {
 main();
 ```
 
-NOTE: The example above uses the **xref::subscriptions/plugins.adoc#single-instance[single instance plugin]** and cannot scale horizontally.
+[NOTE]
+====
+This setup will use the default subscriptions mechanism suitable only for development, testing and single instance servers. 
+If you need to scale horizontally for a production-ready application, see xref::subscriptions/scaling.adoc[Horizontal scaling].
+====
 
 === GraphQL subscriptions
 With the previous server running, we have subscriptions available for `Movie` and `Actor`. We can subscribe to new movies created with the following statement:

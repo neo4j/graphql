@@ -42,6 +42,65 @@ neoSchema = new Neo4jGraphQL({
 });
 ----
 
+[subscriptions-options]
+=== Subscription options
+Subscriptions are no longer set as plugins, but as features.
+
+This means that, instead of:
+
+```javascript
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        subscriptions: plugin,
+    },
+});
+```
+
+Subscriptions are now defined as:
+
+```javascript
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    features: {
+        subscriptions: plugin,
+    },
+});
+```
+
+==== Default subscriptions
+The class `Neo4jGraphQLSubscriptionsSingleInstancePlugin` is no longer exported. 
+Instead, the default subscriptions behavior can be enabled by setting the `subscriptions` option to `true` .
+
+Instead of:
+
+```javascript
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    plugin: {
+        subscriptions: new Neo4jGraphQLSubscriptionsSingleInstancePlugin(),
+    },
+});
+```
+
+The default subscriptions can be enabled with:
+
+```javascript
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    features: {
+        subscriptions: true
+    },
+});
+```
+
+==== Custom Subscription Plugins
+The underlying subscription system has not changed.
+Custom behavior can be implemented the same way, by creating a class implementing the interface described in xref::subscriptions/mechanisms.adoc#custom-subscription[Subscription Mechanisms].
+
+However, if using TypeScript, the exported interface to implement these classes has been renamed from `Neo4jGraphQLSubscriptionsPlugin` to `Neo4jGraphQLSubscriptionsMechanism`.
+
+
 == Updated Directives
 
 We have renamed a number of directives and their arguments, in order to make using `@neo4j/graphql` more intuitive.

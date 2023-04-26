@@ -917,7 +917,7 @@ Had we subscribed to `Person` as well, we would have received two more events:
 ```
 
 [[delete_relationship]]
-= Delete Relationship Subscriptions
+== Delete Relationship Subscriptions
 
 Subscriptions to `DELETE_RELATIONSHIP` events will listen for relationships to a node of the specified type that have been deleted. 
 
@@ -1469,8 +1469,7 @@ Two events will be published (given that we subscribed to `DELETE_RELATIONSHIP` 
 
 === Special Considerations
 
-[[connect-same-label]]
-=== Types using the same Neo4j label
+==== Types using the same Neo4j label
 
 One case that deserves special consideration is overriding the label in Neo4j for a specific GraphQL type. 
 This can be achieved using the `@node` directive, by specifying the `label` argument.
