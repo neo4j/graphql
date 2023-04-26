@@ -110,8 +110,9 @@ export class ApolloTestServer implements TestGraphQLServer {
             })
         );
 
+        const port = 0; // Automatically assigns a free port
         return new Promise<void>((resolve) =>
-            httpServer.listen({ port: 0 }, () => {
+            httpServer.listen({ port }, () => {
                 const serverAddress = httpServer.address() as AddressInfo;
                 this._path = `http://localhost:${serverAddress.port}/graphql`;
                 resolve();
