@@ -22,7 +22,7 @@ mkdir neo4j-graphql-example
 cd neo4j-graphql-example
 ----
 +
-. Create a new Node.js project:
+. Create a new Node.js project (with ESM modules enabled by using the es6 option):
 +
 [source, bash, indent=0]
 ----
