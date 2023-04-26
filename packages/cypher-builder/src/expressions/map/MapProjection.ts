@@ -23,6 +23,7 @@ import type { Variable } from "../../references/Variable";
 import { serializeMap } from "../../utils/serialize-map";
 import { MapExpr } from "./MapExpr";
 import { isString } from "../../utils/is-string";
+import { escapeProperty } from "../../utils/escape";
 
 /** Represents a Map projection
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/syntax/maps/#cypher-map-projection)
@@ -87,7 +88,7 @@ export class MapProjection implements CypherCompilable {
         const variableStr = this.variable.getCypher(env);
         const extraValuesStr = serializeMap(env, this.extraValues, true);
 
-        const projectionStr = this.projection.map((p) => `.${p}`).join(", ");
+        const projectionStr = this.projection.map((p) => `.${escapeProperty(p)}`).join(", ");
 
         const commaStr = extraValuesStr && projectionStr ? ", " : "";
 
