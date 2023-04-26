@@ -45,7 +45,7 @@ function normalizeString(str: string): string {
 }
 
 function needsEscape(str: string): boolean {
-    const validCharacter = /^[a-z0-9_]*$/i;
+    const validCharacter = /^[a-z_]*$/i;
     return !validCharacter.test(str);
 }
 
