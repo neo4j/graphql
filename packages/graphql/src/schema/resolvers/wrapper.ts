@@ -162,7 +162,7 @@ export const wrapSubscription =
         const contextParams = context?.connectionParams || {};
 
         if (!subscriptionsConfig) {
-            debug("Subscription Plugin not set");
+            debug("Subscription Mechanism not set");
             return next(root, args, context, info);
         }
 

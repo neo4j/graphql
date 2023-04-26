@@ -30,7 +30,7 @@ import type {
 } from "../../types";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 
-export function publishEventsToPlugin(
+export function publishEventsToSubscriptionMechanism(
     executeResult: ExecuteResult,
     plugin: Neo4jGraphQLSubscriptionsMechanism | undefined,
     schemaModel: Neo4jGraphQLSchemaModel

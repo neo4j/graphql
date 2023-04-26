@@ -101,7 +101,8 @@ class Neo4jGraphQL {
     private executableSchema?: Promise<GraphQLSchema>;
     private subgraphSchema?: Promise<GraphQLSchema>;
 
-    private pluginsInit?: Promise<void>;
+    // This promise ensures that subscription init only happens once
+    private subscriptionInit?: Promise<void>;
 
     private dbInfo?: Neo4jDatabaseInfo;
 
@@ -143,7 +144,7 @@ class Neo4jGraphQL {
         if (!this.executableSchema) {
             this.executableSchema = this.generateExecutableSchema();
 
-            await this.pluginsSetup();
+            await this.subscriptionMechanismSetup();
         }
 
         return this.executableSchema;
@@ -157,7 +158,7 @@ class Neo4jGraphQL {
         if (!this.subgraphSchema) {
             this.subgraphSchema = this.generateSubgraphSchema();
 
-            await this.pluginsSetup();
+            await this.subscriptionMechanismSetup();
         }
 
         return this.subgraphSchema;
@@ -438,24 +439,24 @@ class Neo4jGraphQL {
         return validationConfig;
     }
 
-    private pluginsSetup(): Promise<void> {
-        if (this.pluginsInit) {
-            return this.pluginsInit;
+    private subscriptionMechanismSetup(): Promise<void> {
+        if (this.subscriptionInit) {
+            return this.subscriptionInit;
         }
 
         const setup = async () => {
-            const subscriptionsPlugin = this.features?.subscriptions;
-            if (subscriptionsPlugin) {
-                subscriptionsPlugin.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
-                if (subscriptionsPlugin.init) {
-                    await subscriptionsPlugin.init();
+            const subscriptionsMechanism = this.features?.subscriptions;
+            if (subscriptionsMechanism) {
+                subscriptionsMechanism.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
+                if (subscriptionsMechanism.init) {
+                    await subscriptionsMechanism.init();
                 }
             }
         };
 
-        this.pluginsInit = setup();
+        this.subscriptionInit = setup();
 
-        return this.pluginsInit;
+        return this.subscriptionInit;
     }
 }
 
