@@ -10,21 +10,25 @@ For this example, we will use link:https://www.apollographql.com/[Apollo] and li
 
 Install the following dependencies:
 ```bash
-npm i --save ws graphql-ws neo4j-driver @neo4j/graphql express apollo-server-express apollo-server-core
+npm i --save ws graphql-ws neo4j-driver @neo4j/graphql express @apollo/server body-parser cors
 ```
 
-The following code implements a simple `apollo-server-express` server with subscriptions. You can find more examples and documentation
+The following code implements a simple `@apollo/server` server with subscriptions. You can find more examples and documentation
 on subscriptions in link:https://www.apollographql.com/docs/apollo-server/data/subscriptions/[Apollo's documentation].
 ```javascript
-const { createServer } = require("http");
-const { EventEmitter } = require('events');
-const neo4j = require('neo4j-driver');
-const { Neo4jGraphQL, Neo4jGraphQLSubscriptionsSingleInstancePlugin } = require('@neo4j/graphql');
-const { WebSocketServer } = require("ws");
-const { useServer } = require("graphql-ws/lib/use/ws");
-const express = require('express');
-const  { ApolloServer } = require("apollo-server-express");
-const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import bodyParser from 'body-parser';
+import cors from "cors";
+import { createServer } from "http";
+import neo4j from 'neo4j-driver';
+import { Neo4jGraphQL, Neo4jGraphQLSubscriptionsSingleInstancePlugin } from '@neo4j/graphql';
+import { WebSocketServer } from "ws";
+import { useServer } from "graphql-ws/lib/use/ws";
+import express from 'express';
+import  { ApolloServer } from "apollo-server-express";
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 
 const typeDefs = `
     type Movie {
@@ -57,9 +61,16 @@ async function main() {
 
     // Neo4j schema
     const schema = await neoSchema.getSchema();
-    const serverCleanup = useServer({
-        schema
-    }, wsServer);
+
+    const serverCleanup = useServer(
+        {
+            schema,
+            context: (ctx) => {
+                return ctx;
+            },
+        },
+        wsServer
+    );
 
     const server = new ApolloServer({
         schema,
@@ -69,19 +80,25 @@ async function main() {
             }),
             {
                 async serverWillStart() {
-                    return {
+                    return Promise.resolve({
                         async drainServer() {
                             await serverCleanup.dispose();
                         },
-                    };
+                    });
                 },
             },
         ],
     });
     await server.start();
-    server.applyMiddleware({
-        app
-    });
+
+    app.use(
+        "/graphql",
+        cors(),
+        bodyParser.json(),
+        expressMiddleware(server, {
+            context: async (req) => ({ req }),
+        })
+    );
 
     const PORT = 4000;
     httpServer.listen(PORT, () => {
