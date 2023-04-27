@@ -34,7 +34,7 @@ function getAliasMeta(directive: DirectiveNode): AliasMeta | undefined {
     const property = (stmtArg.value as StringValueNode).value;
 
     return {
-        property: Cypher.utils.escapeLabel(property),
+        property: Cypher.utils.escapeProperty(property),
         propertyUnescaped: property,
     };
 }

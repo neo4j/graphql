@@ -19,13 +19,14 @@
 
 import type { Expr } from "../types";
 import type { CypherEnvironment } from "../Environment";
+import { escapeProperty } from "./escape";
 
 export function serializeMap(env: CypherEnvironment, map: Map<string, Expr>, omitCurlyBraces = false): string {
     const serializedFields: string[] = [];
 
     for (const [key, value] of map.entries()) {
         if (value) {
-            const fieldStr = `${key}: ${value.getCypher(env)}`;
+            const fieldStr = `${escapeProperty(key)}: ${value.getCypher(env)}`;
             serializedFields.push(fieldStr);
         }
     }

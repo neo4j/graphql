@@ -32,7 +32,7 @@ describe("Cypher Aggregations Many with Alias directive", () => {
             type Movie {
                 id: ID! @alias(property: "_id")
                 title: String! @alias(property: "_title")
-                imdbRating: Int! @alias(property: "_imdbRating")
+                imdbRating: Int! @alias(property: "_imdb Rating")
                 createdAt: DateTime! @alias(property: "_createdAt")
             }
         `;
@@ -74,21 +74,21 @@ describe("Cypher Aggregations Many with Alias directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN { id: { shortest: min(this.\`_id\`), longest: max(this.\`_id\`) }, title: { shortest:
-                                        reduce(aggVar = collect(this.\`_title\`)[0], current IN collect(this.\`_title\`) |
+            RETURN { id: { shortest: min(this._id), longest: max(this._id) }, title: { shortest:
+                                        reduce(aggVar = collect(this._title)[0], current IN collect(this._title) |
                                             CASE
                                             WHEN size(current) < size(aggVar) THEN current
                                             ELSE aggVar
                                             END
                                         )
                                     , longest:
-                                        reduce(aggVar = collect(this.\`_title\`)[0], current IN collect(this.\`_title\`) |
+                                        reduce(aggVar = collect(this._title)[0], current IN collect(this._title) |
                                             CASE
                                             WHEN size(current) > size(aggVar) THEN current
                                             ELSE aggVar
                                             END
                                         )
-                                     }, imdbRating: { min: min(this.\`_imdbRating\`), max: max(this.\`_imdbRating\`), average: avg(this.\`_imdbRating\`) }, createdAt: { min: apoc.date.convertFormat(toString(min(this.\`_createdAt\`)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this.\`_createdAt\`)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } }"
+                                     }, imdbRating: { min: min(this.\`_imdb Rating\`), max: max(this.\`_imdb Rating\`), average: avg(this.\`_imdb Rating\`) }, createdAt: { min: apoc.date.convertFormat(toString(min(this._createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this._createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

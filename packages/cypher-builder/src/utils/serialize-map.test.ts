@@ -24,17 +24,18 @@ import { serializeMap } from "./serialize-map";
 describe("serializeMap", () => {
     const env = new CypherEnvironment();
     const map = new Map<string, Cypher.Expr>([
-        ["test1", new Cypher.Literal(10)],
+        ["test", new Cypher.Literal(10)],
+        ["test$", new Cypher.Literal(10)],
         ["expr", Cypher.reverse(new Cypher.Literal([1]))],
     ]);
 
     test("serialize a map of expressions", () => {
         const result = serializeMap(env, map);
-        expect(result).toBe("{ test1: 10, expr: reverse([1]) }");
+        expect(result).toBe("{ test: 10, `test$`: 10, expr: reverse([1]) }");
     });
 
     test("serialize a map of expressions without curly braces", () => {
         const result = serializeMap(env, map, true);
-        expect(result).toBe("test1: 10, expr: reverse([1])");
+        expect(result).toBe("test: 10, `test$`: 10, expr: reverse([1])");
     });
 });
