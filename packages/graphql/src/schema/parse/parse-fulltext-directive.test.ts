@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server-core";
 import type { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
+import gql from "graphql-tag";
 import getObjFieldMeta from "../get-obj-field-meta";
 import parseFulltextDirective from "./parse-fulltext-directive";
 

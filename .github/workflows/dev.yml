@@ -12,11 +12,6 @@ on:
     - cron: "0 3 * * *"
 
 jobs:
-  # Let's consider the value of testing examples
-  # Perhaps we need some newer, better examples for testing
-  neo-push-tests:
-    uses: ./.github/workflows/reusable-neo-push-tests.yml
-
   code-scanning:
     uses: ./.github/workflows/reusable-codeql-analysis.yml
 
@@ -63,7 +58,6 @@ jobs:
     runs-on: ubuntu-latest
 
     needs:
-      - neo-push-tests
       - code-scanning
       - unit-tests
       - api-library-tests

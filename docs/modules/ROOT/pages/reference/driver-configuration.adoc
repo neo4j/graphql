@@ -13,10 +13,12 @@ The examples in this chapter assume a Neo4j database running at "bolt://localhos
 
 [source, javascript, indent=0]
 ----
-const { Neo4jGraphQL } = require("@neo4j/graphql");
-const neo4j = require("neo4j-driver");
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
 
-const typeDefs = `
+const typeDefs = `#graphql
     type User {
         name: String
     }
@@ -29,22 +31,26 @@ const driver = neo4j.driver(
 
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-neoSchema.getSchema().then((schema) => {
-    const server = new ApolloServer({
-        schema,
-        context: ({ req }) => ({ req }),
-    });
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
 });
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ req }),
+});
+
 ----
 
 ==== Driver in context
 
 [source, javascript, indent=0]
 ----
-const { Neo4jGraphQL } = require("@neo4j/graphql");
-const neo4j = require("neo4j-driver");
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
 
-const typeDefs = `
+const typeDefs = `#graphql
     type User {
         name: String
     }
@@ -57,22 +63,24 @@ const driver = neo4j.driver(
 
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-neoSchema.getSchema().then((schema) => {
-    const server = new ApolloServer({
-        schema,
-        context: ({ req }) => ({ req, executionContext: driver }),
-    });
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
 });
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ req, executionContext: driver }),
+});
+
 ----
 
 === OGM
 
 [source, javascript, indent=0]
 ----
-const { OGM } = require("@neo4j/graphql-ogm");
-const neo4j = require("neo4j-driver");
+import { OGM } from "@neo4j/graphql-ogm";
+import neo4j from "neo4j-driver";
 
-const typeDefs = `
+const typeDefs = `#graphql
     type User {
         name: String
     }
@@ -95,10 +103,10 @@ Use the `checkNeo4jCompat` method available on either a `Neo4jGraphQL` or `OGM` 
 
 [source, javascript, indent=0]
 ----
-const { Neo4jGraphQL } = require("@neo4j/graphql");
-const neo4j = require("neo4j-driver");
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
 
-const typeDefs = `
+const typeDefs = `#graphql
     type User {
         name: String
     }
@@ -117,10 +125,10 @@ await neoSchema.checkNeo4jCompat();
 
 [source, javascript, indent=0]
 ----
-const { OGM } = require("@neo4j/graphql-ogm");
-const neo4j = require("neo4j-driver");
+import { OGM } from "@neo4j/graphql-ogm";
+import neo4j from "neo4j-driver";
 
-const typeDefs = `
+const typeDefs = `#graphql
     type User {
         name: String
     }
@@ -143,10 +151,12 @@ There are two ways to specify which database within a DBMS should be used.
 
 [source, javascript, indent=0]
 ----
-const { Neo4jGraphQL } = require("@neo4j/graphql");
-const neo4j = require("neo4j-driver");
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
 
-const typeDefs = `
+const typeDefs = `#graphql
     type User {
         name: String
     }
@@ -159,11 +169,12 @@ const driver = neo4j.driver(
 
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-neoSchema.getSchema().then((schema) => {
-    const server = new ApolloServer({
-        schema,
-        context: { driverConfig: { database: "my-database" } },
-    });
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
+});
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ req, driverConfig: { database: "my-database" }}),
 });
 ----
 
@@ -171,10 +182,12 @@ neoSchema.getSchema().then((schema) => {
 
 [source, javascript, indent=0]
 ----
-const { Neo4jGraphQL } = require("@neo4j/graphql");
-const neo4j = require("neo4j-driver");
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
 
-const typeDefs = `
+const typeDefs = `#graphql
     type User {
         name: String
     }
@@ -195,10 +208,13 @@ const neoSchema = new Neo4jGraphQL({
     },
 });
 
-neoSchema.getSchema().then((schema) => {
-    const server = new ApolloServer({
-        schema,
-    });
+
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
+});
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ req }),
 });
 ----
 
@@ -212,10 +228,12 @@ It is also possible to specify manually the Neo4j version in the Context.
 
 [source, javascript, indent=0]
 ----
-const { Neo4jGraphQL, Neo4jDatabaseInfo } = require("@neo4j/graphql");
-const neo4j = require("neo4j-driver");
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { Neo4jDatabaseInfo, Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
 
-const typeDefs = `
+const typeDefs = `#graphql
     type User {
         name: String
     }
@@ -228,11 +246,12 @@ const driver = neo4j.driver(
 
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-neoSchema.getSchema().then((schema) => {
-    const server = new ApolloServer({
-        schema,
-        context: { neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4") },
-    });
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
+});
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ req, neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4") }),
 });
 ----
 
@@ -263,10 +282,12 @@ You can then pass this bookmark into the context of a subsequent query, like thi
 
 [source, javascript, indent=0]
 ----
-const { Neo4jGraphQL } = require("@neo4j/graphql");
-const neo4j = require("neo4j-driver");
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
 
-const typeDefs = `
+const typeDefs = `#graphql
     type User {
         name: String
     }
@@ -279,10 +300,12 @@ const driver = neo4j.driver(
 
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-neoSchema.getSchema().then((schema) => {
-    const server = new ApolloServer({
-        schema,
-        context: ({ req }) => ({ driverConfig: { bookmarks: [req.headers["x-neo4j-bookmark"]] } }),
-    });
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
 });
+
+await startStandaloneServer(server, {
+    context: ({ req }) => ({ req, driverConfig: { bookmarks: [req.headers["x-neo4j-bookmark"]] } }),
+});
+
 ----

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { ASTVisitor, FieldDefinitionNode } from "graphql";
 import { GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";

@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-const { ApolloServer } = require("apollo-server");
+const { ApolloServer } = require("@apollo/server");
+const { startStandaloneServer } = require("@apollo/server/standalone");
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 
 const defaultTypeDefs = `
@@ -36,12 +37,11 @@ const defaultTypeDefs = `
 
 async function start(typeDefs = defaultTypeDefs, driver = {}) {
     const neoSchema = new Neo4jGraphQL({ typeDefs });
-    const server = new ApolloServer({
-        schema: await neoSchema.getSchema(),
-        context: ({ req }) => ({ driver, req }),
+    const server = new ApolloServer({ schema: await neoSchema.getSchema(), context: ({ req }) => ({ driver, req }) });
+    const { url } = await startStandaloneServer(server, {
+        context: async ({ req }) => ({ token: req.headers.token }),
+        listen: { port: 4000 },
     });
-    const { url } = await server.listen();
-     
     console.log(`🚀  Server ready at ${url}`);
 }
 

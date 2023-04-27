@@ -18,7 +18,7 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { GraphQLSchema } from "graphql";
 import { graphql, defaultFieldResolver } from "graphql";
 import { getDirective, MapperKind, mapSchema } from "@graphql-tools/utils";
@@ -51,7 +51,7 @@ describe("Custom Directives", () => {
                             const fieldDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
                             if (fieldDirective) {
                                 const { resolve = defaultFieldResolver } = fieldConfig;
-                                 
+
                                 fieldConfig.resolve = async (source, args, context, info) => {
                                     const result = await resolve(source, args, context, info);
                                     if (typeof result === "string") {
