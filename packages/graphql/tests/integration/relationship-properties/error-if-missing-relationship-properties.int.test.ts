@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
+import gql from "graphql-tag";
 import type { Driver } from "neo4j-driver";
-import { gql } from "apollo-server";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4j from "../neo4j";
 
 describe("Throw error if missing @relationshipProperties", () => {
     let driver: Driver;
