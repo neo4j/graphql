@@ -20,7 +20,7 @@
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";

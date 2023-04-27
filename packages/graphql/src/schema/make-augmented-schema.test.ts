@@ -26,7 +26,7 @@ import type {
     InputObjectTypeDefinitionNode,
 } from "graphql";
 import { pluralize } from "graphql-compose";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import makeAugmentedSchema from "./make-augmented-schema";
 import { Node } from "../classes";
 import * as constants from "../constants";

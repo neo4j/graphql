@@ -18,7 +18,7 @@
  */
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { AnnotationsKey } from "./annotation/Annotation";
 import {
     AuthorizationFilterOperationRule,

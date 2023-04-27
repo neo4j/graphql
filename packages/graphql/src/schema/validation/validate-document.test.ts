@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import validateDocument from "./validate-document";
 

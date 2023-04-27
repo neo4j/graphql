@@ -32,20 +32,20 @@ Assuming a running Neo4j database at "bolt://localhost:7687" with username "neo4
 
 [source, javascript, indent=0]
 ----
-const { Neo4jGraphQL } = require("@neo4j/graphql");
-const { OGM } = require("@neo4j/graphql-ogm");
-const { Neo4jGraphQLAuthJWTPlugin } = require("@neo4j/graphql-plugin-auth");
-const { ApolloServer } = require("apollo-server");
-const neo4j = require("neo4j-driver");
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { OGM } from "@neo4j/graphql-ogm";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
+import { ApolloServer } from "apollo-server";
+import neo4j from "neo4j-driver";
 
-const { createJWT, comparePassword } = require("./utils"); // example util functions, more information below
+import { createJWT, comparePassword } from "./utils"; // example util function, more information below
 
 const driver = neo4j.driver(
     "bolt://localhost:7687",
     neo4j.auth.basic("neo4j", "password")
 );
 
-const typeDefs = `
+const typeDefs = `#graphql
     type User {
         id: ID @id
         username: String!
@@ -121,10 +121,11 @@ const neoSchema = new Neo4jGraphQL({
 Promise.all([neoSchema.getSchema(), ogm.init()]).then(([schema]) => {
     const server = new ApolloServer({
         schema,
-        context: ({ req }) => ({ req }),
     });
 
-    server.listen().then(({ url }) => {
+    startStandaloneServer(server, {
+        context: async ({ req }) => ({ req }),
+    }).then(({ url }) =>  {
         console.log(`🚀 Server ready at ${url}`);
     });
 });
