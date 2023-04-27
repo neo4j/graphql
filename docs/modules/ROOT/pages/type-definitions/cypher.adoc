@@ -94,11 +94,10 @@ Inject into context:
 ----
 const server = new ApolloServer({
     typeDefs,
-    context: () => {
-        return {
-            cypherParams: { userId: "user-id-01" }
-        }
-    }
+});
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ cypherParams: { userId: "user-id-01" } }),
 });
 ----
 

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { Neo4jGraphQL } from "../../../src";

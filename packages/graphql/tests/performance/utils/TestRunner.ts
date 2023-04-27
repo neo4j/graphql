@@ -18,7 +18,7 @@
  */
 
 import assert from "assert";
-import { gql } from "apollo-server-express";
+import { gql } from "graphql-tag";
 import type { Driver, ProfiledPlan } from "neo4j-driver";
 import type { DocumentNode } from "graphql";
 import type * as Performance from "../types";
