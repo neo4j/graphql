@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
 import type { DocumentNode } from "graphql";
+import gql from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
