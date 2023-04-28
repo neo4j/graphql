@@ -3166,7 +3166,7 @@ __metadata:
   dependencies:
     "@types/debug": 4.1.7
     "@types/jest": 29.5.1
-    "@types/jsonwebtoken": 9.0.1
+    "@types/jsonwebtoken": 9.0.2
     "@types/node": 18.15.1
     debug: ^4.3.4
     jest: 29.5.0
@@ -3288,7 +3288,7 @@ __metadata:
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
     "@types/jest": 29.5.1
-    "@types/jsonwebtoken": 9.0.1
+    "@types/jsonwebtoken": 9.0.2
     "@types/node": 18.15.1
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
@@ -5127,7 +5127,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:9.0.1, @types/jsonwebtoken@npm:^9.0.0":
+"@types/jsonwebtoken@npm:9.0.2":
+  version: 9.0.2
+  resolution: "@types/jsonwebtoken@npm:9.0.2"
+  dependencies:
+    "@types/node": "*"
+  checksum: 3bb8d40e78d7eb53e427db6e9f0f22e0890cfee80965dcf741d08341814913afb211306de6e9847c6d241cc8e36f8a59090cbfdcc510ab7c81af9d650c5afe0e
+  languageName: node
+  linkType: hard
+
+"@types/jsonwebtoken@npm:^9.0.0":
   version: 9.0.1
   resolution: "@types/jsonwebtoken@npm:9.0.1"
   dependencies:
