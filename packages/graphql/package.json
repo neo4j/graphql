@@ -57,7 +57,7 @@
         "@types/deep-equal": "1.0.1",
         "@types/is-uuid": "1.0.0",
         "@types/jest": "29.5.1",
-        "@types/jsonwebtoken": "9.0.1",
+        "@types/jsonwebtoken": "9.0.2",
         "@types/node": "18.15.1",
         "@types/pluralize": "0.0.29",
         "@types/randomstring": "1.1.8",
