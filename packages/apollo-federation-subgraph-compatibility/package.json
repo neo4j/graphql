@@ -1,7 +1,7 @@
 {
     "name": "apollo-federation-subgraph-compatibility",
     "version": "1.0.0",
-    "packageManager": "yarn@3.5.0",
+    "packageManager": "yarn@3.5.1",
     "scripts": {
         "build": "webpack --config webpack.config.js",
         "test:docker": "yarn build && fedtest docker --compose docker-compose.yml --schema schema.graphql",
