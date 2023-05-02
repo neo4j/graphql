@@ -3083,26 +3083,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.2.1, @neo4j-ndl/base@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@neo4j-ndl/base@npm:1.2.1"
-  checksum: ddc03e4a78eed0ce866155041a00a9df32f6c484fdfb3226125a70b634a439d9382043b8429603e75d7988529ca1c940b3bb3517aa19a788f25cd7f7f5dbe6d1
+"@neo4j-ndl/base@npm:1.3.0, @neo4j-ndl/base@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@neo4j-ndl/base@npm:1.3.0"
+  checksum: 53f3680e8885154f9c5f22765bd97e76e5c1de984c991d53f4edd025567b3b02b8f753a956a45dcfd0678487e481e080f1e67f599b36d7a06e69e7e52fbd9a3d
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.2.2":
-  version: 1.2.2
-  resolution: "@neo4j-ndl/react@npm:1.2.2"
+"@neo4j-ndl/react@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@neo4j-ndl/react@npm:1.3.0"
   dependencies:
     "@floating-ui/react-dom-interactions": ^0.12.0
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^1.2.1
-    "@react-aria/focus": ^3.10.1
+    "@neo4j-ndl/base": ^1.3.0
     "@tanstack/react-table": ^8.5.22
     classnames: ^2.3.1
     detect-browser: ^5.3.0
     react-dropzone: ^14.0.0
+    react-focus-lock: ^2.9.4
     react-select: 5.7.0
     react-syntax-highlighter: ^15.5.0
     react-table: ^7.7.0
@@ -3111,7 +3111,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: 17.x
-  checksum: aca50c808a756cfeb826be199a16cd4bd504e30ae6a5dfd1605a2229790b5fad5c01161559f06ba7a6621f235306bbc54311c9b4fc06352cd920a5504593e639
+  checksum: 4a15327b203e4b393d3d3e2e24e5bc5de0f13355ac47665e0371f823a3b2387c3aaba80a5d2bc0b313b718be2a8355890b46378bf070569d0bc1c101be72690d
   languageName: node
   linkType: hard
 
@@ -3212,8 +3212,8 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@graphiql/react": 0.17.1
-    "@neo4j-ndl/base": 1.2.1
-    "@neo4j-ndl/react": 1.2.2
+    "@neo4j-ndl/base": 1.3.0
+    "@neo4j-ndl/react": 1.3.0
     "@neo4j/graphql": 3.18.2
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.33.0
@@ -4562,80 +4562,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-aria/focus@npm:^3.10.1":
-  version: 3.11.0
-  resolution: "@react-aria/focus@npm:3.11.0"
-  dependencies:
-    "@react-aria/interactions": ^3.14.0
-    "@react-aria/utils": ^3.15.0
-    "@react-types/shared": ^3.17.0
-    "@swc/helpers": ^0.4.14
-    clsx: ^1.1.1
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: f734d7f8d10b5088257742090e9881cea3e634bdc547a9daf8b4afaf67d691ff61457a4d5abec5b4a2faab26cc142f444737286f821a6e8e5014195340708114
-  languageName: node
-  linkType: hard
-
-"@react-aria/interactions@npm:^3.14.0":
-  version: 3.14.0
-  resolution: "@react-aria/interactions@npm:3.14.0"
-  dependencies:
-    "@react-aria/utils": ^3.15.0
-    "@react-types/shared": ^3.17.0
-    "@swc/helpers": ^0.4.14
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: d4e2dd2617bdaa60025a9f50e2c314b2a74c56dba40cc536b909b78bb1c1268a25c5593f28661c86b1d2d37a443878dcacf86a3d6d597abfe8afee258b103ed8
-  languageName: node
-  linkType: hard
-
-"@react-aria/ssr@npm:^3.5.0":
-  version: 3.5.0
-  resolution: "@react-aria/ssr@npm:3.5.0"
-  dependencies:
-    "@swc/helpers": ^0.4.14
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: 3287fe756ff458a3ce46ba0fabe2ede349bff0b232cce30aab0f50afa1c0ac7604809d229b8b19a62a5116cf12bc8099d2c9c72335126499c55c794dd3419dbd
-  languageName: node
-  linkType: hard
-
-"@react-aria/utils@npm:^3.15.0":
-  version: 3.15.0
-  resolution: "@react-aria/utils@npm:3.15.0"
-  dependencies:
-    "@react-aria/ssr": ^3.5.0
-    "@react-stately/utils": ^3.6.0
-    "@react-types/shared": ^3.17.0
-    "@swc/helpers": ^0.4.14
-    clsx: ^1.1.1
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: 9d852b3a8ca492b5e8c733f6258437430d050950d4cbdb99ab221d1a076ebca2625d45384bfb7b651072adc93368462445061c83ceac079418c8deafca2b47c3
-  languageName: node
-  linkType: hard
-
-"@react-stately/utils@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "@react-stately/utils@npm:3.6.0"
-  dependencies:
-    "@swc/helpers": ^0.4.14
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: d2ff4cfed5555b112ad71b9bc1837abd777d8fa225043c476b7c9417f8b21a0bcddad0d7127e0acdbf4d85dc9a260c9ae97722b4e9507e6243b412c2724c5f54
-  languageName: node
-  linkType: hard
-
-"@react-types/shared@npm:^3.17.0":
-  version: 3.17.0
-  resolution: "@react-types/shared@npm:3.17.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: 004fc58ab0d3d64a84ce5a98e7e201b88bbb64f8b4a8309d50be30fe6172d0f172f00c666074aa96f13bbbfbced8b986901ad6b35b6d2d32d8dc25e251fcdb31
-  languageName: node
-  linkType: hard
-
 "@repeaterjs/repeater@npm:3.0.4, @repeaterjs/repeater@npm:^3.0.4":
   version: 3.0.4
   resolution: "@repeaterjs/repeater@npm:3.0.4"
@@ -4703,7 +4629,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/helpers@npm:^0.4.12, @swc/helpers@npm:^0.4.14":
+"@swc/helpers@npm:^0.4.12":
   version: 0.4.14
   resolution: "@swc/helpers@npm:0.4.14"
   dependencies:
@@ -19422,7 +19348,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-focus-lock@npm:^2.5.2":
+"react-focus-lock@npm:^2.5.2, react-focus-lock@npm:^2.9.4":
   version: 2.9.4
   resolution: "react-focus-lock@npm:2.9.4"
   dependencies:
