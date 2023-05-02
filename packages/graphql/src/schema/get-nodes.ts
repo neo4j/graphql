@@ -26,15 +26,15 @@ import type { NodeDirective } from "../classes/NodeDirective";
 import type { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
 import type { FullText, Neo4jGraphQLCallbacks } from "../types";
 import type { Auth } from "../types/deprecated/auth/auth";
-import getObjFieldMeta from "./get-obj-field-meta";
-import parsePluralDirective from "./parse/parse-plural-directive";
-import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
-import parseFulltextDirective from "./parse/parse-fulltext-directive";
-import parseNodeDirective from "./parse-node-directive";
-import parseExcludeDirective from "./parse-exclude-directive";
+import { asArray } from "../utils/utils";
 import getAuth from "./get-auth";
 import type { DefinitionNodes } from "./get-definition-nodes";
-import { asArray } from "../utils/utils";
+import getObjFieldMeta from "./get-obj-field-meta";
+import parseExcludeDirective from "./parse-exclude-directive";
+import parseNodeDirective from "./parse-node-directive";
+import parseFulltextDirective from "./parse/parse-fulltext-directive";
+import parsePluralDirective from "./parse/parse-plural-directive";
+import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
 
 type Nodes = {
     nodes: Node[];
@@ -278,7 +278,6 @@ function getNodes(
             globalIdField: globalIdField?.fieldName,
             globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
             plural: parsePluralDirective(pluralDirectiveDefinition),
-            federationResolvable: resolvable,
         });
 
         return node;
