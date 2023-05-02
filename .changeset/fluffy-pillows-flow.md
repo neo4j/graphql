@@ -2,4 +2,4 @@
 "@neo4j/graphql": patch
 ---
 
-Setting resolvable to false no longer prevents queries and mutations for a type from being generated.
+Federation: Setting `@key` resolvable to false no longer prevents queries and mutations for a type from being generated.
