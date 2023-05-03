@@ -83,7 +83,7 @@ async function translationPerformance() {
     const runsArg = getArgumentValue("--runs");
     if (runsArg) {
         const parsedRuns = Math.trunc(Number(runsArg));
-        if (!parsedRuns) throw new Error("--runs require a positive number");
+        if (!parsedRuns || parsedRuns < 0) throw new Error("--runs require a positive number");
         runs = parsedRuns;
     }
 

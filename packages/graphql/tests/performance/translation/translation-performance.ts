@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
 import path from "path";
 import { Neo4jGraphQL } from "../../../src";
 import { collectTests } from "../utils/collect-test-files";
@@ -25,6 +24,8 @@ import { translateQuery } from "./utils/translate-query";
 import type * as Performance from "../types";
 import { colorText, TTYColors } from "../utils/formatters/color-tty-text";
 import { typeDefs } from "../typedefs";
+import gql from "graphql-tag";
+
 type TranslateTestConfig = {
     runs: number;
     neoSchema: Neo4jGraphQL;
@@ -52,7 +53,7 @@ async function runTest(test: Performance.TestInfo, config: TranslateTestConfig) 
         const runs = Array(config.runs).fill(null);
         const timeZero = performance.now();
         await Promise.all(
-            runs.map((r) => {
+            runs.map(() => {
                 return translateQuery(schema, query);
             })
         );

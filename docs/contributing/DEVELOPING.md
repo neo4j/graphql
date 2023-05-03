@@ -128,7 +128,7 @@ npm run test-docker
 
 #### Database Query Performance
 
-The Database query benchmarks will query translate several GraphQL queries and run the generated Cypher against a test dataset in Neo4j, measuring time and dbHits.
+The Database query benchmarks will translate several GraphQL queries and run the generated Cypher against a test dataset in Neo4j, measuring time and dbHits.
 
 These will be run by default when executing `yarn performance`.
 
@@ -181,9 +181,9 @@ Note that the output will be rounded to milliseconds.
 **Change test runs**
 By default, each query will be translated 100 times, and the total time will be shown.
 
-With the argument `--runs` you can change how many runs to do per query (e.g. `yarn performance --translation --runs 1000`).
+With the option `--runs` you can change how many runs to do per query (e.g. `yarn performance --translation --runs 1000`).
 
-With the option `--single` each query translation will only run once. Note that this option makes the tests faster and logging easier but will yield less accurate results.
+With the flag `--single` each query translation will only run once. Note that this option makes the tests faster and logging easier but will yield less accurate results.
 
 **Make runs asynchronous**
 With the flag `--async`, all the runs for each test will be done asynchronously, this makes the tests slightly faster, and it may yield a more accurate depiction of a real server, but makes it harder to get reliable results and debugging.
