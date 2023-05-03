@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { astFromDirective, astFromEnumType, astFromInputObjectType } from "@graphql-tools/utils";
+import { astFromDirective, astFromEnumType, astFromInputObjectType, astFromObjectType } from "@graphql-tools/utils";
+
 import type {
     TypeDefinitionNode,
     DirectiveDefinitionNode,
@@ -25,7 +26,9 @@ import type {
     EnumTypeDefinitionNode,
     InputObjectTypeDefinitionNode,
 } from "graphql";
+
 import {
+    GraphQLObjectType,
     GraphQLEnumType,
     GraphQLSchema,
     GraphQLDirective,
@@ -166,10 +169,19 @@ function createAuthorization(
     });
 }
 
-function createJWTPayloadWhere(JWTPayloadDefinition?: ObjectTypeDefinitionNode): GraphQLInputObjectType {
-    let fields: Pick<ObjectFields, "scalarFields" | "primitiveFields"> = {
+function createJWTPayloadWhere(
+    schema: GraphQLSchema,
+    JWTPayloadDefinition?: ObjectTypeDefinitionNode
+): GraphQLInputObjectType {
+    let fields: Pick<
+        ObjectFields,
+        "scalarFields" | "primitiveFields" | "enumFields" | "temporalFields" | "pointFields"
+    > = {
         scalarFields: [],
         primitiveFields: [],
+        enumFields: [],
+        temporalFields: [],
+        pointFields: [],
     };
     if (JWTPayloadDefinition) {
         fields = getObjFieldMeta({
@@ -183,18 +195,13 @@ function createJWTPayloadWhere(JWTPayloadDefinition?: ObjectTypeDefinitionNode):
         });
 
         // TODO: should this exist when JwtPayload not defined?
-        const jwtStandardFields = getJwtStandardFields();
+        const jwtStandardFields = getJwtStandardFields(schema);
         fields.primitiveFields.push(...jwtStandardFields);
     }
 
     const inputFieldsType = getWhereFields({
         typeName: "JWTPayload",
-        fields: {
-            ...fields,
-            enumFields: [],
-            temporalFields: [],
-            pointFields: [],
-        },
+        fields,
     });
     const composer = new SchemaComposer();
     const inputTC = composer.createInputTC({
@@ -204,8 +211,8 @@ function createJWTPayloadWhere(JWTPayloadDefinition?: ObjectTypeDefinitionNode):
     return inputTC.getType();
 }
 
-function getJwtStandardFields() {
-    const jwtStandardType = new SchemaComposer().createObjectTC({
+function getJwtStandardFields(schema: GraphQLSchema) {
+    const jwtStandardType = new GraphQLObjectType({
         name: "JWTStandard",
         fields: {
             iss: {
@@ -231,7 +238,7 @@ function getJwtStandardFields() {
         },
     });
     return getObjFieldMeta({
-        obj: jwtStandardType.getType().astNode as ObjectTypeDefinitionNode,
+        obj: astFromObjectType(jwtStandardType, schema),
         objects: [],
         interfaces: [],
         unions: [],
@@ -272,7 +279,7 @@ export function getStaticAuthorizationDefinitions(
         authorizationValidateOperation,
     ];
 
-    const JWTPayloadWere = createJWTPayloadWhere(JWTPayloadDefinition);
+    const JWTPayloadWere = createJWTPayloadWhere(schema, JWTPayloadDefinition);
     const JWTPayloadWereAST = astFromInputObjectType(JWTPayloadWere, schema);
     ASTs.push(JWTPayloadWereAST);
     return ASTs;
