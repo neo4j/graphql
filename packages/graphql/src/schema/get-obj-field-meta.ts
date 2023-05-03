@@ -32,7 +32,7 @@ import type {
     EnumValueNode,
     UnionTypeDefinitionNode,
     ValueNode,
-    ConstDirectiveNode,
+    DirectiveNode,
 } from "graphql";
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
@@ -207,7 +207,7 @@ function getObjFieldMeta({
                         "@jwtClaim directive can only be used on fields within a type annotated with @jwtPayload"
                     );
                 }
-                if ((field.directives as ConstDirectiveNode[]).length > 1) {
+                if ((field.directives as DirectiveNode[]).length > 1) {
                     throw new Error("@jwtClaim directive cannot be combined with other directives.");
                 }
             }
