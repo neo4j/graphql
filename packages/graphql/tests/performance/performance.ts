@@ -20,7 +20,6 @@
 import type { Driver } from "neo4j-driver";
 import path from "path";
 
-import { gql } from "apollo-server";
 import neo4j from "./databaseQuery/neo4j";
 import { setupDatabase, cleanDatabase } from "./databaseQuery/setup-database";
 import { Neo4jGraphQL } from "../../src";
@@ -33,75 +32,9 @@ import { MarkdownFormatter } from "./utils/formatters/MarkdownFormatter";
 import { TTYFormatter } from "./utils/formatters/TTYFormatter";
 import { subgraphSchemaPerformance } from "./schema/subgraph-schema-performance";
 import { runTranslationPerformance } from "./translation/translation-performance";
+import { typeDefs } from "./typedefs";
 
 let driver: Driver;
-
-const typeDefs = gql`
-    union Likable = Person | Movie
-
-    type Person {
-        name: String!
-        born: Int!
-        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
-        directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
-        reviewed: [Movie!]! @relationship(type: "REVIEWED", direction: OUT)
-        produced: [Movie!]! @relationship(type: "PRODUCED", direction: OUT)
-        likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
-    }
-
-    type Movie
-        @fulltext(
-            indexes: [
-                { queryName: "movieTaglineFulltextQuery", name: "MovieTaglineFulltextIndex", fields: ["tagline"] }
-            ]
-        ) {
-        id: ID!
-        title: String!
-        tagline: String
-        released: Int
-        actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
-        directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-        reviewers: [Person!]! @relationship(type: "REVIEWED", direction: IN)
-        producers: [Person!]! @relationship(type: "PRODUCED", direction: IN)
-        likedBy: [User!]! @relationship(type: "LIKES", direction: IN)
-        oneActorName: String @cypher(statement: "MATCH (this)<-[:ACTED_IN]-(a:Person) RETURN a.name")
-        favouriteActor: Person @relationship(type: "FAV", direction: OUT)
-    }
-
-    type MovieClone {
-        title: String!
-        favouriteActor: Person! @relationship(type: "FAV", direction: OUT)
-    }
-    type PersonClone {
-        name: String!
-        movies: [MovieClone!]! @relationship(type: "FAV", direction: IN)
-    }
-
-    type User {
-        name: String!
-        likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
-    }
-
-    type Query {
-        customCypher: [Person]
-            @cypher(
-                statement: """
-                MATCH(m:Movie)--(p:Person)
-                WHERE m.released > 2000
-                RETURN p
-                """
-            )
-        experimentalCustomCypher: [Person]
-            @cypher(
-                statement: """
-                MATCH(m:Movie)--(p:Person)
-                WHERE m.released > 2000
-                RETURN p
-                """
-                columnName: "p"
-            )
-    }
-`;
 
 let neoSchema: Neo4jGraphQL;
 

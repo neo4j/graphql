@@ -24,83 +24,16 @@ import { collectTests } from "../utils/collect-test-files";
 import { translateQuery } from "./utils/translate-query";
 import type * as Performance from "../types";
 import { colorText, TTYColors } from "../utils/formatters/color-tty-text";
+import { typeDefs } from "../typedefs";
 type TranslateTestConfig = {
     runs: number;
     neoSchema: Neo4jGraphQL;
     sync: boolean;
 };
 
-const typeDefs = gql`
-    union Likable = Person | Movie
-
-    type Person {
-        name: String!
-        born: Int!
-        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
-        directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
-        reviewed: [Movie!]! @relationship(type: "REVIEWED", direction: OUT)
-        produced: [Movie!]! @relationship(type: "PRODUCED", direction: OUT)
-        likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
-    }
-
-    type Movie
-        @fulltext(
-            indexes: [
-                { queryName: "movieTaglineFulltextQuery", name: "MovieTaglineFulltextIndex", fields: ["tagline"] }
-            ]
-        ) {
-        id: ID!
-        title: String!
-        tagline: String
-        released: Int
-        actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
-        directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-        reviewers: [Person!]! @relationship(type: "REVIEWED", direction: IN)
-        producers: [Person!]! @relationship(type: "PRODUCED", direction: IN)
-        likedBy: [User!]! @relationship(type: "LIKES", direction: IN)
-        oneActorName: String @cypher(statement: "MATCH (this)<-[:ACTED_IN]-(a:Person) RETURN a.name")
-        favouriteActor: Person @relationship(type: "FAV", direction: OUT)
-    }
-
-    type MovieClone {
-        title: String!
-        favouriteActor: Person! @relationship(type: "FAV", direction: OUT)
-    }
-    type PersonClone {
-        name: String!
-        movies: [MovieClone!]! @relationship(type: "FAV", direction: IN)
-    }
-
-    type User {
-        name: String!
-        likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
-    }
-
-    type Query {
-        customCypher: [Person]
-            @cypher(
-                statement: """
-                MATCH(m:Movie)--(p:Person)
-                WHERE m.released > 2000
-                RETURN p
-                """
-            )
-        experimentalCustomCypher: [Person]
-            @cypher(
-                statement: """
-                MATCH(m:Movie)--(p:Person)
-                WHERE m.released > 2000
-                RETURN p
-                """
-                columnName: "p"
-            )
-    }
-`;
-
 async function runTest(test: Performance.TestInfo, config: TranslateTestConfig) {
     const query = gql(test.query);
     const schema = config.neoSchema;
-    // const req = createJwtRequest("secret", {});
     const THRESHOLD = 1; // Millisecond per translation
     const totalThreshold = THRESHOLD * config.runs;
 
