@@ -33,11 +33,12 @@ import {
     GraphQLList,
     GraphQLBoolean,
     DirectiveLocation,
+    GraphQLString,
 } from "graphql";
 import { SchemaComposer } from "graphql-compose";
 import getObjFieldMeta from "../../../schema/get-obj-field-meta";
+import type { ObjectFields } from "../../../schema/get-obj-field-meta";
 import getWhereFields from "../../../schema/get-where-fields";
-import type { BaseField, TypeMeta } from "../../../types";
 
 const AUTHORIZATION_VALIDATE_STAGE = new GraphQLEnumType({
     name: "AuthorizationValidateStage",
@@ -166,7 +167,10 @@ function createAuthorization(
 }
 
 function createJWTPayloadWhere(JWTPayloadDefinition?: ObjectTypeDefinitionNode): GraphQLInputObjectType {
-    let fields;
+    let fields: Pick<ObjectFields, "scalarFields" | "primitiveFields"> = {
+        scalarFields: [],
+        primitiveFields: [],
+    };
     if (JWTPayloadDefinition) {
         fields = getObjFieldMeta({
             obj: JWTPayloadDefinition,
@@ -177,20 +181,21 @@ function createJWTPayloadWhere(JWTPayloadDefinition?: ObjectTypeDefinitionNode):
             enums: [],
             validateResolvers: false,
         });
+
         // TODO: should this exist when JwtPayload not defined?
-        const standardClaims = createJWTStandardFields();
-        fields.scalarFields.push(...standardClaims);
-    } else {
-        fields = {
-            scalarFields: [],
-            enumFields: [],
-            primitiveFields: [],
-            temporalFields: [],
-            pointFields: [],
-        };
+        const jwtStandardFields = getJwtStandardFields();
+        fields.primitiveFields.push(...jwtStandardFields);
     }
 
-    const inputFieldsType = getWhereFields({ typeName: "JWTPayload", fields });
+    const inputFieldsType = getWhereFields({
+        typeName: "JWTPayload",
+        fields: {
+            ...fields,
+            enumFields: [],
+            temporalFields: [],
+            pointFields: [],
+        },
+    });
     const composer = new SchemaComposer();
     const inputTC = composer.createInputTC({
         name: "JWTPayloadWhere",
@@ -199,74 +204,41 @@ function createJWTPayloadWhere(JWTPayloadDefinition?: ObjectTypeDefinitionNode):
     return inputTC.getType();
 }
 
-function createJWTStandardFields(): BaseField[] {
-    const stringMeta: TypeMeta = {
-        name: "String",
-        array: false,
-        required: false,
-        pretty: "String",
-        input: {
-            where: { type: "String", pretty: "String" },
-            create: {
-                type: "String",
-                pretty: `String`,
+function getJwtStandardFields() {
+    const jwtStandardType = new SchemaComposer().createObjectTC({
+        name: "JWTStandard",
+        fields: {
+            iss: {
+                type: GraphQLString,
+                description:
+                    "A case-sensitive string containing a StringOrURI value that identifies the principal that issued the JWT.",
             },
-            update: {
-                type: "String",
-                pretty: "String",
+            sub: {
+                type: GraphQLString,
+                description:
+                    "A case-sensitive string containing a StringOrURI value that identifies the principal that is the subject of the JWT.",
             },
-        },
-    };
-    const stringListMeta: TypeMeta = {
-        name: "String",
-        array: true,
-        required: false,
-        pretty: "[String!]",
-        input: {
-            where: { type: "String", pretty: "[String!]" },
-            create: {
-                type: "String",
-                pretty: `[String!]`,
+            aud: {
+                type: new GraphQLList(GraphQLString),
+                description:
+                    "An array of case-sensitive strings, each containing a StringOrURI value that identifies the recipients that can process the JWT.",
             },
-            update: {
-                type: "String",
-                pretty: "[String!]",
+            exp: {
+                type: GraphQLString,
+                description:
+                    "Identifies the expiration time on or after which the JWT must not be accepted for processing.",
             },
         },
-    };
-
-    const issField: BaseField = {
-        fieldName: "iss",
-        description:
-            "A case-sensitive string containing a StringOrURI value that identifies the principal that issued the JWT.",
-        typeMeta: stringMeta,
-        otherDirectives: [],
-        arguments: [],
-    };
-    const subField: BaseField = {
-        fieldName: "sub",
-        description:
-            "A case-sensitive string containing a StringOrURI value that identifies the principal that is the subject of the JWT.",
-        typeMeta: stringMeta,
-        otherDirectives: [],
-        arguments: [],
-    };
-    const expField: BaseField = {
-        fieldName: "exp",
-        description: "Identifies the expiration time on or after which the JWT must not be accepted for processing.",
-        typeMeta: stringMeta,
-        otherDirectives: [],
-        arguments: [],
-    };
-    const audField: BaseField = {
-        fieldName: "aud",
-        description:
-            "An array of case-sensitive strings, each containing a StringOrURI value that identifies the recipients that can process the JWT.",
-        typeMeta: stringListMeta,
-        otherDirectives: [],
-        arguments: [],
-    };
-    return [issField, subField, expField, audField];
+    });
+    return getObjFieldMeta({
+        obj: jwtStandardType.getType().astNode as ObjectTypeDefinitionNode,
+        objects: [],
+        interfaces: [],
+        unions: [],
+        scalars: [],
+        enums: [],
+        validateResolvers: false,
+    }).primitiveFields;
 }
 
 export function createAuthorizationDefinitions(
