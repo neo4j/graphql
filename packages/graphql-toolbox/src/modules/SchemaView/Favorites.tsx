@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
+import { tokens } from "@neo4j-ndl/base";
 import { IconButton } from "@neo4j-ndl/react";
-import { TrashIconOutline } from "@neo4j-ndl/react/icons";
-import { FavoriteNameEdit } from "./FavoriteNameEdit";
-import type { Favorite } from "../../types";
+import { StarIconOutline, TrashIconOutline } from "@neo4j-ndl/react/icons";
 import { useStore } from "../../store";
+import type { Favorite } from "../../types";
+import { FavoriteNameEdit } from "./FavoriteNameEdit";
 
 const ALTERNATE_BG_COLOR = "n-bg-neutral-20";
 
@@ -39,6 +40,25 @@ export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
     const updateName = (newName: string, id: string): void => {
         const nextFavs = favorites?.map((fav) => (fav.id === id ? { ...fav, name: newName } : fav)) || null;
         useStore.setState({ favorites: nextFavs });
+    };
+
+    const EmptyState = (): JSX.Element => {
+        return (
+            <div className="h-favorite flex flex-col items-center justify-center n-neutral-text-weakest">
+                <p>No favorites to display.</p>
+                <p className="flex">
+                    Click{" "}
+                    <StarIconOutline
+                        className="h-5 w-5"
+                        style={{
+                            color: tokens.colors.neutral[80],
+                        }}
+                    />{" "}
+                    to save type
+                </p>
+                <p>definitions as favorite.</p>
+            </div>
+        );
     };
 
     return (
@@ -73,7 +93,9 @@ export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
                         );
                     })}
                 </ul>
-            ) : null}
+            ) : (
+                <EmptyState />
+            )}
         </div>
     );
 };
