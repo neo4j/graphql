@@ -66,15 +66,21 @@ const basicTypeDefs = `
     }
 `;
 
-export async function schemaPerformance() {
+export function getLargeSchema(size = 500): string {
     let typeDefs = "";
     const toReplace =
         /(Journalist|Article|HasArticle|Block|Image|HasBlock|TextBlock|DividerBlock|ImageBlock|PDFImage|HAS_ARTICLE|HAS_BLOCK|HAS_IMAGE)/g;
 
-    for (let i = 0; i < 500; i++) {
+    for (let i = 0; i < size; i++) {
         const partialTypes = basicTypeDefs.replaceAll(toReplace, `$1${i}`);
         typeDefs = typeDefs + partialTypes;
     }
+
+    return typeDefs;
+}
+
+export async function schemaPerformance() {
+    const typeDefs = getLargeSchema();
     const neoSchema = new Neo4jGraphQL({
         typeDefs,
     });

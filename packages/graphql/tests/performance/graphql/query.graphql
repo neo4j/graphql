@@ -1,6 +1,12 @@
 query SimpleQuery {
     movies {
         title
+    }
+}
+
+query SimpleQueryWithRelationship {
+    movies {
+        title
         actors {
             name
         }

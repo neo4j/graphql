@@ -25,6 +25,7 @@ import { Neo4jDatabaseInfo } from "../../../../src/classes/Neo4jDatabaseInfo";
 import { DriverBuilder } from "../../../utils/builders/driver-builder";
 import { getQuerySource } from "../../../utils/get-query-source";
 
+// TODO: improve this so only `graphql(graphqlArgs)` is tested
 export async function translateQuery(
     neoSchema: Neo4jGraphQL,
     query: DocumentNode,
