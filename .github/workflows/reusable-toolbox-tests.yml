@@ -26,14 +26,10 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      # the introspector is a referenced project by the Toolbox
+      # the introspector is a referenced project by the Toolbox.
       - name: Build the introspector
         run: yarn build
         working-directory: packages/introspector
-      # # To fail fast, build the Toolbox to see if any errors occur. For example, a common error is building referenced projects like the introspector.
-      # - name: Build the GraphQL Toolbox
-      #   run: yarn build
-      #   working-directory: packages/graphql-toolbox
       - name: Install Playwright
         run: npx playwright install --with-deps
       - name: Run @neo4j/graphql-toolbox unit tests
