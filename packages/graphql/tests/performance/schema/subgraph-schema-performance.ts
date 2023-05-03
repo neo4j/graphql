@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
-import Neo4jGraphQL from "../../src/classes/Neo4jGraphQL";
+import Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
 
 const basicTypeDefs = `
+    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+
     type Journalist {
         articles: [Article!]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle")
     }
@@ -28,8 +30,8 @@ const basicTypeDefs = `
         createdAt: DateTime! @timestamp
     }
 
-    type Article @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-        id: ID! @id @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+    type Article @key(fields: "id") {
+        id: ID! @id
         blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
@@ -66,7 +68,7 @@ const basicTypeDefs = `
     }
 `;
 
-export async function schemaPerformance() {
+export async function subgraphSchemaPerformance() {
     let typeDefs = "";
     const toReplace =
         /(Journalist|Article|HasArticle|Block|Image|HasBlock|TextBlock|DividerBlock|ImageBlock|PDFImage|HAS_ARTICLE|HAS_BLOCK|HAS_IMAGE)/g;
@@ -78,7 +80,7 @@ export async function schemaPerformance() {
     const neoSchema = new Neo4jGraphQL({
         typeDefs,
     });
-    console.time("Schema Generation");
-    await neoSchema.getSchema();
-    console.timeEnd("Schema Generation");
+    console.time("Subgraph Schema Generation");
+    await neoSchema.getSubgraphSchema();
+    console.timeEnd("Subgraph Schema Generation");
 }
