@@ -147,10 +147,25 @@ async function main() {
 
 async function translationPerformance() {
     let runs = 100;
+    const runsArg = getArgumentValue("--runs");
+    if (runsArg) {
+        const parsedRuns = Math.trunc(Number(runsArg));
+        if (!parsedRuns) throw new Error("--runs require a positive number");
+        runs = parsedRuns;
+    }
+
     if (process.argv.includes("--single")) {
         runs = 1;
     }
     await runTranslationPerformance(runs);
+}
+
+function getArgumentValue(argName: string): string | undefined {
+    const runsArg = process.argv.indexOf(argName);
+    if (runsArg === -1) return undefined;
+    const argValue = process.argv[runsArg + 1];
+    if (argValue === undefined) throw new Error(`arg ${argName} requires a value`);
+    return argValue;
 }
 
 async function queryPerformance() {

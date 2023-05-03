@@ -147,15 +147,14 @@ export async function runTranslationPerformance(runs = 100) {
     });
 
     for (const test of [...localTests, ...gqltests]) {
+        let sync = true;
+        if (process.argv.includes("--async")) {
+            sync = false;
+        }
         await runTest(test, {
             runs,
             neoSchema,
-            sync: true,
+            sync,
         });
-        // await runTest(test, {
-        //     runs,
-        //     neoSchema,
-        //     sync: false,
-        // });
     }
 }

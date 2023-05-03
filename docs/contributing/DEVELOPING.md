@@ -174,9 +174,19 @@ Alternatively, the schema can be run ready for subgraph by executing `yarn perfo
 
 This benchmark will measure the time it takes to translate a certain GraphQL query (without hitting the database). All of the queries in the `graphql` folder will be used, along with the queries located in `translation/graphql` `_skip` and `_only` can be used to limit how many queries are run.
 
-This can be run with `yarn performance --translation`
+This can be run with `yarn performance --translation`.
 
-By default, each query will be translated 100 times, and the total time will be shown. With the option `--single` each query will only be run once. Note that this option makes the tests faster and logging easier but will yield less accurate results.
+Note that the output will be rounded to milliseconds.
+
+**Change test runs**
+By default, each query will be translated 100 times, and the total time will be shown.
+
+With the argument `--runs` you can change how many runs to do per query (e.g. `yarn performance --translation --runs 1000`).
+
+With the option `--single` each query translation will only run once. Note that this option makes the tests faster and logging easier but will yield less accurate results.
+
+**Make runs asynchronous**
+With the flag `--async`, all the runs for each test will be done asynchronously, this makes the tests slightly faster, and it may yield a more accurate depiction of a real server, but makes it harder to get reliable results and debugging.
 
 ## Linting/formatting
 
