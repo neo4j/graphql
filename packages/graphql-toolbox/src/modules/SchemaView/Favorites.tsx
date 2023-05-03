@@ -44,14 +44,14 @@ export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
 
     const EmptyState = (): JSX.Element => {
         return (
-            <div className="h-favorite flex flex-col items-center justify-center n-neutral-text-weakest">
+            <div className="h-favorite flex flex-col items-center justify-center leading-6 n-text-neutral-60">
                 <p>No favorites to display.</p>
                 <p className="flex">
                     Click{" "}
                     <StarIconOutline
-                        className="h-5 w-5"
+                        className="h-5 w-5 mx-1"
                         style={{
-                            color: tokens.colors.neutral[80],
+                            color: tokens.colors.neutral[60],
                         }}
                     />{" "}
                     to save type
@@ -62,7 +62,7 @@ export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
     };
 
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full p-6">
             <span className="h5">Favorites</span>
             {favorites?.length ? (
                 <ul className="pt-3 h-favorite overflow-y-scroll">

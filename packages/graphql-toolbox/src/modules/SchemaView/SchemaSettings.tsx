@@ -66,7 +66,7 @@ export const SchemaSettings = () => {
     };
 
     return (
-        <>
+        <div className="p-6">
             <span className="h5">Schema options</span>
             <div className="mb-1 mt-3 flex items-baseline">
                 <Checkbox
@@ -160,6 +160,6 @@ export const SchemaSettings = () => {
                     />
                 </div>
             </div>
-        </>
+        </div>
     );
 };
