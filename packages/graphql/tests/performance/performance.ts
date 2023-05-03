@@ -21,17 +21,18 @@ import type { Driver } from "neo4j-driver";
 import path from "path";
 
 import { gql } from "apollo-server";
-import neo4j from "./utils/neo4j";
-import { setupDatabase, cleanDatabase } from "./utils/setup-database";
+import neo4j from "./databaseQuery/neo4j";
+import { setupDatabase, cleanDatabase } from "./databaseQuery/setup-database";
 import { Neo4jGraphQL } from "../../src";
 import { collectTests, collectCypherTests } from "./utils/collect-test-files";
 import { ResultsWriter } from "./utils/ResultsWriter";
-import { TestRunner } from "./utils/TestRunner";
+import { TestRunner } from "./databaseQuery/TestRunner";
 import type * as Performance from "./types";
-import { schemaPerformance } from "./schema-performance";
+import { schemaPerformance } from "./schema/schema-performance";
 import { MarkdownFormatter } from "./utils/formatters/MarkdownFormatter";
 import { TTYFormatter } from "./utils/formatters/TTYFormatter";
-import { subgraphSchemaPerformance } from "./subgraph-schema-performance";
+import { subgraphSchemaPerformance } from "./schema/subgraph-schema-performance";
+import { runTranslationPerformance } from "./translation/translation-performance";
 
 let driver: Driver;
 
@@ -137,9 +138,19 @@ async function main() {
         await schemaPerformance();
     } else if (process.argv.includes("--subgraph-schema")) {
         await subgraphSchemaPerformance();
+    } else if (process.argv.includes("--translation")) {
+        await translationPerformance();
     } else {
         await queryPerformance();
     }
+}
+
+async function translationPerformance() {
+    let runs = 100;
+    if (process.argv.includes("--single")) {
+        runs = 1;
+    }
+    await runTranslationPerformance(runs);
 }
 
 async function queryPerformance() {
@@ -179,7 +190,7 @@ async function runTests(cypher: boolean) {
 
     const gqlTestsResuts = await runner.runTests(gqltests, { beforeEach, afterEach });
     if (cypher) {
-        const cypherTests = await collectCypherTests(path.join(__dirname, "cypher"));
+        const cypherTests = await collectCypherTests(path.join(__dirname, "databaseQuery", "cypher"));
         const cypherTestsResults = await runner.runCypherTests(cypherTests, {
             beforeEach,
             afterEach,

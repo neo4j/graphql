@@ -75,6 +75,26 @@ const typeDefs = gql`
         name: String!
         likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
     }
+
+    type Query {
+        customCypher: [Person]
+            @cypher(
+                statement: """
+                MATCH(m:Movie)--(p:Person)
+                WHERE m.released > 2000
+                RETURN p
+                """
+            )
+        experimentalCustomCypher: [Person]
+            @cypher(
+                statement: """
+                MATCH(m:Movie)--(p:Person)
+                WHERE m.released > 2000
+                RETURN p
+                """
+                columnName: "p"
+            )
+    }
 `;
 
 async function runTest(test: Performance.TestInfo, config: TranslateTestConfig) {
@@ -111,41 +131,31 @@ async function runTest(test: Performance.TestInfo, config: TranslateTestConfig) 
     let name = `${test.filename}.${test.name}`;
     if (duration > totalThreshold) name = colorText(name, TTYColors.red);
     if (duration < totalThreshold / 2) name = colorText(name, TTYColors.green);
-    const syncTag = config.sync ? "[SYNC]" : "[ASYNC]";
+    const syncTag = config.sync ? "" : "[ASYNC]";
     console.log(name, `${duration} ms on ${config.runs} runs ${syncTag}`);
 
     performance.clearMarks();
     performance.clearMeasures();
 }
 
-async function main() {
-    let runs = 100;
-    if (process.argv.includes("--single")) {
-        runs = 1;
-    }
-    const gqltests = await collectTests(path.join(__dirname, "graphql"));
+export async function runTranslationPerformance(runs = 100) {
+    const gqltests = await collectTests(path.join(__dirname, "..", "graphql"));
+
+    const localTests = await collectTests(path.join(__dirname, "graphql"));
     const neoSchema = new Neo4jGraphQL({
         typeDefs,
     });
 
-    for (const test of gqltests) {
+    for (const test of [...localTests, ...gqltests]) {
         await runTest(test, {
             runs,
             neoSchema,
             sync: true,
         });
-        await runTest(test, {
-            runs,
-            neoSchema,
-            sync: false,
-        });
+        // await runTest(test, {
+        //     runs,
+        //     neoSchema,
+        //     sync: false,
+        // });
     }
 }
-
-main()
-    .then(() => {
-        console.log("Fin");
-    })
-    .catch((err) => {
-        console.error(err);
-    });

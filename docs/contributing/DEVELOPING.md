@@ -121,10 +121,16 @@ npm run test-docker
 
 ### Performance
 
-`packages/graphql` has a performance benchmark built in. To run it:
+`packages/graphql` has several performance benchmarks built in. To run the benchmarks:
 
 1. Go to `packages/graphql`
-2. Run `yarn performance`
+2. Run `yarn performance` (by default, Database Query Performance test will be run)
+
+#### Database Query Performance
+
+The Database query benchmarks will query translate several GraphQL queries and run the generated Cypher against a test dataset in Neo4j, measuring time and dbHits.
+
+These will be run by default when executing `yarn performance`.
 
 All `.graphql` files in `tests/performance/graphql` are part of the performance suite. To skip or run a test, append `_skip` or `_only` to the query, e.g.:
 
@@ -144,19 +150,33 @@ query SimpleUnionQuery_only {
 }
 ```
 
-To update the file `performance.json`, with the results of the performance test, run `yarn performance -u`
+**Saving metrics**
+With the option `-u` a file `performance.json` will be generated, that can be used to compare metrics between runs. This is only available for database query benchmark.
 
-#### Running with Cypher
+**Running Cypher queries**
 
-The performance tests can also run raw Cypher, to enable it, run `yarn performance --cypher`. Cypher queries must be located at `tests/performance/cypher`
+The performance tests can also run raw Cypher, to enable it, run `yarn performance --cypher`. Cypher queries must be located at `tests/performance/databaseQuery/cypher`. This allows for comparison between GraphQL and an alternative Cypher query.
 
-#### Running for markdown
+**Generating markdown**
 
-With the option `--markdown` the output will be formatted in markdown.
+With the option `--markdown` the output will be formatted in markdown instead of the CLI. This is only available for database query benchmark.
 
 #### Schema Generation
 
-Running `yarn performance --schema` will run instead the schema generation performance test.
+This benchmark runs the schema generation for a large GraphQL Schema and outputs the time that took to generate it. No database needed.
+
+To execute this, run `yarn performance --schema`.
+
+**Subgraph Schema**
+Alternatively, the schema can be run ready for subgraph by executing `yarn performance --subgraph-schema`.
+
+#### Translation
+
+This benchmark will measure the time it takes to translate a certain GraphQL query (without hitting the database). All of the queries in the `graphql` folder will be used, along with the queries located in `translation/graphql` `_skip` and `_only` can be used to limit how many queries are run.
+
+This can be run with `yarn performance --translation`
+
+By default, each query will be translated 100 times, and the total time will be shown. With the option `--single` each query will only be run once. Note that this option makes the tests faster and logging easier but will yield less accurate results.
 
 ## Linting/formatting
 
