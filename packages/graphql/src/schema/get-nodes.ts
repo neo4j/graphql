@@ -73,6 +73,7 @@ function getNodes(
                     "plural",
                     "shareable",
                     "deprecated",
+                    "jwtPayload",
                 ].includes(x.name.value)
         );
         const propagatedDirectives = (definition.directives || []).filter((x) =>

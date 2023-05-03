@@ -32,6 +32,7 @@ import type {
     EnumValueNode,
     UnionTypeDefinitionNode,
     ValueNode,
+    ConstDirectiveNode,
 } from "graphql";
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
@@ -102,6 +103,7 @@ function getObjFieldMeta({
 }): ObjectFields {
     const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
     const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
+    const objIsJwtPayload = (obj.directives || []).find((d) => d.name.value === "jwtPayload");
 
     return obj?.fields?.reduce(
         (res: ObjectFields, field) => {
@@ -143,6 +145,7 @@ function getObjFieldMeta({
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
             const populatedByDirective = directives.find((x) => x.name.value === "populatedBy");
+            const jwtClaimDirective = directives.find((x) => x.name.value === "jwtClaim");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
@@ -174,6 +177,7 @@ function getObjFieldMeta({
                             "unique",
                             "callback",
                             "populatedBy",
+                            "jwtClaim",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -193,6 +197,18 @@ function getObjFieldMeta({
                 if (aliasMeta) {
                     baseField.dbPropertyName = aliasMeta.property;
                     baseField.dbPropertyNameUnescaped = aliasMeta.propertyUnescaped;
+                }
+            }
+
+            // TODO: extend with jwtPayload validation?
+            if (jwtClaimDirective) {
+                if (!objIsJwtPayload) {
+                    throw new Error(
+                        "@jwtClaim directive can only be used on fields within a type annotated with @jwtPayload"
+                    );
+                }
+                if ((field.directives as ConstDirectiveNode[]).length > 1) {
+                    throw new Error("@jwtClaim directive cannot be combined with other directives.");
                 }
             }
 

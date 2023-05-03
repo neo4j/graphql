@@ -17,7 +17,14 @@
  * limitations under the License.
  */
 
-import type { DocumentNode, DefinitionNode, GraphQLDirective, GraphQLNamedType, GraphQLError } from "graphql";
+import type {
+    DocumentNode,
+    DefinitionNode,
+    GraphQLDirective,
+    GraphQLNamedType,
+    GraphQLError,
+    ObjectTypeDefinitionNode,
+} from "graphql";
 import { visit, visitInParallel, specifiedDirectives, GraphQLSchema } from "graphql";
 import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/authorization";
 import { authorizationDefinitionsEnricher, authorizationUsageEnricher } from "./enrichers/authorization";
@@ -28,8 +35,8 @@ import type { SDLValidationRule } from "graphql/validation/ValidationContext";
 import { SDLValidationContext } from "graphql/validation/ValidationContext";
 import type { Maybe } from "graphql/jsutils/Maybe";
 
-function getAdditionalDefinitions(): DefinitionNode[] {
-    return getStaticAuthorizationDefinitions();
+function getAdditionalDefinitions(jwtPayload?: ObjectTypeDefinitionNode): DefinitionNode[] {
+    return getStaticAuthorizationDefinitions(jwtPayload);
 }
 function enrichDocument(
     enrichers: Enricher[],
@@ -47,23 +54,35 @@ function enrichDocument(
     };
 }
 
-function makeValidationDocument(userDocument: DocumentNode, augmentedDocument: DocumentNode): DocumentNode {
+function makeValidationDocument(
+    userDocument: DocumentNode,
+    augmentedDocument: DocumentNode,
+    jwtPayload?: ObjectTypeDefinitionNode
+): DocumentNode {
     const enricherContext = new EnricherContext(userDocument, augmentedDocument);
     const enrichers: Enricher[] = [];
     enrichers.push(authorizationDefinitionsEnricher(enricherContext)); // Add Authorization directive definitions, for instance UserAuthorization
     enrichers.push(authorizationUsageEnricher(enricherContext)); // Apply the previously generated directive definitions to the authorized types
-    const additionalDefinitions = getAdditionalDefinitions();
+    const additionalDefinitions = getAdditionalDefinitions(jwtPayload);
     return enrichDocument(enrichers, additionalDefinitions, augmentedDocument);
 }
 
-export function validateUserDefinition(
-    userDocument: DocumentNode,
-    augmentedDocument: DocumentNode,
-    additionalDirectives: Array<GraphQLDirective> = [],
-    additionalTypes: Array<GraphQLNamedType> = [],
-    rules: readonly SDLValidationRule[] = specifiedSDLRules
-): void {
-    const validationDocument = makeValidationDocument(userDocument, augmentedDocument);
+export function validateUserDefinition({
+    userDocument,
+    augmentedDocument,
+    additionalDirectives = [],
+    additionalTypes = [],
+    rules = specifiedSDLRules,
+    jwtPayload,
+}: {
+    userDocument: DocumentNode;
+    augmentedDocument: DocumentNode;
+    additionalDirectives?: Array<GraphQLDirective>;
+    additionalTypes?: Array<GraphQLNamedType>;
+    rules?: readonly SDLValidationRule[];
+    jwtPayload?: ObjectTypeDefinitionNode;
+}): void {
+    const validationDocument = makeValidationDocument(userDocument, augmentedDocument, jwtPayload);
     const schemaToExtend = new GraphQLSchema({
         directives: [...specifiedDirectives, ...additionalDirectives],
         types: [...additionalTypes],

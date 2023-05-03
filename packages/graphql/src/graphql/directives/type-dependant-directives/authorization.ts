@@ -37,6 +37,7 @@ import {
 import { SchemaComposer } from "graphql-compose";
 import getObjFieldMeta from "../../../schema/get-obj-field-meta";
 import getWhereFields from "../../../schema/get-where-fields";
+import type { BaseField, TypeMeta } from "../../../types";
 
 const AUTHORIZATION_VALIDATE_STAGE = new GraphQLEnumType({
     name: "AuthorizationValidateStage",
@@ -165,23 +166,30 @@ function createAuthorization(
 }
 
 function createJWTPayloadWhere(JWTPayloadDefinition?: ObjectTypeDefinitionNode): GraphQLInputObjectType {
-    const fields = JWTPayloadDefinition
-        ? getObjFieldMeta({
-              obj: JWTPayloadDefinition,
-              objects: [],
-              interfaces: [],
-              unions: [],
-              scalars: [],
-              enums: [],
-              validateResolvers: false,
-          })
-        : {
-              scalarFields: [],
-              enumFields: [],
-              primitiveFields: [],
-              temporalFields: [],
-              pointFields: [],
-          };
+    let fields;
+    if (JWTPayloadDefinition) {
+        fields = getObjFieldMeta({
+            obj: JWTPayloadDefinition,
+            objects: [],
+            interfaces: [],
+            unions: [],
+            scalars: [],
+            enums: [],
+            validateResolvers: false,
+        });
+        // TODO: should this exist when JwtPayload not defined?
+        const standardClaims = createJWTStandardFields();
+        fields.scalarFields.push(...standardClaims);
+    } else {
+        fields = {
+            scalarFields: [],
+            enumFields: [],
+            primitiveFields: [],
+            temporalFields: [],
+            pointFields: [],
+        };
+    }
+
     const inputFieldsType = getWhereFields({ typeName: "JWTPayload", fields });
     const composer = new SchemaComposer();
     const inputTC = composer.createInputTC({
@@ -189,6 +197,76 @@ function createJWTPayloadWhere(JWTPayloadDefinition?: ObjectTypeDefinitionNode):
         fields: inputFieldsType,
     });
     return inputTC.getType();
+}
+
+function createJWTStandardFields(): BaseField[] {
+    const stringMeta: TypeMeta = {
+        name: "String",
+        array: false,
+        required: false,
+        pretty: "String",
+        input: {
+            where: { type: "String", pretty: "String" },
+            create: {
+                type: "String",
+                pretty: `String`,
+            },
+            update: {
+                type: "String",
+                pretty: "String",
+            },
+        },
+    };
+    const stringListMeta: TypeMeta = {
+        name: "String",
+        array: true,
+        required: false,
+        pretty: "[String!]",
+        input: {
+            where: { type: "String", pretty: "[String!]" },
+            create: {
+                type: "String",
+                pretty: `[String!]`,
+            },
+            update: {
+                type: "String",
+                pretty: "[String!]",
+            },
+        },
+    };
+
+    const issField: BaseField = {
+        fieldName: "iss",
+        description:
+            "A case-sensitive string containing a StringOrURI value that identifies the principal that issued the JWT.",
+        typeMeta: stringMeta,
+        otherDirectives: [],
+        arguments: [],
+    };
+    const subField: BaseField = {
+        fieldName: "sub",
+        description:
+            "A case-sensitive string containing a StringOrURI value that identifies the principal that is the subject of the JWT.",
+        typeMeta: stringMeta,
+        otherDirectives: [],
+        arguments: [],
+    };
+    const expField: BaseField = {
+        fieldName: "exp",
+        description: "Identifies the expiration time on or after which the JWT must not be accepted for processing.",
+        typeMeta: stringMeta,
+        otherDirectives: [],
+        arguments: [],
+    };
+    const audField: BaseField = {
+        fieldName: "aud",
+        description:
+            "An array of case-sensitive strings, each containing a StringOrURI value that identifies the recipients that can process the JWT.",
+        typeMeta: stringListMeta,
+        otherDirectives: [],
+        arguments: [],
+    };
+    return [issField, subField, expField, audField];
 }
 
 export function createAuthorizationDefinitions(

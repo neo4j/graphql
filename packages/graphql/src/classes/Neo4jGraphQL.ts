@@ -55,6 +55,7 @@ import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchema
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
 import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
+import makeSchemaToAugment from "../schema/make-schema-to-augment";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -329,11 +330,14 @@ class Neo4jGraphQL {
 
     private generateExecutableSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
-            const document = this.getDocument(this.typeDefs);
+            const initialDocument = this.getDocument(this.typeDefs);
 
             const validationConfig = this.parseStartupValidationConfig();
 
-            validateDocument({ document, validationConfig });
+            validateDocument({ document: initialDocument, validationConfig });
+
+            const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
+            const { jwtPayload } = typesExcludedFromGeneration;
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
@@ -343,7 +347,7 @@ class Neo4jGraphQL {
             });
 
             if (validationConfig.validateTypeDefs) {
-                validateUserDefinition(document, typeDefs);
+                validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwtPayload });
             }
 
             this._nodes = nodes;
@@ -366,14 +370,22 @@ class Neo4jGraphQL {
     private async generateSubgraphSchema(): Promise<GraphQLSchema> {
         const { Subgraph } = await import("./Subgraph");
 
-        const document = this.getDocument(this.typeDefs);
+        const initialDocument = this.getDocument(this.typeDefs);
         const subgraph = new Subgraph(this.typeDefs);
 
         const { directives, types } = subgraph.getValidationDefinitions();
 
         const validationConfig = this.parseStartupValidationConfig();
 
-        validateDocument({ document, validationConfig, additionalDirectives: directives, additionalTypes: types });
+        validateDocument({
+            document: initialDocument,
+            validationConfig,
+            additionalDirectives: directives,
+            additionalTypes: types,
+        });
+
+        const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
+        const { jwtPayload } = typesExcludedFromGeneration;
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
@@ -384,7 +396,13 @@ class Neo4jGraphQL {
         });
 
         if (validationConfig.validateTypeDefs) {
-            validateUserDefinition(document, typeDefs, directives, types);
+            validateUserDefinition({
+                userDocument: document,
+                augmentedDocument: typeDefs,
+                additionalDirectives: directives,
+                additionalTypes: types,
+                jwtPayload,
+            });
         }
 
         this._nodes = nodes;
