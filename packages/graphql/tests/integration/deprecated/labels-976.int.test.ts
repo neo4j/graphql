@@ -20,7 +20,7 @@
 import type { DocumentNode, GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Integer, Session } from "neo4j-driver";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";

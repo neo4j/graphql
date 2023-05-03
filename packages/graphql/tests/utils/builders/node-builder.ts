@@ -42,7 +42,6 @@ export class NodeBuilder extends Builder<Node, NodeConstructor> {
             temporalFields: [],
             pointFields: [],
             customResolverFields: [],
-            federationResolvable: true,
             ...newOptions,
         });
     }

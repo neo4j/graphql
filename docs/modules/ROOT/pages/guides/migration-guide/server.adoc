@@ -8,9 +8,9 @@ In your server codebase, the process of creating an executable schema has change
 
 [source, javascript, indent=0]
 ----
-const { makeAugmentedSchema } = require("neo4j-graphql-js");
+import { makeAugmentedSchema } from "neo4j-graphql-js";
 
-const typeDefs = require("./type-definitions");
+import typeDefs from "./type-definitions";
 
 const schema = makeAugmentedSchema({ typeDefs });
 ----
@@ -19,9 +19,9 @@ Has become:
 
 [source, javascript, indent=0]
 ----
-const { Neo4jGraphQL } = require("@neo4j/graphql");
+import { makeAugmentedSchema } from "neo4j-graphql-js";
 
-const typeDefs = require("./type-definitions");
+import typeDefs from "./type-definitions";
 
 const neo4jGraphQL = new Neo4jGraphQL({ typeDefs });
 
@@ -91,16 +91,19 @@ Once a schema has been generated, it can be passed into a GraphQL server instanc
 
 [source, javascript, indent=0]
 ----
-const { ApolloServer } = require("apollo-server");
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
 
-const driver = require("./driver");
-const schema = require("./schema");
+import driver from "./driver";
+import schema from "./schema";
 
-const server = new ApolloServer({ schema, context: { driver } });
+const server = new ApolloServer({ schema });
 
-server.listen().then(({ url }) => {
-    console.log(`@neo4j/graphql API ready at ${url}`);
+const { url } = await startStandaloneServer(server, {
+    context: async ({ req }) => ({ driver, token: req.headers.token }),
 });
+
+console.log(`@neo4j/graphql API ready at ${url}`);
 ----
 
 === Multiple Databases
@@ -109,32 +112,38 @@ Multiple databases were supported in `neo4j-graphql-js` by passing a context key
 
 [source, javascript, indent=0]
 ----
-const { ApolloServer } = require("apollo-server");
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
 
-const driver = require("./driver");
-const schema = require("./schema");
+import driver from "./driver";
+import schema from "./schema";
 
-const server = new ApolloServer({ schema, context: { driver, neo4jDatabase: "sanmateo" } });
+const server = new ApolloServer({ schema });
 
-server.listen().then(({ url }) => {
-    console.log(`@neo4j/graphql API ready at ${url}`);
+const { url } = await startStandaloneServer(server, {
+    context: async ({ req }) => ({ driver, neo4jDatabase: "sanmateo", token: req.headers.token }),
 });
+
+console.log(`@neo4j/graphql API ready at ${url}`);
 ----
 
 In `@neo4j/graphql`, this has now become:
 
 [source, javascript, indent=0]
 ----
-const { ApolloServer } = require("apollo-server");
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
 
-const driver = require("./driver");
-const schema = require("./schema");
+import driver from "./driver";
+import schema from "./schema";
 
 const server = new ApolloServer({ schema, context: { driver, driverConfig: { database: "sanmateo" } } });
 
-server.listen().then(({ url }) => {
-    console.log(`@neo4j/graphql API ready at ${url}`);
+const { url } = await startStandaloneServer(server, {
+    context: async ({ req }) => ({ token: req.headers.token }),
 });
+
+console.log(`@neo4j/graphql API ready at ${url}`);
 ----
 
 Database bookmarks are also supported. See xref::driver-configuration.adoc[Driver Configuration] for more information.

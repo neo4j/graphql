@@ -22,11 +22,11 @@ mkdir neo4j-graphql-example
 cd neo4j-graphql-example
 ----
 +
-. Create a new Node.js project:
+. Create a new Node.js project (with ESM modules enabled by using the es6 option):
 +
 [source, bash, indent=0]
 ----
-npm init --yes
+npm init es6 --yes
 ----
 +
 Whilst you're there, create an empty `index.js` file which will contain all of the code for this example:
@@ -46,11 +46,11 @@ The Neo4j GraphQL Library and it's dependencies must be installed:
 
 Additionally, you will need to install a GraphQL server package which will host your schema and allow you to execute queries and mutations against it. For this example, use the popular https://www.apollographql.com/docs/apollo-server/[Apollo Server] package:
 
-- `apollo-server` is the default package for Apollo Server, which you will pass the Neo4j GraphQL Library generated schema into.
+- `@apollo/server` is the default package for Apollo Server, which you will pass the Neo4j GraphQL Library generated schema into.
 
 [source, bash, indent=0]
 ----
-npm install @neo4j/graphql graphql neo4j-driver apollo-server
+npm install @neo4j/graphql graphql neo4j-driver @apollo/server
 ----
 
 Make sure the database fulfills the requirements stated xref::introduction.adoc#introduction-requirements[here], including the necessary plugins.
@@ -63,11 +63,12 @@ Open up the previously created `index.js` in your editor of choice and write out
 
 [source, javascript, indent=0]
 ----
-const { Neo4jGraphQL } = require("@neo4j/graphql");
-const { ApolloServer, gql } = require("apollo-server");
-const neo4j = require("neo4j-driver");
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
 
-const typeDefs = gql`
+const typeDefs = `#graphql
     type Movie {
         title: String
         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
@@ -106,15 +107,19 @@ Add the following to the bottom of `index.js`:
 
 [source, javascript, indent=0]
 ----
-neoSchema.getSchema().then((schema) => {
-  const server = new ApolloServer({
-      schema,
-  });
 
-  server.listen().then(({ url }) => {
-      console.log(`🚀 Server ready at ${url}`);
-  });
-})
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
+});
+
+const { url } = await startStandaloneServer(server, {
+    context: async ({ req }) => ({ req }),
+    listen: { port: 4000 },
+});
+
+console.log(`🚀 Server ready at ${url}`);
 ----
 
 == Start the server

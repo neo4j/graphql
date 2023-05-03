@@ -64,7 +64,7 @@ passed into the `typeDefs` array alongside the rest of the type definitions:
 const neoSchema = new Neo4jGraphQL({
     typeDefs: [
         upperDirectiveTypeDefs,
-        gql`
+        `#graphql
             type Movie {
                 name: String @uppercase
             }
