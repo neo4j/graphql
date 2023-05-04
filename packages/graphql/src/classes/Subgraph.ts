@@ -29,6 +29,7 @@ import type {
     SchemaExtensionNode,
 } from "graphql";
 import { Kind, parse, print } from "graphql";
+import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { translateResolveReference } from "../translate/translate-resolve-reference";
 import type { Context, Node } from "../types";
 import { execute } from "../utils";
@@ -47,13 +48,16 @@ const federationDirectiveNames = [
     "tag",
     "composeDirective",
     "interfaceObject",
-] as const;
+];
 
 type FederationDirectiveName = (typeof federationDirectiveNames)[number];
 
 type FullyQualifiedFederationDirectiveName = `federation__${FederationDirectiveName}`;
 
-const isFederationDirectiveName = (name): name is FederationDirectiveName => federationDirectiveNames.includes(name);
+type ReferenceResolver = (reference, context: Context, info: GraphQLResolveInfo) => Promise<unknown>;
+
+const isFederationDirectiveName = (name: string): name is FederationDirectiveName =>
+    federationDirectiveNames.includes(name);
 
 export class Subgraph {
     private importArgument: Map<
@@ -103,13 +107,24 @@ export class Subgraph {
         });
     }
 
-    public getReferenceResolvers(nodes: Node[]): IResolvers {
+    public getReferenceResolvers(nodes: Node[], schemaModel: Neo4jGraphQLSchemaModel): IResolvers {
         const resolverMap: IResolvers = {};
 
         const document = mergeTypeDefs(this.typeDefs);
 
         document.definitions.forEach((def) => {
             if (def.kind === Kind.OBJECT_TYPE_DEFINITION) {
+                const entity = schemaModel.getEntity(def.name.value);
+
+                if (schemaModel.isConcreteEntity(entity)) {
+                    const keyAnnotation = entity.annotations.key;
+
+                    // If there is a @key directive with `resolvable` set to false, then do not add __resolveReference
+                    if (keyAnnotation && keyAnnotation.resolvable === false) {
+                        return;
+                    }
+                }
+
                 resolverMap[def.name.value] = {
                     __resolveReference: this.getReferenceResolver(nodes),
                 };
@@ -119,8 +134,8 @@ export class Subgraph {
         return resolverMap;
     }
 
-    private getReferenceResolver(nodes: Node[]): (reference, context, info) => Promise<unknown> {
-        const __resolveReference = async (reference, _context, info: GraphQLResolveInfo): Promise<unknown> => {
+    private getReferenceResolver(nodes: Node[]): ReferenceResolver {
+        const __resolveReference = async (reference, context: Context, info: GraphQLResolveInfo): Promise<unknown> => {
             const { __typename } = reference;
 
             const node = nodes.find((n) => n.name === __typename);
@@ -129,7 +144,6 @@ export class Subgraph {
                 throw new Error("Unable to find matching node");
             }
 
-            const context = _context as Context;
             context.resolveTree = getNeo4jResolveTree(info);
 
             const { cypher, params } = translateResolveReference({ context, node, reference });
