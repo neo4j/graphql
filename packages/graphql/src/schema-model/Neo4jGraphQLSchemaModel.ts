@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { CompositeEntity } from "./entity/CompositeEntity";
-import type { ConcreteEntity } from "./entity/ConcreteEntity";
+import { CompositeEntity } from "./entity/CompositeEntity";
+import { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Entity } from "./entity/Entity";
 
 /** Represents the internal model for the Neo4jGraphQL schema */
@@ -50,5 +50,13 @@ export class Neo4jGraphQLSchemaModel {
 
     public getEntitiesByLabels(labels: string[]): ConcreteEntity[] {
         return this.concreteEntities.filter((entity) => entity.matchLabels(labels));
+    }
+
+    public isConcreteEntity(entity: Entity): entity is ConcreteEntity {
+        return entity instanceof ConcreteEntity;
+    }
+
+    public isCompositeEntity(entity: Entity): entity is CompositeEntity {
+        return entity instanceof CompositeEntity;
     }
 }
