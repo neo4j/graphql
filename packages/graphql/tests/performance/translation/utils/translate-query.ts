@@ -39,7 +39,6 @@ export async function translateQuery(
     const driverBuilder = new DriverBuilder();
     const neo4jDatabaseInfo = new Neo4jDatabaseInfo(options?.neo4jVersion ?? "4.3");
     let contextValue: Record<string, any> = { driver: driverBuilder.instance(), neo4jDatabaseInfo };
-
     if (options?.req) {
         contextValue.req = options.req;
     }

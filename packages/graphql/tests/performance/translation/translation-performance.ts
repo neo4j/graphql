@@ -25,6 +25,8 @@ import type * as Performance from "../types";
 import { colorText, TTYColors } from "../utils/formatters/color-tty-text";
 import { typeDefs } from "../typedefs";
 import gql from "graphql-tag";
+import { getArgumentValue } from "../utils/get-argument-value";
+import { getLargeSchema } from "../schema/schema-performance";
 
 type TranslateTestConfig = {
     runs: number;
@@ -76,8 +78,18 @@ export async function runTranslationPerformance(runs = 100) {
     const gqltests = await collectTests(path.join(__dirname, "..", "graphql"));
 
     const localTests = await collectTests(path.join(__dirname, "graphql"));
+
+    let testTypeDefs = typeDefs;
+
+    const schemaSizeArg = getArgumentValue("--schemaSize");
+    if (schemaSizeArg) {
+        const parsedSchemaSize = Math.trunc(Number(schemaSizeArg));
+        if (!parsedSchemaSize || parsedSchemaSize < 0) throw new Error("--runs require a positive number");
+        testTypeDefs = testTypeDefs + getLargeSchema(parsedSchemaSize);
+    }
+
     const neoSchema = new Neo4jGraphQL({
-        typeDefs,
+        typeDefs: testTypeDefs,
     });
 
     for (const test of [...localTests, ...gqltests]) {

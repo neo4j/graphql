@@ -188,6 +188,11 @@ With the flag `--single` each query translation will only run once. Note that th
 **Make runs asynchronous**
 With the flag `--async`, all the runs for each test will be done asynchronously, this makes the tests slightly faster, and it may yield a more accurate depiction of a real server, but makes it harder to get reliable results and debugging.
 
+**Increase Schema Size**
+The option `--schemaSize` allows to artificially increase the schema size x times.
+
+For instance `--schemaSize 500` will generate a schema roughly 500x. This is done by appending a test default schema to the base schema
+
 ## Linting/formatting
 
 We use ESLint for linting and Prettier for code formatting. Contributions must

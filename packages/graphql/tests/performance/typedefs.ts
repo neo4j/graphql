@@ -17,9 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-
-export const typeDefs = gql`
+export const typeDefs = `#graphql
     union Likable = Person | Movie
 
     type Person {
