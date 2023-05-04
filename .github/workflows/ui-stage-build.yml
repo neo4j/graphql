@@ -17,6 +17,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
+      # the introspector is a referenced project by the Toolbox.
+      - name: Build the introspector
+        run: yarn build
+        working-directory: packages/introspector
       - name: UI build
         env:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
