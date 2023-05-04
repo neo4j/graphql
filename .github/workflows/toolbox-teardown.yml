@@ -1,4 +1,4 @@
-name: "UI Teardown"
+name: "Toolbox Teardown"
 
 on:
   pull_request_target:
@@ -25,7 +25,7 @@ jobs:
         with:
           header: toolbox
           message: |
-            Thanks for the UI updates.
+            Thanks for the Neo4j GraphQL Toolbox updates.
 
-            The UI has now been torn down - reopening this PR will republish it.
+            The Neo4j GraphQL Toolbox has now been torn down - reopening this PR will republish it.
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
