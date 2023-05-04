@@ -146,8 +146,8 @@ function makeAugmentedSchema(
     const extraDefinitions = [
         ...enumTypes,
         ...scalarTypes,
-        ...directives,
         ...inputObjectTypes,
+        ...directives,
         ...unionTypes,
         ...([
             customResolvers.customQuery,
@@ -185,7 +185,9 @@ function makeAugmentedSchema(
     const interfaceCommonFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
-        const authDirective = (relationship.directives || []).find((x) => ["auth", "authoization"].includes(x.name.value));
+        const authDirective = (relationship.directives || []).find((x) =>
+            ["auth", "authoization"].includes(x.name.value)
+        );
         if (authDirective) {
             throw new Error("Cannot have @auth directive on relationship properties interface");
         }
@@ -543,7 +545,6 @@ function makeAugmentedSchema(
     }
 
     nodes.forEach((node) => {
-        
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
             ...node.cypherFields,
@@ -832,7 +833,7 @@ function makeAugmentedSchema(
         });
     });
 
-    if (generateSubscriptions) {
+    if (generateSubscriptions && nodes.length) {
         generateSubscriptionTypes({ schemaComposer: composer, nodes, relationshipFields, interfaceCommonFields });
     }
 

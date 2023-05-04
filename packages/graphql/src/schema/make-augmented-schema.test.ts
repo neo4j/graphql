@@ -30,6 +30,7 @@ import { gql } from "graphql-tag";
 import makeAugmentedSchema from "./make-augmented-schema";
 import { Node } from "../classes";
 import * as constants from "../constants";
+import { not } from "@neo4j/cypher-builder";
 
 describe("makeAugmentedSchema", () => {
     test("should be a function", () => {
@@ -328,6 +329,22 @@ describe("makeAugmentedSchema", () => {
 
             // make sure the schema constructs
             expect(document.kind).toBe("Document");
+        });
+
+        test.only("3270 - should not throw if directive has arguments of input type", () => {
+            const typeDefs = gql`
+                directive @testDirective(action_mapping: [ActionMapping]) on OBJECT | FIELD_DEFINITION | QUERY
+                input ActionMapping {
+                    action: [String!]
+                }
+                type TestType {
+                    someField: String
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).not.toThrow(
+                'Error: Type with name "ActionMapping" does not exists'
+            );
         });
     });
 
