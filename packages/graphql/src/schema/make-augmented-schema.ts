@@ -147,8 +147,8 @@ function makeAugmentedSchema(
         ...enumTypes,
         ...scalarTypes,
         ...inputObjectTypes,
-        ...directives,
         ...unionTypes,
+        ...directives,
         ...([
             customResolvers.customQuery,
             customResolvers.customMutation,

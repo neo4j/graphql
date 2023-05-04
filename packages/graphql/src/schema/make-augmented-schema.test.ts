@@ -330,7 +330,7 @@ describe("makeAugmentedSchema", () => {
             expect(document.kind).toBe("Document");
         });
 
-        test.only("3270 - should not throw if directive has arguments of input type", () => {
+        test("3270 - should not throw if directive has arguments of input type", () => {
             const typeDefs = gql`
                 directive @testDirective(action_mapping: [ActionMapping]) on OBJECT | FIELD_DEFINITION | QUERY
                 input ActionMapping {
