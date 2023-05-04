@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import type { DocumentNode, DefinitionNode, GraphQLDirective, GraphQLNamedType, GraphQLError } from "graphql";
-import { visit, visitInParallel, specifiedDirectives, GraphQLSchema } from "graphql";
+import type { DocumentNode, DefinitionNode, GraphQLDirective, GraphQLNamedType } from "graphql";
+import { specifiedDirectives, GraphQLSchema, print } from "graphql";
 import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/authorization";
 import { authorizationDefinitionsEnricher, authorizationUsageEnricher } from "./enrichers/authorization";
 import { EnricherContext } from "./EnricherContext";
 import type { Enricher } from "./types";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import type { SDLValidationRule } from "graphql/validation/ValidationContext";
-import { SDLValidationContext } from "graphql/validation/ValidationContext";
-import type { Maybe } from "graphql/jsutils/Maybe";
+import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
+import { validateSDL } from "./validate-sdl";
 
 function getAdditionalDefinitions(): DefinitionNode[] {
     return getStaticAuthorizationDefinitions();
@@ -61,30 +61,18 @@ export function validateUserDefinition(
     augmentedDocument: DocumentNode,
     additionalDirectives: Array<GraphQLDirective> = [],
     additionalTypes: Array<GraphQLNamedType> = [],
-    rules: readonly SDLValidationRule[] = specifiedSDLRules
+    rules?: readonly SDLValidationRule[]
 ): void {
+    rules = rules ? rules : [...specifiedSDLRules, DirectiveArgumentOfCorrectType];
     const validationDocument = makeValidationDocument(userDocument, augmentedDocument);
+
     const schemaToExtend = new GraphQLSchema({
         directives: [...specifiedDirectives, ...additionalDirectives],
         types: [...additionalTypes],
     });
-
-    const errors = validateSDL(validationDocument, rules, schemaToExtend);
+    
+    const errors = validateSDL(validationDocument, [...rules, DirectiveArgumentOfCorrectType], schemaToExtend);
     if (errors.length) {
         throw new Error(errors.join("\n"));
     }
-}
-
-function validateSDL(
-    documentAST: DocumentNode,
-    rules: ReadonlyArray<SDLValidationRule>,
-    schemaToExtend?: Maybe<GraphQLSchema>
-): ReadonlyArray<GraphQLError> {
-    const errors: Array<GraphQLError> = [];
-    const context = new SDLValidationContext(documentAST, schemaToExtend, (error) => {
-        errors.push(error);
-    });
-    const visitors = rules.map((rule) => rule(context));
-    visit(documentAST, visitInParallel(visitors));
-    return errors;
 }

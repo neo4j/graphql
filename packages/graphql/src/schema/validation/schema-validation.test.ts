@@ -25,7 +25,7 @@ import { Subgraph } from "../../classes/Subgraph";
 import makeAugmentedSchema from "../make-augmented-schema";
 import { validateUserDefinition } from "./schema-validation";
 
-describe("schema-validation", () => {
+describe("schema validation", () => {
     describe("on OBJECT", () => {
         test("should not returns errors when is correctly used", () => {
             const userDocument = gql`
@@ -205,6 +205,10 @@ describe("schema-validation", () => {
                 interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!
                 }
+
+                type Post {
+                    author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                }
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -241,6 +245,10 @@ describe("schema-validation", () => {
                 interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID! @deprecated(reason: "name is deprecated")
                 }
+
+                type Post {
+                    author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                }
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -262,6 +270,7 @@ describe("schema-validation", () => {
                 type Post implements Media @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!
                     name: String!
+                    author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
                 }
 
                 interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
@@ -287,6 +296,11 @@ describe("schema-validation", () => {
 
                 interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!
+                }
+
+                type Post {
+                    author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                    media: Media @relationship(type: "HAS_MEDIA", direction: IN)
                 }
             `;
 
@@ -511,6 +525,10 @@ describe("schema-validation", () => {
                     id: ID!
                 }
                 extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+
+                type Post {
+                    author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                }
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -549,6 +567,10 @@ describe("schema-validation", () => {
                     id: ID!
                 }
                 extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+
+                type Post {
+                    author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                }
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -568,8 +590,13 @@ describe("schema-validation", () => {
                 interface Member {
                     id: ID! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
                 }
+
                 extend interface Member {
                     id: ID! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                }
+
+                type Post {
+                    author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
                 }
             `;
 
@@ -599,6 +626,10 @@ describe("schema-validation", () => {
                 extend interface Member {
                     id: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
                 }
+
+                type Post {
+                    author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                }
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -627,6 +658,11 @@ describe("schema-validation", () => {
                 }
                 extend interface Media @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
                 extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+
+                type Post {
+                    author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                    media: Media @relationship(type: "HAS_MEDIA", direction: IN)
+                }
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -650,6 +686,11 @@ describe("schema-validation", () => {
                 }
                 extend interface Media @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
                 extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+
+                type Post {
+                    author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                    media: Media @relationship(type: "HAS_MEDIA", direction: IN)
+                }
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -668,6 +709,10 @@ describe("schema-validation", () => {
                 }
                 extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
                 extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+
+                type Post {
+                    author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                }
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -686,6 +731,9 @@ describe("schema-validation", () => {
 
                 interface Member {
                     id: ID!
+                }
+                type Post {
+                    author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
                 }
                 extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
             `;
@@ -741,7 +789,7 @@ describe("schema-validation", () => {
                     name: String
                 }
 
-                extend type Document @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                extend type Document @authorization(filter: [{ where: { node: { name: "$jwt.sub" } } }])
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -772,7 +820,7 @@ describe("schema-validation", () => {
                     name: String
                 }
 
-                extend type Document @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                extend type Document @authorization(filter: [{ where: { node: { name: "$jwt.sub" } } }])
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -837,7 +885,7 @@ describe("schema-validation", () => {
                     name: String!
                 }
 
-                type Post @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                type Post @authorization(filter: [{ where: { node: { content: "$jwt.sub" } } }]) {
                     content: String!
                     author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
                 }
@@ -961,6 +1009,327 @@ describe("schema-validation", () => {
                 "Field cannot named keanu
                 Field cannot named keanu"
             `);
+        });
+    });
+
+    describe("input validation", () => {
+        describe("on OBJECT", () => {
+            describe("correct usage", () => {
+                test("should not returns errors with a valid @authorization filter argument", () => {
+                    const userDocument = gql`
+                        type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                            id: ID!
+                            name: String!
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).not.toThrow();
+                });
+
+                test("should not returns errors with valid @authorization validate argument", () => {
+                    const userDocument = gql`
+                        type User @authorization(validate: [{ operations: [CREATE] }]) {
+                            id: ID!
+                            name: String!
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).not.toThrow();
+                });
+
+                test("should no returns errors when an @authorization filter has a correct where predicate over a 1 to 1 relationship", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID!
+                            name: String!
+                        }
+
+                        type Post @authorization(filter: [{ where: { node: { author: { name: "Simone" } } } }]) {
+                            content: String!
+                            author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).not.toThrow();
+                });
+
+                test("should no returns errors when an @authorization filter has a correct where predicate over a 1 to N relationship", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID!
+                            name: String!
+                        }
+
+                        type Post @authorization(filter: [{ where: { node: { authors_SOME: { name: "Simone" } } } }]) {
+                            content: String!
+                            authors: [User!]! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).not.toThrow();
+                });
+            });
+
+            describe("incorrect usage", () => {
+                test("should returns errors when an @authorization filter contains an unknown operation", () => {
+                    const userDocument = gql`
+                        type User @authorization(filter: [{ seemsNotAWhereToMe: { node: { id: "$jwt.sub" } } }]) {
+                            id: ID!
+                            name: String!
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                        `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type \\"UserAuthorizationFilterRule\\"."`
+                    );
+                });
+
+                test("should returns errors when an @authorization filter has a wrong where definition", () => {
+                    const userDocument = gql`
+                        type User @authorization(filter: [{ where: { notANode: { id: "$jwt.sub" } } }]) {
+                            id: ID!
+                            name: String!
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                        `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type \\"UserAuthorizationWhere\\". Did you mean \\"node\\"?"`
+                    );
+                });
+
+                test("should returns errors when an @authorization filter has a wrong where predicate", () => {
+                    const userDocument = gql`
+                        type User @authorization(filter: [{ where: { node: { notAValidID: "$jwt.sub" } } }]) {
+                            id: ID!
+                            name: String!
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                        `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type \\"UserWhere\\"."`
+                    );
+                });
+
+                test("should returns errors when an @authorization filter has an incorrect where predicate over a 1 to 1 relationship", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID!
+                            name: String!
+                        }
+
+                        type Post @authorization(filter: [{ where: { node: { author: { content: "Simone" } } } }]) {
+                            content: String!
+                            author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                        `"Invalid argument: filter, error: Field \\"content\\" is not defined by type \\"UserWhere\\"."`
+                    );
+                });
+
+                test("should returns errors when an @authorization filter has an incorrect where predicate over a 1 to N relationship", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID!
+                            name: String!
+                        }
+
+                        type Post
+                            @authorization(
+                                filter: [{ where: { node: { author_NOT_A_QUANTIFIER: { name: "Simone" } } } }]
+                            ) {
+                            content: String!
+                            authors: [User!]! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                        `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type \\"PostWhere\\"."`
+                    );
+                });
+            });
+        });
+
+        describe("on Field", () => {
+            describe("correct usage", () => {
+                test("should not returns errors with a valid @authorization filter argument", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                            name: String!
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).not.toThrow();
+                });
+
+                test("should not returns errors with valid @authorization validate argument", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID! @authorization(validate: [{ operations: [CREATE] }])
+                            name: String!
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).not.toThrow();
+                });
+
+                test("should no returns errors when an @authorization filter has a correct where predicate over a 1 to 1 relationship", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID!
+                            name: String!
+                        }
+
+                        type Post {
+                            content: String!
+                            author: User!
+                                @relationship(type: "HAS_AUTHOR", direction: OUT)
+                                @authorization(filter: [{ where: { node: { author: { name: "Simone" } } } }])
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).not.toThrow();
+                });
+
+                test("should no returns errors when an @authorization filter has a correct where predicate over a 1 to N relationship", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID!
+                            name: String!
+                        }
+
+                        type Post {
+                            content: String!
+                            authors: [User!]!
+                                @relationship(type: "HAS_AUTHOR", direction: OUT)
+                                @authorization(filter: [{ where: { node: { authors_SOME: { name: "Simone" } } } }])
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).not.toThrow();
+                });
+            });
+
+            describe("incorrect usage", () => {
+                test("should returns errors when an @authorization filter contains an unknown operation", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID! @authorization(filter: [{ seemsNotAWhereToMe: { node: { id: "$jwt.sub" } } }])
+                            name: String!
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                        `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type \\"UserAuthorizationFilterRule\\"."`
+                    );
+                });
+
+                test("should returns errors when an @authorization filter has a wrong where definition", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID! @authorization(filter: [{ where: { notANode: { id: "$jwt.sub" } } }])
+                            name: String!
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                        `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type \\"UserAuthorizationWhere\\". Did you mean \\"node\\"?"`
+                    );
+                });
+
+                test("should returns errors when an @authorization filter has a wrong where predicate", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID! @authorization(filter: [{ where: { node: { notAValidID: "$jwt.sub" } } }])
+                            name: String!
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                        `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type \\"UserWhere\\"."`
+                    );
+                });
+
+                test("should returns errors when an @authorization filter has an incorrect where predicate over a 1 to 1 relationship", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID!
+                            name: String!
+                        }
+
+                        type Post {
+                            content: String!
+                            author: User!
+                                @relationship(type: "HAS_AUTHOR", direction: OUT)
+                                @authorization(filter: [{ where: { node: { author: { content: "Simone" } } } }])
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                        `"Invalid argument: filter, error: Field \\"content\\" is not defined by type \\"UserWhere\\"."`
+                    );
+                });
+
+                test("should returns errors when an @authorization filter has an incorrect where predicate over a 1 to N relationship", () => {
+                    const userDocument = gql`
+                        type User {
+                            id: ID!
+                            name: String!
+                        }
+
+                        type Post {
+                            content: String!
+                            authors: [User!]!
+                                @relationship(type: "HAS_AUTHOR", direction: OUT)
+                                @authorization(
+                                    filter: [{ where: { node: { author_NOT_A_QUANTIFIER: { name: "Simone" } } } }]
+                                )
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                        `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type \\"PostWhere\\"."`
+                    );
+                });
+            });
         });
     });
 });
