@@ -30,7 +30,6 @@ import { gql } from "graphql-tag";
 import makeAugmentedSchema from "./make-augmented-schema";
 import { Node } from "../classes";
 import * as constants from "../constants";
-import { not } from "@neo4j/cypher-builder";
 
 describe("makeAugmentedSchema", () => {
     test("should be a function", () => {
