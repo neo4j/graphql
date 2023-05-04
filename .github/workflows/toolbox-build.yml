@@ -17,6 +17,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
+      - name: Install dependencies
+        run: yarn
       # the introspector is a referenced project by the Toolbox.
       - name: Build the introspector
         run: yarn build
@@ -25,7 +27,6 @@ jobs:
         env:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          yarn
           yarn build
           echo "$PULL_REQUEST_NUMBER" > ./dist/prnumber
         working-directory: packages/graphql-toolbox
