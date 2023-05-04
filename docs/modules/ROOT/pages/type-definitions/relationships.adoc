@@ -57,7 +57,7 @@ The following should be noted about the fields you just added:
 Relationship properties can be added to the above type definitions in two steps:
 
 1. Add an interface definition containing the desired relationship properties
-2. Add a `properties` argument to either or both "sides" of the `@relationship` directive which points to the newly defined interface
+2. Add a `properties` argument to both "sides" (or just one side, if you prefer) of the `@relationship` directive which points to the newly defined interface
 
 For example, to distinguish which roles an actor played in a movie:
 
