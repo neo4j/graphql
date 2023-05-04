@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, DirectiveNode, DocumentNode, GraphQLArgument, ArgumentNode} from "graphql";
+import type { ASTVisitor, DirectiveNode, DocumentNode, GraphQLArgument, ArgumentNode } from "graphql";
 import { GraphQLError, coerceInputValue, valueFromASTUntyped, buildASTSchema, Kind } from "graphql";
 
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
@@ -39,7 +39,7 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
             }
 
             const graphQLDirective = schema.getDirective(directiveNode.name.value);
-            
+
             if (!graphQLDirective) {
                 // Do not report, delegate this report to KnownDirectivesRule
                 return;

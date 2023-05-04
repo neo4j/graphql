@@ -471,7 +471,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                 `"Invalid argument: testValue, error: Expected type \\"NestedWonderfulInput\\" to be an object."`
             );
         });
-        
+
         test("should returns errors for invalid Input, no required fields", () => {
             const userDocument = gql`
                 input NestedWonderfulInput {

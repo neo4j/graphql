@@ -18,7 +18,7 @@
  */
 
 import type { DocumentNode, DefinitionNode, GraphQLDirective, GraphQLNamedType } from "graphql";
-import { specifiedDirectives, GraphQLSchema, print } from "graphql";
+import { specifiedDirectives, GraphQLSchema } from "graphql";
 import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/authorization";
 import { authorizationDefinitionsEnricher, authorizationUsageEnricher } from "./enrichers/authorization";
 import { EnricherContext } from "./EnricherContext";
@@ -70,7 +70,7 @@ export function validateUserDefinition(
         directives: [...specifiedDirectives, ...additionalDirectives],
         types: [...additionalTypes],
     });
-    
+
     const errors = validateSDL(validationDocument, [...rules, DirectiveArgumentOfCorrectType], schemaToExtend);
     if (errors.length) {
         throw new Error(errors.join("\n"));
