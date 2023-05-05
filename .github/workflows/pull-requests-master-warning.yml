@@ -12,4 +12,4 @@ jobs:
       - name: Post warning
         run: |
           echo "::warning::The target branch of this pull request is 'master'. Please ensure that this is intended."
-          exit 10
+          exit 0
