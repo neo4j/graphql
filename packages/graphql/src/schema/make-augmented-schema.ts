@@ -65,26 +65,26 @@ import { getDefinitionNodes } from "./get-definition-nodes";
 import { isRootType } from "../utils/is-root-type";
 
 // GraphQL type imports
+import type { Subgraph } from "../classes/Subgraph";
+import { SortDirection } from "../graphql/enums/SortDirection";
+import { CartesianPointDistance } from "../graphql/input-objects/CartesianPointDistance";
+import { CartesianPointInput } from "../graphql/input-objects/CartesianPointInput";
+import { FloatWhere } from "../graphql/input-objects/FloatWhere";
+import { PointDistance } from "../graphql/input-objects/PointDistance";
+import { PointInput } from "../graphql/input-objects/PointInput";
+import { QueryOptions } from "../graphql/input-objects/QueryOptions";
+import { CartesianPoint } from "../graphql/objects/CartesianPoint";
 import { CreateInfo } from "../graphql/objects/CreateInfo";
 import { DeleteInfo } from "../graphql/objects/DeleteInfo";
-import { UpdateInfo } from "../graphql/objects/UpdateInfo";
 import { PageInfo } from "../graphql/objects/PageInfo";
-import { SortDirection } from "../graphql/enums/SortDirection";
-import { QueryOptions } from "../graphql/input-objects/QueryOptions";
 import { Point } from "../graphql/objects/Point";
-import { CartesianPoint } from "../graphql/objects/CartesianPoint";
-import { PointInput } from "../graphql/input-objects/PointInput";
-import { CartesianPointInput } from "../graphql/input-objects/CartesianPointInput";
-import { PointDistance } from "../graphql/input-objects/PointDistance";
-import { CartesianPointDistance } from "../graphql/input-objects/CartesianPointDistance";
-import getNodes from "./get-nodes";
-import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
-import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
-import { addGlobalNodeFields } from "./create-global-nodes";
-import { addMathOperatorsToITC } from "./math";
+import { UpdateInfo } from "../graphql/objects/UpdateInfo";
 import { addArrayMethodsToITC } from "./array-methods";
-import { FloatWhere } from "../graphql/input-objects/FloatWhere";
-import type { Subgraph } from "../classes/Subgraph";
+import { addGlobalNodeFields } from "./create-global-nodes";
+import getNodes from "./get-nodes";
+import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
+import { addMathOperatorsToITC } from "./math";
+import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 
 function makeAugmentedSchema(
     document: DocumentNode,
@@ -143,9 +143,9 @@ function makeAugmentedSchema(
     const extraDefinitions = [
         ...enumTypes,
         ...scalarTypes,
-        ...directives,
         ...inputObjectTypes,
         ...unionTypes,
+        ...directives,
         ...([
             customResolvers.customQuery,
             customResolvers.customMutation,
@@ -182,7 +182,9 @@ function makeAugmentedSchema(
     const interfaceCommonFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
-        const authDirective = (relationship.directives || []).find((x) => ["auth", "authoization"].includes(x.name.value));
+        const authDirective = (relationship.directives || []).find((x) =>
+            ["auth", "authoization"].includes(x.name.value)
+        );
         if (authDirective) {
             throw new Error("Cannot have @auth directive on relationship properties interface");
         }
@@ -538,7 +540,6 @@ function makeAugmentedSchema(
     }
 
     nodes.forEach((node) => {
-        
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
             ...node.cypherFields,
@@ -634,30 +635,28 @@ function makeAugmentedSchema(
             args: {},
         };
 
-        if (node.federationResolvable) {
-            composer.createObjectTC({
-                name: node.aggregateTypeNames.selection,
-                fields: {
-                    count: countField,
-                    ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
-                        if (field.typeMeta.array) {
-                            return res;
-                        }
-                        const objectTypeComposer = aggregationTypesMapper.getAggregationType({
-                            fieldName: field.typeMeta.name,
-                            nullable: !field.typeMeta.required,
-                        });
-
-                        if (!objectTypeComposer) return res;
-
-                        res[field.fieldName] = objectTypeComposer.NonNull;
-
+        composer.createObjectTC({
+            name: node.aggregateTypeNames.selection,
+            fields: {
+                count: countField,
+                ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
+                    if (field.typeMeta.array) {
                         return res;
-                    }, {}),
-                },
-                directives: graphqlDirectivesToCompose(node.propagatedDirectives),
-            });
-        }
+                    }
+                    const objectTypeComposer = aggregationTypesMapper.getAggregationType({
+                        fieldName: field.typeMeta.name,
+                        nullable: !field.typeMeta.required,
+                    });
+
+                    if (!objectTypeComposer) return res;
+
+                    res[field.fieldName] = objectTypeComposer.NonNull;
+
+                    return res;
+                }, {}),
+            },
+            directives: graphqlDirectivesToCompose(node.propagatedDirectives),
+        });
 
         const nodeWhereTypeName = `${node.name}Where`;
         composer.createInputTC({
@@ -702,25 +701,23 @@ function makeAugmentedSchema(
 
         const mutationResponseTypeNames = node.mutationResponseTypeNames;
 
-        if (node.federationResolvable) {
-            composer.createObjectTC({
-                name: mutationResponseTypeNames.create,
-                fields: {
-                    info: `CreateInfo!`,
-                    [node.plural]: `[${node.name}!]!`,
-                },
-                directives: graphqlDirectivesToCompose(node.propagatedDirectives),
-            });
+        composer.createObjectTC({
+            name: mutationResponseTypeNames.create,
+            fields: {
+                info: `CreateInfo!`,
+                [node.plural]: `[${node.name}!]!`,
+            },
+            directives: graphqlDirectivesToCompose(node.propagatedDirectives),
+        });
 
-            composer.createObjectTC({
-                name: mutationResponseTypeNames.update,
-                fields: {
-                    info: `UpdateInfo!`,
-                    [node.plural]: `[${node.name}!]!`,
-                },
-                directives: graphqlDirectivesToCompose(node.propagatedDirectives),
-            });
-        }
+        composer.createObjectTC({
+            name: mutationResponseTypeNames.update,
+            fields: {
+                info: `UpdateInfo!`,
+                [node.plural]: `[${node.name}!]!`,
+            },
+            directives: graphqlDirectivesToCompose(node.propagatedDirectives),
+        });
 
         createRelationshipFields({
             relationshipFields: node.relationFields,
@@ -747,67 +744,65 @@ function makeAugmentedSchema(
         ensureNonEmptyInput(composer, `${node.name}UpdateInput`);
         ensureNonEmptyInput(composer, `${node.name}CreateInput`);
 
-        if (node.federationResolvable) {
-            const rootTypeFieldNames = node.rootTypeFieldNames;
+        const rootTypeFieldNames = node.rootTypeFieldNames;
 
-            if (!node.exclude?.operations.includes("read")) {
-                composer.Query.addFields({
-                    [rootTypeFieldNames.read]: findResolver({ node }),
-                });
-                composer.Query.setFieldDirectives(
-                    rootTypeFieldNames.read,
-                    graphqlDirectivesToCompose(node.propagatedDirectives)
-                );
+        if (!node.exclude?.operations.includes("read")) {
+            composer.Query.addFields({
+                [rootTypeFieldNames.read]: findResolver({ node }),
+            });
+            composer.Query.setFieldDirectives(
+                rootTypeFieldNames.read,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
 
-                composer.Query.addFields({
-                    [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
-                });
-                composer.Query.setFieldDirectives(
-                    rootTypeFieldNames.aggregate,
-                    graphqlDirectivesToCompose(node.propagatedDirectives)
-                );
+            composer.Query.addFields({
+                [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
+            });
+            composer.Query.setFieldDirectives(
+                rootTypeFieldNames.aggregate,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
 
-                composer.Query.addFields({
-                    [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
-                });
-                composer.Query.setFieldDirectives(
-                    `${node.plural}Connection`,
-                    graphqlDirectivesToCompose(node.propagatedDirectives)
-                );
-            }
+            composer.Query.addFields({
+                [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
+            });
+            composer.Query.setFieldDirectives(
+                `${node.plural}Connection`,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
+        }
 
-            if (!node.exclude?.operations.includes("create")) {
-                composer.Mutation.addFields({
-                    [rootTypeFieldNames.create]: createResolver({ node }),
-                });
-                composer.Mutation.setFieldDirectives(
-                    rootTypeFieldNames.create,
-                    graphqlDirectivesToCompose(node.propagatedDirectives)
-                );
-            }
+        if (!node.exclude?.operations.includes("create")) {
+            composer.Mutation.addFields({
+                [rootTypeFieldNames.create]: createResolver({ node }),
+            });
+            composer.Mutation.setFieldDirectives(
+                rootTypeFieldNames.create,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
+        }
 
-            if (!node.exclude?.operations.includes("delete")) {
-                composer.Mutation.addFields({
-                    [rootTypeFieldNames.delete]: deleteResolver({ node }),
-                });
-                composer.Mutation.setFieldDirectives(
-                    rootTypeFieldNames.delete,
-                    graphqlDirectivesToCompose(node.propagatedDirectives)
-                );
-            }
+        if (!node.exclude?.operations.includes("delete")) {
+            composer.Mutation.addFields({
+                [rootTypeFieldNames.delete]: deleteResolver({ node }),
+            });
+            composer.Mutation.setFieldDirectives(
+                rootTypeFieldNames.delete,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
+        }
 
-            if (!node.exclude?.operations.includes("update")) {
-                composer.Mutation.addFields({
-                    [rootTypeFieldNames.update]: updateResolver({
-                        node,
-                        schemaComposer: composer,
-                    }),
-                });
-                composer.Mutation.setFieldDirectives(
-                    rootTypeFieldNames.update,
-                    graphqlDirectivesToCompose(node.propagatedDirectives)
-                );
-            }
+        if (!node.exclude?.operations.includes("update")) {
+            composer.Mutation.addFields({
+                [rootTypeFieldNames.update]: updateResolver({
+                    node,
+                    schemaComposer: composer,
+                }),
+            });
+            composer.Mutation.setFieldDirectives(
+                rootTypeFieldNames.update,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
         }
     });
 
@@ -826,7 +821,7 @@ function makeAugmentedSchema(
         });
     });
 
-    if (generateSubscriptions) {
+    if (generateSubscriptions && nodes.length) {
         generateSubscriptionTypes({ schemaComposer: composer, nodes, relationshipFields, interfaceCommonFields });
     }
 

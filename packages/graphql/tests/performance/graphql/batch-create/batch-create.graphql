@@ -608,3 +608,25 @@ mutation BatchCreate {
         }
     }
 }
+
+mutation BatchCreateSmall {
+    createMovies(
+        input: [
+            { id: 0, title: "The Matrix 0" }
+            { id: 1, title: "The Matrix 1" }
+            { id: 2, title: "The Matrix 2" }
+            { id: 3, title: "The Matrix 3" }
+            { id: 4, title: "The Matrix 4" }
+            { id: 5, title: "The Matrix 5" }
+            { id: 6, title: "The Matrix 6" }
+            { id: 7, title: "The Matrix 7" }
+            { id: 8, title: "The Matrix 8" }
+            { id: 9, title: "The Matrix 9" }
+            { id: 10, title: "The Matrix 10" }
+        ]
+    ) {
+        movies {
+            title
+        }
+    }
+}
