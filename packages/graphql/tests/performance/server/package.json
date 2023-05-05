@@ -1,0 +1,20 @@
+{
+    "name": "server_perf",
+    "version": "1.0.0",
+    "author": "Neo4j Inc.",
+    "license": "Apache-2.0",
+    "type": "module",
+    "main": "index.js",
+    "scripts": {
+        "doctor": "clinic doctor --on-port -- node apollo.js",
+        "load": "k6 run load.js"
+    },
+    "devDependencies": {
+        "@apollo/server": "^4.7.0",
+        "clinic": "^12.1.0",
+        "neo4j-driver": "^5.7.0"
+    },
+    "dependencies": {
+        "@neo4j/graphql": "link:../../.."
+    }
+}

@@ -7,7 +7,7 @@
             "@neo4j/cypher-builder": ["../../cypher-builder/src"]
         }
     },
-    "exclude": ["**/*.test.ts"],
+    "exclude": ["**/*.test.ts", "test-api.ts"],
     "references": [
         // allows for the import of package.json without it being bundled into dist
         { "path": "../tsconfig.package.json" },
