@@ -30,7 +30,7 @@ import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
 import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
-import type { BaseField, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings } from "../types";
+import type { BaseField, Neo4jFeaturesSettings } from "../types";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { numericalResolver } from "./resolvers/field/numerical";
 import { aggregateResolver } from "./resolvers/query/aggregate";
