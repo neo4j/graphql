@@ -9,7 +9,10 @@ jobs:
   check-branch:
     runs-on: ubuntu-latest
     steps:
-      - name: Post warning
-        run: |
-          echo "::warning::The target branch of this pull request is 'master'. Please ensure that this is intended."
-          exit 0
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@f61b6cf21ef2fcc468f4345cdfcc9bda741d2343 # v2.6.2
+        with:
+          header: master-target
+          message: |
+            The target branch of this pull request is 'master'. Please ensure that this is intended.
+          GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
