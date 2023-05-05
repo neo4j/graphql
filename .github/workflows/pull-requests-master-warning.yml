@@ -1,0 +1,15 @@
+name: Warn about targetting master branch
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post warning
+        run: |
+          echo "::warning::The target branch of this pull request is 'master'. Please ensure that this is intended."
+          exit 10
