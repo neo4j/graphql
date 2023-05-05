@@ -26,15 +26,15 @@ import type { NodeDirective } from "../classes/NodeDirective";
 import type { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
 import type { FullText, Neo4jGraphQLCallbacks } from "../types";
 import type { Auth } from "../types/deprecated/auth/auth";
-import getObjFieldMeta from "./get-obj-field-meta";
-import parsePluralDirective from "./parse/parse-plural-directive";
-import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
-import parseFulltextDirective from "./parse/parse-fulltext-directive";
-import parseNodeDirective from "./parse-node-directive";
-import parseExcludeDirective from "./parse-exclude-directive";
+import { asArray } from "../utils/utils";
 import getAuth from "./get-auth";
 import type { DefinitionNodes } from "./get-definition-nodes";
-import { asArray } from "../utils/utils";
+import getObjFieldMeta from "./get-obj-field-meta";
+import parseExcludeDirective from "./parse-exclude-directive";
+import parseNodeDirective from "./parse-node-directive";
+import parseFulltextDirective from "./parse/parse-fulltext-directive";
+import parsePluralDirective from "./parse/parse-plural-directive";
+import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
 
 type Nodes = {
     nodes: Node[];
@@ -78,12 +78,7 @@ function getNodes(
         const propagatedDirectives = (definition.directives || []).filter((x) =>
             ["deprecated", "shareable"].includes(x.name.value)
         );
-        let resolvable = true;
-        const keyDirective = (definition.directives || []).find((x) => x.name.value === "key");
-        const resolvableArgument = (keyDirective?.arguments || []).find((x) => x.name.value === "resolvable");
-        if (resolvableArgument?.value.kind === Kind.BOOLEAN && resolvableArgument.value.value === false) {
-            resolvable = false;
-        }
+
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
@@ -261,7 +256,6 @@ function getNodes(
             globalIdField: globalIdField?.fieldName,
             globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
             plural: parsePluralDirective(pluralDirectiveDefinition),
-            federationResolvable: resolvable,
         });
 
         return node;

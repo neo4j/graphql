@@ -1,4 +1,4 @@
-name: "UI Teardown"
+name: "Toolbox Teardown"
 
 on:
   pull_request_target:
@@ -19,13 +19,13 @@ jobs:
       - name: Teardown graphql-toolbox
         run: |
           npm install -g surge
-          surge teardown neo4j-graphql-toolbox-stage-${{ github.event.pull_request.number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+          surge teardown neo4j-graphql-toolbox-${{ github.event.pull_request.number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
       - name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@f61b6cf21ef2fcc468f4345cdfcc9bda741d2343 # v2.6.2
         with:
           header: toolbox
           message: |
-            Thanks for the UI updates.
+            Thanks for the Neo4j GraphQL Toolbox updates.
 
-            The UI has now been torn down - reopening this PR will republish it.
+            The Neo4j GraphQL Toolbox has now been torn down - reopening this PR will republish it.
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}

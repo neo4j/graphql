@@ -27,7 +27,6 @@ import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechani
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { delay } from "../../../src/utils/utils";
 
 describe("Delete Subscriptions when only nodes are targeted - when nodes employ @node directive to configure db label and additionalLabels", () => {
     let neo4j: Neo4j;
