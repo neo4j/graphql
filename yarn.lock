@@ -312,32 +312,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/federation-subgraph-compatibility-tests@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@apollo/federation-subgraph-compatibility-tests@npm:1.2.1"
+"@apollo/federation-subgraph-compatibility-tests@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "@apollo/federation-subgraph-compatibility-tests@npm:1.2.2"
   dependencies:
-    "@apollo/rover": ^0.12.2
+    "@apollo/rover": ^0.14.0
     debug: ^4.3.4
     execa: ^5.1.1
     graphql: ^16.6.0
-    jest: ^29.4.2
-    make-fetch-happen: ^11.0.3
-    pm2: ^5.2.2
-    ts-jest: ^29.0.5
-  checksum: 5620086789fb55dd52385ef4abb48991a94977c2cc1617e14f60c4c128809c357ea07b4cfb468b98ec5353a25080cf8c12abca7d9c36a3accf8494ebf59a0585
+    jest: ^29.5.0
+    make-fetch-happen: ^11.1.1
+    pm2: ^5.3.0
+    ts-jest: ^29.1.0
+  checksum: 8a83880b4b64a6578bfe72807d48a5519eabaf2e1797d64dc3b36f9234eb49139443f4f23843129781261156607fbedd1477a2dd8f47769b4fba37d2f0365fcf
   languageName: node
   linkType: hard
 
-"@apollo/federation-subgraph-compatibility@npm:1.2.1":
-  version: 1.2.1
-  resolution: "@apollo/federation-subgraph-compatibility@npm:1.2.1"
+"@apollo/federation-subgraph-compatibility@npm:1.2.2":
+  version: 1.2.2
+  resolution: "@apollo/federation-subgraph-compatibility@npm:1.2.2"
   dependencies:
-    "@apollo/federation-subgraph-compatibility-tests": ^1.2.1
-    commander: ^10.0.0
+    "@apollo/federation-subgraph-compatibility-tests": ^1.2.2
+    commander: ^10.0.1
     debug: ^4.3.4
   bin:
     fedtest: dist/compatibilityTestCommand.js
-  checksum: a33667af43803f8e5c79d5cc72ddf8c2e00af3440365705a6125d113c1640691e005bc420d264b141bb00422bba95d1b8ac834878aa6badf7cf1d618fc312a44
+  checksum: 2474ddf5594f28503d7b9555ed4dd19ad16b06cd28a49c7a63d20078f99aef59c16b568c5aef9d00baf37ed9428d36aa225179bc26f3c8b21fe94af77ba4033c
   languageName: node
   linkType: hard
 
@@ -422,9 +422,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/rover@npm:^0.12.2":
-  version: 0.12.2
-  resolution: "@apollo/rover@npm:0.12.2"
+"@apollo/rover@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "@apollo/rover@npm:0.14.0"
   dependencies:
     axios-proxy-builder: ^0.1.1
     binary-install: ^1.0.6
@@ -432,7 +432,7 @@ __metadata:
     detect-libc: ^2.0.0
   bin:
     rover: run.js
-  checksum: 66649e5567155cba28882665463074cefbf2a4eacb7e0ab027a5dfad4aa78902160ea32d5e97f82ff39f0a424fb0420bec91fab4985a840e4ad56a0eaeb85404
+  checksum: 63901c1f2c00f6a5c016645eb75cf2e2ddf583bbe962e1be36015c12dcda838d7d5885e815e219c427cee3c3afdb43641c883e01bfcd07335bd03f2c877aa5d6
   languageName: node
   linkType: hard
 
@@ -6454,7 +6454,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "apollo-federation-subgraph-compatibility@workspace:packages/apollo-federation-subgraph-compatibility"
   dependencies:
-    "@apollo/federation-subgraph-compatibility": 1.2.1
+    "@apollo/federation-subgraph-compatibility": 1.2.2
     "@apollo/server": ^4.7.0
     "@graphql-tools/wrap": ^9.3.6
     "@neo4j/graphql": ^3.18.2
@@ -14409,7 +14409,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:29.5.0, jest@npm:^29.4.2":
+"jest@npm:29.5.0, jest@npm:^29.5.0":
   version: 29.5.0
   resolution: "jest@npm:29.5.0"
   dependencies:
@@ -15734,7 +15734,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"make-fetch-happen@npm:^11.0.0, make-fetch-happen@npm:^11.0.3":
+"make-fetch-happen@npm:^11.0.0":
   version: 11.0.3
   resolution: "make-fetch-happen@npm:11.0.3"
   dependencies:
@@ -15754,6 +15754,29 @@ __metadata:
     socks-proxy-agent: ^7.0.0
     ssri: ^10.0.0
   checksum: f718d6b6945d967fa02ae8c6b1146c6e36335b0f9654c5757fd57211a5bcc13bf1dfbaa0d2fdfe8bdd13f78b0e2aa79b4d4438f824dcf0d2ea74883baae1ae31
+  languageName: node
+  linkType: hard
+
+"make-fetch-happen@npm:^11.1.1":
+  version: 11.1.1
+  resolution: "make-fetch-happen@npm:11.1.1"
+  dependencies:
+    agentkeepalive: ^4.2.1
+    cacache: ^17.0.0
+    http-cache-semantics: ^4.1.1
+    http-proxy-agent: ^5.0.0
+    https-proxy-agent: ^5.0.0
+    is-lambda: ^1.0.1
+    lru-cache: ^7.7.1
+    minipass: ^5.0.0
+    minipass-fetch: ^3.0.0
+    minipass-flush: ^1.0.5
+    minipass-pipeline: ^1.2.4
+    negotiator: ^0.6.3
+    promise-retry: ^2.0.1
+    socks-proxy-agent: ^7.0.0
+    ssri: ^10.0.0
+  checksum: 7268bf274a0f6dcf0343829489a4506603ff34bd0649c12058753900b0eb29191dce5dba12680719a5d0a983d3e57810f594a12f3c18494e93a1fbc6348a4540
   languageName: node
   linkType: hard
 
@@ -18258,9 +18281,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pm2@npm:^5.2.2":
-  version: 5.2.2
-  resolution: "pm2@npm:5.2.2"
+"pm2@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "pm2@npm:5.3.0"
   dependencies:
     "@pm2/agent": ~2.0.0
     "@pm2/io": ~5.0.0
@@ -18300,7 +18323,7 @@ __metadata:
     pm2-dev: bin/pm2-dev
     pm2-docker: bin/pm2-docker
     pm2-runtime: bin/pm2-runtime
-  checksum: 091213dc7fc220b814e91dea35525f6b37f3d27081345be82b42873c605055f339bec67287ab70a3d41c62fe2d3edbd58722f4b2c4aa5a3d5479d5e4900b0057
+  checksum: ca1a655ab11b8aa8f7c10098578e7f0ed508fb19fae02694c5478f4167a75cb150eb2c305d734b7420696b70193bb765ffbbca498d2ce427f85ae9d25ef19842
   languageName: node
   linkType: hard
 
@@ -22207,7 +22230,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:29.1.0":
+"ts-jest@npm:29.1.0, ts-jest@npm:^29.1.0":
   version: 29.1.0
   resolution: "ts-jest@npm:29.1.0"
   dependencies:
@@ -22237,39 +22260,6 @@ __metadata:
   bin:
     ts-jest: cli.js
   checksum: 535dc42ad523cbe1e387701fb2e448518419b515c082f09b25411f0b3dd0b854cf3e8141c316d6f4b99883aeb4a4f94159cbb1edfb06d7f77ea6229fadb2e1bf
-  languageName: node
-  linkType: hard
-
-"ts-jest@npm:^29.0.5":
-  version: 29.0.5
-  resolution: "ts-jest@npm:29.0.5"
-  dependencies:
-    bs-logger: 0.x
-    fast-json-stable-stringify: 2.x
-    jest-util: ^29.0.0
-    json5: ^2.2.3
-    lodash.memoize: 4.x
-    make-error: 1.x
-    semver: 7.x
-    yargs-parser: ^21.0.1
-  peerDependencies:
-    "@babel/core": ">=7.0.0-beta.0 <8"
-    "@jest/types": ^29.0.0
-    babel-jest: ^29.0.0
-    jest: ^29.0.0
-    typescript: ">=4.3"
-  peerDependenciesMeta:
-    "@babel/core":
-      optional: true
-    "@jest/types":
-      optional: true
-    babel-jest:
-      optional: true
-    esbuild:
-      optional: true
-  bin:
-    ts-jest: cli.js
-  checksum: f60f129c2287f4c963d9ee2677132496c5c5a5d39c27ad234199a1140c26318a7d5bda34890ab0e30636ec42a8de28f84487c09e9dcec639c9c67812b3a38373
   languageName: node
   linkType: hard
 
