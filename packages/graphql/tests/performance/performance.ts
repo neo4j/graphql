@@ -20,87 +20,21 @@
 import type { Driver } from "neo4j-driver";
 import path from "path";
 
-import { gql } from "graphql-tag";
-import neo4j from "./utils/neo4j";
-import { setupDatabase, cleanDatabase } from "./utils/setup-database";
+import neo4j from "./databaseQuery/neo4j";
+import { setupDatabase, cleanDatabase } from "./databaseQuery/setup-database";
 import { Neo4jGraphQL } from "../../src";
 import { collectTests, collectCypherTests } from "./utils/collect-test-files";
 import { ResultsWriter } from "./utils/ResultsWriter";
-import { TestRunner } from "./utils/TestRunner";
+import { TestRunner } from "./databaseQuery/TestRunner";
 import type * as Performance from "./types";
-import { schemaPerformance } from "./schema-performance";
+import { schemaPerformance } from "./schema/schema-performance";
 import { MarkdownFormatter } from "./utils/formatters/MarkdownFormatter";
 import { TTYFormatter } from "./utils/formatters/TTYFormatter";
-import { subgraphSchemaPerformance } from "./subgraph-schema-performance";
+import { subgraphSchemaPerformance } from "./schema/subgraph-schema-performance";
+import { runTranslationPerformance } from "./translation/translation-performance";
+import { typeDefs } from "./typedefs";
 
 let driver: Driver;
-
-const typeDefs = gql`
-    union Likable = Person | Movie
-
-    type Person {
-        name: String!
-        born: Int!
-        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
-        directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
-        reviewed: [Movie!]! @relationship(type: "REVIEWED", direction: OUT)
-        produced: [Movie!]! @relationship(type: "PRODUCED", direction: OUT)
-        likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
-    }
-
-    type Movie
-        @fulltext(
-            indexes: [
-                { queryName: "movieTaglineFulltextQuery", name: "MovieTaglineFulltextIndex", fields: ["tagline"] }
-            ]
-        ) {
-        id: ID!
-        title: String!
-        tagline: String
-        released: Int
-        actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
-        directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-        reviewers: [Person!]! @relationship(type: "REVIEWED", direction: IN)
-        producers: [Person!]! @relationship(type: "PRODUCED", direction: IN)
-        likedBy: [User!]! @relationship(type: "LIKES", direction: IN)
-        oneActorName: String @cypher(statement: "MATCH (this)<-[:ACTED_IN]-(a:Person) RETURN a.name")
-        favouriteActor: Person @relationship(type: "FAV", direction: OUT)
-    }
-
-    type MovieClone {
-        title: String!
-        favouriteActor: Person! @relationship(type: "FAV", direction: OUT)
-    }
-    type PersonClone {
-        name: String!
-        movies: [MovieClone!]! @relationship(type: "FAV", direction: IN)
-    }
-
-    type User {
-        name: String!
-        likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
-    }
-
-    type Query {
-        customCypher: [Person]
-            @cypher(
-                statement: """
-                MATCH(m:Movie)--(p:Person)
-                WHERE m.released > 2000
-                RETURN p
-                """
-            )
-        experimentalCustomCypher: [Person]
-            @cypher(
-                statement: """
-                MATCH(m:Movie)--(p:Person)
-                WHERE m.released > 2000
-                RETURN p
-                """
-                columnName: "p"
-            )
-    }
-`;
 
 let neoSchema: Neo4jGraphQL;
 
@@ -137,9 +71,34 @@ async function main() {
         await schemaPerformance();
     } else if (process.argv.includes("--subgraph-schema")) {
         await subgraphSchemaPerformance();
+    } else if (process.argv.includes("--translation")) {
+        await translationPerformance();
     } else {
         await queryPerformance();
     }
+}
+
+async function translationPerformance() {
+    let runs = 100;
+    const runsArg = getArgumentValue("--runs");
+    if (runsArg) {
+        const parsedRuns = Math.trunc(Number(runsArg));
+        if (!parsedRuns || parsedRuns < 0) throw new Error("--runs require a positive number");
+        runs = parsedRuns;
+    }
+
+    if (process.argv.includes("--single")) {
+        runs = 1;
+    }
+    await runTranslationPerformance(runs);
+}
+
+function getArgumentValue(argName: string): string | undefined {
+    const runsArg = process.argv.indexOf(argName);
+    if (runsArg === -1) return undefined;
+    const argValue = process.argv[runsArg + 1];
+    if (argValue === undefined) throw new Error(`arg ${argName} requires a value`);
+    return argValue;
 }
 
 async function queryPerformance() {
@@ -179,7 +138,7 @@ async function runTests(cypher: boolean) {
 
     const gqlTestsResuts = await runner.runTests(gqltests, { beforeEach, afterEach });
     if (cypher) {
-        const cypherTests = await collectCypherTests(path.join(__dirname, "cypher"));
+        const cypherTests = await collectCypherTests(path.join(__dirname, "databaseQuery", "cypher"));
         const cypherTestsResults = await runner.runCypherTests(cypherTests, {
             beforeEach,
             afterEach,

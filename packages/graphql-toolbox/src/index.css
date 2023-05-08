@@ -12,7 +12,7 @@
 }
 /* ----------------------*/
 
-/* Global settings for ALL CodeMirror editors */
+/* Global settings for all CodeMirror editors */
 .CodeMirror {
     height: 100%;
     position: inherit;

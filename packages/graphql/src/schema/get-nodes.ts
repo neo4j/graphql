@@ -78,12 +78,7 @@ function getNodes(
         const propagatedDirectives = (definition.directives || []).filter((x) =>
             ["deprecated", "shareable"].includes(x.name.value)
         );
-        let resolvable = true;
-        const keyDirective = (definition.directives || []).find((x) => x.name.value === "key");
-        const resolvableArgument = (keyDirective?.arguments || []).find((x) => x.name.value === "resolvable");
-        if (resolvableArgument?.value.kind === Kind.BOOLEAN && resolvableArgument.value.value === false) {
-            resolvable = false;
-        }
+
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
