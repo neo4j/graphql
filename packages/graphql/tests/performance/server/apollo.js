@@ -25,44 +25,47 @@ import neo4j from "neo4j-driver";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { getLargeSchema } from "./typedefs.js";
 
-const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "password"), {
-    maxConnectionPoolSize: 100,
-});
+async function main() {
+    const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "password"), {
+        maxConnectionPoolSize: 100,
+    });
 
-const neoSchema = new Neo4jGraphQL({
-    typeDefs: getLargeSchema(1),
-    driver,
-    config: {
-        addMeasurementsToExtension: true,
-    },
-});
+    const neoSchema = new Neo4jGraphQL({
+        typeDefs: getLargeSchema(1),
+        driver,
+        config: {
+            addMeasurementsToExtension: true,
+        },
+    });
+    const schema = await neoSchema.getSchema();
 
-const schema = await neoSchema.getSchema();
+    const extensionsPlugin = {
+        async requestDidStart() {
+            return {
+                async willSendResponse(requestContext) {
+                    const { response } = requestContext;
+                    if (response.body.kind === "single" && "data" in response.body.singleResult) {
+                        response.body.singleResult.extensions = requestContext.contextValue.extensions;
+                    }
+                    return response;
+                },
+            };
+        },
+    };
 
-const extensionsPlugin = {
-    async requestDidStart() {
-        return {
-            async willSendResponse(requestContext) {
-                const { response } = requestContext;
-                if (response.body.kind === "single" && "data" in response.body.singleResult) {
-                    response.body.singleResult.extensions = requestContext.contextValue.extensions;
-                }
-                return response;
-            },
-        };
-    },
-};
+    await neoSchema.assertIndexesAndConstraints({ options: { create: true } });
 
-await neoSchema.assertIndexesAndConstraints({ options: { create: true } });
+    const server = new ApolloServer({
+        schema,
+        plugins: [extensionsPlugin],
+    });
 
-const server = new ApolloServer({
-    schema,
-    plugins: [extensionsPlugin],
-});
+    const { url } = await startStandaloneServer(server, {
+        context: async ({ req }) => ({ token: req.headers.token }),
+        listen: { port: 4000 },
+    });
 
-const { url } = await startStandaloneServer(server, {
-    context: async ({ req }) => ({ token: req.headers.token }),
-    listen: { port: 4000 },
-});
+    console.log(`🚀  Server ready at ${url}`);
+}
 
-console.log(`🚀  Server ready at ${url}`);
+main();
