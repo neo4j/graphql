@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import type { DefinitionNode, DocumentNode, ObjectTypeDefinitionNode } from "graphql";
+import type { DocumentNode, ObjectTypeDefinitionNode } from "graphql";
 import { Kind } from "graphql";
 import getFieldTypeMeta from "./get-field-type-meta";
 
-function parseJwtPayload(jwtPayloadAnnotatedTypes: DefinitionNode[]) {
+function parseJwtPayload(jwtPayloadAnnotatedTypes: ObjectTypeDefinitionNode[]): ObjectTypeDefinitionNode {
     if (jwtPayloadAnnotatedTypes.length > 1) {
         throw new Error(`@jwtPayload directive can only be used once in the Type Definitions.`);
     }
@@ -43,20 +43,18 @@ function makeSchemaToAugment(document: DocumentNode): {
     document: DocumentNode;
     typesExcludedFromGeneration: { jwtPayload?: ObjectTypeDefinitionNode };
 } {
-    const jwtPayloadAnnotatedTypes = document.definitions.filter(
+    const jwtPayloadAnnotatedTypes: ObjectTypeDefinitionNode[] = document.definitions.filter(
         (def) =>
             def.kind === Kind.OBJECT_TYPE_DEFINITION &&
             (def.directives || []).find((x) => x.name.value === "jwtPayload")
-    );
+    ) as ObjectTypeDefinitionNode[];
     if (!jwtPayloadAnnotatedTypes.length) {
         return {
             document,
             typesExcludedFromGeneration: {},
         };
     }
-
     const jwtPayload = parseJwtPayload(jwtPayloadAnnotatedTypes);
-
     return {
         document: {
             ...document,

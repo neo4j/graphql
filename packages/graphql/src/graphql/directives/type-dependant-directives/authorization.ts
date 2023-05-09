@@ -233,6 +233,18 @@ function getJwtStandardFields(schema: GraphQLSchema) {
                 description:
                     "Identifies the expiration time on or after which the JWT must not be accepted for processing.",
             },
+            nbf: {
+                type: GraphQLString,
+                description: "Identifies the time before which the JWT must not be accepted for processing.",
+            },
+            iat: {
+                type: GraphQLString,
+                description: "Identifies the time at which the JWT was issued, to determine the age of the JWT.",
+            },
+            jti: {
+                type: GraphQLString,
+                description: "Uniquely identifies the JWT, to prevent the JWT from being replayed.",
+            },
         },
     });
     return getObjFieldMeta({
