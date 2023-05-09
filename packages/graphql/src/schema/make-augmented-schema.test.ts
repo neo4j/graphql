@@ -329,6 +329,22 @@ describe("makeAugmentedSchema", () => {
             // make sure the schema constructs
             expect(document.kind).toBe("Document");
         });
+
+        test("3270 - should not throw if directive has arguments of input type", () => {
+            const typeDefs = gql`
+                directive @testDirective(action_mapping: [ActionMapping]) on OBJECT | FIELD_DEFINITION | QUERY
+                input ActionMapping {
+                    action: [String!]
+                }
+                type TestType {
+                    someField: String
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).not.toThrow(
+                'Error: Type with name "ActionMapping" does not exists'
+            );
+        });
     });
 
     test("should throw error if @auth is used on relationship properties interface", () => {
