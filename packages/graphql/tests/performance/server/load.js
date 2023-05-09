@@ -1,120 +1,68 @@
-//k6 run --vus 1000 --duration 10s load.js
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 // eslint-disable-next-line import/no-unresolved
 import http from "k6/http";
 // eslint-disable-next-line import/no-unresolved
-import { sleep } from "k6";
+import { check, sleep } from "k6";
+// eslint-disable-next-line import/no-unresolved
+import { Trend } from "k6/metrics";
+import { queries } from "./queries.js";
 
-const maxVus = 5000;
+const CONFIG = {
+    maxVUs: 100,
+    duration: 30,
+    query: queries.simpleQuery,
+};
+
 export const options = {
-    startVUs: 0,
     stages: [
-        { duration: "5s", target: maxVus },
-        { duration: "10s", target: maxVus },
-        { duration: "10s", target: 0 },
+        { duration: "5s", target: CONFIG.maxVUs }, // Ramp up
+        { duration: `${CONFIG.duration}s`, target: CONFIG.maxVUs },
+        { duration: "10s", target: 0 }, // Cooldown
     ],
 };
 
+const dbQueryTrend = new Trend("neo4j/gaphql_database_query_time", true);
+
 export default function () {
-    const query = `
-        query ConnectionWithSortAndCypher {
-            moviesConnection(first: 5, sort: [{ title: ASC }, { oneActorName: DESC }]) {
-                edges {
-                    node {
-                        title
-                        oneActorName
-                        actorsConnection {
-                            edges {
-                                node {
-                                    name
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    `;
-    const simpleQuery = `
-        query {
-            movies(where: { title_CONTAINS: "Sharknado" }, options: { sort: { title: ASC }, limit: 25 }) {
-                title
-                actors(options: { sort: { name: DESC }, limit: 10 }) {
-                    name
-                }
-            }
-        }
-    `;
-    const simpleMovie = `
-    query Movies {
-        movies(options: {limit: 10}) {
-          title
-        }
-      }
-    `;
-
-    const highComplexityQueryWithLimit = `
-    query HighComplexityQuery {
-        movies(options: {sort: {title: DESC}, limit: 10}) {
-            released
-            tagline
-            title
-            actors(options: {sort: {name: DESC}, limit: 2}) {
-                name
-                movies(options: {sort: {title: DESC}, limit: 2}) {
-                    released
-                    tagline
-                    title
-                    actors {
-                        name
-                        movies(options: {sort: {title: DESC}, limit: 2}) {
-                            released
-                            tagline
-                            title
-                            actors {
-                                name
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    `;
-    const highComplexityQuery = `
-        query HighComplexityQuery {
-            movies {
-                released
-                tagline
-                title
-                actors {
-                    name
-                    movies {
-                        released
-                        tagline
-                        title
-                        actors {
-                            name
-                            movies {
-                                released
-                                tagline
-                                title
-                                actors {
-                                    name
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    `;
-
     const headers = {
         "Content-Type": "application/json",
     };
-    http.post("http://localhost:4000/graphql", JSON.stringify({ query: simpleQuery }), { headers: headers });
+    const res = http.post("http://localhost:4000/graphql", JSON.stringify({ query: CONFIG.query }), {
+        headers: headers,
+    });
+
+    const body = JSON.parse(res.body);
     // TODO: check
-    // check(res, { 'status was 200': (r) => r.status == 200 });
+    check(res, {
+        "status was 200": (r) => r.status == 200,
+        "response has no error": () => {
+            if (body.errors && body.errors.length > 0) return false;
+            return true;
+        },
+    });
+
+    const measurements = body.extensions && body.extensions.measurements;
+    if (measurements) {
+        dbQueryTrend.add(measurements.databaseQueryTime);
+    }
+
     sleep(0.3);
 }

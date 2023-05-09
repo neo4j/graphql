@@ -76,6 +76,9 @@ export interface Neo4jGraphQLConfig {
      * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby
      */
     callbacks?: Neo4jGraphQLCallbacks;
+
+    /** Attach metrics to context extension field */
+    addMeasurementsToExtension?: boolean;
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
@@ -231,6 +234,7 @@ class Neo4jGraphQL {
     private async getNeo4jDatabaseInfo(driver: Driver, driverConfig?: DriverConfig): Promise<Neo4jDatabaseInfo> {
         const executorConstructorParam: ExecutorConstructorParam = {
             executionContext: driver,
+            metrics: false,
         };
 
         if (driverConfig?.database) {

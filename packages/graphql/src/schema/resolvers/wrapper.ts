@@ -90,6 +90,7 @@ export const wrapResolver =
         context.schemaModel = schemaModel;
         context.plugins = plugins || {};
         context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions);
+        context.addMeasurementsToExtension = Boolean(config.addMeasurementsToExtension);
         context.callbacks = config.callbacks;
 
         if (!context.jwt) {
@@ -121,6 +122,7 @@ export const wrapResolver =
         const executorConstructorParam: ExecutorConstructorParam = {
             executionContext: context.executionContext,
             auth: context.auth,
+            metrics: Boolean(context.addMeasurementsToExtension),
         };
 
         if (config.queryOptions) {

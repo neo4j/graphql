@@ -75,7 +75,9 @@ describe("wrapper test", () => {
         const resolverDecorator = wrapResolver(wrapResolverArgs);
         const resolvedResult = "Resolved value";
         readTransaction.mockReturnValueOnce({
-            records: [["4.4.0", "enterprise"]],
+            result: {
+                records: [["4.4.0", "enterprise"]],
+            },
         });
         const resolver = jest.fn((_root, _args, context: Context) => {
             expect(context).toBeDefined();
@@ -127,14 +129,14 @@ describe("wrapper test", () => {
         };
 
         readTransaction.mockReturnValueOnce({
-            records: [["4.3.0", "enterprise"]],
+            result: { records: [["4.3.0", "enterprise"]] },
         });
         const wrappedResolver = resolverDecorator(resolver);
         const firstRes = await wrappedResolver({}, {}, {} as Context, {} as GraphQLResolveInfo);
         expect(firstRes).toBe(resolvedResult);
         expect(readTransaction).toHaveBeenCalledTimes(1);
         readTransaction.mockReturnValueOnce({
-            records: [["4.4.0", "enterprise"]],
+            result: { records: [["4.4.0", "enterprise"]] },
         });
         const secondRes = await wrappedResolver({}, {}, {} as Context, {} as GraphQLResolveInfo);
         expect(secondRes).toBe(resolvedResult);

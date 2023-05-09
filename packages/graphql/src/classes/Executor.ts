@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver, QueryResult, Result, Session, SessionMode, Transaction } from "neo4j-driver";
+import type { Driver, QueryResult, Session, SessionMode, Transaction } from "neo4j-driver";
 import { Neo4jError } from "neo4j-driver";
 import Debug from "debug";
 import environment from "../environment";
@@ -38,6 +38,7 @@ import type { AuthContext } from "../types/deprecated/auth/auth-context";
 import createAuthParam from "../translate/create-auth-param";
 import type { GraphQLResolveInfo } from "graphql";
 import { print } from "graphql";
+import { wrapInTimeMeasurement } from "../utils/wrap-in-time-measurement";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -85,6 +86,14 @@ export type ExecutorConstructorParam = {
     queryOptions?: CypherQueryOptions;
     database?: string;
     bookmarks?: string | string[];
+    metrics?: boolean;
+};
+
+export type ExecutorResult = {
+    result: QueryResult;
+    measurements?: {
+        time: number;
+    };
 };
 
 export class Executor {
@@ -97,8 +106,16 @@ export class Executor {
 
     private database: string | undefined;
     private bookmarks: string | string[] | undefined;
+    private returnMeasurements: boolean;
 
-    constructor({ executionContext, auth, queryOptions, database, bookmarks }: ExecutorConstructorParam) {
+    constructor({
+        executionContext,
+        auth,
+        queryOptions,
+        database,
+        bookmarks,
+        metrics = false,
+    }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
         this.queryOptions = queryOptions;
@@ -109,6 +126,7 @@ export class Executor {
         }
         this.database = database;
         this.bookmarks = bookmarks;
+        this.returnMeasurements = metrics;
     }
 
     public async execute(
@@ -116,7 +134,7 @@ export class Executor {
         parameters: unknown,
         defaultAccessMode: SessionMode,
         info?: GraphQLResolveInfo
-    ): Promise<QueryResult> {
+    ): Promise<ExecutorResult> {
         try {
             if (isDriverLike(this.executionContext)) {
                 const session = this.executionContext.session(this.getSessionParam(defaultAccessMode));
@@ -223,7 +241,7 @@ export class Executor {
         defaultAccessMode: string,
         session: Session,
         info?: GraphQLResolveInfo
-    ): Promise<QueryResult> {
+    ): Promise<ExecutorResult> {
         const transactionType = `${defaultAccessMode.toLowerCase()}Transaction`;
         const result = await session[transactionType]((transaction: Transaction) => {
             return this.transactionRun(query, parameters, transaction);
@@ -235,7 +253,7 @@ export class Executor {
         return result;
     }
 
-    private transactionRun(query: string, parameters, transaction: Transaction): Result {
+    private async transactionRun(query: string, parameters, transaction: Transaction): Promise<ExecutorResult> {
         const queryToRun = this.generateQuery(query);
         const parametersToRun = this.generateParameters(query, parameters);
 
@@ -244,6 +262,19 @@ export class Executor {
             `About to execute Cypher:\nCypher:\n${queryToRun}\nParams:\n${JSON.stringify(parametersToRun, null, 2)}`
         );
 
-        return transaction.run(queryToRun, parametersToRun);
+        const { result, time } = await wrapInTimeMeasurement(() => {
+            return transaction.run(queryToRun, parametersToRun);
+        });
+
+        const measurements = this.returnMeasurements
+            ? {
+                  time,
+              }
+            : undefined;
+
+        return {
+            result,
+            measurements,
+        };
     }
 }
