@@ -5,8 +5,9 @@
     "license": "Apache-2.0",
     "type": "module",
     "main": "index.js",
+    "private": true,
     "scripts": {
-        "doctor": "clinic doctor --on-port -- node apollo.js",
+        "doctor": "clinic doctor --on-port -- node ./servers/apollo.js",
         "load": "k6 run load.js"
     },
     "devDependencies": {

@@ -25,7 +25,7 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import neo4j from "neo4j-driver";
 // eslint-disable-next-line import/no-unresolved
 import { Neo4jGraphQL } from "@neo4j/graphql";
-import { getLargeSchema } from "./typedefs.js";
+import { getLargeSchema } from "../typedefs.js";
 
 async function main() {
     const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "password"), {
