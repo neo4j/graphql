@@ -36,7 +36,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -49,7 +49,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -67,7 +67,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -80,7 +80,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
             );
@@ -96,7 +96,7 @@ describe("schema validation", () => {
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -111,7 +111,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
             );
@@ -129,7 +129,7 @@ describe("schema validation", () => {
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -143,7 +143,7 @@ describe("schema validation", () => {
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
             );
@@ -166,7 +166,7 @@ describe("schema validation", () => {
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -187,7 +187,7 @@ describe("schema validation", () => {
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
             );
@@ -212,7 +212,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -229,7 +229,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"Unknown argument \\"wrongFilter\\" on directive \\"@MemberAuthorization\\". Did you mean \\"filter\\"?"`
             );
@@ -252,7 +252,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -279,7 +279,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -305,7 +305,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
     });
@@ -321,7 +321,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -340,7 +340,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"The directive \\"@UserAuthorization\\" can only be used once at this location."`
             );
@@ -363,7 +363,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"The directive \\"@UserAuthorization\\" can only be used once at this location."`
             );
@@ -386,7 +386,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -408,7 +408,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -434,7 +434,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -455,7 +455,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"The directive \\"@UserAuthorization\\" can only be used once at this location."`
             );
@@ -471,7 +471,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
             );
@@ -490,7 +490,7 @@ describe("schema validation", () => {
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -506,7 +506,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
             );
@@ -532,7 +532,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -550,7 +550,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"Unknown argument \\"wrongFilter\\" on directive \\"@MemberAuthorization\\". Did you mean \\"filter\\"?"`
             );
@@ -574,7 +574,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"The directive \\"@MemberAuthorization\\" can only be used once at this location."`
             );
@@ -601,7 +601,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"The directive \\"@MemberAuthorization\\" can only be used once at this location."`
             );
@@ -633,7 +633,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -666,7 +666,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -694,7 +694,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -716,7 +716,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"The directive \\"@MemberAuthorization\\" can only be used once at this location."`
             );
@@ -740,7 +740,7 @@ describe("schema validation", () => {
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
 
@@ -757,7 +757,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"Unknown argument \\"wrongFilter\\" on directive \\"@MemberAuthorization\\". Did you mean \\"filter\\"?"`
             );
@@ -793,7 +793,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).not.toThrow();
         });
         test("should returns errors when incorrectly used in several place", () => {
@@ -824,7 +824,7 @@ describe("schema validation", () => {
             `;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"Unknown argument \\"wrongFilter\\" on directive \\"@PostAuthorization\\". Did you mean \\"filter\\"?"`
             );
@@ -850,7 +850,13 @@ describe("schema validation", () => {
             const { directives, types } = subgraph.getValidationDefinitions();
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, directives, types);
+            const executeValidate = () =>
+                validateUserDefinition({
+                    userDocument,
+                    augmentedDocument,
+                    additionalDirectives: directives,
+                    additionalTypes: types,
+                });
             expect(executeValidate).not.toThrow();
         });
 
@@ -872,7 +878,13 @@ describe("schema validation", () => {
             const { directives, types } = subgraph.getValidationDefinitions();
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, directives, types);
+            const executeValidate = () =>
+                validateUserDefinition({
+                    userDocument,
+                    augmentedDocument,
+                    additionalDirectives: directives,
+                    additionalTypes: types,
+                });
             expect(executeValidate).not.toThrow();
         });
 
@@ -894,7 +906,13 @@ describe("schema validation", () => {
             const { directives, types } = subgraph.getValidationDefinitions();
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, directives, types);
+            const executeValidate = () =>
+                validateUserDefinition({
+                    userDocument,
+                    augmentedDocument,
+                    additionalDirectives: directives,
+                    additionalTypes: types,
+                });
             expect(executeValidate).not.toThrow();
         });
 
@@ -916,7 +934,13 @@ describe("schema validation", () => {
             const { directives, types } = subgraph.getValidationDefinitions();
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, directives, types);
+            const executeValidate = () =>
+                validateUserDefinition({
+                    userDocument,
+                    augmentedDocument,
+                    additionalDirectives: directives,
+                    additionalTypes: types,
+                });
 
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
@@ -944,7 +968,13 @@ describe("schema validation", () => {
             const { directives, types } = subgraph.getValidationDefinitions();
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, directives, types);
+            const executeValidate = () =>
+                validateUserDefinition({
+                    userDocument,
+                    augmentedDocument,
+                    additionalDirectives: directives,
+                    additionalTypes: types,
+                });
             expect(executeValidate).not.toThrow();
         });
 
@@ -969,7 +999,13 @@ describe("schema validation", () => {
             const { directives, types } = subgraph.getValidationDefinitions();
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-            const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, directives, types);
+            const executeValidate = () =>
+                validateUserDefinition({
+                    userDocument,
+                    augmentedDocument,
+                    additionalDirectives: directives,
+                    additionalTypes: types,
+                });
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                 `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
             );
@@ -988,7 +1024,13 @@ describe("schema validation", () => {
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
             const executeValidate = () =>
-                validateUserDefinition(userDocument, augmentedDocument, [], [], [noKeanuFields]);
+                validateUserDefinition({
+                    userDocument,
+                    augmentedDocument,
+                    additionalDirectives: [],
+                    additionalTypes: [],
+                    rules: [noKeanuFields],
+                });
             expect(executeValidate).not.toThrow();
         });
 
@@ -1003,7 +1045,13 @@ describe("schema validation", () => {
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
             const executeValidate = () =>
-                validateUserDefinition(userDocument, augmentedDocument, [], [], [noKeanuFields]);
+                validateUserDefinition({
+                    userDocument,
+                    augmentedDocument,
+                    additionalDirectives: [],
+                    additionalTypes: [],
+                    rules: [noKeanuFields],
+                });
             // It returns two time the error as in the ValidationSchema keanu appears two times.
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(`
                 "Field cannot named keanu
@@ -1024,7 +1072,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -1037,7 +1091,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -1055,7 +1115,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -1073,7 +1139,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).not.toThrow();
                 });
             });
@@ -1088,7 +1160,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type \\"UserAuthorizationFilterRule\\"."`
                     );
@@ -1103,7 +1181,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type \\"UserAuthorizationWhere\\". Did you mean \\"node\\"?"`
                     );
@@ -1118,7 +1202,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type \\"UserWhere\\"."`
                     );
@@ -1138,7 +1228,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"content\\" is not defined by type \\"UserWhere\\"."`
                     );
@@ -1161,7 +1257,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type \\"PostWhere\\"."`
                     );
@@ -1180,7 +1282,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -1193,7 +1301,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -1213,7 +1327,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -1233,7 +1353,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).not.toThrow();
                 });
             });
@@ -1248,7 +1374,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type \\"UserAuthorizationFilterRule\\"."`
                     );
@@ -1263,7 +1395,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type \\"UserAuthorizationWhere\\". Did you mean \\"node\\"?"`
                     );
@@ -1278,7 +1416,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type \\"UserWhere\\"."`
                     );
@@ -1300,7 +1444,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"content\\" is not defined by type \\"UserWhere\\"."`
                     );
@@ -1324,7 +1474,13 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
+                    const executeValidate = () =>
+                        validateUserDefinition({
+                            userDocument,
+                            augmentedDocument,
+                            additionalDirectives: [],
+                            additionalTypes: [],
+                        });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type \\"PostWhere\\"."`
                     );
