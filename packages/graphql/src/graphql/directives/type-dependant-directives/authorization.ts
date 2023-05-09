@@ -40,6 +40,7 @@ import { SchemaComposer } from "graphql-compose";
 import getObjFieldMeta from "../../../schema/get-obj-field-meta";
 import type { ObjectFields } from "../../../schema/get-obj-field-meta";
 import getWhereFields from "../../../schema/get-where-fields";
+import type { PrimitiveField } from "../../../types";
 
 const AUTHORIZATION_VALIDATE_STAGE = new GraphQLEnumType({
     name: "AuthorizationValidateStage",
@@ -209,7 +210,7 @@ function createJWTPayloadWhere(
     return inputTC.getType();
 }
 
-function getJwtStandardFields(schema: GraphQLSchema) {
+function getJwtStandardFields(schema: GraphQLSchema): PrimitiveField[] {
     const jwtStandardType = new GraphQLObjectType({
         name: "JWTStandard",
         fields: {

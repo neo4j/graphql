@@ -43,18 +43,18 @@ function makeSchemaToAugment(document: DocumentNode): {
     document: DocumentNode;
     typesExcludedFromGeneration: { jwtPayload?: ObjectTypeDefinitionNode };
 } {
-    const jwtPayloadAnnotatedTypes: ObjectTypeDefinitionNode[] = document.definitions.filter(
+    const jwtPayloadAnnotatedTypes = document.definitions.filter(
         (def) =>
             def.kind === Kind.OBJECT_TYPE_DEFINITION &&
             (def.directives || []).find((x) => x.name.value === "jwtPayload")
-    ) as ObjectTypeDefinitionNode[];
+    );
     if (!jwtPayloadAnnotatedTypes.length) {
         return {
             document,
             typesExcludedFromGeneration: {},
         };
     }
-    const jwtPayload = parseJwtPayload(jwtPayloadAnnotatedTypes);
+    const jwtPayload = parseJwtPayload(jwtPayloadAnnotatedTypes as ObjectTypeDefinitionNode[]);
     return {
         document: {
             ...document,
