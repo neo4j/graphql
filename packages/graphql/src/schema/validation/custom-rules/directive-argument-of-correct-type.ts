@@ -18,7 +18,7 @@
  */
 
 import type { ASTVisitor, DirectiveNode, GraphQLArgument, ArgumentNode } from "graphql";
-import { GraphQLError, coerceInputValue, valueFromASTUntyped, buildASTSchema, Kind } from "graphql";
+import { GraphQLError, coerceInputValue, valueFromASTUntyped, buildASTSchema } from "graphql";
 
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 
