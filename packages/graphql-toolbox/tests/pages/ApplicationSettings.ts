@@ -59,4 +59,10 @@ export class ApplicationSettings extends Screen {
             )
         ).toBeFalsy();
     }
+
+    public async verifyCopyrightCurrentYear() {
+        await this.page.waitForSelector("[data-test-settings-close-button]");
+        const text = (await this.page.locator("[data-test-copyright-information]").innerText()).valueOf();
+        expect(text).toContain(new Date().getFullYear().toString());
+    }
 }
