@@ -43,7 +43,7 @@ export class ContextBuilder extends Builder<Context, Context> {
             schema: new GraphQLSchema({}),
             subscriptionsEnabled: false,
             executionContext: {} as neo4j.Driver,
-            executor: new Executor({ executionContext: {} as neo4j.Driver, auth: {} as AuthContext, metrics: false }),
+            executor: new Executor({ executionContext: {} as neo4j.Driver, auth: {} as AuthContext }),
             neo4jDatabaseInfo: {} as Neo4jDatabaseInfo,
             info: {} as GraphQLResolveInfo,
             addMeasurementsToExtension: false,

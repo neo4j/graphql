@@ -234,7 +234,6 @@ class Neo4jGraphQL {
     private async getNeo4jDatabaseInfo(driver: Driver, driverConfig?: DriverConfig): Promise<Neo4jDatabaseInfo> {
         const executorConstructorParam: ExecutorConstructorParam = {
             executionContext: driver,
-            metrics: false,
         };
 
         if (driverConfig?.database) {

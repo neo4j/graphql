@@ -122,7 +122,7 @@ export const wrapResolver =
         const executorConstructorParam: ExecutorConstructorParam = {
             executionContext: context.executionContext,
             auth: context.auth,
-            metrics: Boolean(context.addMeasurementsToExtension),
+            measureTime: Boolean(context.addMeasurementsToExtension),
         };
 
         if (config.queryOptions) {

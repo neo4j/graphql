@@ -86,7 +86,7 @@ export type ExecutorConstructorParam = {
     queryOptions?: CypherQueryOptions;
     database?: string;
     bookmarks?: string | string[];
-    metrics?: boolean;
+    measureTime?: boolean;
 };
 
 export type ExecutorResult = {
@@ -114,7 +114,7 @@ export class Executor {
         queryOptions,
         database,
         bookmarks,
-        metrics = false,
+        measureTime = false,
     }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
@@ -126,7 +126,7 @@ export class Executor {
         }
         this.database = database;
         this.bookmarks = bookmarks;
-        this.returnMeasurements = metrics;
+        this.returnMeasurements = measureTime;
     }
 
     public async execute(
