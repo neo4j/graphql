@@ -10,9 +10,10 @@
 .pt-02 {
     padding-top: 0.2rem;
 }
+
 /* ----------------------*/
 
-/* Global settings for ALL CodeMirror editors */
+/* Global settings for all CodeMirror editors */
 .CodeMirror {
     height: 100%;
     position: inherit;
@@ -21,6 +22,11 @@
         Courier New;
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
+}
+
+/* Remove this when using GraphiQL v2 component(s) for editors */
+.CodeMirror-lint-mark-error {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJDw4cOCW1/KIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==);
 }
 
 .CodeMirror-hints {
@@ -44,6 +50,7 @@ li.CodeMirror-hint-active {
     pointer-events: none;
     opacity: 0.85;
 }
+
 /* ----------------------*/
 
 
@@ -65,20 +72,29 @@ li.CodeMirror-hint-active {
     margin: 5px 0;
     z-index: 100;
 }
+
 /* ----------------------*/
 
 
 /* All GraphiQL v2 components */
 .graphiql-container {
-    --color-primary: 209, 100%, 42% !important; /* primary-50 */
-    --color-secondary: 201, 100%, 55% !important; /* primary-30 */
-    --color-tertiary: 199, 100%, 82% !important; /* primary-20 */
+    /* primary-50 */
+    --color-primary: 209, 100%, 42% !important;
+    /* primary-30 */
+    --color-secondary: 201, 100%, 55% !important;
+    /* primary-20 */
+    --color-tertiary: 199, 100%, 82% !important;
     --color-info: 208, 100%, 51% !important;
-    --color-success: 157, 43%, 34% !important; /* success-50 */
-    --color-warning: 45, 65%, 51% !important; /* warning-50 */
-    --color-error: 346, 69%, 47% !important; /* danger-50 */
-    --color-neutral: 213, 8%, 12% !important; /* neutral-50 */
-    --color-base: 218, 31%, 95% !important; /* neutral-30 */
+    /* success-50 */
+    --color-success: 157, 43%, 34% !important;
+    /* warning-50 */
+    --color-warning: 45, 65%, 51% !important;
+    /* danger-50 */
+    --color-error: 346, 79%, 27%;
+    /* neutral-50 */
+    --color-neutral: 213, 8%, 12% !important;
+    /* neutral-30 */
+    --color-base: 218, 31%, 95% !important;
 
     --alpha-secondary: 0.9;
     --alpha-tertiary: 1;
@@ -86,6 +102,7 @@ li.CodeMirror-hint-active {
     --alpha-background-medium: 0.4;
     --alpha-background-light: 0.1;
 }
+
 /* ----------------------*/
 
 /* Query Explorer (OneGraph) */
@@ -117,7 +134,7 @@ li.CodeMirror-hint-active {
     padding: 3px;
 }
 
-.docExplorerWrap .graphiql-explorer-actions > span {
+.docExplorerWrap .graphiql-explorer-actions>span {
     display: none !important;
 }
 
@@ -137,6 +154,7 @@ li.CodeMirror-hint-active {
     display: inline-flex;
     align-items: center;
 }
+
 /* ----------------------*/
 
 
@@ -154,9 +172,10 @@ li.CodeMirror-hint-active {
     border: 1px solid rgb(var(--colors-primary-40));
 }
 
-@-moz-document url-prefix() { 
+@-moz-document url-prefix() {
     .canny-indication-wrapper {
         padding-bottom: 0.25rem;
     }
 }
+
 /* ----------------------*/

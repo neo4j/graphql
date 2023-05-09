@@ -39,4 +39,15 @@ base.test.describe("settings", () => {
 
         await applicationSettingsPage.closeSettingsDrawer();
     });
+
+    test("should show the current year in the copyright information", async ({
+        loginPage,
+        applicationSettingsPage,
+    }) => {
+        await loginPage.loginDismissIntrospection();
+
+        await applicationSettingsPage.openSettingsDrawer();
+        await applicationSettingsPage.verifyCopyrightCurrentYear();
+        await applicationSettingsPage.closeSettingsDrawer();
+    });
 });
