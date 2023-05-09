@@ -1024,7 +1024,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -1037,7 +1037,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -1055,7 +1055,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -1073,7 +1073,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).not.toThrow();
                 });
             });
@@ -1088,7 +1088,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type \\"UserAuthorizationFilterRule\\"."`
                     );
@@ -1103,7 +1103,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type \\"UserAuthorizationWhere\\". Did you mean \\"node\\"?"`
                     );
@@ -1118,7 +1118,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type \\"UserWhere\\"."`
                     );
@@ -1138,7 +1138,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"content\\" is not defined by type \\"UserWhere\\"."`
                     );
@@ -1161,7 +1161,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type \\"PostWhere\\"."`
                     );
@@ -1180,7 +1180,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -1193,7 +1193,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -1213,7 +1213,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).not.toThrow();
                 });
 
@@ -1233,7 +1233,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).not.toThrow();
                 });
             });
@@ -1248,7 +1248,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type \\"UserAuthorizationFilterRule\\"."`
                     );
@@ -1263,7 +1263,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type \\"UserAuthorizationWhere\\". Did you mean \\"node\\"?"`
                     );
@@ -1278,7 +1278,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type \\"UserWhere\\"."`
                     );
@@ -1300,7 +1300,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"content\\" is not defined by type \\"UserWhere\\"."`
                     );
@@ -1324,7 +1324,7 @@ describe("schema validation", () => {
                     `;
 
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], [], []);
+                    const executeValidate = () => validateUserDefinition(userDocument, augmentedDocument, [], []);
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                         `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type \\"PostWhere\\"."`
                     );

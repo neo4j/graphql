@@ -17,19 +17,13 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, DirectiveNode, DocumentNode, GraphQLArgument, ArgumentNode } from "graphql";
+import type { ASTVisitor, DirectiveNode, GraphQLArgument, ArgumentNode } from "graphql";
 import { GraphQLError, coerceInputValue, valueFromASTUntyped, buildASTSchema, Kind } from "graphql";
 
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 
 export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): ASTVisitor {
-    const astDefinitions = context.getDocument().definitions;
-
-    const schemaDocument: DocumentNode = {
-        kind: Kind.DOCUMENT,
-        definitions: astDefinitions,
-    };
-    const schema = buildASTSchema(schemaDocument, { assumeValid: true, assumeValidSDL: true });
+    const schema = buildASTSchema(context.getDocument(), { assumeValid: true, assumeValidSDL: true });
 
     return {
         Directive(directiveNode: DirectiveNode) {
@@ -38,15 +32,15 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                 return;
             }
 
-            const graphQLDirective = schema.getDirective(directiveNode.name.value);
+            const directiveDefinition = schema.getDirective(directiveNode.name.value);
 
-            if (!graphQLDirective) {
+            if (!directiveDefinition) {
                 // Do not report, delegate this report to KnownDirectivesRule
                 return;
             }
 
             directiveNode.arguments?.forEach((argument) => {
-                const argumentDefinition = findArgumentDefinitionNodeByName(graphQLDirective.args, argument.name.value);
+                const argumentDefinition = findArgumentDefinitionNodeByName(directiveDefinition.args, argument.name.value);
                 if (!argumentDefinition) {
                     return;
                 }
@@ -82,14 +76,7 @@ function assertArgumentType(argumentNode: ArgumentNode, inputValueDefinition: Gr
         errorMsg = error.message;
     };
 
-    try {
-        coerceInputValue(argValue, argType, onError);
-    } catch (error) {
-        isValid = false;
-        if (error instanceof Error) {
-            errorMsg = error.message;
-        }
-    }
+    coerceInputValue(argValue, argType, onError);
 
     return { isValid, errorMsg };
 }

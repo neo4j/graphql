@@ -71,7 +71,7 @@ export function validateUserDefinition(
         types: [...additionalTypes],
     });
 
-    const errors = validateSDL(validationDocument, [...rules, DirectiveArgumentOfCorrectType], schemaToExtend);
+    const errors = validateSDL(validationDocument, rules, schemaToExtend);
     if (errors.length) {
         throw new Error(errors.join("\n"));
     }
