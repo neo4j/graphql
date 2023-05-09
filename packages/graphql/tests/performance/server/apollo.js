@@ -19,6 +19,7 @@
 
 "use strict";
 
+// eslint-disable-next-line import/named
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import neo4j from "neo4j-driver";
