@@ -193,7 +193,7 @@ function generateRelationshipField(
     if (properties) {
         const propertyInterface = propertyInterfaces.get(properties as string);
         if (!propertyInterface) throw new Error("Property interfaces not defined with @relationshipProperties");
-        const fields = (propertyInterface?.fields || []).map(generateField);
+        const fields = (propertyInterface?.fields || []).map((field) => generateField(field));
         attributes = filterTruthy(fields);
     }
     return new Relationship({
@@ -276,16 +276,26 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
 }
 
 function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
-    return filterTruthy(
+    const entityAnnotations: Annotation[] = [];
+
+    // We only ever want to create one annotation even when an entity contains several key directives
+    const hasKeyDirective = directives.find((directive) => directive.name.value === "key");
+    if (hasKeyDirective) {
+        entityAnnotations.push(parseKeyAnnotation(directives));
+    }
+
+    const annotations: Annotation[] = filterTruthy(
         directives.map((directive) => {
             switch (directive.name.value) {
                 case "authorization":
                     return parseAuthorizationAnnotation(directive);
-                case "key":
-                    return parseKeyAnnotation(directive);
                 default:
                     return undefined;
             }
         })
     );
+
+    entityAnnotations.concat(annotations);
+
+    return entityAnnotations;
 }

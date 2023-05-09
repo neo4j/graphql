@@ -19,7 +19,7 @@
 
 export class KeyAnnotation {
     public fields: string; // Technically a GraphQL selection set https://spec.graphql.org/draft/#sec-Selection-Sets
-    public resolvable: boolean;
+    public resolvable: boolean; // Defaults to true
 
     constructor({ fields, resolvable = true }: { fields: string; resolvable?: boolean }) {
         this.fields = fields;

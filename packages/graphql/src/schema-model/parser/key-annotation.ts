@@ -21,20 +21,28 @@ import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import { KeyAnnotation } from "../annotation/KeyAnnotation";
 import { parseArguments } from "./utils";
 
-export function parseKeyAnnotation(directive: DirectiveNode): KeyAnnotation {
-    const { fields, resolvable, ...unrecognizedArguments } = parseArguments(directive) as {
-        fields: string;
-        resolvable: boolean;
-    };
+export function parseKeyAnnotation(directives: readonly DirectiveNode[]): KeyAnnotation {
+    const allFields: unknown[] = [];
+    let isResolvable = false;
 
-    if (Object.keys(unrecognizedArguments).length) {
-        throw new Neo4jGraphQLSchemaValidationError(
-            `@key unrecognized arguments: ${Object.keys(unrecognizedArguments).join(", ")}`
-        );
-    }
+    directives.forEach((directive) => {
+        const { fields, resolvable, ...unrecognizedArguments } = parseArguments(directive) as {
+            fields: string;
+            resolvable: boolean;
+        };
+
+        if (Object.keys(unrecognizedArguments).length) {
+            throw new Neo4jGraphQLSchemaValidationError(
+                `@key unrecognized arguments: ${Object.keys(unrecognizedArguments).join(", ")}`
+            );
+        }
+
+        allFields.push(fields);
+        isResolvable = isResolvable || resolvable;
+    });
 
     return new KeyAnnotation({
-        fields,
-        resolvable,
+        fields: allFields.join(", "), // Since we don't use this ever, we can just output it as a single comma delimited string
+        resolvable: isResolvable,
     });
 }
