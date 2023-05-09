@@ -17,31 +17,31 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useRef, useState } from "react";
+import { Banner } from "@neo4j-ndl/react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
-import { Banner } from "@neo4j-ndl/react";
+import type { EditorFromTextArea } from "codemirror";
 import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
-import type { EditorFromTextArea } from "codemirror";
+import { useCallback, useContext, useRef, useState } from "react";
+import { rudimentaryTypeDefinitionsAnalytics } from "../../analytics/analytics";
+import { tracking } from "../../analytics/tracking";
 import { DEFAULT_DATABASE_NAME } from "../../constants";
-import { formatCode, ParserOptions } from "../EditorView/utils";
+import { AppSettingsContext } from "../../contexts/appsettings";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
-import { AppSettingsContext } from "../../contexts/appsettings";
-import { AppSettings } from "../AppSettings/AppSettings";
-import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
-import { SchemaSettings } from "./SchemaSettings";
-import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
-import { ActionElementsBar } from "./ActionElementsBar";
-import { SchemaEditor } from "./SchemaEditor";
+import { useStore } from "../../store";
 import type { Favorite } from "../../types";
 import { ConstraintState } from "../../types";
+import { AppSettings } from "../AppSettings/AppSettings";
+import { ParserOptions, formatCode } from "../EditorView/utils";
+import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
+import { ActionElementsBar } from "./ActionElementsBar";
 import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
-import { tracking } from "../../analytics/tracking";
-import { rudimentaryTypeDefinitionsAnalytics } from "../../analytics/analytics";
-import { useStore } from "../../store";
+import { SchemaEditor } from "./SchemaEditor";
+import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
+import { SchemaSettings } from "./SchemaSettings";
 
 export interface Props {
     hasSchema: boolean;
@@ -207,9 +207,9 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 </div>
                 <div className="flex">
                     <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100">
-                        <div className="p-6 w-full">
+                        <div className="w-full">
                             <SchemaSettings />
-                            <hr className="my-8" />
+                            <hr />
                             <Favorites favorites={favorites} onSelectFavorite={setTypeDefsFromFavorite} />
                         </div>
                     </div>
