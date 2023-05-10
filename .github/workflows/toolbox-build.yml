@@ -1,4 +1,4 @@
-name: "UI Build"
+name: "Toolbox Build"
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
       - "packages/graphql-toolbox/**"
 
 jobs:
-  build-ui:
+  build-graphql-toolbox:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,16 +17,21 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
-      - name: UI build
+      - name: Install dependencies
+        run: yarn
+      # the introspector is a referenced project by the Toolbox.
+      - name: Build the introspector
+        run: yarn build
+        working-directory: packages/introspector
+      - name: Build the Toolbox
         env:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          yarn
           yarn build
           echo "$PULL_REQUEST_NUMBER" > ./dist/prnumber
         working-directory: packages/graphql-toolbox
-      - name: Archive UI
+      - name: Archive Toolbox build
         uses: actions/upload-artifact@v3
         with:
-          name: graphqlui
+          name: graphqltoolbox
           path: packages/graphql-toolbox/dist

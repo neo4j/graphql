@@ -146,9 +146,9 @@ function makeAugmentedSchema(
     const extraDefinitions = [
         ...enumTypes,
         ...scalarTypes,
-        ...directives,
         ...inputObjectTypes,
         ...unionTypes,
+        ...directives,
         ...([
             customResolvers.customQuery,
             customResolvers.customMutation,
@@ -827,7 +827,7 @@ function makeAugmentedSchema(
         });
     });
 
-    if (generateSubscriptions) {
+    if (generateSubscriptions && nodes.length) {
         generateSubscriptionTypes({ schemaComposer: composer, nodes, relationshipFields, interfaceCommonFields });
     }
 

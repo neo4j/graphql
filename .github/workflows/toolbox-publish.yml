@@ -1,19 +1,19 @@
-name: "UI Publish"
+name: "Toolbox Publish"
 
 on:
   workflow_run:
-    workflows: ["UI Build"]
+    workflows: ["Toolbox Build"]
     types:
       - completed
 
 jobs:
-  publish-ui:
+  publish-graphql-toolbox:
     if: github.event.workflow_run.conclusion == 'success'
 
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Download built UI"
+      - name: Download built Toolbox
         uses: actions/github-script@v6.4.1
         with:
           script: |
@@ -23,7 +23,7 @@ jobs:
                run_id: ${{ github.event.workflow_run.id }},
             });
             var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "graphqlui"
+              return artifact.name == "graphqltoolbox"
             })[0];
             var download = await github.rest.actions.downloadArtifact({
                owner: context.repo.owner,
@@ -32,8 +32,8 @@ jobs:
                archive_format: 'zip',
             });
             var fs = require('fs');
-            fs.writeFileSync('${{ github.workspace }}/graphqlui.zip', Buffer.from(download.data));
-      - run: unzip graphqlui.zip
+            fs.writeFileSync('${{ github.workspace }}/graphqltoolbox.zip', Buffer.from(download.data));
+      - run: unzip graphqltoolbox.zip
       - id: get-pr-number
         run: |
           number=$(<prnumber)
@@ -42,19 +42,19 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
-      - name: Publish UI
+      - name: Publish the Toolbox to surge.sh
         run: |
           npm install -g surge
-          surge . neo4j-graphql-toolbox-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+          surge . neo4j-graphql-toolbox-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
       - name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@f61b6cf21ef2fcc468f4345cdfcc9bda741d2343 # v2.6.2
         with:
           number: ${{ steps.get-pr-number.outputs.pr-number }}
           header: toolbox
           message: |
-            Made some changes to the GraphQL Toolbox? Or made some changes to the core library perhaps?
+            Made some changes to the Neo4j GraphQL Toolbox? Or made some changes to the core library perhaps?
 
-            Check out your changes at https://neo4j-graphql-toolbox-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh
+            Check out your changes at https://neo4j-graphql-toolbox-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh
 
             Use for instance a local dbms hosted on [Neo4j Desktop](https://neo4j.com/download/) or a cloud-hosted [Aura Free](https://neo4j.com/cloud/aura-free/) dbms.
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
