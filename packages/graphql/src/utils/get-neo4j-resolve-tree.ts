@@ -26,6 +26,7 @@ import type {
     GraphQLResolveInfo,
     GraphQLInputType,
     GraphQLList,
+    GraphQLSchema,
 } from "graphql";
 import { GraphQLInputObjectType, GraphQLScalarType } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
@@ -85,7 +86,25 @@ export interface GetNeo4jResolveTreeOptions {
     args?: any;
 }
 
-function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4jResolveTreeOptions): ResolveTree {
+function findField(schema: GraphQLSchema, fieldName: string): GraphQLField<any, any> {
+    const queryType = schema.getQueryType();
+    const mutationType = schema.getMutationType();
+    const subscriptionType = schema.getSubscriptionType();
+
+    const queryFields = queryType?.getFields()[fieldName];
+    const mutationFields = mutationType?.getFields()[fieldName];
+    const subscriptionFields = subscriptionType?.getFields()[fieldName];
+
+    const field = queryFields || mutationFields || subscriptionFields;
+    if (!field) throw new Error(`Field ${field} not found`);
+
+    return field;
+}
+
+export default function getNeo4jResolveTree(
+    resolveInfo: GraphQLResolveInfo,
+    options?: GetNeo4jResolveTreeOptions
+): ResolveTree {
     const resolveTree = options?.resolveTree || (parseResolveInfo(resolveInfo) as ResolveTree);
     const resolverArgs = options?.args;
     const mergedArgs: Record<string, unknown> = { ...resolveTree.args, ...resolverArgs };
@@ -95,15 +114,7 @@ function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4j
     if (options?.field) {
         field = options.field;
     } else {
-        const queryType = resolveInfo.schema.getQueryType();
-        const mutationType = resolveInfo.schema.getMutationType();
-        const subscriptionType = resolveInfo.schema.getSubscriptionType();
-
-        field = Object.values({
-            ...queryType?.getFields(),
-            ...mutationType?.getFields(),
-            ...subscriptionType?.getFields(),
-        }).find((f) => f.name === resolveTree.name) as GraphQLField<any, any>;
+        field = findField(resolveInfo.schema, resolveTree.name);
     }
 
     const args = Object.entries(mergedArgs).reduce((res, [name, value]) => {
@@ -165,5 +176,3 @@ function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4j
 
     return { alias, args, fieldsByTypeName, name };
 }
-
-export default getNeo4jResolveTree;
