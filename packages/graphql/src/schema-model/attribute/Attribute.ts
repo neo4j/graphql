@@ -77,6 +77,9 @@ export class Attribute {
         if (this.annotations[annotationKey]) {
             throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
         }
+
+        // We cast to any because we aren't narrowing the Annotation type here.
+        // There's no reason to narrow either, since we care more about performance.
         this.annotations[annotationKey] = annotation as any;
     }
 }
