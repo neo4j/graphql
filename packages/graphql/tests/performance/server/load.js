@@ -26,7 +26,7 @@ import { Trend } from "k6/metrics";
 import { queries } from "./queries.js";
 
 const CONFIG = {
-    maxVUs: 100,
+    maxVUs: 1000,
     duration: 30,
     query: queries.simpleQuery,
 };
@@ -40,6 +40,7 @@ export const options = {
 };
 
 const dbQueryTrend = new Trend("neo4j/gaphql_database_query_time", true);
+const translationTimeTrend = new Trend("neo4j/graphql_translation_time", true);
 
 export default function () {
     const headers = {
@@ -62,6 +63,7 @@ export default function () {
     const measurements = body.extensions && body.extensions.measurements;
     if (measurements) {
         dbQueryTrend.add(measurements.databaseQueryTime);
+        translationTimeTrend.add(measurements.translationTime);
     }
 
     sleep(0.3);

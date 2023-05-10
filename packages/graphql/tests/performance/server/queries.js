@@ -47,13 +47,13 @@ export const queries = {
                         released
                         tagline
                         title
-                        actors {
+                        actors(options: {sort: {name: DESC}, limit: 2}) {
                             name
                             movies(options: { sort: { title: DESC }, limit: 2 }) {
                                 released
                                 tagline
                                 title
-                                actors {
+                                actors(options: {sort: {name: DESC}, limit: 2}) {
                                     name
                                 }
                             }
