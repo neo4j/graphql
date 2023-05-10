@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { astFromDirective, astFromEnumType, astFromInputObjectType, astFromObjectType } from "@graphql-tools/utils";
+import { astFromDirective, astFromEnumType, astFromInputObjectType } from "@graphql-tools/utils";
 import type {
     TypeDefinitionNode,
     DirectiveDefinitionNode,
@@ -33,14 +33,10 @@ import {
     GraphQLList,
     GraphQLBoolean,
     DirectiveLocation,
-    GraphQLString,
-    GraphQLObjectType,
 } from "graphql";
 import { SchemaComposer } from "graphql-compose";
-import getObjFieldMeta from "../../../schema/get-obj-field-meta";
-import type { ObjectFields } from "../../../schema/get-obj-field-meta";
 import getWhereFields from "../../../schema/get-where-fields";
-import type { PrimitiveField } from "../../../types";
+import { getJwtFields } from "./jwt-payload";
 
 const AUTHORIZATION_VALIDATE_STAGE = new GraphQLEnumType({
     name: "AuthorizationValidateStage",
@@ -172,35 +168,9 @@ function createJWTPayloadWhere(
     schema: GraphQLSchema,
     JWTPayloadDefinition?: ObjectTypeDefinitionNode
 ): GraphQLInputObjectType {
-    let fields: Pick<
-        ObjectFields,
-        "scalarFields" | "primitiveFields" | "enumFields" | "temporalFields" | "pointFields"
-    > = {
-        scalarFields: [],
-        primitiveFields: [],
-        enumFields: [],
-        temporalFields: [],
-        pointFields: [],
-    };
-    if (JWTPayloadDefinition) {
-        fields = getObjFieldMeta({
-            obj: JWTPayloadDefinition,
-            objects: [],
-            interfaces: [],
-            unions: [],
-            scalars: [],
-            enums: [],
-            validateResolvers: false,
-        });
-
-        // TODO: should this exist when JwtPayload not defined?
-        const jwtStandardFields = getJwtStandardFields(schema);
-        fields.primitiveFields.push(...jwtStandardFields);
-    }
-
     const inputFieldsType = getWhereFields({
         typeName: "JWTPayload",
-        fields,
+        fields: getJwtFields(schema, JWTPayloadDefinition),
     });
     const composer = new SchemaComposer();
     const inputTC = composer.createInputTC({
@@ -208,55 +178,6 @@ function createJWTPayloadWhere(
         fields: inputFieldsType,
     });
     return inputTC.getType();
-}
-
-function getJwtStandardFields(schema: GraphQLSchema): PrimitiveField[] {
-    const jwtStandardType = new GraphQLObjectType({
-        name: "JWTStandard",
-        fields: {
-            iss: {
-                type: GraphQLString,
-                description:
-                    "A case-sensitive string containing a StringOrURI value that identifies the principal that issued the JWT.",
-            },
-            sub: {
-                type: GraphQLString,
-                description:
-                    "A case-sensitive string containing a StringOrURI value that identifies the principal that is the subject of the JWT.",
-            },
-            aud: {
-                type: new GraphQLList(GraphQLString),
-                description:
-                    "An array of case-sensitive strings, each containing a StringOrURI value that identifies the recipients that can process the JWT.",
-            },
-            exp: {
-                type: GraphQLString,
-                description:
-                    "Identifies the expiration time on or after which the JWT must not be accepted for processing.",
-            },
-            nbf: {
-                type: GraphQLString,
-                description: "Identifies the time before which the JWT must not be accepted for processing.",
-            },
-            iat: {
-                type: GraphQLString,
-                description: "Identifies the time at which the JWT was issued, to determine the age of the JWT.",
-            },
-            jti: {
-                type: GraphQLString,
-                description: "Uniquely identifies the JWT, to prevent the JWT from being replayed.",
-            },
-        },
-    });
-    return getObjFieldMeta({
-        obj: astFromObjectType(jwtStandardType, schema),
-        objects: [],
-        interfaces: [],
-        unions: [],
-        scalars: [],
-        enums: [],
-        validateResolvers: false,
-    }).primitiveFields;
 }
 
 export function createAuthorizationDefinitions(

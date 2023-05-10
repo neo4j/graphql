@@ -52,7 +52,7 @@ import type { TypeSource } from "@graphql-tools/utils";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
-import makeSchemaToAugment from "../schema/make-schema-to-augment";
+import { makeSchemaToAugment } from "../schema/make-schema-to-augment";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;

@@ -17,19 +17,56 @@
  * limitations under the License.
  */
 
-import type { DocumentNode, ObjectTypeDefinitionNode } from "graphql";
+import type { DefinitionNode, DocumentNode, ObjectTypeDefinitionNode } from "graphql";
 import { Kind } from "graphql";
 import getFieldTypeMeta from "./get-field-type-meta";
 
-function parseJwtPayload(jwtPayloadAnnotatedTypes: ObjectTypeDefinitionNode[]): ObjectTypeDefinitionNode {
+export function makeSchemaToAugment(document: DocumentNode): {
+    document: DocumentNode;
+    typesExcludedFromGeneration: { jwtPayload?: ObjectTypeDefinitionNode };
+} {
+    const jwtTypeDefinitions: ObjectTypeDefinitionNode[] = [];
+    const definitions: DefinitionNode[] = [];
+
+    for (const definition of document.definitions) {
+        if (
+            definition.kind === Kind.OBJECT_TYPE_DEFINITION &&
+            (definition.directives || []).some((x) => x.name.value === "jwtPayload")
+        ) {
+            jwtTypeDefinitions.push(definition);
+        } else {
+            definitions.push(definition);
+        }
+    }
+
+    const jwtPayload = parseJwtPayload(jwtTypeDefinitions);
+    if (!jwtPayload) {
+        return {
+            document,
+            typesExcludedFromGeneration: {},
+        };
+    }
+    return {
+        document: {
+            ...document,
+            definitions,
+        },
+        typesExcludedFromGeneration: { jwtPayload },
+    };
+}
+
+function parseJwtPayload(jwtPayloadAnnotatedTypes: ObjectTypeDefinitionNode[]): ObjectTypeDefinitionNode | undefined {
+    if (!jwtPayloadAnnotatedTypes.length) {
+        return undefined;
+    }
     if (jwtPayloadAnnotatedTypes.length > 1) {
         throw new Error(`@jwtPayload directive can only be used once in the Type Definitions.`);
     }
-    const jwtPayload = jwtPayloadAnnotatedTypes[0] as ObjectTypeDefinitionNode;
-    if ((jwtPayload.directives || []).length > 1) {
+    const jwtPayload = jwtPayloadAnnotatedTypes[0];
+    if ((jwtPayload?.directives || []).length > 1) {
         throw new Error(`@jwtPayload directive cannot be combined with other directives.`);
     }
-    jwtPayload.fields?.forEach((f) => {
+    jwtPayload?.fields?.forEach((f) => {
         const typeMeta = getFieldTypeMeta(f.type);
         if (!["String", "ID", "Int", "Float", "Boolean"].includes(typeMeta.name)) {
             throw new Error("fields of a @jwtPayload type can only be Scalars or Lists of Scalars.");
@@ -37,31 +74,3 @@ function parseJwtPayload(jwtPayloadAnnotatedTypes: ObjectTypeDefinitionNode[]): 
     });
     return jwtPayload;
 }
-
-// TODO: alternatively use get-obj-field-meta for validation and make schema-validation find the @jwtPayload annotated type
-function makeSchemaToAugment(document: DocumentNode): {
-    document: DocumentNode;
-    typesExcludedFromGeneration: { jwtPayload?: ObjectTypeDefinitionNode };
-} {
-    const jwtPayloadAnnotatedTypes = document.definitions.filter(
-        (def) =>
-            def.kind === Kind.OBJECT_TYPE_DEFINITION &&
-            (def.directives || []).find((x) => x.name.value === "jwtPayload")
-    );
-    if (!jwtPayloadAnnotatedTypes.length) {
-        return {
-            document,
-            typesExcludedFromGeneration: {},
-        };
-    }
-    const jwtPayload = parseJwtPayload(jwtPayloadAnnotatedTypes as ObjectTypeDefinitionNode[]);
-    return {
-        document: {
-            ...document,
-            definitions: document.definitions.filter((d) => !jwtPayloadAnnotatedTypes.includes(d)),
-        },
-        typesExcludedFromGeneration: { jwtPayload },
-    };
-}
-
-export default makeSchemaToAugment;
