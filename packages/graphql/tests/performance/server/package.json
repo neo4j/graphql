@@ -8,7 +8,8 @@
     "private": true,
     "scripts": {
         "doctor": "clinic doctor --on-port -- node ./servers/apollo.js",
-        "load": "k6 run load.js"
+        "load": "k6 run load.js",
+        "flame": "clinic flame -- node ./servers/apollo.js"
     },
     "devDependencies": {
         "@apollo/server": "^4.7.0",
