@@ -20,26 +20,14 @@
 import { KeyAnnotation } from "./KeyAnnotation";
 
 describe("KeyAnnotation", () => {
-    it("initialize class correctly when all params are set", () => {
+    it("initialize class correctly when resolvable param is set", () => {
         const keyAnnotation = new KeyAnnotation({
-            fields: "sku",
             resolvable: false,
         });
-        expect(keyAnnotation.fields).toBe("sku");
         expect(keyAnnotation.resolvable).toBe(false);
     });
     it("resolvable should default to true", () => {
-        const keyAnnotation = new KeyAnnotation({
-            fields: "sku",
-        });
-        expect(keyAnnotation.fields).toBe("sku");
-        expect(keyAnnotation.resolvable).toBe(true);
-    });
-    it("fields should accept multiple words", () => {
-        const keyAnnotation = new KeyAnnotation({
-            fields: "sku variation { id }",
-        });
-        expect(keyAnnotation.fields).toBe("sku variation { id }");
+        const keyAnnotation = new KeyAnnotation({});
         expect(keyAnnotation.resolvable).toBe(true);
     });
 });

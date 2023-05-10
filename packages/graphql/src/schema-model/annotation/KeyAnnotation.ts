@@ -18,11 +18,10 @@
  */
 
 export class KeyAnnotation {
-    public fields: string; // Technically a GraphQL selection set https://spec.graphql.org/draft/#sec-Selection-Sets
+    // fields from the @key directive is intentionally excluded as it is not in use by our schema model
     public resolvable: boolean; // Defaults to true
 
-    constructor({ fields, resolvable = true }: { fields: string; resolvable?: boolean }) {
-        this.fields = fields;
+    constructor({ resolvable = true }: { resolvable?: boolean }) {
         this.resolvable = resolvable;
     }
 }

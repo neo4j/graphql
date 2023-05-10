@@ -46,7 +46,6 @@ describe("parseKeyAnnotation", () => {
             },
         ];
         const keyAnnotation = parseKeyAnnotation(directives);
-        expect(keyAnnotation.fields).toBe("sku variation { id }");
         expect(keyAnnotation.resolvable).toBe(true);
     });
     it("should parse when there are two directives", () => {
@@ -93,7 +92,6 @@ describe("parseKeyAnnotation", () => {
             },
         ];
         const keyAnnotation = parseKeyAnnotation(directives);
-        expect(keyAnnotation.fields).toBe("id, sku variation { id }");
         expect(keyAnnotation.resolvable).toBe(true);
     });
     it("should parse resolvable when there is only one directive", () => {
@@ -131,7 +129,6 @@ describe("parseKeyAnnotation", () => {
             },
         ];
         const keyAnnotation = parseKeyAnnotation(directives);
-        expect(keyAnnotation.fields).toBe("sku variation { id }");
         expect(keyAnnotation.resolvable).toBe(false);
     });
     it("should parse resolvable when there are two directives", () => {
@@ -200,7 +197,6 @@ describe("parseKeyAnnotation", () => {
             },
         ];
         const keyAnnotation = parseKeyAnnotation(directives);
-        expect(keyAnnotation.fields).toBe("sku variation { id }, id");
         expect(keyAnnotation.resolvable).toBe(true);
     });
 });

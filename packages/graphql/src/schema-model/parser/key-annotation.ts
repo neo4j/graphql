@@ -22,10 +22,11 @@ import { KeyAnnotation } from "../annotation/KeyAnnotation";
 import { parseArguments } from "./utils";
 
 export function parseKeyAnnotation(directives: readonly DirectiveNode[]): KeyAnnotation {
-    const allFields: unknown[] = [];
     let isResolvable = false;
 
     directives.forEach((directive) => {
+        // fields is a recognized argument but we don't use it, hence we ignore the non-usage of the variable.
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { fields, resolvable, ...unrecognizedArguments } = parseArguments(directive) as {
             fields: string;
             resolvable: boolean;
@@ -37,12 +38,10 @@ export function parseKeyAnnotation(directives: readonly DirectiveNode[]): KeyAnn
             );
         }
 
-        allFields.push(fields);
         isResolvable = isResolvable || resolvable;
     });
 
     return new KeyAnnotation({
-        fields: allFields.join(", "), // Since we don't use this ever, we can just output it as a single comma delimited string
         resolvable: isResolvable,
     });
 }
