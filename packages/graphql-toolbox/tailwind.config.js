@@ -6,7 +6,7 @@ module.exports = {
         "content-container": "calc(100vh - 6rem)",
         "content-container-extended": "calc(100vh - 9rem)",
         "content-docs-container": "calc(100vh - 9rem - 10px)",
-        "favorite": "35rem",
+        "favorite": "40rem",
       },
       width: {
         "content-container": "calc(100% - 24rem)",

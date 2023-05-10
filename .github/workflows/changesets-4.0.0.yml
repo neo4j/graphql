@@ -51,7 +51,7 @@ jobs:
 
       - name: Create release PR or release
         id: changesets
-        uses: changesets/action@e9cc34b540dd3ad1b030c57fd97269e8f6ad905a # v1.4.1
+        uses: changesets/action@c533929662039a070283d6b52b06d0bcea20f14e # v1.4.3
         with:
           title: changesets for branch `4.0.0`
           version: yarn changeset-version-4.0.0
