@@ -295,7 +295,5 @@ function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotati
         })
     );
 
-    entityAnnotations.concat(annotations);
-
-    return entityAnnotations;
+    return entityAnnotations.concat(annotations);
 }
