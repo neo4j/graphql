@@ -2,4 +2,4 @@
 "@neo4j/graphql": patch
 ---
 
-Increase server performance for large schemas
+Improve server performance for large schemas when querying
