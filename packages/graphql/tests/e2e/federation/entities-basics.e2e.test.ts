@@ -20,10 +20,10 @@
 import supertest from "supertest";
 import { UniqueType } from "../../utils/graphql-types";
 import { GatewayServer } from "./setup/gateway-server";
+import { Neo4j } from "./setup/neo4j";
 import type { Server } from "./setup/server";
 import { TestSubgraph } from "./setup/subgraph";
 import { SubgraphServer } from "./setup/subgraph-server";
-import { Neo4j } from "./setup/neo4j";
 
 describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/federation/entities/)", () => {
     let productsServer: Server;
@@ -44,7 +44,7 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
         const products = `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type ${Product} @key(fields: "id") {
+            type ${Product} @key(fields: "id") @shareable {
                 id: ID!
                 name: String
                 price: Int
@@ -54,7 +54,7 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
         const reviews = `
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type ${Product} @key(fields: "id", resolvable: false) {
+            type ${Product} @key(fields: "id", resolvable: false) @shareable {
                 id: ID!
             }
 

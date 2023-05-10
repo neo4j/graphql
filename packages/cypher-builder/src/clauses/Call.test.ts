@@ -29,13 +29,13 @@ describe("CypherBuilder Call", () => {
         const createQuery = new Cypher.Create(movieNode).set([movieNode.property("id"), idParam]).return(movieNode);
         const queryResult = new Cypher.Call(createQuery).build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-                "CALL {
-                    CREATE (this0:\`Movie\`)
-                    SET
-                        this0.id = $param0
-                    RETURN this0
-                }"
-            `);
+            "CALL {
+                CREATE (this0:\`Movie\`)
+                SET
+                    this0.id = $param0
+                RETURN this0
+            }"
+        `);
         expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
                   "param0": "my-id",
@@ -55,15 +55,15 @@ describe("CypherBuilder Call", () => {
         const queryResult = call.build();
 
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-                "CALL {
-                    CALL {
-                        CREATE (this0:\`Movie\`)
-                        SET
-                            this0.id = $param0
-                        RETURN this0
-                    }
-                }"
-            `);
+            "CALL {
+                CALL {
+                    CREATE (this0:\`Movie\`)
+                    SET
+                        this0.id = $param0
+                    RETURN this0
+                }
+            }"
+        `);
         expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
                   "param0": "my-id",

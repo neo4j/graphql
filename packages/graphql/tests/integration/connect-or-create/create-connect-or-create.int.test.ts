@@ -18,7 +18,7 @@
  */
 
 import type { Driver, Session, Integer } from "neo4j-driver";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";

@@ -31,6 +31,16 @@ describe("Property", () => {
         expect(queryResult.cypher).toMatchInlineSnapshot(`"var0.myProperty"`);
     });
 
+    it("Escape string property if needed", () => {
+        const variable = new Cypher.Variable();
+        const property = variable.property("myPro`perty");
+
+        const testClause = new TestClause(property);
+
+        const queryResult = testClause.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"var0.\`myPro\`\`perty\`"`);
+    });
+
     it("Serialize nested string property", () => {
         const variable = new Cypher.Variable();
         const property = variable.property("myProperty").property("myNestedValue");

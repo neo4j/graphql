@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { cleanNodes } from "../../../utils/clean-nodes";

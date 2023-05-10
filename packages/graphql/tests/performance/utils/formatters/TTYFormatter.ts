@@ -19,16 +19,7 @@
 
 import { omitFields } from "../../../../src/utils/utils";
 import type * as Performance from "../../types";
-
-enum TTYColors {
-    yellow = "\x1b[33m",
-    cyan = "\x1b[36m",
-    red = "\x1b[31m",
-    green = "\x1b[32m",
-    magenta = "\x1b[45m",
-}
-
-const TTYReset = "\x1b[0m";
+import { colorText, TTYColors } from "./color-tty-text";
 
 type TTYTableItem = Performance.ProfileResult & { "time (ms)": number };
 
@@ -47,9 +38,9 @@ export class TTYFormatter {
         const hasOldResults = Boolean(oldResults);
 
         return results.reduce((acc, { name, result, file, type }) => {
-            const coloredFile = this.colorText(file, TTYColors.yellow);
+            const coloredFile = colorText(file, TTYColors.yellow);
 
-            const coloredOnly = this.colorText("_only", TTYColors.cyan);
+            const coloredOnly = colorText("_only", TTYColors.cyan);
             let displayName = name.replace(/_only$/i, coloredOnly);
 
             const oldResult = oldResults ? oldResults[`${file}.${name}`] : undefined;
@@ -60,26 +51,22 @@ export class TTYFormatter {
             } as Performance.ProfileResult & { "time (ms)": number };
             if (oldResult) {
                 if (this.lessThan(result2.dbHits, oldResult.result.dbHits, 0.1)) {
-                    displayName = this.colorText(displayName, TTYColors.green);
+                    displayName = colorText(displayName, TTYColors.green);
                 } else if (this.moreThan(result2.dbHits, oldResult.result.dbHits, 0.1)) {
-                    displayName = this.colorText(displayName, TTYColors.red);
+                    displayName = colorText(displayName, TTYColors.red);
                 }
             } else if (hasOldResults) {
-                displayName = this.colorText(displayName, TTYColors.magenta); // For new tests added
+                displayName = colorText(displayName, TTYColors.magenta); // For new tests added
             }
 
             let typeStr = "";
             if (type === "cypher") {
-                typeStr = this.colorText("[cypher]", TTYColors.cyan);
+                typeStr = colorText("[cypher]", TTYColors.cyan);
             }
 
             acc[`${typeStr} ${coloredFile}.${displayName}`] = result2;
             return acc;
         }, {} as Record<string, TTYTableItem>);
-    }
-
-    private colorText(text: string, color: TTYColors): string {
-        return `${color}${text}${TTYReset}`;
     }
 
     private moreThan(a: number, b: number, delta: number): boolean {

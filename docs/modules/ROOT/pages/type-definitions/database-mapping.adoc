@@ -243,12 +243,13 @@ When running the server with Apollo:
 
 [source, js, indent=0]
 ----
-neoSchema.getSchema().then((schema) => {
-    new ApolloServer({
-        schema,
-        context: ({ req }) => ({ req, appId: "myApp" }),
-    });
-})
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
+});
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ req, appId: "myApp" }),
+});
 ----
 
 ==== `additionalLabels`

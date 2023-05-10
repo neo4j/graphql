@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { toGlobalId } from "../../src/utils/global-ids";
 import { Neo4jGraphQL } from "../../src";
 import { createJwtRequest } from "../utils/create-jwt-request";
