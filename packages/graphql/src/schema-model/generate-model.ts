@@ -140,8 +140,8 @@ function hydrateRelationships(
     const name = definition.name.value;
     const entity = schema.getEntity(name);
 
-    if (!(entity instanceof ConcreteEntity)) {
-        throw new Error(`Cannot add relationship to non-concrete entity ${entity.name}`);
+    if (!schema.isConcreteEntity(entity)) {
+        throw new Error(`Cannot add relationship to non-concrete entity ${name}`);
     }
 
     const relationshipPropertyInterfaces = getRelationshipPropertiesInterfaces(definitionNodes);

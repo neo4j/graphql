@@ -42,21 +42,19 @@ export class Neo4jGraphQLSchemaModel {
         this.compositeEntities = compositeEntities;
     }
 
-    public getEntity(name: string): Entity {
-        const entity = this.entities.get(name);
-        if (!entity) throw new Error(`Entity ${name} not found in schema model`);
-        return entity;
+    public getEntity(name: string): Entity | undefined {
+        return this.entities.get(name);
     }
 
     public getEntitiesByLabels(labels: string[]): ConcreteEntity[] {
         return this.concreteEntities.filter((entity) => entity.matchLabels(labels));
     }
 
-    public isConcreteEntity(entity: Entity): entity is ConcreteEntity {
+    public isConcreteEntity(entity?: Entity): entity is ConcreteEntity {
         return entity instanceof ConcreteEntity;
     }
 
-    public isCompositeEntity(entity: Entity): entity is CompositeEntity {
+    public isCompositeEntity(entity?: Entity): entity is CompositeEntity {
         return entity instanceof CompositeEntity;
     }
 }
