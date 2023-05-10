@@ -21,7 +21,7 @@ import type { SessionMode, QueryResult } from "neo4j-driver";
 import Debug from "debug";
 import { DEBUG_EXECUTE } from "../constants";
 import type { Context } from "../types";
-import { addMeasurementField } from "./add-measurement-field";
+import { Measurement, addMeasurementField } from "./add-measurement-field";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -53,8 +53,8 @@ async function execute({
 
     debug(`Execute successful, received ${records.length} records`);
 
-    if (context.addMeasurementsToExtension && measurements) {
-        addMeasurementField(context, "databaseQueryTime", measurements.time);
+    if (measurements) {
+        addMeasurementField(context, Measurement.databaseQueryTime, measurements.time);
     }
 
     return {

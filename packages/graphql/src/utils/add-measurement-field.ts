@@ -19,7 +19,13 @@
 
 import type { Context } from "../types";
 
-export function addMeasurementField(context: Context, name: string, value: number): void {
+export enum Measurement {
+    translationTime = "translationTime",
+    databaseQueryTime = "databaseQueryTime",
+}
+
+export function addMeasurementField(context: Context, name: Measurement, value: number): void {
+    if (!context.addMeasurementsToExtension) return;
     if (!context.extensions) context.extensions = { measurements: {} };
     if (!context.extensions.measurements) context.extensions.measurements = {};
     context.extensions.measurements[name] = value;
