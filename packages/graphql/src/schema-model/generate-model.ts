@@ -28,23 +28,24 @@ import type { DefinitionNodes } from "../schema/get-definition-nodes";
 import { getDefinitionNodes } from "../schema/get-definition-nodes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
+import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import type { Annotation } from "./annotation/Annotation";
 import { Attribute, AttributeType } from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
-import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import { parseAuthorizationAnnotation } from "./parser/authorization-annotation";
 import { parseCypherAnnotation } from "./parser/cypher-annotation";
+import { parseKeyAnnotation } from "./parser/key-annotation";
 import { parseArguments } from "./parser/utils";
 import { Relationship } from "./relationship/Relationship";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionNodes = getDefinitionNodes(document);
 
-    // init interface to typennames map
-    const interfaceToImplementingTypeNamesMap = initInterfacesToTypenamesMap(definitionNodes);
-    // hydrate interface to typennames map
-    hydrateInterfacesToTypenamesMap(definitionNodes, interfaceToImplementingTypeNamesMap);
+    // init interface to typeNames map
+    const interfaceToImplementingTypeNamesMap = initInterfacesToTypeNamesMap(definitionNodes);
+    // hydrate interface to typeNames map
+    hydrateInterfacesToTypeNamesMap(definitionNodes, interfaceToImplementingTypeNamesMap);
 
     const concreteEntities = definitionNodes.objectTypes.map(generateConcreteEntity);
     const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
@@ -75,7 +76,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     return schema;
 }
 
-function initInterfacesToTypenamesMap(definitionNodes: DefinitionNodes) {
+function initInterfacesToTypeNamesMap(definitionNodes: DefinitionNodes) {
     return definitionNodes.interfaceTypes.reduce((acc, entity) => {
         const interfaceTypeName = entity.name.value;
         acc.set(interfaceTypeName, []);
@@ -83,7 +84,7 @@ function initInterfacesToTypenamesMap(definitionNodes: DefinitionNodes) {
     }, new Map<string, string[]>());
 }
 
-function hydrateInterfacesToTypenamesMap(
+function hydrateInterfacesToTypeNamesMap(
     definitionNodes: DefinitionNodes,
     interfaceToImplementingTypeNamesMap: Map<string, string[]>
 ) {
@@ -139,14 +140,14 @@ function hydrateRelationships(
     const name = definition.name.value;
     const entity = schema.getEntity(name);
 
-    if (!(entity instanceof ConcreteEntity)) {
-        throw new Error(`Cannot add relationship to non-concrete entity ${entity.name}`);
+    if (!schema.isConcreteEntity(entity)) {
+        throw new Error(`Cannot add relationship to non-concrete entity ${name}`);
     }
 
     const relationshipPropertyInterfaces = getRelationshipPropertiesInterfaces(definitionNodes);
 
     const relationshipFields = (definition.fields || []).map((fieldDefinition) => {
-        // TODO: use same relationship for 2 diferent entities if possible
+        // TODO: use same relationship for 2 different entities if possible
         return generateRelationshipField(fieldDefinition, schema, entity, relationshipPropertyInterfaces);
     });
 
@@ -192,7 +193,7 @@ function generateRelationshipField(
     if (properties) {
         const propertyInterface = propertyInterfaces.get(properties as string);
         if (!propertyInterface) throw new Error("Property interfaces not defined with @relationshipProperties");
-        const fields = (propertyInterface?.fields || []).map(generateField);
+        const fields = (propertyInterface?.fields || []).map((field) => generateField(field));
         attributes = filterTruthy(fields);
     }
     return new Relationship({
@@ -275,7 +276,15 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
 }
 
 function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
-    return filterTruthy(
+    const entityAnnotations: Annotation[] = [];
+
+    // We only ever want to create one annotation even when an entity contains several key directives
+    const hasKeyDirective = directives.find((directive) => directive.name.value === "key");
+    if (hasKeyDirective) {
+        entityAnnotations.push(parseKeyAnnotation(directives));
+    }
+
+    const annotations: Annotation[] = filterTruthy(
         directives.map((directive) => {
             switch (directive.name.value) {
                 case "authorization":
@@ -285,4 +294,6 @@ function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotati
             }
         })
     );
+
+    return entityAnnotations.concat(annotations);
 }
