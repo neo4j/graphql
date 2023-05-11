@@ -224,11 +224,14 @@ function createSimpleRelationshipPredicate({
                 return { predicate: Cypher.single(childNode, patternComprehension, new Cypher.Literal(true)) };
             }
 
-            const matchStatement = new Cypher.Match(matchPattern);
+            const matchStatement = new Cypher.OptionalMatch(matchPattern);
+            const countAlias = new Cypher.Variable();
+            const withStatement = new Cypher.With([Cypher.count(childNode), countAlias], "*");
+            const countNeqZero = Cypher.neq(countAlias, new Cypher.Literal(0));
 
             return {
-                predicate: innerOperation,
-                preComputedSubqueries: Cypher.concat(matchStatement),
+                predicate: Cypher.and(countNeqZero, innerOperation),
+                preComputedSubqueries: Cypher.concat(matchStatement, withStatement),
             };
         }
         case "not":
