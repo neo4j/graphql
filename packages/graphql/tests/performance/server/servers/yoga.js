@@ -16,16 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 "use strict";
 
 // eslint-disable-next-line import/named
-import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
 import neo4j from "neo4j-driver";
 // eslint-disable-next-line import/no-unresolved
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { getLargeSchema } from "../typedefs.js";
+import { createServer } from "http";
+import { createYoga } from "graphql-yoga";
 
 async function main() {
     const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "password"), {
@@ -41,33 +40,15 @@ async function main() {
     });
     const schema = await neoSchema.getSchema();
 
-    const extensionsPlugin = {
-        async requestDidStart() {
-            return {
-                async willSendResponse(requestContext) {
-                    const { response } = requestContext;
-                    if (response.body.kind === "single" && "data" in response.body.singleResult) {
-                        response.body.singleResult.extensions = requestContext.contextValue.extensions;
-                    }
-                    return response;
-                },
-            };
-        },
-    };
-
-    await neoSchema.assertIndexesAndConstraints({ options: { create: true } });
-
-    const server = new ApolloServer({
+    const yoga = createYoga({
         schema,
-        plugins: [extensionsPlugin],
     });
 
-    const { url } = await startStandaloneServer(server, {
-        context: async ({ req }) => ({ token: req.headers.token }),
-        listen: { port: 4000 },
-    });
+    const server = createServer(yoga);
 
-    console.log(`🚀  Server ready at ${url}`);
+    server.listen(4000, () => {
+        console.info("Server is running on http://localhost:4000/graphql");
+    });
 }
 
 main().catch((err) => {

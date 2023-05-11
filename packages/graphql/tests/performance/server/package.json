@@ -7,13 +7,16 @@
     "main": "index.js",
     "private": true,
     "scripts": {
-        "doctor": "clinic doctor --on-port -- node ./servers/apollo.js",
-        "load": "k6 run load.js",
-        "flame": "clinic flame -- node ./servers/apollo.js"
+        "doctor-apollo": "clinic doctor --on-port -- node ./servers/apollo.js",
+        "flame-apollo": "clinic flame -- node ./servers/apollo.js",
+        "doctor-yoga": "clinic doctor --on-port -- node ./servers/yoga.js",
+        "flame-yoga": "clinic flame -- node ./servers/yoga.js",
+        "load": "k6 run load.js"
     },
     "devDependencies": {
         "@apollo/server": "^4.7.0",
         "clinic": "^12.1.0",
+        "graphql-yoga": "^3.9.1",
         "neo4j-driver": "^5.7.0"
     },
     "dependencies": {
