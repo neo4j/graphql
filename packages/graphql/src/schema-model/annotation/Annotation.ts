@@ -17,23 +17,27 @@
  * limitations under the License.
  */
 
-import { CypherAnnotation } from "./CypherAnnotation";
 import { AuthorizationAnnotation } from "./AuthorizationAnnotation";
+import { CypherAnnotation } from "./CypherAnnotation";
+import { KeyAnnotation } from "./KeyAnnotation";
 
-export type Annotation = CypherAnnotation | AuthorizationAnnotation;
+export type Annotation = CypherAnnotation | AuthorizationAnnotation | KeyAnnotation;
 
 export enum AnnotationsKey {
     cypher = "cypher",
     authorization = "authorization",
+    key = "key",
 }
 
 export type Annotations = {
     [AnnotationsKey.cypher]: CypherAnnotation;
     [AnnotationsKey.authorization]: AuthorizationAnnotation;
+    [AnnotationsKey.key]: KeyAnnotation;
 };
 
 export function annotationToKey(ann: Annotation): keyof Annotations {
     if (ann instanceof CypherAnnotation) return AnnotationsKey.cypher;
     if (ann instanceof AuthorizationAnnotation) return AnnotationsKey.authorization;
+    if (ann instanceof KeyAnnotation) return AnnotationsKey.key;
     throw new Error("annotation not known");
 }
