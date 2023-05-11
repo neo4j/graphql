@@ -41,6 +41,7 @@ export const options = {
 
 const dbQueryTrend = new Trend("neo4j/gaphql_database_query_time", true);
 const translationTimeTrend = new Trend("neo4j/graphql_translation_time", true);
+const wrapperTimeTrend = new Trend("neo4j/graphql_wrapper_time", true);
 
 export default function () {
     const headers = {
@@ -64,6 +65,7 @@ export default function () {
     if (measurements) {
         dbQueryTrend.add(measurements.databaseQueryTime);
         translationTimeTrend.add(measurements.translationTime);
+        wrapperTimeTrend.add(measurements.wrapperTime);
     }
 
     sleep(0.3);

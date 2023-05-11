@@ -22,6 +22,7 @@ import type { Context } from "../types";
 export enum Measurement {
     translationTime = "translationTime",
     databaseQueryTime = "databaseQueryTime",
+    wrapperTime = "wrapperTime",
 }
 
 export function addMeasurementField(context: Context, name: Measurement, value: number): void {
