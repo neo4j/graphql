@@ -93,8 +93,12 @@ export function createEdgeSubquery({
 
     const authorizationPredicateReturn = createAuthorizationBeforePredicate({
         context,
-        variable: relatedNodeRef,
-        node: relatedNode,
+        nodes: [
+            {
+                variable: relatedNodeRef,
+                node: relatedNode,
+            },
+        ],
         operations: ["READ"],
     });
 

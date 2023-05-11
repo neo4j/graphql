@@ -24,20 +24,24 @@ import type { AuthorizationOperation } from "../../types/authorization";
 import { createAuthorizationFilterPredicate } from "./rules/create-authorization-filter-predicate";
 import { createAuthorizationValidatePredicate } from "./rules/create-authorization-validate-predicate";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
+import type { NodeMap } from "./types/node-map";
 
-export function createAuthorizationBeforePredicate({
+function createNodePredicate({
     context,
-    variable,
     node,
+    variable,
     operations,
     fieldName,
 }: {
     context: Context;
-    variable: Cypher.Node;
     node: Node;
+    variable: Cypher.Node;
     operations: AuthorizationOperation[];
     fieldName?: string;
-}): PredicateReturn | undefined {
+}): PredicateReturn {
+    const predicates: Cypher.Predicate[] = [];
+    let subqueries: Cypher.CompositeClause | undefined;
+
     const concreteEntities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
 
     if (concreteEntities.length !== 1) {
@@ -54,9 +58,6 @@ export function createAuthorizationBeforePredicate({
     }
 
     if (annotation) {
-        const predicates: Cypher.Predicate[] = [];
-        let subqueries: Cypher.CompositeClause | undefined;
-
         const { predicate: filterPredicate, preComputedSubqueries: filterSubqueries } =
             createAuthorizationFilterPredicate({
                 context,
@@ -94,12 +95,52 @@ export function createAuthorizationBeforePredicate({
                 subqueries = Cypher.concat(subqueries, validateSubqueries);
             }
         }
-
-        return {
-            predicate: Cypher.and(...predicates),
-            preComputedSubqueries: subqueries,
-        };
     }
 
-    return undefined;
+    return {
+        predicate: Cypher.and(...predicates),
+        preComputedSubqueries: subqueries,
+    };
+}
+
+export function createAuthorizationBeforePredicate({
+    context,
+    nodes,
+    operations,
+}: {
+    context: Context;
+    nodes: NodeMap[];
+    operations: AuthorizationOperation[];
+}): PredicateReturn | undefined {
+    const predicates: Cypher.Predicate[] = [];
+    let subqueries: Cypher.CompositeClause | undefined;
+
+    for (const nodeEntry of nodes) {
+        const { node, variable, fieldName } = nodeEntry;
+
+        const { predicate, preComputedSubqueries } = createNodePredicate({
+            context,
+            node,
+            variable,
+            fieldName,
+            operations,
+        });
+
+        if (predicate) {
+            predicates.push(predicate);
+        }
+
+        if (preComputedSubqueries) {
+            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+        }
+    }
+
+    if (!predicates.length) {
+        return undefined;
+    }
+
+    return {
+        predicate: Cypher.and(...predicates),
+        preComputedSubqueries: subqueries,
+    };
 }

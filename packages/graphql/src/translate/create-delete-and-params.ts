@@ -136,8 +136,12 @@ function createDeleteAndParams({
 
                     const authorizationAndParams = createAuthorizationBeforeAndParams({
                         context,
-                        variable: variableName,
-                        node: refNode,
+                        nodes: [
+                            {
+                                variable: variableName,
+                                node: refNode,
+                            },
+                        ],
                         operations: ["READ"],
                     });
 

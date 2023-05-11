@@ -49,7 +49,7 @@ describe("@auth allow on specific interface implementation", () => {
                     validate: [
                         {
                             when: BEFORE
-                            operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT]
+                            operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             where: { node: { creator: { id: "$jwt.sub" } } }
                         }
                     ]

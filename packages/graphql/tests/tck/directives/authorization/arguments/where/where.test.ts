@@ -47,7 +47,14 @@ describe("Cypher Auth Where", () => {
             }
 
             extend type User
-                @auth(rules: [{ operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT], where: { id: "$jwt.sub" } }])
+                @auth(
+                    rules: [
+                        {
+                            operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+                            where: { id: "$jwt.sub" }
+                        }
+                    ]
+                )
 
             extend type User {
                 password: String! @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
@@ -61,7 +68,7 @@ describe("Cypher Auth Where", () => {
                 @auth(
                     rules: [
                         {
-                            operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT]
+                            operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
                             where: { creator: { id: "$jwt.sub" } }
                         }
                     ]

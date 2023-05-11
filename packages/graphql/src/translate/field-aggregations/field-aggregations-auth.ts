@@ -46,8 +46,12 @@ export function createFieldAggregationAuth({
 
     const authorizationPredicateReturn = createAuthorizationBeforePredicate({
         context,
-        variable: subqueryNodeAlias,
-        node,
+        nodes: [
+            {
+                variable: subqueryNodeAlias,
+                node,
+            },
+        ],
         operations: ["READ"],
     });
 

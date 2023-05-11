@@ -56,6 +56,11 @@ describe("Edge subquery", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             config: { startupValidation: false },
+            features: {
+                authorization: {
+                    key: "secret",
+                },
+            },
         });
     });
 
@@ -68,13 +73,14 @@ describe("Edge subquery", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
+        const req = createJwtRequest("secret", { sub: "user" });
         const result = await translateQuery(neoSchema, query, {
             req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WHERE (this.title = $param0.sub AND apoc.util.validatePredicate(NOT (this.title = $param0.sub), "@neo4j/graphql/FORBIDDEN", [0]))
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE (this_actors0.name = $param0.sub AND apoc.util.validatePredicate(NOT (this_actors0.name = $param0.sub), \\"@neo4j/graphql/FORBIDDEN\\", [0]))

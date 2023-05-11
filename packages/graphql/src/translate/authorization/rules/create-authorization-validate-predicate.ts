@@ -43,8 +43,9 @@ export function createAuthorizationValidatePredicate({
 }): PredicateReturn | undefined {
     const cypherNode = getOrCreateCypherNode(variable);
 
+    // TODO: double check this logic
     const matchedRules = rules.filter(
-        (rule) => rule.when.includes(when) && rule.operations.filter((operation) => operations.includes(operation))
+        (rule) => rule.when.includes(when) && rule.operations.some((operation) => operations.includes(operation))
     );
 
     const predicates: Cypher.Predicate[] = [];

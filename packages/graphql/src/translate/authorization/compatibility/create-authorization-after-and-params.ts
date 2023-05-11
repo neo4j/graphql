@@ -20,10 +20,10 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Context, Node } from "../../../types";
 import type { AuthorizationOperation } from "../../../types/authorization";
-import { createAuthorizationBeforePredicate } from "../create-authorization-before-predicate";
+import { createAuthorizationAfterPredicate } from "../create-authorization-after-predicate";
 import type { NodeMap } from "../types/node-map";
 
-export type AuthorizationBeforeAndParams = {
+export type AuthorizationAfterAndParams = {
     cypher: string;
     params: Record<string, any>;
     subqueries?: string;
@@ -44,7 +44,7 @@ function stringNodeMapToNodeMap(stringNodeMap: StringNodeMap[]): NodeMap[] {
     });
 }
 
-export function createAuthorizationBeforeAndParams({
+export function createAuthorizationAfterAndParams({
     context,
     nodes,
     operations,
@@ -52,17 +52,17 @@ export function createAuthorizationBeforeAndParams({
     context: Context;
     nodes: StringNodeMap[];
     operations: AuthorizationOperation[];
-}): AuthorizationBeforeAndParams | undefined {
+}): AuthorizationAfterAndParams | undefined {
     const nodeMap = stringNodeMapToNodeMap(nodes);
 
-    const predicateReturn = createAuthorizationBeforePredicate({
+    const predicateReturn = createAuthorizationAfterPredicate({
         context,
         nodes: nodeMap,
         operations,
     });
 
     if (predicateReturn) {
-        const result: AuthorizationBeforeAndParams = { cypher: "", params: {} };
+        const result: AuthorizationAfterAndParams = { cypher: "", params: {} };
 
         const { predicate, preComputedSubqueries } = predicateReturn;
 

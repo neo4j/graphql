@@ -49,6 +49,7 @@ export function createRelationshipOperation({
     const childNode = new Cypher.Node({ labels: refNode.getLabels(context) });
 
     const relationship = new Cypher.Relationship({ type: relationField.type });
+
     const direction = getCypherRelationshipDirection(relationField);
 
     const matchPattern = new Cypher.Pattern(parentNode)
@@ -224,11 +225,14 @@ function createSimpleRelationshipPredicate({
                 return { predicate: Cypher.single(childNode, patternComprehension, new Cypher.Literal(true)) };
             }
 
-            const matchStatement = new Cypher.Match(matchPattern);
+            const matchStatement = new Cypher.OptionalMatch(matchPattern);
+            const countAlias = new Cypher.NamedVariable(`${relationField.fieldName}Count`);
+            const withStatement = new Cypher.With([Cypher.count(childNode), countAlias], "*");
+            const countNeqZero = Cypher.neq(countAlias, new Cypher.Literal(0));
 
             return {
-                predicate: innerOperation,
-                preComputedSubqueries: Cypher.concat(matchStatement),
+                predicate: Cypher.and(countNeqZero, innerOperation),
+                preComputedSubqueries: Cypher.concat(matchStatement, withStatement),
             };
         }
         case "not":

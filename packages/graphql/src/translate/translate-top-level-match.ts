@@ -127,8 +127,12 @@ export function createMatchClause({
 
     const authorizationPredicateReturn = createAuthorizationBeforePredicate({
         context,
-        variable: matchNode,
-        node,
+        nodes: [
+            {
+                variable: matchNode,
+                node,
+            },
+        ],
         operations: authOperationsToAuthorizationOperations(operation),
     });
 

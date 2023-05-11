@@ -120,7 +120,7 @@ export const wrapResolver =
         const authParam = createAuthParam({ context });
 
         context.auth = authParam;
-        context.authParam = new Cypher.Param(authParam.jwt);
+        context.authParam = new Cypher.NamedParam("jwt", authParam.jwt);
 
         const executorConstructorParam: ExecutorConstructorParam = {
             executionContext: context.executionContext,

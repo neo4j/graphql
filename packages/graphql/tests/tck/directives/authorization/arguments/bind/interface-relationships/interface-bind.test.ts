@@ -36,7 +36,7 @@ describe("Cypher Auth Allow", () => {
                     validate: [
                         {
                             when: AFTER
-                            operations: [CREATE, CONNECT, DISCONNECT]
+                            operations: [CREATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
                             where: { node: { creator: { id: "$jwt.sub" } } }
                         }
                     ]
@@ -66,7 +66,7 @@ describe("Cypher Auth Allow", () => {
                     validate: [
                         {
                             when: AFTER
-                            operations: [CREATE, UPDATE, CONNECT, DISCONNECT]
+                            operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
                             where: { node: { id: "$jwt.sub" } }
                         }
                     ]

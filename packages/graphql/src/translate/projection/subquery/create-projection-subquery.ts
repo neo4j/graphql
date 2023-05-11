@@ -92,8 +92,12 @@ export function createProjectionSubquery({
 
     const authorizationPredicateReturn = createAuthorizationBeforePredicate({
         context,
-        variable: targetNode,
-        node,
+        nodes: [
+            {
+                variable: targetNode,
+                node,
+            },
+        ],
         operations: ["READ"],
     });
 

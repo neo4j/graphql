@@ -55,7 +55,7 @@ describe("Cypher Auth Allow", () => {
                 @authorization(
                     validate: [
                         {
-                            operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT]
+                            operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             when: BEFORE
                             where: { node: { id: "$jwt.sub" } }
                         }
@@ -75,7 +75,7 @@ describe("Cypher Auth Allow", () => {
                 @authorization(
                     validate: [
                         {
-                            operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT]
+                            operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             when: BEFORE
                             where: { node: { creator: { id: "$jwt.sub" } } }
                         }
@@ -86,7 +86,7 @@ describe("Cypher Auth Allow", () => {
                 @authorization(
                     validate: [
                         {
-                            operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT]
+                            operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             when: BEFORE
                             where: { node: { creator: { id: "$jwt.sub" } } }
                         }

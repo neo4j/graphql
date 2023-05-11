@@ -98,10 +98,14 @@ export default function createProjectionAndParams({
         if (authableField) {
             const authorizationPredicateReturn = createAuthorizationBeforePredicate({
                 context,
-                variable: varName,
-                node,
+                nodes: [
+                    {
+                        variable: varName,
+                        node,
+                        fieldName: authableField.fieldName,
+                    },
+                ],
                 operations: ["READ"],
-                fieldName: authableField.fieldName,
             });
 
             if (authorizationPredicateReturn) {

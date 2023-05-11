@@ -53,7 +53,7 @@ describe("Cypher Auth Where", () => {
                 @authorization(
                     filter: [
                         {
-                            operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT]
+                            operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
                             where: { node: { creator: { id: "$jwt.sub" } } }
                         }
                     ]
@@ -66,7 +66,10 @@ describe("Cypher Auth Where", () => {
             extend type User
                 @authorization(
                     filter: [
-                        { operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT], where: { node: { id: "$jwt.sub" } } }
+                        {
+                            operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
+                            where: { node: { id: "$jwt.sub" } }
+                        }
                     ]
                 )
 

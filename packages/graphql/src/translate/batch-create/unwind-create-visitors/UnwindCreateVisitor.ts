@@ -223,8 +223,12 @@ export class UnwindCreateVisitor implements Visitor {
     private getAuthNodeClause(node: Node, context: Context, nodeRef: Cypher.Node): Cypher.Clause | undefined {
         const authorizationPredicateReturn = createAuthorizationAfterPredicate({
             context,
-            variable: nodeRef,
-            node,
+            nodes: [
+                {
+                    variable: nodeRef,
+                    node,
+                },
+            ],
             operations: ["CREATE"],
         });
 

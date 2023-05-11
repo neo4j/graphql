@@ -17,14 +17,15 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import type { AuthorizationAnnotation } from "../../schema-model/annotation/AuthorizationAnnotation";
 import type { Node, Context, PredicateReturn } from "../../types";
 import type { AuthorizationOperation } from "../../types/authorization";
 import { createAuthorizationValidatePredicate } from "./rules/create-authorization-validate-predicate";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
+import type { NodeMap } from "./types/node-map";
 
-export function createAuthorizationAfterPredicate({
+function createNodePredicate({
     context,
     variable,
     node,
@@ -64,4 +65,80 @@ export function createAuthorizationAfterPredicate({
     }
 
     return undefined;
+}
+
+export function createAuthorizationAfterPredicate({
+    context,
+    nodes,
+    operations,
+}: {
+    context: Context;
+    nodes: NodeMap[];
+    operations: AuthorizationOperation[];
+}): PredicateReturn | undefined {
+    const predicates: Cypher.Predicate[] = [];
+    let subqueries: Cypher.CompositeClause | undefined;
+
+    for (const nodeEntry of nodes) {
+        const { node, variable, fieldName } = nodeEntry;
+
+        const predicateReturn = createNodePredicate({
+            context,
+            node,
+            variable,
+            fieldName,
+            operations,
+        });
+
+        if (!predicateReturn) {
+            continue;
+        }
+
+        const { predicate, preComputedSubqueries } = predicateReturn;
+
+        if (predicate) {
+            predicates.push(predicate);
+        }
+
+        if (preComputedSubqueries) {
+            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+        }
+    }
+
+    if (!predicates.length) {
+        return undefined;
+    }
+
+    return {
+        predicate: Cypher.and(...predicates),
+        preComputedSubqueries: subqueries,
+    };
+
+    // const concreteEntities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
+
+    // if (concreteEntities.length !== 1) {
+    //     throw new Error("Couldn't match entity");
+    // }
+
+    // const concreteEntity = concreteEntities[0] as ConcreteEntity;
+    // let annotation: AuthorizationAnnotation | undefined;
+
+    // if (fieldName) {
+    //     annotation = concreteEntity.attributes.get(fieldName)?.annotations.authorization;
+    // } else {
+    //     annotation = concreteEntity.annotations.authorization;
+    // }
+
+    // if (annotation) {
+    //     return createAuthorizationValidatePredicate({
+    //         when: "AFTER",
+    //         context,
+    //         node: node,
+    //         rules: annotation.validate || [],
+    //         variable,
+    //         operations,
+    //     });
+    // }
+
+    // return undefined;
 }
