@@ -165,36 +165,37 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                     CALL {
                         WITH this1
                         MATCH (this1)-[:HAS_ADDRESS]->(this2:\`Address\`)
-                        MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
+                        OPTIONAL MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
+                        WITH *, count(this3) AS var4
                         WITH *
-                        WHERE this3.number IN $param0
-                        RETURN count(this2) = 1 AS var4
+                        WHERE (var4 <> 0 AND this3.number IN $param0)
+                        RETURN count(this2) = 1 AS var5
                     }
                     WITH *
-                    WHERE (this1.area >= $param1 AND this1.floor >= $param2 AND this1.estateType IN $param3 AND var4 = true)
-                    RETURN count(this1) = 1 AS var5
+                    WHERE (this1.area >= $param1 AND this1.floor >= $param2 AND this1.estateType IN $param3 AND var5 = true)
+                    RETURN count(this1) = 1 AS var6
                 }
                 WITH *
-                WHERE var5 = true
-                RETURN count(this0) = 1 AS var6
+                WHERE var6 = true
+                RETURN count(this0) = 1 AS var7
             }
             WITH *
-            WHERE ((this.price >= $param4 AND var6 = true) AND this.archivedAt IS NULL)
+            WHERE ((this.price >= $param4 AND var7 = true) AND this.archivedAt IS NULL)
             CALL {
                 WITH this
-                MATCH (this)-[this7:HAS_VALUATION]->(this8:\`Valuation\`)
-                WHERE this8.archivedAt IS NULL
+                MATCH (this)-[this8:HAS_VALUATION]->(this9:\`Valuation\`)
+                WHERE this9.archivedAt IS NULL
                 CALL {
-                    WITH this8
-                    MATCH (this8)-[this9:VALUATION_FOR]->(this10:\`Estate\`)
-                    WHERE this10.archivedAt IS NULL
-                    WITH this10 { .uuid } AS this10
-                    RETURN head(collect(this10)) AS var11
+                    WITH this9
+                    MATCH (this9)-[this10:VALUATION_FOR]->(this11:\`Estate\`)
+                    WHERE this11.archivedAt IS NULL
+                    WITH this11 { .uuid } AS this11
+                    RETURN head(collect(this11)) AS var12
                 }
-                WITH this8 { estate: var11 } AS this8
-                RETURN head(collect(this8)) AS var12
+                WITH this9 { estate: var12 } AS this9
+                RETURN head(collect(this9)) AS var13
             }
-            RETURN this { valuation: var12 } AS this"
+            RETURN this { valuation: var13 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -263,39 +264,40 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                     CALL {
                         WITH this1
                         MATCH (this1)-[:HAS_ADDRESS]->(this2:\`Address\`)
-                        MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
+                        OPTIONAL MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
+                        WITH *, count(this3) AS var4
                         WITH *
-                        WHERE this3.number IN $param0
-                        RETURN count(this2) = 1 AS var4
+                        WHERE (var4 <> 0 AND this3.number IN $param0)
+                        RETURN count(this2) = 1 AS var5
                     }
                     WITH *
-                    WHERE (this1.area >= $param1 AND this1.floor >= $param2 AND this1.estateType IN $param3 AND var4 = true)
-                    RETURN count(this1) = 1 AS var5
+                    WHERE (this1.area >= $param1 AND this1.floor >= $param2 AND this1.estateType IN $param3 AND var5 = true)
+                    RETURN count(this1) = 1 AS var6
                 }
                 WITH *
-                WHERE var5 = true
-                RETURN count(this0) = 1 AS var6
+                WHERE var6 = true
+                RETURN count(this0) = 1 AS var7
             }
             WITH *
-            WHERE ((this.price >= $param4 AND var6 = true) AND this.archivedAt IS NULL)
+            WHERE ((this.price >= $param4 AND var7 = true) AND this.archivedAt IS NULL)
             WITH *
             SKIP $param5
             LIMIT $param6
             CALL {
                 WITH this
-                MATCH (this)-[this7:HAS_VALUATION]->(this8:\`Valuation\`)
-                WHERE this8.archivedAt IS NULL
+                MATCH (this)-[this8:HAS_VALUATION]->(this9:\`Valuation\`)
+                WHERE this9.archivedAt IS NULL
                 CALL {
-                    WITH this8
-                    MATCH (this8)-[this9:VALUATION_FOR]->(this10:\`Estate\`)
-                    WHERE this10.archivedAt IS NULL
-                    WITH this10 { .uuid } AS this10
-                    RETURN head(collect(this10)) AS var11
+                    WITH this9
+                    MATCH (this9)-[this10:VALUATION_FOR]->(this11:\`Estate\`)
+                    WHERE this11.archivedAt IS NULL
+                    WITH this11 { .uuid } AS this11
+                    RETURN head(collect(this11)) AS var12
                 }
-                WITH this8 { estate: var11 } AS this8
-                RETURN head(collect(this8)) AS var12
+                WITH this9 { estate: var12 } AS this9
+                RETURN head(collect(this9)) AS var13
             }
-            RETURN this { valuation: var12 } AS this"
+            RETURN this { valuation: var13 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -372,39 +374,40 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                     CALL {
                         WITH this1
                         MATCH (this1)-[:HAS_ADDRESS]->(this2:\`Address\`)
-                        MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
+                        OPTIONAL MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
+                        WITH *, count(this3) AS var4
                         WITH *
-                        WHERE this3.number IN $param0
-                        RETURN count(this2) = 1 AS var4
+                        WHERE (var4 <> 0 AND this3.number IN $param0)
+                        RETURN count(this2) = 1 AS var5
                     }
                     WITH *
-                    WHERE (this1.area >= $param1 AND this1.floor >= $param2 AND this1.estateType IN $param3 AND var4 = true)
-                    RETURN count(this1) = 1 AS var5
+                    WHERE (this1.area >= $param1 AND this1.floor >= $param2 AND this1.estateType IN $param3 AND var5 = true)
+                    RETURN count(this1) = 1 AS var6
                 }
                 WITH *
-                WHERE var5 = true
-                RETURN count(this0) = 1 AS var6
+                WHERE var6 = true
+                RETURN count(this0) = 1 AS var7
             }
             WITH *
-            WHERE ((this.price >= $param4 AND var6 = true) AND this.archivedAt IS NULL)
+            WHERE ((this.price >= $param4 AND var7 = true) AND this.archivedAt IS NULL)
             WITH *
             SKIP $param5
             LIMIT $param6
             CALL {
                 WITH this
-                MATCH (this)-[this7:HAS_VALUATION]->(this8:\`Valuation\`)
-                WHERE this8.archivedAt IS NULL
+                MATCH (this)-[this8:HAS_VALUATION]->(this9:\`Valuation\`)
+                WHERE this9.archivedAt IS NULL
                 CALL {
-                    WITH this8
-                    MATCH (this8)-[this9:VALUATION_FOR]->(this10:\`Estate\`)
-                    WHERE this10.archivedAt IS NULL
-                    WITH this10 { .uuid } AS this10
-                    RETURN head(collect(this10)) AS var11
+                    WITH this9
+                    MATCH (this9)-[this10:VALUATION_FOR]->(this11:\`Estate\`)
+                    WHERE this11.archivedAt IS NULL
+                    WITH this11 { .uuid } AS this11
+                    RETURN head(collect(this11)) AS var12
                 }
-                WITH this8 { estate: var11 } AS this8
-                RETURN head(collect(this8)) AS var12
+                WITH this9 { estate: var12 } AS this9
+                RETURN head(collect(this9)) AS var13
             }
-            RETURN this { valuation: var12 } AS this"
+            RETURN this { valuation: var13 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
