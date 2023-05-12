@@ -18,7 +18,7 @@
  */
 
 import { astFromObjectType } from "@graphql-tools/utils";
-import type { GraphQLSchema, ObjectTypeDefinitionNode } from "graphql";
+import { GraphQLInt, GraphQLSchema, ObjectTypeDefinitionNode } from "graphql";
 import { GraphQLList, GraphQLString, GraphQLObjectType } from "graphql";
 import getObjFieldMeta from "../../../schema/get-obj-field-meta";
 import type { ObjectFields } from "../../../schema/get-obj-field-meta";
