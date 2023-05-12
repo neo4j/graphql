@@ -18,13 +18,13 @@
  */
 "use strict";
 
-// eslint-disable-next-line import/named
 import neo4j from "neo4j-driver";
 // eslint-disable-next-line import/no-unresolved
 import { Neo4jGraphQL } from "@neo4j/graphql";
+// eslint-disable-next-line import/named
+import { createYoga } from "graphql-yoga";
 import { getLargeSchema } from "../typedefs.js";
 import { createServer } from "http";
-import { createYoga } from "graphql-yoga";
 
 async function main() {
     const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "bolt://localhost:7687" } = process.env;
