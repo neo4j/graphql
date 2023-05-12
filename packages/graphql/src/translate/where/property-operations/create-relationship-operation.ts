@@ -225,7 +225,7 @@ function createSimpleRelationshipPredicate({
             }
 
             const matchStatement = new Cypher.OptionalMatch(matchPattern);
-            const countAlias = new Cypher.Variable();
+            const countAlias = new Cypher.NamedVariable(`${relationField.fieldName}Count`);
             const withStatement = new Cypher.With([Cypher.count(childNode), countAlias], "*");
             const countNeqZero = Cypher.neq(countAlias, new Cypher.Literal(0));
 
