@@ -38,3 +38,5 @@ export { relationshipDirective } from "./relationship";
 export { timestampDirective } from "./timestamp";
 export { uniqueDirective } from "./unique";
 export { writeonlyDirective } from "./writeonly";
+export { jwtPayload } from "./jwt-payload";
+export { jwtClaim } from "./jwt-claim";

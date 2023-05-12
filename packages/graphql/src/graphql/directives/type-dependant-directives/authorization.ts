@@ -35,8 +35,8 @@ import {
     DirectiveLocation,
 } from "graphql";
 import { SchemaComposer } from "graphql-compose";
-import getObjFieldMeta from "../../../schema/get-obj-field-meta";
 import getWhereFields from "../../../schema/get-where-fields";
+import { getJwtFields } from "./jwt-payload";
 
 const AUTHORIZATION_VALIDATE_STAGE = new GraphQLEnumType({
     name: "AuthorizationValidateStage",
@@ -164,25 +164,14 @@ function createAuthorization(
     });
 }
 
-function createJWTPayloadWhere(JWTPayloadDefinition?: ObjectTypeDefinitionNode): GraphQLInputObjectType {
-    const fields = JWTPayloadDefinition
-        ? getObjFieldMeta({
-              obj: JWTPayloadDefinition,
-              objects: [],
-              interfaces: [],
-              unions: [],
-              scalars: [],
-              enums: [],
-              validateResolvers: false,
-          })
-        : {
-              scalarFields: [],
-              enumFields: [],
-              primitiveFields: [],
-              temporalFields: [],
-              pointFields: [],
-          };
-    const inputFieldsType = getWhereFields({ typeName: "JWTPayload", fields });
+function createJWTPayloadWhere(
+    schema: GraphQLSchema,
+    JWTPayloadDefinition?: ObjectTypeDefinitionNode
+): GraphQLInputObjectType {
+    const inputFieldsType = getWhereFields({
+        typeName: "JWTPayload",
+        fields: getJwtFields(schema, JWTPayloadDefinition),
+    });
     const composer = new SchemaComposer();
     const inputTC = composer.createInputTC({
         name: "JWTPayloadWhere",
@@ -222,7 +211,7 @@ export function getStaticAuthorizationDefinitions(
         authorizationValidateOperation,
     ];
 
-    const JWTPayloadWere = createJWTPayloadWhere(JWTPayloadDefinition);
+    const JWTPayloadWere = createJWTPayloadWhere(schema, JWTPayloadDefinition);
     const JWTPayloadWereAST = astFromInputObjectType(JWTPayloadWere, schema);
     ASTs.push(JWTPayloadWereAST);
     return ASTs;
