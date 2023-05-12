@@ -1,5 +1,11 @@
 # @neo4j/cypher-builder
 
+## 0.4.2
+
+### Patch Changes
+
+-   [#3220](https://github.com/neo4j/graphql/pull/3220) [`2d3661476`](https://github.com/neo4j/graphql/commit/2d3661476b78713d11b6d74a8db8c7af51d18989) Thanks [@angrykoala](https://github.com/angrykoala)! - Serialize properties if needed
+
 ## 0.4.1
 
 ### Patch Changes

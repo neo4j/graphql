@@ -22,7 +22,7 @@ import type { NodeRef } from "../references/NodeRef";
 import type { Param } from "../references/Param";
 import type { Path } from "../references/Path";
 import { RelationshipRef } from "../references/RelationshipRef";
-import { escapeLabel } from "../utils/escape-label";
+import { escapeLabel } from "../utils/escape";
 import { PartialPattern } from "./PartialPattern";
 import { PatternElement } from "./PatternElement";
 

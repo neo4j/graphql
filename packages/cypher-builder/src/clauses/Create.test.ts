@@ -76,12 +76,12 @@ describe("CypherBuilder Create", () => {
 
         const queryResult = createQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-                "CREATE (this0:\`Movie\` { id: NULL })
-                SET
-                    this0.test = NULL,
-                    this0.nullStr = $param0
-                RETURN this0"
-            `);
+            "CREATE (this0:\`Movie\` { id: NULL })
+            SET
+                this0.test = NULL,
+                this0.nullStr = $param0
+            RETURN this0"
+        `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {

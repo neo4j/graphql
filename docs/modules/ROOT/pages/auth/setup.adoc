@@ -186,11 +186,12 @@ Then, using Apollo Server as an example, you must include the request in the Gra
 
 [source, javascript, indent=0]
 ----
-neoSchema.getSchema().then((schema) => {
-    const server = new ApolloServer({
-        schema,
-        context: ({ req }) => ({ req }),
-    });
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
+});
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ req }),
 });
 ----
 
@@ -223,11 +224,12 @@ For example, you might have a function `decodeJWT` which returns a decoded JWT:
 ----
 const decodedJWT = decodeJWT(encodedJWT)
 
-neoSchema.getSchema().then((schema) => {
-    const server = new ApolloServer({
-        schema,
-        context: { jwt: decodedJWT.payload },
-    });
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
+});
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ req, jwt: decodedJWT.payload }),
 });
 ----
 
@@ -237,7 +239,7 @@ You can't use the `@auth` directive on custom resolvers, however, an auth parame
 
 [source, javascript, indent=0]
 ----
-const typeDefs = `
+const typeDefs = `#graphql
     type Query {
         myId: ID!
     }

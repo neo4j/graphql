@@ -19,7 +19,7 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Apollo Federation", () => {
@@ -683,6 +683,11 @@ describe("Apollo Federation", () => {
               posts: [Post!]!
             }
 
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
+
             type DeleteInfo @federation__shareable {
               bookmark: String
               nodesDeleted: Int!
@@ -691,8 +696,11 @@ describe("Apollo Federation", () => {
 
             type Mutation {
               createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
+              deleteUsers(where: UserWhere): DeleteInfo!
               updatePosts(connect: PostConnectInput, create: PostRelationInput, delete: PostDeleteInput, disconnect: PostDisconnectInput, update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -918,6 +926,9 @@ describe("Apollo Federation", () => {
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
             enum SortDirection {
@@ -945,8 +956,18 @@ describe("Apollo Federation", () => {
               posts: [Post!]!
             }
 
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
+
             type User @key(fields: \\"name\\", resolvable: false) {
               name: String!
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input UserConnectWhere {
@@ -955,6 +976,20 @@ describe("Apollo Federation", () => {
 
             input UserCreateInput {
               name: String!
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
+
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
             }
 
             \\"\\"\\"
@@ -982,6 +1017,12 @@ describe("Apollo Federation", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+            }
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             scalar _Any

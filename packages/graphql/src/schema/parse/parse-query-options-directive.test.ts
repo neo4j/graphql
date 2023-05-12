@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server-core";
-import * as neo4j from "neo4j-driver";
 import type { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
-import { parseQueryOptionsDirective } from "./parse-query-options-directive";
+import gql from "graphql-tag";
+import * as neo4j from "neo4j-driver";
 import { QueryOptionsDirective } from "../../classes/QueryOptionsDirective";
+import { parseQueryOptionsDirective } from "./parse-query-options-directive";
 
 describe("parseQueryOptionsDirective", () => {
     test("max and default argument", () => {

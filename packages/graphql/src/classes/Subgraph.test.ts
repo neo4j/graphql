@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import gql from "graphql-tag";
+import { gql } from "graphql-tag";
 import { Subgraph } from "./Subgraph";
 
 describe("Subgraph", () => {

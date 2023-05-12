@@ -19,7 +19,7 @@
 
 import { mergeTreeDescriptors, getTreeDescriptor } from "./parser";
 import { Neo4jGraphQL } from "../../../src";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { GraphQLCreateInput } from "./types";
 import type Node from "../../classes/Node";
 import { ContextBuilder } from "../../../tests/utils/builders/context-builder";

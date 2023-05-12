@@ -46,11 +46,12 @@ For example, in order to set the Cypher runtime to "interpreted":
 
 [source, javascript, indent=0]
 ----
-const { Neo4jGraphQL, CypherRuntime } = require("@neo4j/graphql");
-const neo4j = require("neo4j-driver");
-const { ApolloServer } = require("apollo-server");
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { Neo4jGraphQL, CypherRuntime } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
 
-const typeDefs = `
+const typeDefs = `#graphql
     type Movie {
         title: String!
     }
@@ -71,14 +72,12 @@ const neoSchema = new Neo4jGraphQL({
     },
 });
 
-neoSchema.getSchema().then((schema) => {
-    const server = new ApolloServer({
-        schema,
-        context: ({ req }) => ({ req }),
-    });
-
-    server.listen().then(({ url }) => {
-        console.log(`Server ready at ${url}`);
-    });
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
 });
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ req }),
+});
+
 ----

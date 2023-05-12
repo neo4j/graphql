@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { useContext } from "react";
 import { Checkbox, Radio } from "@neo4j-ndl/react";
-import { Theme, ThemeContext } from "../../contexts/theme";
+import { useContext } from "react";
 import { AppSettingsContext } from "../..//contexts/appsettings";
 import { tracking } from "../../analytics/tracking";
+import { Theme, ThemeContext } from "../../contexts/theme";
 
 interface Props {
     onClickClose: () => void;
@@ -114,7 +114,7 @@ export const AppSettings = ({ onClickClose }: Props) => {
             </div>
             <div className="absolute bottom-2 right-28 font-bold text-xs flex flex-col">
                 <span>Made by Neo4j, Inc</span>
-                <span>Copyright &copy; 2002-2022</span>
+                <span data-test-copyright-information>Copyright &copy; 2002-2023</span>  {/* explicitly hard code values */}
                 <div className="flex">
                     <span>App version:</span>&nbsp;
                     <pre>{process.env.VERSION}</pre>

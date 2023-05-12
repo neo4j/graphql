@@ -19,7 +19,7 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Authorization", () => {
@@ -35,7 +35,7 @@ describe("Authorization", () => {
                 id: ID!
                 name: String!
                 author: User! @relationship(type: "HAS_AUTHOR", direction: IN)
-            }        
+            }
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });

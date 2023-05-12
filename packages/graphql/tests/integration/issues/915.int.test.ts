@@ -22,7 +22,7 @@ import { int, isInt } from "neo4j-driver";
 import { generate } from "randomstring";
 import type { ValueNode } from "graphql";
 import { graphql, GraphQLError, GraphQLScalarType, Kind } from "graphql";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { delay } from "../../../src/utils/utils";
