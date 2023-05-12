@@ -26,8 +26,10 @@ import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
+import { Measurement, addMeasurementField } from "../utils/add-measurement-field";
 
 export function translateDelete({ context, node }: { context: Context; node: Node }): Cypher.CypherResult {
+    const p1 = performance.now();
     const { resolveTree } = context;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
@@ -104,7 +106,10 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
         return [cypher.filter(Boolean).join("\n"), cypherParams];
     });
 
-    return deleteQuery.build(varName);
+    const result = deleteQuery.build(varName);
+    const p2 = performance.now();
+    addMeasurementField(context, Measurement.translationTime, p2 - p1);
+    return result;
 }
 
 function getDeleteReturn(context: Context): Array<string> {
