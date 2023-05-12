@@ -93,7 +93,9 @@ export function createMatchClause({
         where = where?.[node.singular];
     }
 
-    let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined = matchClause;
+    // TODO: maybe find a better way to move the authorization where out of the top-level match and into the preComputedSubqueries
+    // let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined = matchClause;
+    let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
     if (where) {
         const { predicate: whereOp, preComputedSubqueries } = createWherePredicate({
@@ -117,11 +119,18 @@ export function createMatchClause({
             }
         }
 
+        if (!whereClause) {
+            whereClause = matchClause;
+        }
+
         if (whereOp) whereClause.where(whereOp);
     }
 
     if (whereOperators && whereOperators.length) {
         const andChecks = Cypher.and(...whereOperators);
+        if (!whereClause) {
+            whereClause = matchClause;
+        }
         whereClause.where(andChecks);
     }
 
@@ -140,6 +149,9 @@ export function createMatchClause({
         const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
 
         if (predicate) {
+            if (!whereClause) {
+                whereClause = new Cypher.With("*");
+            }
             whereClause.where(predicate);
         }
 
@@ -159,6 +171,9 @@ export function createMatchClause({
                 return [authCypher, authParams];
             });
 
+            if (!whereClause) {
+                whereClause = matchClause;
+            }
             whereClause.where(authQuery);
         }
     }
@@ -166,6 +181,7 @@ export function createMatchClause({
     if (matchClause === whereClause) {
         whereClause = undefined;
     }
+
     return {
         matchClause,
         preComputedWhereFieldSubqueries,

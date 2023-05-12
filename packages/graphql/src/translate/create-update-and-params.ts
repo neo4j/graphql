@@ -246,6 +246,7 @@ export default function createUpdateAndParams({
                                 innerUpdate.push(subqueries);
                             }
                         } else {
+                            // TODO: Authorization - delete for 4.0.0
                             if (node.auth) {
                                 const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
                                     operations: "UPDATE",
@@ -599,6 +600,7 @@ export default function createUpdateAndParams({
 
                 res.params = { ...res.params, ...authWhereParams };
             } else {
+                // TODO: Authorization - delete for 4.0.0
                 if (authableField.auth) {
                     const { cypher: preAuthCypher, params: preAuthParams } = createAuthAndParams({
                         entity: authableField,
@@ -631,6 +633,7 @@ export default function createUpdateAndParams({
 
                 res.params = { ...res.params, ...authWhereParams };
             } else {
+                // TODO: Authorization - delete for 4.0.0
                 if (authableField.auth) {
                     const { cypher: postAuthCypher, params: postAuthParams } = createAuthAndParams({
                         entity: authableField,
@@ -753,6 +756,7 @@ export default function createUpdateAndParams({
             params = { ...params, ...authWhereParams };
         }
     } else {
+        // TODO: Authorization - delete for 4.0.0
         if (node.auth) {
             const { cypher: postAuthCypher, params: postAuthParams } = createAuthAndParams({
                 entity: node,

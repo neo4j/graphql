@@ -142,7 +142,7 @@ function createDeleteAndParams({
                                 node: refNode,
                             },
                         ],
-                        operations: ["READ"],
+                        operations: ["DELETE"],
                     });
 
                     if (authorizationAndParams) {
