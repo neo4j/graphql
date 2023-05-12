@@ -28,7 +28,9 @@ import { Neo4jGraphQL } from "@neo4j/graphql";
 import { getLargeSchema } from "../typedefs.js";
 
 async function main() {
-    const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "password"), {
+    const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "bolt://localhost:7687" } = process.env;
+
+    const driver = neo4j.driver(NEO_URL, neo4j.auth.basic(NEO_USER, NEO_PASSWORD), {
         maxConnectionPoolSize: 100,
     });
 
