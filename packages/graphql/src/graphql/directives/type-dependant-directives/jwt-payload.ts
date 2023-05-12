@@ -79,16 +79,16 @@ function getStandardJwtDefinition(schema: GraphQLSchema): ObjectTypeDefinitionNo
                     "An array of case-sensitive strings, each containing a StringOrURI value that identifies the recipients that can process the JWT.",
             },
             exp: {
-                type: GraphQLString,
+                type: GraphQLInt,
                 description:
                     "Identifies the expiration time on or after which the JWT must not be accepted for processing.",
             },
             nbf: {
-                type: GraphQLString,
+                type: GraphQLInt,
                 description: "Identifies the time before which the JWT must not be accepted for processing.",
             },
             iat: {
-                type: GraphQLString,
+                type: GraphQLInt,
                 description: "Identifies the time at which the JWT was issued, to determine the age of the JWT.",
             },
             jti: {
