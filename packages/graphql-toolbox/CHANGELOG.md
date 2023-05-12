@@ -1,5 +1,18 @@
 # @neo4j/graphql-toolbox
 
+## 1.5.3
+
+### Patch Changes
+
+-   [#3301](https://github.com/neo4j/graphql/pull/3301) [`8233928c6`](https://github.com/neo4j/graphql/commit/8233928c6942a085f7146b029370ede5baf0cd49) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: Toolbox, show lint mark in editors
+
+-   [#3296](https://github.com/neo4j/graphql/pull/3296) [`6de12788a`](https://github.com/neo4j/graphql/commit/6de12788a1e1b2748ebd8699f864d9b443c201bf) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox, update UI for schema options and constraint sidebar
+
+-   [#3302](https://github.com/neo4j/graphql/pull/3302) [`f3b8e6780`](https://github.com/neo4j/graphql/commit/f3b8e6780d4450c5095feae8348ed2376bd02530) Thanks [@tbwiss](https://github.com/tbwiss)! - boyscouting: Toolbox, copyright information update
+
+-   Updated dependencies [[`e8092aa85`](https://github.com/neo4j/graphql/commit/e8092aa855244f7da21bb82f874bfda534a6fa4b), [`99fe4b4b8`](https://github.com/neo4j/graphql/commit/99fe4b4b813538fa985111918bf6ffe2ef458f05)]:
+    -   @neo4j/graphql@3.18.3
+
 ## 1.5.2
 
 ### Patch Changes
