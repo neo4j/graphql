@@ -3262,7 +3262,7 @@ __metadata:
     "@types/webpack": 5.28.1
     autoprefixer: 10.4.14
     codemirror: 5.65.13
-    codemirror-graphql: 2.0.7
+    codemirror-graphql: 2.0.8
     compression-webpack-plugin: 10.0.0
     copy-webpack-plugin: 11.0.0
     cross-env: 7.0.3
@@ -8257,20 +8257,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror-graphql@npm:2.0.7":
-  version: 2.0.7
-  resolution: "codemirror-graphql@npm:2.0.7"
-  dependencies:
-    graphql-language-service: 5.1.5
-  peerDependencies:
-    "@codemirror/language": 6.0.0
-    codemirror: ^5.65.3
-    graphql: ^15.5.0 || ^16.0.0
-  checksum: 0ef71972065a85a500745173486255c4eb702037f6416b552d77831bf250fbaaf52ebf00de4b5cc1a778f228a673f3438cdd444f02bb1b8d21ee351cafb1eda3
-  languageName: node
-  linkType: hard
-
-"codemirror-graphql@npm:^2.0.8":
+"codemirror-graphql@npm:2.0.8, codemirror-graphql@npm:^2.0.8":
   version: 2.0.8
   resolution: "codemirror-graphql@npm:2.0.8"
   dependencies:
@@ -12019,20 +12006,6 @@ __metadata:
   dependencies:
     graphql-type-json: 0.3.2
   checksum: 46c566470a41d9ed5065b2ac2c50c870d34e5d03fff7eaa71cf10212a6492d1eef8a6ed9df012fbbfc85fa587eddbf498ce115015b075630f2c4168fcd447810
-  languageName: node
-  linkType: hard
-
-"graphql-language-service@npm:5.1.5":
-  version: 5.1.5
-  resolution: "graphql-language-service@npm:5.1.5"
-  dependencies:
-    nullthrows: ^1.0.0
-    vscode-languageserver-types: ^3.17.1
-  peerDependencies:
-    graphql: ^15.5.0 || ^16.0.0
-  bin:
-    graphql: dist/temp-bin.js
-  checksum: c89acdd3ea9892ab2c04bccf10718b32c49eac14c97960f12bdde0491cd184d7f1f20cf8c8c3e169f471dd79d2b3538fa39f8a5e35fcade74305b9c840209c6b
   languageName: node
   linkType: hard
 
