@@ -48,6 +48,7 @@ export class ContextBuilder extends Builder<Context, Context> {
             neo4jDatabaseInfo: {} as Neo4jDatabaseInfo,
             authParam: new Cypher.Param({}),
             info: {} as GraphQLResolveInfo,
+            addMeasurementsToExtension: false,
             ...newOptions,
         });
     }

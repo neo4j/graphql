@@ -28,6 +28,7 @@ import Cypher from "@neo4j/cypher-builder";
 import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import { addMeasurementField, Measurement } from "../utils/add-measurement-field";
 
 type ProjectionAndParamsResult = {
     projection: Cypher.Expr;
@@ -48,6 +49,7 @@ export default async function translateCreate({
     context: Context;
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
+    const p1 = performance.now();
     try {
         return await unwindCreate({ context, node });
     } catch (error) {
@@ -211,13 +213,17 @@ export default async function translateCreate({
         cypher: createQueryCypher.cypher,
     });
 
-    return {
+    const result = {
         cypher,
         params: {
             ...createQueryCypher.params,
             resolvedCallbacks,
         },
     };
+
+    const p2 = performance.now();
+    addMeasurementField(context, Measurement.translationTime, p2 - p1);
+    return result;
 }
 function generateCreateReturnStatement(
     projectionExpr: Cypher.Expr | undefined,

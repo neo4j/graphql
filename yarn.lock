@@ -2048,9 +2048,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphiql/react@npm:0.17.3":
-  version: 0.17.3
-  resolution: "@graphiql/react@npm:0.17.3"
+"@graphiql/react@npm:0.17.4":
+  version: 0.17.4
+  resolution: "@graphiql/react@npm:0.17.4"
   dependencies:
     "@graphiql/toolkit": ^0.8.4
     "@reach/combobox": ^0.17.0
@@ -2061,16 +2061,16 @@ __metadata:
     "@reach/visually-hidden": ^0.17.0
     clsx: ^1.2.1
     codemirror: ^5.65.3
-    codemirror-graphql: ^2.0.7
+    codemirror-graphql: ^2.0.8
     copy-to-clipboard: ^3.2.0
-    graphql-language-service: ^5.1.5
+    graphql-language-service: ^5.1.6
     markdown-it: ^12.2.0
     set-value: ^4.1.0
   peerDependencies:
     graphql: ^15.5.0 || ^16.0.0
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: db4e6eac84c1a0d4e67ea26beb3c8cf954195dca7fca9fd804177efa0721c25535870edc157bf69b343b914d38e141d29b1b288820fb24170163826756f7c13d
+  checksum: 14046047555f049b615a4b029b311b552baa229ebb421d25dbaf0f0fa730f354d4d1532582a4d6a309e4ca3097a5978edc9a0d53932b4020cb509f5430b89770
   languageName: node
   linkType: hard
 
@@ -3119,21 +3119,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.3.2, @neo4j-ndl/base@npm:^1.3.2":
-  version: 1.3.2
-  resolution: "@neo4j-ndl/base@npm:1.3.2"
-  checksum: 629c1a26096ede6e291cb5e71ada7669e2e1db1478a4bd2ac306dd85937c5bca8734202e443f65f17f0c4fee25935757a15ad1f4821f5f47f055768b1daf9fb9
+"@neo4j-ndl/base@npm:1.3.6, @neo4j-ndl/base@npm:^1.3.6":
+  version: 1.3.6
+  resolution: "@neo4j-ndl/base@npm:1.3.6"
+  checksum: cd0b68028efe4c88795a01d2981c0c502ffe6c29a99b654caf395252dad1fef711c54537f31fe1b7b01f281551f3b1b7066c0521c85c42017a7b1310a2e20e6d
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@neo4j-ndl/react@npm:1.3.2"
+"@neo4j-ndl/react@npm:1.3.6":
+  version: 1.3.6
+  resolution: "@neo4j-ndl/react@npm:1.3.6"
   dependencies:
     "@floating-ui/react-dom-interactions": ^0.12.0
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^1.3.2
+    "@neo4j-ndl/base": ^1.3.6
     "@tanstack/react-table": ^8.5.22
     classnames: ^2.3.1
     detect-browser: ^5.3.0
@@ -3147,11 +3147,11 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: 17.x
-  checksum: 22f33b632fdedb5cca0cb6c51f6d2f484a4f074633ea7c394561583e441f3435a458f808ec6a07b3c4a512e78e48615a1a3d38deccbe306393276b5bbc04da4b
+  checksum: 017a6c6b86f83a7be5a492bf18a2719c8024242c23044dac10721b7fa6e4e4569af8b6dd373194fe9cdf088a6962068e25b721ba25c9169375d5b7873dc0fb59
   languageName: node
   linkType: hard
 
-"@neo4j/cypher-builder@workspace:packages/cypher-builder, @neo4j/cypher-builder@~0.4.1":
+"@neo4j/cypher-builder@workspace:packages/cypher-builder, @neo4j/cypher-builder@~0.4.2":
   version: 0.0.0-use.local
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
@@ -3174,7 +3174,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^4.0.0
     "@graphql-codegen/typescript": ^3.0.0
     "@graphql-tools/merge": ^8.3.3
-    "@neo4j/graphql": ^3.18.2
+    "@neo4j/graphql": ^3.18.3
     "@neo4j/graphql-plugin-auth": ^2.2.0
     "@types/jest": 29.5.1
     "@types/node": 18.15.1
@@ -3187,7 +3187,7 @@ __metadata:
     pluralize: 8.0.0
     prettier: ^2.7.1
     randomstring: 1.2.3
-    semver: 7.5.0
+    semver: 7.5.1
     ts-jest: 29.1.0
     typescript: 5.0.4
   peerDependencies:
@@ -3229,7 +3229,7 @@ __metadata:
     body-parser: ^1.20.2
     camelcase: 6.3.0
     cors: ^2.8.5
-    graphql-ws: 5.12.1
+    graphql-ws: 5.13.0
     jest: 29.5.0
     neo4j-driver: 5.8.0
     pluralize: 8.0.0
@@ -3247,10 +3247,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@graphiql/react": 0.17.3
-    "@neo4j-ndl/base": 1.3.2
-    "@neo4j-ndl/react": 1.3.2
-    "@neo4j/graphql": 3.18.2
+    "@graphiql/react": 0.17.4
+    "@neo4j-ndl/base": 1.3.6
+    "@neo4j-ndl/react": 1.3.6
+    "@neo4j/graphql": 3.18.3
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.33.0
     "@tsconfig/create-react-app": 1.0.3
@@ -3262,7 +3262,7 @@ __metadata:
     "@types/webpack": 5.28.1
     autoprefixer: 10.4.14
     codemirror: 5.65.13
-    codemirror-graphql: 2.0.7
+    codemirror-graphql: 2.0.8
     compression-webpack-plugin: 10.0.0
     copy-webpack-plugin: 11.0.0
     cross-env: 7.0.3
@@ -3299,7 +3299,7 @@ __metadata:
     ts-node: 10.9.1
     tsconfig-paths-webpack-plugin: 4.0.1
     typescript: 5.0.4
-    webpack: 5.82.0
+    webpack: 5.82.1
     webpack-cli: 5.1.1
     webpack-dev-server: 4.15.0
     webpack-notifier: 1.15.0
@@ -3307,7 +3307,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@3.18.2, @neo4j/graphql@^3.13.0, @neo4j/graphql@^3.15.0, @neo4j/graphql@^3.16.0, @neo4j/graphql@^3.18.2, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@3.18.3, @neo4j/graphql@^3.13.0, @neo4j/graphql@^3.15.0, @neo4j/graphql@^3.16.0, @neo4j/graphql@^3.18.3, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -3319,7 +3319,7 @@ __metadata:
     "@graphql-tools/resolvers-composition": ^6.5.3
     "@graphql-tools/schema": 9.0.19
     "@graphql-tools/utils": ^9.0.0
-    "@neo4j/cypher-builder": ~0.4.1
+    "@neo4j/cypher-builder": ~0.4.2
     "@neo4j/graphql-plugin-auth": ^2.2.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
@@ -3337,11 +3337,11 @@ __metadata:
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
     graphql-compose: ^9.0.8
-    graphql-middleware: 6.1.33
+    graphql-middleware: 6.1.34
     graphql-parse-resolve-info: ^4.12.3
     graphql-relay: ^0.10.0
     graphql-tag: 2.12.6
-    graphql-ws: 5.12.1
+    graphql-ws: 5.13.0
     is-uuid: 1.0.2
     jest: 29.5.0
     jest-extended: 3.2.4
@@ -4760,7 +4760,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node16@npm:1.0.3, @tsconfig/node16@npm:^1.0.2":
+"@tsconfig/node16@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@tsconfig/node16@npm:1.0.4"
+  checksum: 202319785901f942a6e1e476b872d421baec20cf09f4b266a1854060efbf78cde16a4d256e8bc949d31e6cd9a90f1e8ef8fb06af96a65e98338a2b6b0de0a0ff
+  languageName: node
+  linkType: hard
+
+"@tsconfig/node16@npm:^1.0.2":
   version: 1.0.3
   resolution: "@tsconfig/node16@npm:1.0.3"
   checksum: 3a8b657dd047495b7ad23437d6afd20297ce90380ff0bdee93fc7d39a900dbd8d9e26e53ff6b465e7967ce2adf0b218782590ce9013285121e6a5928fbd6819f
@@ -6464,7 +6471,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": 1.2.2
     "@apollo/server": ^4.7.0
     "@graphql-tools/wrap": ^9.3.6
-    "@neo4j/graphql": ^3.18.2
+    "@neo4j/graphql": ^3.18.3
     fork-ts-checker-webpack-plugin: 8.0.0
     graphql: 16.6.0
     graphql-tag: ^2.12.6
@@ -6472,7 +6479,7 @@ __metadata:
     ts-loader: 9.4.2
     tsconfig-paths-webpack-plugin: 4.0.1
     typescript: 5.0.4
-    webpack: 5.82.0
+    webpack: 5.82.1
   languageName: unknown
   linkType: soft
 
@@ -8250,16 +8257,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror-graphql@npm:2.0.7, codemirror-graphql@npm:^2.0.7":
-  version: 2.0.7
-  resolution: "codemirror-graphql@npm:2.0.7"
+"codemirror-graphql@npm:2.0.8, codemirror-graphql@npm:^2.0.8":
+  version: 2.0.8
+  resolution: "codemirror-graphql@npm:2.0.8"
   dependencies:
-    graphql-language-service: 5.1.5
+    graphql-language-service: 5.1.6
   peerDependencies:
     "@codemirror/language": 6.0.0
     codemirror: ^5.65.3
     graphql: ^15.5.0 || ^16.0.0
-  checksum: 0ef71972065a85a500745173486255c4eb702037f6416b552d77831bf250fbaaf52ebf00de4b5cc1a778f228a673f3438cdd444f02bb1b8d21ee351cafb1eda3
+  checksum: 523901e6d227afb7955d19fd2f7d9ec217a17f5316154e06dcb88ac74b591528d8a2eb76eeea9574afb70db797dd609fb5f3757c248c173265c88cb2396bfa39
   languageName: node
   linkType: hard
 
@@ -10055,13 +10062,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:^5.13.0":
-  version: 5.13.0
-  resolution: "enhanced-resolve@npm:5.13.0"
+"enhanced-resolve@npm:^5.14.0":
+  version: 5.14.0
+  resolution: "enhanced-resolve@npm:5.14.0"
   dependencies:
     graceful-fs: ^4.2.4
     tapable: ^2.2.0
-  checksum: 76d6844c4393d76beed5b3ce6cf5a98dee3ad5c84a9887f49ccde1224e3b7af201dfbd5a57ebf2b49f623b74883df262d50ff480d3cc02fc2881fc58b84e1bbe
+  checksum: fff1aaebbf376371e5df4502e111967f6247c37611ad3550e4e7fca657f6dcb29ef7ffe88bf14e5010b78997f1ddd984a8db97af87ee0a5477771398fd326f5b
   languageName: node
   linkType: hard
 
@@ -12002,9 +12009,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-language-service@npm:5.1.5, graphql-language-service@npm:^5.1.5":
-  version: 5.1.5
-  resolution: "graphql-language-service@npm:5.1.5"
+"graphql-language-service@npm:5.1.6, graphql-language-service@npm:^5.1.6":
+  version: 5.1.6
+  resolution: "graphql-language-service@npm:5.1.6"
   dependencies:
     nullthrows: ^1.0.0
     vscode-languageserver-types: ^3.17.1
@@ -12012,7 +12019,7 @@ __metadata:
     graphql: ^15.5.0 || ^16.0.0
   bin:
     graphql: dist/temp-bin.js
-  checksum: c89acdd3ea9892ab2c04bccf10718b32c49eac14c97960f12bdde0491cd184d7f1f20cf8c8c3e169f471dd79d2b3538fa39f8a5e35fcade74305b9c840209c6b
+  checksum: db9e3a2e662b53ae5762c547ba33e3eaf36d04514aca868a9238f47d7999bfc3b2fb6c05dbbdab1c45dc2f04c524e6ff88d0d59e16859c67c483194e49c01b6b
   languageName: node
   linkType: hard
 
@@ -12034,15 +12041,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphql-middleware@npm:6.1.33":
-  version: 6.1.33
-  resolution: "graphql-middleware@npm:6.1.33"
+"graphql-middleware@npm:6.1.34":
+  version: 6.1.34
+  resolution: "graphql-middleware@npm:6.1.34"
   dependencies:
     "@graphql-tools/delegate": ^8.8.1
     "@graphql-tools/schema": ^8.5.1
   peerDependencies:
     graphql: ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: 5de687942686fbc775ed2f035c82148d66cd5c32d94726118e64522b68d40dc18e7811ce7fc0e1b62b7ded0efaf08938be2585abf7a1935dab7a3422e5315271
+  checksum: a1969123fbe6cc6c472c9d6c22242d05ba931f7b9af16ac3cecdcc566225c22d599ba4c767c5181376e82110d4b1e86f4649b3681cc9aebdd9dc6c6650e38c8b
   languageName: node
   linkType: hard
 
@@ -12098,12 +12105,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-ws@npm:5.12.1":
-  version: 5.12.1
-  resolution: "graphql-ws@npm:5.12.1"
+"graphql-ws@npm:5.13.0":
+  version: 5.13.0
+  resolution: "graphql-ws@npm:5.13.0"
   peerDependencies:
     graphql: ">=0.11 <=16"
-  checksum: 88d587c431feba681957faecd96101bb3860e1a4765f34b8cae1c514e7f98754b5f31c6b3127775e4732f26883b0802fe426bf9f7031c16cd0b25a27ad90ec9c
+  checksum: 8ce21bd7c92781b324a941773ecc34d068a1c247816f38c2d863db613f627ad589f26ab3d39c6d2311dac6d21f93691f09f5b4dee11e0599d9e47b98c4deef9f
   languageName: node
   linkType: hard
 
@@ -16022,7 +16029,7 @@ __metadata:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     "@apollo/server": ^4.7.0
-    "@neo4j/graphql": ^3.18.2
+    "@neo4j/graphql": ^3.18.3
     graphql: 16.6.0
     neo4j-driver: 5.8.0
   languageName: unknown
@@ -16629,7 +16636,7 @@ __metadata:
   dependencies:
     "@changesets/changelog-github": 0.4.8
     "@changesets/cli": 2.26.1
-    "@tsconfig/node16": 1.0.3
+    "@tsconfig/node16": 1.0.4
     "@typescript-eslint/eslint-plugin": 5.59.5
     "@typescript-eslint/parser": 5.59.5
     concurrently: 8.0.1
@@ -20437,14 +20444,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.5.0":
-  version: 7.5.0
-  resolution: "semver@npm:7.5.0"
+"semver@npm:7.5.1":
+  version: 7.5.1
+  resolution: "semver@npm:7.5.1"
   dependencies:
     lru-cache: ^6.0.0
   bin:
     semver: bin/semver.js
-  checksum: 2d266937756689a76f124ffb4c1ea3e1bbb2b263219f90ada8a11aebebe1280b13bb76cca2ca96bdee3dbc554cbc0b24752eb895b2a51577aa644427e9229f2b
+  checksum: d16dbedad53c65b086f79524b9ef766bf38670b2395bdad5c957f824dcc566b624988013564f4812bcace3f9d405355c3635e2007396a39d1bffc71cfec4a2fc
   languageName: node
   linkType: hard
 
@@ -23538,9 +23545,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.82.0":
-  version: 5.82.0
-  resolution: "webpack@npm:5.82.0"
+"webpack@npm:5.82.1":
+  version: 5.82.1
+  resolution: "webpack@npm:5.82.1"
   dependencies:
     "@types/eslint-scope": ^3.7.3
     "@types/estree": ^1.0.0
@@ -23551,7 +23558,7 @@ __metadata:
     acorn-import-assertions: ^1.7.6
     browserslist: ^4.14.5
     chrome-trace-event: ^1.0.2
-    enhanced-resolve: ^5.13.0
+    enhanced-resolve: ^5.14.0
     es-module-lexer: ^1.2.1
     eslint-scope: 5.1.1
     events: ^3.2.0
@@ -23571,7 +23578,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 499e7f5f24fccaa76f64f2a01f91f371073416f568ef6171dc73187a89078f0c33410d4c9f40d411f0827bab8455f8476eabd803ef4d2920d9a2e5f17efa2703
+  checksum: 747ee7ebd238c15249c2652060e3c6ca6d62cc66dcf7e4e2824ecd4875b7ea5e01fce8f4179080a3e84dfdb3c8d0992700444c7c5a05ef47b38c0623d3ac76de
   languageName: node
   linkType: hard
 

@@ -1,5 +1,16 @@
 # @neo4j/graphql
 
+## 3.18.3
+
+### Patch Changes
+
+-   [#3264](https://github.com/neo4j/graphql/pull/3264) [`e8092aa85`](https://github.com/neo4j/graphql/commit/e8092aa855244f7da21bb82f874bfda534a6fa4b) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Federation: Setting `@key` resolvable to false no longer prevents queries and mutations for a type from being generated.
+
+-   [#3309](https://github.com/neo4j/graphql/pull/3309) [`99fe4b4b8`](https://github.com/neo4j/graphql/commit/99fe4b4b813538fa985111918bf6ffe2ef458f05) Thanks [@angrykoala](https://github.com/angrykoala)! - Improve server performance for large schemas when querying
+
+-   Updated dependencies [[`2d3661476`](https://github.com/neo4j/graphql/commit/2d3661476b78713d11b6d74a8db8c7af51d18989)]:
+    -   @neo4j/cypher-builder@0.4.2
+
 ## 3.18.2
 
 ### Patch Changes

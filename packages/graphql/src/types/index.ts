@@ -55,9 +55,11 @@ export interface Context {
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
+    addMeasurementsToExtension: boolean;
     executionContext: Driver | Session | Transaction;
     executor: Executor;
     authParam: Cypher.Param;
+    extensions?: Record<string, any>;
     [k: string]: any;
 }
 

@@ -25,8 +25,10 @@ import { createAuthorizationBeforePredicate } from "./authorization/create-autho
 import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import { translateTopLevelMatch } from "./translate-top-level-match";
+import { Measurement, addMeasurementField } from "../utils/add-measurement-field";
 
 function translateAggregate({ node, context }: { node: Node; context: Context }): [Cypher.Clause, any] {
+    const p1 = performance.now();
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
@@ -202,8 +204,11 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
     const retSt = new Cypher.Return(projections);
     cypherStrs.push(retSt);
+    const result: [Cypher.Clause, Record<string, any>] = [Cypher.concat(...cypherStrs), cypherParams];
+    const p2 = performance.now();
+    addMeasurementField(context, Measurement.translationTime, p2 - p1);
 
-    return [Cypher.concat(...cypherStrs), cypherParams];
+    return result;
 }
 
 export default translateAggregate;

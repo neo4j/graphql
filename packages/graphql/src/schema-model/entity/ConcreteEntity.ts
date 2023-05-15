@@ -18,12 +18,12 @@
  */
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import { annotationToKey } from "../annotation/Annotation";
-import type { Annotation, Annotations } from "../annotation/Annotation";
-import type { Attribute } from "../attribute/Attribute";
-import type { Entity } from "./Entity";
-import type { Relationship } from "../relationship/Relationship";
 import { setsAreEqual } from "../../utils/sets-are-equal";
+import type { Annotation, Annotations } from "../annotation/Annotation";
+import { annotationToKey } from "../annotation/Annotation";
+import type { Attribute } from "../attribute/Attribute";
+import type { Relationship } from "../relationship/Relationship";
+import type { Entity } from "./Entity";
 
 export class ConcreteEntity implements Entity {
     public readonly name: string;
@@ -74,9 +74,14 @@ export class ConcreteEntity implements Entity {
 
     private addAnnotation(annotation: Annotation): void {
         const annotationKey = annotationToKey(annotation);
-        if (this.annotations[annotationKey]) {
+        const existingAnnotation = this.annotations[annotationKey];
+
+        if (existingAnnotation) {
             throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
         }
+
+        // We cast to any because we aren't narrowing the Annotation type here.
+        // There's no reason to narrow either, since we care more about performance.
         this.annotations[annotationKey] = annotation as any;
     }
 
