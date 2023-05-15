@@ -3229,7 +3229,7 @@ __metadata:
     body-parser: ^1.20.2
     camelcase: 6.3.0
     cors: ^2.8.5
-    graphql-ws: 5.13.0
+    graphql-ws: 5.13.1
     jest: 29.5.0
     neo4j-driver: 5.8.0
     pluralize: 8.0.0
@@ -3341,7 +3341,7 @@ __metadata:
     graphql-parse-resolve-info: ^4.12.3
     graphql-relay: ^0.10.0
     graphql-tag: 2.12.6
-    graphql-ws: 5.13.0
+    graphql-ws: 5.13.1
     is-uuid: 1.0.2
     jest: 29.5.0
     jest-extended: 3.2.4
@@ -12105,12 +12105,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-ws@npm:5.13.0":
-  version: 5.13.0
-  resolution: "graphql-ws@npm:5.13.0"
+"graphql-ws@npm:5.13.1":
+  version: 5.13.1
+  resolution: "graphql-ws@npm:5.13.1"
   peerDependencies:
     graphql: ">=0.11 <=16"
-  checksum: 8ce21bd7c92781b324a941773ecc34d068a1c247816f38c2d863db613f627ad589f26ab3d39c6d2311dac6d21f93691f09f5b4dee11e0599d9e47b98c4deef9f
+  checksum: 7a820c15d6d99f1b4c40b928131899a66edf2fdbca3db09a03dd7f6bde1e81f0a76ccda8e26254aabb0dc30f2a8c133cb0c5c5627c2dde8d032a8dc5a21f0ed3
   languageName: node
   linkType: hard
 
