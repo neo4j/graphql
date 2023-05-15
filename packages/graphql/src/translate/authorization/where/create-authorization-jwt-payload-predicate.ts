@@ -47,10 +47,11 @@ export function createJwtPayloadWherePredicate({
             }
             return;
         }
+
         const predicate = createParameterWhere({
             key,
             value,
-            parameter: context.authParam,
+            context,
         });
         if (predicate) {
             predicates.push(predicate);

@@ -71,12 +71,12 @@ describe("auth/roles", () => {
     });
 
     describe("read", () => {
-        test("should throw if missing role on type definition", async () => {
+        test.only("should throw if missing role on type definition", async () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
                 type JWTPayload @jwtPayload {
-                    roles: [String!]!
+                    roles: [String!]! @jwtClaim(path: "banana.apple.roles")
                 }
 
                 type ${typeProduct} @authorization(validate: [{
@@ -121,7 +121,7 @@ describe("auth/roles", () => {
             }
         });
 
-        test.only("should throw if missing role on field definition", async () => {
+        test("should throw if missing role on field definition", async () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `

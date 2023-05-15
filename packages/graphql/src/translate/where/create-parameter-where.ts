@@ -21,16 +21,17 @@ import Cypher from "@neo4j/cypher-builder";
 import type { WhereRegexGroups } from "./utils";
 import { whereRegEx } from "./utils";
 import { createBaseOperation } from "./property-operations/create-comparison-operation";
+import type { Context } from "../../types";
 
 /** Translates a property into its predicate filter */
 export function createParameterWhere({
     key,
     value,
-    parameter,
+    context,
 }: {
     key: string;
     value: any;
-    parameter: Cypher.Param;
+    context: Context;
 }): Cypher.Predicate | undefined {
     const match = whereRegEx.exec(key);
     if (!match) {
@@ -47,10 +48,23 @@ export function createParameterWhere({
         throw new Error(`Failed to find operator in filter: ${key}`);
     }
 
-    const isNot = operator.startsWith("NOT") ?? false;
+    const mappedJwtClaim = context.jwtPayloadFieldsMap?.get(fieldName);
 
-    // TODO: this won't work for the claim
-    const target = parameter.property(fieldName);
+    let target: Cypher.Property | undefined;
+
+    if (mappedJwtClaim) {
+        const paths = mappedJwtClaim.split(".");
+
+        // for (const path of paths) {
+        //     target = (target || context.authParam).property(path);
+        // }
+
+        target = context.authParam.property(...paths);
+    } else {
+        target = context.authParam.property(fieldName);
+    }
+
+    const isNot = operator.startsWith("NOT") ?? false;
 
     const comparisonOp = createBaseOperation({
         target,

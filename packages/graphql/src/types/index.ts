@@ -60,6 +60,7 @@ export interface Context {
     executor: Executor;
     authParam: Cypher.Param;
     extensions?: Record<string, any>;
+    jwtPayloadFieldsMap?: Map<string, string>;
     [k: string]: any;
 }
 
