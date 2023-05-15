@@ -35,6 +35,7 @@ import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSch
 import { IncomingMessage } from "http";
 import { Neo4jGraphQLAuthorization } from "../../classes/authorization/Neo4jGraphQLAuthorization";
 import { getToken, parseBearerToken } from "../../classes/authorization/parse-request-token";
+import { Measurement, addMeasurementField } from "../../utils/add-measurement-field";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -55,6 +56,7 @@ export const wrapResolver =
     ({ driver, config, nodes, relationships, schemaModel, plugins, dbInfo, features }: WrapResolverArguments) =>
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
+        const p1 = performance.now();
         const { driverConfig } = config;
         const callbacks = features.populatedBy?.callbacks;
         const authorization = features.authorization;
@@ -92,6 +94,7 @@ export const wrapResolver =
         context.schemaModel = schemaModel;
         context.plugins = plugins || {};
         context.subscriptionsEnabled = Boolean(features.subscriptions);
+        context.addMeasurementsToExtension = Boolean(config.addMeasurementsToExtension);
         context.callbacks = callbacks;
         context.features = features;
 
@@ -124,6 +127,7 @@ export const wrapResolver =
         const executorConstructorParam: ExecutorConstructorParam = {
             executionContext: context.executionContext,
             auth: context.auth,
+            measureTime: Boolean(context.addMeasurementsToExtension),
         };
 
         if (config.queryOptions) {
@@ -150,6 +154,8 @@ export const wrapResolver =
             context.neo4jDatabaseInfo = neo4jDatabaseInfo;
         }
 
+        const p2 = performance.now();
+        addMeasurementField(context, Measurement.wrapperTime, p2 - p1);
         return next(root, args, context, info);
     };
 

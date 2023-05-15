@@ -17,7 +17,52 @@
  * limitations under the License.
  */
 
-import Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
+export const typeDefs = `#graphql
+    union Likable = Person | Movie
+
+    type Person {
+        name: String!
+        born: Int!
+        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+        directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
+        reviewed: [Movie!]! @relationship(type: "REVIEWED", direction: OUT)
+        produced: [Movie!]! @relationship(type: "PRODUCED", direction: OUT)
+        likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
+    }
+
+    type Movie
+        @fulltext(
+            indexes: [
+                { queryName: "movieTaglineFulltextQuery", name: "MovieTaglineFulltextIndex", fields: ["tagline"] }
+            ]
+        ) {
+        id: ID!
+        title: String!
+        tagline: String
+        released: Int
+        actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
+        directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+        reviewers: [Person!]! @relationship(type: "REVIEWED", direction: IN)
+        producers: [Person!]! @relationship(type: "PRODUCED", direction: IN)
+        likedBy: [User!]! @relationship(type: "LIKES", direction: IN)
+        oneActorName: String @cypher(statement: "MATCH (this)<-[:ACTED_IN]-(a:Person) RETURN a.name")
+        favouriteActor: Person @relationship(type: "FAV", direction: OUT)
+    }
+
+    type MovieClone {
+        title: String!
+        favouriteActor: Person! @relationship(type: "FAV", direction: OUT)
+    }
+    type PersonClone {
+        name: String!
+        movies: [MovieClone!]! @relationship(type: "FAV", direction: IN)
+    }
+
+    type User {
+        name: String!
+        likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
+    }
+`;
 
 const basicTypeDefs = `
     type Journalist {
@@ -66,25 +111,15 @@ const basicTypeDefs = `
     }
 `;
 
-export function getLargeSchema(size = 500): string {
-    let typeDefs = "";
+export function getLargeSchema(size = 500) {
+    let largeTypedefs = typeDefs;
     const toReplace =
         /(Journalist|Article|HasArticle|Block|Image|HasBlock|TextBlock|DividerBlock|ImageBlock|PDFImage|HAS_ARTICLE|HAS_BLOCK|HAS_IMAGE)/g;
 
-    for (let i = 0; i < size; i++) {
+    for (let i = 0; i < size - 1; i++) {
         const partialTypes = basicTypeDefs.replaceAll(toReplace, `$1${i}`);
-        typeDefs = typeDefs + partialTypes;
+        largeTypedefs = largeTypedefs + partialTypes;
     }
 
-    return typeDefs;
-}
-
-export async function schemaPerformance() {
-    const typeDefs = getLargeSchema();
-    const neoSchema = new Neo4jGraphQL({
-        typeDefs,
-    });
-    console.time("Schema Generation");
-    await neoSchema.getSchema();
-    console.timeEnd("Schema Generation");
+    return largeTypedefs;
 }

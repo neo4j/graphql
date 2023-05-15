@@ -56,8 +56,10 @@ export interface Context {
     features: ContextFeatures;
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
+    addMeasurementsToExtension: boolean;
     executionContext: Driver | Session | Transaction;
     executor: Executor;
+    extensions?: Record<string, any>;
     [k: string]: any;
 }
 
