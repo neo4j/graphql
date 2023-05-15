@@ -56,8 +56,8 @@ describe("CartesianPoint", () => {
 
     test("enables creation of a node with a cartesian point", async () => {
         const serial = faker.string.uuid();
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
+        const x = faker.number.float();
+        const y = faker.number.float();
 
         const create = `
             mutation CreateParts($serial: String!, $x: Float!, $y: Float!) {
@@ -105,9 +105,9 @@ describe("CartesianPoint", () => {
 
     test("enables creation of a node with a cartesian-3d point", async () => {
         const serial = faker.string.uuid();
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
-        const z = faker.datatype.float();
+        const x = faker.number.float();
+        const y = faker.number.float();
+        const z = faker.number.float();
 
         const create = `
             mutation CreateParts($serial: String!, $x: Float!, $y: Float!, $z: Float!) {
@@ -156,9 +156,9 @@ describe("CartesianPoint", () => {
 
     test("enables update of a node with a cartesian point", async () => {
         const serial = faker.string.uuid();
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
-        const newY = faker.datatype.float();
+        const x = faker.number.float();
+        const y = faker.number.float();
+        const newY = faker.number.float();
 
         const beforeResult = await session.run(`
             CALL {
@@ -221,10 +221,10 @@ describe("CartesianPoint", () => {
 
     test("enables update of a node with a cartesian-3d point", async () => {
         const serial = faker.string.uuid();
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
-        const z = faker.datatype.float();
-        const newY = faker.datatype.float();
+        const x = faker.number.float();
+        const y = faker.number.float();
+        const z = faker.number.float();
+        const newY = faker.number.float();
 
         const beforeResult = await session.run(`
             CALL {
@@ -289,8 +289,8 @@ describe("CartesianPoint", () => {
 
     test("enables query of a node with a cartesian point", async () => {
         const serial = faker.string.uuid();
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
+        const x = faker.number.float();
+        const y = faker.number.float();
 
         const result = await session.run(`
             CALL {
@@ -342,9 +342,9 @@ describe("CartesianPoint", () => {
 
     test("enables query of a node with a cartesian-3d point", async () => {
         const serial = faker.string.uuid();
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
-        const z = faker.datatype.float();
+        const x = faker.number.float();
+        const y = faker.number.float();
+        const z = faker.number.float();
 
         const result = await session.run(`
             CALL {

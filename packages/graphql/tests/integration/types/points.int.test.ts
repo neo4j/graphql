@@ -113,7 +113,7 @@ describe("[Point]", () => {
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.location.longitude().toString()),
             latitude: parseFloat(faker.location.latitude().toString()),
-            height: faker.datatype.float(),
+            height: faker.number.float(),
         }));
 
         const create = `
@@ -254,7 +254,7 @@ describe("[Point]", () => {
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.location.longitude().toString()),
             latitude: parseFloat(faker.location.latitude().toString()),
-            height: faker.datatype.float(),
+            height: faker.number.float(),
         }));
         const newWaypoints = waypoints.map((waypoint) => ({
             longitude: parseFloat(faker.location.longitude().toString()),
@@ -456,7 +456,7 @@ describe("[Point]", () => {
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.location.longitude().toString()),
             latitude: parseFloat(faker.location.latitude().toString()),
-            height: faker.datatype.float(),
+            height: faker.number.float(),
         }));
 
         await session.run(

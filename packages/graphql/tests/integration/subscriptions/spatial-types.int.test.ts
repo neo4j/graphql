@@ -70,8 +70,8 @@ describe("Subscriptions to spatial types", () => {
         const longitude2 = parseFloat(faker.location.longitude().toString());
         const latitude1 = parseFloat(faker.location.latitude().toString());
         const latitude2 = parseFloat(faker.location.latitude().toString());
-        const height1 = faker.datatype.float();
-        const height2 = faker.datatype.float();
+        const height1 = faker.number.float();
+        const height2 = faker.number.float();
 
         const query = `
         mutation CreateMovie($longitude1: Float!, $latitude1: Float!, $height1: Float!, $longitude2: Float!, $latitude2: Float!, $height2: Float!)  {
@@ -179,7 +179,7 @@ describe("Subscriptions to spatial types", () => {
     test("update type with Point field", async () => {
         const longitude1 = parseFloat(faker.location.longitude().toString());
         const latitude1 = parseFloat(faker.location.latitude().toString());
-        const height1 = faker.datatype.float();
+        const height1 = faker.number.float();
         const newLatitude = parseFloat(faker.location.latitude().toString());
 
         await session.run(`
@@ -398,10 +398,10 @@ describe("Subscriptions to spatial types", () => {
     });
 
     test("create type with CartesianPoint field", async () => {
-        const x1 = faker.datatype.float();
-        const y1 = faker.datatype.float();
-        const x2 = faker.datatype.float();
-        const y2 = faker.datatype.float();
+        const x1 = faker.number.float();
+        const y1 = faker.number.float();
+        const x2 = faker.number.float();
+        const y2 = faker.number.float();
 
         const query = `
         mutation CreateMovie($x1: Float!, $x2: Float!, $y1: Float!, $y2: Float!)  {
@@ -507,9 +507,9 @@ describe("Subscriptions to spatial types", () => {
         );
     });
     test("update type with CartesianPoint field", async () => {
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
-        const newY = faker.datatype.float();
+        const x = faker.number.float();
+        const y = faker.number.float();
+        const newY = faker.number.float();
 
         await session.run(`
             CALL {
@@ -594,8 +594,8 @@ describe("Subscriptions to spatial types", () => {
         );
     });
     test("query type with CartesianPoint field and filters", async () => {
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
+        const x = faker.number.float();
+        const y = faker.number.float();
 
         await session.run(`
             CALL {
@@ -664,8 +664,8 @@ describe("Subscriptions to spatial types", () => {
                 locations: [
                     { x, y },
                     {
-                        x: faker.datatype.float(),
-                        y: faker.datatype.float(),
+                        x: faker.number.float(),
+                        y: faker.number.float(),
                     },
                 ],
             },
@@ -704,12 +704,12 @@ describe("Subscriptions to spatial types", () => {
             variableValues: {
                 locations: [
                     {
-                        x: faker.datatype.float(),
-                        y: faker.datatype.float(),
+                        x: faker.number.float(),
+                        y: faker.number.float(),
                     },
                     {
-                        x: faker.datatype.float(),
-                        y: faker.datatype.float(),
+                        x: faker.number.float(),
+                        y: faker.number.float(),
                     },
                 ],
             },

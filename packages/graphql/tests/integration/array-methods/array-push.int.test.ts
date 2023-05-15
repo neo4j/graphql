@@ -289,7 +289,7 @@ describe("array-push", () => {
     const point = {
         longitude: parseFloat(faker.location.longitude().toString()),
         latitude: parseFloat(faker.location.latitude().toString()),
-        height: faker.datatype.float(),
+        height: faker.number.float(),
     };
 
     test.each<ArrayPushTest>([
@@ -367,8 +367,8 @@ describe("array-push", () => {
     });
 
     const cartesianPoint = {
-        x: faker.datatype.float(),
-        y: faker.datatype.float(),
+        x: faker.number.float(),
+        y: faker.number.float(),
     };
 
     test.each<ArrayPushTest>([

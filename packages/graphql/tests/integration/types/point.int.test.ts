@@ -124,7 +124,7 @@ describe("Point", () => {
         const size = faker.number.int({ max: 100000 });
         const longitude = parseFloat(faker.location.longitude().toString());
         const latitude = parseFloat(faker.location.latitude().toString());
-        const height = faker.datatype.float();
+        const height = faker.number.float();
 
         const create = `
             mutation CreatePhotographs(
@@ -264,7 +264,7 @@ describe("Point", () => {
         const size = faker.number.int({ max: 100000 });
         const longitude = parseFloat(faker.location.longitude().toString());
         const latitude = parseFloat(faker.location.latitude().toString());
-        const height = faker.datatype.float();
+        const height = faker.number.float();
         const newLatitude = parseFloat(faker.location.latitude().toString());
 
         const beforeResult = await session.run(`
@@ -561,7 +561,7 @@ describe("Point", () => {
         const size = faker.number.int({ max: 100000 });
         const longitude = parseFloat(faker.location.longitude().toString());
         const latitude = parseFloat(faker.location.latitude().toString());
-        const height = faker.datatype.float();
+        const height = faker.number.float();
 
         const result = await session.run(`
             CALL {
