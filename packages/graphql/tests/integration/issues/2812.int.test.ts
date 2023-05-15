@@ -47,15 +47,19 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         Actor = new UniqueType("Actor");
 
         const typeDefs = `
-            type ${Actor} @auth(rules: [{ allow: { nodeCreatedBy: "$jwt.sub" } }]) {
+            type JWTPayload @jwtPayload {
+                roles: [String!]!
+            }
+
+            type ${Actor} @authorization(validate: [{ where: { node: { nodeCreatedBy: "$jwt.sub" } } }]) {
                 id: ID! @id
                 name: String
                 nodeCreatedBy: String
-                fieldA: String @auth(rules: [{ operations: [CREATE, UPDATE], roles: ["role-A"] }])
-                fieldB: String @auth(rules: [{ operations: [CREATE, UPDATE], roles: ["role-B"] }])
+                fieldA: String @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwtPayload: { roles_INCLUDES: "role-A" } } }])
+                fieldB: String @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwtPayload: { roles_INCLUDES: "role-B" } } }])
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
-            type ${Movie} @auth(rules: [{ operations: [CREATE, UPDATE], roles: ["admin"] }]) {
+            type ${Movie} @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }

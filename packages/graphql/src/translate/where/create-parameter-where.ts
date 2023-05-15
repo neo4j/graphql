@@ -53,11 +53,10 @@ export function createParameterWhere({
     let target: Cypher.Property | undefined;
 
     if (mappedJwtClaim) {
-        const paths = mappedJwtClaim.split(".");
+        // TODO: validate browser compatibility for Toolbox (https://caniuse.com/?search=Lookbehind)
+        let paths = mappedJwtClaim.split(/(?<!\\)\./);
 
-        // for (const path of paths) {
-        //     target = (target || context.authParam).property(path);
-        // }
+        paths = paths.map((p) => p.replaceAll(/\\\./g, "."));
 
         target = context.authParam.property(...paths);
     } else {
