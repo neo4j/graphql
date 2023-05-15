@@ -50,6 +50,8 @@ interface Res {
 // TODO: Authorization - delete for 4.0.0
 export interface ProjectionMeta {
     authValidatePredicates?: Cypher.Predicate[];
+    authorizationPredicates: Cypher.Predicate[];
+    authorizationSubqueries: Cypher.CompositeClause | undefined;
 }
 
 export type ProjectionResult = {
@@ -113,10 +115,15 @@ export default function createProjectionAndParams({
 
                 if (predicate) {
                     res.predicates.push(predicate);
+                    res.meta.authorizationPredicates.push(predicate);
                 }
 
                 if (preComputedSubqueries && !preComputedSubqueries.empty) {
                     res.subqueries.push(preComputedSubqueries);
+                    res.meta.authorizationSubqueries = Cypher.concat(
+                        res.meta.authorizationSubqueries,
+                        preComputedSubqueries
+                    );
                 }
             } else if (authableField.auth) {
                 // TODO: Authorization - delete for 4.0.0
@@ -238,6 +245,8 @@ export default function createProjectionAndParams({
                         relationField,
                         relationshipDirection: direction,
                         optionsInput,
+                        authorizationPredicates: recurse.meta?.authorizationPredicates,
+                        authorizationSubqueries: recurse.meta?.authorizationSubqueries,
                         authValidatePredicates: recurse.meta?.authValidatePredicates,
                         addSkipAndLimit: false,
                         collect: false,
@@ -291,6 +300,8 @@ export default function createProjectionAndParams({
                 relationField,
                 relationshipDirection: direction,
                 optionsInput,
+                authorizationPredicates: recurse.meta?.authorizationPredicates,
+                authorizationSubqueries: recurse.meta?.authorizationSubqueries,
                 authValidatePredicates: recurse.meta?.authValidatePredicates,
             });
             res.subqueries.push(new Cypher.Call(subquery).innerWith(varName));
@@ -428,7 +439,10 @@ export default function createProjectionAndParams({
               ]
             : [],
         params: {},
-        meta: {},
+        meta: {
+            authorizationPredicates: [],
+            authorizationSubqueries: undefined,
+        },
         subqueries: [],
         subqueriesBeforeSort: [],
         predicates: [],
@@ -508,7 +522,10 @@ function createFulltextProjection({
         return {
             projection: new Cypher.Map(),
             params: {},
-            meta: {},
+            meta: {
+                authorizationPredicates: [],
+                authorizationSubqueries: undefined,
+            },
             subqueries: [],
             subqueriesBeforeSort: [],
             predicates: [],

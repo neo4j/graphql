@@ -1779,7 +1779,7 @@ describe("@fulltext directive", () => {
 
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @authorization(filter: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
+                @authorization(validate: [{ when: BEFORE, where: { node: { name: "$jwt.name" } } }]) {
                     name: String!
                     born: Int!
                     actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)

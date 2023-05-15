@@ -40,6 +40,8 @@ export function createProjectionSubquery({
     relationshipDirection,
     optionsInput,
     authValidatePredicates,
+    authorizationPredicates,
+    authorizationSubqueries,
     addSkipAndLimit = true,
     collect = true,
 }: {
@@ -55,6 +57,8 @@ export function createProjectionSubquery({
     relationshipDirection: CypherRelationshipDirection;
     optionsInput: GraphQLOptionsArg;
     authValidatePredicates: Cypher.Predicate[] | undefined;
+    authorizationPredicates: Cypher.Predicate[];
+    authorizationSubqueries: Cypher.CompositeClause | undefined;
     addSkipAndLimit?: boolean;
     collect?: boolean;
 }): Cypher.Clause {
@@ -102,15 +106,18 @@ export function createProjectionSubquery({
     });
 
     if (authorizationPredicateReturn) {
-        const { predicate: authorizationPredicate, preComputedSubqueries: authorizationSubqueries } =
+        const { predicate: authorizationBeforePredicate, preComputedSubqueries: authorizationBeforeSubqueries } =
             authorizationPredicateReturn;
 
-        if (authorizationPredicate) {
-            predicates.push(authorizationPredicate);
+        if (authorizationBeforePredicate) {
+            predicates.push(authorizationBeforePredicate);
         }
 
-        if (authorizationSubqueries && !authorizationSubqueries.empty) {
-            preComputedWhereFieldSubqueries = Cypher.concat(preComputedWhereFieldSubqueries, authorizationSubqueries);
+        if (authorizationBeforeSubqueries && !authorizationBeforeSubqueries.empty) {
+            preComputedWhereFieldSubqueries = Cypher.concat(
+                preComputedWhereFieldSubqueries,
+                authorizationBeforeSubqueries
+            );
         }
     } else {
         // TODO: Authorization - delete for 4.0.0
@@ -144,6 +151,12 @@ export function createProjectionSubquery({
         }
     }
 
+    predicates.push(...authorizationPredicates);
+    if (authorizationSubqueries) {
+        preComputedWhereFieldSubqueries = Cypher.concat(preComputedWhereFieldSubqueries, authorizationSubqueries);
+    }
+
+    // TODO: Authorization - delete for 4.0.0
     if (authValidatePredicates?.length) {
         const authValidatePredicate = Cypher.and(...authValidatePredicates);
 

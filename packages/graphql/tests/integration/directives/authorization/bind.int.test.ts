@@ -286,6 +286,67 @@ describe("auth/bind", () => {
             }
         });
 
+        test("should throw forbidden when creating a node when rule is not satisfied", async () => {
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID 
+                    name: String
+                }
+
+                extend type User {
+                    id: ID @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
+                }
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const userName = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    createUsers(input: 
+                        [
+                            {
+                                id: "${userName}",
+                            }
+                        ]
+                        ) {
+                        users {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
+                },
+            });
+
+            try {
+                const req = createJwtRequest(secret, { sub: userId });
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
         test("should no throw forbidden when creating a nested node without passing the bind specified at the Field level", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
