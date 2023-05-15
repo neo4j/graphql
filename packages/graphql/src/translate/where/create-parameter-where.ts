@@ -49,8 +49,11 @@ export function createParameterWhere({
 
     const isNot = operator.startsWith("NOT") ?? false;
 
+    // TODO: this won't work for the claim
+    const target = parameter.property(fieldName);
+
     const comparisonOp = createBaseOperation({
-        target: parameter,
+        target,
         value: new Cypher.Param(value),
         operator,
     });
