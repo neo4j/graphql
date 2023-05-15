@@ -92,8 +92,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!, $name2: String) {
@@ -189,8 +189,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!, $name2: String) {
@@ -297,8 +297,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!) {

@@ -57,7 +57,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int());
+        const someInt = Number(faker.number.int({ max: 100000 }));
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -120,7 +120,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int());
+        const someInt = Number(faker.number.int({ max: 100000 }));
         const someIntGt = someInt - 1;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -184,7 +184,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int());
+        const someInt = Number(faker.number.int({ max: 100000 }));
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -247,7 +247,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int());
+        const someInt = Number(faker.number.int({ max: 100000 }));
         const someIntLT = someInt + 1;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -311,7 +311,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.number.int());
+        const someInt = Number(faker.number.int({ max: 100000 }));
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 

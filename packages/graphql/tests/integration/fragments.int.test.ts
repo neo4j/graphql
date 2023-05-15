@@ -74,16 +74,16 @@ describe("fragments", () => {
         readable: true,
         charset: "alphabetic",
     });
-    const movieRuntime = faker.number.int();
-    const movieScreenTime = faker.number.int();
+    const movieRuntime = faker.number.int({ max: 100000 });
+    const movieScreenTime = faker.number.int({ max: 100000 });
 
     const seriesTitle = generate({
         readable: true,
         charset: "alphabetic",
     });
-    const seriesRuntime = faker.number.int();
-    const seriesEpisodes = faker.number.int();
-    const seriesScreenTime = faker.number.int();
+    const seriesRuntime = faker.number.int({ max: 100000 });
+    const seriesEpisodes = faker.number.int({ max: 100000 });
+    const seriesScreenTime = faker.number.int({ max: 100000 });
 
     beforeAll(async () => {
         neo4j = new Neo4j();

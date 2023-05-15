@@ -88,14 +88,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.number.int();
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation UpdateCreate(
@@ -197,14 +197,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.number.int();
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation UpdateCreate(

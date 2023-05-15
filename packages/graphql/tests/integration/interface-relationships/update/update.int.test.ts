@@ -88,8 +88,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const movieNewTitle = generate({
             readable: true,
@@ -100,7 +100,7 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.number.int();
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation UpdateUpdate($name: String, $oldTitle: String, $newTitle: String) {
@@ -192,8 +192,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const movieNewTitle = generate({
             readable: true,
@@ -204,7 +204,7 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.number.int();
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation UpdateUpdate($name: String, $newName: String, $oldTitle: String, $newTitle: String) {
@@ -304,15 +304,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const movieNewTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
 
-        const seriesScreenTime = faker.number.int();
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation UpdateUpdate(
@@ -455,15 +455,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const movieNewTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
 
-        const seriesScreenTime = faker.number.int();
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation UpdateUpdate($name: String, $newName: String, $oldName: String, $oldTitle: String, $newTitle: String) {

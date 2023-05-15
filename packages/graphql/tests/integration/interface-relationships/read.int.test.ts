@@ -108,15 +108,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.number.int();
-        const seriesScreenTime = faker.number.int();
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             query Actors($name: String) {
@@ -182,26 +182,26 @@ describe("interface relationships", () => {
 
         const movie1 = {
             title: "A",
-            runtime: faker.number.int(),
-            screenTime: faker.number.int(),
+            runtime: faker.number.int({ max: 100000 }),
+            screenTime: faker.number.int({ max: 100000 }),
         };
 
         const movie2 = {
             title: "B",
-            runtime: faker.number.int(),
-            screenTime: faker.number.int(),
+            runtime: faker.number.int({ max: 100000 }),
+            screenTime: faker.number.int({ max: 100000 }),
         };
 
         const series1 = {
             title: "C",
-            episodes: faker.number.int(),
-            screenTime: faker.number.int(),
+            episodes: faker.number.int({ max: 100000 }),
+            screenTime: faker.number.int({ max: 100000 }),
         };
 
         const series2 = {
             title: "D",
-            episodes: faker.number.int(),
-            screenTime: faker.number.int(),
+            episodes: faker.number.int({ max: 100000 }),
+            screenTime: faker.number.int({ max: 100000 }),
         };
 
         const query = gql`
@@ -259,21 +259,21 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.number.int();
-        const seriesScreenTime = faker.number.int();
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const newMovieTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const newMovieRuntime = faker.number.int();
+        const newMovieRuntime = faker.number.int({ max: 100000 });
 
         const query = `
             query Actors($name: String) {
@@ -344,11 +344,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
-        const seriesEpisodes = faker.number.int();
-        const seriesScreenTime = faker.number.int();
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             query Actors($name: String, $title: String) {
@@ -415,11 +415,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
-        const seriesEpisodes = faker.number.int();
-        const seriesScreenTime = faker.number.int();
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             query Actors($name: String, $title: String) {
@@ -479,11 +479,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.number.int();
-        const movieScreenTime = faker.number.int();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
-        const seriesEpisodes = faker.number.int();
-        const seriesScreenTime = faker.number.int();
+        const seriesEpisodes = faker.number.int({ max: 100000 });
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             query Actors($name: String, $title: String, $movieTitle: String) {
