@@ -47,6 +47,27 @@ describe("schema validation", () => {
             expect(executeValidate).not.toThrow();
         });
 
+        test("should not returns errors when is correctly used with claims path", () => {
+            const jwtType = `
+                type MyJWT  @jwtPayload {
+                    myClaim: String 
+                    groups: [String!]! @jwtClaim(path: "applications[0].groups")
+                }
+            `;
+            const userDocument = gql`
+                ${jwtType}
+                type User @authorization(filter: [{ where: { jwtPayload: { groups_INCLUDES: "something" } } }]) {
+                    id: ID!
+                    name: String!
+                }
+            `;
+            const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+
+            const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+            expect(executeValidate).not.toThrow();
+        });
+
         test("should not returns errors when is correctly used together with node", () => {
             const jwtType = `
                 type MyJWT  @jwtPayload {

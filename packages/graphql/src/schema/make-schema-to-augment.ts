@@ -23,7 +23,9 @@ import getFieldTypeMeta from "./get-field-type-meta";
 
 export function makeSchemaToAugment(document: DocumentNode): {
     document: DocumentNode;
-    typesExcludedFromGeneration: { jwtPayload?: ObjectTypeDefinitionNode };
+    typesExcludedFromGeneration: {
+        jwtPayload?: { type: ObjectTypeDefinitionNode; jwtPayloadFieldsMap: Map<string, string> };
+    };
 } {
     const jwtTypeDefinitions: ObjectTypeDefinitionNode[] = [];
     const definitions: DefinitionNode[] = [];
@@ -55,14 +57,20 @@ export function makeSchemaToAugment(document: DocumentNode): {
     };
 }
 
-function parseJwtPayload(jwtPayloadAnnotatedTypes: ObjectTypeDefinitionNode[]): ObjectTypeDefinitionNode | undefined {
-    if (!jwtPayloadAnnotatedTypes.length) {
-        return undefined;
-    }
+function parseJwtPayload(jwtPayloadAnnotatedTypes: ObjectTypeDefinitionNode[]):
+    | {
+          type: ObjectTypeDefinitionNode;
+          jwtPayloadFieldsMap: Map<string, string>;
+      }
+    | undefined {
+    const jwtPayloadFieldsMap = new Map<string, string>();
     if (jwtPayloadAnnotatedTypes.length > 1) {
         throw new Error(`@jwtPayload directive can only be used once in the Type Definitions.`);
     }
     const jwtPayload = jwtPayloadAnnotatedTypes[0];
+    if (!jwtPayload) {
+        return undefined;
+    }
     if ((jwtPayload?.directives || []).length > 1) {
         throw new Error(`@jwtPayload directive cannot be combined with other directives.`);
     }
@@ -71,6 +79,17 @@ function parseJwtPayload(jwtPayloadAnnotatedTypes: ObjectTypeDefinitionNode[]): 
         if (!["String", "ID", "Int", "Float", "Boolean"].includes(typeMeta.name)) {
             throw new Error("fields of a @jwtPayload type can only be Scalars or Lists of Scalars.");
         }
+        const fieldName = f.name.value;
+        const jwtClaimDirective = f.directives?.find((x) => x.name.value === "jwtClaim");
+        if (!jwtClaimDirective) {
+            jwtPayloadFieldsMap.set(fieldName, fieldName);
+        } else {
+            const claimPathArgument = jwtClaimDirective.arguments?.find((a) => a.name.value === "path")?.value;
+            if (!claimPathArgument || claimPathArgument.kind !== Kind.STRING) {
+                throw new Error(`@jwtClaim path argument required and must be a String.`);
+            }
+            jwtPayloadFieldsMap.set(fieldName, claimPathArgument.value);
+        }
     });
-    return jwtPayload;
+    return { type: jwtPayload, jwtPayloadFieldsMap };
 }

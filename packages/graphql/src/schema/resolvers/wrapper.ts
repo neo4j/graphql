@@ -45,6 +45,7 @@ type WrapResolverArguments = {
     config: Neo4jGraphQLConfig;
     nodes: Node[];
     relationships: Relationship[];
+    jwtPayloadFieldsMap?: Map<string, string>;
     schemaModel: Neo4jGraphQLSchemaModel;
     plugins?: Neo4jGraphQLPlugins;
     dbInfo?: Neo4jDatabaseInfo;
@@ -54,7 +55,17 @@ type WrapResolverArguments = {
 let neo4jDatabaseInfo: Neo4jDatabaseInfo;
 
 export const wrapResolver =
-    ({ driver, config, nodes, relationships, schemaModel, plugins, dbInfo, authorization }: WrapResolverArguments) =>
+    ({
+        driver,
+        config,
+        nodes,
+        relationships,
+        jwtPayloadFieldsMap,
+        schemaModel,
+        plugins,
+        dbInfo,
+        authorization,
+    }: WrapResolverArguments) =>
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const p1 = performance.now();
@@ -90,6 +101,7 @@ export const wrapResolver =
 
         context.nodes = nodes;
         context.relationships = relationships;
+        context.jwtPayloadFieldsMap = jwtPayloadFieldsMap;
         context.schemaModel = schemaModel;
         context.plugins = plugins || {};
         context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions);
