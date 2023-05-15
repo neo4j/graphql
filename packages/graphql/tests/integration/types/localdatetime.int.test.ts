@@ -327,7 +327,7 @@ describe("LocalDateTime", () => {
                     const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
-                    const future = faker.date.future(100).toISOString().split("Z")[0];
+                    const future = faker.date.future({ years: 2 }).toISOString().split("Z")[0];
                     const parsedFuture = parseLocalDateTime(future);
                     const neo4jFuture = new neo4jDriver.types.LocalDateTime(
                         parsedFuture.year,
@@ -353,7 +353,7 @@ describe("LocalDateTime", () => {
                     );
 
                     const pastId = generate({ readable: false });
-                    const past = faker.date.past(100).toISOString().split("Z")[0];
+                    const past = faker.date.past({ years: 2 }).toISOString().split("Z")[0];
                     const parsedPast = parseLocalDateTime(past);
                     const neo4jPast = new neo4jDriver.types.LocalDateTime(
                         parsedPast.year,
@@ -463,7 +463,7 @@ describe("LocalDateTime", () => {
                     const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
-                    const future = faker.date.future(100).toISOString().split("Z")[0];
+                    const future = faker.date.future({ years: 2 }).toISOString().split("Z")[0];
                     const parsedFuture = parseLocalDateTime(future);
                     const neo4jFuture = new neo4jDriver.types.LocalDateTime(
                         parsedFuture.year,
@@ -489,7 +489,7 @@ describe("LocalDateTime", () => {
                     );
 
                     const pastId = generate({ readable: false });
-                    const past = faker.date.past(100).toISOString().split("Z")[0];
+                    const past = faker.date.past({ years: 2 }).toISOString().split("Z")[0];
                     const parsedPast = parseLocalDateTime(past);
                     const neo4jPast = new neo4jDriver.types.LocalDateTime(
                         parsedPast.year,
