@@ -23,10 +23,10 @@ import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import type { ArrayPopTest } from "./types";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
+import type { ArrayPopTest } from "./types";
 
 describe("array-pop", () => {
     let driver: Driver;
@@ -370,8 +370,8 @@ describe("array-pop", () => {
     );
 
     const point = {
-        longitude: parseFloat(faker.address.longitude()),
-        latitude: parseFloat(faker.address.latitude()),
+        longitude: parseFloat(faker.location.longitude()),
+        latitude: parseFloat(faker.location.latitude()),
         height: faker.datatype.float(),
     };
 

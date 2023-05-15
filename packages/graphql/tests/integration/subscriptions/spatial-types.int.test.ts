@@ -18,14 +18,14 @@
  */
 
 import { faker } from "@faker-js/faker";
-import { gql } from "graphql-tag";
 import { graphql } from "graphql";
+import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { int } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
+import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import Neo4j from "../neo4j";
 
 describe("Subscriptions to spatial types", () => {
@@ -66,10 +66,10 @@ describe("Subscriptions to spatial types", () => {
     });
 
     test("create type with Point field", async () => {
-        const longitude1 = parseFloat(faker.address.longitude());
-        const longitude2 = parseFloat(faker.address.longitude());
-        const latitude1 = parseFloat(faker.address.latitude());
-        const latitude2 = parseFloat(faker.address.latitude());
+        const longitude1 = parseFloat(faker.location.longitude());
+        const longitude2 = parseFloat(faker.location.longitude());
+        const latitude1 = parseFloat(faker.location.latitude());
+        const latitude2 = parseFloat(faker.location.latitude());
         const height1 = faker.datatype.float();
         const height2 = faker.datatype.float();
 
@@ -177,10 +177,10 @@ describe("Subscriptions to spatial types", () => {
         );
     });
     test("update type with Point field", async () => {
-        const longitude1 = parseFloat(faker.address.longitude());
-        const latitude1 = parseFloat(faker.address.latitude());
+        const longitude1 = parseFloat(faker.location.longitude());
+        const latitude1 = parseFloat(faker.location.latitude());
         const height1 = faker.datatype.float();
-        const newLatitude = parseFloat(faker.address.latitude());
+        const newLatitude = parseFloat(faker.location.latitude());
 
         await session.run(`
             CALL {
@@ -264,8 +264,8 @@ describe("Subscriptions to spatial types", () => {
         );
     });
     test("query type with Point field and filters", async () => {
-        const longitude = parseFloat(faker.address.longitude());
-        const latitude = parseFloat(faker.address.latitude());
+        const longitude = parseFloat(faker.location.longitude());
+        const latitude = parseFloat(faker.location.latitude());
 
         await session.run(`
             CALL {
@@ -334,8 +334,8 @@ describe("Subscriptions to spatial types", () => {
                 locations: [
                     { longitude, latitude },
                     {
-                        longitude: parseFloat(faker.address.longitude()),
-                        latitude: parseFloat(faker.address.latitude()),
+                        longitude: parseFloat(faker.location.longitude()),
+                        latitude: parseFloat(faker.location.latitude()),
                     },
                 ],
             },
@@ -374,12 +374,12 @@ describe("Subscriptions to spatial types", () => {
             variableValues: {
                 locations: [
                     {
-                        longitude: parseFloat(faker.address.longitude()),
-                        latitude: parseFloat(faker.address.latitude()),
+                        longitude: parseFloat(faker.location.longitude()),
+                        latitude: parseFloat(faker.location.latitude()),
                     },
                     {
-                        longitude: parseFloat(faker.address.longitude()),
-                        latitude: parseFloat(faker.address.latitude()),
+                        longitude: parseFloat(faker.location.longitude()),
+                        latitude: parseFloat(faker.location.latitude()),
                     },
                 ],
             },

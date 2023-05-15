@@ -57,8 +57,8 @@ describe("[Point]", () => {
     test("enables creation of a node with multiple wgs-84 points", async () => {
         const id = faker.datatype.uuid();
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
+            longitude: parseFloat(faker.location.longitude()),
+            latitude: parseFloat(faker.location.latitude()),
         }));
 
         const create = `
@@ -111,8 +111,8 @@ describe("[Point]", () => {
     test("enables creation of a node with multiple wgs-84-3d points", async () => {
         const id = faker.datatype.uuid();
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
+            longitude: parseFloat(faker.location.longitude()),
+            latitude: parseFloat(faker.location.latitude()),
             height: faker.datatype.float(),
         }));
 
@@ -167,11 +167,11 @@ describe("[Point]", () => {
     test("enables update of a node with multiple wgs-84 points", async () => {
         const id = faker.datatype.uuid();
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
+            longitude: parseFloat(faker.location.longitude()),
+            latitude: parseFloat(faker.location.latitude()),
         }));
         const newWaypoints = waypoints.map((waypoint) => ({
-            longitude: parseFloat(faker.address.longitude()),
+            longitude: parseFloat(faker.location.longitude()),
             latitude: waypoint.latitude,
         }));
 
@@ -252,12 +252,12 @@ describe("[Point]", () => {
     test("enables update of a node with multiple wgs-84-3d points", async () => {
         const id = faker.datatype.uuid();
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
+            longitude: parseFloat(faker.location.longitude()),
+            latitude: parseFloat(faker.location.latitude()),
             height: faker.datatype.float(),
         }));
         const newWaypoints = waypoints.map((waypoint) => ({
-            longitude: parseFloat(faker.address.longitude()),
+            longitude: parseFloat(faker.location.longitude()),
             latitude: waypoint.latitude,
             height: waypoint.height,
         }));
@@ -342,8 +342,8 @@ describe("[Point]", () => {
         // Create test data and prepare for testing
         const id = faker.datatype.uuid();
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
+            longitude: parseFloat(faker.location.longitude()),
+            latitude: parseFloat(faker.location.latitude()),
         }));
 
         await session.run(
@@ -438,8 +438,8 @@ describe("[Point]", () => {
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: {
                 waypoint: {
-                    longitude: parseFloat(faker.address.longitude()),
-                    latitude: parseFloat(faker.address.latitude()),
+                    longitude: parseFloat(faker.location.longitude()),
+                    latitude: parseFloat(faker.location.latitude()),
                 },
             },
         });
@@ -454,8 +454,8 @@ describe("[Point]", () => {
     test("enables query of a node with multiple wgs-84-3d points", async () => {
         const id = faker.datatype.uuid();
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
+            longitude: parseFloat(faker.location.longitude()),
+            latitude: parseFloat(faker.location.latitude()),
             height: faker.datatype.float(),
         }));
 
