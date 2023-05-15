@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { int } from "neo4j-driver";
 import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
+import { int } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4j from "../neo4j";
 
 describe("CartesianPoint", () => {
     let driver: Driver;
@@ -55,7 +55,7 @@ describe("CartesianPoint", () => {
     });
 
     test("enables creation of a node with a cartesian point", async () => {
-        const serial = faker.datatype.uuid();
+        const serial = faker.string.uuid();
         const x = faker.datatype.float();
         const y = faker.datatype.float();
 
@@ -104,7 +104,7 @@ describe("CartesianPoint", () => {
     });
 
     test("enables creation of a node with a cartesian-3d point", async () => {
-        const serial = faker.datatype.uuid();
+        const serial = faker.string.uuid();
         const x = faker.datatype.float();
         const y = faker.datatype.float();
         const z = faker.datatype.float();
@@ -155,7 +155,7 @@ describe("CartesianPoint", () => {
     });
 
     test("enables update of a node with a cartesian point", async () => {
-        const serial = faker.datatype.uuid();
+        const serial = faker.string.uuid();
         const x = faker.datatype.float();
         const y = faker.datatype.float();
         const newY = faker.datatype.float();
@@ -220,7 +220,7 @@ describe("CartesianPoint", () => {
     });
 
     test("enables update of a node with a cartesian-3d point", async () => {
-        const serial = faker.datatype.uuid();
+        const serial = faker.string.uuid();
         const x = faker.datatype.float();
         const y = faker.datatype.float();
         const z = faker.datatype.float();
@@ -288,7 +288,7 @@ describe("CartesianPoint", () => {
     });
 
     test("enables query of a node with a cartesian point", async () => {
-        const serial = faker.datatype.uuid();
+        const serial = faker.string.uuid();
         const x = faker.datatype.float();
         const y = faker.datatype.float();
 
@@ -341,7 +341,7 @@ describe("CartesianPoint", () => {
     });
 
     test("enables query of a node with a cartesian-3d point", async () => {
-        const serial = faker.datatype.uuid();
+        const serial = faker.string.uuid();
         const x = faker.datatype.float();
         const y = faker.datatype.float();
         const z = faker.datatype.float();

@@ -55,7 +55,7 @@ describe("[Point]", () => {
     });
 
     test("enables creation of a node with multiple wgs-84 points", async () => {
-        const id = faker.datatype.uuid();
+        const id = faker.string.uuid();
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.location.longitude().toString()),
             latitude: parseFloat(faker.location.latitude().toString()),
@@ -109,7 +109,7 @@ describe("[Point]", () => {
     });
 
     test("enables creation of a node with multiple wgs-84-3d points", async () => {
-        const id = faker.datatype.uuid();
+        const id = faker.string.uuid();
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.location.longitude().toString()),
             latitude: parseFloat(faker.location.latitude().toString()),
@@ -165,7 +165,7 @@ describe("[Point]", () => {
     });
 
     test("enables update of a node with multiple wgs-84 points", async () => {
-        const id = faker.datatype.uuid();
+        const id = faker.string.uuid();
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.location.longitude().toString()),
             latitude: parseFloat(faker.location.latitude().toString()),
@@ -250,7 +250,7 @@ describe("[Point]", () => {
     });
 
     test("enables update of a node with multiple wgs-84-3d points", async () => {
-        const id = faker.datatype.uuid();
+        const id = faker.string.uuid();
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.location.longitude().toString()),
             latitude: parseFloat(faker.location.latitude().toString()),
@@ -340,7 +340,7 @@ describe("[Point]", () => {
 
     test("enables query of a node with multiple wgs-84 points", async () => {
         // Create test data and prepare for testing
-        const id = faker.datatype.uuid();
+        const id = faker.string.uuid();
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.location.longitude().toString()),
             latitude: parseFloat(faker.location.latitude().toString()),
@@ -452,7 +452,7 @@ describe("[Point]", () => {
     });
 
     test("enables query of a node with multiple wgs-84-3d points", async () => {
-        const id = faker.datatype.uuid();
+        const id = faker.string.uuid();
         const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
             longitude: parseFloat(faker.location.longitude().toString()),
             latitude: parseFloat(faker.location.latitude().toString()),
