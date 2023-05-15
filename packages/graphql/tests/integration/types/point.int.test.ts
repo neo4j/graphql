@@ -68,8 +68,8 @@ describe("Point", () => {
     test("enables creation of a node with a wgs-84 point", async () => {
         const id = faker.datatype.uuid();
         const size = faker.number.int({});
-        const longitude = parseFloat(faker.location.longitude());
-        const latitude = parseFloat(faker.location.latitude());
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude().toString());
 
         const create = `
             mutation CreatePhotographs($id: String!, $size: Int!, $longitude: Float!, $latitude: Float!) {
@@ -122,8 +122,8 @@ describe("Point", () => {
     test("enables creation of a node with a wgs-84-3d point", async () => {
         const id = faker.datatype.uuid();
         const size = faker.number.int({});
-        const longitude = parseFloat(faker.location.longitude());
-        const latitude = parseFloat(faker.location.latitude());
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude().toString());
         const height = faker.datatype.float();
 
         const create = `
@@ -190,9 +190,9 @@ describe("Point", () => {
     test("enables update of a node with a wgs-84 point", async () => {
         const id = faker.datatype.uuid();
         const size = faker.number.int({});
-        const longitude = parseFloat(faker.location.longitude());
-        const latitude = parseFloat(faker.location.latitude());
-        const newLatitude = parseFloat(faker.location.latitude());
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude().toString());
+        const newLatitude = parseFloat(faker.location.latitude().toString());
 
         const beforeResult = await session.run(`
             CALL {
@@ -262,10 +262,10 @@ describe("Point", () => {
     test("enables update of a node with a wgs-84-3d point", async () => {
         const id = faker.datatype.uuid();
         const size = faker.number.int({});
-        const longitude = parseFloat(faker.location.longitude());
-        const latitude = parseFloat(faker.location.latitude());
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude().toString());
         const height = faker.datatype.float();
-        const newLatitude = parseFloat(faker.location.latitude());
+        const newLatitude = parseFloat(faker.location.latitude().toString());
 
         const beforeResult = await session.run(`
             CALL {
@@ -338,8 +338,8 @@ describe("Point", () => {
         // Create node
         const id = faker.datatype.uuid();
         const size = faker.number.int({});
-        const longitude = parseFloat(faker.location.longitude());
-        const latitude = parseFloat(faker.location.latitude(88));
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude(88).toString());
 
         const result = await session.run(`
             CALL {
@@ -416,8 +416,8 @@ describe("Point", () => {
                 locations: [
                     { longitude, latitude },
                     {
-                        longitude: parseFloat(faker.location.longitude()),
-                        latitude: parseFloat(faker.location.latitude()),
+                        longitude: parseFloat(faker.location.longitude().toString()),
+                        latitude: parseFloat(faker.location.latitude().toString()),
                     },
                 ],
             },
@@ -458,12 +458,12 @@ describe("Point", () => {
             variableValues: {
                 locations: [
                     {
-                        longitude: parseFloat(faker.location.longitude()),
-                        latitude: parseFloat(faker.location.latitude()),
+                        longitude: parseFloat(faker.location.longitude().toString()),
+                        latitude: parseFloat(faker.location.latitude().toString()),
                     },
                     {
-                        longitude: parseFloat(faker.location.longitude()),
-                        latitude: parseFloat(faker.location.latitude()),
+                        longitude: parseFloat(faker.location.longitude().toString()),
+                        latitude: parseFloat(faker.location.latitude().toString()),
                     },
                 ],
             },
@@ -559,8 +559,8 @@ describe("Point", () => {
     test("enables query for equality of a node with a wgs-84-3d point", async () => {
         const id = faker.datatype.uuid();
         const size = faker.number.int({});
-        const longitude = parseFloat(faker.location.longitude());
-        const latitude = parseFloat(faker.location.latitude());
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude().toString());
         const height = faker.datatype.float();
 
         const result = await session.run(`

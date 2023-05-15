@@ -370,8 +370,8 @@ describe("array-pop", () => {
     );
 
     const point = {
-        longitude: parseFloat(faker.location.longitude()),
-        latitude: parseFloat(faker.location.latitude()),
+        longitude: parseFloat(faker.location.longitude().toString()),
+        latitude: parseFloat(faker.location.latitude().toString()),
         height: faker.datatype.float(),
     };
 

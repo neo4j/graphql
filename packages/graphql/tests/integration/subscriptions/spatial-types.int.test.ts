@@ -66,10 +66,10 @@ describe("Subscriptions to spatial types", () => {
     });
 
     test("create type with Point field", async () => {
-        const longitude1 = parseFloat(faker.location.longitude());
-        const longitude2 = parseFloat(faker.location.longitude());
-        const latitude1 = parseFloat(faker.location.latitude());
-        const latitude2 = parseFloat(faker.location.latitude());
+        const longitude1 = parseFloat(faker.location.longitude().toString());
+        const longitude2 = parseFloat(faker.location.longitude().toString());
+        const latitude1 = parseFloat(faker.location.latitude().toString());
+        const latitude2 = parseFloat(faker.location.latitude().toString());
         const height1 = faker.datatype.float();
         const height2 = faker.datatype.float();
 
@@ -177,10 +177,10 @@ describe("Subscriptions to spatial types", () => {
         );
     });
     test("update type with Point field", async () => {
-        const longitude1 = parseFloat(faker.location.longitude());
-        const latitude1 = parseFloat(faker.location.latitude());
+        const longitude1 = parseFloat(faker.location.longitude().toString());
+        const latitude1 = parseFloat(faker.location.latitude().toString());
         const height1 = faker.datatype.float();
-        const newLatitude = parseFloat(faker.location.latitude());
+        const newLatitude = parseFloat(faker.location.latitude().toString());
 
         await session.run(`
             CALL {
@@ -264,8 +264,8 @@ describe("Subscriptions to spatial types", () => {
         );
     });
     test("query type with Point field and filters", async () => {
-        const longitude = parseFloat(faker.location.longitude());
-        const latitude = parseFloat(faker.location.latitude());
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude().toString());
 
         await session.run(`
             CALL {
@@ -334,8 +334,8 @@ describe("Subscriptions to spatial types", () => {
                 locations: [
                     { longitude, latitude },
                     {
-                        longitude: parseFloat(faker.location.longitude()),
-                        latitude: parseFloat(faker.location.latitude()),
+                        longitude: parseFloat(faker.location.longitude().toString()),
+                        latitude: parseFloat(faker.location.latitude().toString()),
                     },
                 ],
             },
@@ -374,12 +374,12 @@ describe("Subscriptions to spatial types", () => {
             variableValues: {
                 locations: [
                     {
-                        longitude: parseFloat(faker.location.longitude()),
-                        latitude: parseFloat(faker.location.latitude()),
+                        longitude: parseFloat(faker.location.longitude().toString()),
+                        latitude: parseFloat(faker.location.latitude().toString()),
                     },
                     {
-                        longitude: parseFloat(faker.location.longitude()),
-                        latitude: parseFloat(faker.location.latitude()),
+                        longitude: parseFloat(faker.location.longitude().toString()),
+                        latitude: parseFloat(faker.location.latitude().toString()),
                     },
                 ],
             },
