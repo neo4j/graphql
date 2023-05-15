@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
+import { faker } from "@faker-js/faker";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { getQuerySource } from "../utils/get-query-source";
+import Neo4j from "./neo4j";
 
 const testLabel = generate({ charset: "alphabetic" });
 
@@ -74,16 +74,16 @@ describe("fragments", () => {
         readable: true,
         charset: "alphabetic",
     });
-    const movieRuntime = faker.datatype.number();
-    const movieScreenTime = faker.datatype.number();
+    const movieRuntime = faker.number.int();
+    const movieScreenTime = faker.number.int();
 
     const seriesTitle = generate({
         readable: true,
         charset: "alphabetic",
     });
-    const seriesRuntime = faker.datatype.number();
-    const seriesEpisodes = faker.datatype.number();
-    const seriesScreenTime = faker.datatype.number();
+    const seriesRuntime = faker.number.int();
+    const seriesEpisodes = faker.number.int();
+    const seriesScreenTime = faker.number.int();
 
     beforeAll(async () => {
         neo4j = new Neo4j();

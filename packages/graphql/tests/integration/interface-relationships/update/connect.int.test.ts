@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
+import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import Neo4j from "../../neo4j";
 
 describe("interface relationships", () => {
     let driver: Driver;
@@ -88,14 +88,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int();
+        const movieScreenTime = faker.number.int();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.datatype.number();
+        const seriesScreenTime = faker.number.int();
 
         const query = `
             mutation ConnectMovie($name: String, $title: String, $screenTime: Int!) {
@@ -174,14 +174,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int();
+        const movieScreenTime = faker.number.int();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.datatype.number();
+        const seriesScreenTime = faker.number.int();
 
         const query = `
             mutation ConnectMovie($name1: String, $name2: String, $title: String, $screenTime: Int!) {
@@ -279,14 +279,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int();
+        const movieScreenTime = faker.number.int();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.datatype.number();
+        const seriesScreenTime = faker.number.int();
 
         const query = `
             mutation ConnectMovie($name1: String, $name2: String, $title: String, $screenTime: Int!) {
@@ -397,14 +397,14 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int();
+        const movieScreenTime = faker.number.int();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.datatype.number();
+        const seriesScreenTime = faker.number.int();
 
         const query = `
             mutation ConnectMovie($name1: String, $name2: String, $title: String, $screenTime: Int!) {

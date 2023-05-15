@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
+import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("interface relationships", () => {
     let driver: Driver;
@@ -108,15 +108,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int();
+        const movieScreenTime = faker.number.int();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.datatype.number();
-        const seriesScreenTime = faker.datatype.number();
+        const seriesEpisodes = faker.number.int();
+        const seriesScreenTime = faker.number.int();
 
         const query = `
             query Actors($name: String) {
@@ -182,26 +182,26 @@ describe("interface relationships", () => {
 
         const movie1 = {
             title: "A",
-            runtime: faker.datatype.number(),
-            screenTime: faker.datatype.number(),
+            runtime: faker.number.int(),
+            screenTime: faker.number.int(),
         };
 
         const movie2 = {
             title: "B",
-            runtime: faker.datatype.number(),
-            screenTime: faker.datatype.number(),
+            runtime: faker.number.int(),
+            screenTime: faker.number.int(),
         };
 
         const series1 = {
             title: "C",
-            episodes: faker.datatype.number(),
-            screenTime: faker.datatype.number(),
+            episodes: faker.number.int(),
+            screenTime: faker.number.int(),
         };
 
         const series2 = {
             title: "D",
-            episodes: faker.datatype.number(),
-            screenTime: faker.datatype.number(),
+            episodes: faker.number.int(),
+            screenTime: faker.number.int(),
         };
 
         const query = gql`
@@ -259,21 +259,21 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int();
+        const movieScreenTime = faker.number.int();
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const seriesEpisodes = faker.datatype.number();
-        const seriesScreenTime = faker.datatype.number();
+        const seriesEpisodes = faker.number.int();
+        const seriesScreenTime = faker.number.int();
 
         const newMovieTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
-        const newMovieRuntime = faker.datatype.number();
+        const newMovieRuntime = faker.number.int();
 
         const query = `
             query Actors($name: String) {
@@ -344,11 +344,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int();
+        const movieScreenTime = faker.number.int();
 
-        const seriesEpisodes = faker.datatype.number();
-        const seriesScreenTime = faker.datatype.number();
+        const seriesEpisodes = faker.number.int();
+        const seriesScreenTime = faker.number.int();
 
         const query = `
             query Actors($name: String, $title: String) {
@@ -415,11 +415,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int();
+        const movieScreenTime = faker.number.int();
 
-        const seriesEpisodes = faker.datatype.number();
-        const seriesScreenTime = faker.datatype.number();
+        const seriesEpisodes = faker.number.int();
+        const seriesScreenTime = faker.number.int();
 
         const query = `
             query Actors($name: String, $title: String) {
@@ -479,11 +479,11 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int();
+        const movieScreenTime = faker.number.int();
 
-        const seriesEpisodes = faker.datatype.number();
-        const seriesScreenTime = faker.datatype.number();
+        const seriesEpisodes = faker.number.int();
+        const seriesScreenTime = faker.number.int();
 
         const query = `
             query Actors($name: String, $title: String, $movieTitle: String) {
