@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -121,10 +120,15 @@ describe("auth/jwks-endpoint", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
+            type JWTPayload @jwtPayload {
+                roles: [String!]! @jwtClaim(path: "https://myAuthTest\\\\.auth0\\\\.com/jwt/claims.my-auth-roles")
+            }
+
             type User {
                 id: ID
             }
-            extend type User @auth(rules: [{ operations: [READ], roles: ["standard-user"] }])
+
+            extend type User @authorization(validate: [{ operations: [READ], where: { jwtPayload: { roles_INCLUDES: "standard-user" } } }])
         `;
 
         const userId = generate({
@@ -141,11 +145,12 @@ describe("auth/jwks-endpoint", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
-                    rolesPath: "https://myAuthTest\\.auth0\\.com/jwt/claims.my-auth-roles",
-                }),
+            features: {
+                authorization: {
+                    key: {
+                        url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
+                },
             },
         });
 
@@ -185,10 +190,14 @@ describe("auth/jwks-endpoint", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
+            type JWTPayload @jwtPayload {
+                roles: [String!]! @jwtClaim(path: "https://myAuthTest\\\\.auth0\\\\.com/jwt/claims.my-auth-roles")
+            }
+
             type User {
                 id: ID
             }
-            extend type User @auth(rules: [{ operations: [READ], roles: ["editor"] }])
+            extend type User @authorization(validate: [{ operations: [READ], where: { jwtPayload: { roles_INCLUDES: "editor" } } }])
         `;
 
         const userId = generate({
@@ -205,11 +214,12 @@ describe("auth/jwks-endpoint", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
-                    rolesPath: "https://myAuthTest\\.auth0\\.com/jwt/claims.my-auth-roles",
-                }),
+            features: {
+                authorization: {
+                    key: {
+                        url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
+                },
             },
         });
 
@@ -268,11 +278,15 @@ describe("auth/jwks-endpoint", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
-                    issuer: "https://testcompany.com",
-                }),
+            features: {
+                authorization: {
+                    key: {
+                        url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
+                    verifyOptions: {
+                        issuer: "https://testcompany.com",
+                    },
+                },
             },
         });
 
@@ -329,11 +343,15 @@ describe("auth/jwks-endpoint", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
-                    issuer: "https://company.com",
-                }),
+            features: {
+                authorization: {
+                    key: {
+                        url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
+                    verifyOptions: {
+                        issuer: "https://company.com",
+                    },
+                },
             },
         });
 
@@ -391,11 +409,15 @@ describe("auth/jwks-endpoint", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
-                    audience: "urn:user",
-                }),
+            features: {
+                authorization: {
+                    key: {
+                        url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
+                    verifyOptions: {
+                        audience: "urn:user",
+                    },
+                },
             },
         });
 
@@ -452,11 +474,15 @@ describe("auth/jwks-endpoint", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
-                    audience: "urn:user",
-                }),
+            features: {
+                authorization: {
+                    key: {
+                        url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
+                    verifyOptions: {
+                        audience: "urn:user",
+                    },
+                },
             },
         });
 

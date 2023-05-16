@@ -26,6 +26,7 @@ import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("auth/allow", () => {
     let driver: Driver;
@@ -62,7 +63,7 @@ describe("auth/allow", () => {
     });
 
     describe("read", () => {
-        test.only("should throw forbidden when reading a node with invalid allow", async () => {
+        test("should throw forbidden when reading a node with invalid allow", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
@@ -70,7 +71,7 @@ describe("auth/allow", () => {
                     id: ID
                 }
 
-                extend type ${userType.name} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${userType.name} @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
             `;
 
             const userId = generate({
@@ -87,12 +88,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -125,7 +122,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                    password: String @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
                 }
             `;
 
@@ -143,12 +140,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -186,7 +179,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                    password: String @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
                 }
             `;
 
@@ -210,12 +203,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -253,7 +242,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
+                    password: String @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
                 }
             `;
 
@@ -281,12 +270,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -326,7 +311,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${postType.name}
-                    @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                    @auth(rules: [{ operations: [READ], allow: { creator: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -350,12 +335,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -395,7 +376,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${postType.name}
-                    @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                    @auth(rules: [{ operations: [READ], allow: { creator: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -423,12 +404,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -476,7 +453,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${commentType.name}
-                    @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                    @auth(rules: [{ operations: [READ], allow: { creator: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -506,12 +483,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -546,7 +519,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name}
-                    @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
+                    @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub"  } }])
             `;
 
             const userId = generate({
@@ -565,12 +538,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -603,7 +572,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
+                    password: String @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub" }}])
                 }
 
             `;
@@ -624,12 +593,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -667,7 +632,7 @@ describe("auth/allow", () => {
                     id: ID
                 }
 
-                extend type ${userType.name} @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${userType.name} @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub" }}])
             `;
 
             const userId = generate({
@@ -693,12 +658,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -737,7 +698,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
+                    password: String @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub" }}])
                 }
             `;
 
@@ -764,12 +725,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -803,7 +760,7 @@ describe("auth/allow", () => {
                     id: ID
                 }
 
-                extend type ${userType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE], where: { node: { id: "$jwt.sub" } } }])
+                extend type ${userType.name} @auth(rules: [{ operations: [DELETE], allow: { id: "$jwt.sub" }}])
             `;
 
             const userId = generate({
@@ -822,12 +779,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -866,7 +819,7 @@ describe("auth/allow", () => {
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${postType.name} @auth(rules: [{ operations: [DELETE], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -898,12 +851,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -943,7 +892,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${postType.name} @auth(rules: [{ operations: [DISCONNECT], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -969,12 +918,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -1019,7 +964,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${postType.name} @auth(rules: [{ operations: [DISCONNECT], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -1059,12 +1004,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -1106,7 +1047,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${postType.name} @auth(rules: [{ operations: [CONNECT], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -1132,12 +1073,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });
@@ -1183,7 +1120,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
+                extend type ${postType.name} @auth(rules: [{ operations: [CONNECT], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -1223,12 +1160,8 @@ describe("auth/allow", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });

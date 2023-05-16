@@ -45,6 +45,10 @@ describe("@alias directive", () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
         const typeDefs = `
+            type JWTPayload @jwtPayload {
+                roles: [String!]!
+            }
+
             interface AliasInterface {
                 id: ID! @alias(property: "dbId")
                 name: String! @alias(property: "toBeOverridden")
@@ -59,7 +63,7 @@ describe("@alias directive", () => {
 
             type ${AliasDirectiveTestMovie} {
                 title: String! @alias(property: "dbTitle")
-                titleAuth: String @alias(property: "dbTitle") @auth(rules: [{roles: ["reader"]}])
+                titleAuth: String @alias(property: "dbTitle") @authorization(validate: [{ where: { jwtPayload: { roles_INCLUDES: "reader" } } }])
                 year: Int
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
@@ -69,7 +73,7 @@ describe("@alias directive", () => {
                 relationshipCreatedAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 
-            type ${ProtectedUser} @auth(rules: [{ allow: { name: "$jwt.sub" } }]) {
+            type ${ProtectedUser} @authorization(validate: [{ when: [BEFORE], where: { node: { name: "$jwt.sub" } } }]) {
                 name: String! @alias(property: "dbName")
             }
         `;

@@ -58,7 +58,7 @@ describe("326", () => {
 
             type User {
                 id: ID
-                email: String! @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
+                email: String! @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
         `;
 

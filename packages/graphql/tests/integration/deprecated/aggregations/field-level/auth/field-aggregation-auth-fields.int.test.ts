@@ -17,35 +17,32 @@
  * limitations under the License.
  */
 
-import jsonwebtoken from "jsonwebtoken";
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import { IncomingMessage } from "http";
-import { Socket } from "net";
-import Neo4j from "../../../neo4j";
-import { Neo4jGraphQL } from "../../../../../src/classes";
-import { UniqueType } from "../../../../utils/graphql-types";
+import type { IncomingMessage } from "http";
+import Neo4j from "../../../../neo4j";
+import { Neo4jGraphQL } from "../../../../../../src/classes";
+import { UniqueType } from "../../../../../utils/graphql-types";
+import { createJwtRequest } from "../../../../../utils/create-jwt-request";
 
 describe(`Field Level Auth Where Requests`, () => {
     let neoSchema: Neo4jGraphQL;
-    let token: string;
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
+    let req: IncomingMessage;
     const typeMovie = new UniqueType("Movie");
     const typeActor = new UniqueType("Actor");
     const typeDefs = `
     type ${typeMovie.name} {
         name: String
         year: Int
-        createdAt: DateTime
         ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
     }
 
     type ${typeActor.name} {
-        name: String
+        name: String @auth(rules: [{ isAuthenticated: true }])
         year: Int
-        createdAt: DateTime
         testId: Int
         ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
     }`;
@@ -58,30 +55,21 @@ describe(`Field Level Auth Where Requests`, () => {
 
         await session.run(`
             CREATE (m:${typeMovie.name}
-                {name: "Terminator",year:1990,createdAt: datetime()})
+                {name: "Terminator",year:1999})
                 <-[:ACTED_IN]-
-                (:${typeActor.name} { name: "Arnold", year: 1970, createdAt: datetime(), testId: 1234})
-                CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", year:1985, createdAt: datetime(), testId: 1235})`);
-
-        const extendedTypeDefs = `${typeDefs}
-        extend type ${typeActor.name} @auth(rules: [{ where: { testId: "$jwt.sub" } }])`;
+                (:${typeActor.name} { name: "Arnold", year: 1970 })
+                CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", year:1985 })`);
 
         neoSchema = new Neo4jGraphQL({
-            typeDefs: extendedTypeDefs,
+            typeDefs,
             features: {
                 authorization: {
-                    key: "secret",
+                    key: secret,
                 },
             },
         });
 
-        token = jsonwebtoken.sign(
-            {
-                roles: [],
-                sub: 1234,
-            },
-            secret
-        );
+        req = createJwtRequest(secret);
     });
 
     afterAll(async () => {
@@ -89,27 +77,60 @@ describe(`Field Level Auth Where Requests`, () => {
         await driver.close();
     });
 
-    test("authenticated query", async () => {
+    test("unauthenticated query on normal field", async () => {
         const query = `query {
             ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate(where: {year_GT: 10}) {
-                    count
+                ${typeActor.plural}Aggregate {
                     node {
                         year {
                             max
-                        },
-                        name {
-                            longest,
-                            shortest
+                            }
                         }
-                    },
                     }
                 }
             }`;
 
-        const socket = new Socket({ readable: true });
-        const req = new IncomingMessage(socket);
-        req.headers.authorization = `Bearer ${token}`;
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        expect(gqlResult.errors).toBeUndefined();
+    });
+
+    test("unauthenticated query on auth field", async () => {
+        const query = `query {
+            ${typeMovie.plural} {
+                ${typeActor.plural}Aggregate {
+                    node {
+                        name {
+                            longest
+                            }
+                        }
+                    }
+                }
+            }`;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+    });
+
+    test("authenticated query on auth field", async () => {
+        const query = `query {
+            ${typeMovie.plural} {
+                ${typeActor.plural}Aggregate {
+                    node {
+                        name {
+                            longest
+                            }
+                        }
+                    }
+                }
+            }`;
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
@@ -117,17 +138,5 @@ describe(`Field Level Auth Where Requests`, () => {
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
-            count: 1,
-            node: {
-                year: {
-                    max: 1970,
-                },
-                name: {
-                    longest: "Arnold",
-                    shortest: "Arnold",
-                },
-            },
-        });
     });
 });

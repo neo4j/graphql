@@ -24,6 +24,7 @@ import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { Neo4jGraphQLAuthJWTPlugin } from "../../../../../plugins/graphql-plugin-auth/src";
 
 describe("auth/bind", () => {
     let driver: Driver;
@@ -87,12 +88,8 @@ describe("auth/bind", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
                 plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                     subscriptions: plugin,
                 },
             });

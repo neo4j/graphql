@@ -1564,8 +1564,12 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
+                type JWTPayload @jwtPayload {
+                    roles: [String!]!
+                }
+
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @auth(rules: [{ roles: ["admin"] }]) {
+                @authorization(validate: [{ where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
                     name: String!
                     born: Int!
                     actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -1645,8 +1649,12 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
+                type JWTPayload @jwtPayload {
+                    roles: [String!]!
+                }
+
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @auth(rules: [{ roles: ["admin"] }]) {
+                @authorization(validate: [{ where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
                     name: String!
                     born: Int!
                     actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -1843,8 +1851,12 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
+                type JWTPayload @jwtPayload {
+                    roles: [String!]!
+                }
+
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @auth(rules: [{ roles: ["admin"], operations: [READ] }]) {
+                @authorization(validate: [{ operations: [READ], where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
                     name: String!
                     born: Int!
                     actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)

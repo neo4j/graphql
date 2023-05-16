@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -55,7 +54,7 @@ describe("auth/object-path", () => {
                 id: ID
             }
 
-            extend type ${User} @auth(rules: [{ operations: [READ], allow: { id: "$jwt.nested.object.path.sub" } }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.nested.object.path.sub" } } }])
         `;
 
         const userId = generate({
@@ -122,7 +121,7 @@ describe("auth/object-path", () => {
                 creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            extend type ${Post} @auth(rules: [{ operations: [READ], allow: { creator: { id: "$context.userId" } } }])
+            extend type ${Post} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$context.userId" } } } }])
         `;
 
         const userId = generate({
@@ -176,11 +175,15 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
+            type JWTPayload @jwtPayload {
+                roles: [String!]! @jwtClaim(path: "https://github\\\\.com/claims.https://github\\\\.com/claims/roles")
+            }
+
             type ${User} {
                 id: ID
             }
 
-            extend type ${User} @auth(rules: [{ operations: [READ], roles: ["admin"] }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
         `;
 
         const userId = generate({
@@ -197,11 +200,10 @@ describe("auth/object-path", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                    rolesPath: "https://github\\.com/claims.https://github\\.com/claims/roles",
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -233,11 +235,15 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
+            type JWTPayload @jwtPayload {
+                roles: [String!]! 
+            }
+
             type ${User} {
                 id: ID
             }
 
-            extend type ${User} @auth(rules: [{ operations: [READ], roles: ["admin"] }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
         `;
 
         const userId = generate({

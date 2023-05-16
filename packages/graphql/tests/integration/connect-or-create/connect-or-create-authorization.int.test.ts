@@ -45,12 +45,16 @@ describe("Update -> ConnectOrCreate", () => {
         driver = await neo4j.getDriver();
 
         typeDefs = gql`
+        type JWTPayload @jwtPayload {
+            roles: [String!]!
+        }
+        
         type ${typeMovie.name} {
             title: String
             genres: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
         }
 
-        type ${typeGenre.name} @auth(rules: [{ operations: [CONNECT, CREATE], roles: ["admin"] }]) {
+        type ${typeGenre.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP, CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
             name: String @unique
         }
         `;

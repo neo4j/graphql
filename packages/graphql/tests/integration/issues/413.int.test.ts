@@ -50,12 +50,17 @@ describe("413", () => {
             }
 
             extend type JobPlan
-                @auth(
-                    rules: [
-                        { operations: [CREATE, UPDATE], bind: { tenantID: "$context.jwt.tenant_id" } }
+                @authorization(
+                    validate: [
                         {
+                            when: [AFTER]
+                            operations: [CREATE, UPDATE]
+                            where: { node: { tenantID: "$context.jwt.tenant_id" } }
+                        }
+                        {
+                            when: [BEFORE]
                             operations: [READ, UPDATE, CONNECT, DISCONNECT, DELETE]
-                            allow: { tenantID: "$context.jwt.tenant_id" }
+                            where: { node: { tenantID: "$context.jwt.tenant_id" } }
                         }
                     ]
                 )

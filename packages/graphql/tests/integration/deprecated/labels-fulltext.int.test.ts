@@ -30,6 +30,7 @@ import { delay } from "../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { SCORE_FIELD } from "../../../src/graphql/directives/fulltext";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
@@ -1446,10 +1447,8 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -1516,10 +1515,8 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -1582,10 +1579,8 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -1663,10 +1658,8 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -1728,10 +1721,8 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -1796,10 +1787,8 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                 },
             });
             generatedSchema = await neoSchema.getSchema();
@@ -1861,10 +1850,8 @@ describe("@fulltext directive", () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
                 },
             });
             generatedSchema = await neoSchema.getSchema();

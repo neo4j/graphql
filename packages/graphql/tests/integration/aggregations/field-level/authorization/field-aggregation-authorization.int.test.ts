@@ -24,6 +24,7 @@ import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 import { UniqueType } from "../../../../utils/graphql-types";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("Field Level Aggregations Auth", () => {
     let driver: Driver;
@@ -87,8 +88,8 @@ describe("Field Level Aggregations Auth", () => {
                     typeDefs: extendedTypeDefs,
                     features: {
                         authorization: {
-                            key: "secret",
-                        },
+                            key: "secret"
+                        }
                     },
                 });
 
@@ -168,16 +169,15 @@ describe("Field Level Aggregations Auth", () => {
 
             beforeAll(() => {
                 const extendedTypeDefs = `${typeDefs}
-                extend type ${typeMovie.name} @auth(rules: [{
-                    allow: { testId: "$jwt.sub" }
-                }])`;
+                extend type ${typeMovie.name} 
+                    @authorization(validate: [{ when: [BEFORE], where: { node: { testId: "$jwt.sub" } } }])
 
                 neoSchema = new Neo4jGraphQL({
                     typeDefs: extendedTypeDefs,
                     features: {
                         authorization: {
-                            key: "secret",
-                        },
+                            key: "secret"
+                        }
                     },
                 });
             });
