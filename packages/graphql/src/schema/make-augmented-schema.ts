@@ -928,11 +928,12 @@ function makeAugmentedSchema(
 
     let parsedDoc = parse(generatedTypeDefs);
 
-    const emptyObjectsInterfaces = (
-        parsedDoc.definitions.filter(
-            (x) => (x.kind === "ObjectTypeDefinition" && !isRootType(x)) || x.kind === "InterfaceTypeDefinition"
-        ) as (InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode)[]
-    ).filter((x) => !x.fields?.length);
+    const emptyObjectsInterfaces = parsedDoc.definitions
+        .filter(
+            (x): x is InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode =>
+                (x.kind === Kind.OBJECT_TYPE_DEFINITION && !isRootType(x)) || x.kind === Kind.INTERFACE_TYPE_DEFINITION
+        )
+        .filter((x) => !x.fields?.length);
 
     if (emptyObjectsInterfaces.length) {
         throw new Error(
