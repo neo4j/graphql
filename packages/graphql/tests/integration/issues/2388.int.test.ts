@@ -47,30 +47,34 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
         session = await neo4j.getSession();
 
         const typeDefs = `
+        type JWTPayload @jwtPayload {
+            roles: [String!]!
+        }
+
         type ${PartAddress}
-        @auth(rules: [
-            { operations: [READ, CREATE, UPDATE, DELETE, CONNECT, DISCONNECT], roles: ["upstream"] }
-            { operations: [READ], roles: ["downstream"] }
-        ])
+            @authorization(validate: [
+                { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwtPayload: { roles_INCLUDES: "upstream" } } }
+                { operations: [READ], where: { jwtPayload: { roles_INCLUDES: "downstream" } } }
+            ])
         {
             id: ID! @id
         }
 
         type ${PartUsage}
-        @auth(rules: [
-            { operations: [READ, CREATE, UPDATE, DELETE, CONNECT, DISCONNECT], roles: ["upstream"] }
-            { operations: [READ], roles: ["downstream"] }
-        ])
+            @authorization(validate: [
+                { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwtPayload: { roles_INCLUDES: "upstream" } } }
+                { operations: [READ], where: { jwtPayload: { roles_INCLUDES: "downstream" } } }
+            ])
         {
             partAddress: ${PartAddress}
             @relationship(type: "BELONGS_TO", direction: OUT)
         }
 
         type ${Part}
-        @auth(rules: [
-            { operations: [READ, CREATE, UPDATE, DELETE, CONNECT, DISCONNECT], roles: ["upstream"] }
-            { operations: [READ], roles: ["downstream"] }
-        ])
+            @authorization(validate: [
+                { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwtPayload: { roles_INCLUDES: "upstream" } } }
+                { operations: [READ], where: { jwtPayload: { roles_INCLUDES: "downstream" } } }
+            ])
         {
             partUsages: [${PartUsage}!]!
             @relationship(type: "USAGE_OF", direction: IN)
