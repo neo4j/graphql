@@ -59,7 +59,7 @@ describe("413", () => {
                         }
                         {
                             when: [BEFORE]
-                            operations: [READ, UPDATE, CONNECT, DISCONNECT, DELETE]
+                            operations: [READ, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, DELETE]
                             where: { node: { tenantID: "$context.jwt.tenant_id" } }
                         }
                     ]

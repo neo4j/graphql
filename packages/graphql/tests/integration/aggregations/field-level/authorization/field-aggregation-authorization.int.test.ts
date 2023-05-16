@@ -88,8 +88,8 @@ describe("Field Level Aggregations Auth", () => {
                     typeDefs: extendedTypeDefs,
                     features: {
                         authorization: {
-                            key: "secret"
-                        }
+                            key: "secret",
+                        },
                     },
                 });
 
@@ -171,13 +171,14 @@ describe("Field Level Aggregations Auth", () => {
                 const extendedTypeDefs = `${typeDefs}
                 extend type ${typeMovie.name} 
                     @authorization(validate: [{ when: [BEFORE], where: { node: { testId: "$jwt.sub" } } }])
+                `;
 
                 neoSchema = new Neo4jGraphQL({
                     typeDefs: extendedTypeDefs,
                     features: {
                         authorization: {
-                            key: "secret"
-                        }
+                            key: "secret",
+                        },
                     },
                 });
             });
