@@ -84,9 +84,10 @@ import { addArrayMethodsToITC } from "./array-methods";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
+import filterInterfaceTypes from "./make-augmented-schema/filter-interface-types";
 import { addMathOperatorsToITC } from "./math";
-import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 import { getSchemaConfigurationFlags, schemaConfigurationFromSchemaExtensions } from "./schema-configuration";
+import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 
 function makeAugmentedSchema(
     document: DocumentNode,
@@ -145,7 +146,7 @@ function makeAugmentedSchema(
 
     const globalSchemaConfiguration = schemaConfigurationFromSchemaExtensions(schemaExtensions);
 
-    let { interfaceTypes } = definitionNodes;
+    const { interfaceTypes } = definitionNodes;
 
     const extraDefinitions = [
         ...enumTypes,
@@ -179,10 +180,10 @@ function makeAugmentedSchema(
 
     const hasGlobalNodes = addGlobalNodeFields(nodes, composer);
 
-    const relationshipProperties = interfaceTypes.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
-    const interfaceRelationships = interfaceTypes.filter((i) => interfaceRelationshipNames.has(i.name.value));
-    interfaceTypes = interfaceTypes.filter(
-        (i) => !(relationshipPropertyInterfaceNames.has(i.name.value) || interfaceRelationshipNames.has(i.name.value))
+    const { relationshipProperties, interfaceRelationships, filteredInterfaceTypes } = filterInterfaceTypes(
+        interfaceTypes,
+        relationshipPropertyInterfaceNames,
+        interfaceRelationshipNames
     );
 
     const relationshipFields = new Map<string, ObjectFields>();
@@ -214,7 +215,7 @@ function makeAugmentedSchema(
 
         const relFields = getObjFieldMeta({
             enums: enumTypes,
-            interfaces: interfaceTypes,
+            interfaces: filteredInterfaceTypes,
             objects: objectTypes,
             scalars: scalarTypes,
             unions: unionTypes,
@@ -303,7 +304,7 @@ function makeAugmentedSchema(
 
         const interfaceFields = getObjFieldMeta({
             enums: enumTypes,
-            interfaces: [...interfaceTypes, ...interfaceRelationships],
+            interfaces: [...filteredInterfaceTypes, ...interfaceRelationships],
             objects: objectTypes,
             scalars: scalarTypes,
             unions: unionTypes,
@@ -856,7 +857,7 @@ function makeAugmentedSchema(
                 obj: cypherType,
                 scalars: scalarTypes,
                 enums: enumTypes,
-                interfaces: interfaceTypes,
+                interfaces: filteredInterfaceTypes,
                 unions: unionTypes,
                 objects: objectTypes,
                 callbacks,
@@ -890,12 +891,12 @@ function makeAugmentedSchema(
         }
     });
 
-    interfaceTypes.forEach((inter) => {
+    filteredInterfaceTypes.forEach((inter) => {
         const objectFields = getObjFieldMeta({
             obj: inter,
             scalars: scalarTypes,
             enums: enumTypes,
-            interfaces: interfaceTypes,
+            interfaces: filteredInterfaceTypes,
             unions: unionTypes,
             objects: objectTypes,
             callbacks,
