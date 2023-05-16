@@ -456,7 +456,7 @@ describe("Global node resolution", () => {
             creator: ${typeUser.name}! @relationship(type: "CREATED", direction: IN)
           }
 
-          extend type ${typeFilm.name} @auth(rules: [{ allow: { creator: { dbId: "$jwt.sub" } } }])
+          extend type ${typeFilm.name} @authorization(validate: [{ when: [BEFORE], where: { node: { creator: { dbId: "$jwt.sub" } } } }])
         `;
 
         const query = `
@@ -513,7 +513,7 @@ describe("Global node resolution", () => {
             name: String!
           }
 
-          extend type ${typeUser.name} @auth(rules: [{ allow: { dbId: "$jwt.sub" } }])
+          extend type ${typeUser.name} @authorization(validate: [{ when: [BEFORE], where: { node: { dbId: "$jwt.sub" } } }])
       `;
 
         const query = `
@@ -564,14 +564,16 @@ describe("Global node resolution", () => {
         const session = await neo4j.getSession();
         const typeDefs = `
 
+        type JWTPayload @jwtPayload {
+          roles: [String!]!
+        }
+
         type ${typeUser.name} {
           dbId: ID! @id(global: true) @alias(property: "id")
           name: String!
         }
 
-        extend type ${typeUser.name} @auth(rules: [
-          { allow: { OR: [{ roles: ["admin"] }, { dbId: "$jwt.sub" } ] } }
-        ])
+        extend type ${typeUser.name} @authorization(validate: [{ when: [BEFORE], where: { OR: [{ jwtPayload: { roles_INCLUDES: "admin" }, node: { dbId: "$jwt.sub" } }] } }])
     `;
 
         const query = `
