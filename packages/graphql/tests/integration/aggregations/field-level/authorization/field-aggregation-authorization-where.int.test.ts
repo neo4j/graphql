@@ -99,7 +99,7 @@ describe(`Field Level Authorization Where Requests`, () => {
         });
     });
 
-    test("unauthenticated query", async () => {
+    test.only("unauthenticated query", async () => {
         const query = `query {
             ${typeMovie.plural} {
                 ${typeActor.plural}Aggregate {

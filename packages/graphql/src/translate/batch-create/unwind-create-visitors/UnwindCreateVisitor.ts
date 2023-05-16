@@ -111,32 +111,34 @@ export class UnwindCreateVisitor implements Visitor {
 
         const authNodeClause = this.getAuthNodeClause(create.node, this.context, currentNode);
 
-        let authFieldsClause;
+        let authorizationFieldsClause: Cypher.CompositeClause | Cypher.With | undefined;
+
         const authorizationPredicateReturn = this.getAuthorizationFieldClause(create, this.context, currentNode);
         if (authorizationPredicateReturn) {
             const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
 
             if (predicate) {
                 if (preComputedSubqueries && !preComputedSubqueries.empty) {
-                    authFieldsClause = Cypher.concat(
+                    authorizationFieldsClause = Cypher.concat(
                         new Cypher.With("*"),
                         preComputedSubqueries,
                         new Cypher.With("*").where(predicate)
                     );
                 }
 
-                authFieldsClause = new Cypher.With("*").where(predicate);
+                authorizationFieldsClause = new Cypher.With("*").where(predicate);
             }
-        } else {
-            // TODO: Authorization - delete for 4.0.0
-            authFieldsClause = this.getAuthFieldClause(create, this.context, currentNode, this.unwindVar);
         }
+
+        // TODO: Authorization - delete for 4.0.0
+        const authFieldsClause = this.getAuthFieldClause(create, this.context, currentNode, this.unwindVar);
 
         const clause = Cypher.concat(
             ...filterTruthy([
                 createClause,
                 ...nestedClauses,
                 authNodeClause,
+                authorizationFieldsClause,
                 authFieldsClause,
                 relationshipValidationClause,
                 new Cypher.Return(currentNode),
@@ -226,29 +228,31 @@ export class UnwindCreateVisitor implements Visitor {
 
         const authNodeClause = this.getAuthNodeClause(nestedCreate.node, this.context, currentNode);
 
-        let authFieldsClause;
+        let authorizationFieldsClause: Cypher.CompositeClause | Cypher.With | undefined;
+
         const authorizationPredicateReturn = this.getAuthorizationFieldClause(nestedCreate, this.context, currentNode);
         if (authorizationPredicateReturn) {
             const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
 
             if (predicate) {
                 if (preComputedSubqueries && !preComputedSubqueries.empty) {
-                    authFieldsClause = Cypher.concat(
+                    authorizationFieldsClause = Cypher.concat(
                         new Cypher.With("*"),
                         preComputedSubqueries,
                         new Cypher.With("*").where(predicate)
                     );
                 }
 
-                authFieldsClause = new Cypher.With("*").where(predicate);
+                authorizationFieldsClause = new Cypher.With("*").where(predicate);
             }
-        } else {
-            // TODO: Authorization - delete for 4.0.0
-            authFieldsClause = this.getAuthFieldClause(nestedCreate, this.context, currentNode, nodeVar);
         }
+
+        // TODO: Authorization - delete for 4.0.0
+        const authFieldsClause = this.getAuthFieldClause(nestedCreate, this.context, currentNode, nodeVar);
 
         subQueryStatements.push(...nestedClauses);
         subQueryStatements.push(authNodeClause);
+        subQueryStatements.push(authorizationFieldsClause);
         subQueryStatements.push(authFieldsClause);
         subQueryStatements.push(relationshipValidationClause);
         subQueryStatements.push(new Cypher.Return([Cypher.collect(new Cypher.Literal(null)), new Cypher.Variable()]));

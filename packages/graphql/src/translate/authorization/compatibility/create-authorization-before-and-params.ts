@@ -70,13 +70,13 @@ export function createAuthorizationBeforeAndParams({
             const predicateCypher = new Cypher.RawCypher((env) => {
                 return predicate.getCypher(env);
             });
-            const { cypher, params } = predicateCypher.build();
+            const { cypher, params } = predicateCypher.build("authorization_");
             result.cypher = cypher;
             result.params = params;
         }
 
         if (preComputedSubqueries && !preComputedSubqueries.empty) {
-            const { cypher } = preComputedSubqueries.build();
+            const { cypher } = preComputedSubqueries.build("authorization_");
             result.subqueries = cypher;
         }
 
