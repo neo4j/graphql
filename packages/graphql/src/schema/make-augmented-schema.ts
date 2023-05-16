@@ -89,6 +89,10 @@ import { addMathOperatorsToITC } from "./math";
 import { getSchemaConfigurationFlags, schemaConfigurationFromSchemaExtensions } from "./schema-configuration";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 
+function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
+    return "name" in x;
+}
+
 function makeAugmentedSchema(
     document: DocumentNode,
     {
@@ -923,10 +927,6 @@ function makeAugmentedSchema(
     const generatedTypeDefs = composer.toSDL();
 
     let parsedDoc = parse(generatedTypeDefs);
-
-    function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
-        return "name" in x;
-    }
 
     const emptyObjectsInterfaces = (
         parsedDoc.definitions.filter(
