@@ -225,7 +225,8 @@ export class Executor {
 
         if (info) {
             const source = {
-                query: print(info.operation),
+                // We avoid using print here, when possible, as it is a heavy process
+                query: info.operation.loc?.source.body || print(info.operation),
                 params: info.variableValues,
             };
 
