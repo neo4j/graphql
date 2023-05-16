@@ -525,6 +525,7 @@ export interface Neo4jAuthorizationSettings {
     key: Key | ((req: RequestLike) => Key);
     verify?: boolean;
     verifyOptions?: JWTVerifyOptions;
+    globalAuthentication?: boolean;
 }
 export interface RemoteJWKS {
     url: string | URL;

@@ -38,6 +38,7 @@ import { parseCypherAnnotation } from "./parser/cypher-annotation";
 import { parseKeyAnnotation } from "./parser/key-annotation";
 import { parseArguments } from "./parser/utils";
 import { Relationship } from "./relationship/Relationship";
+import { parseAuthenticationAnnotation } from "./parser/authentication-annotation";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionNodes = getDefinitionNodes(document);
@@ -268,6 +269,8 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
                     return parseCypherAnnotation(directive);
                 case "authorization":
                     return parseAuthorizationAnnotation(directive);
+                case "authentication":
+                    return parseAuthenticationAnnotation(directive);
                 default:
                     return undefined;
             }
@@ -289,6 +292,8 @@ function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotati
             switch (directive.name.value) {
                 case "authorization":
                     return parseAuthorizationAnnotation(directive);
+                case "authentication":
+                    return parseAuthenticationAnnotation(directive);
                 default:
                     return undefined;
             }

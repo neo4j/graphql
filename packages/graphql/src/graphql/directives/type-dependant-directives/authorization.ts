@@ -55,6 +55,17 @@ const AUTHORIZATION_VALIDATE_OPERATION = new GraphQLEnumType({
     },
 });
 
+const AUTHORIZATION_FILTER_OPERATION = new GraphQLEnumType({
+    name: "AuthorizationFilterOperation",
+    values: {
+        READ: { value: "READ" },
+        UPDATE: { value: "UPDATE" },
+        DELETE: { value: "DELETE" },
+        CREATE_RELATIONSHIP: { value: "CREATE_RELATIONSHIP" },
+        DELETE_RELATIONSHIP: { value: "DELETE_RELATIONSHIP" },
+    },
+});
+
 function createAuthorizationWhere(typeDefinitionName: string, schema: GraphQLSchema): GraphQLInputObjectType {
     /**
      * Both inputWhere and JWTPayloadWhere can be undefined,
@@ -100,7 +111,7 @@ function createAuthorizationFilterRule(
         fields() {
             return {
                 operations: {
-                    type: new GraphQLList(AUTHORIZATION_VALIDATE_OPERATION),
+                    type: new GraphQLList(AUTHORIZATION_FILTER_OPERATION),
                     defaultValue: ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"],
                 },
                 requireAuthentication: {
@@ -206,9 +217,11 @@ export function getStaticAuthorizationDefinitions(
     const schema = new GraphQLSchema({});
     const authorizationValidateStage = astFromEnumType(AUTHORIZATION_VALIDATE_STAGE, schema);
     const authorizationValidateOperation = astFromEnumType(AUTHORIZATION_VALIDATE_OPERATION, schema);
+    const authorizationFilterOperation = astFromEnumType(AUTHORIZATION_FILTER_OPERATION, schema);
     const ASTs: Array<InputObjectTypeDefinitionNode | EnumTypeDefinitionNode> = [
         authorizationValidateStage,
         authorizationValidateOperation,
+        authorizationFilterOperation,
     ];
 
     const JWTPayloadWere = createJWTPayloadWhere(schema, JWTPayloadDefinition);

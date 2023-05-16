@@ -37,7 +37,7 @@ export class Neo4jGraphQLAuthorization {
     public async decode(req: RequestLike): Promise<JWTPayload | undefined> {
         const bearerToken = getToken(req);
         if (!bearerToken) {
-            return;
+            throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
         }
         const token = parseBearerToken(bearerToken);
         if (!token) {
@@ -52,17 +52,21 @@ export class Neo4jGraphQLAuthorization {
             return await this.verify(token, secret);
         } catch (error) {
             debug("%s", error);
-            if (error instanceof errors.JWSInvalid) {
-                throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
-            }
-            throw new Neo4jError("Forbidden", AUTH_FORBIDDEN_ERROR);
+            throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
         }
     }
 
     public decodeBearerToken(bearerToken: string): JWTPayload | undefined {
         const token = parseBearerToken(bearerToken);
-        if (!token) throw new Error();
-        return decodeJwt(token);
+        if (!token) {
+            throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
+        }
+        try {
+            return decodeJwt(token);
+        } catch (error) {
+            debug("%s", error);
+            throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
+        }
     }
 
     private resolveKey(req: RequestLike): Key {

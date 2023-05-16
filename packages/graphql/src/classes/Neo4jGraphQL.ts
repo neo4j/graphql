@@ -39,6 +39,7 @@ import checkNeo4jCompat from "./utils/verify-database";
 import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
 import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
 import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
+import type { WrapResolverArguments } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
@@ -52,7 +53,8 @@ import type { TypeSource } from "@graphql-tools/utils";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
-import { makeSchemaToAugment } from "../schema/make-schema-to-augment";
+import { makeDocumentToAugment } from "../schema/make-document-to-augment";
+import { Neo4jGraphQLError } from "./Error";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -98,6 +100,7 @@ class Neo4jGraphQL {
     private _nodes?: Node[];
     private _relationships?: Relationship[];
     private plugins?: Neo4jGraphQLPlugins;
+
     private jwtPayloadFieldsMap?: Map<string, string>;
 
     private schemaModel?: Neo4jGraphQLSchemaModel;
@@ -119,6 +122,13 @@ class Neo4jGraphQL {
         this.schemaDefinition = schemaDefinition;
 
         this.checkEnableDebug();
+
+        if (
+            this.features?.authorization?.verify === false &&
+            this.features?.authorization?.globalAuthentication === true
+        ) {
+            throw new Neo4jGraphQLError("`globalAuthentication` option requires the `verify` option to be enabled.");
+        }
     }
 
     public get nodes(): Node[] {
@@ -259,7 +269,7 @@ class Neo4jGraphQL {
             callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
         };
 
-        const wrapResolverArgs = {
+        const wrapResolverArgs: WrapResolverArguments = {
             driver: this.driver,
             config,
             nodes: this.nodes,
@@ -286,7 +296,7 @@ class Neo4jGraphQL {
             throw new Error("Schema Model is not defined");
         }
 
-        const wrapResolverArgs = {
+        const wrapResolverArgs: WrapResolverArguments = {
             driver: this.driver,
             config: this.config,
             nodes: this.nodes,
@@ -316,7 +326,7 @@ class Neo4jGraphQL {
                 validateDocument(initialDocument);
             }
 
-            const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
+            const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
             const { jwtPayload } = typesExcludedFromGeneration;
             if (jwtPayload) {
                 this.jwtPayloadFieldsMap = jwtPayload.jwtPayloadFieldsMap;
@@ -373,7 +383,7 @@ class Neo4jGraphQL {
             validateDocument(initialDocument, directives, types);
         }
 
-        const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
+        const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
         const { jwtPayload } = typesExcludedFromGeneration;
         if (jwtPayload) {
             this.jwtPayloadFieldsMap = jwtPayload.jwtPayloadFieldsMap;

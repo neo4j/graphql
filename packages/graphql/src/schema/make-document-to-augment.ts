@@ -21,12 +21,13 @@ import type { DefinitionNode, DocumentNode, ObjectTypeDefinitionNode } from "gra
 import { Kind } from "graphql";
 import getFieldTypeMeta from "./get-field-type-meta";
 
-export function makeSchemaToAugment(document: DocumentNode): {
+type DocumentToAugment = {
     document: DocumentNode;
     typesExcludedFromGeneration: {
         jwtPayload?: { type: ObjectTypeDefinitionNode; jwtPayloadFieldsMap: Map<string, string> };
     };
-} {
+};
+export function makeDocumentToAugment(document: DocumentNode): DocumentToAugment {
     const jwtTypeDefinitions: ObjectTypeDefinitionNode[] = [];
     const definitions: DefinitionNode[] = [];
 
@@ -42,18 +43,13 @@ export function makeSchemaToAugment(document: DocumentNode): {
     }
 
     const jwtPayload = parseJwtPayload(jwtTypeDefinitions);
-    if (!jwtPayload) {
-        return {
-            document,
-            typesExcludedFromGeneration: {},
-        };
-    }
+
     return {
         document: {
             ...document,
             definitions,
         },
-        typesExcludedFromGeneration: { jwtPayload },
+        typesExcludedFromGeneration: jwtPayload ? { jwtPayload } : {},
     };
 }
 

@@ -66,6 +66,7 @@ function getNodes(
                 ![
                     "auth",
                     "authorization",
+                    "authentication",
                     "exclude",
                     "node",
                     "fulltext",

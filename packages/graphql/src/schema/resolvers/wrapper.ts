@@ -21,12 +21,13 @@ import Debug from "debug";
 import type { GraphQLResolveInfo } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
+import { Neo4jError } from "neo4j-driver";
 import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
 import type { Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import { getNeo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
-import { DEBUG_GRAPHQL } from "../../constants";
+import { AUTH_FORBIDDEN_ERROR, DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
 import type { Context, Neo4jAuthorizationSettings, Neo4jGraphQLPlugins, RequestLike } from "../../types";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
@@ -40,7 +41,7 @@ import { Measurement, addMeasurementField } from "../../utils/add-measurement-fi
 
 const debug = Debug(DEBUG_GRAPHQL);
 
-type WrapResolverArguments = {
+export type WrapResolverArguments = {
     driver?: Driver;
     config: Neo4jGraphQLConfig;
     nodes: Node[];
@@ -112,8 +113,6 @@ export const wrapResolver =
         if (!context.jwt) {
             const req: RequestLike = context instanceof IncomingMessage ? context : context.req || context.request;
             if (authorizationSettings) {
-                // If global authentication enabled, throw
-                // If global authentication not enabled, set isAuthenticated to true/false
                 try {
                     const authorization = new Neo4jGraphQLAuthorization(authorizationSettings);
                     const jwt = await authorization.decode(req);
@@ -127,9 +126,10 @@ export const wrapResolver =
                         claims: jwtPayloadFieldsMap,
                     };
                 } catch (e) {
-                    // TODO: If global authentication throw
+                    if (authorizationSettings.globalAuthentication) {
+                        throw e;
+                    }
                     const isAuthenticated = false;
-
                     context.authorization = {
                         isAuthenticated,
                         jwtParam: new Cypher.NamedParam("jwt", {}),
@@ -211,15 +211,25 @@ export const wrapSubscription =
             plugin: plugins.subscriptions,
         };
 
-        if (!context?.jwt && contextParams.authorization) {
+        // TODO: refactor this code to resemble wrapResolver more
+        if (!context?.jwt) {
             if (resolverArgs.authorizationSettings) {
-                subscriptionContext.jwt = new Neo4jGraphQLAuthorization(
-                    resolverArgs.authorizationSettings
-                ).decodeBearerToken(contextParams.authorization);
+                if (!contextParams.authorization) {
+                    if (resolverArgs.authorizationSettings.globalAuthentication) {
+                        throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
+                    }
+                } else {
+                    // TODO: verification not part of this?!
+                    subscriptionContext.jwt = new Neo4jGraphQLAuthorization(
+                        resolverArgs.authorizationSettings
+                    ).decodeBearerToken(contextParams.authorization);
+                }
             } else {
-                // TODO: remove this else after migrating to new authorization constructor
-                const token = parseBearerToken(contextParams.authorization);
-                subscriptionContext.jwt = await decodeToken(token, plugins.auth);
+                if (contextParams.authorization) {
+                    // TODO: remove this else after migrating to new authorization constructor
+                    const token = parseBearerToken(contextParams.authorization);
+                    subscriptionContext.jwt = await decodeToken(token, plugins.auth);
+                }
             }
         }
 
