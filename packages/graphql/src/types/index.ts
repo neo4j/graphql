@@ -40,6 +40,14 @@ export type DriverConfig = {
     bookmarks?: string | string[];
 };
 
+type AuthorizationContext = {
+    jwt?: JwtPayload;
+    jwtParam: Cypher.Param;
+    isAuthenticated: boolean;
+    isAuthenticatedParam: Cypher.Param;
+    claims?: Map<string, string>;
+};
+
 export interface Context {
     driver?: Driver;
     driverConfig?: DriverConfig;
@@ -58,9 +66,9 @@ export interface Context {
     addMeasurementsToExtension: boolean;
     executionContext: Driver | Session | Transaction;
     executor: Executor;
-    authParam: Cypher.Param;
     extensions?: Record<string, any>;
     jwtPayloadFieldsMap?: Map<string, string>;
+    authorization: AuthorizationContext;
     [k: string]: any;
 }
 

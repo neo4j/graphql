@@ -54,7 +54,16 @@ export function createAuthorizationFilterPredicate({
         });
 
         if (predicate) {
-            predicates.push(predicate);
+            if (rule.requireAuthentication) {
+                predicates.push(
+                    Cypher.and(
+                        Cypher.eq(context.authorization.isAuthenticatedParam, new Cypher.Literal(true)),
+                        predicate
+                    )
+                );
+            } else {
+                predicates.push(predicate);
+            }
         }
 
         if (preComputedSubqueries && !preComputedSubqueries.empty) {

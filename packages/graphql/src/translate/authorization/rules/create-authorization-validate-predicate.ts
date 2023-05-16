@@ -60,6 +60,19 @@ export function createAuthorizationValidatePredicate({
         });
 
         if (predicate) {
+            if (rule.requireAuthentication) {
+                predicates.push(
+                    Cypher.and(
+                        Cypher.eq(context.authorization.isAuthenticatedParam, new Cypher.Literal(true)),
+                        predicate
+                    )
+                );
+            } else {
+                predicates.push(predicate);
+            }
+        }
+
+        if (predicate) {
             predicates.push(predicate);
         }
 

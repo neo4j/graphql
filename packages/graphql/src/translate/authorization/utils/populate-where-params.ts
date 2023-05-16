@@ -34,7 +34,7 @@ export function populateWhereParams({ where, context }: { where: GraphQLWhereArg
             if (v.startsWith("$jwt")) {
                 const path = v.substring(5);
 
-                parsed[k] = context.authParam.property(path);
+                parsed[k] = context.authorization.jwtParam.property(path);
             } else {
                 parsed[k] = v;
             }

@@ -49,7 +49,7 @@ type WrapResolverArguments = {
     schemaModel: Neo4jGraphQLSchemaModel;
     plugins?: Neo4jGraphQLPlugins;
     dbInfo?: Neo4jDatabaseInfo;
-    authorization?: Neo4jAuthorizationSettings;
+    authorizationSettings?: Neo4jAuthorizationSettings;
 };
 
 let neo4jDatabaseInfo: Neo4jDatabaseInfo;
@@ -64,7 +64,7 @@ export const wrapResolver =
         schemaModel,
         plugins,
         dbInfo,
-        authorization,
+        authorizationSettings,
     }: WrapResolverArguments) =>
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
@@ -101,6 +101,7 @@ export const wrapResolver =
 
         context.nodes = nodes;
         context.relationships = relationships;
+        // TODO: 4.0.0 - remove
         context.jwtPayloadFieldsMap = jwtPayloadFieldsMap;
         context.schemaModel = schemaModel;
         context.plugins = plugins || {};
@@ -110,8 +111,31 @@ export const wrapResolver =
 
         if (!context.jwt) {
             const req: RequestLike = context instanceof IncomingMessage ? context : context.req || context.request;
-            if (authorization) {
-                context.jwt = await new Neo4jGraphQLAuthorization(authorization).decode(req);
+            if (authorizationSettings) {
+                // If global authentication enabled, throw
+                // If global authentication not enabled, set isAuthenticated to true/false
+                try {
+                    const authorization = new Neo4jGraphQLAuthorization(authorizationSettings);
+                    const jwt = await authorization.decode(req);
+                    const isAuthenticated = true;
+
+                    context.authorization = {
+                        isAuthenticated,
+                        jwt,
+                        jwtParam: new Cypher.NamedParam("jwt", jwt),
+                        isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
+                        claims: jwtPayloadFieldsMap,
+                    };
+                } catch (e) {
+                    // TODO: If global authentication throw
+                    const isAuthenticated = false;
+
+                    context.authorization = {
+                        isAuthenticated,
+                        jwtParam: new Cypher.NamedParam("jwt", {}),
+                        isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
+                    };
+                }
             } else {
                 // TODO: remove this else after migrating to new authorization constructor
                 if (context.plugins.auth) {
@@ -135,7 +159,6 @@ export const wrapResolver =
         const authParam = createAuthParam({ context });
 
         context.auth = authParam;
-        context.authParam = new Cypher.NamedParam("jwt", authParam.jwt);
 
         const executorConstructorParam: ExecutorConstructorParam = {
             executionContext: context.executionContext,
@@ -189,10 +212,10 @@ export const wrapSubscription =
         };
 
         if (!context?.jwt && contextParams.authorization) {
-            if (resolverArgs.authorization) {
-                subscriptionContext.jwt = new Neo4jGraphQLAuthorization(resolverArgs.authorization).decodeBearerToken(
-                    contextParams.authorization
-                );
+            if (resolverArgs.authorizationSettings) {
+                subscriptionContext.jwt = new Neo4jGraphQLAuthorization(
+                    resolverArgs.authorizationSettings
+                ).decodeBearerToken(contextParams.authorization);
             } else {
                 // TODO: remove this else after migrating to new authorization constructor
                 const token = parseBearerToken(contextParams.authorization);

@@ -266,7 +266,7 @@ class Neo4jGraphQL {
             relationships: this.relationships,
             schemaModel: this.schemaModel,
             plugins: this.plugins,
-            authorization: this.features?.authorization,
+            authorizationSettings: this.features?.authorization,
             jwtPayloadFieldsMap: this.jwtPayloadFieldsMap,
         };
 
@@ -293,7 +293,7 @@ class Neo4jGraphQL {
             relationships: this.relationships,
             schemaModel: this.schemaModel,
             plugins: this.plugins,
-            authorization: this.features?.authorization,
+            authorizationSettings: this.features?.authorization,
             jwtPayloadFieldsMap: this.jwtPayloadFieldsMap,
         };
 
