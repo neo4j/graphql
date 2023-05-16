@@ -20,53 +20,69 @@
 // eslint-disable-next-line import/no-unresolved
 import http from "k6/http";
 // eslint-disable-next-line import/no-unresolved
-import { check, sleep } from "k6";
+import { check } from "k6";
 // eslint-disable-next-line import/no-unresolved
 import { Trend } from "k6/metrics";
 import { queries } from "./queries.js";
 
 const CONFIG = {
-    maxVUs: 1000,
-    duration: 30,
+    maxVUs: 10,
+    duration: 90,
+    skipChecks: false,
     query: queries.simpleQuery,
-};
-
-export const options = {
-    stages: [
-        { duration: "5s", target: CONFIG.maxVUs }, // Ramp up
-        { duration: `${CONFIG.duration}s`, target: CONFIG.maxVUs },
-        { duration: "10s", target: 0 }, // Cooldown
-    ],
+    api: "http://localhost:4000/graphql",
 };
 
 const dbQueryTrend = new Trend("neo4j/gaphql_database_query_time", true);
 const translationTimeTrend = new Trend("neo4j/graphql_translation_time", true);
 const wrapperTimeTrend = new Trend("neo4j/graphql_wrapper_time", true);
 
-export default function () {
-    const headers = {
-        "Content-Type": "application/json",
-    };
-    const res = http.post("http://localhost:4000/graphql", JSON.stringify({ query: CONFIG.query }), {
-        headers: headers,
-    });
-
-    const body = JSON.parse(res.body);
-    // TODO: check
-    check(res, {
-        "status was 200": (r) => r.status == 200,
-        "response has no error": () => {
-            if (body.errors && body.errors.length > 0) return false;
-            return true;
+export const options = {
+    scenarios: {
+        default: {
+            executor: "ramping-vus",
+            stages: [
+                { duration: "5s", target: CONFIG.maxVUs }, // Ramp up
+                { duration: `${CONFIG.duration}s`, target: CONFIG.maxVUs },
+                { duration: "10s", target: 0 }, // Cooldown
+            ],
         },
+    },
+};
+
+export function setup() {
+    return {
+        query: CONFIG.query,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+}
+
+export default function (config) {
+    const res = http.post(CONFIG.api, JSON.stringify({ query: config.query }), {
+        headers: config.headers,
     });
 
-    const measurements = body.extensions && body.extensions.measurements;
-    if (measurements) {
-        dbQueryTrend.add(measurements.databaseQueryTime);
-        translationTimeTrend.add(measurements.translationTime);
-        wrapperTimeTrend.add(measurements.wrapperTime);
+    if (!config.skipChecks) {
+        const body = JSON.parse(res.body);
+        check(res, {
+            "status was 200": (r) => r.status == 200,
+            "response has body": (r) => r.body,
+            "response has data": () => body && body.data,
+            "response has no error": () => {
+                if (body && body.errors && body.errors.length > 0) {
+                    console.error(body.errors);
+                    return false;
+                }
+                return true;
+            },
+        });
+        const measurements = body.extensions && body.extensions.measurements;
+        if (measurements) {
+            dbQueryTrend.add(measurements.databaseQueryTime);
+            translationTimeTrend.add(measurements.translationTime);
+            wrapperTimeTrend.add(measurements.wrapperTime);
+        }
     }
-
-    sleep(0.3);
 }
