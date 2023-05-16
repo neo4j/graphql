@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
+import { faker } from "@faker-js/faker";
 import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
-import { faker } from "@faker-js/faker";
 import { gql } from "graphql-tag";
+import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
+import Neo4j from "../../neo4j";
 
 describe("interface relationships", () => {
     let driver: Driver;
@@ -109,15 +109,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const screenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const screenTime = faker.number.int({ max: 100000 });
 
         const seriesTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
 
-        const episodeRuntime = faker.datatype.number();
+        const episodeRuntime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation CreateActorConnectMovie(
