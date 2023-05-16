@@ -24,7 +24,6 @@ import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 import { UniqueType } from "../../../../utils/graphql-types";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("Field Level Aggregations Auth", () => {
     let driver: Driver;
@@ -37,7 +36,7 @@ describe("Field Level Aggregations Auth", () => {
         name: String
         year: Int
         createdAt: DateTime
-        testId: Int
+        testId: String
         ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
     }
 
@@ -56,7 +55,7 @@ describe("Field Level Aggregations Auth", () => {
 
         await session.run(`
         CREATE (m:${typeMovie.name}
-            {name: "Terminator",testId: 1234,year:1990,createdAt: datetime()})
+            {name: "Terminator",testId: "1234",year:1990,createdAt: datetime()})
             <-[:ACTED_IN]-
             (:${typeActor.name} { name: "Arnold", year: 1970, createdAt: datetime()})
 
