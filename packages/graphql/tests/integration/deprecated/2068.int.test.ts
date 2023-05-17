@@ -24,7 +24,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { UniqueType } from "../../utils/graphql-types";
-import { Neo4jGraphQLAuthJWTPlugin } from "../../../../plugins/graphql-plugin-auth/src";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("https://github.com/neo4j/graphql/pull/2068", () => {
     let driver: Driver;
@@ -88,7 +88,10 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret }) },
+            });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 

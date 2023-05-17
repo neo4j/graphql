@@ -234,8 +234,7 @@ describe("auth/allow-unauthenticated", () => {
                     published: Boolean!
                 }
 
-                extend type ${Post} @authorization(validate: [{ 
-                    when: BEFORE, 
+                extend type ${Post} @authorization(filter: [{ 
                     requireAuthentication: false, 
                     where: { node: { OR: [
                         { publisher: "$jwt.sub" },
@@ -347,7 +346,7 @@ describe("auth/allow-unauthenticated", () => {
                     published: Boolean!
                 }
 
-                extend type ${Post} @authorization(validate: [{
+                extend type ${Post} @authorization(filter: [{
                     requireAuthentication: false, 
                     where: { node: { OR: [
                         { publisher: "$jwt.sub" },

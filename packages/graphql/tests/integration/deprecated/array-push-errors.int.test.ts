@@ -25,6 +25,7 @@ import { generate } from "randomstring";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
 import { UniqueType } from "../../utils/graphql-types";
@@ -33,6 +34,10 @@ describe("array-push", () => {
     let driver: Driver;
     let session: Session;
     let neo4j: Neo4j;
+    const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
+        secret: "secret",
+    });
+
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
@@ -103,11 +108,11 @@ describe("array-push", () => {
         const typeDefs = `
             type ${typeMovie} {
                 title: String
-                tags: [String] @authentication(operations: [UPDATE])
+                tags: [String] @auth(rules: [{ operations: [UPDATE], isAuthenticated: true }])
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: "secret" } } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
         const update = `
             mutation {

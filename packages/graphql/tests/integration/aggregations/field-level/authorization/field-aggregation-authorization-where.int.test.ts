@@ -113,7 +113,11 @@ describe(`Field Level Authorization Where Requests`, () => {
             source: query,
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
-        expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.data as any).toEqual({
+            [typeMovie.plural]: [{ [`${typeActor.plural}Aggregate`]: { count: 0 } }],
+        });
     });
 
     test("authenticated query with wrong credentials", async () => {

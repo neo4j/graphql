@@ -191,7 +191,7 @@ describe("Field Level Aggregations Auth", () => {
                         }
                     }`;
 
-                const req = createJwtRequest(secret, { sub: 1234 });
+                const req = createJwtRequest(secret, { sub: "1234" });
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
@@ -214,7 +214,7 @@ describe("Field Level Aggregations Auth", () => {
                     source: query,
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             });
 
             test("authenticated query with wrong credentials", async () => {
@@ -225,7 +225,7 @@ describe("Field Level Aggregations Auth", () => {
                             }
                         }
                     }`;
-                const invalidReq = createJwtRequest(secret, { sub: 2222 });
+                const invalidReq = createJwtRequest(secret, { sub: "2222" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),

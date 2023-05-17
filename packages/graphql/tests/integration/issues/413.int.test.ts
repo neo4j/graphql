@@ -43,6 +43,10 @@ describe("413", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = gql`
+            type JWTPayload @jwtPayload {
+                tenant_id: String!
+            }
+
             type JobPlan {
                 id: ID! @id
                 tenantID: ID!
@@ -52,15 +56,11 @@ describe("413", () => {
             extend type JobPlan
                 @authorization(
                     validate: [
-                        {
-                            when: [AFTER]
-                            operations: [CREATE, UPDATE]
-                            where: { node: { tenantID: "$context.jwt.tenant_id" } }
-                        }
+                        { when: [AFTER], operations: [CREATE, UPDATE], where: { node: { tenantID: "$jwt.tenant_id" } } }
                         {
                             when: [BEFORE]
                             operations: [READ, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, DELETE]
-                            where: { node: { tenantID: "$context.jwt.tenant_id" } }
+                            where: { node: { tenantID: "$jwt.tenant_id" } }
                         }
                     ]
                 )

@@ -573,7 +573,7 @@ describe("Global node resolution", () => {
           name: String!
         }
 
-        extend type ${typeUser.name} @authorization(validate: [{ when: [BEFORE], where: { OR: [{ jwtPayload: { roles_INCLUDES: "admin" }, node: { dbId: "$jwt.sub" } }] } }])
+        extend type ${typeUser.name} @authorization(validate: [{ when: [BEFORE], where: { OR: [{ jwtPayload: { roles_INCLUDES: "admin" } }, { node: { dbId: "$jwt.sub" } }] } }])
     `;
 
         const query = `

@@ -50,11 +50,15 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
+            type JWTPayload @jwtPayload {
+                nestedSub: String! @jwtClaim(path: "nested.object.path.sub")
+            }
+
             type ${User} {
                 id: ID
             }
 
-            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.nested.object.path.sub" } } }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.nestedSub" } } }])
         `;
 
         const userId = generate({

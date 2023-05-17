@@ -401,7 +401,7 @@ describe("auth/is-authenticated", () => {
             try {
                 await session.run(`
                     CREATE (:${User} {id: "${userId}"})
-                    CREATE (:${Post} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
                 `);
 
                 const socket = new Socket({ readable: true });
@@ -478,7 +478,7 @@ describe("auth/is-authenticated", () => {
             try {
                 await session.run(`
                     CREATE (:${User} {id: "${userId}"})
-                    CREATE (:${Post} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
                 `);
 
                 const socket = new Socket({ readable: true });

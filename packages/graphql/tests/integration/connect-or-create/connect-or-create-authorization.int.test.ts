@@ -27,148 +27,296 @@ import { getQuerySource } from "../../utils/get-query-source";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { UniqueType } from "../../utils/graphql-types";
 
-describe("Update -> ConnectOrCreate", () => {
-    let driver: Driver;
-    let neo4j: Neo4j;
-    let session: Session;
-    let typeDefs: DocumentNode;
-    let queryUpdate: DocumentNode;
-    let queryCreate: DocumentNode;
+describe("connectOrCreate", () => {
+    describe("Update -> ConnectOrCreate", () => {
+        let driver: Driver;
+        let neo4j: Neo4j;
+        let session: Session;
+        let typeDefs: DocumentNode;
+        let queryUpdate: DocumentNode;
+        let queryCreate: DocumentNode;
 
-    const typeMovie = new UniqueType("Movie");
-    const typeGenre = new UniqueType("Genre");
-    const secret = "secret";
-    let neoSchema: Neo4jGraphQL;
+        const typeMovie = new UniqueType("Movie");
+        const typeGenre = new UniqueType("Genre");
+        const secret = "secret";
+        let neoSchema: Neo4jGraphQL;
 
-    beforeAll(async () => {
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
+        beforeAll(async () => {
+            neo4j = new Neo4j();
+            driver = await neo4j.getDriver();
 
-        typeDefs = gql`
-        type JWTPayload @jwtPayload {
-            roles: [String!]!
-        }
-        
-        type ${typeMovie.name} {
-            title: String
-            genres: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
-        }
+            typeDefs = gql`
+            type JWTPayload @jwtPayload {
+                roles: [String!]!
+            }
+            
+            type ${typeMovie.name} {
+                title: String
+                genres: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
+            }
+    
+            type ${typeGenre.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP, CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
+                name: String @unique
+            }
+            `;
 
-        type ${typeGenre.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP, CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
-            name: String @unique
-        }
-        `;
-
-        queryUpdate = gql`
-            mutation {
-              ${typeMovie.operations.update}(
-                update: {
-                    title: "Forrest Gump 2"
-                    genres: {
-                      connectOrCreate: {
-                        where: { node: { name: "Horror" } }
-                        onCreate: { node: { name: "Horror" } }
+            queryUpdate = gql`
+                mutation {
+                  ${typeMovie.operations.update}(
+                    update: {
+                        title: "Forrest Gump 2"
+                        genres: {
+                          connectOrCreate: {
+                            where: { node: { name: "Horror" } }
+                            onCreate: { node: { name: "Horror" } }
+                          }
+                        }
                       }
+                  ) {
+                    ${typeMovie.plural} {
+                      title
                     }
                   }
-              ) {
-                ${typeMovie.plural} {
-                  title
                 }
-              }
-            }
-            `;
+                `;
 
-        queryCreate = gql`
-            mutation {
-                ${typeMovie.operations.create}(
-                    input: [
-                        {
-                            title: "Cool Movie"
-                            genres: {
-                                connectOrCreate: {
-                                    where: { node: { name: "Comedy" } },
-                                    onCreate: { node: { name: "Comedy" } }
+            queryCreate = gql`
+                mutation {
+                    ${typeMovie.operations.create}(
+                        input: [
+                            {
+                                title: "Cool Movie"
+                                genres: {
+                                    connectOrCreate: {
+                                        where: { node: { name: "Comedy" } },
+                                        onCreate: { node: { name: "Comedy" } }
+                                    }
                                 }
                             }
+                        ]
+                    ) {
+                        ${typeMovie.plural} {
+                            title
                         }
-                    ]
-                ) {
-                    ${typeMovie.plural} {
-                        title
                     }
                 }
+                `;
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
+                },
+            });
+        });
+
+        beforeEach(async () => {
+            session = await neo4j.getSession();
+        });
+
+        afterEach(async () => {
+            await session.run(`MATCH (m:${typeMovie.name}) DETACH DELETE m`);
+            await session.run(`MATCH (g:${typeGenre.name}) DETACH DELETE g`);
+
+            await session.close();
+        });
+
+        afterAll(async () => {
+            await driver.close();
+        });
+
+        test("cannot update with ConnectOrCreate auth", async () => {
+            await session.run(`CREATE (:${typeMovie.name} { title: "RandomMovie1"})`);
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuerySource(queryUpdate),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
+
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+        });
+
+        test("update with ConnectOrCreate auth", async () => {
+            await session.run(`CREATE (:${typeMovie.name} { title: "Forrest Gump"})`);
+            const req = createJwtRequest(secret, { roles: ["admin"] });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuerySource(queryUpdate),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            });
+            expect(gqlResult.errors).toBeUndefined();
+
+            const genreCount: any = await session.run(`
+              MATCH (m:${typeGenre.name} { name: "Horror" })
+              RETURN COUNT(m) as count
+            `);
+            expect((genreCount.records[0].toObject().count as Integer).toNumber()).toBe(1);
+        });
+
+        test("create with ConnectOrCreate auth", async () => {
+            const req = createJwtRequest(secret, { roles: ["admin"] });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuerySource(queryCreate),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            });
+            expect(gqlResult.errors).toBeUndefined();
+
+            const genreCount: any = await session.run(`
+              MATCH (m:${typeGenre.name} { name: "Comedy" })
+              RETURN COUNT(m) as count
+            `);
+            expect((genreCount.records[0].toObject().count as Integer).toNumber()).toBe(1);
+        });
+    });
+
+    describe("authorization rules on source and target types", () => {
+        let driver: Driver;
+        let neo4j: Neo4j;
+        let session: Session;
+        let typeDefs: DocumentNode;
+        let queryUpdate: DocumentNode;
+        let queryCreate: DocumentNode;
+
+        const typeMovie = new UniqueType("Movie");
+        const typeGenre = new UniqueType("Genre");
+        const secret = "secret";
+        let neoSchema: Neo4jGraphQL;
+
+        beforeAll(async () => {
+            neo4j = new Neo4j();
+            driver = await neo4j.getDriver();
+
+            typeDefs = gql`
+            type JWTPayload @jwtPayload {
+                roles: [String!]!
+            }
+            
+            type ${typeMovie.name} @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
+                title: String
+                genres: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
+            }
+    
+            type ${typeGenre.name} @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
+                name: String @unique
             }
             `;
 
-        neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            features: {
-                authorization: {
-                    key: "secret",
+            queryUpdate = gql`
+                mutation {
+                  ${typeMovie.operations.update}(
+                    update: {
+                        title: "Forrest Gump 2"
+                        genres: {
+                          connectOrCreate: {
+                            where: { node: { name: "Horror" } }
+                            onCreate: { node: { name: "Horror" } }
+                          }
+                        }
+                      }
+                  ) {
+                    ${typeMovie.plural} {
+                      title
+                    }
+                  }
+                }
+                `;
+
+            queryCreate = gql`
+                mutation {
+                    ${typeMovie.operations.create}(
+                        input: [
+                            {
+                                title: "Cool Movie"
+                                genres: {
+                                    connectOrCreate: {
+                                        where: { node: { name: "Comedy" } },
+                                        onCreate: { node: { name: "Comedy" } }
+                                    }
+                                }
+                            }
+                        ]
+                    ) {
+                        ${typeMovie.plural} {
+                            title
+                        }
+                    }
+                }
+                `;
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
-            },
-        });
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
-    afterEach(async () => {
-        await session.run(`MATCH (m:${typeMovie.name}) DETACH DELETE m`);
-        await session.run(`MATCH (g:${typeGenre.name}) DETACH DELETE g`);
-
-        await session.close();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
-    test("cannot update with ConnectOrCreate auth", async () => {
-        await session.run(`CREATE (:${typeMovie.name} { title: "RandomMovie1"})`);
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: getQuerySource(queryUpdate),
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
         });
 
-        expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-    });
-
-    test("update with ConnectOrCreate auth", async () => {
-        await session.run(`CREATE (:${typeMovie.name} { title: "Forrest Gump"})`);
-        const req = createJwtRequest(secret, { roles: ["admin"] });
-
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: getQuerySource(queryUpdate),
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+        beforeEach(async () => {
+            session = await neo4j.getSession();
         });
-        expect(gqlResult.errors).toBeUndefined();
 
-        const genreCount: any = await session.run(`
-          MATCH (m:${typeGenre.name} { name: "Horror" })
-          RETURN COUNT(m) as count
-        `);
-        expect((genreCount.records[0].toObject().count as Integer).toNumber()).toBe(1);
-    });
+        afterEach(async () => {
+            await session.run(`MATCH (m:${typeMovie.name}) DETACH DELETE m`);
+            await session.run(`MATCH (g:${typeGenre.name}) DETACH DELETE g`);
 
-    test("create with ConnectOrCreate auth", async () => {
-        const req = createJwtRequest(secret, { roles: ["admin"] });
-
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: getQuerySource(queryCreate),
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            await session.close();
         });
-        expect(gqlResult.errors).toBeUndefined();
 
-        const genreCount: any = await session.run(`
-          MATCH (m:${typeGenre.name} { name: "Comedy" })
-          RETURN COUNT(m) as count
-        `);
-        expect((genreCount.records[0].toObject().count as Integer).toNumber()).toBe(1);
+        afterAll(async () => {
+            await driver.close();
+        });
+
+        test("cannot update with ConnectOrCreate auth", async () => {
+            await session.run(`CREATE (:${typeMovie.name} { title: "RandomMovie1"})`);
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuerySource(queryUpdate),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
+
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+        });
+
+        test("update with ConnectOrCreate auth", async () => {
+            await session.run(`CREATE (:${typeMovie.name} { title: "Forrest Gump"})`);
+            const req = createJwtRequest(secret, { roles: ["admin"] });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuerySource(queryUpdate),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            });
+            expect(gqlResult.errors).toBeUndefined();
+
+            const genreCount: any = await session.run(`
+              MATCH (m:${typeGenre.name} { name: "Horror" })
+              RETURN COUNT(m) as count
+            `);
+            expect((genreCount.records[0].toObject().count as Integer).toNumber()).toBe(1);
+        });
+
+        test("create with ConnectOrCreate auth", async () => {
+            const req = createJwtRequest(secret, { roles: ["admin"] });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuerySource(queryCreate),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            });
+            expect(gqlResult.errors).toBeUndefined();
+
+            const genreCount: any = await session.run(`
+              MATCH (m:${typeGenre.name} { name: "Comedy" })
+              RETURN COUNT(m) as count
+            `);
+            expect((genreCount.records[0].toObject().count as Integer).toNumber()).toBe(1);
+        });
     });
 });

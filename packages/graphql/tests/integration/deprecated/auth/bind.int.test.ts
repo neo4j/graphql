@@ -696,7 +696,7 @@ describe("auth/bind", () => {
     });
 
     describe("disconnect", () => {
-        test.only("should throw forbidden when disconnecting a node property with invalid bind", async () => {
+        test("should throw forbidden when disconnecting a node property with invalid bind", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `

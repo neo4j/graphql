@@ -62,7 +62,7 @@ describe("auth/allow", () => {
     });
 
     describe("read", () => {
-        test.only("should throw forbidden when reading a node with invalid allow", async () => {
+        test("should throw forbidden when reading a node with invalid allow", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
