@@ -160,7 +160,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type ${User}  @authentication(operations: [CREATE]) {
+                type ${User} @authentication(operations: [CREATE]) {
                     id: ID
                     name: String
                 }
@@ -221,6 +221,59 @@ describe("auth/is-authenticated", () => {
                     ${User.operations.create}(input: [{ password: "1" }]) {
                         ${User.plural} {
                             password
+                        }
+                    }
+                }
+            `;
+
+            const token = "not valid token";
+
+            try {
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw if not authenticated on nested create type", async () => {
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type ${User} {
+                    id: ID
+                    name: String
+                    products: [${Product}!]! @relationship(type: "HAS_PRODUCT", direction: OUT) 
+                }
+
+                type ${Product} @authentication(operations: [CREATE]) {
+                    id: ID
+                }   
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = `
+                mutation {
+                    ${User.operations.create}(input: [{ id: "1", products: { create: [{ node: { id: "5" } }] } }]) {
+                        ${User.plural} {
+                            id
                         }
                     }
                 }
