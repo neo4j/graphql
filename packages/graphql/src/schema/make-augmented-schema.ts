@@ -28,7 +28,7 @@ import type {
     SchemaExtensionNode,
 } from "graphql";
 import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
-import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
+import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import type { Node } from "../classes";
@@ -145,12 +145,18 @@ function makeAugmentedSchema(
 
     const definitionNodes = getDefinitionNodes(document);
 
-    const { scalarTypes, objectTypes, enumTypes, inputObjectTypes, directives, unionTypes, schemaExtensions } =
-        definitionNodes;
+    const {
+        interfaceTypes,
+        scalarTypes,
+        objectTypes,
+        enumTypes,
+        inputObjectTypes,
+        directives,
+        unionTypes,
+        schemaExtensions,
+    } = definitionNodes;
 
     const globalSchemaConfiguration = schemaConfigurationFromSchemaExtensions(schemaExtensions);
-
-    const { interfaceTypes } = definitionNodes;
 
     const extraDefinitions = [
         ...enumTypes,
@@ -158,11 +164,7 @@ function makeAugmentedSchema(
         ...inputObjectTypes,
         ...unionTypes,
         ...directives,
-        ...([
-            customResolvers.customQuery,
-            customResolvers.customMutation,
-            customResolvers.customSubscription,
-        ] as ObjectTypeDefinitionNode[]),
+        ...[customResolvers.customQuery, customResolvers.customMutation, customResolvers.customSubscription],
     ].filter(Boolean) as DefinitionNode[];
 
     Object.values(Scalars).forEach((scalar: GraphQLScalarType) => composer.addTypeDefs(`scalar ${scalar.name}`));
@@ -589,7 +591,7 @@ function makeAugmentedSchema(
         }
 
         const sortFields = getSortableFields(node).reduce(
-            (res, f) => ({
+            (res: InputTypeComposerFieldConfigMapDefinition, f) => ({
                 ...res,
                 [f.fieldName]: {
                     type: sortDirection.getTypeName(),
@@ -832,7 +834,7 @@ function makeAugmentedSchema(
             throw new Error(`Union ${union.name.value} has no types`);
         }
 
-        const fields = union.types.reduce((f, type) => {
+        const fields = union.types.reduce((f: Record<string, string>, type) => {
             return { ...f, [type.name.value]: `${type.name.value}Where` };
         }, {});
 
