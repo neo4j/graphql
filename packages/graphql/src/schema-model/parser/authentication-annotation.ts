@@ -21,11 +21,23 @@ import type { AuthenticationOperation } from "../annotation/AuthenticationAnnota
 import { AuthenticationAnnotation } from "../annotation/AuthenticationAnnotation";
 
 import { parseArguments } from "./utils";
-
+const authenticationDefaultOperations: AuthenticationOperation[] = [
+    "READ",
+    "CREATE",
+    "UPDATE",
+    "DELETE",
+    "CREATE_RELATIONSHIP",
+    "DELETE_RELATIONSHIP",
+    "SUBSCRIBE",
+];
 export function parseAuthenticationAnnotation(directive: DirectiveNode): AuthenticationAnnotation {
-    const { operations } = parseArguments(directive) as {
-        operations: AuthenticationOperation[];
+    const args = parseArguments(directive) as {
+        operations?: AuthenticationOperation[];
     };
 
-    return new AuthenticationAnnotation(operations);
+    if (args.operations) {
+        return new AuthenticationAnnotation(args.operations);
+    }
+
+    return new AuthenticationAnnotation(authenticationDefaultOperations);
 }

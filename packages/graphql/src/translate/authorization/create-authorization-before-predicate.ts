@@ -25,6 +25,11 @@ import { createAuthorizationFilterPredicate } from "./rules/create-authorization
 import { createAuthorizationValidatePredicate } from "./rules/create-authorization-validate-predicate";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { NodeMap } from "./types/node-map";
+import {
+    AuthenticationAnnotation,
+    AuthenticationOperation,
+} from "../../schema-model/annotation/AuthenticationAnnotation";
+import { AUTH_UNAUTHENTICATED_ERROR } from "../../constants";
 
 function createNodePredicate({
     context,
@@ -39,9 +44,6 @@ function createNodePredicate({
     operations: AuthorizationOperation[];
     fieldName?: string;
 }): PredicateReturn {
-    const predicates: Cypher.Predicate[] = [];
-    let subqueries: Cypher.CompositeClause | undefined;
-
     const concreteEntities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
 
     if (concreteEntities.length !== 1) {
@@ -49,12 +51,53 @@ function createNodePredicate({
     }
 
     const concreteEntity = concreteEntities[0] as ConcreteEntity;
+
+    const authenticationPredicate = createNodeAuthenticationPredicate({
+        entity: concreteEntity,
+        context,
+        operations,
+        fieldName,
+    });
+
+    const { predicate: authorizationPredicate, preComputedSubqueries } = createNodeAuthorizationPredicate({
+        entity: concreteEntity,
+        node,
+        variable,
+        context,
+        operations,
+        fieldName,
+    });
+
+    return {
+        predicate: Cypher.and(authenticationPredicate, authorizationPredicate),
+        preComputedSubqueries,
+    };
+}
+
+function createNodeAuthorizationPredicate({
+    context,
+    node,
+    entity,
+    variable,
+    operations,
+    fieldName,
+}: {
+    context: Context;
+    node: Node;
+    entity: ConcreteEntity;
+    variable: Cypher.Node;
+    operations: AuthorizationOperation[];
+    fieldName?: string;
+}): PredicateReturn {
+    const predicates: Cypher.Predicate[] = [];
+    let subqueries: Cypher.CompositeClause | undefined;
+
     let annotation: AuthorizationAnnotation | undefined;
 
     if (fieldName) {
-        annotation = concreteEntity.attributes.get(fieldName)?.annotations.authorization;
+        annotation = entity.attributes.get(fieldName)?.annotations.authorization;
     } else {
-        annotation = concreteEntity.annotations.authorization;
+        annotation = entity.annotations.authorization;
     }
 
     if (annotation) {
@@ -101,6 +144,36 @@ function createNodePredicate({
         predicate: Cypher.and(...predicates),
         preComputedSubqueries: subqueries,
     };
+}
+
+function createNodeAuthenticationPredicate({
+    entity,
+    context,
+    operations,
+    fieldName,
+}: {
+    context: Context;
+    entity: ConcreteEntity;
+    operations: AuthenticationOperation[];
+    fieldName?: string;
+}): Cypher.Predicate | undefined {
+    let annotation: AuthenticationAnnotation | undefined;
+    if (fieldName) {
+        annotation = entity.attributes.get(fieldName)?.annotations.authentication;
+    } else {
+        annotation = entity.annotations.authentication;
+    }
+    if (!annotation) {
+        return;
+    }
+    const requiresAuthentication = annotation.operations.some((operation) => operations.includes(operation));
+    if (!requiresAuthentication) {
+        return;
+    }
+    return Cypher.apoc.util.validatePredicate(
+        Cypher.eq(context.authorization.isAuthenticatedParam, new Cypher.Literal(false)),
+        AUTH_UNAUTHENTICATED_ERROR
+    );
 }
 
 export function createAuthorizationBeforePredicate({

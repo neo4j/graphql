@@ -113,7 +113,10 @@ describe("array-pop-and-push", () => {
         const typeDefs = `
             type ${typeMovie} {
                 title: String
-                tags: [String] @authentication(operations: [UPDATE])
+                tags: [String] @auth(rules: [{
+                    operations: [UPDATE],
+                    isAuthenticated: true
+                }])
                 moreTags: [String]
             }
         `;

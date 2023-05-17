@@ -81,7 +81,7 @@ describe("Field Level Aggregations Auth", () => {
 
             beforeAll(() => {
                 const extendedTypeDefs = `${typeDefs}
-                extend type ${typeMovie.name} @auth(rules: [{ isAuthenticated: true }])`;
+                extend type ${typeMovie.name} @authentication`;
 
                 neoSchema = new Neo4jGraphQL({
                     typeDefs: extendedTypeDefs,

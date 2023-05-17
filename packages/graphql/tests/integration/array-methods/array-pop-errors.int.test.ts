@@ -94,10 +94,6 @@ describe("array-pop-errors", () => {
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Property tags cannot be NULL"))
@@ -163,10 +159,7 @@ describe("array-pop-errors", () => {
         const typeDefs = `
             type ${typeMovie} {
                 title: String
-                tags: [String] @auth(rules: [{
-                    operations: [UPDATE],
-                    isAuthenticated: true
-                }])
+                tags: [String] @authentication(operations: [UPDATE])
             }
         `;
 
@@ -204,10 +197,6 @@ describe("array-pop-errors", () => {
             source: update,
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeDefined();
         expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Unauthenticated"))).toBeTruthy();
@@ -252,10 +241,6 @@ describe("array-pop-errors", () => {
             source: update,
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -305,10 +290,6 @@ describe("array-pop-errors", () => {
             source: update,
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -392,10 +373,6 @@ describe("array-pop-errors", () => {
             variableValues: { id, numberToPop: 1 },
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeDefined();
         expect(

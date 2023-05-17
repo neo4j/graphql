@@ -21,15 +21,15 @@ import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import type { TestGraphQLServer } from "../../setup/apollo-server";
-import { ApolloTestServer } from "../../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
-import { WebSocketTestClient } from "../../setup/ws-client";
-import Neo4j from "../../setup/neo4j";
-import { createJwtHeader } from "../../../utils/create-jwt-request";
-import { cleanNodes } from "../../../utils/clean-nodes";
+import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
+import type { TestGraphQLServer } from "../setup/apollo-server";
+import { ApolloTestServer } from "../setup/apollo-server";
+import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { WebSocketTestClient } from "../setup/ws-client";
+import Neo4j from "../setup/neo4j";
+import { createJwtHeader } from "../../utils/create-jwt-request";
+import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("Subscription authentication", () => {
     const typeMovie = new UniqueType("Movie");
@@ -660,7 +660,7 @@ describe("Subscription authentication", () => {
                 title: String!
             }
 
-            extend type ${typeMovie} @authentication(operations: [SUBSCRIBE])
+            extend type ${typeMovie} @auth(rules: [{ isAuthenticated: false, operations: [DELETE] }, { isAuthenticated: true, operations: [SUBSCRIBE] }])
             `;
 
             const neoSchema = new Neo4jGraphQL({
@@ -738,7 +738,7 @@ describe("Subscription authentication", () => {
         });
     });
 
-    describe("auth without subscribe operations", () => {
+    describe("auth without subscribe oprations", () => {
         let server: TestGraphQLServer;
         let wsClient: WebSocketTestClient;
 
@@ -807,8 +807,7 @@ describe("Subscription authentication", () => {
         });
     });
 
-    // what are these trying to achieve?
-    describe.skip("auth with isAuthenticated set to false", () => {
+    describe("auth with isAuthenticated set to false", () => {
         let server: TestGraphQLServer;
         let wsClient: WebSocketTestClient;
 
@@ -896,7 +895,7 @@ describe("Subscription authentication", () => {
         });
     });
 
-    describe.skip("auth with allowUnauthenticated", () => {
+    describe("auth with allowUnauthenticated", () => {
         let server: TestGraphQLServer;
         let wsClient: WebSocketTestClient;
 
@@ -907,7 +906,7 @@ describe("Subscription authentication", () => {
             }
 
             extend type ${typeMovie} @auth(rules: [{ isAuthenticated: true, allowUnauthenticated: true, operations: [SUBSCRIBE] }])
-            `;
+            `; //TODO: isAuthenticated + allowUnauthenticated??
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,

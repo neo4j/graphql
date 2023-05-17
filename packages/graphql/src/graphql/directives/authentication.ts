@@ -28,8 +28,19 @@ export const AuthenticationOperationEnum = new GraphQLEnumType({
         DELETE: { value: "DELETE" },
         CREATE_RELATIONSHIP: { value: "CREATE_RELATIONSHIP" },
         DELETE_RELATIONSHIP: { value: "DELETE_RELATIONSHIP" },
+        SUBSCRIBE: { value: "SUBSCRIBE" },
     },
 });
+
+const authenticationDefaultOperations = [
+    "READ",
+    "CREATE",
+    "UPDATE",
+    "DELETE",
+    "CREATE_RELATIONSHIP",
+    "DELETE_RELATIONSHIP",
+    "SUBSCRIBE",
+];
 
 export const authentication = new GraphQLDirective({
     name: "authentication",
@@ -38,7 +49,7 @@ export const authentication = new GraphQLDirective({
     args: {
         operations: {
             type: new GraphQLList(AuthenticationOperationEnum),
-            defaultValue: ["READ", "CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"],
+            defaultValue: authenticationDefaultOperations,
         },
     },
 });

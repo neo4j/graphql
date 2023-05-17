@@ -66,10 +66,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "READ" });
 
             const typeDefs = `
-                type ${Product} @auth(rules: [{
-                    operations: [READ],
-                    isAuthenticated: true
-                }]) {
+                type ${Product} @authentication(operations: [READ]) {
                     id: ID
                     name: String
                 }
@@ -117,7 +114,7 @@ describe("auth/is-authenticated", () => {
             const typeDefs = `
                 type ${User}  {
                     id: ID
-                    password: String @auth(rules: [{ operations: [READ], isAuthenticated: true }])
+                    password: String  @authentication(operations: [READ]) 
                 }
             `;
 
@@ -163,10 +160,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type ${User} @auth(rules: [{
-                    operations: [CREATE],
-                    isAuthenticated: true
-                }]) {
+                type ${User}  @authentication(operations: [CREATE]) {
                     id: ID
                     name: String
                 }
@@ -216,10 +210,7 @@ describe("auth/is-authenticated", () => {
             const typeDefs = `
                 type ${User} {
                     id: ID
-                    password: String @auth(rules: [{
-                        operations: [CREATE],
-                        isAuthenticated: true
-                    }])
+                    password: String  @authentication(operations: [CREATE]) 
                 }
             `;
 
@@ -260,10 +251,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type ${User} @auth(rules: [{
-                    operations: [UPDATE],
-                    isAuthenticated: true
-                }]) {
+                type ${User}  @authentication(operations: [UPDATE])  {
                     id: ID
                     name: String
                 }
@@ -313,10 +301,7 @@ describe("auth/is-authenticated", () => {
             const typeDefs = `
                 type ${User} {
                     id: ID
-                    password: String @auth(rules: [{
-                        operations: [UPDATE],
-                        isAuthenticated: true
-                    }])
+                    password: String  @authentication(operations: [UPDATE]) 
                 }
             `;
 
@@ -378,16 +363,9 @@ describe("auth/is-authenticated", () => {
                 }
 
                 extend type ${User}
-                    @auth(
-                        rules: [
-                            {
-                                operations: [CONNECT]
-                                isAuthenticated: true
-                            }
-                        ]
-                    )
+                    @authentication(operations: [CREATE_RELATIONSHIP]) 
 
-                extend type ${Post} @auth(rules: [{ operations: [CONNECT], isAuthenticated: true }])
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP]) 
             `;
 
             const userId = generate({
@@ -462,16 +440,9 @@ describe("auth/is-authenticated", () => {
                 }
 
                 extend type ${User}
-                    @auth(
-                        rules: [
-                            {
-                                operations: [DISCONNECT]
-                                isAuthenticated: true
-                            }
-                        ]
-                    )
+                    @authentication(operations: [DELETE_RELATIONSHIP]) 
 
-                extend type ${Post} @auth(rules: [{ operations: [DISCONNECT], isAuthenticated: true }])
+                extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP]) 
             `;
 
             const userId = generate({
@@ -532,10 +503,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type ${User} @auth(rules: [{
-                    operations: [DELETE],
-                    isAuthenticated: true
-                }]) {
+                type ${User} @authentication(operations: [DELETE])  {
                     id: ID
                     name: String
                 }
@@ -587,10 +555,7 @@ describe("auth/is-authenticated", () => {
                     posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type Post @auth(rules: [{
-                    operations: [DELETE],
-                    isAuthenticated: true
-                }]) {
+                type Post @authentication(operations: [DELETE]) {
                     id: ID
                     name: String
                 }
@@ -656,7 +621,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Query {
-                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u") @auth(rules: [{ isAuthenticated: true }])
+                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u") @authentication
                 }
             `;
 
@@ -706,7 +671,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Mutation {
-                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u") @auth(rules: [{ isAuthenticated: true }])
+                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u") @authentication
                 }
             `;
 
@@ -759,7 +724,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     history: [${History}]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h")
-                        @auth(rules: [{ operations: [READ], isAuthenticated: true }])
+                        @authentication(operations: [READ]) 
                 }
             `;
 
@@ -805,10 +770,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "READ" });
 
             const typeDefs = `
-                type ${Product} @auth(rules: [{
-                    operations: [READ],
-                    isAuthenticated: true
-                }]) {
+                type ${Product} @authentication(operations: [READ])  {
                     id: ID
                     name: String
                 }

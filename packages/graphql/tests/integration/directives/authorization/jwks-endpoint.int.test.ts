@@ -61,7 +61,7 @@ describe("auth/jwks-endpoint", () => {
             type User {
                 id: ID
             }
-            extend type User @auth(rules: [{ isAuthenticated: true }])
+            extend type User @authentication
         `;
 
         const userId = generate({
@@ -261,7 +261,7 @@ describe("auth/jwks-endpoint", () => {
             type User {
                 id: ID
             }
-            extend type User @auth(rules: [{ isAuthenticated: true }])
+            extend type User @authentication
         `;
 
         const userId = generate({
@@ -326,7 +326,7 @@ describe("auth/jwks-endpoint", () => {
             type User {
                 id: ID
             }
-            extend type User @auth(rules: [{ isAuthenticated: true }])
+            extend type User @authentication
         `;
 
         const userId = generate({
@@ -392,7 +392,7 @@ describe("auth/jwks-endpoint", () => {
             type User {
                 id: ID
             }
-            extend type User @auth(rules: [{ isAuthenticated: true }])
+            extend type User @authentication
         `;
 
         const userId = generate({
@@ -457,7 +457,7 @@ describe("auth/jwks-endpoint", () => {
             type User {
                 id: ID
             }
-            extend type User @auth(rules: [{ isAuthenticated: true }])
+            extend type User @authentication
         `;
 
         const userId = generate({

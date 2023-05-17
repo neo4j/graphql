@@ -40,6 +40,7 @@ describe("Subscription global authentication", () => {
         type ${typeMovie} {
             title: String!
         }
+        extend type ${typeMovie} @authentication
     `;
 
     beforeAll(async () => {

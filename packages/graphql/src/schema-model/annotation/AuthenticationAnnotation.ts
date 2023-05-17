@@ -23,12 +23,17 @@ export type AuthenticationOperation =
     | "UPDATE"
     | "DELETE"
     | "CREATE_RELATIONSHIP"
-    | "DELETE_RELATIONSHIP";
+    | "DELETE_RELATIONSHIP"
+    | "SUBSCRIBE";
 
 export class AuthenticationAnnotation {
-    private operations: AuthenticationOperation[];
+    private _operations: AuthenticationOperation[];
 
     constructor(operations: AuthenticationOperation[]) {
-        this.operations = operations;
+        this._operations = operations;
+    }
+
+    public get operations() {
+        return this._operations;
     }
 }

@@ -30,7 +30,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
 import { UniqueType } from "../../utils/graphql-types";
 
-describe("array-push", () => {
+describe("array-pop-errors", () => {
     let driver: Driver;
     let session: Session;
     let neo4j: Neo4j;
@@ -54,8 +54,7 @@ describe("array-push", () => {
     afterEach(async () => {
         await session.close();
     });
-
-    test("should throw an error when trying to push on to a non-existing array", async () => {
+    test("should throw an error when trying to pop an element from a non-existing array", async () => {
         const typeMovie = new UniqueType("Movie");
 
         const typeDefs = gql`
@@ -73,7 +72,7 @@ describe("array-push", () => {
 
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_PUSH: "test" }) {
+                ${typeMovie.operations.update} (update: { tags_POP: 1 }) {
                     ${typeMovie.plural} {
                         title
                         tags
@@ -95,9 +94,65 @@ describe("array-push", () => {
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Property tags cannot be NULL"))
+        ).toBeTruthy();
+
+        expect(gqlResult.data).toBeNull();
+    });
+
+    test("should throw an error when trying to pop an element from multiple non-existing arrays", async () => {
+        const typeMovie = new UniqueType("Movie");
+
+        const typeDefs = gql`
+            type ${typeMovie} {
+                title: String
+                tags: [String]
+                otherTags: [String]
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const update = `
+            mutation {
+                ${typeMovie.operations.update} (update: { tags_POP: 1, otherTags_POP: 1 }) {
+                    ${typeMovie.plural} {
+                        title
+                        tags
+                        otherTags
+                    }
+                }
+            }
+        `;
+
+        // Created deliberately without the tags or otherTags properties.
+        const cypher = `
+            CREATE (m:${typeMovie} {title:$movieTitle})
+        `;
+
+        await session.run(cypher, { movieTitle });
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: update,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect(
+            (gqlResult.errors as GraphQLError[]).some((el) =>
+                el.message.includes("Properties tags, otherTags cannot be NULL")
+            )
         ).toBeTruthy();
 
         expect(gqlResult.data).toBeNull();
@@ -108,15 +163,22 @@ describe("array-push", () => {
         const typeDefs = `
             type ${typeMovie} {
                 title: String
-                tags: [String] @authentication(operations: [UPDATE])
+                tags: [String] @auth(rules: [{
+                    operations: [UPDATE],
+                    isAuthenticated: true
+                }])
             }
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
 
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_PUSH: "test" }) {
+                ${typeMovie.operations.update} (update: { tags_POP: 1 }) {
                     ${typeMovie.plural} {
                         title
                         tags
@@ -125,12 +187,8 @@ describe("array-push", () => {
             }
         `;
 
-        const movieTitle = generate({
-            charset: "alphabetic",
-        });
-
         const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: []})
+            CREATE (m:${typeMovie} {title:$movieTitle, tags: ['a', 'b']})
         `;
 
         await session.run(cypher, { movieTitle });
@@ -144,8 +202,12 @@ describe("array-push", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
+
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
 
         expect(gqlResult.errors).toBeDefined();
         expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Unauthenticated"))).toBeTruthy();
@@ -170,7 +232,7 @@ describe("array-push", () => {
 
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_PUSH: 123 }) {
+                ${typeMovie.operations.update} (update: { tags_POP: a }) {
                     ${typeMovie.plural} {
                         title
                         tags
@@ -180,7 +242,7 @@ describe("array-push", () => {
         `;
 
         const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags:[]})
+            CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc", "xyz"]})
         `;
 
         await session.run(cypher, { movieTitle });
@@ -191,12 +253,17 @@ describe("array-push", () => {
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("String cannot represent a non string value")
+                el.message.includes("Int cannot represent non-integer value")
             )
         ).toBeTruthy();
+
         expect(gqlResult.data).toBeUndefined();
     });
 
@@ -218,7 +285,7 @@ describe("array-push", () => {
 
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_PUSH: "test", tags: [] }) {
+                ${typeMovie.operations.update} (update: { tags_POP: 1, tags: [] }) {
                     ${typeMovie.plural} {
                         title
                         tags
@@ -254,7 +321,6 @@ describe("array-push", () => {
 
     test("should throw an error when performing an ambiguous property update on relationship properties", async () => {
         const initialPay = 100;
-        const payIncrement = 50;
         const movie = new UniqueType("Movie");
         const actor = new UniqueType("Actor");
         const typeDefs = `
@@ -281,14 +347,14 @@ describe("array-push", () => {
         });
 
         const query = `
-            mutation Mutation($id: ID, $payIncrement: [Float]) {
+            mutation Mutation($id: ID, $numberToPop: Int) {
                 ${actor.operations.update}(where: { id: $id }, update: {
                     actedIn: [
                         {
                             update: {
                                 edge: {
                                     pay: [],
-                                    pay_PUSH: $payIncrement
+                                    pay_POP: $numberToPop
                                 }
                             }
                         }
@@ -323,7 +389,7 @@ describe("array-push", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            variableValues: { id, payIncrement },
+            variableValues: { id, numberToPop: 1 },
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 

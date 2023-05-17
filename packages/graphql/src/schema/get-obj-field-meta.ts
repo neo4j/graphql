@@ -172,6 +172,7 @@ function getObjFieldMeta({
                             "id",
                             "auth",
                             "authorization",
+                            "authentication",
                             "readonly",
                             "writeonly",
                             "computed",

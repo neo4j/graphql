@@ -37,17 +37,12 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         driver = await neo4j.getDriver();
 
         const typeDefs = gql`
-            type JWTPayload @jwtPayload {
-                roles: [String!]!
-            }
-
             type Battery {
                 id: ID! @id(autogenerate: false)
                 current: Boolean!
             }
 
-            extend type Battery
-                @authorization(validate: [{ when: [BEFORE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
+            extend type Battery @auth(rules: [{ isAuthenticated: true, roles: ["admin"] }])
 
             type CombustionEngine {
                 id: ID! @id(autogenerate: false)
@@ -77,10 +72,10 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
-            features: {
-                authorization: {
-                    key: secret,
-                },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
             },
         });
         schema = await neoGraphql.getSchema();
