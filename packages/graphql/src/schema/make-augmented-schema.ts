@@ -41,7 +41,7 @@ import { upperFirst } from "../utils/upper-first";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import { augmentFulltextSchema } from "./augment/fulltext";
 import createConnectionFields from "./create-connection-fields";
-import createRelationshipFields from "./create-relationship-fields";
+import createRelationshipFields from "./create-relationship-fields/create-relationship-fields";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import getCustomResolvers from "./get-custom-resolvers";
 import { getDefinitionNodes } from "./get-definition-nodes";
