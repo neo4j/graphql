@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { Context, GraphQLWhereArg } from "../../../types";
 
-export function populateWhereParams({ where, context }: { where: GraphQLWhereArg; context: Context }) {
+export function populateWhereParams({ where, context }: { where: GraphQLWhereArg; context: Context }): GraphQLWhereArg {
     const parsed: GraphQLWhereArg = {};
 
     Object.entries(where).forEach(([k, v]) => {
@@ -34,7 +35,15 @@ export function populateWhereParams({ where, context }: { where: GraphQLWhereArg
             if (v.startsWith("$jwt")) {
                 const path = v.substring(5);
 
-                parsed[k] = context.authorization.jwtParam.property(path);
+                const mappedPath = context.authorization.claims?.get(path);
+
+                const jwtProperty = context.authorization.jwtParam.property(...(mappedPath || path).split("."));
+
+                // coalesce jwt parameter values to be an empty string which can be evaluated in a boolean expression
+                // comparing against null will always produce null, which results in errors in apoc.util.validatePredicate
+                const coalesce = Cypher.coalesce(jwtProperty, new Cypher.Literal(""));
+
+                parsed[k] = coalesce;
             } else {
                 parsed[k] = v;
             }

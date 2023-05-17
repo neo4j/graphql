@@ -157,7 +157,10 @@ export function createPropertyWhere({
         propertyRefOrCoalesce: propertyRef,
         // When dealing with authorization input, references to JWT will already be a param
         // TODO: Pre-parse all where input in a manner similar to populateWhereParams, which substitutes all values for params
-        param: value instanceof Cypher.Param || value instanceof Cypher.Property ? value : new Cypher.Param(value),
+        param:
+            value instanceof Cypher.Param || value instanceof Cypher.Property || value instanceof Cypher.Function
+                ? value
+                : new Cypher.Param(value),
         operator,
         durationField,
         pointField,

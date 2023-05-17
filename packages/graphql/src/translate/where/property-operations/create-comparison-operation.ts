@@ -33,12 +33,13 @@ export function createComparisonOperation({
 }: {
     operator: string | undefined;
     propertyRefOrCoalesce: Cypher.Property | Cypher.Function | Cypher.Variable;
-    param: Cypher.Param | Cypher.Property;
+    param: Cypher.Param | Cypher.Property | Cypher.Function;
     durationField: PrimitiveField | undefined;
     pointField: PointField | undefined;
     neo4jDatabaseInfo: Neo4jDatabaseInfo;
 }): Cypher.ComparisonOp {
-    if (pointField) {
+    // TODO: consider if this conditional is the correct solution - should we make the function compatible?
+    if (!(param instanceof Cypher.Function) && pointField) {
         return createPointComparisonOperation({
             operator,
             propertyRefOrCoalesce,
