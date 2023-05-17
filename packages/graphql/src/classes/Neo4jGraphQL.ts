@@ -208,6 +208,28 @@ class Neo4jGraphQL {
         });
     }
 
+    public neo4jValidateGraphQLDocument(): void {
+        const initialDocument = this.getDocument(this.schemaDefinition.typeDefs);
+
+        //
+        // TODO: write tests for this method here!
+        //
+        validateDocument(initialDocument);
+
+        const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
+        const { jwtPayload } = typesExcludedFromGeneration;
+
+        const { typeDefs } = makeAugmentedSchema(document, {
+            features: this.features,
+            enableRegex: false,
+            validateResolvers: true,
+            generateSubscriptions: false,
+            userCustomResolvers: undefined,
+        });
+
+        validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwtPayload });
+    }
+
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
         forEachField(schema, (field) => {
             if (!field.resolve) {
@@ -309,9 +331,6 @@ class Neo4jGraphQL {
 
             const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
-            // expose this as a public method. write tests for it!
-            // call the method: neo4jValidateGraphQLDocument
-            // ###### FROM HERE #####
             if (validateTypeDefs) {
                 validateDocument(initialDocument);
             }
@@ -331,7 +350,6 @@ class Neo4jGraphQL {
             if (validateTypeDefs) {
                 validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwtPayload });
             }
-            // ###### TO HERE #####
 
             this._nodes = nodes;
             this._relationships = relationships;
