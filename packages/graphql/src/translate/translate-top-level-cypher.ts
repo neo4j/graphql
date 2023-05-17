@@ -44,7 +44,14 @@ export function translateTopLevelCypher({
 }): Cypher.CypherResult {
     context.resolveTree = getNeo4jResolveTree(info);
     const { resolveTree } = context;
-    let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
+    let params = {
+        ...args,
+        auth: createAuthParam({ context }),
+        cypherParams: context.cypherParams,
+    };
+    if (statement.includes("$jwt")) {
+        params.jwt = context.authorization.jwtParam.value;
+    }
     const cypherStrs: string[] = [];
 
     const { cypher: authCypher, params: authParams } = createAuthAndParams({ entity: field, context });
@@ -170,6 +177,10 @@ export function translateTopLevelCypher({
         }),
         { strs: initApocParamsStrs, params }
     );
+
+    if (statement.includes("$jwt")) {
+        apocParams.strs.push("jwt: $jwt");
+    }
 
     params = { ...params, ...apocParams.params };
 

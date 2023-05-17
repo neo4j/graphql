@@ -150,6 +150,16 @@ export const wrapResolver =
                 }
                 context.jwt = await decodeToken(token, context.plugins.auth);
             }
+        } else {
+            const isAuthenticated = true;
+            const jwt = context.jwt;
+
+            context.authorization = {
+                isAuthenticated,
+                jwt,
+                jwtParam: new Cypher.NamedParam("jwt", jwt),
+                isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
+            };
         }
 
         verifyGlobalAuthentication(context, context.plugins?.auth);

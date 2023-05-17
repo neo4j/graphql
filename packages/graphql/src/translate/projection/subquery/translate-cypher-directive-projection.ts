@@ -70,6 +70,10 @@ export function translateCypherDirectiveProjection({
     let projectionExpr: Cypher.Expr | undefined;
     let hasUnionLabelsPredicate: Cypher.Predicate | undefined;
 
+    if (cypherField.statement.includes("$jwt")) {
+        res.params.jwt = context.authorization.jwtParam.value;
+    }
+
     if (referenceNode) {
         const {
             projection: str,

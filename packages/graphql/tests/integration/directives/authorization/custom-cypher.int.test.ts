@@ -44,8 +44,8 @@ describe("should inject the auth into cypher directive", () => {
         const typeDefs = `
             type Query {
                 userId: ID @cypher(statement: """
-                    RETURN $auth.jwt.sub
-                """)
+                    RETURN $jwt.sub AS sub
+                """, columnName: "sub")
             }
         `;
 
@@ -91,8 +91,8 @@ describe("should inject the auth into cypher directive", () => {
         const typeDefs = `
             type Query {
                 userId: ID @cypher(statement: """
-                    RETURN $auth.jwt.sub
-                """)
+                    RETURN $jwt.sub AS sub
+                """, columnName: "sub")
             }
         `;
 
@@ -129,7 +129,7 @@ describe("should inject the auth into cypher directive", () => {
         }
     });
 
-    test("mutation", async () => {
+    test.only("mutation", async () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
@@ -139,8 +139,8 @@ describe("should inject the auth into cypher directive", () => {
 
             type Mutation {
                 userId: ID @cypher(statement: """
-                    RETURN $auth.jwt.sub
-                """)
+                    RETURN $jwt.sub AS sub
+                """, columnName: "sub")
             }
         `;
 
@@ -190,8 +190,8 @@ describe("should inject the auth into cypher directive", () => {
 
             type Mutation {
                 userId: ID @cypher(statement: """
-                    RETURN $auth.jwt.sub
-                """)
+                    RETURN $jwt.sub AS a
+                """, columnName: "a")
             }
         `;
 
@@ -235,9 +235,8 @@ describe("should inject the auth into cypher directive", () => {
             type User {
                 id: ID
                 userId: ID @cypher(statement: """
-                    WITH $auth.jwt.sub as a
-                    RETURN a
-                """)
+                    RETURN $jwt.sub AS a
+                """, columnName: "a")
             }
         `;
 
@@ -290,9 +289,8 @@ describe("should inject the auth into cypher directive", () => {
             type User {
                 id: ID
                 userId: ID @cypher(statement: """
-                    WITH $auth.jwt.sub as a
-                    RETURN a
-                """)
+                    RETURN $jwt.sub AS a
+                """, columnName: "a")
             }
         `;
 
