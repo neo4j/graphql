@@ -23,6 +23,7 @@ import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 
 describe("auth/custom-resolvers", () => {
     let driver: Driver;
@@ -69,7 +70,7 @@ describe("auth/custom-resolvers", () => {
                         me: (_, __, ctx) => ({ id: ctx.auth.jwt.sub }),
                     },
                 },
-                features: { authorization: { key: secret } },
+                plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret }) },
             });
 
             const req = createJwtRequest(secret, { sub: userId });
@@ -110,7 +111,7 @@ describe("auth/custom-resolvers", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 resolvers: { Mutation: { me: (_, __, ctx) => ({ id: ctx.auth.jwt.sub }) } },
-                features: { authorization: { key: secret } },
+                plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret }) },
             });
 
             const req = createJwtRequest(secret, { sub: userId });
@@ -154,7 +155,7 @@ describe("auth/custom-resolvers", () => {
                     Query: { me: () => ({}) },
                     User: { customId: (_, __, ctx) => ctx.auth.jwt.sub },
                 },
-                features: { authorization: { key: secret } },
+                plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret }) },
             });
 
             const req = createJwtRequest(secret, { sub: userId });
