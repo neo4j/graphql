@@ -25,7 +25,7 @@ import { createAuthorizationFilterPredicate } from "./rules/create-authorization
 import { createAuthorizationValidatePredicate } from "./rules/create-authorization-validate-predicate";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { NodeMap } from "./types/node-map";
-import {
+import type {
     AuthenticationAnnotation,
     AuthenticationOperation,
 } from "../../schema-model/annotation/AuthenticationAnnotation";

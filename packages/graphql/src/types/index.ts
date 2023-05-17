@@ -30,7 +30,7 @@ import type { Executor } from "../classes/Executor";
 import type { Directive } from "graphql-compose";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { Auth } from "./deprecated/auth/auth";
-import type { JwtPayload } from "./deprecated/auth/jwt-payload";
+import type { JwtPayload } from "./jwt-payload";
 import type { AuthContext } from "./deprecated/auth/auth-context";
 
 export { Node } from "../classes";
@@ -67,7 +67,6 @@ export interface Context {
     executionContext: Driver | Session | Transaction;
     executor: Executor;
     extensions?: Record<string, any>;
-    jwtPayloadFieldsMap?: Map<string, string>;
     authorization: AuthorizationContext;
     [k: string]: any;
 }

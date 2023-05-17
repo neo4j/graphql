@@ -72,10 +72,6 @@ export function createAuthorizationValidatePredicate({
             }
         }
 
-        if (predicate) {
-            predicates.push(predicate);
-        }
-
         if (preComputedSubqueries && !preComputedSubqueries.empty) {
             subqueries = Cypher.concat(subqueries, preComputedSubqueries);
         }

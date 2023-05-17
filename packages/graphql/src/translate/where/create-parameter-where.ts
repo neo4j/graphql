@@ -48,9 +48,9 @@ export function createParameterWhere({
         throw new Error(`Failed to find operator in filter: ${key}`);
     }
 
-    // TODO: this is specific to authorization, 
+    // TODO: this is specific to authorization,
     // but this function has arguments which would indicate it should be generic
-    const mappedJwtClaim = context.jwtPayloadFieldsMap?.get(fieldName);
+    const mappedJwtClaim = context.authorization.claims?.get(fieldName);
 
     let target: Cypher.Property | undefined;
 

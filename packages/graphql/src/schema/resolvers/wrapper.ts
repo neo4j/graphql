@@ -102,8 +102,6 @@ export const wrapResolver =
 
         context.nodes = nodes;
         context.relationships = relationships;
-        // TODO: 4.0.0 - remove
-        context.jwtPayloadFieldsMap = jwtPayloadFieldsMap;
         context.schemaModel = schemaModel;
         context.plugins = plugins || {};
         context.subscriptionsEnabled = Boolean(context.plugins?.subscriptions);
