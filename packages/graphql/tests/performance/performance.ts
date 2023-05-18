@@ -33,6 +33,7 @@ import { TTYFormatter } from "./utils/formatters/TTYFormatter";
 import { subgraphSchemaPerformance } from "./schema/subgraph-schema-performance";
 import { runTranslationPerformance } from "./translation/translation-performance";
 import { typeDefs } from "./typedefs";
+import { getArgumentValue } from "./utils/get-argument-value";
 
 let driver: Driver;
 
@@ -91,14 +92,6 @@ async function translationPerformance() {
         runs = 1;
     }
     await runTranslationPerformance(runs);
-}
-
-function getArgumentValue(argName: string): string | undefined {
-    const runsArg = process.argv.indexOf(argName);
-    if (runsArg === -1) return undefined;
-    const argValue = process.argv[runsArg + 1];
-    if (argValue === undefined) throw new Error(`arg ${argName} requires a value`);
-    return argValue;
 }
 
 async function queryPerformance() {
