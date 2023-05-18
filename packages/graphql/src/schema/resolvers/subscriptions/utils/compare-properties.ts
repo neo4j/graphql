@@ -177,7 +177,7 @@ const multipleConditionsAggregationMap = {
 /** Returns true if receivedProperties comply with filters specified in whereProperties, false otherwise. */
 export function filterByProperties<T>(
     node: Node,
-    whereProperties: Record<string, T | Array<Record<string, T>>>,
+    whereProperties: Record<string, T | Array<Record<string, T>> | Record<string, T>>,
     receivedProperties: Record<string, T>
 ): boolean {
     for (const [k, v] of Object.entries(whereProperties)) {

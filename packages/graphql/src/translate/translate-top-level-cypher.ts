@@ -27,6 +27,7 @@ import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
 import { Neo4jGraphQLError } from "../classes";
+import { filterByValues } from "./authorization/utils/filter-by-values";
 
 export function translateTopLevelCypher({
     context,
@@ -54,6 +55,15 @@ export function translateTopLevelCypher({
     const annotation = operationField.annotations.authentication;
     if (annotation && !context.authorization.isAuthenticated) {
         throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+    }
+    const authorizationAnnotation = operationField.annotations.authorization;
+    if (authorizationAnnotation) {
+        const authorizationResults = authorizationAnnotation.validate?.map((rule) =>
+            filterByValues(rule.where, { jwtPayload: context.authorization.jwt })
+        );
+        if (authorizationResults?.every((result) => result === false)) {
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+        }
     }
 
     context.resolveTree = getNeo4jResolveTree(info);

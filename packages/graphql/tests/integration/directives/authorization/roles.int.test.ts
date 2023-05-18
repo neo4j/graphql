@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -1103,7 +1102,7 @@ describe("auth/roles", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -1156,7 +1155,7 @@ describe("auth/roles", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
             }
