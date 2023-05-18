@@ -19,7 +19,6 @@
 
 import type { IResolvers } from "@graphql-tools/utils";
 import type { DirectiveNode, NamedTypeNode } from "graphql";
-import { Kind } from "graphql";
 import type { Exclude } from "../classes";
 import { Node } from "../classes";
 import type { NodeDirective } from "../classes/NodeDirective";
@@ -35,6 +34,7 @@ import parseNodeDirective from "./parse-node-directive";
 import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import parsePluralDirective from "./parse/parse-plural-directive";
 import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
+import { schemaConfigurationFromObjectTypeDefinition } from "./schema-configuration";
 
 type Nodes = {
     nodes: Node[];
@@ -73,6 +73,9 @@ function getNodes(
                     "plural",
                     "shareable",
                     "deprecated",
+                    "query",
+                    "mutation",
+                    "subscription",
                 ].includes(x.name.value)
         );
         const propagatedDirectives = (definition.directives || []).filter((x) =>
@@ -137,6 +140,8 @@ function getNodes(
         if (excludeDirective || interfaceExcludeDirectives.length) {
             exclude = parseExcludeDirective(excludeDirective || interfaceExcludeDirectives[0]);
         }
+
+        const schemaConfiguration = schemaConfigurationFromObjectTypeDefinition(definition);
 
         let nodeDirective: NodeDirective;
         if (nodeDirectiveDefinition) {
@@ -263,6 +268,7 @@ function getNodes(
             auth,
             // @ts-ignore we can be sure it's defined
             exclude,
+            schemaConfiguration,
             // @ts-ignore we can be sure it's defined
             nodeDirective,
             // @ts-ignore we can be sure it's defined
