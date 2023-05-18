@@ -102,7 +102,6 @@ describe("unwind-create field-level auth rules", () => {
             }
         });
 
-        // TODO: Should UNWIND not happen for field-level authorization rules?
         test("should not raise an error if a user is created without id", async () => {
             const session = await neo4j.getSession();
 
@@ -140,6 +139,78 @@ describe("unwind-create field-level auth rules", () => {
                 ${User.operations.create}(input: [{ id: $id }, { name: $name }]) {
                     ${User.plural} {
                         id
+                    }
+                }
+            }
+            `;
+
+            try {
+                const req = createJwtRequest("secret", { sub: id });
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    variableValues: { id, name },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not raise an error if a nested user is created without id", async () => {
+            const session = await neo4j.getSession();
+
+            const User = new UniqueType("User");
+            const Post = new UniqueType("Post");
+
+            const typeDefs = `
+            type ${User} {
+                id: ID
+                name: String
+            }
+            type ${Post} {
+                title: String
+                creator: ${User} @relationship(type: "HAS_POST", direction: IN)
+            }
+            extend type ${User} {
+                id: ID @authorization(validate: [{ operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
+            }
+        `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const id = generate({
+                charset: "alphabetic",
+            });
+
+            const name = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+            mutation($id: ID!, $name: String!) {
+                ${Post.operations.create}(input: [{
+                    title: "one", 
+                    creator: { create: { node: { id: $id } } }
+                }, { 
+                    title: "two", 
+                    creator: { create: { node: { name: $name } } }
+                }]) {
+                    ${Post.plural} {
+                        title 
+                        creator {
+                            id
+                        }
                     }
                 }
             }

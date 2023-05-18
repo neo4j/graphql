@@ -33,6 +33,7 @@ export function createAuthorizationValidatePredicate({
     rules,
     variable,
     operations,
+    conditionForEvaluation,
 }: {
     when: AuthorizationValidateWhen;
     context: Context;
@@ -40,6 +41,7 @@ export function createAuthorizationValidatePredicate({
     rules: AuthorizationValidateRule[];
     variable: string | Cypher.Node;
     operations: AuthorizationOperation[];
+    conditionForEvaluation?: Cypher.Predicate;
 }): PredicateReturn | undefined {
     const cypherNode = getOrCreateCypherNode(variable);
 
@@ -79,7 +81,13 @@ export function createAuthorizationValidatePredicate({
 
     if (predicates.length) {
         const wherePredicate = Cypher.or(...predicates);
-        const validatePredicate = Cypher.apoc.util.validatePredicate(Cypher.not(wherePredicate), AUTH_FORBIDDEN_ERROR);
+        let innerPredicate: Cypher.Predicate;
+        if (conditionForEvaluation) {
+            innerPredicate = Cypher.and(conditionForEvaluation, Cypher.not(wherePredicate));
+        } else {
+            innerPredicate = Cypher.not(wherePredicate);
+        }
+        const validatePredicate = Cypher.apoc.util.validatePredicate(innerPredicate, AUTH_FORBIDDEN_ERROR);
 
         return {
             predicate: validatePredicate,

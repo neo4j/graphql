@@ -113,7 +113,11 @@ export class UnwindCreateVisitor implements Visitor {
 
         let authorizationFieldsClause: Cypher.CompositeClause | Cypher.With | undefined;
 
-        const authorizationPredicateReturn = this.getAuthorizationFieldClause(create, this.context, currentNode);
+        const authorizationPredicateReturn = this.getAuthorizationFieldClause({
+            astNode: create,
+            nodeRef: currentNode,
+            unwindVar: this.unwindVar,
+        });
         if (authorizationPredicateReturn) {
             const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
 
@@ -230,7 +234,11 @@ export class UnwindCreateVisitor implements Visitor {
 
         let authorizationFieldsClause: Cypher.CompositeClause | Cypher.With | undefined;
 
-        const authorizationPredicateReturn = this.getAuthorizationFieldClause(nestedCreate, this.context, currentNode);
+        const authorizationPredicateReturn = this.getAuthorizationFieldClause({
+            astNode: nestedCreate,
+            nodeRef: currentNode,
+            unwindVar: nodeVar,
+        });
         if (authorizationPredicateReturn) {
             const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
 
@@ -360,11 +368,15 @@ export class UnwindCreateVisitor implements Visitor {
         }
     }
 
-    private getAuthorizationFieldClause(
-        astNode: CreateAST | NestedCreateAST,
-        context: Context,
-        nodeRef: Cypher.Node
-    ): PredicateReturn | undefined {
+    private getAuthorizationFieldClause({
+        astNode,
+        nodeRef,
+        unwindVar,
+    }: {
+        astNode: CreateAST | NestedCreateAST;
+        nodeRef: Cypher.Node;
+        unwindVar: Cypher.Variable;
+    }): PredicateReturn | undefined {
         const authorizationPredicates: Cypher.Predicate[] = [];
         let authorizationSubquery: Cypher.CompositeClause | undefined = undefined;
 
@@ -376,7 +388,7 @@ export class UnwindCreateVisitor implements Visitor {
 
         for (const field of usedAuthFields) {
             const authorizationPredicateReturn = createAuthorizationAfterPredicate({
-                context,
+                context: this.context,
                 nodes: [
                     {
                         variable: nodeRef,
@@ -385,6 +397,7 @@ export class UnwindCreateVisitor implements Visitor {
                     },
                 ],
                 operations: ["CREATE"],
+                conditionForEvaluation: Cypher.isNotNull(unwindVar.property(field.fieldName)),
             });
             if (authorizationPredicateReturn) {
                 const { predicate, preComputedSubqueries } = authorizationPredicateReturn;

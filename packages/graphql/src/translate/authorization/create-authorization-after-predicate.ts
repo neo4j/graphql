@@ -31,12 +31,14 @@ function createNodePredicate({
     node,
     operations,
     fieldName,
+    conditionForEvaluation,
 }: {
     context: Context;
     variable: Cypher.Node;
     node: Node;
     operations: AuthorizationOperation[];
     fieldName?: string;
+    conditionForEvaluation?: Cypher.Predicate;
 }): PredicateReturn | undefined {
     const concreteEntities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
 
@@ -61,6 +63,7 @@ function createNodePredicate({
             rules: annotation.validate || [],
             variable,
             operations,
+            conditionForEvaluation,
         });
     }
 
@@ -71,10 +74,12 @@ export function createAuthorizationAfterPredicate({
     context,
     nodes,
     operations,
+    conditionForEvaluation,
 }: {
     context: Context;
     nodes: NodeMap[];
     operations: AuthorizationOperation[];
+    conditionForEvaluation?: Cypher.Predicate;
 }): PredicateReturn | undefined {
     const predicates: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
@@ -88,6 +93,7 @@ export function createAuthorizationAfterPredicate({
             variable,
             fieldName,
             operations,
+            conditionForEvaluation,
         });
 
         if (!predicateReturn) {
