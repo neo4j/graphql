@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import dotProp from "dot-prop";
 import type { Context, GraphQLWhereArg } from "../../../types";
 
 export function populateWhereParams({ where, context }: { where: GraphQLWhereArg; context: Context }): GraphQLWhereArg {
@@ -44,6 +45,10 @@ export function populateWhereParams({ where, context }: { where: GraphQLWhereArg
                 const coalesce = Cypher.coalesce(jwtProperty, new Cypher.Literal(""));
 
                 parsed[k] = coalesce;
+            } else if (v.startsWith("$context")) {
+                const path = v.substring(9);
+                const contextValueParameter = new Cypher.Param(dotProp.get(context, path));
+                parsed[k] = contextValueParameter || "";
             } else {
                 parsed[k] = v;
             }
