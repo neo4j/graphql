@@ -18,10 +18,11 @@
  */
 
 import type { Node } from "../classes";
+import { Neo4jGraphQLError } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import type { Context } from "../types";
-import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, AUTHORIZATION_UNAUTHENTICATED, META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
@@ -30,7 +31,6 @@ import { UnsupportedUnwindOptimization } from "./batch-create/types";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { addMeasurementField, Measurement } from "../utils/add-measurement-field";
 import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
-import { Neo4jError } from "neo4j-driver";
 
 type ProjectionAndParamsResult = {
     projection: Cypher.Expr;
@@ -70,11 +70,16 @@ export default async function translateCreate({
         if (annotation) {
             const requiresAuthentication = annotation.operations.some((operation) => operation === "CREATE");
             if (requiresAuthentication && !context.authorization.isAuthenticated) {
-                throw new Neo4jError("Unauthenticated", AUTH_UNAUTHENTICATED_ERROR);
+                throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
             }
         }
 
         // TODO: consider if we could wedge a check of roles in here
+
+        // const authorizationAnnotation = entity.annotations.authorization
+        // if(authorizationAnnotation) {
+        //     // go over validate BEFORE where ops contains create
+        // }
     }
 
     try {
