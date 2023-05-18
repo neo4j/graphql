@@ -21,11 +21,12 @@ import type { GraphQLResolveInfo } from "graphql";
 import createProjectionAndParams from "./create-projection-and-params";
 import type { Context, CypherField } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, AUTHORIZATION_UNAUTHENTICATED } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
+import { Neo4jGraphQLError } from "../classes";
 
 export function translateTopLevelCypher({
     context,
@@ -42,6 +43,19 @@ export function translateTopLevelCypher({
     statement: string;
     type: "Query" | "Mutation";
 }): Cypher.CypherResult {
+    const operation = context.schemaModel.operations[type];
+    if (!operation) {
+        throw new Error(`Failed to find operation ${type} in Schema Model.`);
+    }
+    const operationField = operation.findFields(field.fieldName);
+    if (!operationField) {
+        throw new Error(`Failed to find field ${field.fieldName} on operation ${type}.`);
+    }
+    const annotation = operationField.annotations.authentication;
+    if (annotation && !context.authorization.isAuthenticated) {
+        throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+    }
+
     context.resolveTree = getNeo4jResolveTree(info);
     const { resolveTree } = context;
     let params = {
