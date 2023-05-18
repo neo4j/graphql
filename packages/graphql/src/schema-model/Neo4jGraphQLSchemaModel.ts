@@ -17,22 +17,30 @@
  * limitations under the License.
  */
 
+import type { Operation } from "./Operation";
 import { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Entity } from "./entity/Entity";
-
+export type Operations = {
+    Query?: Operation;
+    Mutation?: Operation;
+    Subscription?: Operation;
+};
 /** Represents the internal model for the Neo4jGraphQL schema */
 export class Neo4jGraphQLSchemaModel {
     public entities: Map<string, Entity>;
     public concreteEntities: ConcreteEntity[];
     public compositeEntities: CompositeEntity[];
+    public operations: Operations;
 
     constructor({
         concreteEntities,
         compositeEntities,
+        operations,
     }: {
         concreteEntities: ConcreteEntity[];
         compositeEntities: CompositeEntity[];
+        operations: Operations;
     }) {
         this.entities = [...compositeEntities, ...concreteEntities].reduce((acc, entity) => {
             acc.set(entity.name, entity);
@@ -40,6 +48,7 @@ export class Neo4jGraphQLSchemaModel {
         }, new Map<string, Entity>());
         this.concreteEntities = concreteEntities;
         this.compositeEntities = compositeEntities;
+        this.operations = operations;
     }
 
     public getEntity(name: string): Entity | undefined {
