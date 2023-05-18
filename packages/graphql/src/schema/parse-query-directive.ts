@@ -19,7 +19,7 @@
 
 
 import type { DirectiveNode} from "graphql";
-import { getArgumentValues } from "graphql";
+import { getArgumentValues } from "../utils/getArgumentValues";
 import { QueryDirective } from "../classes/QueryDirective";
 import { queryDirective as queryDirectiveDefinition} from "../graphql/directives/query";
 

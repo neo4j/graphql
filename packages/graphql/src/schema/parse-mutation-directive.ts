@@ -18,9 +18,9 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import { getArgumentValues } from "graphql";
 import { MutationDirective } from "../classes/MutationDirective";
 import { mutationDirective as mutationDirectiveDefinition } from "../graphql/directives/mutation";
+import { getArgumentValues } from "../utils/getArgumentValues";
 
 function parseMutationDirective(directiveNode: DirectiveNode | undefined) {
     if (!directiveNode || directiveNode.name.value !== mutationDirectiveDefinition.name) {

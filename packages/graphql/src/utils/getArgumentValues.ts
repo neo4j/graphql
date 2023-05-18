@@ -1,0 +1,82 @@
+import { inspect } from "@graphql-tools/utils";
+import type { Maybe } from "@graphql-tools/utils/typings/types";
+import type { DirectiveNode, FieldNode, GraphQLDirective, GraphQLField } from "graphql";
+import { GraphQLError, isNonNullType, Kind, valueFromAST, print } from "graphql";
+import type { ObjMap } from "graphql/jsutils/ObjMap";
+
+/**
+ * Polyfill of GraphQL-JS getArgumentValues, remove it after dropping the support of GraphQL-JS 15.0
+ *
+ * Prepares an object map of argument values given a list of argument
+ * definitions and list of argument AST nodes.
+ *
+ * Note: The returned value is a plain Object with a prototype, since it is
+ * exposed to user code. Care should be taken to not pull values from the
+ * Object prototype.
+ */
+export function getArgumentValues(
+    def: GraphQLField<unknown, unknown> | GraphQLDirective,
+    node: FieldNode | DirectiveNode,
+    variableValues?: Maybe<ObjMap<unknown>>
+): { [argument: string]: unknown } {
+    const coercedValues: { [argument: string]: unknown } = {};
+
+    // FIXME: https://github.com/graphql/graphql-js/issues/2203
+    /* c8 ignore next */
+    const argumentNodes = node.arguments ?? [];
+    const argNodeMap = new Map(argumentNodes.map((arg) => [arg.name.value, arg]));
+
+    for (const argDef of def.args) {
+        const name = argDef.name;
+        const argType = argDef.type;
+        const argumentNode = argNodeMap.get(name);
+
+        if (argumentNode == null) {
+            if (argDef.defaultValue !== undefined) {
+                coercedValues[name] = argDef.defaultValue;
+            } else if (isNonNullType(argType)) {
+                throw new GraphQLError(
+                    `Argument "${name}" of required type "${inspect(argType)}" ` + "was not provided.",
+                    { nodes: node }
+                );
+            }
+            continue;
+        }
+
+        const valueNode = argumentNode.value;
+        let isNull = valueNode.kind === Kind.NULL;
+
+        if (valueNode.kind === Kind.VARIABLE) {
+            const variableName = valueNode.name.value;
+            if (variableValues == null || !Object.prototype.hasOwnProperty.call(variableValues, variableName)) {
+                if (argDef.defaultValue !== undefined) {
+                    coercedValues[name] = argDef.defaultValue;
+                } else if (isNonNullType(argType)) {
+                    throw new GraphQLError(
+                        `Argument "${name}" of required type "${inspect(argType)}" ` +
+                            `was provided the variable "$${variableName}" which was not provided a runtime value.`,
+                        { nodes: valueNode }
+                    );
+                }
+                continue;
+            }
+            isNull = variableValues[variableName] == null;
+        }
+
+        if (isNull && isNonNullType(argType)) {
+            throw new GraphQLError(`Argument "${name}" of non-null type "${inspect(argType)}" ` + "must not be null.", {
+                nodes: valueNode,
+            });
+        }
+
+        const coercedValue = valueFromAST(valueNode, argType, variableValues);
+        if (coercedValue === undefined) {
+            // Note: ValuesOfCorrectTypeRule validation should catch this before
+            // execution. This is a runtime check to ensure execution does not
+            // continue with an invalid argument value.
+            throw new GraphQLError(`Argument "${name}" has invalid value ${print(valueNode)}.`, { nodes: valueNode });
+        }
+        coercedValues[name] = coercedValue;
+    }
+    return coercedValues;
+}
