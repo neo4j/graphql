@@ -181,6 +181,7 @@ function validateDocument(
     });
 
     const schema = extendSchema(schemaToExtend, doc);
+
     const errors = validateSchema(schema);
 
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");

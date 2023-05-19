@@ -26,6 +26,7 @@ import {
     schemaConfigurationFromObjectTypeDefinition,
     schemaConfigurationFromSchemaExtensions,
 } from "./schema-configuration";
+import parseExcludeDirective from "./parse-exclude-directive";
 
 describe("schemaConfiguration", () => {
     test("schemaConfigurationFromObjectTypeDefinition should return a Schema Configuration object", () => {
@@ -107,6 +108,37 @@ describe("schemaConfiguration", () => {
             subscribeDelete: false,
             subscribeDeleteRelationship: false,
             subscribeUpdate: false,
+        });
+    });
+
+    test("getSchemaConfigurationFlags should return the correct flags when used with the deprecated exclude directive", () => {
+        const typeDefs = `
+                type TestType @exclude(operations: [CREATE, DELETE]) {
+                    name: String
+                }
+            `;
+
+        const documentNode = parse(typeDefs);
+        const objectTypeDefinition = documentNode.definitions.find(
+            (definition) => definition.kind === Kind.OBJECT_TYPE_DEFINITION
+        ) as ObjectTypeDefinitionNode;
+        const exclude = (objectTypeDefinition.directives as any[])[0];
+        const excludeDirective = parseExcludeDirective(exclude);
+        const schemaConfigurationFlags = getSchemaConfigurationFlags({
+            excludeDirective,
+        });
+
+        expect(schemaConfigurationFlags).toEqual({
+            read: true,
+            aggregate: true,
+            create: false,
+            delete: false,
+            update: true,
+            subscribeCreate: true,
+            subscribeCreateRelationship: true,
+            subscribeDelete: true,
+            subscribeDeleteRelationship: true,
+            subscribeUpdate: true,
         });
     });
 });

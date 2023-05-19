@@ -25,10 +25,11 @@ export class SubscriptionDirective {
     public deleteRelationship: boolean;
 
     constructor(operations?: ("CREATE" | "UPDATE" | "DELETE" | "CREATE_RELATIONSHIP" | "DELETE_RELATIONSHIP")[]) {
-        this.create = !!operations?.find((operation) => operation === "CREATE");
-        this.update = !!operations?.find((operation) => operation === "UPDATE");
-        this.delete = !!operations?.find((operation) => operation === "DELETE");
-        this.createRelationship = !!operations?.find((operation) => operation === "CREATE_RELATIONSHIP");
-        this.deleteRelationship = !!operations?.find((operation) => operation === "DELETE_RELATIONSHIP");
+        const operationsSet = new Set(operations);
+        this.create = operationsSet.has("CREATE");
+        this.update = operationsSet.has("UPDATE");
+        this.delete =  operationsSet.has("DELETE");
+        this.createRelationship =  operationsSet.has("CREATE_RELATIONSHIP");
+        this.deleteRelationship =  operationsSet.has("DELETE_RELATIONSHIP");
     }
 }

@@ -23,7 +23,6 @@ import type { MutationDirective } from "../classes/MutationDirective";
 import type { QueryDirective } from "../classes/QueryDirective";
 import type { SubscriptionDirective } from "../classes/SubscriptionDirective";
 import {
-    excludeDirective,
     mutationDirective as mutationDirectiveDefinition,
     queryDirective as queryDirectiveDefinition,
     subscriptionDirective as subscriptionDirectiveDefinition,
@@ -155,12 +154,13 @@ export function getSchemaConfigurationFlags(options: {
 
     const schemaConfigurationFlags = getDefaultSchemaConfigurationFlags();
 
-    if (excludeDirective) {
+    if (options.excludeDirective) {
+        const excludeOperationsSet = new Set(options.excludeDirective.operations);
         schemaConfigurationFlags.read = schemaConfigurationFlags.aggregate =
-            !options.excludeDirective?.operations.includes("read");
-        schemaConfigurationFlags.create = !options.excludeDirective?.operations.includes("create");
-        schemaConfigurationFlags.delete = !options.excludeDirective?.operations.includes("delete");
-        schemaConfigurationFlags.update = !options.excludeDirective?.operations.includes("update");
+            !excludeOperationsSet.has("read");
+        schemaConfigurationFlags.create = !excludeOperationsSet.has("create");
+        schemaConfigurationFlags.delete = !excludeOperationsSet.has("delete");
+        schemaConfigurationFlags.update = !excludeOperationsSet.has("update");
     }
 
     const queryDirective =

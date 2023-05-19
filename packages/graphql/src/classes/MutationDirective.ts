@@ -23,8 +23,9 @@ export class MutationDirective {
     public delete: boolean;
 
     constructor(operations?: ("CREATE" | "UPDATE" | "DELETE")[]) {
-        this.create = !!operations?.find(operation  => operation === "CREATE");
-        this.update = !!operations?.find(operation  => operation === "UPDATE");
-        this.delete = !!operations?.find(operation  => operation === "DELETE");
+        const operationsSet = new Set(operations);
+        this.create = operationsSet.has("CREATE");
+        this.update = operationsSet.has("UPDATE");
+        this.delete = operationsSet.has("DELETE");
     }
 }
