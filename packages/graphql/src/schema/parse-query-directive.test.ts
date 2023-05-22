@@ -37,7 +37,7 @@ describe("parseQueryDirective", () => {
         );
     });
 
-    test("should returns read: true, aggregate: false with no arguments", () => {
+    test("should return read: true, aggregate: false with no arguments", () => {
         const typeDefs = `
             type TestType @query {
                 name: String
@@ -51,7 +51,7 @@ describe("parseQueryDirective", () => {
         expect(parseQueryDirective(directive)).toMatchObject(expected);
     });
 
-    test("should returns read: true with only aggregate argument", () => {
+    test("should return read: true with only aggregate argument", () => {
         const typeDefs = `
             type TestType @query(aggregate: false) {
                 name: String
@@ -65,7 +65,7 @@ describe("parseQueryDirective", () => {
         expect(parseQueryDirective(directive)).toMatchObject(expected);
     });
 
-    test("should returns aggregate: false with only read argument", () => {
+    test("should return aggregate: false with only read argument", () => {
         const typeDefs = `
             type TestType @query(read: true) {
                 name: String
@@ -79,7 +79,7 @@ describe("parseQueryDirective", () => {
         expect(parseQueryDirective(directive)).toMatchObject(expected);
     });
 
-    test("should returns aggregate: true if specified", () => {
+    test("should return aggregate: true if specified", () => {
         const typeDefs = `
             type TestType @query(aggregate: true) {
                 name: String
