@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { IncomingMessage } from "http";
@@ -36,9 +35,6 @@ describe("auth/is-authenticated", () => {
     let User: UniqueType;
 
     const secret = "secret";
-    const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
-        secret: "secret",
-    });
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -214,7 +210,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
 
             const query = `
                 mutation {

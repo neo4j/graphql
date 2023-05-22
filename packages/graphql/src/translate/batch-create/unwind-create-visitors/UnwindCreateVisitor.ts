@@ -284,6 +284,7 @@ export class UnwindCreateVisitor implements Visitor {
                 },
             ],
             operations: ["CREATE"],
+            includeAuthenticationPredicate: true,
         });
 
         if (authorizationPredicateReturn) {
@@ -398,6 +399,7 @@ export class UnwindCreateVisitor implements Visitor {
                 ],
                 operations: ["CREATE"],
                 conditionForEvaluation: Cypher.isNotNull(unwindVar.property(field.fieldName)),
+                includeAuthenticationPredicate: true,
             });
             if (authorizationPredicateReturn) {
                 const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
