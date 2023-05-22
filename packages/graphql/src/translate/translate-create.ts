@@ -73,13 +73,6 @@ export default async function translateCreate({
                 throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
             }
         }
-
-        // TODO: consider if we could wedge a check of roles in here
-
-        // const authorizationAnnotation = entity.annotations.authorization
-        // if(authorizationAnnotation) {
-        //     // go over validate BEFORE where ops contains create
-        // }
     }
 
     try {

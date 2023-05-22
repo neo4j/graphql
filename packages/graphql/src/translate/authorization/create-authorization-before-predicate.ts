@@ -25,11 +25,7 @@ import { createAuthorizationFilterPredicate } from "./rules/create-authorization
 import { createAuthorizationValidatePredicate } from "./rules/create-authorization-validate-predicate";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { NodeMap } from "./types/node-map";
-import type {
-    AuthenticationAnnotation,
-    AuthenticationOperation,
-} from "../../schema-model/annotation/AuthenticationAnnotation";
-import { AUTH_UNAUTHENTICATED_ERROR } from "../../constants";
+import { createNodeAuthenticationPredicate } from "./create-authentication-predicate";
 
 function createNodePredicate({
     context,
@@ -144,36 +140,6 @@ function createNodeAuthorizationPredicate({
         predicate: Cypher.and(...predicates),
         preComputedSubqueries: subqueries,
     };
-}
-
-function createNodeAuthenticationPredicate({
-    entity,
-    context,
-    operations,
-    fieldName,
-}: {
-    context: Context;
-    entity: ConcreteEntity;
-    operations: AuthenticationOperation[];
-    fieldName?: string;
-}): Cypher.Predicate | undefined {
-    let annotation: AuthenticationAnnotation | undefined;
-    if (fieldName) {
-        annotation = entity.attributes.get(fieldName)?.annotations.authentication;
-    } else {
-        annotation = entity.annotations.authentication;
-    }
-    if (!annotation) {
-        return;
-    }
-    const requiresAuthentication = annotation.operations.some((operation) => operations.includes(operation));
-    if (!requiresAuthentication) {
-        return;
-    }
-    return Cypher.apoc.util.validatePredicate(
-        Cypher.eq(context.authorization.isAuthenticatedParam, new Cypher.Literal(false)),
-        AUTH_UNAUTHENTICATED_ERROR
-    );
 }
 
 export function createAuthorizationBeforePredicate({
