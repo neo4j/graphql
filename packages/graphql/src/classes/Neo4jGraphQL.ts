@@ -208,26 +208,33 @@ class Neo4jGraphQL {
         });
     }
 
-    public neo4jValidateGraphQLDocument(): void {
-        const initialDocument = this.getDocument(this.schemaDefinition.typeDefs);
+    public neo4jValidateGraphQLDocument(): { isValid: boolean; validationErrors: string[] } {
+        let isValid = false;
+        let validationErrors: string[] = [];
+        try {
+            const initialDocument = this.getDocument(this.schemaDefinition.typeDefs);
 
-        //
-        // TODO: write tests for this method here!
-        //
-        validateDocument(initialDocument);
+            validateDocument(initialDocument);
 
-        const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
-        const { jwtPayload } = typesExcludedFromGeneration;
+            const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
+            const { jwtPayload } = typesExcludedFromGeneration;
 
-        const { typeDefs } = makeAugmentedSchema(document, {
-            features: this.features,
-            enableRegex: false,
-            validateResolvers: true,
-            generateSubscriptions: false,
-            userCustomResolvers: undefined,
-        });
+            const { typeDefs } = makeAugmentedSchema(document, {
+                features: this.features,
+                enableRegex: false,
+                validateResolvers: true,
+                generateSubscriptions: false,
+                userCustomResolvers: undefined,
+            });
 
-        validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwtPayload });
+            validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwtPayload });
+            isValid = true;
+        } catch (error) {
+            if (error instanceof Error) {
+                validationErrors = error.message.split("\n\n");
+            }
+        }
+        return { isValid, validationErrors };
     }
 
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
