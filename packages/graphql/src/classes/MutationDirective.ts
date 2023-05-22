@@ -17,15 +17,17 @@
  * limitations under the License.
  */
 
+import { MutationOperations } from "../graphql/directives/mutation";
+
 export class MutationDirective {
     public create: boolean;
     public update: boolean;
     public delete: boolean;
 
-    constructor(operations?: ("CREATE" | "UPDATE" | "DELETE")[]) {
+    constructor(operations?: (MutationOperations)[]) {
         const operationsSet = new Set(operations);
-        this.create = operationsSet.has("CREATE");
-        this.update = operationsSet.has("UPDATE");
-        this.delete = operationsSet.has("DELETE");
+        this.create = operationsSet.has(MutationOperations.CREATE);
+        this.update = operationsSet.has(MutationOperations.UPDATE);
+        this.delete = operationsSet.has(MutationOperations.DELETE);
     }
 }

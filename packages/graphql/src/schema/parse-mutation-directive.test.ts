@@ -21,6 +21,7 @@ import type { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import { parse } from "graphql";
 import { MutationDirective } from "../classes/MutationDirective";
 import parseMutationDirective from "./parse-mutation-directive";
+import { MutationOperations } from "../graphql/directives/mutation";
 
 describe("parseMutationDirective", () => {
     test("should throw an error if incorrect directive is passed in", () => {
@@ -46,7 +47,7 @@ describe("parseMutationDirective", () => {
 
         const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-        const expected = new MutationDirective(["CREATE", "UPDATE", "DELETE"]);
+        const expected = new MutationDirective([MutationOperations.CREATE, MutationOperations.UPDATE, MutationOperations.DELETE]);
 
         expect(parseMutationDirective(directive)).toMatchObject(expected);
     });
@@ -60,7 +61,7 @@ describe("parseMutationDirective", () => {
 
         const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-        const expected = new MutationDirective(["UPDATE"]);
+        const expected = new MutationDirective([MutationOperations.UPDATE]);
 
         expect(parseMutationDirective(directive)).toMatchObject(expected);
     });
