@@ -1,0 +1,39 @@
+[[schema-configuration-subscription]]
+= @subscription
+
+This directive instruct the library to limit the operations available in the Subscription root type.
+
+== Definition
+
+[source, graphql, indent=0]
+----
+enum SubscriptionFields {
+    CREATE
+    UPDATE
+    DELETE
+    CREATE_RELATIONSHIP
+    DELETE_RELATIONSHIP
+}
+
+directive @subscription(operations: [SubscriptionFields!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])  on OBJECT | SCHEMA
+----
+
+== Usage
+
+=== Disable subscriptions for Actor
+
+[source, graphql, indent=0]
+----
+type Actor @subscription(operations: []) {
+    name: String
+}
+----
+
+=== Enable only actorCreated subscription for Actor
+
+[source, graphql, indent=0]
+----
+type Actor @subscription(operations: [CREATE]) {
+    name: String
+}
+----

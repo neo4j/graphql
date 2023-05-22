@@ -1,0 +1,31 @@
+[[schema-configuration-query]]
+= @query
+
+This directive instruct the library to limit the operations available in the Query root type.
+
+== Definition
+
+[source, graphql, indent=0]
+----
+directive @query(read: Boolean! = true, aggregate: Boolean! = false) on OBJECT | SCHEMA
+----
+
+== Usage
+
+=== Disable actors and actorsConnection operations
+
+[source, graphql, indent=0]
+----
+type Actor @query(read: false, aggregate: true) {
+    name: String
+}
+----
+
+=== Disable actorsAggregate operations
+
+[source, graphql, indent=0]
+----
+type Actor @query(read: true, aggregate: false) {
+    name: String
+}
+----

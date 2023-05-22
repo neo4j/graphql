@@ -1,0 +1,134 @@
+[[type-definitions-schema-configuration]]
+= Schema Configuration
+
+Neo4j GraphQL Library supports several functionalities like CRUD operations, aggregation, filtering, and many others.
+
+To make them work, a large amount of GraphQL types are generated.
+
+For instance, starting from the type definitions:
+
+[source, graphql, indent=0]
+----
+type Movie { 
+    title: String 
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN) 
+} 
+
+type Actor { 
+    name: String 
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT) 
+}
+----
+The library generates the following operation fields:
+
+**Query**:
+
+    * `movies`
+    * `moviesAggregate`
+    * `moviesConnection`
+    * `actors`
+    * `actorsAggregate`
+    * `actorsConnection`
+
+**Mutation**:
+
+    * `createMovies`
+    * `deleteMovies`
+    * `updateMovies`
+    * `createActors`
+    * `deleteActors`
+    * `updateActors`
+
+**Subscription**:
+
+    * `movieCreated`
+    * `movieUpdated`
+    * `movieDeleted`
+    * `movieRelationshipCreated`
+    * `movieRelationshipDeleted`
+    * `actorCreated`
+    * `actorUpdated`
+    * `actorDeleted`
+    * `actorRelationshipCreated`
+    * `actorRelationshipDeleted`
+
+In most cases, it may be advisable to reduce the scope of the API produced. Whatever the reason is to reduce the size of the schema, improve the performance, or limit access to unwanted operations, this section provides all the information needed to configure the API produced.
+Neo4j GraphQL solves this problem by exposing directives that affect the schema generation phase.
+
+== Usage
+
+From the type definitions above, let's say we want to prevent users from querying `actors` in the Neo4j Database. To do that, let's bring some changes to the initial type definitions:
+
+[source, graphql, indent=0]
+----
+type Movie { 
+    title: String 
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN) 
+} 
+
+type Actor @query(read: false, aggregate: false) { 
+    name: String 
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT) 
+}
+----
+
+With this change, the library does not generates the following operation fields from the Query root type:
+
+**Query**:
+
+    * `movies`
+    * `moviesAggregate`
+    * `moviesConnection`
+    * [.line-through]#`actors`#
+    * [.line-through]#`actorsAggregate`#
+    * [.line-through]#`actorsConnection`#
+
+=== Schema usage
+
+There are cases when what is wanted is to disable an operation for the whole type definitions and not only from some specific types.
+For instance, let's say that we want to remove all the aggregate fields generated from both `actor` and `movie` Object types. To avoid useless repetition, Neo4j GraphQL Library allows specifying a global behavior by adding the schema configuration directive directly to the schema type, as follows:
+
+[source, graphql, indent=0]
+----
+type Movie { 
+    title: String 
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN) 
+} 
+
+type Actor { 
+    name: String 
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT) 
+}
+extend schema @query(read: true, aggregate: false)
+----
+
+**Query**:
+
+    * `movies`
+    * [.line-through]#`moviesAggregate`#
+    * `moviesConnection`
+    * `actors`
+    * [.line-through]#`actorsAggregate`#
+    * `actorsConnection`
+
+
+**Invalid schema usage**
+
+The same schema configuration directive cannot be applied only to both Schema and Object.
+
+For instance, the following type definitions:
+[source, graphql, indent=0]
+----
+type Movie { 
+    title: String 
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN) 
+} 
+
+type Actor @query(read: false, aggregate: true) { 
+    name: String 
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT) 
+}
+extend schema @query(read: true, aggregate: false)
+----
+
+Will raise the error: `"@query directive already defined at the schema location"`.
