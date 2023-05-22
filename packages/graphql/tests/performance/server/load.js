@@ -33,7 +33,7 @@ const CONFIG = {
     api: "http://localhost:4000/graphql",
 };
 
-const dbQueryTrend = new Trend("neo4j/gaphql_database_query_time", true);
+const dbQueryTrend = new Trend("neo4j/graphql_database_query_time", true);
 const translationTimeTrend = new Trend("neo4j/graphql_translation_time", true);
 const wrapperTimeTrend = new Trend("neo4j/graphql_wrapper_time", true);
 
