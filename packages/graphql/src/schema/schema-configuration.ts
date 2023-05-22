@@ -73,7 +73,7 @@ export function schemaConfigurationFromSchemaExtensions(schemaExtensions: Schema
         for (const directive of schemaExtension.directives || []) {
             if (directive.name.value === queryDirectiveDefinition.name) {
                 if (schemaConfiguration.queryDirective) {
-                    throw new Error(`Ambiguity usage with the directive named: ${queryDirectiveDefinition.name}`);
+                    throw new Error(`Ambiguous usage with the directive named: ${queryDirectiveDefinition.name}`);
                 }
                 schemaConfiguration.queryDirective = parseQueryDirective(directive);
             }
@@ -87,7 +87,7 @@ export function schemaConfigurationFromSchemaExtensions(schemaExtensions: Schema
 
             if (directive.name.value === subscriptionDirectiveDefinition.name) {
                 if (schemaConfiguration.subscriptionDirective) {
-                    throw new Error(`Ambiguity usage with the directive named: ${queryDirectiveDefinition.name}`);
+                    throw new Error(`Ambiguous usage with the directive named: ${queryDirectiveDefinition.name}`);
                 }
                 schemaConfiguration.subscriptionDirective = parseSubscriptionDirective(directive);
             }

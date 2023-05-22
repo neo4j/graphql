@@ -37,7 +37,7 @@ describe("parseMutationDirective", () => {
         );
     });
 
-    test("should returns create: true, update: true, delete: true with no arguments", () => {
+    test("should return create: true, update: true, delete: true with no arguments", () => {
         const typeDefs = `
             type TestType @mutation {
                 name: String
@@ -51,7 +51,7 @@ describe("parseMutationDirective", () => {
         expect(parseMutationDirective(directive)).toMatchObject(expected);
     });
 
-    test("should returns create: false, delete: false with only update passed", () => {
+    test("should return create: false, delete: false with only update passed", () => {
         const typeDefs = `
             type TestType @mutation(operations: [UPDATE]) {
                 name: String

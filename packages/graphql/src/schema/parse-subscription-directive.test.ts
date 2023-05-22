@@ -38,7 +38,7 @@ describe("parseSubscriptionDirective", () => {
         );
     });
 
-    test("should contains all the operations enabled when initialized with no argument", () => {
+    test("should contain all the operations enabled when initialized with no argument", () => {
         const typeDefs = `
             type TestType @subscription {
                 name: String
@@ -52,7 +52,7 @@ describe("parseSubscriptionDirective", () => {
         expect(parseSubscriptionDirective(directive)).toMatchObject(expected);
     });
 
-    test("should returns an instance with only update enabled, when only update passed", () => {
+    test("should return an instance with only update enabled, when only update passed", () => {
         const typeDefs = `
             type TestType @subscription(operations: [UPDATE]) {
                 name: String
