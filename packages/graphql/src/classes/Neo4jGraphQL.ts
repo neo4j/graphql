@@ -223,7 +223,7 @@ class Neo4jGraphQL {
                 features: this.features,
                 enableRegex: false,
                 validateResolvers: true,
-                generateSubscriptions: false,
+                generateSubscriptions: true,
                 userCustomResolvers: undefined,
             });
 
