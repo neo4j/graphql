@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-
-import type { DirectiveNode} from "graphql";
-import { getArgumentValues } from "../utils/getArgumentValues";
+import type { DirectiveNode } from "graphql";
+import { getArgumentValues } from "../utils/get-argument-values";
 import { QueryDirective } from "../classes/QueryDirective";
-import { queryDirective as queryDirectiveDefinition} from "../graphql/directives/query";
-
+import { queryDirective as queryDirectiveDefinition } from "../graphql/directives/query";
 
 function parseQueryDirective(directiveNode: DirectiveNode | undefined) {
     if (!directiveNode || directiveNode.name.value !== queryDirectiveDefinition.name) {
         throw new Error("Undefined or incorrect directive passed into parseQueryDirective function");
     }
-    const arg = getArgumentValues(queryDirectiveDefinition, directiveNode) as ConstructorParameters<typeof QueryDirective>[0];
+    const arg = getArgumentValues(queryDirectiveDefinition, directiveNode) as ConstructorParameters<
+        typeof QueryDirective
+    >[0];
 
     return new QueryDirective(arg);
 }

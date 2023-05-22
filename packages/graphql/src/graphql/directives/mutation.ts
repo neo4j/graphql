@@ -19,12 +19,18 @@
 
 import { DirectiveLocation, GraphQLDirective, GraphQLEnumType, GraphQLList, GraphQLNonNull } from "graphql";
 
+export enum MutationOperations {
+    CREATE = "CREATE",
+    UPDATE = "UPDATE",
+    DELETE = "DELETE",
+}
+
 const MUTATION_FIELDS = new GraphQLEnumType({
     name: "MutationFields",
     values: {
-        CREATE: { value: "CREATE" },
-        UPDATE: { value: "UPDATE" },
-        DELETE: { value: "DELETE" },
+        [MutationOperations.CREATE]: { value: MutationOperations.CREATE },
+        [MutationOperations.UPDATE]: { value: MutationOperations.UPDATE },
+        [MutationOperations.DELETE]: { value: MutationOperations.DELETE },
     },
 });
 
@@ -35,9 +41,8 @@ export const mutationDirective = new GraphQLDirective({
         operations: {
             description: "Describe operations available for this type",
             type: new GraphQLNonNull(new GraphQLList(MUTATION_FIELDS)),
-            defaultValue: ["CREATE", "UPDATE", "DELETE"],
+            defaultValue: [MutationOperations.CREATE, MutationOperations.UPDATE, MutationOperations.DELETE],
         },
     },
     locations: [DirectiveLocation.OBJECT, DirectiveLocation.SCHEMA],
 });
-

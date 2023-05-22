@@ -21,6 +21,7 @@ import type { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import { parse } from "graphql";
 import { SubscriptionDirective } from "../classes/SubscriptionDirective";
 import parseSubscriptionDirective from "./parse-subscription-directive";
+import { SubscriptionOperations } from "../graphql/directives/subscription";
 
 describe("parseSubscriptionDirective", () => {
     test("should throw an error if incorrect directive is passed in", () => {
@@ -46,7 +47,7 @@ describe("parseSubscriptionDirective", () => {
 
         const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-        const expected = new SubscriptionDirective(["CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"]);
+        const expected = new SubscriptionDirective([SubscriptionOperations.CREATE, SubscriptionOperations.UPDATE, SubscriptionOperations.DELETE, SubscriptionOperations.CREATE_RELATIONSHIP, SubscriptionOperations.DELETE_RELATIONSHIP]);
 
         expect(parseSubscriptionDirective(directive)).toMatchObject(expected);
     });
@@ -60,7 +61,7 @@ describe("parseSubscriptionDirective", () => {
 
         const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-        const expected = new SubscriptionDirective(["UPDATE"]);
+        const expected = new SubscriptionDirective([SubscriptionOperations.UPDATE]);
 
         expect(parseSubscriptionDirective(directive)).toMatchObject(expected);
     });

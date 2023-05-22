@@ -27,6 +27,7 @@ import {
     schemaConfigurationFromSchemaExtensions,
 } from "./schema-configuration";
 import parseExcludeDirective from "./parse-exclude-directive";
+import { SubscriptionOperations } from "../graphql/directives/subscription";
 
 describe("schemaConfiguration", () => {
     test("schemaConfigurationFromObjectTypeDefinition should return a Schema Configuration object", () => {
@@ -42,11 +43,11 @@ describe("schemaConfiguration", () => {
         expect(schemaConfiguration).toMatchObject({
             queryDirective: new QueryDirective({ read: false, aggregate: false }),
             subscriptionDirective: new SubscriptionDirective([
-                "CREATE",
-                "DELETE",
-                "UPDATE",
-                "CREATE_RELATIONSHIP",
-                "DELETE_RELATIONSHIP",
+                SubscriptionOperations.CREATE,
+                SubscriptionOperations.DELETE,
+                SubscriptionOperations.UPDATE,
+                SubscriptionOperations.CREATE_RELATIONSHIP,
+                SubscriptionOperations.DELETE_RELATIONSHIP,
             ]),
         });
     });
@@ -66,11 +67,11 @@ describe("schemaConfiguration", () => {
 
         expect(schemaConfiguration).toMatchObject({
             subscriptionDirective: new SubscriptionDirective([
-                "CREATE",
-                "DELETE",
-                "UPDATE",
-                "CREATE_RELATIONSHIP",
-                "DELETE_RELATIONSHIP",
+                SubscriptionOperations.CREATE,
+                SubscriptionOperations.DELETE,
+                SubscriptionOperations.UPDATE,
+                SubscriptionOperations.CREATE_RELATIONSHIP,
+                SubscriptionOperations.DELETE_RELATIONSHIP,
             ]),
         });
     });

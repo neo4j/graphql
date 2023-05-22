@@ -18,7 +18,7 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import { getArgumentValues } from "../utils/getArgumentValues";
+import { getArgumentValues } from "../utils/get-argument-values";
 import { SubscriptionDirective } from "../classes/SubscriptionDirective";
 import { subscriptionDirective as subscriptionDirectiveDefinition } from "../graphql/directives/subscription";
 

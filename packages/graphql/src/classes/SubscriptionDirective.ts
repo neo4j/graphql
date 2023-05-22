@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -17,6 +18,8 @@
  * limitations under the License.
  */
 
+import { SubscriptionOperations } from "../graphql/directives/subscription";
+
 export class SubscriptionDirective {
     public create: boolean;
     public update: boolean;
@@ -24,12 +27,12 @@ export class SubscriptionDirective {
     public createRelationship: boolean;
     public deleteRelationship: boolean;
 
-    constructor(operations?: ("CREATE" | "UPDATE" | "DELETE" | "CREATE_RELATIONSHIP" | "DELETE_RELATIONSHIP")[]) {
+    constructor(operations?: (SubscriptionOperations)[]) {
         const operationsSet = new Set(operations);
-        this.create = operationsSet.has("CREATE");
-        this.update = operationsSet.has("UPDATE");
-        this.delete =  operationsSet.has("DELETE");
-        this.createRelationship =  operationsSet.has("CREATE_RELATIONSHIP");
-        this.deleteRelationship =  operationsSet.has("DELETE_RELATIONSHIP");
+        this.create = operationsSet.has(SubscriptionOperations.CREATE);
+        this.update = operationsSet.has(SubscriptionOperations.UPDATE);
+        this.delete =  operationsSet.has(SubscriptionOperations.DELETE);
+        this.createRelationship =  operationsSet.has(SubscriptionOperations.CREATE_RELATIONSHIP);
+        this.deleteRelationship =  operationsSet.has(SubscriptionOperations.DELETE_RELATIONSHIP);
     }
 }

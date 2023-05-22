@@ -39,9 +39,6 @@ export function getArgumentValues(
     variableValues?: Maybe<ObjMap<unknown>>
 ): { [argument: string]: unknown } {
     const coercedValues: { [argument: string]: unknown } = {};
-
-    // FIXME: https://github.com/graphql/graphql-js/issues/2203
-    /* c8 ignore next */
     const argumentNodes = node.arguments ?? [];
     const argNodeMap = new Map(argumentNodes.map((arg) => [arg.name.value, arg]));
 
@@ -84,9 +81,6 @@ export function getArgumentValues(
 
         const coercedValue = valueFromAST(valueNode, argType, variableValues);
         if (coercedValue === undefined) {
-            // Note: ValuesOfCorrectTypeRule validation should catch this before
-            // execution. This is a runtime check to ensure execution does not
-            // continue with an invalid argument value.
             throw new Error(`Argument "${name}" has invalid value ${print(valueNode)}.`);
         }
         coercedValues[name] = coercedValue;

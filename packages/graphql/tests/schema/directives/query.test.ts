@@ -322,7 +322,6 @@ describe("@query directive", () => {
                 extend schema @query(read: false, aggregate: true)
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            //const schemaFN = async () => await neoSchema.getSchema();
             await expect(async () => {
                 await neoSchema.getSchema();
             }).rejects.toThrowErrorMatchingInlineSnapshot(`"@query directive already defined at the schema location"`);

@@ -19,14 +19,22 @@
 
 import { DirectiveLocation, GraphQLDirective, GraphQLEnumType, GraphQLList, GraphQLNonNull } from "graphql";
 
+export enum SubscriptionOperations {
+    CREATE = "CREATE",
+    UPDATE = "UPDATE",
+    DELETE = "DELETE",
+    CREATE_RELATIONSHIP = "CREATE_RELATIONSHIP",
+    DELETE_RELATIONSHIP = "DELETE_RELATIONSHIP",
+}
+
 const SUBSCRIPTION_FIELDS = new GraphQLEnumType({
     name: "SubscriptionFields",
     values: {
-        CREATE: { value: "CREATE" },
-        UPDATE: { value: "UPDATE" },
-        DELETE: { value: "DELETE" },
-        CREATE_RELATIONSHIP: { value: "CREATE_RELATIONSHIP" },
-        DELETE_RELATIONSHIP: { value: "DELETE_RELATIONSHIP" },
+        [SubscriptionOperations.CREATE]: { value: SubscriptionOperations.CREATE },
+        [SubscriptionOperations.UPDATE]: { value: SubscriptionOperations.UPDATE },
+        [SubscriptionOperations.DELETE]: { value: SubscriptionOperations.DELETE },
+        [SubscriptionOperations.CREATE_RELATIONSHIP]: { value: SubscriptionOperations.CREATE_RELATIONSHIP },
+        [SubscriptionOperations.DELETE_RELATIONSHIP]: { value: SubscriptionOperations.DELETE_RELATIONSHIP },
     },
 });
 
@@ -37,7 +45,13 @@ export const subscriptionDirective = new GraphQLDirective({
         operations: {
             description: "Enable/Disable subscription operations for this type",
             type: new GraphQLNonNull(new GraphQLList(SUBSCRIPTION_FIELDS)),
-            defaultValue: ["CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"],
+            defaultValue: [
+                SubscriptionOperations.CREATE,
+                SubscriptionOperations.UPDATE,
+                SubscriptionOperations.DELETE,
+                SubscriptionOperations.CREATE_RELATIONSHIP,
+                SubscriptionOperations.DELETE_RELATIONSHIP,
+            ],
         },
     },
     locations: [DirectiveLocation.OBJECT, DirectiveLocation.SCHEMA],
