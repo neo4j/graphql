@@ -76,8 +76,8 @@ describe("generate", () => {
             export type Query = {
               __typename?: \\"Query\\";
               users: Array<User>;
-              usersAggregate: UserAggregateSelection;
               usersConnection: UsersConnection;
+              usersAggregate: UserAggregateSelection;
             };
 
             export type QueryUsersArgs = {
@@ -85,15 +85,15 @@ describe("generate", () => {
               options?: InputMaybe<UserOptions>;
             };
 
-            export type QueryUsersAggregateArgs = {
-              where?: InputMaybe<UserWhere>;
-            };
-
             export type QueryUsersConnectionArgs = {
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
               where?: InputMaybe<UserWhere>;
               sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+            };
+
+            export type QueryUsersAggregateArgs = {
+              where?: InputMaybe<UserWhere>;
             };
 
             export type Mutation = {
@@ -345,8 +345,8 @@ describe("generate", () => {
               __typename?: \\"Query\\";
               usersFulltextUserName: Array<UserFulltextResult>;
               users: Array<User>;
-              usersAggregate: UserAggregateSelection;
               usersConnection: UsersConnection;
+              usersAggregate: UserAggregateSelection;
             };
 
             export type QueryUsersFulltextUserNameArgs = {
@@ -363,16 +363,16 @@ describe("generate", () => {
               fulltext?: InputMaybe<UserFulltext>;
             };
 
-            export type QueryUsersAggregateArgs = {
-              where?: InputMaybe<UserWhere>;
-              fulltext?: InputMaybe<UserFulltext>;
-            };
-
             export type QueryUsersConnectionArgs = {
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
               where?: InputMaybe<UserWhere>;
               sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+              fulltext?: InputMaybe<UserFulltext>;
+            };
+
+            export type QueryUsersAggregateArgs = {
+              where?: InputMaybe<UserWhere>;
               fulltext?: InputMaybe<UserFulltext>;
             };
 
@@ -665,8 +665,8 @@ describe("generate", () => {
             export type Query = {
               __typename?: \\"Query\\";
               users: Array<User>;
-              usersAggregate: UserAggregateSelection;
               usersConnection: UsersConnection;
+              usersAggregate: UserAggregateSelection;
             };
 
             export type QueryUsersArgs = {
@@ -674,15 +674,15 @@ describe("generate", () => {
               options?: InputMaybe<UserOptions>;
             };
 
-            export type QueryUsersAggregateArgs = {
-              where?: InputMaybe<UserWhere>;
-            };
-
             export type QueryUsersConnectionArgs = {
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
               where?: InputMaybe<UserWhere>;
               sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
+            };
+
+            export type QueryUsersAggregateArgs = {
+              where?: InputMaybe<UserWhere>;
             };
 
             export type Mutation = {
@@ -938,20 +938,16 @@ describe("generate", () => {
             export type Query = {
               __typename?: \\"Query\\";
               movies: Array<Movie>;
-              moviesAggregate: MovieAggregateSelection;
               moviesConnection: MoviesConnection;
+              moviesAggregate: MovieAggregateSelection;
               people: Array<Person>;
-              peopleAggregate: PersonAggregateSelection;
               peopleConnection: PeopleConnection;
+              peopleAggregate: PersonAggregateSelection;
             };
 
             export type QueryMoviesArgs = {
               where?: InputMaybe<MovieWhere>;
               options?: InputMaybe<MovieOptions>;
-            };
-
-            export type QueryMoviesAggregateArgs = {
-              where?: InputMaybe<MovieWhere>;
             };
 
             export type QueryMoviesConnectionArgs = {
@@ -961,13 +957,13 @@ describe("generate", () => {
               sort?: InputMaybe<Array<InputMaybe<MovieSort>>>;
             };
 
+            export type QueryMoviesAggregateArgs = {
+              where?: InputMaybe<MovieWhere>;
+            };
+
             export type QueryPeopleArgs = {
               where?: InputMaybe<PersonWhere>;
               options?: InputMaybe<PersonOptions>;
-            };
-
-            export type QueryPeopleAggregateArgs = {
-              where?: InputMaybe<PersonWhere>;
             };
 
             export type QueryPeopleConnectionArgs = {
@@ -975,6 +971,10 @@ describe("generate", () => {
               after?: InputMaybe<Scalars[\\"String\\"]>;
               where?: InputMaybe<PersonWhere>;
               sort?: InputMaybe<Array<InputMaybe<PersonSort>>>;
+            };
+
+            export type QueryPeopleAggregateArgs = {
+              where?: InputMaybe<PersonWhere>;
             };
 
             export type Mutation = {

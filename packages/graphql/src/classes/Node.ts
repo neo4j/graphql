@@ -45,6 +45,7 @@ import { GraphElement } from "./GraphElement";
 import type { NodeDirective } from "./NodeDirective";
 import type { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { NodeAuth } from "./deprecated/NodeAuth";
+import type { SchemaConfiguration } from "../schema/schema-configuration";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -66,6 +67,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     auth?: Auth;
     fulltextDirective?: FullText;
     exclude?: Exclude;
+    schemaConfiguration?: SchemaConfiguration;
     nodeDirective?: NodeDirective;
     description?: string;
     queryOptionsDirective?: QueryOptionsDirective;
@@ -146,6 +148,7 @@ class Node extends GraphElement {
     public interfaces: NamedTypeNode[];
     public objectFields: ObjectField[];
     public exclude?: Exclude;
+    public schemaConfiguration?: SchemaConfiguration;
     public nodeDirective?: NodeDirective;
     public fulltextDirective?: FullText;
     public auth?: NodeAuth;
@@ -169,6 +172,7 @@ class Node extends GraphElement {
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
         this.exclude = input.exclude;
+        this.schemaConfiguration = input.schemaConfiguration;
         this.nodeDirective = input.nodeDirective;
         this.fulltextDirective = input.fulltextDirective;
         this.auth = input.auth ? new NodeAuth(input.auth) : undefined;

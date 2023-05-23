@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
-import { generate } from "randomstring";
 import { faker } from "@faker-js/faker";
-import Neo4j from "../../../neo4j";
+import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
+import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../../src/classes";
+import Neo4j from "../../../neo4j";
 
 describe("aggregations-where-edge-int", () => {
     let driver: Driver;
@@ -60,7 +60,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.datatype.number());
+        const someInt = Number(faker.number.int({ max: 100000 }));
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -125,7 +125,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.datatype.number());
+        const someInt = Number(faker.number.int({ max: 100000 }));
         const someIntGt = someInt - 1;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -192,7 +192,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.datatype.number());
+        const someInt = Number(faker.number.int({ max: 100000 }));
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -258,7 +258,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.datatype.number());
+        const someInt = Number(faker.number.int({ max: 100000 }));
         const someIntLT = someInt + 1;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -324,7 +324,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Number(faker.datatype.number());
+        const someInt = Number(faker.number.int({ max: 100000 }));
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 

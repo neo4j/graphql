@@ -25,6 +25,7 @@ import type {
     InterfaceTypeDefinitionNode,
     NameNode,
     ObjectTypeDefinitionNode,
+    SchemaExtensionNode,
 } from "graphql";
 import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
 import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
@@ -85,6 +86,7 @@ import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { addMathOperatorsToITC } from "./math";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
+import { getSchemaConfigurationFlags, schemaConfigurationFromSchemaExtensions } from "./schema-configuration";
 
 function makeAugmentedSchema(
     document: DocumentNode,
@@ -138,6 +140,8 @@ function makeAugmentedSchema(
     const { scalarTypes, objectTypes, enumTypes, inputObjectTypes, directives, unionTypes, schemaExtensions } =
         definitionNodes;
 
+    const globalSchemaConfiguration = schemaConfigurationFromSchemaExtensions(schemaExtensions);
+
     let { interfaceTypes } = definitionNodes;
 
     const extraDefinitions = [
@@ -183,7 +187,7 @@ function makeAugmentedSchema(
 
     relationshipProperties.forEach((relationship) => {
         const authDirective = (relationship.directives || []).find((x) =>
-            ["auth", "authoization"].includes(x.name.value)
+            ["auth", "authorization"].includes(x.name.value)
         );
         if (authDirective) {
             throw new Error("Cannot have @auth directive on relationship properties interface");
@@ -746,7 +750,13 @@ function makeAugmentedSchema(
 
         const rootTypeFieldNames = node.rootTypeFieldNames;
 
-        if (!node.exclude?.operations.includes("read")) {
+        const schemaConfigurationFlags = getSchemaConfigurationFlags({
+            globalSchemaConfiguration,
+            nodeSchemaConfiguration: node.schemaConfiguration,
+            excludeDirective: node.exclude,
+        });
+
+        if (schemaConfigurationFlags.read) {
             composer.Query.addFields({
                 [rootTypeFieldNames.read]: findResolver({ node }),
             });
@@ -754,15 +764,6 @@ function makeAugmentedSchema(
                 rootTypeFieldNames.read,
                 graphqlDirectivesToCompose(node.propagatedDirectives)
             );
-
-            composer.Query.addFields({
-                [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
-            });
-            composer.Query.setFieldDirectives(
-                rootTypeFieldNames.aggregate,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
-            );
-
             composer.Query.addFields({
                 [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
             });
@@ -771,8 +772,17 @@ function makeAugmentedSchema(
                 graphqlDirectivesToCompose(node.propagatedDirectives)
             );
         }
+        if (schemaConfigurationFlags.aggregate) {
+            composer.Query.addFields({
+                [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
+            });
+            composer.Query.setFieldDirectives(
+                rootTypeFieldNames.aggregate,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
+        }
 
-        if (!node.exclude?.operations.includes("create")) {
+        if (schemaConfigurationFlags.create) {
             composer.Mutation.addFields({
                 [rootTypeFieldNames.create]: createResolver({ node }),
             });
@@ -782,7 +792,7 @@ function makeAugmentedSchema(
             );
         }
 
-        if (!node.exclude?.operations.includes("delete")) {
+        if (schemaConfigurationFlags.delete) {
             composer.Mutation.addFields({
                 [rootTypeFieldNames.delete]: deleteResolver({ node }),
             });
@@ -792,7 +802,7 @@ function makeAugmentedSchema(
             );
         }
 
-        if (!node.exclude?.operations.includes("update")) {
+        if (schemaConfigurationFlags.update) {
             composer.Mutation.addFields({
                 [rootTypeFieldNames.update]: updateResolver({
                     node,
@@ -822,7 +832,13 @@ function makeAugmentedSchema(
     });
 
     if (generateSubscriptions && nodes.length) {
-        generateSubscriptionTypes({ schemaComposer: composer, nodes, relationshipFields, interfaceCommonFields });
+        generateSubscriptionTypes({
+            schemaComposer: composer,
+            nodes,
+            relationshipFields,
+            interfaceCommonFields,
+            globalSchemaConfiguration,
+        });
     }
 
     ["Mutation", "Query"].forEach((type) => {
@@ -953,6 +969,17 @@ function makeAugmentedSchema(
         }
     });
 
+    // do not propagate Neo4jGraphQL directives on schema extensions
+    const schemaExtensionsWithoutNeo4jDirectives = schemaExtensions.map((schemaExtension): SchemaExtensionNode => {
+        return {
+            kind: schemaExtension.kind,
+            loc: schemaExtension.loc,
+            operationTypes: schemaExtension.operationTypes,
+            directives: schemaExtension.directives?.filter(
+                (schemaDirective) => !["query", "mutation", "subscription"].includes(schemaDirective.name.value)
+            ),
+        };
+    });
     const seen = {};
     parsedDoc = {
         ...parsedDoc,
@@ -979,7 +1006,7 @@ function makeAugmentedSchema(
 
                 return true;
             }),
-            ...schemaExtensions,
+            ...schemaExtensionsWithoutNeo4jDirectives,
         ],
     };
 
