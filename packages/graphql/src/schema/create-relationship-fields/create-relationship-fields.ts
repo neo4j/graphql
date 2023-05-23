@@ -106,10 +106,6 @@ function createRelationshipFields({
         const nestedOperations = new Set(rel.nestedOperations);
         const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
         const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
-        const nodeConnectInput = schemaComposer.getOrCreateITC(`${sourceName}ConnectInput`);
-        const nodeDeleteInput = schemaComposer.getOrCreateITC(`${sourceName}DeleteInput`);
-        const nodeDisconnectInput = schemaComposer.getOrCreateITC(`${sourceName}DisconnectInput`);
-        const nodeRelationInput = schemaComposer.getOrCreateITC(`${sourceName}RelationInput`);
 
         const upperFieldName = upperFirst(rel.fieldName);
         const nodeFieldInputName = `${rel.connectionPrefix}${upperFieldName}FieldInput`;
@@ -277,6 +273,7 @@ function createRelationshipFields({
                 create,
             });
 
+            const nodeRelationInput = schemaComposer.getOrCreateITC(`${sourceName}RelationInput`);
             nodeRelationInput.addFields({
                 [rel.fieldName]: {
                     type: create,
@@ -318,6 +315,7 @@ function createRelationshipFields({
                 connect,
             });
 
+            const nodeConnectInput = schemaComposer.getOrCreateITC(`${sourceName}ConnectInput`);
             nodeConnectInput.addFields({
                 [rel.fieldName]: {
                     type: connect,
@@ -364,6 +362,7 @@ function createRelationshipFields({
                 });
             }
 
+            const nodeDeleteInput = schemaComposer.getOrCreateITC(`${sourceName}DeleteInput`);
             nodeDeleteInput.addFields({
                 [rel.fieldName]: {
                     type: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
@@ -388,6 +387,7 @@ function createRelationshipFields({
                 disconnect: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
             });
 
+            const nodeDisconnectInput = schemaComposer.getOrCreateITC(`${sourceName}DisconnectInput`);
             nodeDisconnectInput.addFields({
                 [rel.fieldName]: {
                     type: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,

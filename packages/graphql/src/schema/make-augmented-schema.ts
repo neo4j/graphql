@@ -807,7 +807,7 @@ function makeAugmentedSchema(
 
         if (schemaConfigurationFlags.delete) {
             composer.Mutation.addFields({
-                [rootTypeFieldNames.delete]: deleteResolver({ node }),
+                [rootTypeFieldNames.delete]: deleteResolver({ node, composer }),
             });
             composer.Mutation.setFieldDirectives(
                 rootTypeFieldNames.delete,
@@ -819,7 +819,7 @@ function makeAugmentedSchema(
             composer.Mutation.addFields({
                 [rootTypeFieldNames.update]: updateResolver({
                     node,
-                    schemaComposer: composer,
+                    composer,
                 }),
             });
             composer.Mutation.setFieldDirectives(
