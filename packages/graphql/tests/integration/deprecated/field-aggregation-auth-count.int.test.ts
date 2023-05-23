@@ -19,14 +19,15 @@
 
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { gql } from "graphql-tag";
 import { generate } from "randomstring";
+import { gql } from "graphql-tag";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { UniqueType } from "../../utils/graphql-types";
 import { createJwtRequest } from "../../utils/create-jwt-request";
-import { Neo4jGraphQLAuthJWTPlugin } from "../../../../plugins/graphql-plugin-auth/src";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 
-describe("413", () => {
+describe("Aggregate -> count", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
@@ -39,18 +40,18 @@ describe("413", () => {
         await driver.close();
     });
 
-    // NOTE: this test was updated to use aggregate instead of count
-    test("should recreate issue and return correct count as an aggregation", async () => {
+    test("should return count aggregation with allow @auth", async () => {
         const session = await neo4j.getSession();
+        const jobPlanType = new UniqueType("JobPlan");
 
         const typeDefs = gql`
-            type JobPlan {
+            type ${jobPlanType.name} {
                 id: ID! @id
                 tenantID: ID!
                 name: String!
             }
 
-            extend type JobPlan
+            extend type ${jobPlanType.name}
                 @auth(
                     rules: [
                         { operations: [CREATE, UPDATE], bind: { tenantID: "$context.jwt.tenant_id" } }
@@ -70,12 +71,14 @@ describe("413", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret }) },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
+            },
         });
 
         const query = `
             query {
-                jobPlansAggregate(where: {tenantID: "${tenantID}"}) {
+                ${jobPlanType.operations.aggregate}(where: {tenantID: "${tenantID}"}) {
                   count
                 }
             }
@@ -84,9 +87,9 @@ describe("413", () => {
         try {
             await session.run(
                 `
-                    CREATE (:JobPlan {tenantID: $tenantID})
-                    CREATE (:JobPlan {tenantID: $tenantID})
-                    CREATE (:JobPlan {tenantID: $tenantID})
+                    CREATE (:${jobPlanType.name} {tenantID: $tenantID})
+                    CREATE (:${jobPlanType.name} {tenantID: $tenantID})
+                    CREATE (:${jobPlanType.name} {tenantID: $tenantID})
                 `,
                 { tenantID }
             );
@@ -103,8 +106,8 @@ describe("413", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result.data as any).toEqual({
-                jobPlansAggregate: { count: 3 },
+            expect((result.data as any)[jobPlanType.operations.aggregate]).toEqual({
+                count: 3,
             });
         } finally {
             await session.close();
