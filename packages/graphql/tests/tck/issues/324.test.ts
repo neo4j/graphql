@@ -143,7 +143,7 @@ describe("#324", () => {
             	}
             	RETURN count(*) AS update_this_car0
             }
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)-[this_car_Car_unique:CAR]->(:Car)
