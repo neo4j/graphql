@@ -3214,7 +3214,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth"
   dependencies:
-    "@types/debug": 4.1.7
+    "@types/debug": 4.1.8
     "@types/jest": 29.5.1
     "@types/jsonwebtoken": 9.0.2
     "@types/node": 18.15.1
@@ -3236,7 +3236,7 @@ __metadata:
     "@types/amqplib": 0.10.1
     "@types/body-parser": 1.19.2
     "@types/cors": 2.8.13
-    "@types/debug": 4.1.7
+    "@types/debug": 4.1.8
     "@types/jest": 29.5.1
     "@types/node": 18.15.1
     amqplib: 0.10.3
@@ -4920,12 +4920,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:4.1.7":
-  version: 4.1.7
-  resolution: "@types/debug@npm:4.1.7"
+"@types/debug@npm:4.1.8":
+  version: 4.1.8
+  resolution: "@types/debug@npm:4.1.8"
   dependencies:
     "@types/ms": "*"
-  checksum: 0a7b89d8ed72526858f0b61c6fd81f477853e8c4415bb97f48b1b5545248d2ae389931680b94b393b993a7cfe893537a200647d93defe6d87159b96812305adc
+  checksum: a9a9bb40a199e9724aa944e139a7659173a9b274798ea7efbc277cb084bc37d32fc4c00877c3496fac4fed70a23243d284adb75c00b5fdabb38a22154d18e5df
   languageName: node
   linkType: hard
 
