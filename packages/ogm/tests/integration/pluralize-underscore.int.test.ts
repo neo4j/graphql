@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import { gql } from "graphql-tag";
+import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
 import { OGM } from "../../src";
-import { UniqueType } from "../utils";
+import { UniqueType } from "../utils/utils";
+import neo4j from "./neo4j";
 
 describe("pluralize with underscore", () => {
     const taskType = new UniqueType("super_task");
