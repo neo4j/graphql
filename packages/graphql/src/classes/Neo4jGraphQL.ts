@@ -209,8 +209,6 @@ class Neo4jGraphQL {
     }
 
     public neo4jValidateGraphQLDocument(): { isValid: boolean; validationErrors: string[] } {
-        let isValid = false;
-        let validationErrors: string[] = [];
         try {
             const initialDocument = this.getDocument(this.schemaDefinition.typeDefs);
 
@@ -228,13 +226,14 @@ class Neo4jGraphQL {
             });
 
             validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwtPayload });
-            isValid = true;
         } catch (error) {
             if (error instanceof Error) {
-                validationErrors = error.message.split("\n\n");
+                const validationErrors = error.message.split("\n\n");
+                return { isValid: false, validationErrors };
             }
+            return { isValid: false, validationErrors: [] };
         }
-        return { isValid, validationErrors };
+        return { isValid: true, validationErrors: [] };
     }
 
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
