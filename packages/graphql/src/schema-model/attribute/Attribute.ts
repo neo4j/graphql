@@ -35,6 +35,7 @@ export enum AttributeType {
     Date = "Date",
     Duration = "Duration",
     Point = "Point",
+    ObjectType = "ObjectType",
 }
 
 export class Attribute {

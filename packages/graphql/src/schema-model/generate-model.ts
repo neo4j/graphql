@@ -249,15 +249,14 @@ function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments:
 
 function generateAttribute(field: FieldDefinitionNode): Attribute | undefined {
     const typeMeta = getFieldTypeMeta(field.type); // TODO: without originalType
-    if (isAttributeType(typeMeta.name)) {
-        const annotations = createFieldAnnotations(field.directives || []);
-        return new Attribute({
-            name: field.name.value,
-            annotations,
-            type: typeMeta.name,
-            isArray: Boolean(typeMeta.array),
-        });
-    }
+    const attributeType = isAttributeType(typeMeta.name) ? typeMeta.name : AttributeType.ObjectType;
+    const annotations = createFieldAnnotations(field.directives || []);
+    return new Attribute({
+        name: field.name.value,
+        annotations,
+        type: attributeType,
+        isArray: Boolean(typeMeta.array),
+    });
 }
 function generateField(field: FieldDefinitionNode): Field | undefined {
     const annotations = createFieldAnnotations(field.directives || []);
