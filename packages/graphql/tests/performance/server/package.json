@@ -11,7 +11,7 @@
         "flame-apollo": "clinic flame -- node ./servers/apollo.js",
         "doctor-yoga": "clinic doctor --on-port -- node ./servers/yoga.js",
         "flame-yoga": "clinic flame -- node ./servers/yoga.js",
-        "load": "k6 run load.js"
+        "load": "k6 run load.js --insecure-skip-tls-verify"
     },
     "devDependencies": {
         "@apollo/server": "^4.7.0",
