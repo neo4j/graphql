@@ -20,15 +20,14 @@
 import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { Neo4jGraphQL } from "../../../src/classes";
-import type { TestGraphQLServer } from "../setup/apollo-server";
-import { ApolloTestServer } from "../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketTestClient } from "../setup/ws-client";
-import Neo4j from "../setup/neo4j";
-import { createJwtHeader } from "../../utils/create-jwt-request";
-import { UniqueType } from "../../utils/graphql-types";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import type { TestGraphQLServer } from "../../setup/apollo-server";
+import { ApolloTestServer } from "../../setup/apollo-server";
+import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { WebSocketTestClient } from "../../setup/ws-client";
+import Neo4j from "../../setup/neo4j";
+import { createJwtHeader } from "../../../utils/create-jwt-request";
+import { UniqueType } from "../../../utils/graphql-types";
 
 describe("Subscription global authentication", () => {
     let neo4j: Neo4j;
@@ -41,8 +40,7 @@ describe("Subscription global authentication", () => {
         type ${typeMovie} {
             title: String!
         }
-
-        extend type ${typeMovie} @auth(rules: [{ isAuthenticated: true }])
+        extend type ${typeMovie} @authentication
     `;
 
     beforeAll(async () => {
@@ -67,12 +65,14 @@ describe("Subscription global authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
+                features: {
+                    authorization: {
+                        key: secret,
+                        globalAuthentication: true,
+                    },
+                },
                 plugins: {
                     subscriptions: new TestSubscriptionsPlugin(),
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                        globalAuthentication: true,
-                    }),
                 },
             });
 
@@ -142,12 +142,14 @@ describe("Subscription global authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
+                features: {
+                    authorization: {
+                        key: secret,
+                        globalAuthentication: true,
+                    },
+                },
                 plugins: {
                     subscriptions: new TestSubscriptionsPlugin(),
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                        globalAuthentication: true,
-                    }),
                 },
             });
 
@@ -217,12 +219,14 @@ describe("Subscription global authentication", () => {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
+                features: {
+                    authorization: {
+                        key: secret,
+                        globalAuthentication: true,
+                    },
+                },
                 plugins: {
                     subscriptions: new TestSubscriptionsPlugin(),
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                        globalAuthentication: true,
-                    }),
                 },
             });
 

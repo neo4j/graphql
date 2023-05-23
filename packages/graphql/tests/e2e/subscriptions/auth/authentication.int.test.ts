@@ -56,7 +56,7 @@ describe("Subscription authentication", () => {
                 title: String!
             }
 
-            extend type ${typeMovie} @authentication
+            extend type ${typeMovie} @auth(rules: [{ isAuthenticated: true }])
             `;
 
             const neoSchema = new Neo4jGraphQL({
@@ -179,7 +179,7 @@ describe("Subscription authentication", () => {
                 title: String!
             }
 
-            extend type ${typeMovie} @authentication(operations: [SUBSCRIBE])
+            extend type ${typeMovie} @auth(rules: [{ isAuthenticated: true, operations: [SUBSCRIBE] }])
             `;
 
             const neoSchema = new Neo4jGraphQL({
@@ -223,7 +223,7 @@ describe("Subscription authentication", () => {
                 `);
 
             const result = await createMovie("movie1", server);
-
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([
                 {
@@ -250,7 +250,7 @@ describe("Subscription authentication", () => {
                     `);
 
             const result = await createMovie("movie1", server);
-
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
@@ -279,7 +279,7 @@ describe("Subscription authentication", () => {
                 reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
                 imdbId: Int @unique
             }
-            extend type ${typeMovie} @authentication(operations: [SUBSCRIBE])
+            extend type ${typeMovie} @auth(rules: [{ isAuthenticated: true, operations: [SUBSCRIBE] }])
             
             type ${typeActor} {
                 name: String!
@@ -431,7 +431,7 @@ describe("Subscription authentication", () => {
                 `,
                 })
                 .expect(200);
-
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toIncludeSameMembers([
                 {
@@ -558,7 +558,7 @@ describe("Subscription authentication", () => {
                 `,
                 })
                 .expect(200);
-
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toIncludeSameMembers([
                 {
@@ -660,7 +660,7 @@ describe("Subscription authentication", () => {
                 title: String!
             }
 
-            extend type ${typeMovie} @authentication(operations: [SUBSCRIBE])
+            extend type ${typeMovie} @auth(rules: [{ isAuthenticated: false, operations: [DELETE] }, { isAuthenticated: true, operations: [SUBSCRIBE] }])
             `;
 
             const neoSchema = new Neo4jGraphQL({
@@ -704,7 +704,7 @@ describe("Subscription authentication", () => {
                 `);
 
             const result = await createMovie("movie1", server);
-
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([
                 {
@@ -748,7 +748,7 @@ describe("Subscription authentication", () => {
                 title: String!
             }
 
-            extend type ${typeMovie} @authentication(operations: [CREATE])
+            extend type ${typeMovie} @auth(rules: [{ isAuthenticated: true, operations: [CREATE] }])
             `;
 
             const neoSchema = new Neo4jGraphQL({
@@ -792,7 +792,7 @@ describe("Subscription authentication", () => {
                     `);
 
             const result = await createMovie("movie1", server);
-
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([
                 {
@@ -808,7 +808,7 @@ describe("Subscription authentication", () => {
     });
 
     // what are these trying to achieve?
-    describe.skip("auth with isAuthenticated set to false", () => {
+    describe("auth with isAuthenticated set to false", () => {
         let server: TestGraphQLServer;
         let wsClient: WebSocketTestClient;
 
@@ -896,7 +896,7 @@ describe("Subscription authentication", () => {
         });
     });
 
-    describe.skip("auth with allowUnauthenticated", () => {
+    describe("auth with allowUnauthenticated", () => {
         let server: TestGraphQLServer;
         let wsClient: WebSocketTestClient;
 

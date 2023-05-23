@@ -129,7 +129,7 @@ describe("should inject the auth into cypher directive", () => {
         }
     });
 
-    test.only("mutation", async () => {
+    test("mutation", async () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `

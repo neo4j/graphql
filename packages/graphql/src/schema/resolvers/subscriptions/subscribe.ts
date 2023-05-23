@@ -27,6 +27,7 @@ import { SubscriptionAuth } from "./subscription-auth";
 import type { SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where";
+import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) {
@@ -51,6 +52,17 @@ export function generateSubscribeMethod({
     relationshipFields?: Map<string, ObjectFields>;
 }) {
     return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
+        const entities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
+        if (entities) {
+            const concreteEntity = entities[0] as ConcreteEntity;
+            const hasAuthentication = concreteEntity.annotations.authentication;
+            if (hasAuthentication && hasAuthentication.operations.includes("SUBSCRIBE")) {
+                if (!context.jwt) {
+                    throw new Error("Error, request not authenticated");
+                }
+            }
+            // TODO: authorization
+        }
         if (node.auth) {
             const authRules = node.auth.getRules(["SUBSCRIBE"]);
             for (const rule of authRules) {
@@ -62,11 +74,12 @@ export function generateSubscribeMethod({
                 }
             }
         }
-
+        console.log("here", type);
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
 
         if (["create", "update", "delete"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
+                console.log(">", data[0], node.name);
                 return (
                     (data[0] as NodeSubscriptionsEvent).typename === node.name &&
                     subscriptionWhere({ where: args.where, event: data[0], node }) &&
@@ -77,6 +90,7 @@ export function generateSubscribeMethod({
 
         if (["create_relationship", "delete_relationship"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
+                console.log(">>", data[0], node.name);
                 const relationEventPayload = data[0] as RelationshipSubscriptionsEvent;
                 const isOfRelevantType =
                     relationEventPayload.toTypename === node.name || relationEventPayload.fromTypename === node.name;

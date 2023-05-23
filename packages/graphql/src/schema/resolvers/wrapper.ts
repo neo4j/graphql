@@ -208,6 +208,7 @@ export const wrapSubscription =
     (next) =>
     async (root: any, args: any, context: SubscriptionConnectionContext | undefined, info: GraphQLResolveInfo) => {
         const plugins = resolverArgs?.plugins || {};
+        const schemaModel = resolverArgs?.schemaModel;
         const contextParams = context?.connectionParams || {};
 
         if (!plugins.subscriptions) {
@@ -217,9 +218,9 @@ export const wrapSubscription =
 
         const subscriptionContext: SubscriptionContext = {
             plugin: plugins.subscriptions,
+            schemaModel,
         };
 
-        // TODO: refactor this code to resemble wrapResolver more
         if (!context?.jwt) {
             if (resolverArgs.authorizationSettings) {
                 if (!contextParams.authorization) {
@@ -227,10 +228,17 @@ export const wrapSubscription =
                         throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
                     }
                 } else {
-                    // TODO: verification not part of this?!
-                    subscriptionContext.jwt = new Neo4jGraphQLAuthorization(
-                        resolverArgs.authorizationSettings
-                    ).decodeBearerToken(contextParams.authorization);
+                    // TODO: verification was not part of this?!
+                    try {
+                        const authorization = new Neo4jGraphQLAuthorization(resolverArgs.authorizationSettings);
+                        const jwt = await authorization.decodeBearerTokenWithVerify(contextParams.authorization);
+                        subscriptionContext.jwt = jwt;
+                    } catch (e) {
+                        if (resolverArgs.authorizationSettings.globalAuthentication) {
+                            throw e;
+                        }
+                        subscriptionContext.jwt = undefined;
+                    }
                 }
             } else {
                 if (contextParams.authorization) {

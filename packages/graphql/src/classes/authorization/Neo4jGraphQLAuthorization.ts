@@ -70,6 +70,23 @@ export class Neo4jGraphQLAuthorization {
         }
     }
 
+    public async decodeBearerTokenWithVerify(bearerToken: string): Promise<JWTPayload | undefined> {
+        const token = parseBearerToken(bearerToken);
+        if (!token) {
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+        }
+        try {
+            if (this.authorization.verify === false) {
+                debug("Skipping verifying JWT as verify is set to false");
+                return decodeJwt(token);
+            }
+            return await this.verify(token, this.authorization.key as Key);
+        } catch (error) {
+            debug("%s", error);
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+        }
+    }
+
     private resolveKey(req: RequestLike): Key {
         if (typeof this.authorization.key === "function") {
             return this.authorization.key(req);
