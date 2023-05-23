@@ -52,6 +52,7 @@ import type { TypeSource } from "@graphql-tools/utils";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
+import { makeSchemaToAugment } from "../schema/make-schema-to-augment";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -76,6 +77,9 @@ export interface Neo4jGraphQLConfig {
      * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby
      */
     callbacks?: Neo4jGraphQLCallbacks;
+
+    /** Attach metrics to context extension field */
+    addMeasurementsToExtension?: boolean;
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
@@ -301,13 +305,16 @@ class Neo4jGraphQL {
 
     private generateExecutableSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
-            const document = this.getDocument(this.schemaDefinition.typeDefs);
+            const initialDocument = this.getDocument(this.schemaDefinition.typeDefs);
 
             const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
             if (validateTypeDefs) {
-                validateDocument(document);
+                validateDocument(initialDocument);
             }
+
+            const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
+            const { jwtPayload } = typesExcludedFromGeneration;
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
@@ -319,7 +326,7 @@ class Neo4jGraphQL {
             });
 
             if (validateTypeDefs) {
-                validateUserDefinition(document, typeDefs);
+                validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwtPayload });
             }
 
             this._nodes = nodes;
@@ -345,7 +352,7 @@ class Neo4jGraphQL {
     private async generateSubgraphSchema(): Promise<GraphQLSchema> {
         const { Subgraph } = await import("./Subgraph");
 
-        const document = this.getDocument(this.schemaDefinition.typeDefs);
+        const initialDocument = this.getDocument(this.schemaDefinition.typeDefs);
         const subgraph = new Subgraph(this.schemaDefinition.typeDefs);
 
         const { directives, types } = subgraph.getValidationDefinitions();
@@ -353,8 +360,11 @@ class Neo4jGraphQL {
         const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
         if (validateTypeDefs) {
-            validateDocument(document, directives, types);
+            validateDocument(initialDocument, directives, types);
         }
+
+        const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
+        const { jwtPayload } = typesExcludedFromGeneration;
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
@@ -367,7 +377,13 @@ class Neo4jGraphQL {
         });
 
         if (validateTypeDefs) {
-            validateUserDefinition(document, typeDefs, directives, types);
+            validateUserDefinition({
+                userDocument: document,
+                augmentedDocument: typeDefs,
+                additionalDirectives: directives,
+                additionalTypes: types,
+                jwtPayload,
+            });
         }
 
         this._nodes = nodes;

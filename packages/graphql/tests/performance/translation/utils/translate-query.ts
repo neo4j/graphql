@@ -25,6 +25,7 @@ import { Neo4jDatabaseInfo } from "../../../../src/classes/Neo4jDatabaseInfo";
 import { DriverBuilder } from "../../../utils/builders/driver-builder";
 import { getQuerySource } from "../../../utils/get-query-source";
 
+// TODO: improve this so only `graphql(graphqlArgs)` is tested
 export async function translateQuery(
     neoSchema: Neo4jGraphQL,
     query: DocumentNode,
@@ -38,7 +39,6 @@ export async function translateQuery(
     const driverBuilder = new DriverBuilder();
     const neo4jDatabaseInfo = new Neo4jDatabaseInfo(options?.neo4jVersion ?? "4.3");
     let contextValue: Record<string, any> = { driver: driverBuilder.instance(), neo4jDatabaseInfo };
-
     if (options?.req) {
         contextValue.req = options.req;
     }

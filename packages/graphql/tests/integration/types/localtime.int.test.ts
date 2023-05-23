@@ -22,9 +22,9 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { parseLocalTime } from "../../../src/graphql/scalars/LocalTime";
+import Neo4j from "../neo4j";
 
 describe("LocalTime", () => {
     let driver: Driver;
@@ -116,7 +116,7 @@ describe("LocalTime", () => {
             const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
-            const times = [...new Array(faker.datatype.number({ min: 2, max: 4 }))].map(
+            const times = [...new Array(faker.number.int({ min: 2, max: 4 }))].map(
                 () => faker.date.past().toISOString().split("T")[1]?.split("Z")[0]
             );
             const parsedTimes = times.map((time) => parseLocalTime(time));
