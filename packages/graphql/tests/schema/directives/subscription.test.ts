@@ -20,13 +20,13 @@
 import type { GraphQLFieldMap } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
 
 describe("@subscription directive", () => {
-    let subscriptionPlugin: TestSubscriptionsPlugin;
+    let subscriptionPlugin: TestSubscriptionsMechanism;
 
     beforeAll(() => {
-        subscriptionPlugin = new TestSubscriptionsPlugin();
+        subscriptionPlugin = new TestSubscriptionsMechanism();
     });
 
     describe("on OBJECT", () => {
@@ -44,7 +44,10 @@ describe("@subscription directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: { subscriptions: subscriptionPlugin },
+            });
             const schema = await neoSchema.getSchema();
 
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
@@ -94,7 +97,7 @@ describe("@subscription directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -143,7 +146,7 @@ describe("@subscription directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -192,7 +195,7 @@ describe("@subscription directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -241,7 +244,7 @@ describe("@subscription directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -290,7 +293,7 @@ describe("@subscription directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -339,7 +342,7 @@ describe("@subscription directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -387,7 +390,7 @@ describe("@subscription directive", () => {
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
 
             const schema = await neoSchema.getSchema();
             expect(schema).toBeDefined();
@@ -410,7 +413,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
 
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
@@ -461,7 +464,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription(operations: [UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -511,7 +514,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription(operations: [CREATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -561,7 +564,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription(operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -611,7 +614,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription(operations: [CREATE, UPDATE, DELETE, DELETE_RELATIONSHIP])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -661,7 +664,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription(operations: [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -711,7 +714,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription(operations: [])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -760,7 +763,7 @@ describe("@subscription directive", () => {
                 }
                 extend schema @query(read: true) @subscription(operations: [])
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
 
             const schema = await neoSchema.getSchema();
             expect(schema).toBeDefined();
