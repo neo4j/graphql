@@ -174,7 +174,7 @@ export default async function translateUpdate({
             parentVar: varName,
             withVars,
             parameterPrefix: `${resolveTree.name}.args.update`,
-            includeRelationshipValidation: true,
+            includeRelationshipValidation: false,
         });
         [updateStr] = updateAndParams;
         cypherParams = {
@@ -435,7 +435,7 @@ export default async function translateUpdate({
 
     const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
 
-    const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
+    const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
 
     const updateQuery = new Cypher.RawCypher((env: Cypher.Environment) => {
         const projectionSubqueryStr = projectionSubquery ? projectionSubquery.getCypher(env) : "";
