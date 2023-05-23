@@ -342,7 +342,7 @@ describe("@auth allow with interface relationships", () => {
             	SET this_creator0.password = $this_update_creator0_password
             	RETURN count(*) AS update_this_creator0
             }
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:HAS_CONTENT]-(:User)
