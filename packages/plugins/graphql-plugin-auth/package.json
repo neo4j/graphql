@@ -34,7 +34,7 @@
         "jwks-rsa": "^3.0.0"
     },
     "devDependencies": {
-        "@types/debug": "4.1.7",
+        "@types/debug": "4.1.8",
         "@types/jest": "29.5.1",
         "@types/jsonwebtoken": "9.0.2",
         "@types/node": "18.15.1",
