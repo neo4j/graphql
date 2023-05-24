@@ -23,6 +23,7 @@ import { generate } from "randomstring";
 import { gql } from "graphql-tag";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { TestSubscriptionsPlugin } from "../utils/TestSubscriptionPlugin";
 
 describe("update", () => {
     let driver: Driver;
@@ -35,6 +36,72 @@ describe("update", () => {
 
     afterAll(async () => {
         await driver.close();
+    });
+
+    test("should return info object when subscriptions enabled", async () => {
+        const session = await neo4j.getSession();
+
+        const typeDefs = `
+            type Movie {
+                id: ID!
+                name: String
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                subscriptions: new TestSubscriptionsPlugin(),
+            },
+        });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const initialName = generate({
+            charset: "alphabetic",
+        });
+
+        const updatedName = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+        mutation($id: ID, $name: String) {
+            updateMovies(where: { id: $id }, update: {name: $name}) {
+                info {
+                    nodesCreated
+                    nodesDeleted
+                }
+            }
+          }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (:Movie {id: $id, name: $initialName})
+            `,
+                {
+                    id,
+                    initialName,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                variableValues: { id, name: updatedName },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual({ info: { nodesCreated: 0, nodesDeleted: 0 } });
+        } finally {
+            await session.close();
+        }
     });
 
     test("should update no movies where predicate yields false", async () => {
