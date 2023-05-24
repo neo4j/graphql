@@ -66,34 +66,6 @@ describe("https://github.com/neo4j/graphql/issues/2197", () => {
             driver,
         });
         schema = await neoGraphql.getSchema();
-    });
-
-    afterEach(async () => {
-        await session.run("MATCH (n) DETACH DELETE n");
-        await driver.close();
-    });
-
-    test("@queryOptions is ignored on unions connection query", async () => {
-        const query = `
-            query {
-                ${authorType.plural} {
-                    name
-                    publicationsConnection {
-                    edges {
-                        words
-                        node {
-                        ... on ${bookType.name} {
-                            title
-                        }
-                        ... on ${journalType.name} {
-                            subject
-                        }
-                        }
-                    }
-                    }
-                }
-            }
-        `;
 
         await session.run(
             `
@@ -116,6 +88,34 @@ describe("https://github.com/neo4j/graphql/issues/2197", () => {
             MERGE (a)-[:WROTE {words: 25}]->(j4)
             `
         );
+    });
+
+    afterEach(async () => {
+        await session.run("MATCH (n) DETACH DELETE n");
+        await driver.close();
+    });
+
+    test("@queryOptions is ignored on unions connection query", async () => {
+        const query = `
+            query {
+                ${authorType.plural} {
+                    name
+                    publicationsConnection {
+                        edges {
+                            words
+                            node {
+                                ... on ${bookType.name} {
+                                    title
+                                }
+                                ... on ${journalType.name} {
+                                    subject
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
 
         const result = await graphql({
             schema,
@@ -135,43 +135,21 @@ describe("https://github.com/neo4j/graphql/issues/2197", () => {
                 ${authorType.plural} {
                     name
                     publicationsConnection(first: 3) {
-                    edges {
-                        words
-                        node {
-                        ... on ${bookType.name} {
-                            title
+                        edges {
+                            words
+                            node {
+                                ... on ${bookType.name} {
+                                    title
+                                }
+                                ... on ${journalType.name} {
+                                    subject
+                                }
+                            }
                         }
-                        ... on ${journalType.name} {
-                            subject
-                        }
-                        }
-                    }
                     }
                 }
             }
         `;
-
-        await session.run(
-            `
-            CREATE (a:${authorType} {name: "Byron"})
-            CREATE (b1:${bookType} {title: "book1"})
-            CREATE (b2:${bookType} {title: "book2"})
-            CREATE (b3:${bookType} {title: "book3"})
-            CREATE (b4:${bookType} {title: "book4"})
-            CREATE (j1:${journalType} {subject: "journal1"})
-            CREATE (j2:${journalType} {subject: "journal2"})
-            CREATE (j3:${journalType} {subject: "journal3"})
-            CREATE (j4:${journalType} {subject: "journal4"})
-            MERGE (a)-[:WROTE {words: 100}]->(b1)
-            MERGE (a)-[:WROTE {words: 150}]->(b2)
-            MERGE (a)-[:WROTE {words: 200}]->(b3)
-            MERGE (a)-[:WROTE {words: 250}]->(b4)
-            MERGE (a)-[:WROTE {words: 15}]->(j1)
-            MERGE (a)-[:WROTE {words: 10}]->(j2)
-            MERGE (a)-[:WROTE {words: 20}]->(j3)
-            MERGE (a)-[:WROTE {words: 25}]->(j4)
-            `
-        );
 
         const result = await graphql({
             schema,
@@ -201,28 +179,6 @@ describe("https://github.com/neo4j/graphql/issues/2197", () => {
             }
         `;
 
-        await session.run(
-            `
-            CREATE (a:${authorType} {name: "Byron"})
-            CREATE (b1:${bookType} {title: "book1"})
-            CREATE (b2:${bookType} {title: "book2"})
-            CREATE (b3:${bookType} {title: "book3"})
-            CREATE (b4:${bookType} {title: "book4"})
-            CREATE (j1:${journalType} {subject: "journal1"})
-            CREATE (j2:${journalType} {subject: "journal2"})
-            CREATE (j3:${journalType} {subject: "journal3"})
-            CREATE (j4:${journalType} {subject: "journal4"})
-            MERGE (a)-[:WROTE {words: 100}]->(b1)
-            MERGE (a)-[:WROTE {words: 150}]->(b2)
-            MERGE (a)-[:WROTE {words: 200}]->(b3)
-            MERGE (a)-[:WROTE {words: 250}]->(b4)
-            MERGE (a)-[:WROTE {words: 15}]->(j1)
-            MERGE (a)-[:WROTE {words: 10}]->(j2)
-            MERGE (a)-[:WROTE {words: 20}]->(j3)
-            MERGE (a)-[:WROTE {words: 25}]->(j4)
-            `
-        );
-
         const result = await graphql({
             schema,
             source: query,
@@ -250,28 +206,6 @@ describe("https://github.com/neo4j/graphql/issues/2197", () => {
                 }
             }
         `;
-
-        await session.run(
-            `
-            CREATE (a:${authorType} {name: "Byron"})
-            CREATE (b1:${bookType} {title: "book1"})
-            CREATE (b2:${bookType} {title: "book2"})
-            CREATE (b3:${bookType} {title: "book3"})
-            CREATE (b4:${bookType} {title: "book4"})
-            CREATE (j1:${journalType} {subject: "journal1"})
-            CREATE (j2:${journalType} {subject: "journal2"})
-            CREATE (j3:${journalType} {subject: "journal3"})
-            CREATE (j4:${journalType} {subject: "journal4"})
-            MERGE (a)-[:WROTE {words: 100}]->(b1)
-            MERGE (a)-[:WROTE {words: 150}]->(b2)
-            MERGE (a)-[:WROTE {words: 200}]->(b3)
-            MERGE (a)-[:WROTE {words: 250}]->(b4)
-            MERGE (a)-[:WROTE {words: 15}]->(j1)
-            MERGE (a)-[:WROTE {words: 10}]->(j2)
-            MERGE (a)-[:WROTE {words: 20}]->(j3)
-            MERGE (a)-[:WROTE {words: 25}]->(j4)
-            `
-        );
 
         const result = await graphql({
             schema,
