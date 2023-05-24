@@ -2048,9 +2048,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphiql/react@npm:0.17.4":
-  version: 0.17.4
-  resolution: "@graphiql/react@npm:0.17.4"
+"@graphiql/react@npm:0.17.5":
+  version: 0.17.5
+  resolution: "@graphiql/react@npm:0.17.5"
   dependencies:
     "@graphiql/toolkit": ^0.8.4
     "@reach/combobox": ^0.17.0
@@ -2070,7 +2070,7 @@ __metadata:
     graphql: ^15.5.0 || ^16.0.0
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 14046047555f049b615a4b029b311b552baa229ebb421d25dbaf0f0fa730f354d4d1532582a4d6a309e4ca3097a5978edc9a0d53932b4020cb509f5430b89770
+  checksum: 74aa28f0d2d439fd9a763fe690a95075949a3e1a32b97a8c1195be8ae4a902bc6da367e2ad46e4f6425d57ca09d5a5e0d1f9b612454e4a501213dcbbcd8c49ab
   languageName: node
   linkType: hard
 
@@ -3261,7 +3261,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@graphiql/react": 0.17.4
+    "@graphiql/react": 0.17.5
     "@neo4j-ndl/base": 1.3.7
     "@neo4j-ndl/react": 1.3.7
     "@neo4j/graphql": 3.18.3
