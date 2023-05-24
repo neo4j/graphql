@@ -92,6 +92,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ releasedIn: 2000 });
         await createMovie({ releasedIn: 1999 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -115,6 +117,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ releasedIn: 2000 });
         await createMovie({ releasedIn: 1999 });
         await createMovie({ releasedIn: 2999 });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -144,6 +148,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ releasedIn: 2020 });
         await createMovie({ releasedIn: 2000 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -167,6 +173,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ releasedIn: 1920 });
         await createMovie({ releasedIn: 2000 });
         await createMovie({ releasedIn: 2030 });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -197,6 +205,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ averageRating: 8.0 });
         await createMovie({ averageRating: 5 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -220,6 +230,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ averageRating: 6.7 });
         await createMovie({ averageRating: 7.0 });
         await createMovie({ averageRating: 7.1 });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -249,6 +261,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ averageRating: 8 });
         await createMovie({ averageRating: 7.9 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -272,6 +286,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ averageRating: 4.1 });
         await createMovie({ averageRating: 5.3 });
         await createMovie({ averageRating: 6.2 });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -301,6 +317,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ averageRating: 4.1 });
         await createMovie({ averageRating: 5 });
         await createMovie({ averageRating: 6.2 });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -336,6 +354,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ fileSize: bigInts.m });
         await createMovie({ fileSize: bigInts.s });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -364,6 +384,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ fileSize: bigInts.s });
         await createMovie({ fileSize: bigInts.m });
         await createMovie({ fileSize: bigInts.l });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -397,6 +419,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ fileSize: bigInts.l });
         await createMovie({ fileSize: bigInts.m });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -425,6 +449,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         await createMovie({ fileSize: bigInts.s });
         await createMovie({ fileSize: bigInts.m });
         await createMovie({ fileSize: bigInts.l });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([

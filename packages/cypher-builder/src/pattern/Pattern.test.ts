@@ -136,6 +136,20 @@ describe("Patterns", () => {
 
             expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
         });
+
+        test("Escape relationship type if needed", () => {
+            const a = new Cypher.Node();
+            const b = new Cypher.Node();
+            const rel = new Cypher.Relationship({
+                type: "ACTE`D_IN",
+            });
+
+            const query = new TestClause(new Cypher.Pattern(a).related(rel).to(b));
+            const queryResult = query.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`"(this0)-[this1:ACTE\`D_IN]->(this2)"`);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
     });
 
     describe("variable length", () => {

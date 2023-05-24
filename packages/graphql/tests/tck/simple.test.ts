@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
@@ -39,7 +39,6 @@ describe("Simple Cypher tests", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,

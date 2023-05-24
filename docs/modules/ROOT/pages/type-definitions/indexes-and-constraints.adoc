@@ -248,7 +248,7 @@ In order to ensure that the specified constraints exist in the database, you wil
 
 [source, javascript, indent=0]
 ----
-const typeDefs = gql`
+const typeDefs = `#graphql
     type Colour {
         id: ID! @id
         hexadecimal: String! @unique

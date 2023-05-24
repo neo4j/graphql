@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
 import { createJwtRequest } from "../../../../../utils/create-jwt-request";
@@ -74,7 +74,6 @@ describe("@auth allow when inherited from interface", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
@@ -127,7 +126,8 @@ describe("@auth allow when inherited from interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .password } AS this"
         `);
 
@@ -366,7 +366,7 @@ describe("@auth allow when inherited from interface", () => {
             	SET this_creator0.id = $this_update_creator0_id
             	RETURN count(*) AS update_this_creator0
             }
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
@@ -421,7 +421,7 @@ describe("@auth allow when inherited from interface", () => {
             	SET this_creator0.password = $this_update_creator0_password
             	RETURN count(*) AS update_this_creator0
             }
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
@@ -653,7 +653,7 @@ describe("@auth allow when inherited from interface", () => {
             }
             RETURN count(*) AS disconnect_this_post0_disconnect_Post
             }
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:HAS_COMMENT]-(:User)

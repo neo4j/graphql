@@ -24,7 +24,7 @@ import { Unwind } from "../Unwind";
 export abstract class WithUnwind extends ClauseMixin {
     protected unwindStatement: Unwind | undefined;
 
-    public unwind(...columns: Array<"*" | ProjectionColumn>): Unwind {
+    public unwind(...columns: Array<ProjectionColumn>): Unwind {
         if (this.unwindStatement) {
             this.unwindStatement.addColumns(...columns);
         } else {

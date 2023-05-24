@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { int } from "neo4j-driver";
 import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
+import { int } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4j from "../neo4j";
 
 describe("CartesianPoint", () => {
     let driver: Driver;
@@ -55,9 +55,9 @@ describe("CartesianPoint", () => {
     });
 
     test("enables creation of a node with a cartesian point", async () => {
-        const serial = faker.datatype.uuid();
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
+        const serial = faker.string.uuid();
+        const x = faker.number.float();
+        const y = faker.number.float();
 
         const create = `
             mutation CreateParts($serial: String!, $x: Float!, $y: Float!) {
@@ -98,16 +98,16 @@ describe("CartesianPoint", () => {
                 RETURN p { .serial, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(y);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(7203));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(y);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(7203));
     });
 
     test("enables creation of a node with a cartesian-3d point", async () => {
-        const serial = faker.datatype.uuid();
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
-        const z = faker.datatype.float();
+        const serial = faker.string.uuid();
+        const x = faker.number.float();
+        const y = faker.number.float();
+        const z = faker.number.float();
 
         const create = `
             mutation CreateParts($serial: String!, $x: Float!, $y: Float!, $z: Float!) {
@@ -148,17 +148,17 @@ describe("CartesianPoint", () => {
                 RETURN p { .serial, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(y);
-        expect((result.records[0].toObject() as any).p.location.z).toEqual(z);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(9157));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(y);
+        expect((result.records[0]?.toObject() as any).p.location.z).toEqual(z);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(9157));
     });
 
     test("enables update of a node with a cartesian point", async () => {
-        const serial = faker.datatype.uuid();
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
-        const newY = faker.datatype.float();
+        const serial = faker.string.uuid();
+        const x = faker.number.float();
+        const y = faker.number.float();
+        const newY = faker.number.float();
 
         const beforeResult = await session.run(`
             CALL {
@@ -172,8 +172,8 @@ describe("CartesianPoint", () => {
             p { .serial, .location } AS p
         `);
 
-        expect((beforeResult.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((beforeResult.records[0].toObject() as any).p.location.y).toEqual(y);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.y).toEqual(y);
 
         const update = `
             mutation UpdateParts($serial: String!, $x: Float!, $y: Float!) {
@@ -214,17 +214,17 @@ describe("CartesianPoint", () => {
                 RETURN p { .serial, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(newY);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(7203));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(newY);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(7203));
     });
 
     test("enables update of a node with a cartesian-3d point", async () => {
-        const serial = faker.datatype.uuid();
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
-        const z = faker.datatype.float();
-        const newY = faker.datatype.float();
+        const serial = faker.string.uuid();
+        const x = faker.number.float();
+        const y = faker.number.float();
+        const z = faker.number.float();
+        const newY = faker.number.float();
 
         const beforeResult = await session.run(`
             CALL {
@@ -238,9 +238,9 @@ describe("CartesianPoint", () => {
             p { .serial, .location } AS p
         `);
 
-        expect((beforeResult.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((beforeResult.records[0].toObject() as any).p.location.y).toEqual(y);
-        expect((beforeResult.records[0].toObject() as any).p.location.z).toEqual(z);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.y).toEqual(y);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.z).toEqual(z);
 
         const update = `
             mutation UpdateParts($serial: String!, $x: Float!, $y: Float!, $z: Float!) {
@@ -281,16 +281,16 @@ describe("CartesianPoint", () => {
                 RETURN p { .serial, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(newY);
-        expect((result.records[0].toObject() as any).p.location.z).toEqual(z);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(9157));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(newY);
+        expect((result.records[0]?.toObject() as any).p.location.z).toEqual(z);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(9157));
     });
 
     test("enables query of a node with a cartesian point", async () => {
-        const serial = faker.datatype.uuid();
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
+        const serial = faker.string.uuid();
+        const x = faker.number.float();
+        const y = faker.number.float();
 
         const result = await session.run(`
             CALL {
@@ -304,8 +304,8 @@ describe("CartesianPoint", () => {
             p { .id, .location } AS p
         `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(y);
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(y);
 
         const partsQuery = `
             query Parts($serial: String!) {
@@ -341,10 +341,10 @@ describe("CartesianPoint", () => {
     });
 
     test("enables query of a node with a cartesian-3d point", async () => {
-        const serial = faker.datatype.uuid();
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
-        const z = faker.datatype.float();
+        const serial = faker.string.uuid();
+        const x = faker.number.float();
+        const y = faker.number.float();
+        const z = faker.number.float();
 
         const result = await session.run(`
             CALL {
@@ -358,9 +358,9 @@ describe("CartesianPoint", () => {
             p { .id, .location } AS p
         `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(y);
-        expect((result.records[0].toObject() as any).p.location.z).toEqual(z);
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(y);
+        expect((result.records[0]?.toObject() as any).p.location.z).toEqual(z);
 
         const partsQuery = `
             query Parts($serial: String!) {

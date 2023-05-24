@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -29,9 +28,6 @@ describe("auth/where", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     const secret = "secret";
-    const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
-        secret: "secret",
-    });
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -66,7 +62,14 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             try {
                 await session.run(`
@@ -127,7 +130,14 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             try {
                 await session.run(`
@@ -204,7 +214,14 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             try {
                 await session.run(`
@@ -281,7 +298,14 @@ describe("auth/where", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+                const neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    features: {
+                        authorization: {
+                            key: secret,
+                        },
+                    },
+                });
 
                 try {
                     await session.run(`
@@ -359,7 +383,14 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             try {
                 await session.run(`
@@ -422,8 +453,14 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
-
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
             try {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})
@@ -471,8 +508,14 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
-
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
             try {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})
@@ -539,8 +582,14 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
-
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
             try {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})
@@ -600,8 +649,14 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
-
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
             try {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})
@@ -666,8 +721,14 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
-
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
             try {
                 await session.run(`
                     CREATE (u:User {id: "${userId}"})
@@ -731,8 +792,14 @@ describe("auth/where", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
-
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
             try {
                 await session.run(`
                     CREATE (u:User {id: "${userId}"})

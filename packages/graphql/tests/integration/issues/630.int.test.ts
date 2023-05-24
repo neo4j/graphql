@@ -112,7 +112,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
                 schema,
                 source,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                variableValues: { actorId: actors[0].id },
+                variableValues: { actorId: actors[0]?.id },
             });
 
             expect(gqlResult.errors).toBeUndefined();

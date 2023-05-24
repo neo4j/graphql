@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
-import { gql } from "apollo-server";
+import { graphql } from "graphql";
+import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import Neo4j from "../../neo4j";
 
 describe("interface relationships", () => {
     let driver: Driver;
@@ -92,8 +92,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!, $name2: String) {
@@ -189,8 +189,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!, $name2: String) {
@@ -297,8 +297,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!) {

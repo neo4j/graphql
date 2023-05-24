@@ -20,19 +20,17 @@
 import type { Expr } from "../types";
 import type { CypherEnvironment } from "../Environment";
 
-export function serializeMap(
-    env: CypherEnvironment,
-    obj: Record<string, Expr | undefined>,
-    omitCurlyBraces = false
-): string {
-    const valuesList = Object.entries(obj)
-        .filter(([, value]) => value !== undefined)
-        .map(([key, value]) => {
-            return `${key}: ${(value as Expr).getCypher(env)}`; // TODO: improve Typings
-        });
+export function serializeMap(env: CypherEnvironment, map: Map<string, Expr>, omitCurlyBraces = false): string {
+    const serializedFields: string[] = [];
 
-    const serializedContent = valuesList.join(", ");
+    for (const [key, value] of map.entries()) {
+        if (value) {
+            const fieldStr = `${key}: ${value.getCypher(env)}`;
+            serializedFields.push(fieldStr);
+        }
+    }
+
+    const serializedContent = serializedFields.join(", ");
     if (omitCurlyBraces) return serializedContent;
-
     return `{ ${serializedContent} }`;
 }

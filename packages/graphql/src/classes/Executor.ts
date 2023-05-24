@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver, QueryResult, Result, Session, SessionMode, Transaction } from "neo4j-driver";
+import type { Driver, QueryResult, Session, SessionMode, Transaction } from "neo4j-driver";
 import { Neo4jError } from "neo4j-driver";
 import Debug from "debug";
 import environment from "../environment";
@@ -33,8 +33,12 @@ import {
     DEBUG_EXECUTE,
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
-import type { AuthContext, CypherQueryOptions } from "../types";
+import type { CypherQueryOptions } from "../types";
+import type { AuthContext } from "../types/deprecated/auth/auth-context";
 import createAuthParam from "../translate/create-auth-param";
+import type { GraphQLResolveInfo } from "graphql";
+import { print } from "graphql";
+import { wrapInTimeMeasurement } from "../utils/wrap-in-time-measurement";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -67,6 +71,10 @@ type TransactionConfig = {
         app: string;
         // Possible values from https://neo4j.com/docs/operations-manual/current/monitoring/logging/#attach-metadata-tx (will only be user-transpiled for @neo4j/graphql)
         type: "system" | "user-direct" | "user-action" | "user-transpiled";
+        source?: {
+            query: string;
+            params: Record<string, unknown>;
+        };
     };
 };
 
@@ -78,6 +86,14 @@ export type ExecutorConstructorParam = {
     queryOptions?: CypherQueryOptions;
     database?: string;
     bookmarks?: string | string[];
+    measureTime?: boolean;
+};
+
+export type ExecutorResult = {
+    result: QueryResult;
+    measurements?: {
+        time: number;
+    };
 };
 
 export class Executor {
@@ -90,8 +106,16 @@ export class Executor {
 
     private database: string | undefined;
     private bookmarks: string | string[] | undefined;
+    private returnMeasurements: boolean;
 
-    constructor({ executionContext, auth, queryOptions, database, bookmarks }: ExecutorConstructorParam) {
+    constructor({
+        executionContext,
+        auth,
+        queryOptions,
+        database,
+        bookmarks,
+        measureTime = false,
+    }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
         this.queryOptions = queryOptions;
@@ -102,19 +126,25 @@ export class Executor {
         }
         this.database = database;
         this.bookmarks = bookmarks;
+        this.returnMeasurements = measureTime;
     }
 
-    public async execute(query: string, parameters: unknown, defaultAccessMode: SessionMode): Promise<QueryResult> {
+    public async execute(
+        query: string,
+        parameters: unknown,
+        defaultAccessMode: SessionMode,
+        info?: GraphQLResolveInfo
+    ): Promise<ExecutorResult> {
         try {
             if (isDriverLike(this.executionContext)) {
                 const session = this.executionContext.session(this.getSessionParam(defaultAccessMode));
-                const result = await this.sessionRun(query, parameters, defaultAccessMode, session);
+                const result = await this.sessionRun(query, parameters, defaultAccessMode, session, info);
                 await session.close();
                 return result;
             }
 
             if (isSessionLike(this.executionContext)) {
-                return await this.sessionRun(query, parameters, defaultAccessMode, this.executionContext);
+                return await this.sessionRun(query, parameters, defaultAccessMode, this.executionContext, info);
             }
 
             return await this.transactionRun(query, parameters, this.executionContext);
@@ -135,7 +165,7 @@ export class Executor {
 
             if (error.message.includes(`Caused by: java.lang.RuntimeException: ${RELATIONSHIP_REQUIREMENT_PREFIX}`)) {
                 const [, message] = error.message.split(RELATIONSHIP_REQUIREMENT_PREFIX);
-                return new Neo4jGraphQLRelationshipValidationError(message);
+                return new Neo4jGraphQLRelationshipValidationError(message || "");
             }
 
             if (error.code === "Neo.ClientError.Schema.ConstraintValidationFailed") {
@@ -183,27 +213,40 @@ export class Executor {
         return sessionParam;
     }
 
-    private getTransactionConfig(): TransactionConfig {
+    private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {
         const app = `${environment.NPM_PACKAGE_NAME}@${environment.NPM_PACKAGE_VERSION}`;
 
-        return {
+        const transactionConfig: TransactionConfig = {
             metadata: {
                 app,
                 type: "user-transpiled",
             },
         };
+
+        if (info) {
+            const source = {
+                // We avoid using print here, when possible, as it is a heavy process
+                query: info.operation.loc?.source.body || print(info.operation),
+                params: info.variableValues,
+            };
+
+            transactionConfig.metadata.source = source;
+        }
+
+        return transactionConfig;
     }
 
     private async sessionRun(
         query: string,
         parameters: unknown,
         defaultAccessMode: string,
-        session: Session
-    ): Promise<QueryResult> {
+        session: Session,
+        info?: GraphQLResolveInfo
+    ): Promise<ExecutorResult> {
         const transactionType = `${defaultAccessMode.toLowerCase()}Transaction`;
         const result = await session[transactionType]((transaction: Transaction) => {
             return this.transactionRun(query, parameters, transaction);
-        }, this.getTransactionConfig());
+        }, this.getTransactionConfig(info));
         const lastBookmark = session.lastBookmark();
         if (Array.isArray(lastBookmark) && lastBookmark[0]) {
             this.lastBookmark = lastBookmark[0];
@@ -211,7 +254,7 @@ export class Executor {
         return result;
     }
 
-    private transactionRun(query: string, parameters, transaction: Transaction): Result {
+    private async transactionRun(query: string, parameters, transaction: Transaction): Promise<ExecutorResult> {
         const queryToRun = this.generateQuery(query);
         const parametersToRun = this.generateParameters(query, parameters);
 
@@ -220,6 +263,19 @@ export class Executor {
             `About to execute Cypher:\nCypher:\n${queryToRun}\nParams:\n${JSON.stringify(parametersToRun, null, 2)}`
         );
 
-        return transaction.run(queryToRun, parametersToRun);
+        const { result, time } = await wrapInTimeMeasurement(() => {
+            return transaction.run(queryToRun, parametersToRun);
+        });
+
+        const measurements = this.returnMeasurements
+            ? {
+                  time,
+              }
+            : undefined;
+
+        return {
+            result,
+            measurements,
+        };
     }
 }

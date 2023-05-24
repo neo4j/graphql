@@ -21,12 +21,13 @@ import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import type { GraphQLOptionsArg, Context, GraphQLWhereArg, CypherFieldReferenceMap } from "../types";
-import { createAuthPredicates } from "./create-auth-and-params";
+import { createAuthPredicates } from "./create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
+import { Measurement, addMeasurementField } from "../utils/add-measurement-field";
 
 export function translateRead(
     {
@@ -40,6 +41,7 @@ export function translateRead(
     },
     varName = "this"
 ): Cypher.CypherResult {
+    const p1 = performance.now();
     const { resolveTree } = context;
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
 
@@ -70,11 +72,10 @@ export function translateRead(
     });
 
     if (projection.meta?.authValidatePredicates?.length) {
-        projAuth = new Cypher.CallProcedure(
-            new Cypher.apoc.Validate(
+        projAuth = new Cypher.With("*").where(
+            Cypher.apoc.util.validatePredicate(
                 Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                AUTH_FORBIDDEN_ERROR,
-                new Cypher.Literal([0])
+                AUTH_FORBIDDEN_ERROR
             )
         );
     }
@@ -84,13 +85,15 @@ export function translateRead(
         entity: node,
         context,
         allow: {
-            parentNode: node,
+            node,
             varName,
         },
     });
 
     if (authPredicates) {
-        topLevelWhereClause.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR));
+        (topLevelWhereClause || topLevelMatch).where(
+            Cypher.apoc.util.validatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR)
+        );
     }
 
     const projectionSubqueries = Cypher.concat(...projection.subqueries);
@@ -191,10 +194,10 @@ export function translateRead(
         projectionClause = Cypher.concat(withTotalCount, returnClause);
     }
 
-    const preComputedWhereFields =
+    const preComputedWhereFields: Cypher.Clause | undefined =
         preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty
             ? Cypher.concat(preComputedWhereFieldSubqueries, topLevelWhereClause)
-            : undefined;
+            : topLevelWhereClause;
 
     const readQuery = Cypher.concat(
         topLevelMatch,
@@ -206,5 +209,9 @@ export function translateRead(
         projectionSubqueries,
         projectionClause
     );
-    return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
+    const result = readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
+
+    const p2 = performance.now();
+    addMeasurementField(context, Measurement.translationTime, p2 - p1);
+    return result;
 }

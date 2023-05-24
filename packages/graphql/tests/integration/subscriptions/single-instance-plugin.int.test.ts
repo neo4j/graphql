@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { EventMeta } from "../../../src";
@@ -45,7 +45,6 @@ describe("Subscriptions Single Instance Plugin", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
             },

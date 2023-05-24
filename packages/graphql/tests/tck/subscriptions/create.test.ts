@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { Neo4jGraphQL } from "../../../src";
@@ -45,7 +45,6 @@ describe("Subscriptions metadata on create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
             } as any,
@@ -98,7 +97,6 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true },
                 plugins: {
                     subscriptions: plugin,
                 } as any,
@@ -183,7 +181,6 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true },
                 plugins: {
                     subscriptions: plugin,
                 } as any,
@@ -285,7 +282,6 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true },
                 plugins: {
                     subscriptions: plugin,
                 } as any,
@@ -405,7 +401,6 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true },
                 plugins: {
                     subscriptions: plugin,
                 } as any,
@@ -550,7 +545,6 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
-                config: { enableRegex: true },
                 plugins: {
                     subscriptions: plugin,
                 } as any,

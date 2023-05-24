@@ -241,7 +241,7 @@ export function filterByRelationshipProperties({
     if (!relationships.length) {
         return false;
     }
-    const receivedEventRelationship = relationships[0]; // ONE relationship only possible
+    const receivedEventRelationship = relationships[0] as RelationField; // ONE relationship only possible
 
     for (const [wherePropertyKey, wherePropertyValue] of Object.entries(whereProperties)) {
         const { fieldName } = parseFilterProperty(wherePropertyKey);

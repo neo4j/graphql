@@ -19,7 +19,7 @@
 
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import Neo4j from "../neo4j";

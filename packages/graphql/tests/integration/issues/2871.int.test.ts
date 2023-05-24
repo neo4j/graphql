@@ -205,9 +205,8 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
 
     test("should not match if SOME second level relationships meet nested predicates", async () => {
         await session.run(`
-            CREATE (f4:${FirstLevel})-[:HAS_SECOND_LEVEL]->(s4:${SecondLevel})
-            CREATE (f4)-[:HAS_SECOND_LEVEL]->(s5:${SecondLevel})
-        `);
+            CREATE (f4:${FirstLevel} {id: "22", createdAt: "1970-01-02T01:00:00.000Z"})-[:HAS_SECOND_LEVEL]->(s4:${SecondLevel} {id: "24", createdAt: "1970-01-02T01:00:00.000Z"})-[:HAS_THIRD_LEVEL]->(:${ThirdLevel} {id: "25", createdAt: "1970-01-02T01:00:00.000Z"})
+            `);
 
         const query = `
             query {

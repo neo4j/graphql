@@ -18,7 +18,10 @@
  */
 
 import * as base from "@playwright/test";
+import * as dotenv from "dotenv";
 import { test } from "./utils/pagemodel";
+
+dotenv.config();
 
 base.test.describe("settings", () => {
     test("should be able to enable and disable product usage tracking", async ({
@@ -34,6 +37,17 @@ base.test.describe("settings", () => {
         await applicationSettingsPage.isProductUsageTrackingNotChecked();
         await applicationSettingsPage.enableProductUsageTracking();
 
+        await applicationSettingsPage.closeSettingsDrawer();
+    });
+
+    test("should show the current year in the copyright information", async ({
+        loginPage,
+        applicationSettingsPage,
+    }) => {
+        await loginPage.loginDismissIntrospection();
+
+        await applicationSettingsPage.openSettingsDrawer();
+        await applicationSettingsPage.verifyCopyrightCurrentYear();
         await applicationSettingsPage.closeSettingsDrawer();
     });
 });

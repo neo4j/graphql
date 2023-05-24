@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+
 export class CypherAnnotation {
     public statement: string;
 

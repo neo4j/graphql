@@ -38,7 +38,7 @@ export function createResolver({ node }: { node: Node }) {
             context,
         });
 
-        const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
+        const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(
             (selection) => selection.kind === "Field" && selection.name.value === node.plural
         ) as FieldNode;
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;

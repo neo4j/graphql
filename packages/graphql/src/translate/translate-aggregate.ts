@@ -24,8 +24,10 @@ import type { BaseField, Context, GraphQLWhereArg, PrimitiveField, TemporalField
 import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import { translateTopLevelMatch } from "./translate-top-level-match";
+import { Measurement, addMeasurementField } from "../utils/add-measurement-field";
 
 function translateAggregate({ node, context }: { node: Node; context: Context }): [Cypher.Clause, any] {
+    const p1 = performance.now();
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
@@ -36,29 +38,27 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     cypherStrs.push(new Cypher.RawCypher(topLevelMatch.cypher));
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
-    const allowAuth = createAuthAndParams({
+    const { cypher: nodeAuthCypher, params: nodeAuthParams } = createAuthAndParams({
         operations: "READ",
         entity: node,
         context,
         allow: {
-            parentNode: node,
+            node,
             varName,
         },
     });
-    if (allowAuth[0]) {
+    if (nodeAuthCypher) {
         cypherStrs.push(
-            new Cypher.CallProcedure(
-                new Cypher.apoc.Validate(
-                    Cypher.not(new Cypher.RawCypher(allowAuth[0])),
-                    AUTH_FORBIDDEN_ERROR,
-                    new Cypher.Literal([0])
-                )
+            Cypher.apoc.util.validate(
+                Cypher.not(new Cypher.RawCypher(nodeAuthCypher)),
+                AUTH_FORBIDDEN_ERROR,
+                new Cypher.Literal([0])
             )
         );
-        cypherParams = { ...cypherParams, ...allowAuth[1] };
+        cypherParams = { ...cypherParams, ...nodeAuthParams };
     }
 
-    const selections = fieldsByTypeName[node.aggregateTypeNames.selection];
+    const selections = fieldsByTypeName[node.aggregateTypeNames.selection] || {};
     const projections: Cypher.Map = new Cypher.Map();
     const authStrs: string[] = [];
 
@@ -67,15 +67,15 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         const authField = node.authableFields.find((x) => x.fieldName === selection[0]);
         if (authField) {
             if (authField.auth) {
-                const allowAndParams = createAuthAndParams({
+                const { cypher: fieldAuthCypher, params: fieldAuthParams } = createAuthAndParams({
                     entity: authField,
                     operations: "READ",
                     context,
-                    allow: { parentNode: node, varName },
+                    allow: { node, varName },
                 });
-                if (allowAndParams[0]) {
-                    authStrs.push(allowAndParams[0]);
-                    cypherParams = { ...cypherParams, ...allowAndParams[1] };
+                if (fieldAuthCypher) {
+                    authStrs.push(fieldAuthCypher);
+                    cypherParams = { ...cypherParams, ...fieldAuthParams };
                 }
             }
         }
@@ -83,12 +83,10 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
     if (authStrs.length) {
         cypherStrs.push(
-            new Cypher.CallProcedure(
-                new Cypher.apoc.Validate(
-                    Cypher.not(Cypher.and(...authStrs.map((str) => new Cypher.RawCypher(str)))),
-                    AUTH_FORBIDDEN_ERROR,
-                    new Cypher.Literal([0])
-                )
+            Cypher.apoc.util.validate(
+                Cypher.not(Cypher.and(...authStrs.map((str) => new Cypher.RawCypher(str)))),
+                AUTH_FORBIDDEN_ERROR,
+                new Cypher.Literal([0])
             )
         );
     }
@@ -112,7 +110,8 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             const thisProjections: Cypher.Expr[] = [];
             const aggregateFields =
                 selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNullable`] ||
-                selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`];
+                selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelectionNonNullable`] ||
+                {};
 
             Object.entries(aggregateFields).forEach((entry) => {
                 // "min" | "max" | "average" | "sum" | "shortest" | "longest"
@@ -180,8 +179,11 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
     const retSt = new Cypher.Return(projections);
     cypherStrs.push(retSt);
+    const result: [Cypher.Clause, Record<string, any>] = [Cypher.concat(...cypherStrs), cypherParams];
+    const p2 = performance.now();
+    addMeasurementField(context, Measurement.translationTime, p2 - p1);
 
-    return [Cypher.concat(...cypherStrs), cypherParams];
+    return result;
 }
 
 export default translateAggregate;

@@ -19,7 +19,7 @@
 
 import { haveSharedElement } from "../../../utils/utils";
 import createAuthParam from "../../../translate/create-auth-param";
-import type { AuthRule } from "../../../types";
+import type { AuthRule } from "../../../types/deprecated/auth/auth-rule";
 import type { SubscriptionContext } from "./types";
 
 export class SubscriptionAuth {

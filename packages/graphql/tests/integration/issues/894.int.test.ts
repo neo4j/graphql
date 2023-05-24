@@ -20,7 +20,7 @@
 import type { DocumentNode, GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";
@@ -131,6 +131,6 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             `);
 
         expect(userOrgs.records).toHaveLength(1);
-        expect(userOrgs.records[0].toObject().orgName as string).toBe("The Empire");
+        expect(userOrgs.records[0]?.toObject().orgName as string).toBe("The Empire");
     });
 });

@@ -17,27 +17,6 @@
  * limitations under the License.
  */
 
-export const LOCAL_STATE_TYPE_DEFS = "neo4j.graphql.typeDefs";
-export const LOCAL_STATE_OPTIONS = "neo4j.graphql.options";
-export const LOCAL_STATE_TYPE_LAST_QUERY = "neo4j.graphql.lastQuery";
-export const LOCAL_STATE_TYPE_LAST_PARAMS = "neo4j.graphql.lastParams";
-export const LOCAL_STATE_LOGIN = "neo4j.graphql.login";
-export const LOCAL_STATE_CONNECTION_USERNAME = "neo4j.graphql.connection.username";
-export const LOCAL_STATE_CONNECTION_URL = "neo4j.graphql.connection.url";
-export const LOCAL_STATE_ENABLE_DEBUG = "neo4j.graphql.debug";
-export const LOCAL_STATE_CHECK_CONSTRAINT = "neo4j.graphql.checkConstraint";
-export const LOCAL_STATE_CREATE_CONSTRAINT = "neo4j.graphql.createConstraint";
-export const LOCAL_STATE_CONSTRAINT = "neo4j.graphql.constraint";
-export const LOCAL_STATE_EDITOR_THEME = "neo4j.graphql.editorTheme";
-export const LOCAL_STATE_ENABLE_REGEX = "neo4j.graphql.enable.regex";
-export const LOCAL_STATE_FAVORITES = "neo4j.graphql.favorites";
-export const LOCAL_STATE_SHOW_LINT_MARKERS = "neo4j.graphql.showLintMarkers";
-export const LOCAL_STATE_SELECTED_DATABASE_NAME = "neo4j.graphql.selectedDatabaseName";
-export const LOCAL_STATE_HIDE_INTROSPECTION_PROMPT = "neo4j.graphql.hideIntrospectionPrompt";
-export const LOCAL_STATE_GRID_STATE = "neo4j.graphql.gridState";
-export const LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING = "neo4j.graphql.enableProductUsageTracking";
-export const LOCAL_STATE_HIDE_PRODUCT_USAGE_MESSAGE = "neo4j.graphql.hideProductUsageMessage";
-
 export const SCHEMA_EDITOR_INPUT = "SCHEMA_EDITOR_INPUT";
 export const EDITOR_QUERY_INPUT = "EDITOR_QUERY_INPUT";
 export const EDITOR_PARAMS_INPUT = "EDITOR_PARAMS_INPUT";
@@ -48,8 +27,7 @@ export const VERIFY_CONNECTION_INTERVAL_MS = 30000;
 export const THEME_EDITOR_LIGHT = "neo";
 export const THEME_EDITOR_DARK = "dracula";
 
-export const DEFAULT_TYPE_DEFS = `
-# Write your own type definition in the editor here or 
+export const DEFAULT_TYPE_DEFS = `# Write your own type definition in the editor here or 
 # generate it automatically from the current Neo4j database (introspection)
 
 # Example type definition:
@@ -58,8 +36,7 @@ type Movie {
 }
 `;
 
-export const DEFAULT_QUERY = `
-# Type queries into this side of the screen, and you will 
+export const DEFAULT_QUERY = `# Type queries into this side of the screen, and you will 
 # see intelligent typeaheads aware of the current GraphQL type schema.
 # Try the Explorer and use the Documentation
 

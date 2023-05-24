@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLResolveInfo } from "graphql";
+import type { FieldNode, GraphQLResolveInfo } from "graphql";
 
 /**
  * Based on the default field resolver used by graphql-js that accounts for aliased fields
@@ -26,10 +26,12 @@ import type { GraphQLResolveInfo } from "graphql";
 
 export function defaultFieldResolver(source: any, args: any, context: unknown, info: GraphQLResolveInfo) {
     if ((typeof source === "object" && source !== null) || typeof source === "function") {
+        const fieldNode = info.fieldNodes[0] as FieldNode;
+
         const property =
-            info.fieldNodes[0].alias && Object.prototype.hasOwnProperty.call(source, info.fieldNodes[0].alias.value)
-                ? source[info.fieldNodes[0].alias.value]
-                : source[info.fieldNodes[0].name.value];
+            fieldNode.alias && Object.prototype.hasOwnProperty.call(source, fieldNode.alias.value)
+                ? source[fieldNode.alias.value]
+                : source[fieldNode.name.value];
         if (typeof property === "function") {
             return property(args, context, info);
         }

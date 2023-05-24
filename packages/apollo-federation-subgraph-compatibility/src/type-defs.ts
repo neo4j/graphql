@@ -101,6 +101,6 @@ export const typeDefs = gql`
 
     type Inventory @interfaceObject @key(fields: "id") {
         id: ID!
-        deprecatedProducts: [DeprecatedProduct!]!
+        deprecatedProducts: [DeprecatedProduct!]! @relationship(type: "HAS_DEPRECATED_PRODUCT", direction: OUT)
     }
 `;

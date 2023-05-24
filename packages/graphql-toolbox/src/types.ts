@@ -42,6 +42,23 @@ export interface Neo4jDatabase {
     role: string;
 }
 
+export interface GridState {
+    maxWidth: number;
+    maxHeight: number;
+    leftTop: {
+        width: number;
+        height: number;
+    };
+    leftBottom: {
+        width: number;
+        height: number;
+    };
+    right: {
+        width: number;
+        height: number;
+    };
+}
+
 export enum ConstraintState {
     check,
     create,

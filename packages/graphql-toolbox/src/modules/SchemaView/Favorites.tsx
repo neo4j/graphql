@@ -17,99 +17,52 @@
  * limitations under the License.
  */
 
+import { tokens } from "@neo4j-ndl/base";
 import { IconButton } from "@neo4j-ndl/react";
-import { CheckIconOutline, PencilIconOutline, TrashIconOutline } from "@neo4j-ndl/react/icons";
-import { Storage } from "../../utils/storage";
+import { StarIconOutline, TrashIconOutline } from "@neo4j-ndl/react/icons";
+import { useStore } from "../../store";
 import type { Favorite } from "../../types";
-import { LOCAL_STATE_FAVORITES } from "../../constants";
-import { Fragment, useState } from "react";
-
-interface NameComponentProps {
-    name: string;
-    saveName: (newName: string) => void;
-    onSelectFavorite: () => void;
-}
-
-interface FavoritesProps {
-    favorites: Favorite[] | null;
-    setFavorites: (nextState: Favorite[] | null) => void;
-    onSelectFavorite: (typeDefs: string) => void;
-}
+import { FavoriteNameEdit } from "./FavoriteNameEdit";
 
 const ALTERNATE_BG_COLOR = "n-bg-neutral-20";
 
-const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps) => {
-    const [editMode, setEditMode] = useState<boolean>(false);
-    const [nameValue, setNameValue] = useState<string>(name);
+interface FavoritesProps {
+    favorites: Favorite[] | null;
+    onSelectFavorite: (typeDefs: string) => void;
+}
 
-    const _handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-            setEditMode(false);
-            saveName(nameValue);
-        }
-    };
-
-    return (
-        <Fragment>
-            <div
-                className="w-full"
-                onClick={() => onSelectFavorite()}
-                onKeyDown={() => onSelectFavorite()}
-                role="button"
-                tabIndex={0}
-            >
-                {editMode ? (
-                    <input
-                        className="w-60"
-                        value={nameValue}
-                        onChange={(event) => setNameValue(event.currentTarget.value)}
-                        onKeyDown={_handleKeyDown}
-                    />
-                ) : (
-                    <div className="truncate w-60">{name}</div>
-                )}
-            </div>
-            {editMode ? (
-                <IconButton
-                    aria-label="Finish editing favorite name"
-                    className={`border-none h-5 w-5`}
-                    clean
-                    onClick={() => {
-                        setEditMode(false);
-                        saveName(nameValue);
-                    }}
-                >
-                    <CheckIconOutline />
-                </IconButton>
-            ) : (
-                <IconButton
-                    aria-label="Edit favorite name"
-                    className={`border-none h-5 w-5`}
-                    clean
-                    onClick={() => setEditMode(true)}
-                >
-                    <PencilIconOutline />
-                </IconButton>
-            )}
-        </Fragment>
-    );
-};
-
-export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: FavoritesProps) => {
+export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
     const deleteFavorite = (id: string): void => {
         const nextFavs = favorites?.filter((fav) => fav.id !== id) || null;
-        setFavorites(nextFavs);
-        Storage.storeJSON(LOCAL_STATE_FAVORITES, nextFavs);
+        useStore.setState({ favorites: nextFavs });
     };
 
     const updateName = (newName: string, id: string): void => {
         const nextFavs = favorites?.map((fav) => (fav.id === id ? { ...fav, name: newName } : fav)) || null;
-        setFavorites(nextFavs);
-        Storage.storeJSON(LOCAL_STATE_FAVORITES, nextFavs);
+        useStore.setState({ favorites: nextFavs });
+    };
+
+    const EmptyState = (): JSX.Element => {
+        return (
+            <div className="h-favorite flex flex-col items-center justify-center leading-6 n-text-neutral-60">
+                <p>No favorites to display.</p>
+                <p className="flex">
+                    Click{" "}
+                    <StarIconOutline
+                        className="h-5 w-5 mx-1"
+                        style={{
+                            color: tokens.colors.neutral[60],
+                        }}
+                    />{" "}
+                    to save type
+                </p>
+                <p>definitions as favorite.</p>
+            </div>
+        );
     };
 
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full p-6">
             <span className="h5">Favorites</span>
             {favorites?.length ? (
                 <ul className="pt-3 h-favorite overflow-y-scroll">
@@ -122,7 +75,7 @@ export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: Favorit
                                     isAlternateBackground ? ALTERNATE_BG_COLOR : ""
                                 }`}
                             >
-                                <NameComponent
+                                <FavoriteNameEdit
                                     name={favorite.name}
                                     saveName={(newName) => updateName(newName, favorite.id)}
                                     onSelectFavorite={() => onSelectFavorite(favorite.typeDefs)}
@@ -140,7 +93,9 @@ export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: Favorit
                         );
                     })}
                 </ul>
-            ) : null}
+            ) : (
+                <EmptyState />
+            )}
         </div>
     );
 };

@@ -12,11 +12,6 @@ on:
     - cron: "0 3 * * *"
 
 jobs:
-  # Let's consider the value of testing examples
-  # Perhaps we need some newer, better examples for testing
-  neo-push-tests:
-    uses: ./.github/workflows/reusable-neo-push-tests.yml
-
   code-scanning:
     uses: ./.github/workflows/reusable-codeql-analysis.yml
 
@@ -63,7 +58,6 @@ jobs:
     runs-on: ubuntu-latest
 
     needs:
-      - neo-push-tests
       - code-scanning
       - unit-tests
       - api-library-tests
@@ -80,7 +74,7 @@ jobs:
         id: check
       - name: Send Slack announcement of pipeline failure
         if: steps.check.outputs.status == 'failure' && github.event_name == 'schedule'
-        uses: slackapi/slack-github-action@v1.23.0
+        uses: slackapi/slack-github-action@v1.24.0
         with:
           payload: '{"url":"https://github.com/neo4j/graphql/actions/runs/${{ github.run_id }}"}'
         env:

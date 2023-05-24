@@ -19,14 +19,14 @@
 
 import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import type { ArrayPushTest } from "./types";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
+import type { ArrayPushTest } from "./types";
 
 describe("array-push", () => {
     let driver: Driver;
@@ -52,9 +52,9 @@ describe("array-push", () => {
 
     const date = new Date().toISOString();
     const expectedDateOutput = date.split("T")[0];
-    const time = faker.date.past().toISOString().split("T")[1];
+    const time = faker.date.past().toISOString().split("T")[1] as string;
     const expectedTimeOutput = `${time.slice(0, -1)}000000Z`;
-    const localTime = `${faker.date.past().toISOString().split("T")[1].split("Z")[0]}`;
+    const localTime = `${faker.date.past().toISOString().split("T")[1]?.split("Z")[0]}`;
     const localDateTime = `${faker.date.past().toISOString().split("Z")[0]}`;
     // Expected localTime and localDateTime may cause flakiness with the ms precision.
     const expectedLocalTime = expect.stringContaining(localTime);
@@ -287,9 +287,9 @@ describe("array-push", () => {
     });
 
     const point = {
-        longitude: parseFloat(faker.address.longitude()),
-        latitude: parseFloat(faker.address.latitude()),
-        height: faker.datatype.float(),
+        longitude: parseFloat(faker.location.longitude().toString()),
+        latitude: parseFloat(faker.location.latitude().toString()),
+        height: faker.number.float(),
     };
 
     test.each<ArrayPushTest>([
@@ -367,8 +367,8 @@ describe("array-push", () => {
     });
 
     const cartesianPoint = {
-        x: faker.datatype.float(),
-        y: faker.datatype.float(),
+        x: faker.number.float(),
+        y: faker.number.float(),
     };
 
     test.each<ArrayPushTest>([
@@ -650,7 +650,7 @@ describe("array-push", () => {
                 id,
             }
         );
-        expect(storedValue.records[0].get("pay")).toEqual([initialPay, payIncrement]);
+        expect(storedValue.records[0]?.get("pay")).toEqual([initialPay, payIncrement]);
     });
 
     test("should be possible to update Point relationship properties", async () => {

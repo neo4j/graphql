@@ -18,7 +18,7 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
@@ -59,7 +59,7 @@ describe("schema/rfc/autogenerate-properties-node", () => {
         });
     });
 
-    test("Callback - existance", async () => {
+    test("Callback - existence", async () => {
         const typeDefs = gql`
             type Movie {
                 id: ID

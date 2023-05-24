@@ -186,6 +186,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -255,6 +257,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
+        // forcing a delay to ensure events do not exist
+        await delay(4);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(0);
     });
@@ -306,7 +310,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -392,6 +397,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
+        // forcing a delay to ensure events do not exist
+        await delay(4);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(0);
     });
@@ -441,7 +448,9 @@ subscription SubscriptionMovie {
                 `,
             })
             .expect(200);
-        await delay(3);
+
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(1);
         expect(wsClient.events).toIncludeSameMembers([
@@ -508,6 +517,9 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
+        // forcing a delay to ensure events do not exist
+        await delay(4);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(0);
     });
@@ -558,7 +570,8 @@ subscription SubscriptionMovie {
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
@@ -640,6 +653,9 @@ subscription SubscriptionMovie {
                 `,
             })
             .expect(200);
+
+        // forcing a delay to ensure events do not exist
+        await delay(4);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toHaveLength(0);

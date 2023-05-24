@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../src";
 import { createJwtRequest } from "../../../../../../utils/create-jwt-request";
@@ -63,7 +63,6 @@ describe("Cypher Auth isAuthenticated", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
@@ -97,7 +96,7 @@ describe("Cypher Auth isAuthenticated", () => {
                     create_this1.id = create_var0.id,
                     create_this1.content = create_var0.content
                 WITH *
-                CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"

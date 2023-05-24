@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import type { IncomingMessage } from "http";
@@ -86,10 +85,10 @@ describe("Field Level Aggregations Auth", () => {
 
                 neoSchema = new Neo4jGraphQL({
                     typeDefs: extendedTypeDefs,
-                    plugins: {
-                        auth: new Neo4jGraphQLAuthJWTPlugin({
-                            secret: "secret",
-                        }),
+                    features: {
+                        authorization: {
+                            key: "secret",
+                        },
                     },
                 });
 
@@ -175,10 +174,10 @@ describe("Field Level Aggregations Auth", () => {
 
                 neoSchema = new Neo4jGraphQL({
                     typeDefs: extendedTypeDefs,
-                    plugins: {
-                        auth: new Neo4jGraphQLAuthJWTPlugin({
-                            secret: "secret",
-                        }),
+                    features: {
+                        authorization: {
+                            key: "secret",
+                        },
                     },
                 });
             });

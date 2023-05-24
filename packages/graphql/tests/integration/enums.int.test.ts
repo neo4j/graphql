@@ -80,7 +80,7 @@ describe("enums", () => {
                 RETURN m {.id, .status} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({ id, status: "ACTIVE" });
+            expect((result.records[0]?.toObject() as any).m).toEqual({ id, status: "ACTIVE" });
         } finally {
             await session.close();
         }
@@ -132,7 +132,7 @@ describe("enums", () => {
                 RETURN m {.id, .status} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({ id, status: "ACTIVE" });
+            expect((result.records[0]?.toObject() as any).m).toEqual({ id, status: "ACTIVE" });
         } finally {
             await session.close();
         }
@@ -186,7 +186,7 @@ describe("enums", () => {
                 RETURN m {.id, .status} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({ id, status: "active" });
+            expect((result.records[0]?.toObject() as any).m).toEqual({ id, status: "active" });
         } finally {
             await session.close();
         }
@@ -242,7 +242,7 @@ describe("enums", () => {
                 RETURN m {.id, .status} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({ id, status: "active" });
+            expect((result.records[0]?.toObject() as any).m).toEqual({ id, status: "active" });
         } finally {
             await session.close();
         }

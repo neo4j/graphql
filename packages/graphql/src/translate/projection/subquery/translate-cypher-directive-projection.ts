@@ -207,10 +207,6 @@ export function translateCypherDirectiveProjection({
         []) as GraphQLSortArg[];
     const isSortArg = sortInput.find((obj) => Object.keys(obj).includes(alias));
     if (isSortArg) {
-        if (!res.meta.cypherSortFields) {
-            res.meta.cypherSortFields = [];
-        }
-        res.meta.cypherSortFields.push(alias);
         res.subqueriesBeforeSort.push(callSt);
     } else {
         res.subqueries.push(callSt);

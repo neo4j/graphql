@@ -19,7 +19,7 @@
 
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../classes";
-import type { AuthContext } from "../types";
+import type { AuthContext } from "../types/deprecated/auth/auth-context";
 import {
     CypherConnectComponentsPlanner,
     CypherExpressionEngine,
@@ -104,6 +104,7 @@ describe("execute", () => {
                             database,
                             bookmarks,
                         }),
+                        info: undefined,
                     }).instance(),
                 });
 
@@ -180,6 +181,7 @@ describe("execute", () => {
                         bookmarks,
                         queryOptions: {},
                     }),
+                    info: undefined,
                 }).instance(),
             });
 
@@ -268,6 +270,7 @@ describe("execute", () => {
                             replan: CypherReplanning.DEFAULT,
                         },
                     }),
+                    info: undefined,
                 }).instance(),
             });
 

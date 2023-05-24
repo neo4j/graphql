@@ -53,7 +53,7 @@ export function addSortAndLimitOptionsToClause({
     cypherFieldAliasMap,
 }: {
     optionsInput: GraphQLOptionsArg;
-    target: Cypher.Variable | Cypher.PropertyRef;
+    target: Cypher.Variable | Cypher.Property;
     projectionClause: Cypher.Return | Cypher.With;
     nodeField?: string;
     fulltextScoreVariable?: Cypher.Variable;
@@ -88,7 +88,7 @@ function createOrderByParams({
     cypherFieldAliasMap,
 }: {
     optionsInput: GraphQLOptionsArg;
-    target: Cypher.Variable | Cypher.PropertyRef;
+    target: Cypher.Variable | Cypher.Property;
     nodeField?: string;
     fulltextScoreVariable?: Cypher.Variable;
     cypherFields?: CypherField[];
@@ -105,7 +105,7 @@ function createOrderByParams({
     return orderList.map(([field, order]) => {
         // TODO: remove this once translation of cypher fields moved to cypher builder.
         if (cypherFieldAliasMap && cypherFields && cypherFields.some((f) => f.fieldName === field)) {
-            return [cypherFieldAliasMap[field], order];
+            return [cypherFieldAliasMap[field] as Cypher.Variable, order];
         }
         if (fulltextScoreVariable && field === SCORE_FIELD) {
             return [fulltextScoreVariable, order];

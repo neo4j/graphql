@@ -20,7 +20,7 @@
 import type { DocumentNode, GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Integer, Session } from "neo4j-driver";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";
@@ -145,8 +145,8 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
         `);
 
         expect(bibRefRes.records).toHaveLength(1);
-        expect(bibRefRes.records[0].toObject().bibRefUri as string).toBe("urn:myiri2");
-        expect(bibRefRes.records[0].toObject().conceptUri as string).toBe("new-e");
+        expect(bibRefRes.records[0]?.toObject().bibRefUri as string).toBe("urn:myiri2");
+        expect(bibRefRes.records[0]?.toObject().conceptUri as string).toBe("new-e");
 
         const updateBibRefResult = await graphqlQuery(updateBibRefQuery);
         expect(updateBibRefResult.errors).toBeUndefined();
@@ -175,7 +175,7 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
         `);
 
         expect(conceptCount.records).toHaveLength(1);
-        expect(conceptCount.records[0].toObject().bibRefUri as string).toBe("urn:myiri2");
-        expect((conceptCount.records[0].toObject().conceptCount as Integer).toNumber()).toBe(2);
+        expect(conceptCount.records[0]?.toObject().bibRefUri as string).toBe("urn:myiri2");
+        expect((conceptCount.records[0]?.toObject().conceptCount as Integer).toNumber()).toBe(2);
     });
 });

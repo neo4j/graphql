@@ -22,7 +22,7 @@ import type { Context, GraphQLOptionsArg, GraphQLWhereArg, RelationField } from 
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../../where/create-where-predicate";
 import type { CypherRelationshipDirection } from "../../../utils/get-relationship-direction";
-import { createAuthPredicates } from "../../create-auth-and-params";
+import { createAuthPredicates } from "../../create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
 
@@ -108,20 +108,20 @@ export function createProjectionSubquery({
         operations: "READ",
         context,
         allow: {
-            parentNode: node,
+            node,
             varName: targetNode,
         },
     });
 
     if (preAuth) {
-        const allowAuth = new Cypher.apoc.ValidatePredicate(Cypher.not(preAuth), AUTH_FORBIDDEN_ERROR);
+        const allowAuth = Cypher.apoc.util.validatePredicate(Cypher.not(preAuth), AUTH_FORBIDDEN_ERROR);
         predicates.push(allowAuth);
     }
 
     if (authValidatePredicates?.length) {
         const authValidatePredicate = Cypher.and(...authValidatePredicates);
 
-        const authStatement = new Cypher.apoc.ValidatePredicate(
+        const authStatement = Cypher.apoc.util.validatePredicate(
             Cypher.not(authValidatePredicate),
             AUTH_FORBIDDEN_ERROR
         );

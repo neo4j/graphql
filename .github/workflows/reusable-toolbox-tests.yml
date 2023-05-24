@@ -9,10 +9,10 @@ jobs:
 
     services:
       neo4j:
-        image: neo4j:enterprise
+        image: neo4j:5-enterprise
         env:
           NEO4J_AUTH: neo4j/password
-          NEO4JLABS_PLUGINS: '["apoc"]'
+          NEO4J_PLUGINS: '["apoc-core"]'
           NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
         ports:
           - 7687:7687
@@ -26,6 +26,10 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      # the introspector is a referenced project by the Toolbox.
+      - name: Build the introspector
+        run: yarn build
+        working-directory: packages/introspector
       - name: Install Playwright
         run: npx playwright install --with-deps
       - name: Run @neo4j/graphql-toolbox unit tests
@@ -38,3 +42,10 @@ jobs:
           NEO_USER: neo4j
           NEO_PASSWORD: password
           NEO_URL: bolt://localhost:7687
+      - name: Upload playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-test-failure-report
+          path: packages/graphql-toolbox/tests/artifacts
+          retention-days: 4

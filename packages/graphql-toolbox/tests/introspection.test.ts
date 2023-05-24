@@ -17,9 +17,12 @@
  * limitations under the License.
  */
 
-import * as neo4j from "neo4j-driver";
 import * as base from "@playwright/test";
-import { test, expect, beforeAll, afterAll } from "./utils/pagemodel";
+import * as dotenv from "dotenv";
+import * as neo4j from "neo4j-driver";
+import { afterAll, beforeAll, expect, test } from "./utils/pagemodel";
+
+dotenv.config();
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 

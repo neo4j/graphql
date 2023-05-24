@@ -34,6 +34,7 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMeta } from "../translate/subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
+import { Measurement, addMeasurementField } from "../utils/add-measurement-field";
 
 export default async function translateUpdate({
     node,
@@ -42,6 +43,7 @@ export default async function translateUpdate({
     node: Node;
     context: Context;
 }): Promise<[string, any]> {
+    const p1 = performance.now();
     const { resolveTree } = context;
     const updateInput = resolveTree.args.update;
     const connectInput = resolveTree.args.connect;
@@ -77,7 +79,7 @@ export default async function translateUpdate({
     const interfaceStrs: string[] = [];
     let updateArgs = {};
 
-    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.update];
+    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.update] || {};
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 
@@ -172,7 +174,7 @@ export default async function translateUpdate({
             parentVar: varName,
             withVars,
             parameterPrefix: `${resolveTree.name}.args.update`,
-            includeRelationshipValidation: true,
+            includeRelationshipValidation: false,
         });
         [updateStr] = updateAndParams;
         cypherParams = {
@@ -208,8 +210,8 @@ export default async function translateUpdate({
                     const inStr = relationField.direction === "IN" ? "<-" : "-";
                     const outStr = relationField.direction === "OUT" ? "->" : "-";
                     refNodes.forEach((refNode) => {
-                        const validateRelationshipExistance = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        connectStrs.push(validateRelationshipExistance);
+                        const validateRelationshipExistence = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                        connectStrs.push(validateRelationshipExistence);
                     });
                 }
 
@@ -338,8 +340,22 @@ export default async function translateUpdate({
                     const relTypeStr = `[${relationVarName}:${relationField.type}]`;
 
                     if (!relationField.typeMeta.array) {
-                        const validateRelationshipExistance = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        createStrs.push(validateRelationshipExistance);
+                        const singleCardinalityValidationTemplate = (nodeName) =>
+                            `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                        if (relationField.union && relationField.union.nodes) {
+                            const validateRelationshipExistence = relationField.union.nodes.map(
+                                singleCardinalityValidationTemplate
+                            );
+                            createStrs.push(...validateRelationshipExistence);
+                        } else if (relationField.interface && relationField.interface.implementations) {
+                            const validateRelationshipExistence = relationField.interface.implementations.map(
+                                singleCardinalityValidationTemplate
+                            );
+                            createStrs.push(...validateRelationshipExistence);
+                        } else {
+                            const validateRelationshipExistence = singleCardinalityValidationTemplate(refNode.name);
+                            createStrs.push(validateRelationshipExistence);
+                        }
                     }
 
                     const createAndParams = createCreateAndParams({
@@ -408,11 +424,10 @@ export default async function translateUpdate({
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
         if (projection.meta?.authValidatePredicates?.length) {
-            projAuth = new Cypher.CallProcedure(
-                new Cypher.apoc.Validate(
+            projAuth = new Cypher.With("*").where(
+                Cypher.apoc.util.validatePredicate(
                     Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                    AUTH_FORBIDDEN_ERROR,
-                    new Cypher.Literal([0])
+                    AUTH_FORBIDDEN_ERROR
                 )
             );
         }
@@ -420,7 +435,7 @@ export default async function translateUpdate({
 
     const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
 
-    const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
+    const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
 
     const updateQuery = new Cypher.RawCypher((env: Cypher.Environment) => {
         const projectionSubqueryStr = projectionSubquery ? projectionSubquery.getCypher(env) : "";
@@ -442,7 +457,7 @@ export default async function translateUpdate({
                 : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
 
             projectionSubqueryStr,
-            ...(connectionStrs.length || projAuth ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
+            ...(connectionStrs.length ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
             ...(projAuth ? [projAuth.getCypher(env)] : []),
             ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,
@@ -467,11 +482,14 @@ export default async function translateUpdate({
         ];
     });
 
-    const result = updateQuery.build("update_");
+    const cypherResult = updateQuery.build("update_");
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
-        cypher: result.cypher,
+        cypher: cypherResult.cypher,
     });
-    return [cypher, { ...result.params, resolvedCallbacks }];
+    const result: [string, Record<string, any>] = [cypher, { ...cypherResult.params, resolvedCallbacks }];
+    const p2 = performance.now();
+    addMeasurementField(context, Measurement.translationTime, p2 - p1);
+    return result;
 }
 
 function generateUpdateReturnStatement(

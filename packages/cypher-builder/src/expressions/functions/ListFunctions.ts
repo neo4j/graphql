@@ -32,15 +32,6 @@ export function size(expr: Expr): CypherFunction {
 }
 
 /**
- * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-collect)
- * @group Expressions
- * @category Cypher Functions
- */
-export function collect(expr: Expr): CypherFunction {
-    return new CypherFunction("collect", [expr]);
-}
-
-/**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-head)
  * @group Expressions
  * @category Cypher Functions

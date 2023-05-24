@@ -31,8 +31,9 @@ export async function verifyFunctions(sessionFactory: () => Session): Promise<vo
     `;
 
     try {
-        const result = await session.run(cypher);
-        const record = result.records[0].toObject() as { functions: string[] };
+        const result = await session.run<{ functions: string[] }>(cypher);
+        const record = result.records[0]?.toObject();
+        if (!record) throw new Error("verifyFunctions failed to get functions");
 
         const missingFunctions = REQUIRED_APOC_FUNCTIONS.filter((f) => !record.functions.includes(f));
         if (missingFunctions.length) {

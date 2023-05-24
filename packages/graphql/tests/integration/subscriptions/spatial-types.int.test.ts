@@ -18,14 +18,14 @@
  */
 
 import { faker } from "@faker-js/faker";
-import { gql } from "apollo-server";
 import { graphql } from "graphql";
+import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { int } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
+import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import Neo4j from "../neo4j";
 
 describe("Subscriptions to spatial types", () => {
@@ -52,7 +52,6 @@ describe("Subscriptions to spatial types", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
             },
@@ -67,12 +66,12 @@ describe("Subscriptions to spatial types", () => {
     });
 
     test("create type with Point field", async () => {
-        const longitude1 = parseFloat(faker.address.longitude());
-        const longitude2 = parseFloat(faker.address.longitude());
-        const latitude1 = parseFloat(faker.address.latitude());
-        const latitude2 = parseFloat(faker.address.latitude());
-        const height1 = faker.datatype.float();
-        const height2 = faker.datatype.float();
+        const longitude1 = parseFloat(faker.location.longitude().toString());
+        const longitude2 = parseFloat(faker.location.longitude().toString());
+        const latitude1 = parseFloat(faker.location.latitude().toString());
+        const latitude2 = parseFloat(faker.location.latitude().toString());
+        const height1 = faker.number.float();
+        const height2 = faker.number.float();
 
         const query = `
         mutation CreateMovie($longitude1: Float!, $latitude1: Float!, $height1: Float!, $longitude2: Float!, $latitude2: Float!, $height2: Float!)  {
@@ -110,7 +109,7 @@ describe("Subscriptions to spatial types", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data[typeMovie.operations.create][typeMovie.plural]).toEqual([
+        expect(gqlResult.data[typeMovie.operations.create][typeMovie.plural]).toIncludeSameMembers([
             {
                 title: "As good as it gets",
                 filmedIn: {
@@ -137,14 +136,14 @@ describe("Subscriptions to spatial types", () => {
                 RETURN m { .title, .filmedIn } as m
             `);
 
-        expect((result.records[0].toObject() as any).m.filmedIn.x).toEqual(longitude1);
-        expect((result.records[0].toObject() as any).m.filmedIn.y).toEqual(latitude1);
-        expect((result.records[0].toObject() as any).m.filmedIn.z).toEqual(height1);
-        expect((result.records[0].toObject() as any).m.filmedIn.srid).toEqual(int(4979));
-        expect((result.records[1].toObject() as any).m.filmedIn.x).toEqual(longitude2);
-        expect((result.records[1].toObject() as any).m.filmedIn.y).toEqual(latitude2);
-        expect((result.records[1].toObject() as any).m.filmedIn.z).toEqual(height2);
-        expect((result.records[1].toObject() as any).m.filmedIn.srid).toEqual(int(4979));
+        expect((result.records[0]?.toObject() as any).m.filmedIn.x).toEqual(longitude1);
+        expect((result.records[0]?.toObject() as any).m.filmedIn.y).toEqual(latitude1);
+        expect((result.records[0]?.toObject() as any).m.filmedIn.z).toEqual(height1);
+        expect((result.records[0]?.toObject() as any).m.filmedIn.srid).toEqual(int(4979));
+        expect((result.records[1]?.toObject() as any).m.filmedIn.x).toEqual(longitude2);
+        expect((result.records[1]?.toObject() as any).m.filmedIn.y).toEqual(latitude2);
+        expect((result.records[1]?.toObject() as any).m.filmedIn.z).toEqual(height2);
+        expect((result.records[1]?.toObject() as any).m.filmedIn.srid).toEqual(int(4979));
 
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
@@ -178,10 +177,10 @@ describe("Subscriptions to spatial types", () => {
         );
     });
     test("update type with Point field", async () => {
-        const longitude1 = parseFloat(faker.address.longitude());
-        const latitude1 = parseFloat(faker.address.latitude());
-        const height1 = faker.datatype.float();
-        const newLatitude = parseFloat(faker.address.latitude());
+        const longitude1 = parseFloat(faker.location.longitude().toString());
+        const latitude1 = parseFloat(faker.location.latitude().toString());
+        const height1 = faker.number.float();
+        const newLatitude = parseFloat(faker.location.latitude().toString());
 
         await session.run(`
             CALL {
@@ -238,10 +237,10 @@ describe("Subscriptions to spatial types", () => {
                 WHERE m.title = "As good as it gets"
                 RETURN m { .title, .filmedIn } as m
             `);
-        expect((result.records[0].toObject() as any).m.filmedIn.x).toEqual(longitude1);
-        expect((result.records[0].toObject() as any).m.filmedIn.y).toEqual(newLatitude);
-        expect((result.records[0].toObject() as any).m.filmedIn.z).toEqual(height1);
-        expect((result.records[0].toObject() as any).m.filmedIn.srid).toEqual(int(4979));
+        expect((result.records[0]?.toObject() as any).m.filmedIn.x).toEqual(longitude1);
+        expect((result.records[0]?.toObject() as any).m.filmedIn.y).toEqual(newLatitude);
+        expect((result.records[0]?.toObject() as any).m.filmedIn.z).toEqual(height1);
+        expect((result.records[0]?.toObject() as any).m.filmedIn.srid).toEqual(int(4979));
 
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
@@ -265,8 +264,8 @@ describe("Subscriptions to spatial types", () => {
         );
     });
     test("query type with Point field and filters", async () => {
-        const longitude = parseFloat(faker.address.longitude());
-        const latitude = parseFloat(faker.address.latitude());
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude().toString());
 
         await session.run(`
             CALL {
@@ -335,8 +334,8 @@ describe("Subscriptions to spatial types", () => {
                 locations: [
                     { longitude, latitude },
                     {
-                        longitude: parseFloat(faker.address.longitude()),
-                        latitude: parseFloat(faker.address.latitude()),
+                        longitude: parseFloat(faker.location.longitude().toString()),
+                        latitude: parseFloat(faker.location.latitude().toString()),
                     },
                 ],
             },
@@ -375,12 +374,12 @@ describe("Subscriptions to spatial types", () => {
             variableValues: {
                 locations: [
                     {
-                        longitude: parseFloat(faker.address.longitude()),
-                        latitude: parseFloat(faker.address.latitude()),
+                        longitude: parseFloat(faker.location.longitude().toString()),
+                        latitude: parseFloat(faker.location.latitude().toString()),
                     },
                     {
-                        longitude: parseFloat(faker.address.longitude()),
-                        latitude: parseFloat(faker.address.latitude()),
+                        longitude: parseFloat(faker.location.longitude().toString()),
+                        latitude: parseFloat(faker.location.latitude().toString()),
                     },
                 ],
             },
@@ -399,10 +398,10 @@ describe("Subscriptions to spatial types", () => {
     });
 
     test("create type with CartesianPoint field", async () => {
-        const x1 = faker.datatype.float();
-        const y1 = faker.datatype.float();
-        const x2 = faker.datatype.float();
-        const y2 = faker.datatype.float();
+        const x1 = faker.number.float();
+        const y1 = faker.number.float();
+        const x2 = faker.number.float();
+        const y2 = faker.number.float();
 
         const query = `
         mutation CreateMovie($x1: Float!, $x2: Float!, $y1: Float!, $y2: Float!)  {
@@ -467,14 +466,14 @@ describe("Subscriptions to spatial types", () => {
                 RETURN m { .title, .location } as m
             `);
 
-        expect((result.records[0].toObject() as any).m.location.x).toEqual(x1);
-        expect((result.records[0].toObject() as any).m.location.y).toEqual(y1);
-        expect((result.records[0].toObject() as any).m.location.z).toBeUndefined();
-        expect((result.records[0].toObject() as any).m.location.srid).toEqual(int(7203));
-        expect((result.records[1].toObject() as any).m.location.x).toEqual(x2);
-        expect((result.records[1].toObject() as any).m.location.y).toEqual(y2);
-        expect((result.records[1].toObject() as any).m.location.z).toBeUndefined();
-        expect((result.records[1].toObject() as any).m.location.srid).toEqual(int(7203));
+        expect((result.records[0]?.toObject() as any).m.location.x).toEqual(x1);
+        expect((result.records[0]?.toObject() as any).m.location.y).toEqual(y1);
+        expect((result.records[0]?.toObject() as any).m.location.z).toBeUndefined();
+        expect((result.records[0]?.toObject() as any).m.location.srid).toEqual(int(7203));
+        expect((result.records[1]?.toObject() as any).m.location.x).toEqual(x2);
+        expect((result.records[1]?.toObject() as any).m.location.y).toEqual(y2);
+        expect((result.records[1]?.toObject() as any).m.location.z).toBeUndefined();
+        expect((result.records[1]?.toObject() as any).m.location.srid).toEqual(int(7203));
 
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
@@ -508,9 +507,9 @@ describe("Subscriptions to spatial types", () => {
         );
     });
     test("update type with CartesianPoint field", async () => {
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
-        const newY = faker.datatype.float();
+        const x = faker.number.float();
+        const y = faker.number.float();
+        const newY = faker.number.float();
 
         await session.run(`
             CALL {
@@ -568,10 +567,10 @@ describe("Subscriptions to spatial types", () => {
                 RETURN m { .title, .location } as m
             `);
 
-        expect((result.records[0].toObject() as any).m.location.x).toEqual(x);
-        expect((result.records[0].toObject() as any).m.location.y).toEqual(newY);
-        expect((result.records[0].toObject() as any).m.location.z).toBeUndefined();
-        expect((result.records[0].toObject() as any).m.location.srid).toEqual(int(7203));
+        expect((result.records[0]?.toObject() as any).m.location.x).toEqual(x);
+        expect((result.records[0]?.toObject() as any).m.location.y).toEqual(newY);
+        expect((result.records[0]?.toObject() as any).m.location.z).toBeUndefined();
+        expect((result.records[0]?.toObject() as any).m.location.srid).toEqual(int(7203));
 
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
@@ -595,8 +594,8 @@ describe("Subscriptions to spatial types", () => {
         );
     });
     test("query type with CartesianPoint field and filters", async () => {
-        const x = faker.datatype.float();
-        const y = faker.datatype.float();
+        const x = faker.number.float();
+        const y = faker.number.float();
 
         await session.run(`
             CALL {
@@ -665,8 +664,8 @@ describe("Subscriptions to spatial types", () => {
                 locations: [
                     { x, y },
                     {
-                        x: faker.datatype.float(),
-                        y: faker.datatype.float(),
+                        x: faker.number.float(),
+                        y: faker.number.float(),
                     },
                 ],
             },
@@ -705,12 +704,12 @@ describe("Subscriptions to spatial types", () => {
             variableValues: {
                 locations: [
                     {
-                        x: faker.datatype.float(),
-                        y: faker.datatype.float(),
+                        x: faker.number.float(),
+                        y: faker.number.float(),
                     },
                     {
-                        x: faker.datatype.float(),
-                        y: faker.datatype.float(),
+                        x: faker.number.float(),
+                        y: faker.number.float(),
                     },
                 ],
             },

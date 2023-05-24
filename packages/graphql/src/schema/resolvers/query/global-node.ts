@@ -69,8 +69,11 @@ export function globalNodeResolver({ nodes }: { nodes: Node[] }) {
         });
 
         let obj = null;
-        if (executeResult.records.length && executeResult.records[0].this) {
-            obj = { ...executeResult.records[0].this, id: args.id, __resolveType: node.name };
+
+        const thisValue = executeResult.records[0]?.this;
+
+        if (executeResult.records.length && thisValue) {
+            obj = { ...thisValue, id: args.id, __resolveType: node.name };
         }
 
         return obj;

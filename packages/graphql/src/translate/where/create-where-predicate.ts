@@ -23,10 +23,10 @@ import Cypher from "@neo4j/cypher-builder";
 // Recursive function
 import { createPropertyWhere } from "./property-operations/create-property-where";
 import type { LogicalOperator } from "../utils/logical-operators";
-import { getCypherLogicalOperator, isLogicalOperator } from "../utils/logical-operators";
-import { asArray } from "../../utils/utils";
+import { isLogicalOperator, getLogicalPredicate } from "../utils/logical-operators";
+import { asArray, filterTruthy } from "../../utils/utils";
 
-/** Translate a target node and GraphQL input into a Cypher operation o valid where expression */
+/** Translate a target node and GraphQL input into a Cypher operation or valid where expression */
 export function createWherePredicate({
     targetElement,
     whereInput,
@@ -44,7 +44,7 @@ export function createWherePredicate({
     whereFields.forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
             const { predicate, preComputedSubqueries } = createNestedPredicate({
-                key: key as LogicalOperator,
+                key: key,
                 element,
                 targetElement,
                 context,
@@ -107,6 +107,6 @@ function createNestedPredicate({
         if (preComputedSubqueries && !preComputedSubqueries.empty)
             subqueries = Cypher.concat(subqueries, preComputedSubqueries);
     });
-    const logicalOperator = getCypherLogicalOperator(key);
-    return { predicate: logicalOperator(...nested), preComputedSubqueries: subqueries };
+    const logicalPredicate = getLogicalPredicate(key, filterTruthy(nested));
+    return { predicate: logicalPredicate, preComputedSubqueries: subqueries };
 }

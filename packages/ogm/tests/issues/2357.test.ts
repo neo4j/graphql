@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "@neo4j/graphql";
-import neo4j from "../integration/neo4j";
+import type { Driver } from "neo4j-driver";
 import { OGM } from "../../src";
-import { UniqueType } from "../utils";
+import neo4j from "../integration/neo4j";
+import { UniqueType } from "../utils/utils";
 
 describe("https://github.com/neo4j/graphql/issues/2357", () => {
     let driver: Driver;

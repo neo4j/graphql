@@ -18,7 +18,7 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
@@ -62,7 +62,7 @@ describe("@populatedBy tests", () => {
             });
         });
 
-        test("PopulatedBy - existance", async () => {
+        test("PopulatedBy - existence", async () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
@@ -95,11 +95,13 @@ describe("@populatedBy tests", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    callbacks: {
-                        callback1,
-                        callback2,
-                        callback3,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
                     },
                 },
             });
@@ -296,11 +298,13 @@ describe("@populatedBy tests", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    callbacks: {
-                        callback1,
-                        callback2,
-                        callback3,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
                     },
                 },
             });
@@ -534,7 +538,7 @@ describe("@populatedBy tests", () => {
             });
         });
 
-        test("PopulatedBy - existance", async () => {
+        test("PopulatedBy - existence", async () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
@@ -584,11 +588,13 @@ describe("@populatedBy tests", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    callbacks: {
-                        callback1,
-                        callback2,
-                        callback3,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
                     },
                 },
             });
@@ -1178,11 +1184,13 @@ describe("@populatedBy tests", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                config: {
-                    callbacks: {
-                        callback1,
-                        callback2,
-                        callback3,
+                features: {
+                    populatedBy: {
+                        callbacks: {
+                            callback1,
+                            callback2,
+                            callback3,
+                        },
                     },
                 },
             });

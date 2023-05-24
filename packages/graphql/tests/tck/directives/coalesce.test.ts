@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams, setTestEnvVars, unsetTestEnvVars } from "../utils/tck-test-utils";
@@ -53,7 +53,13 @@ describe("Cypher coalesce()", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
+            features: {
+                filters: {
+                    String: {
+                        MATCHES: true,
+                    },
+                },
+            },
         });
 
         const query = gql`
@@ -132,7 +138,13 @@ describe("Cypher coalesce()", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
+            features: {
+                filters: {
+                    String: {
+                        MATCHES: true,
+                    },
+                },
+            },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
             },
@@ -183,7 +195,13 @@ describe("Cypher coalesce()", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
+            features: {
+                filters: {
+                    String: {
+                        MATCHES: true,
+                    },
+                },
+            },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({ secret }),
             },

@@ -33,10 +33,10 @@ export function createGlobalNodeOperation({
 }): Cypher.ComparisonOp {
     const { field, id } = node.fromGlobalId(value);
     const idDbFieldName = mapToDbProperty(node, field);
-    let idProperty = targetElement.property(idDbFieldName) as Cypher.PropertyRef | Cypher.Function;
+    let idProperty = targetElement.property(idDbFieldName) as Cypher.Property | Cypher.Function;
     if (coalesceValue) {
         idProperty = Cypher.coalesce(
-            idProperty as Cypher.PropertyRef,
+            idProperty as Cypher.Property,
             new Cypher.RawCypher(`${coalesceValue}`) // TODO: move into Cypher.literal
         );
     }

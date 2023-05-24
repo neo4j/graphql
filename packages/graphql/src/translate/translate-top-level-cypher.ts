@@ -47,10 +47,10 @@ export function translateTopLevelCypher({
     let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
     const cypherStrs: string[] = [];
 
-    const preAuth = createAuthAndParams({ entity: field, context });
-    if (preAuth[0]) {
-        params = { ...params, ...preAuth[1] };
-        cypherStrs.push(`CALL apoc.util.validate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+    const { cypher: authCypher, params: authParams } = createAuthAndParams({ entity: field, context });
+    if (authCypher) {
+        params = { ...params, ...authParams };
+        cypherStrs.push(`CALL apoc.util.validate(NOT (${authCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
     }
 
     let projectionStr;
@@ -192,7 +192,7 @@ export function translateTopLevelCypher({
 
     return new Cypher.RawCypher((env) => {
         if (projectionAuthStrs.length) {
-            const validatePred = new Cypher.apoc.ValidatePredicate(
+            const validatePred = Cypher.apoc.util.validatePredicate(
                 Cypher.not(Cypher.and(...projectionAuthStrs)),
                 AUTH_FORBIDDEN_ERROR
             );

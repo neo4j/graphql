@@ -18,7 +18,7 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -53,7 +53,6 @@ describe("Batch Create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

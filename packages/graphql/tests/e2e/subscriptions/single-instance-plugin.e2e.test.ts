@@ -116,6 +116,9 @@ describe("Create Subscription", () => {
 
         await createMovie("movie1");
 
+        await wsClient.waitForEvents(1);
+        await wsClient2.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -143,6 +146,8 @@ describe("Create Subscription", () => {
 
         await createMovie("movie1");
         await createMovie("movie2");
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([

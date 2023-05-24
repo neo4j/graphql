@@ -20,9 +20,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { ResizableBox } from "react-resizable";
 import debounce from "lodash.debounce";
-import { Storage } from "../../../utils/storage";
+import { useStore } from "../../../store";
+import type { GridState } from "../../../types";
 import { usePrevious } from "../../..//utils/utils";
-import { LOCAL_STATE_GRID_STATE } from "../../../constants";
 // @ts-ignore - SVG Import
 import unionHorizontal from "./union_horizontal.svg";
 // @ts-ignore - SVG Import
@@ -37,23 +37,6 @@ interface Props {
     resultView: React.ReactNode;
     parameterEditor: React.ReactNode;
     isRightPanelVisible: boolean;
-}
-
-interface GridState {
-    maxWidth: number;
-    maxHeight: number;
-    leftTop: {
-        width: number;
-        height: number;
-    };
-    leftBottom: {
-        width: number;
-        height: number;
-    };
-    right: {
-        width: number;
-        height: number;
-    };
 }
 
 const initialState: GridState = {
@@ -74,13 +57,13 @@ const initialState: GridState = {
 };
 
 export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVisible }: Props) => {
-    const [values, setValues] = useState<GridState>(Storage.retrieveJSON(LOCAL_STATE_GRID_STATE) || initialState);
+    const [values, setValues] = useState<GridState>(useStore.getState().gridState || initialState);
     const prevIsRightPanelVisible = usePrevious(isRightPanelVisible);
 
     const debouncedBoxResize = useMemo(
         () =>
             debounce((nextState: GridState) => {
-                Storage.storeJSON(LOCAL_STATE_GRID_STATE, nextState);
+                useStore.setState({ gridState: nextState });
             }, DEBOUNCE_LOCAL_STORE_TIMEOUT),
         []
     );
@@ -117,7 +100,7 @@ export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVis
             },
         };
         setValues(nextState);
-        Storage.storeJSON(LOCAL_STATE_GRID_STATE, nextState);
+        useStore.setState({ gridState: nextState });
     };
 
     useEffect(() => {

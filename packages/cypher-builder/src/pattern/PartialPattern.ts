@@ -77,6 +77,9 @@ export class PartialPattern extends PatternElement<RelationshipRef> {
         return this;
     }
 
+    /**
+     * @hidden
+     */
     public getCypher(env: CypherEnvironment): string {
         const prevStr = this.previous.getCypher(env);
 
@@ -105,7 +108,9 @@ export class PartialPattern extends PatternElement<RelationshipRef> {
     }
 
     private getRelationshipTypesString(relationship: RelationshipRef): string {
-        const type = relationship.type; // TODO: escape label
+        const type = relationship.type;
+        // TODO: escape label is breaking change
+        // const type = relationship.type ? escapeType(relationship.type) : undefined;
         return relationship.type ? `:${type}` : "";
     }
 }

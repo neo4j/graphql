@@ -19,21 +19,22 @@
 
 import type { IResolvers } from "@graphql-tools/utils";
 import type { DirectiveNode, NamedTypeNode } from "graphql";
-import { Kind } from "graphql";
 import type { Exclude } from "../classes";
 import { Node } from "../classes";
 import type { NodeDirective } from "../classes/NodeDirective";
 import type { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
-import type { Auth, FullText, Neo4jGraphQLCallbacks } from "../types";
-import getObjFieldMeta from "./get-obj-field-meta";
-import parsePluralDirective from "./parse/parse-plural-directive";
-import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
-import parseFulltextDirective from "./parse/parse-fulltext-directive";
-import parseNodeDirective from "./parse-node-directive";
-import parseExcludeDirective from "./parse-exclude-directive";
+import type { FullText, Neo4jGraphQLCallbacks } from "../types";
+import type { Auth } from "../types/deprecated/auth/auth";
+import { asArray } from "../utils/utils";
 import getAuth from "./get-auth";
 import type { DefinitionNodes } from "./get-definition-nodes";
-import { asArray } from "../utils/utils";
+import getObjFieldMeta from "./get-obj-field-meta";
+import parseExcludeDirective from "./parse-exclude-directive";
+import parseNodeDirective from "./parse-node-directive";
+import parseFulltextDirective from "./parse/parse-fulltext-directive";
+import parsePluralDirective from "./parse/parse-plural-directive";
+import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
+import { schemaConfigurationFromObjectTypeDefinition } from "./schema-configuration";
 
 type Nodes = {
     nodes: Node[];
@@ -62,19 +63,26 @@ function getNodes(
     const nodes = definitionNodes.objectTypes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
             (x) =>
-                !["auth", "exclude", "node", "fulltext", "queryOptions", "plural", "shareable", "deprecated"].includes(
-                    x.name.value
-                )
+                ![
+                    "auth",
+                    "authorization",
+                    "exclude",
+                    "node",
+                    "fulltext",
+                    "queryOptions",
+                    "plural",
+                    "shareable",
+                    "deprecated",
+                    "query",
+                    "mutation",
+                    "subscription",
+                    "jwtPayload",
+                ].includes(x.name.value)
         );
         const propagatedDirectives = (definition.directives || []).filter((x) =>
             ["deprecated", "shareable"].includes(x.name.value)
         );
-        let resolvable = true;
-        const keyDirective = (definition.directives || []).find((x) => x.name.value === "key");
-        const resolvableArgument = (keyDirective?.arguments || []).find((x) => x.name.value === "resolvable");
-        if (resolvableArgument?.value.kind === Kind.BOOLEAN && resolvableArgument.value.value === false) {
-            resolvable = false;
-        }
+
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
@@ -124,13 +132,17 @@ function getNodes(
 
         let auth: Auth;
         if (authDirective || interfaceAuthDirectives.length) {
-            auth = getAuth(authDirective || interfaceAuthDirectives[0]);
+            const authData = authDirective || interfaceAuthDirectives[0];
+            if (!authData) throw new Error("authData not found in getNodes");
+            auth = getAuth(authData);
         }
 
         let exclude: Exclude;
         if (excludeDirective || interfaceExcludeDirectives.length) {
             exclude = parseExcludeDirective(excludeDirective || interfaceExcludeDirectives[0]);
         }
+
+        const schemaConfiguration = schemaConfigurationFromObjectTypeDefinition(definition);
 
         let nodeDirective: NodeDirective;
         if (nodeDirectiveDefinition) {
@@ -257,6 +269,7 @@ function getNodes(
             auth,
             // @ts-ignore we can be sure it's defined
             exclude,
+            schemaConfiguration,
             // @ts-ignore we can be sure it's defined
             nodeDirective,
             // @ts-ignore we can be sure it's defined
@@ -267,12 +280,10 @@ function getNodes(
             globalIdField: globalIdField?.fieldName,
             globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
             plural: parsePluralDirective(pluralDirectiveDefinition),
-            federationResolvable: resolvable,
         });
 
         return node;
     });
-
     return {
         nodes,
         pointInTypeDefs,

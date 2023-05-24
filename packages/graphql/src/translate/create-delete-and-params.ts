@@ -41,7 +41,6 @@ function createDeleteAndParams({
     chainStr,
     withVars,
     context,
-    insideDoWhen,
     parameterPrefix,
     recursing,
 }: {
@@ -52,7 +51,6 @@ function createDeleteAndParams({
     node: Node;
     withVars: string[];
     context: Context;
-    insideDoWhen?: boolean;
     parameterPrefix: string;
     recursing?: boolean;
 }): [string, any] {
@@ -135,15 +133,15 @@ function createDeleteAndParams({
                         }
                     }
 
-                    const whereAuth = createAuthAndParams({
+                    const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
                         operations: "DELETE",
                         entity: refNode,
                         context,
                         where: { varName: variableName, node: refNode },
                     });
-                    if (whereAuth[0]) {
-                        whereStrs.push(whereAuth[0]);
-                        res.params = { ...res.params, ...whereAuth[1] };
+                    if (authWhereCypher) {
+                        whereStrs.push(authWhereCypher);
+                        res.params = { ...res.params, ...authWhereParams };
                     }
                     if (whereStrs.length) {
                         const predicate = `${whereStrs.join(" AND ")}`;
@@ -160,20 +158,16 @@ function createDeleteAndParams({
                         }
                     }
 
-                    const allowAuth = createAuthAndParams({
+                    const { cypher: authAllowCypher, params: authAllowParams } = createAuthAndParams({
                         entity: refNode,
                         operations: "DELETE",
                         context,
-                        escapeQuotes: Boolean(insideDoWhen),
-                        allow: { parentNode: refNode, varName: variableName },
+                        allow: { node: refNode, varName: variableName },
                     });
-                    if (allowAuth[0]) {
-                        const quote = insideDoWhen ? `\\"` : `"`;
+                    if (authAllowCypher) {
                         res.strs.push(`WITH ${[...withVars, variableName].join(", ")}${withRelationshipStr}`);
-                        res.strs.push(
-                            `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
-                        );
-                        res.params = { ...res.params, ...allowAuth[1] };
+                        res.strs.push(`CALL apoc.util.validate(NOT (${authAllowCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+                        res.params = { ...res.params, ...authAllowParams };
                     }
 
                     if (d.delete) {

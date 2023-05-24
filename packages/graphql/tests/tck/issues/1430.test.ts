@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -82,6 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             "MATCH (this:\`ABCE\`)
             WHERE this.id = $param0
             CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
+            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             CREATE (this_create_interface_ChildOne0_node_ChildOne:ChildOne)
             SET this_create_interface_ChildOne0_node_ChildOne.id = randomUUID()
             SET this_create_interface_ChildOne0_node_ChildOne.name = $this_create_interface_ChildOne0_node_ChildOne_name

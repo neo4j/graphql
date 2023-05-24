@@ -85,7 +85,7 @@ describe("create", () => {
                 { id }
             );
 
-            expect((reFind.records[0].toObject() as any).m.properties).toMatchObject({ id });
+            expect((reFind.records[0]?.toObject() as any).m.properties).toMatchObject({ id });
         } finally {
             await session.close();
         }
@@ -354,13 +354,13 @@ describe("create", () => {
                                 {
                                     node: {
                                         ...photos[0],
-                                        color: { connect: { where: { node: { id: colors[0].id } } } },
+                                        color: { connect: { where: { node: { id: colors[0]?.id } } } },
                                     },
                                 },
                                 {
                                     node: {
                                         ...photos[1],
-                                        color: { connect: { where: { node: { id: colors[1].id } } } },
+                                        color: { connect: { where: { node: { id: colors[1]?.id } } } },
                                     },
                                 },
                             ],
@@ -397,7 +397,7 @@ describe("create", () => {
         `;
 
         const neo4jResult = await session.run(cypher, { id: product.id });
-        const neo4jProduct = neo4jResult.records[0].toObject().product;
+        const neo4jProduct = neo4jResult.records[0]?.toObject().product;
 
         expect(neo4jProduct.id).toMatch(product.id);
         expect(neo4jProduct.name).toMatch(product.name);

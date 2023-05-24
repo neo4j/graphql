@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
 import { createJwtRequest } from "../utils/create-jwt-request";
@@ -47,9 +47,6 @@ describe("Cypher Advanced Filtering", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                enableRegex: true,
-            },
             features: {
                 filters: {
                     String: {
@@ -57,6 +54,10 @@ describe("Cypher Advanced Filtering", () => {
                         GT: true,
                         LTE: true,
                         GTE: true,
+                        MATCHES: true,
+                    },
+                    ID: {
+                        MATCHES: true,
                     },
                 },
             },

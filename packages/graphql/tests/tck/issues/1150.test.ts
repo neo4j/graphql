@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -63,7 +63,6 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,

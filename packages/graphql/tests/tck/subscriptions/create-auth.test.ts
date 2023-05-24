@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
@@ -48,7 +48,6 @@ describe("Subscriptions metadata on create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 subscriptions: plugin,
                 auth: new Neo4jGraphQLAuthJWTPlugin({

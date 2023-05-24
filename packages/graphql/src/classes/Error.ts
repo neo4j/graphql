@@ -79,3 +79,12 @@ export class Neo4jGraphQLRelationshipValidationError extends Neo4jGraphQLError {
         Object.defineProperty(this, "name", { value: "Neo4jGraphQLRelationshipValidationError" });
     }
 }
+export class Neo4jGraphQLSchemaValidationError extends Neo4jGraphQLError {
+    readonly name;
+
+    constructor(message: string) {
+        super(message);
+
+        Object.defineProperty(this, "name", { value: "Neo4jGraphQLSchemaValidationError" });
+    }
+}

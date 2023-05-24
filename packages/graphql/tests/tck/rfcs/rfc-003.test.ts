@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -374,7 +374,7 @@ describe("tck/rfs/003", () => {
                         "MATCH (this:\`Movie\`)
                         WHERE this.id = $param0
                         SET this.id = $this_update_id
-                        WITH this
+                        WITH *
                         CALL {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
@@ -428,7 +428,7 @@ describe("tck/rfs/003", () => {
                         "MATCH (this:\`Movie\`)
                         WHERE this.id = $param0
                         SET this.id = $this_update_id
-                        WITH this
+                        WITH *
                         CALL {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
@@ -506,7 +506,7 @@ describe("tck/rfs/003", () => {
                             	}
                             	RETURN count(*) AS update_this_director0
                             }
-                            WITH this
+                            WITH *
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
@@ -583,7 +583,7 @@ describe("tck/rfs/003", () => {
                             	}
                             	RETURN count(*) AS update_this_director0
                             }
-                            WITH this
+                            WITH *
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
@@ -657,7 +657,7 @@ describe("tck/rfs/003", () => {
                             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once', [0])
                             	RETURN c AS this_director0_create0_node_address_Address_unique_ignored
                             }
-                            WITH this
+                            WITH *
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)

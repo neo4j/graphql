@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
@@ -56,7 +56,6 @@ describe("Interface Relationships", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
         });
     });
 

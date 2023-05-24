@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -29,9 +28,6 @@ describe("should inject the auth into cypher directive", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     const secret = "secret";
-    const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
-        secret: "secret",
-    });
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -57,7 +53,14 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
 
         const query = `
             {
@@ -145,7 +148,14 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
 
         const query = `
             mutation {
@@ -235,7 +245,14 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
 
         const query = `
         {

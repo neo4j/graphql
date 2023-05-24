@@ -51,7 +51,10 @@ export function createPointExpression({
 }): Cypher.Expr {
     const isArray = field.typeMeta.array;
 
-    const { crs, ...point } = resolveTree.fieldsByTypeName[field.typeMeta.name];
+    const { crs, ...point } = resolveTree.fieldsByTypeName[field.typeMeta.name] as { crs: ResolveTree } & Record<
+        string,
+        ResolveTree
+    >;
     const dbFieldName = field.dbPropertyName || resolveTree.name;
 
     const CypherVariable = getOrCreateCypherVariable(variable);
@@ -90,7 +93,7 @@ function createPointProjectionMap({
     crs,
     point,
 }: {
-    variableOrProperty: Cypher.Variable | Cypher.PropertyRef;
+    variableOrProperty: Cypher.Variable | Cypher.Property;
     crs: unknown;
     point: unknown;
 }): Cypher.Map {

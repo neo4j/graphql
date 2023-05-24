@@ -22,9 +22,9 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { parseLocalDateTime } from "../../../src/graphql/scalars/LocalDateTime";
+import Neo4j from "../neo4j";
 
 describe("LocalDateTime", () => {
     let driver: Driver;
@@ -92,7 +92,7 @@ describe("LocalDateTime", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; localDT: any } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; localDT: any } = neo4jResult.records[0]?.toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jDriver.isLocalDateTime(neo4jMovie.localDT)).toBe(true);
@@ -116,7 +116,7 @@ describe("LocalDateTime", () => {
             const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
-            const localDTs = [...new Array(faker.datatype.number({ min: 2, max: 4 }))].map(
+            const localDTs = [...new Array(faker.number.int({ min: 2, max: 4 }))].map(
                 () => faker.date.past().toISOString().split("Z")[0]
             );
             const parsedLocalDateTimes = localDTs.map((localDT) => parseLocalDateTime(localDT));
@@ -162,7 +162,7 @@ describe("LocalDateTime", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; localDTs: any[] } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; localDTs: any[] } = neo4jResult.records[0]?.toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jMovie.localDTs).toHaveLength(localDTs.length);
@@ -245,7 +245,7 @@ describe("LocalDateTime", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; localDT: any } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; localDT: any } = neo4jResult.records[0]?.toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jDriver.isLocalDateTime(neo4jMovie.localDT)).toBe(true);
@@ -327,7 +327,7 @@ describe("LocalDateTime", () => {
                     const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
-                    const future = faker.date.future(100).toISOString().split("Z")[0];
+                    const future = faker.date.future({ years: 2 }).toISOString().split("Z")[0];
                     const parsedFuture = parseLocalDateTime(future);
                     const neo4jFuture = new neo4jDriver.types.LocalDateTime(
                         parsedFuture.year,
@@ -353,7 +353,7 @@ describe("LocalDateTime", () => {
                     );
 
                     const pastId = generate({ readable: false });
-                    const past = faker.date.past(100).toISOString().split("Z")[0];
+                    const past = faker.date.past({ years: 2 }).toISOString().split("Z")[0];
                     const parsedPast = parseLocalDateTime(past);
                     const neo4jPast = new neo4jDriver.types.LocalDateTime(
                         parsedPast.year,
@@ -411,32 +411,32 @@ describe("LocalDateTime", () => {
                         /* eslint-disable jest/no-conditional-expect */
                         if (filter === "LT") {
                             expect(graphqlMovies).toHaveLength(1);
-                            expect(graphqlMovies[0].id).toBe(pastId);
-                            expect(parseLocalDateTime(graphqlMovies[0].localDT)).toStrictEqual(parsedPast);
+                            expect(graphqlMovies[0]?.id).toBe(pastId);
+                            expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedPast);
                         }
 
                         if (filter === "LTE") {
                             expect(graphqlMovies).toHaveLength(2);
-                            expect(graphqlMovies[0].id).toBe(pastId);
-                            expect(parseLocalDateTime(graphqlMovies[0].localDT)).toStrictEqual(parsedPast);
+                            expect(graphqlMovies[0]?.id).toBe(pastId);
+                            expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedPast);
 
-                            expect(graphqlMovies[1].id).toBe(presentId);
-                            expect(parseLocalDateTime(graphqlMovies[1].localDT)).toStrictEqual(parsedPresent);
+                            expect(graphqlMovies[1]?.id).toBe(presentId);
+                            expect(parseLocalDateTime(graphqlMovies[1]?.localDT)).toStrictEqual(parsedPresent);
                         }
 
                         if (filter === "GT") {
                             expect(graphqlMovies).toHaveLength(1);
-                            expect(graphqlMovies[0].id).toBe(futureId);
-                            expect(parseLocalDateTime(graphqlMovies[0].localDT)).toStrictEqual(parsedFuture);
+                            expect(graphqlMovies[0]?.id).toBe(futureId);
+                            expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedFuture);
                         }
 
                         if (filter === "GTE") {
                             expect(graphqlMovies).toHaveLength(2);
-                            expect(graphqlMovies[0].id).toBe(presentId);
-                            expect(parseLocalDateTime(graphqlMovies[0].localDT)).toStrictEqual(parsedPresent);
+                            expect(graphqlMovies[0]?.id).toBe(presentId);
+                            expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedPresent);
 
-                            expect(graphqlMovies[1].id).toBe(futureId);
-                            expect(parseLocalDateTime(graphqlMovies[1].localDT)).toStrictEqual(parsedFuture);
+                            expect(graphqlMovies[1]?.id).toBe(futureId);
+                            expect(parseLocalDateTime(graphqlMovies[1]?.localDT)).toStrictEqual(parsedFuture);
                         }
                         /* eslint-enable jest/no-conditional-expect */
                     } finally {
@@ -463,7 +463,7 @@ describe("LocalDateTime", () => {
                     const schema = await neoSchema.getSchema();
 
                     const futureId = generate({ readable: false });
-                    const future = faker.date.future(100).toISOString().split("Z")[0];
+                    const future = faker.date.future({ years: 2 }).toISOString().split("Z")[0];
                     const parsedFuture = parseLocalDateTime(future);
                     const neo4jFuture = new neo4jDriver.types.LocalDateTime(
                         parsedFuture.year,
@@ -489,7 +489,7 @@ describe("LocalDateTime", () => {
                     );
 
                     const pastId = generate({ readable: false });
-                    const past = faker.date.past(100).toISOString().split("Z")[0];
+                    const past = faker.date.past({ years: 2 }).toISOString().split("Z")[0];
                     const parsedPast = parseLocalDateTime(past);
                     const neo4jPast = new neo4jDriver.types.LocalDateTime(
                         parsedPast.year,
@@ -550,25 +550,25 @@ describe("LocalDateTime", () => {
 
                         /* eslint-disable jest/no-conditional-expect */
                         if (sort === "ASC") {
-                            expect(graphqlMovies[0].id).toBe(pastId);
-                            expect(parseLocalDateTime(graphqlMovies[0].localDT)).toStrictEqual(parsedPast);
+                            expect(graphqlMovies[0]?.id).toBe(pastId);
+                            expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedPast);
 
-                            expect(graphqlMovies[1].id).toBe(presentId);
-                            expect(parseLocalDateTime(graphqlMovies[1].localDT)).toStrictEqual(parsedPresent);
+                            expect(graphqlMovies[1]?.id).toBe(presentId);
+                            expect(parseLocalDateTime(graphqlMovies[1]?.localDT)).toStrictEqual(parsedPresent);
 
-                            expect(graphqlMovies[2].id).toBe(futureId);
-                            expect(parseLocalDateTime(graphqlMovies[2].localDT)).toStrictEqual(parsedFuture);
+                            expect(graphqlMovies[2]?.id).toBe(futureId);
+                            expect(parseLocalDateTime(graphqlMovies[2]?.localDT)).toStrictEqual(parsedFuture);
                         }
 
                         if (sort === "DESC") {
-                            expect(graphqlMovies[0].id).toBe(futureId);
-                            expect(parseLocalDateTime(graphqlMovies[0].localDT)).toStrictEqual(parsedFuture);
+                            expect(graphqlMovies[0]?.id).toBe(futureId);
+                            expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedFuture);
 
-                            expect(graphqlMovies[1].id).toBe(presentId);
-                            expect(parseLocalDateTime(graphqlMovies[1].localDT)).toStrictEqual(parsedPresent);
+                            expect(graphqlMovies[1]?.id).toBe(presentId);
+                            expect(parseLocalDateTime(graphqlMovies[1]?.localDT)).toStrictEqual(parsedPresent);
 
-                            expect(graphqlMovies[2].id).toBe(pastId);
-                            expect(parseLocalDateTime(graphqlMovies[2].localDT)).toStrictEqual(parsedPast);
+                            expect(graphqlMovies[2]?.id).toBe(pastId);
+                            expect(parseLocalDateTime(graphqlMovies[2]?.localDT)).toStrictEqual(parsedPast);
                         }
                         /* eslint-enable jest/no-conditional-expect */
                     } finally {

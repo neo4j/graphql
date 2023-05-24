@@ -52,7 +52,7 @@ export function setTestEnvVars(envVars: string | undefined): void {
     if (envVars) {
         envVars.split(/\n/g).forEach((v: string) => {
             const [name, val] = v.split("=");
-            process.env[name] = val;
+            process.env[name as string] = val;
         });
     }
 }
@@ -60,7 +60,7 @@ export function setTestEnvVars(envVars: string | undefined): void {
 export function unsetTestEnvVars(envVars: string | undefined): void {
     if (envVars) {
         envVars.split(/\n/g).forEach((v: string) => {
-            const [name] = v.split("=");
+            const name = v.split("=")[0] as string;
             delete process.env[name];
         });
     }
@@ -124,7 +124,7 @@ export async function translateQuery(
         }
     }
 
-    const [cypher, params] = driverBuilder.runFunction.calls[0];
+    const [cypher, params] = driverBuilder.runFunction.calls[0] as [string, Record<string, any>];
 
     if (process.env.VERIFY_TCK) {
         const neo4j = new Neo4j();
@@ -133,9 +133,7 @@ export async function translateQuery(
             await session.run(`EXPLAIN ${cypher}`, params);
         } catch (e) {
             if (e instanceof Neo4jError) {
-                throw new Error(
-                    `${e.message}\n\n${cypher as string}\n\n${formatParams(params as Record<string, any>)}`
-                );
+                throw new Error(`${e.message}\n\n${cypher}\n\n${formatParams(params)}`);
             }
 
             throw e;

@@ -1,5 +1,5 @@
-import type { ReactNode} from "react";
-import { Fragment, useContext, useEffect } from "react";
+import type { ReactNode } from "react";
+import { useContext, useEffect } from "react";
 import {
     AcademicCapIconOutline,
     ArrowSmallUpIconOutline,
@@ -11,7 +11,7 @@ import {
     VariableIconOutline,
 } from "@neo4j-ndl/react/icons";
 import { tracking } from "../../analytics/tracking";
-import type { Screen} from "../../contexts/screen";
+import type { Screen } from "../../contexts/screen";
 import { ScreenContext } from "../../contexts/screen";
 import { cannySettings } from "../../common/canny";
 
@@ -109,7 +109,7 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
     };
 
     return (
-        <Fragment>
+        <>
             <div className="flex items-center">
                 <span className="h6">{listBlockTitle}</span>
                 <ArrowSmallUpIconOutline className="h-4 w-4 ml-1 rotate-45" />
@@ -146,7 +146,7 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
                     );
                 })}
             </ul>
-        </Fragment>
+        </>
     );
 };
 
@@ -168,14 +168,14 @@ export const Resources = ({ showSchemaView }: Props): JSX.Element => {
     return (
         <div data-test-help-drawer-resources-list>
             {showSchemaView ? (
-                <Fragment>
+                <>
                     <ResourceLinksBlock
                         listBlockTitle="Documentation"
                         links={linksDocumentation}
                         screen={screen.view}
                     />
                     <hr className="mb-6" />
-                </Fragment>
+                </>
             ) : null}
             <ResourceLinksBlock listBlockTitle="Github" links={linksGithub} screen={screen.view} />
             <hr className="mb-6" />

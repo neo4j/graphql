@@ -28,17 +28,18 @@ import { WithOrder } from "./mixins/WithOrder";
 import { WithReturn } from "./mixins/WithReturn";
 import { WithWhere } from "./mixins/WithWhere";
 import { mixin } from "./utils/mixin";
+import { WithDelete } from "./mixins/WithDelete";
 
 // With requires an alias for expressions that are not variables
 export type WithProjection = Variable | [Expr, string | Variable | Literal];
 
-export interface With extends WithOrder, WithReturn, WithWhere {}
+export interface With extends WithOrder, WithReturn, WithWhere, WithDelete {}
 
 /**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/with/)
  * @group Clauses
  */
-@mixin(WithOrder, WithReturn, WithWhere)
+@mixin(WithOrder, WithReturn, WithWhere, WithDelete)
 export class With extends Clause {
     private projection: Projection;
     private isDistinct = false;
@@ -66,9 +67,10 @@ export class With extends Clause {
         const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
         const withStr = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });
         const whereStr = compileCypherIfExists(this.whereSubClause, env, { prefix: "\n" });
+        const deleteStr = compileCypherIfExists(this.deleteClause, env, { prefix: "\n" });
         const distinctStr = this.isDistinct ? " DISTINCT" : "";
 
-        return `WITH${distinctStr} ${projectionStr}${whereStr}${orderByStr}${withStr}${returnStr}`;
+        return `WITH${distinctStr} ${projectionStr}${whereStr}${orderByStr}${deleteStr}${withStr}${returnStr}`;
     }
 
     // Cannot be part of WithWith due to dependency cycles

@@ -26,24 +26,35 @@ import { serializeMap } from "../../utils/serialize-map";
  * @group Expressions
  */
 export class MapExpr implements CypherCompilable {
-    private value: Record<string, Expr | undefined>;
+    private map = new Map<string, Expr>();
 
-    constructor(value: Record<string, Expr | undefined> = {}) {
-        this.value = value;
+    constructor(value: Record<string, Expr> = {}) {
+        this.set(value);
+    }
+
+    public get size(): number {
+        return this.map.size;
     }
 
     public set(key: string, value: Expr): void;
     public set(values: Record<string, Expr>): void;
     public set(keyOrValues: Record<string, Expr> | string, value?: Expr): void {
         if (typeof keyOrValues === "string") {
-            this.value[keyOrValues] = value as Expr;
+            this.setField(keyOrValues, value);
         } else {
-            this.value = { ...this.value, ...keyOrValues };
+            Object.entries(keyOrValues).forEach(([key, value]) => {
+                this.setField(key, value);
+            });
         }
+    }
+
+    private setField(key: string, value: Expr | undefined): void {
+        if (!value) throw new Error(`Missing value on map key ${key}`);
+        this.map.set(key, value);
     }
 
     /** @internal */
     public getCypher(env: CypherEnvironment): string {
-        return serializeMap(env, this.value);
+        return serializeMap(env, this.map);
     }
 }

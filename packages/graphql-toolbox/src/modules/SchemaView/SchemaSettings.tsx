@@ -17,87 +17,118 @@
  * limitations under the License.
  */
 
-import React from "react";
-import { Checkbox } from "@neo4j-ndl/react";
+import { Checkbox, Radio, SmartTooltip } from "@neo4j-ndl/react";
 import { QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
-import { ProTooltip } from "../../components/ProTooltip";
-import { Storage } from "../../utils/storage";
-import { LOCAL_STATE_CONSTRAINT, LOCAL_STATE_ENABLE_DEBUG, LOCAL_STATE_ENABLE_REGEX } from "../../constants";
-import { ConstraintState } from "../../types";
-import { CustomSelect } from "../../components/CustomSelect";
+import type React from "react";
+import { useRef } from "react";
 import { tracking } from "../../analytics/tracking";
+import { useStore } from "../../store";
+import { ConstraintState } from "../../types";
 
-interface Props {
-    isRegexChecked: string | null;
-    isDebugChecked: string | null;
-    constraintState: string | null;
-    setIsRegexChecked: React.Dispatch<React.SetStateAction<string | null>>;
-    setIsDebugChecked: React.Dispatch<React.SetStateAction<string | null>>;
-    setConstraintState: React.Dispatch<React.SetStateAction<string | null>>;
-}
+export const SchemaSettings = () => {
+    const enableRegex = useStore((store) => store.enableRegex);
+    const enableDebug = useStore((store) => store.enableDebug);
+    const constraint = useStore((store) => store.constraint);
 
-export const SchemaSettings = ({
-    isRegexChecked,
-    isDebugChecked,
-    constraintState,
-    setIsRegexChecked,
-    setIsDebugChecked,
-    setConstraintState,
-}: Props) => {
     const onChangeRegexCheckbox = (): void => {
-        const next = isRegexChecked === "true" ? "false" : "true";
-        setIsRegexChecked(next);
-        Storage.store(LOCAL_STATE_ENABLE_REGEX, next);
-        tracking.trackSchemaSettingsCheckbox({ screen: "type definitions", action: next, box: "regex" });
+        useStore.setState({ enableRegex: !enableRegex });
+        tracking.trackSchemaSettingsCheckbox({
+            screen: "type definitions",
+            action: !enableRegex ? "true" : "false",
+            box: "regex",
+        });
     };
 
     const onChangeDebugCheckbox = (): void => {
-        const next = isDebugChecked === "true" ? "false" : "true";
-        setIsDebugChecked(next);
-        Storage.store(LOCAL_STATE_ENABLE_DEBUG, next);
-        tracking.trackSchemaSettingsCheckbox({ screen: "type definitions", action: next, box: "debug" });
+        useStore.setState({ enableDebug: !enableDebug });
+        tracking.trackSchemaSettingsCheckbox({
+            screen: "type definitions",
+            action: !enableDebug ? "true" : "false",
+            box: "debug",
+        });
     };
 
     const onChangeConstraintState = (nextConstraintState: string): void => {
-        setConstraintState(nextConstraintState);
-        Storage.store(LOCAL_STATE_CONSTRAINT, nextConstraintState);
+        useStore.setState({ constraint: nextConstraintState });
         tracking.trackSchemaConstraints({ screen: "type definitions", value: ConstraintState[nextConstraintState] });
     };
 
     const InfoToolTip = ({ text, width }: { text: React.ReactNode; width: number }): JSX.Element => {
+        const tooltipRef = useRef<SVGSVGElement | null>(null);
         return (
-            <ProTooltip
-                tooltipText={text}
-                arrowPositionOverride="left"
-                blockVisibility={false}
-                width={width || 200}
-                left={28}
-                top={-13}
-            >
-                <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" />
-            </ProTooltip>
+            <>
+                <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" ref={tooltipRef} />
+                <SmartTooltip allowedPlacements={["right"]} style={{ width: `${width || 200}px` }} ref={tooltipRef}>
+                    {text}
+                </SmartTooltip>
+            </>
         );
     };
 
     return (
-        <React.Fragment>
-            <span className="h5">Schema settings</span>
-            <div className="pt-4">
-                <div className="mb-1 flex items-baseline">
-                    <Checkbox
-                        className="m-0"
-                        aria-label="Enable Regex"
-                        label="Enable Regex"
-                        checked={isRegexChecked === "true"}
-                        onChange={onChangeRegexCheckbox}
-                    />
+        <div className="p-6">
+            <span className="h5">Schema options</span>
+            <div className="mb-1 mt-3 flex items-baseline">
+                <Checkbox
+                    className="my-2"
+                    aria-label="Enable Regex"
+                    label="Enable Regex"
+                    checked={enableRegex}
+                    onChange={onChangeRegexCheckbox}
+                />
+                <InfoToolTip
+                    text={
+                        <span>
+                            More information:{" "}
+                            <a
+                                className="underline"
+                                href="https://neo4j.com/docs/graphql-manual/current/filtering/#filtering-regex"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                here
+                            </a>
+                        </span>
+                    }
+                    width={160}
+                />
+            </div>
+            <div className="mb-1 mt-2 flex items-baseline">
+                <Checkbox
+                    data-test-schema-debug-checkbox
+                    className="my-2"
+                    aria-label="Enable Debug"
+                    label="Enable Debug"
+                    checked={enableDebug}
+                    onChange={onChangeDebugCheckbox}
+                />
+                <InfoToolTip
+                    text={
+                        <span>
+                            Also enable &quot;verbose&quot; logging in browser. Instructions:{" "}
+                            <a
+                                className="underline"
+                                href="https://github.com/debug-js/debug#browser-support"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                here
+                            </a>
+                        </span>
+                    }
+                    width={370}
+                />
+            </div>
+            <div className="mt-3 flex flex-col">
+                <div className="flex items-center">
+                    <span className="h5">Constraints</span>{" "}
                     <InfoToolTip
                         text={
                             <span>
                                 More information:{" "}
                                 <a
                                     className="underline"
-                                    href="https://neo4j.com/docs/graphql-manual/current/filtering/#filtering-regex"
+                                    href="https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-and-constraints-asserting"
                                     target="_blank"
                                     rel="noreferrer"
                                 >
@@ -108,71 +139,27 @@ export const SchemaSettings = ({
                         width={160}
                     />
                 </div>
-                <div className="mb-1 flex items-baseline">
-                    <Checkbox
-                        data-test-schema-debug-checkbox
-                        className="m-0"
-                        aria-label="Enable Debug"
-                        label="Enable Debug"
-                        checked={isDebugChecked === "true"}
-                        onChange={onChangeDebugCheckbox}
+                <div className="mt-2">
+                    <Radio
+                        label="Check"
+                        className="my-3"
+                        checked={constraint === ConstraintState.check.toString()}
+                        onChange={() => onChangeConstraintState(ConstraintState.check.toString())}
                     />
-                    <InfoToolTip
-                        text={
-                            <span>
-                                Also enable &quot;verbose&quot; logging in browser. Instructions:{" "}
-                                <a
-                                    className="underline"
-                                    href="https://github.com/debug-js/debug#browser-support"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    here
-                                </a>
-                            </span>
-                        }
-                        width={370}
+                    <Radio
+                        label="Create"
+                        className="my-3"
+                        checked={constraint === ConstraintState.create.toString()}
+                        onChange={() => onChangeConstraintState(ConstraintState.create.toString())}
                     />
-                </div>
-                <div className="mt-3 flex flex-col">
-                    <div className="flex items-center">
-                        <span className="h6">Constraints</span>{" "}
-                        <InfoToolTip
-                            text={
-                                <span>
-                                    More information:{" "}
-                                    <a
-                                        className="underline"
-                                        href="https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-and-constraints-asserting"
-                                        target="_blank"
-                                        rel="noreferrer"
-                                    >
-                                        here
-                                    </a>
-                                </span>
-                            }
-                            width={160}
-                        />
-                    </div>
-                    <div className="mt-2">
-                        <CustomSelect
-                            value={constraintState || undefined}
-                            onChange={(event) => onChangeConstraintState(event.target.value)}
-                            testTag="data-test-schema-settings-selection"
-                        >
-                            {Object.keys(ConstraintState)
-                                .filter((x) => !isNaN(parseInt(x)))
-                                .map((constraintVal) => {
-                                    return (
-                                        <option key={constraintVal} value={constraintVal}>
-                                            {ConstraintState[constraintVal]}
-                                        </option>
-                                    );
-                                })}
-                        </CustomSelect>
-                    </div>
+                    <Radio
+                        label="Ignore"
+                        className="my-3"
+                        checked={constraint === ConstraintState.ignore.toString()}
+                        onChange={() => onChangeConstraintState(ConstraintState.ignore.toString())}
+                    />
                 </div>
             </div>
-        </React.Fragment>
+        </div>
     );
 };

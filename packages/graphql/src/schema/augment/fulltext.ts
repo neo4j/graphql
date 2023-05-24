@@ -20,13 +20,13 @@
 import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
-import { fulltextResolver } from "../resolvers/query/fulltext";
-import { upperFirst } from "../../utils/upper-first";
-import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
 import { SCORE_FIELD } from "../../graphql/directives/fulltext";
+import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
+import { upperFirst } from "../../utils/upper-first";
+import { fulltextResolver } from "../resolvers/query/fulltext";
 
 export const fulltextArgDeprecationMessage =
-    "This argument has been deprecated and will be removed in version 4.0.0 of the library. " +
+    "This argument has been deprecated and will be removed in future versions of the library. " +
     "Please use the top-level query that corresponds to the index you wish to query instead. " +
     "More information about the changes to @fulltext can be found here: " +
     "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.";
@@ -81,30 +81,28 @@ export function augmentFulltextSchema(
             },
         });
 
-        if (node.federationResolvable) {
-            composer.createObjectTC({
-                name: node.fulltextTypeNames.result,
-                description: fulltextResultDescription,
-                fields: {
-                    [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
-                    [node.singular]: `${node.name}!`,
-                },
-            });
+        composer.createObjectTC({
+            name: node.fulltextTypeNames.result,
+            description: fulltextResultDescription,
+            fields: {
+                [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
+                [node.singular]: `${node.name}!`,
+            },
+        });
 
-            node.fulltextDirective.indexes.forEach((index) => {
-                // TODO: remove indexName assignment and undefined check once the name argument has been removed.
-                const indexName = index.indexName || index.name;
-                if (indexName === undefined) {
-                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-                }
-                let queryName = `${node.plural}Fulltext${upperFirst(indexName)}`;
-                if (index.queryName) {
-                    queryName = index.queryName;
-                }
-                composer.Query.addFields({
-                    [queryName]: fulltextResolver({ node }, index),
-                });
+        node.fulltextDirective.indexes.forEach((index) => {
+            // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+            const indexName = index.indexName || index.name;
+            if (indexName === undefined) {
+                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            }
+            let queryName = `${node.plural}Fulltext${upperFirst(indexName)}`;
+            if (index.queryName) {
+                queryName = index.queryName;
+            }
+            composer.Query.addFields({
+                [queryName]: fulltextResolver({ node }, index),
             });
-        }
+        });
     }
 }

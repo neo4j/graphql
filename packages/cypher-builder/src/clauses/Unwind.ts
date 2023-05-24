@@ -24,19 +24,19 @@ import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import { Clause } from "./Clause";
 import { WithWith } from "./mixins/WithWith";
 import { mixin } from "./utils/mixin";
+import { WithDelete } from "./mixins/WithDelete";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Unwind extends WithWith {}
+export interface Unwind extends WithWith, WithDelete {}
 
 /**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/unwind/)
  * @group Clauses
  */
-@mixin(WithWith)
+@mixin(WithWith, WithDelete)
 export class Unwind extends Clause {
     private projection: Projection;
 
-    constructor(...columns: Array<"*" | ProjectionColumn>) {
+    constructor(...columns: Array<ProjectionColumn>) {
         super();
         this.projection = new Projection(columns);
     }
@@ -48,7 +48,8 @@ export class Unwind extends Clause {
     /** @internal */
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
-        const withCypher = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });
-        return `UNWIND ${projectionStr}${withCypher}`;
+        const withStr = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });
+        const deleteStr = compileCypherIfExists(this.deleteClause, env, { prefix: "\n" });
+        return `UNWIND ${projectionStr}${deleteStr}${withStr}`;
     }
 }

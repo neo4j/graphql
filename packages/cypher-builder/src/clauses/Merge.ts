@@ -27,14 +27,16 @@ import { mixin } from "./utils/mixin";
 import { WithSet } from "./mixins/WithSet";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import type { NodeRef } from "../references/NodeRef";
+import { WithPathAssign } from "./mixins/WithPathAssign";
+import { WithDelete } from "./mixins/WithDelete";
 
-export interface Merge extends WithReturn, WithSet {}
+export interface Merge extends WithReturn, WithSet, WithPathAssign, WithDelete {}
 
 /**
  * @see [Cypher Documentation](https://neo4j.com/docs/cypher-manual/current/clauses/merge/)
  * @group Clauses
  */
-@mixin(WithReturn, WithSet)
+@mixin(WithReturn, WithSet, WithPathAssign, WithDelete)
 export class Merge extends Clause {
     private pattern: Pattern;
     private onCreateClause: OnCreate;
@@ -59,11 +61,14 @@ export class Merge extends Clause {
 
     /** @internal */
     public getCypher(env: CypherEnvironment): string {
-        const mergeStr = `MERGE ${this.pattern.getCypher(env)}`;
+        const pathAssignStr = this.compilePath(env);
+
+        const mergeStr = `MERGE ${pathAssignStr}${this.pattern.getCypher(env)}`;
         const setCypher = compileCypherIfExists(this.setSubClause, env, { prefix: "\n" });
         const onCreateStr = compileCypherIfExists(this.onCreateClause, env, { prefix: "\n" });
         const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
+        const deleteStr = compileCypherIfExists(this.deleteClause, env, { prefix: "\n" });
 
-        return `${mergeStr}${setCypher}${onCreateStr}${returnStr}`;
+        return `${mergeStr}${setCypher}${onCreateStr}${deleteStr}${returnStr}`;
     }
 }

@@ -92,6 +92,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "mvie2" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -115,6 +117,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await createMovie({ id: "dummy1" });
         await createMovie({ id: "not-dummy1" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -137,6 +141,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
 
         await createMovie({ id: 1 });
         await createMovie({ id: 2 });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -162,6 +168,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await createMovie({ title: "mvie1" });
         await createMovie({ title: "movie2" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -185,6 +193,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await createMovie({ id: "not-dummy1" });
         await createMovie({ id: "dummy2" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -207,6 +217,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
 
         await createMovie({ id: 2 });
         await createMovie({ id: 3 });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -232,6 +244,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await createMovie({ title: "test-movie1" });
         await createMovie({ title: "test-movie2" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -255,6 +269,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await createMovie({ id: "not-dummy" });
         await createMovie({ id: "dummy2" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -277,6 +293,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
 
         await createMovie({ id: 13 });
         await createMovie({ id: 31 });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -302,6 +320,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await createMovie({ title: "test-movie2" });
         await createMovie({ title: "test-movie1" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -325,6 +345,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await createMovie({ id: "dummy-not" });
         await createMovie({ id: "2dummy" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -347,6 +369,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
 
         await createMovie({ id: 31 });
         await createMovie({ id: 13 });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -372,6 +396,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await createMovie({ title: "test-movie2" });
         await createMovie({ title: "test2-movie1" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -395,6 +421,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await createMovie({ id: "dummy-not" });
         await createMovie({ id: 2 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -417,6 +445,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
 
         await createMovie({ id: 31 });
         await createMovie({ id: 1 });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -442,6 +472,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await createMovie({ title: "test2-movie2" });
         await createMovie({ title: "test2-movie1" });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -465,6 +497,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await createMovie({ id: "dummy-not" });
         await createMovie({ id: 2 });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -487,6 +521,8 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
 
         await createMovie({ id: 31 });
         await createMovie({ id: 1 });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([

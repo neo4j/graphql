@@ -225,15 +225,15 @@ export default function createUpdateAndParams({
                         innerUpdate.push(...delayedSubquery);
 
                         if (node.auth) {
-                            const whereAuth = createAuthAndParams({
+                            const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
                                 operations: "UPDATE",
                                 entity: refNode,
                                 context,
                                 where: { varName: variableName, node: refNode },
                             });
-                            if (whereAuth[0]) {
-                                whereStrs.push(whereAuth[0]);
-                                res.params = { ...res.params, ...whereAuth[1] };
+                            if (authWhereCypher) {
+                                whereStrs.push(authWhereCypher);
+                                res.params = { ...res.params, ...authWhereParams };
                             }
                         }
                         if (whereStrs.length) {
@@ -559,33 +559,33 @@ export default function createUpdateAndParams({
 
         if (authableField) {
             if (authableField.auth) {
-                const preAuth = createAuthAndParams({
+                const { cypher: preAuthCypher, params: preAuthParams } = createAuthAndParams({
                     entity: authableField,
                     operations: "UPDATE",
                     context,
-                    allow: { varName, parentNode: node },
+                    allow: { varName, node },
                 });
-                const postAuth = createAuthAndParams({
+                const { cypher: postAuthCypher, params: postAuthParams } = createAuthAndParams({
                     entity: authableField,
                     operations: "UPDATE",
                     skipRoles: true,
                     skipIsAuthenticated: true,
                     context,
-                    bind: { parentNode: node, varName },
+                    bind: { node, varName },
                 });
 
                 if (!res.meta) {
                     res.meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] };
                 }
 
-                if (preAuth[0]) {
-                    res.meta.preAuthStrs.push(preAuth[0]);
-                    res.params = { ...res.params, ...preAuth[1] };
+                if (preAuthCypher) {
+                    res.meta.preAuthStrs.push(preAuthCypher);
+                    res.params = { ...res.params, ...preAuthParams };
                 }
 
-                if (postAuth[0]) {
-                    res.meta.postAuthStrs.push(postAuth[0]);
-                    res.params = { ...res.params, ...postAuth[1] };
+                if (postAuthCypher) {
+                    res.meta.postAuthStrs.push(postAuthCypher);
+                    res.params = { ...res.params, ...postAuthParams };
                 }
             }
         }
@@ -647,28 +647,28 @@ export default function createUpdateAndParams({
     let postAuthStrs: string[] = [];
     const withStr = `WITH ${withVars.join(", ")}`;
 
-    const preAuth = createAuthAndParams({
+    const { cypher: preAuthCypher, params: preAuthParams } = createAuthAndParams({
         entity: node,
         context,
-        allow: { parentNode: node, varName },
+        allow: { node, varName },
         operations: "UPDATE",
     });
-    if (preAuth[0]) {
-        preAuthStrs.push(preAuth[0]);
-        params = { ...params, ...preAuth[1] };
+    if (preAuthCypher) {
+        preAuthStrs.push(preAuthCypher);
+        params = { ...params, ...preAuthParams };
     }
 
-    const postAuth = createAuthAndParams({
+    const { cypher: postAuthCypher, params: postAuthParams } = createAuthAndParams({
         entity: node,
         context,
         skipIsAuthenticated: true,
         skipRoles: true,
         operations: "UPDATE",
-        bind: { parentNode: node, varName },
+        bind: { node, varName },
     });
-    if (postAuth[0]) {
-        postAuthStrs.push(postAuth[0]);
-        params = { ...params, ...postAuth[1] };
+    if (postAuthCypher) {
+        postAuthStrs.push(postAuthCypher);
+        params = { ...params, ...postAuthParams };
     }
 
     if (meta) {

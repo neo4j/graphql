@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
@@ -51,7 +51,6 @@ describe("Node Directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true },
             plugins: {
                 auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
@@ -102,12 +101,15 @@ describe("Node Directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`Comment\`)
-WHERE single(this0 IN [(this)<-[:HAS_POST]-(this0:\`Person\`) WHERE this0.id = $param0 | 1] WHERE true)
-WITH this
-CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-DETACH DELETE this"
-`);
+            "MATCH (this:\`Comment\`)
+            OPTIONAL MATCH (this)<-[:HAS_POST]-(this0:\`Person\`)
+            WITH *, count(this0) AS creatorCount
+            WITH *
+            WHERE (creatorCount <> 0 AND this0.id = $param0)
+            WITH this
+            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            DETACH DELETE this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

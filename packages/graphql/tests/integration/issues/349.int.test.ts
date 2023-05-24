@@ -20,7 +20,7 @@
 import { getDirective, MapperKind, mapSchema } from "@graphql-tools/utils";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
@@ -46,7 +46,6 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                     [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
                         const fieldDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
                         if (fieldDirective) {
-                             
                             fieldConfig.resolve = () => {
                                 throw new Error("go away");
                             };
@@ -157,7 +156,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
             });
 
             expect(gqlResult.data).toBeNull();
-            expect(gqlResult.errors && gqlResult.errors[0].message).toBe("go away");
+            expect(gqlResult.errors && gqlResult.errors[0]?.message).toBe("go away");
         });
 
         test("query top - DisallowDirective", async () => {
@@ -172,7 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
             });
 
             expect(gqlResult.data).toBeNull();
-            expect(gqlResult.errors && gqlResult.errors[0].message).toBe("go away");
+            expect(gqlResult.errors && gqlResult.errors[0]?.message).toBe("go away");
         });
 
         test("mutation nested - DisallowDirective", async () => {
@@ -189,7 +188,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
             });
 
             expect(gqlResult.data).toBeNull();
-            expect(gqlResult.errors && gqlResult.errors[0].message).toBe("go away");
+            expect(gqlResult.errors && gqlResult.errors[0]?.message).toBe("go away");
         });
 
         test("query nested - DisallowDirective", async () => {
@@ -206,7 +205,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
             });
 
             expect(gqlResult.data).toBeNull();
-            expect(gqlResult.errors && gqlResult.errors[0].message).toBe("go away");
+            expect(gqlResult.errors && gqlResult.errors[0]?.message).toBe("go away");
         });
     });
 

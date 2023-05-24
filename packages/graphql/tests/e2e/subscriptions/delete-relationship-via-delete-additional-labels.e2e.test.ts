@@ -27,7 +27,6 @@ import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { delay } from "../../../src/utils/utils";
 
 describe("Delete Subscriptions when only nodes are targeted - when nodes employ @node directive to configure db label and additionalLabels", () => {
     let neo4j: Neo4j;
@@ -277,6 +276,9 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             })
             .expect(200);
 
+        await wsClient2.waitForEvents(2);
+        await wsClient.waitForEvents(2);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
@@ -429,6 +431,9 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             `,
             })
             .expect(200);
+
+        await wsClient2.waitForEvents(3);
+        await wsClient.waitForEvents(3);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
@@ -662,6 +667,9 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             `,
             })
             .expect(200);
+
+        await wsClient2.waitForEvents(6);
+        await wsClient.waitForEvents(3);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
@@ -944,7 +952,9 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             })
             .expect(200);
 
-        await delay(2);
+        await wsClient2.waitForEvents(6);
+        await wsClient.waitForEvents(3);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(6);
@@ -1269,7 +1279,9 @@ describe("Delete Subscriptions when only nodes are targeted - when nodes employ 
             })
             .expect(200);
 
-        await delay(3);
+        await wsClient2.waitForEvents(2);
+        await wsClient.waitForEvents(10);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 

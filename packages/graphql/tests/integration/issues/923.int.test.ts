@@ -20,7 +20,7 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session, Integer } from "neo4j-driver";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { UniqueType } from "../../utils/graphql-types";
@@ -118,6 +118,6 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
           MATCH (m:${testBlogpost.name} { slug: "myslug" })
           RETURN COUNT(m) as count
         `);
-        expect((blogPostCount.records[0].toObject().count as Integer).toNumber()).toBe(1);
+        expect((blogPostCount.records[0]?.toObject().count as Integer).toNumber()).toBe(1);
     });
 });
