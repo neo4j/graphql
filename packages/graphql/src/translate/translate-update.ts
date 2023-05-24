@@ -505,7 +505,8 @@ function generateUpdateReturnStatement(
     if (subscriptionsEnabled) {
         statements = Cypher.concat(
             statements,
-            new Cypher.RawCypher(`, collect(DISTINCT m) as ${META_CYPHER_VARIABLE}`)
+            new Cypher.RawCypher(statements ? ", " : ""),
+            new Cypher.RawCypher(`collect(DISTINCT m) as ${META_CYPHER_VARIABLE}`)
         );
     }
 
