@@ -34,6 +34,7 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMeta } from "../translate/subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
+import { Measurement, addMeasurementField } from "../utils/add-measurement-field";
 
 export default async function translateUpdate({
     node,
@@ -42,6 +43,7 @@ export default async function translateUpdate({
     node: Node;
     context: Context;
 }): Promise<[string, any]> {
+    const p1 = performance.now();
     const { resolveTree } = context;
     const updateInput = resolveTree.args.update;
     const connectInput = resolveTree.args.connect;
@@ -172,7 +174,7 @@ export default async function translateUpdate({
             parentVar: varName,
             withVars,
             parameterPrefix: `${resolveTree.name}.args.update`,
-            includeRelationshipValidation: true,
+            includeRelationshipValidation: false,
         });
         [updateStr] = updateAndParams;
         cypherParams = {
@@ -433,7 +435,7 @@ export default async function translateUpdate({
 
     const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
 
-    const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
+    const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
 
     const updateQuery = new Cypher.RawCypher((env: Cypher.Environment) => {
         const projectionSubqueryStr = projectionSubquery ? projectionSubquery.getCypher(env) : "";
@@ -480,11 +482,14 @@ export default async function translateUpdate({
         ];
     });
 
-    const result = updateQuery.build("update_");
+    const cypherResult = updateQuery.build("update_");
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
-        cypher: result.cypher,
+        cypher: cypherResult.cypher,
     });
-    return [cypher, { ...result.params, resolvedCallbacks }];
+    const result: [string, Record<string, any>] = [cypher, { ...cypherResult.params, resolvedCallbacks }];
+    const p2 = performance.now();
+    addMeasurementField(context, Measurement.translationTime, p2 - p1);
+    return result;
 }
 
 function generateUpdateReturnStatement(

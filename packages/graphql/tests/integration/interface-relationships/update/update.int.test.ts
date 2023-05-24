@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
+import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import Neo4j from "../../neo4j";
 
 describe("interface relationships", () => {
     let driver: Driver;
@@ -88,8 +88,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const movieNewTitle = generate({
             readable: true,
@@ -100,7 +100,7 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.datatype.number();
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation UpdateUpdate($name: String, $oldTitle: String, $newTitle: String) {
@@ -192,8 +192,8 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const movieNewTitle = generate({
             readable: true,
@@ -204,7 +204,7 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const seriesScreenTime = faker.datatype.number();
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation UpdateUpdate($name: String, $newName: String, $oldTitle: String, $newTitle: String) {
@@ -304,15 +304,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const movieNewTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
 
-        const seriesScreenTime = faker.datatype.number();
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation UpdateUpdate(
@@ -455,15 +455,15 @@ describe("interface relationships", () => {
             readable: true,
             charset: "alphabetic",
         });
-        const movieRuntime = faker.datatype.number();
-        const movieScreenTime = faker.datatype.number();
+        const movieRuntime = faker.number.int({ max: 100000 });
+        const movieScreenTime = faker.number.int({ max: 100000 });
 
         const movieNewTitle = generate({
             readable: true,
             charset: "alphabetic",
         });
 
-        const seriesScreenTime = faker.datatype.number();
+        const seriesScreenTime = faker.number.int({ max: 100000 });
 
         const query = `
             mutation UpdateUpdate($name: String, $newName: String, $oldName: String, $oldTitle: String, $newTitle: String) {

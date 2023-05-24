@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
+import { faker } from "@faker-js/faker";
+import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { int } from "neo4j-driver";
-import { graphql } from "graphql";
-import { faker } from "@faker-js/faker";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4j from "../neo4j";
 
 describe("[CartesianPoint]", () => {
     let driver: Driver;
@@ -55,10 +55,10 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables creation of a node with multiple cartesian points", async () => {
-        const id = faker.datatype.uuid();
-        const locations = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
-            x: faker.datatype.float(),
-            y: faker.datatype.float(),
+        const id = faker.string.uuid();
+        const locations = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
+            x: faker.number.float(),
+            y: faker.number.float(),
         }));
 
         const create = `
@@ -109,11 +109,11 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables creation of a node with multiple cartesian-3d points", async () => {
-        const id = faker.datatype.uuid();
-        const locations = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
-            x: faker.datatype.float(),
-            y: faker.datatype.float(),
-            z: faker.datatype.float(),
+        const id = faker.string.uuid();
+        const locations = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
+            x: faker.number.float(),
+            y: faker.number.float(),
+            z: faker.number.float(),
         }));
 
         const create = `
@@ -165,13 +165,13 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables update of a node with multiple cartesian points", async () => {
-        const id = faker.datatype.uuid();
-        const locations = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
-            x: faker.datatype.float(),
-            y: faker.datatype.float(),
+        const id = faker.string.uuid();
+        const locations = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
+            x: faker.number.float(),
+            y: faker.number.float(),
         }));
         const newLocations = locations.map((location) => ({
-            x: faker.datatype.float(),
+            x: faker.number.float(),
             y: location.y,
         }));
 
@@ -250,14 +250,14 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables update of a node with multiple cartesian-3d points", async () => {
-        const id = faker.datatype.uuid();
-        const locations = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
-            x: faker.datatype.float(),
-            y: faker.datatype.float(),
-            z: faker.datatype.float(),
+        const id = faker.string.uuid();
+        const locations = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
+            x: faker.number.float(),
+            y: faker.number.float(),
+            z: faker.number.float(),
         }));
         const newLocations = locations.map((location) => ({
-            x: faker.datatype.float(),
+            x: faker.number.float(),
             y: location.y,
             z: location.z,
         }));
@@ -339,10 +339,10 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables query of a node with multiple cartesian points", async () => {
-        const id = faker.datatype.uuid();
-        const locations = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
-            x: faker.datatype.float(),
-            y: faker.datatype.float(),
+        const id = faker.string.uuid();
+        const locations = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
+            x: faker.number.float(),
+            y: faker.number.float(),
         }));
 
         await session.run(
@@ -389,11 +389,11 @@ describe("[CartesianPoint]", () => {
     });
 
     test("enables query of a node with multiple cartesian-3d points", async () => {
-        const id = faker.datatype.uuid();
-        const locations = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
-            x: faker.datatype.float(),
-            y: faker.datatype.float(),
-            z: faker.datatype.float(),
+        const id = faker.string.uuid();
+        const locations = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
+            x: faker.number.float(),
+            y: faker.number.float(),
+            z: faker.number.float(),
         }));
 
         await session.run(
