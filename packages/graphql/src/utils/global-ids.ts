@@ -31,7 +31,7 @@ export function toGlobalId({ typeName, field, id }: DecodedGlobalId): string {
 
 export function fromGlobalId(id: string, isInt?: boolean): DecodedGlobalId {
     const unbasedGlobalId = unbase64(id);
-    const [typeName, field, ...rest] = unbasedGlobalId.split(":");
+    const [typeName, field, ...rest] = unbasedGlobalId.split(":") as [string, string, string, ...string[]];
 
     return {
         typeName,

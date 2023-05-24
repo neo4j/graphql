@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode, NamedTypeNode } from "graphql";
 import camelcase from "camelcase";
+import type { DirectiveNode, NamedTypeNode } from "graphql";
 import pluralize from "pluralize";
 import type {
     ConnectionField,
@@ -36,15 +36,16 @@ import type {
     UnionField,
 } from "../types";
 import type { Auth } from "../types/deprecated/auth/auth";
+import type { DecodedGlobalId } from "../utils/global-ids";
+import { fromGlobalId, toGlobalId } from "../utils/global-ids";
+import { upperFirst } from "../utils/upper-first";
 import type Exclude from "./Exclude";
 import type { GraphElementConstructor } from "./GraphElement";
 import { GraphElement } from "./GraphElement";
 import type { NodeDirective } from "./NodeDirective";
-import type { DecodedGlobalId } from "../utils/global-ids";
-import { fromGlobalId, toGlobalId } from "../utils/global-ids";
 import type { QueryOptionsDirective } from "./QueryOptionsDirective";
-import { upperFirst } from "../utils/upper-first";
 import { NodeAuth } from "./deprecated/NodeAuth";
+import type { SchemaConfiguration } from "../schema/schema-configuration";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -66,13 +67,13 @@ export interface NodeConstructor extends GraphElementConstructor {
     auth?: Auth;
     fulltextDirective?: FullText;
     exclude?: Exclude;
+    schemaConfiguration?: SchemaConfiguration;
     nodeDirective?: NodeDirective;
     description?: string;
     queryOptionsDirective?: QueryOptionsDirective;
     isGlobalNode?: boolean;
     globalIdField?: string;
     globalIdFieldIsInt?: boolean;
-    federationResolvable: boolean;
 }
 
 type MutableField =
@@ -147,6 +148,7 @@ class Node extends GraphElement {
     public interfaces: NamedTypeNode[];
     public objectFields: ObjectField[];
     public exclude?: Exclude;
+    public schemaConfiguration?: SchemaConfiguration;
     public nodeDirective?: NodeDirective;
     public fulltextDirective?: FullText;
     public auth?: NodeAuth;
@@ -155,7 +157,6 @@ class Node extends GraphElement {
     public singular: string;
     public plural: string;
     public isGlobalNode: boolean | undefined;
-    public federationResolvable: boolean;
     private _idField: string | undefined;
     private _idFieldIsInt?: boolean;
 
@@ -171,6 +172,7 @@ class Node extends GraphElement {
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
         this.exclude = input.exclude;
+        this.schemaConfiguration = input.schemaConfiguration;
         this.nodeDirective = input.nodeDirective;
         this.fulltextDirective = input.fulltextDirective;
         this.auth = input.auth ? new NodeAuth(input.auth) : undefined;
@@ -180,7 +182,6 @@ class Node extends GraphElement {
         this._idFieldIsInt = input.globalIdFieldIsInt;
         this.singular = this.generateSingular();
         this.plural = this.generatePlural(input.plural);
-        this.federationResolvable = input.federationResolvable;
     }
 
     // Fields you can set in a create or update mutation

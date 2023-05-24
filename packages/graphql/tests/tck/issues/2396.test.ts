@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -165,9 +165,10 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                     CALL {
                         WITH this1
                         MATCH (this1)-[:HAS_ADDRESS]->(this2:\`Address\`)
-                        MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
+                        OPTIONAL MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
+                        WITH *, count(this3) AS postalCodeCount
                         WITH *
-                        WHERE this3.number IN $param0
+                        WHERE (postalCodeCount <> 0 AND this3.number IN $param0)
                         RETURN count(this2) = 1 AS var4
                     }
                     WITH *
@@ -263,9 +264,10 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                     CALL {
                         WITH this1
                         MATCH (this1)-[:HAS_ADDRESS]->(this2:\`Address\`)
-                        MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
+                        OPTIONAL MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
+                        WITH *, count(this3) AS postalCodeCount
                         WITH *
-                        WHERE this3.number IN $param0
+                        WHERE (postalCodeCount <> 0 AND this3.number IN $param0)
                         RETURN count(this2) = 1 AS var4
                     }
                     WITH *
@@ -372,9 +374,10 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                     CALL {
                         WITH this1
                         MATCH (this1)-[:HAS_ADDRESS]->(this2:\`Address\`)
-                        MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
+                        OPTIONAL MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:\`PostalCode\`)
+                        WITH *, count(this3) AS postalCodeCount
                         WITH *
-                        WHERE this3.number IN $param0
+                        WHERE (postalCodeCount <> 0 AND this3.number IN $param0)
                         RETURN count(this2) = 1 AS var4
                     }
                     WITH *

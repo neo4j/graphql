@@ -27,6 +27,8 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
 import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import { addMeasurementField, Measurement } from "../utils/add-measurement-field";
 
 type ProjectionAndParamsResult = {
     projection: Cypher.Expr;
@@ -47,6 +49,7 @@ export default async function translateCreate({
     context: Context;
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
+    const p1 = performance.now();
     try {
         return await unwindCreate({ context, node });
     } catch (error) {
@@ -61,7 +64,10 @@ export default async function translateCreate({
     const projectionWith: string[] = [];
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
 
-    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
+    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create] as Record<
+        string,
+        ResolveTree
+    >;
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
@@ -72,7 +78,7 @@ export default async function translateCreate({
 
     const { createStrs, params } = mutationInputs.reduce(
         (res, input, index) => {
-            const varName = varNameStrs[index];
+            const varName = varNameStrs[index] as string;
             const create = [`CALL {`];
             const withVars = [varName];
             projectionWith.push(varName);
@@ -195,13 +201,17 @@ export default async function translateCreate({
         cypher: createQueryCypher.cypher,
     });
 
-    return {
+    const result = {
         cypher,
         params: {
             ...createQueryCypher.params,
             resolvedCallbacks,
         },
     };
+
+    const p2 = performance.now();
+    addMeasurementField(context, Measurement.translationTime, p2 - p1);
+    return result;
 }
 function generateCreateReturnStatement(
     projectionExpr: Cypher.Expr | undefined,

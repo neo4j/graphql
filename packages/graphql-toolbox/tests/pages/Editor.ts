@@ -60,11 +60,11 @@ export class Editor extends Screen {
     public async showSchemaDocs() {
         await this.page.waitForSelector("[data-test-explorer-show-docs-switch]");
         await this.page.check("[data-test-explorer-show-docs-switch]");
-        await this.page.waitForSelector("[data-test-doc-explorer-close-button]");
+        await this.page.waitForSelector(".graphiql-doc-explorer");
     }
 
     public async hideSchemaDocs() {
-        await this.page.waitForSelector("[data-test-doc-explorer-close-button]");
+        await this.page.waitForSelector(".graphiql-doc-explorer");
         await this.page.uncheck("[data-test-explorer-show-docs-switch]");
     }
 

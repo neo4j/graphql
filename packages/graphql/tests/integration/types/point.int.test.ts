@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { int } from "neo4j-driver";
 import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
+import { int } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4j from "../neo4j";
 
 describe("Point", () => {
     let driver: Driver;
@@ -66,10 +66,10 @@ describe("Point", () => {
     });
 
     test("enables creation of a node with a wgs-84 point", async () => {
-        const id = faker.datatype.uuid();
-        const size = faker.datatype.number({});
-        const longitude = parseFloat(faker.address.longitude());
-        const latitude = parseFloat(faker.address.latitude());
+        const id = faker.string.uuid();
+        const size = faker.number.int({ max: 100000 });
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude().toString());
 
         const create = `
             mutation CreatePhotographs($id: String!, $size: Int!, $longitude: Float!, $latitude: Float!) {
@@ -114,17 +114,17 @@ describe("Point", () => {
                 RETURN p { .id, .size, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(latitude);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(4326));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(latitude);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(4326));
     });
 
     test("enables creation of a node with a wgs-84-3d point", async () => {
-        const id = faker.datatype.uuid();
-        const size = faker.datatype.number({});
-        const longitude = parseFloat(faker.address.longitude());
-        const latitude = parseFloat(faker.address.latitude());
-        const height = faker.datatype.float();
+        const id = faker.string.uuid();
+        const size = faker.number.int({ max: 100000 });
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude().toString());
+        const height = faker.number.float();
 
         const create = `
             mutation CreatePhotographs(
@@ -181,18 +181,18 @@ describe("Point", () => {
                 RETURN p { .id, .size, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(latitude);
-        expect((result.records[0].toObject() as any).p.location.z).toEqual(height);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(4979));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(latitude);
+        expect((result.records[0]?.toObject() as any).p.location.z).toEqual(height);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(4979));
     });
 
     test("enables update of a node with a wgs-84 point", async () => {
-        const id = faker.datatype.uuid();
-        const size = faker.datatype.number({});
-        const longitude = parseFloat(faker.address.longitude());
-        const latitude = parseFloat(faker.address.latitude());
-        const newLatitude = parseFloat(faker.address.latitude());
+        const id = faker.string.uuid();
+        const size = faker.number.int({ max: 100000 });
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude().toString());
+        const newLatitude = parseFloat(faker.location.latitude().toString());
 
         const beforeResult = await session.run(`
             CALL {
@@ -207,8 +207,8 @@ describe("Point", () => {
             p { .id, .size, .location } AS p
         `);
 
-        expect((beforeResult.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((beforeResult.records[0].toObject() as any).p.location.y).toEqual(latitude);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.y).toEqual(latitude);
 
         const update = `
             mutation UpdatePhotographs($id: String!, $longitude: Float!, $latitude: Float!) {
@@ -254,18 +254,18 @@ describe("Point", () => {
                 RETURN p { .id, .size, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(newLatitude);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(4326));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(newLatitude);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(4326));
     });
 
     test("enables update of a node with a wgs-84-3d point", async () => {
-        const id = faker.datatype.uuid();
-        const size = faker.datatype.number({});
-        const longitude = parseFloat(faker.address.longitude());
-        const latitude = parseFloat(faker.address.latitude());
-        const height = faker.datatype.float();
-        const newLatitude = parseFloat(faker.address.latitude());
+        const id = faker.string.uuid();
+        const size = faker.number.int({ max: 100000 });
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude().toString());
+        const height = faker.number.float();
+        const newLatitude = parseFloat(faker.location.latitude().toString());
 
         const beforeResult = await session.run(`
             CALL {
@@ -280,9 +280,9 @@ describe("Point", () => {
             p { .id, .size, .location } AS p
         `);
 
-        expect((beforeResult.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((beforeResult.records[0].toObject() as any).p.location.y).toEqual(latitude);
-        expect((beforeResult.records[0].toObject() as any).p.location.z).toEqual(height);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.y).toEqual(latitude);
+        expect((beforeResult.records[0]?.toObject() as any).p.location.z).toEqual(height);
 
         const update = `
             mutation UpdatePhotographs($id: String!, $longitude: Float!, $latitude: Float!, $height: Float!) {
@@ -328,18 +328,18 @@ describe("Point", () => {
                 RETURN p { .id, .size, .location} as p
             `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(newLatitude);
-        expect((result.records[0].toObject() as any).p.location.z).toEqual(height);
-        expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(4979));
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(newLatitude);
+        expect((result.records[0]?.toObject() as any).p.location.z).toEqual(height);
+        expect((result.records[0]?.toObject() as any).p.location.srid).toEqual(int(4979));
     });
 
     test("enables query of a node with a wgs-84 point", async () => {
         // Create node
-        const id = faker.datatype.uuid();
-        const size = faker.datatype.number({});
-        const longitude = parseFloat(faker.address.longitude());
-        const latitude = parseFloat(faker.address.latitude(88));
+        const id = faker.string.uuid();
+        const size = faker.number.int({ max: 100000 });
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude(88).toString());
 
         const result = await session.run(`
             CALL {
@@ -354,8 +354,8 @@ describe("Point", () => {
             p { .id, .size, .location } AS p
         `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(latitude);
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(latitude);
 
         // Test equality
         const photographsEqualsQuery = `
@@ -416,8 +416,8 @@ describe("Point", () => {
                 locations: [
                     { longitude, latitude },
                     {
-                        longitude: parseFloat(faker.address.longitude()),
-                        latitude: parseFloat(faker.address.latitude()),
+                        longitude: parseFloat(faker.location.longitude().toString()),
+                        latitude: parseFloat(faker.location.latitude().toString()),
                     },
                 ],
             },
@@ -458,12 +458,12 @@ describe("Point", () => {
             variableValues: {
                 locations: [
                     {
-                        longitude: parseFloat(faker.address.longitude()),
-                        latitude: parseFloat(faker.address.latitude()),
+                        longitude: parseFloat(faker.location.longitude().toString()),
+                        latitude: parseFloat(faker.location.latitude().toString()),
                     },
                     {
-                        longitude: parseFloat(faker.address.longitude()),
-                        latitude: parseFloat(faker.address.latitude()),
+                        longitude: parseFloat(faker.location.longitude().toString()),
+                        latitude: parseFloat(faker.location.latitude().toString()),
                     },
                 ],
             },
@@ -557,11 +557,11 @@ describe("Point", () => {
     });
 
     test("enables query for equality of a node with a wgs-84-3d point", async () => {
-        const id = faker.datatype.uuid();
-        const size = faker.datatype.number({});
-        const longitude = parseFloat(faker.address.longitude());
-        const latitude = parseFloat(faker.address.latitude());
-        const height = faker.datatype.float();
+        const id = faker.string.uuid();
+        const size = faker.number.int({ max: 100000 });
+        const longitude = parseFloat(faker.location.longitude().toString());
+        const latitude = parseFloat(faker.location.latitude().toString());
+        const height = faker.number.float();
 
         const result = await session.run(`
             CALL {
@@ -576,9 +576,9 @@ describe("Point", () => {
             p { .id, .size, .location } AS p
         `);
 
-        expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
-        expect((result.records[0].toObject() as any).p.location.y).toEqual(latitude);
-        expect((result.records[0].toObject() as any).p.location.z).toEqual(height);
+        expect((result.records[0]?.toObject() as any).p.location.x).toEqual(longitude);
+        expect((result.records[0]?.toObject() as any).p.location.y).toEqual(latitude);
+        expect((result.records[0]?.toObject() as any).p.location.z).toEqual(height);
 
         const photographsQuery = `
             query Photographs($longitude: Float!, $latitude: Float!, $height: Float) {

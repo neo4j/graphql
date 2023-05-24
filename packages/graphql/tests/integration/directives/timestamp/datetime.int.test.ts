@@ -82,7 +82,7 @@ describe("timestamp/datetime", () => {
                 const movie: {
                     id: string;
                     createdAt: DateTime;
-                } = (result.records[0].toObject() as any).m;
+                } = (result.records[0]?.toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
                 expect(new Date(movie.createdAt.toString())).toBeInstanceOf(Date);
@@ -206,7 +206,7 @@ describe("timestamp/datetime", () => {
                 const movie: {
                     id: string;
                     updatedAt: DateTime;
-                } = (result.records[0].toObject() as any).m;
+                } = (result.records[0]?.toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
                 expect(new Date(movie.updatedAt.toString())).toBeInstanceOf(Date);
@@ -332,7 +332,7 @@ describe("timestamp/datetime", () => {
                 const movie: {
                     id: string;
                     createdAt: DateTime;
-                } = (result.records[0].toObject() as any).m;
+                } = (result.records[0]?.toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
                 expect(new Date(movie.createdAt.toString())).toBeInstanceOf(Date);
@@ -524,7 +524,7 @@ describe("timestamp/datetime", () => {
                 const movie: {
                     id: string;
                     updatedAt: DateTime;
-                } = (result.records[0].toObject() as any).m;
+                } = (result.records[0]?.toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
                 expect(new Date(movie.updatedAt.toString())).toBeInstanceOf(Date);
@@ -580,7 +580,7 @@ describe("timestamp/datetime", () => {
                 const movie: {
                     id: string;
                     createdAt: DateTime;
-                } = (result.records[0].toObject() as any).m;
+                } = (result.records[0]?.toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
                 expect(new Date(movie.createdAt.toString())).toBeInstanceOf(Date);
@@ -772,7 +772,7 @@ describe("timestamp/datetime", () => {
                 const movie: {
                     id: string;
                     updatedAt: DateTime;
-                } = (result.records[0].toObject() as any).m;
+                } = (result.records[0]?.toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
                 expect(new Date(movie.updatedAt.toString())).toBeInstanceOf(Date);

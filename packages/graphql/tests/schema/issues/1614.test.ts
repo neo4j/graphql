@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { validateSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
 
@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
         const errors = validateSchema(schema);
         expect(errors).toEqual([]);
 
-        const relationship = neoSchema.relationships.find(r => r.name === "CrewMemberMoviesRelationship");
+        const relationship = neoSchema.relationships.find((r) => r.name === "CrewMemberMoviesRelationship");
         expect(relationship).toBeDefined();
         expect(relationship?.enumFields?.length).toBe(1);
         expect(relationship?.properties).toBe("CrewPosition");

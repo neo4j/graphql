@@ -19,6 +19,7 @@
 
 import { useContext, useEffect, useState } from "react";
 import type { GraphQLSchema } from "graphql";
+import { EditorContextProvider } from "@graphiql/react";
 import { TopBar } from "../TopBar/TopBar";
 import { Login } from "../Login/Login";
 import { SchemaView } from "../SchemaView/SchemaView";
@@ -94,21 +95,23 @@ export const Main = () => {
 
     return (
         <div className="flex w-full h-full flex-col">
-            <Banner />
-            <TopBar />
-            <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
-                {screen.view === Screen.TYPEDEFS ? (
-                    <SchemaView
-                        hasSchema={!!schema}
-                        onChange={(schema) => {
-                            setSchema(schema);
-                            screen.setScreen(Screen.EDITOR);
-                        }}
-                    />
-                ) : (
-                    <Editor schema={schema} />
-                )}
-            </div>
+            <EditorContextProvider>
+                <Banner />
+                <TopBar />
+                <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
+                    {screen.view === Screen.TYPEDEFS ? (
+                        <SchemaView
+                            hasSchema={!!schema}
+                            onChange={(schema) => {
+                                setSchema(schema);
+                                screen.setScreen(Screen.EDITOR);
+                            }}
+                        />
+                    ) : (
+                        <Editor schema={schema} />
+                    )}
+                </div>
+            </EditorContextProvider>
         </div>
     );
 };

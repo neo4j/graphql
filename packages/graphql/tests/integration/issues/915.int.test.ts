@@ -22,7 +22,7 @@ import { int, isInt } from "neo4j-driver";
 import { generate } from "randomstring";
 import type { ValueNode } from "graphql";
 import { graphql, GraphQLError, GraphQLScalarType, Kind } from "graphql";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { delay } from "../../../src/utils/utils";
@@ -217,6 +217,6 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
         });
 
         expect(errorResult.errors).toHaveLength(1);
-        expect(errorResult.errors?.[0].message).toBe("Constraint validation failed");
+        expect(errorResult.errors?.[0]?.message).toBe("Constraint validation failed");
     });
 });

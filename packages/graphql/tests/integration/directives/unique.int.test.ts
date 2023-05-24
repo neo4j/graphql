@@ -20,7 +20,7 @@
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
@@ -168,7 +168,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         });
 
         expect(errorResult.errors).toHaveLength(1);
-        expect(errorResult.errors?.[0].message).toBe("Constraint validation failed");
+        expect(errorResult.errors?.[0]?.message).toBe("Constraint validation failed");
     });
 
     describe("@unique", () => {

@@ -1,5 +1,58 @@
 # @neo4j/graphql-toolbox
 
+## 1.5.4
+
+### Patch Changes
+
+-   Updated dependencies [[`cc08bcd8a`](https://github.com/neo4j/graphql/commit/cc08bcd8a07044e38380fada05893de980351644), [`dcfe28b49`](https://github.com/neo4j/graphql/commit/dcfe28b4912bb328a03caab48991f0903f000751), [`ce573b770`](https://github.com/neo4j/graphql/commit/ce573b7705a01caadcc1ad10984f85976451ca2c), [`43e189c14`](https://github.com/neo4j/graphql/commit/43e189c14853cd626e14b53338b4ef0ca7e489b8)]:
+    -   @neo4j/graphql@3.19.0
+
+## 1.5.3
+
+### Patch Changes
+
+-   [#3301](https://github.com/neo4j/graphql/pull/3301) [`8233928c6`](https://github.com/neo4j/graphql/commit/8233928c6942a085f7146b029370ede5baf0cd49) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: Toolbox, show lint mark in editors
+
+-   [#3296](https://github.com/neo4j/graphql/pull/3296) [`6de12788a`](https://github.com/neo4j/graphql/commit/6de12788a1e1b2748ebd8699f864d9b443c201bf) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox, update UI for schema options and constraint sidebar
+
+-   [#3302](https://github.com/neo4j/graphql/pull/3302) [`f3b8e6780`](https://github.com/neo4j/graphql/commit/f3b8e6780d4450c5095feae8348ed2376bd02530) Thanks [@tbwiss](https://github.com/tbwiss)! - boyscouting: Toolbox, copyright information update
+
+-   Updated dependencies [[`e8092aa85`](https://github.com/neo4j/graphql/commit/e8092aa855244f7da21bb82f874bfda534a6fa4b), [`99fe4b4b8`](https://github.com/neo4j/graphql/commit/99fe4b4b813538fa985111918bf6ffe2ef458f05)]:
+    -   @neo4j/graphql@3.18.3
+
+## 1.5.2
+
+### Patch Changes
+
+-   [#3189](https://github.com/neo4j/graphql/pull/3189) [`75c05b80d`](https://github.com/neo4j/graphql/commit/75c05b80d2353a581a56f34f7f492737a6bdf536) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: Toolbox, Codemirror text selection visibility
+
+-   Updated dependencies [[`a8aabfeca`](https://github.com/neo4j/graphql/commit/a8aabfecad39b371fa82d16ea00e1e45d4044d05), [`8657dff82`](https://github.com/neo4j/graphql/commit/8657dff8274ea3d3a4a42c18c8e81232748cbeff)]:
+    -   @neo4j/graphql@3.18.2
+
+## 1.5.1
+
+### Patch Changes
+
+-   Updated dependencies [[`cbc15970c`](https://github.com/neo4j/graphql/commit/cbc15970cd87e5cdcfbae40ce5bacf1fb819ade8)]:
+    -   @neo4j/graphql@3.18.1
+
+## 1.5.0
+
+### Minor Changes
+
+-   [#3150](https://github.com/neo4j/graphql/pull/3150) [`98dd592a9`](https://github.com/neo4j/graphql/commit/98dd592a90c134605b88e8a28eeeccf0334f321e) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox, Docs explorer GraphiQL v2 component
+
+### Patch Changes
+
+-   [#3112](https://github.com/neo4j/graphql/pull/3112) [`4ec6e274a`](https://github.com/neo4j/graphql/commit/4ec6e274a58c50ce4bf674c84360c8eb53762956) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox, persistent store refactor
+
+-   [#3128](https://github.com/neo4j/graphql/pull/3128) [`fb2497e24`](https://github.com/neo4j/graphql/commit/fb2497e24805898e89f0c640cb98a8fa614372bc) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox, cleanup components and use new NDL tooltip component
+
+-   [#3086](https://github.com/neo4j/graphql/pull/3086) [`299ca1ec8`](https://github.com/neo4j/graphql/commit/299ca1ec847d742c3d21c6f5c8b5a745d6684fe9) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: Toolbox, on load selection of database
+
+-   Updated dependencies [[`7a2f2acc4`](https://github.com/neo4j/graphql/commit/7a2f2acc434d1996a4b3785416acb0c46ad7f199), [`ce5fb9eb3`](https://github.com/neo4j/graphql/commit/ce5fb9eb36a08dde95de605b49f842876b1c1515)]:
+    -   @neo4j/graphql@3.18.0
+
 ## 1.4.13
 
 ### Patch Changes

@@ -31,6 +31,8 @@ export interface JWKSPluginInput {
     rolesPath?: string;
     globalAuthentication?: boolean;
     bindPredicate?: "all" | "any";
+    issuer?: string | string[];
+    audience?: string | RegExp | (string | RegExp)[];
 }
 
 class Neo4jGraphQLAuthJWKSPlugin {
@@ -40,6 +42,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
     options!: JwksRsa.Options;
     bindPredicate: "all" | "any";
     input: JWKSPluginInput;
+
     constructor(input: JWKSPluginInput) {
         //We are going to use this input later, so we need to save it here.
         this.input = input;
@@ -118,6 +121,8 @@ class Neo4jGraphQLAuthJWKSPlugin {
                 getKey,
                 {
                     algorithms: ["HS256", "RS256"],
+                    issuer: this.input.issuer,
+                    audience: this.input.audience,
                 },
                 (err, decoded) => {
                     if (err) {

@@ -74,7 +74,12 @@ function createRelationshipFields({
             "DeleteInput",
             "DisconnectInput",
             "RelationInput",
-        ].map((type) => schemaComposer.getOrCreateITC(`${sourceName}${type}`));
+        ].map((type) => schemaComposer.getOrCreateITC(`${sourceName}${type}`)) as [
+            InputTypeComposer,
+            InputTypeComposer,
+            InputTypeComposer,
+            InputTypeComposer
+        ];
     }
 
     relationshipFields.forEach((rel) => {
@@ -306,7 +311,7 @@ function createRelationshipFields({
                     name: `${typePrefix}${operation}Input`,
                     fields: {},
                 })
-            );
+            ) as [InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer];
 
             const unionCreateFieldInput = schemaComposer.createInputTC({
                 name: `${typePrefix}CreateFieldInput`,
@@ -336,7 +341,9 @@ function createRelationshipFields({
                             node: `${n.name}CreateInput!`,
                             ...(hasNonGeneratedProperties
                                 ? {
-                                      edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
+                                      edge: `${rel.properties}CreateInput${
+                                          hasNonNullNonGeneratedProperties ? `!` : ""
+                                      }`,
                                   }
                                 : {}),
                         },
@@ -347,7 +354,7 @@ function createRelationshipFields({
                     });
 
                     unionCreateFieldInput.addFields({
-                        [n.name]:  rel.typeMeta.array ? `[${createName}!]` : createName,
+                        [n.name]: rel.typeMeta.array ? `[${createName}!]` : createName,
                     });
                 }
 
@@ -370,12 +377,16 @@ function createRelationshipFields({
                             where: connectWhereName,
                             ...(n.relationFields.length
                                 ? {
-                                      connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput`,
+                                      connect: rel.typeMeta.array
+                                          ? `[${n.name}ConnectInput!]`
+                                          : `${n.name}ConnectInput`,
                                   }
                                 : {}),
                             ...(hasNonGeneratedProperties
                                 ? {
-                                      edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
+                                      edge: `${rel.properties}CreateInput${
+                                          hasNonNullNonGeneratedProperties ? `!` : ""
+                                      }`,
                                   }
                                 : {}),
                         },

@@ -23,12 +23,10 @@ import type { ConnectionField, ConnectionQueryArgs } from "../types";
 import { isNeoInt } from "../utils/utils";
 
 function getAliasKey({ selectionSet, key }: { selectionSet: SelectionSetNode | undefined; key: string }): string {
-    const selection = (selectionSet?.selections || []).find(
-        (x) => x.kind === "Field" && x.name.value === key
-    ) as FieldNode;
-
-    if (selection?.alias) {
-        return selection.alias.value;
+    for (const field of selectionSet?.selections || []) {
+        if (field.kind === "Field" && field.name.value === key && field.alias) {
+            return field.alias.value;
+        }
     }
 
     return key;
@@ -45,7 +43,7 @@ export function connectionFieldResolver({
     args: ConnectionQueryArgs;
     info: GraphQLResolveInfo;
 }) {
-    const firstField = info.fieldNodes[0];
+    const firstField = info.fieldNodes[0] as FieldNode;
     const { selectionSet } = firstField;
 
     let value = source[connectionField.fieldName];

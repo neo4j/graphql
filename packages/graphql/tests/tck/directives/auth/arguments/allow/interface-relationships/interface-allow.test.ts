@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../src";
 import { createJwtRequest } from "../../../../../../utils/create-jwt-request";
@@ -342,7 +342,7 @@ describe("@auth allow with interface relationships", () => {
             	SET this_creator0.password = $this_update_creator0_password
             	RETURN count(*) AS update_this_creator0
             }
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:HAS_CONTENT]-(:User)

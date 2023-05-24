@@ -27,6 +27,7 @@ import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
+import { delay } from "../../../../src/utils/utils";
 
 describe("Create Subscription with optional filters valid for all types", () => {
     let neo4j: Neo4j;
@@ -99,6 +100,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await deleteMovie("similarTitles", ["dummy", "movie"]);
         await deleteMovie("similarTitles", ["mock"]);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -124,6 +127,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await deleteMovie("similarIds", ["1", "12"]);
         await deleteMovie("similarIds", "11");
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -151,6 +156,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await deleteMovie("similarIds", [42]);
         await deleteMovie("similarIds", [4, 2]);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -176,6 +183,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await deleteMovie("allDates", [2020, 2019]);
         await deleteMovie("allDates", [2019]);
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -208,6 +217,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await deleteMovie("allRatings", [6, 5.4]);
         await deleteMovie("allRatings", [5.0]);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -235,6 +246,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await deleteMovie("allSizes", ["9223372036854775608", "922372036854775608"]);
         await deleteMovie("allSizes", ["123"]);
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -265,6 +278,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await deleteMovie("similarTitles", ["movie", "movie"]);
         await deleteMovie("similarTitles", ["mock"]);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -290,6 +305,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await deleteMovie("similarIds", ["1", "12"]);
         await deleteMovie("similarIds", ["11"]);
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -317,6 +334,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await deleteMovie("similarIds", [2, 4, 42]);
         await deleteMovie("similarIds", [4, 2]);
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -342,6 +361,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await deleteMovie("allDates", [2020, 2018]);
         await deleteMovie("allDates", []);
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -374,6 +395,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await deleteMovie("allRatings", [6, 5.4]);
         await deleteMovie("allRatings", [5.4]);
 
+        // forcing a delay to ensure events do not exist
+        await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
@@ -395,6 +418,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await deleteMovie("allSizes", ["9223372036854775608", "922372036854775608"]);
         await deleteMovie("allSizes", ["123"]);
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([

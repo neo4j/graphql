@@ -1,5 +1,11 @@
 # @neo4j/graphql-plugin-auth
 
+## 2.2.0
+
+### Minor Changes
+
+-   [#3176](https://github.com/neo4j/graphql/pull/3176) [`4712a9a0a`](https://github.com/neo4j/graphql/commit/4712a9a0a741a456e660006c2e9c9b8bd1f869fb) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Auth plugins, constructor arguments for optional `iss` and `aud` JWT claim check on token verification
+
 ## 2.1.0
 
 ### Minor Changes

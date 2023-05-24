@@ -20,7 +20,7 @@ Create a new directory, and within it, run the following commands to start a new
 [source, bash, indent=0]
 ----
 npm init --yes
-npm install @apollo/server @neo4j/graphql graphql-tag neo4j-driver
+npm install @apollo/server @neo4j/graphql neo4j-driver
 ----
 
 === Example subgraphs
@@ -34,13 +34,12 @@ Create a file `locations.js` with the following contents:
 
 [source, javascript, indent=0]
 ----
-const { ApolloServer } = require("@apollo/server");
-const { startStandaloneServer } = require("@apollo/server/standalone");
-const { Neo4jGraphQL } = require("@neo4j/graphql");
-const gql = require("graphql-tag");
-const neo4j = require("neo4j-driver");
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
 
-const typeDefs = gql`
+const typeDefs = `#graphql
   extend schema
     @link(url: "https://specs.apollo.dev/federation/v2.0",
           import: ["@key", "@shareable"])
@@ -48,11 +47,11 @@ const typeDefs = gql`
   type Location @key(fields: "id") @shareable {
     id: ID!
     "The name of the location"
-    name: String!
+    name: String
     "A short description about the location"
-    description: String!
+    description: String
     "The location's main photo as a URL"
-    photo: String!
+    photo: String
   }
 `;
 
@@ -61,21 +60,20 @@ const driver = neo4j.driver(
   neo4j.auth.basic("neo4j", process.env.NEO4J_PASSWORD)
 );
 
-const neo4jgraphql = new Neo4jGraphQL({
+const neoSchema = new Neo4jGraphQL({
   typeDefs,
   driver,
 });
 
-neo4jgraphql.getSubgraphSchema().then((schema) => {
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-  });
+const schema = neoSchema.getSubgraphSchema();
 
-  startStandaloneServer(server, { listen: { port: 4001 } }).then((url) => {
-    console.log(`🚀  Server ready at ${url}`);
-  });
+const server = new ApolloServer({
+  schema,
 });
+
+const { url } = startStandaloneServer(server, { listen: { port: 4001 } });
+
+console.log(`🚀 Server ready at ${url}`);
 ----
 
 Start this server by running `node locations.js`.
@@ -86,13 +84,12 @@ Create a file `reviews.js` with the following contents:
 
 [source, javascript, indent=0]
 ----
-const { ApolloServer } = require("@apollo/server");
-const { startStandaloneServer } = require("@apollo/server/standalone");
-const { Neo4jGraphQL } = require("@neo4j/graphql");
-const gql = require("graphql-tag");
-const neo4j = require("neo4j-driver");
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
 
-const typeDefs = gql`
+const typeDefs = `#graphql
   extend schema
     @link(url: "https://specs.apollo.dev/federation/v2.0",
           import: ["@key", "@shareable"])
@@ -121,21 +118,20 @@ const driver = neo4j.driver(
   neo4j.auth.basic("neo4j", process.env.NEO4J_PASSWORD)
 );
 
-const neo4jgraphql = new Neo4jGraphQL({
+const neoSchema = new Neo4jGraphQL({
   typeDefs,
   driver,
 });
 
-neo4jgraphql.getSubgraphSchema().then((schema) => {
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-  });
+const schema = neoSchema.getSubgraphSchema();
 
-  startStandaloneServer(server, { listen: { port: 4002 } }).then((url) => {
-    console.log(`🚀  Server ready at ${url}`);
-  });
+const server = new ApolloServer({
+  schema,
 });
+
+const { url } = await startStandaloneServer(server, { listen: { port: 4002 } });
+
+console.log(`🚀 Server ready at ${url}`);
 ----
 
 Start this server by running `node reviews.js`.
@@ -159,6 +155,9 @@ subgraphs:
 ----
 
 In the same directory, execute the following command to generate the supergraph schema:
+
+NOTE: The first time you run this command with a Federation 2 YAML configuration, Rover installs a separate plugin and prompts you to accept the terms and conditions of the ELv2 license.
+Find more information in the https://www.apollographql.com/docs/federation/quickstart/local-composition/#2-perform-composition[Apollo Federation docs].
 
 [source, bash, indent=0]
 ----

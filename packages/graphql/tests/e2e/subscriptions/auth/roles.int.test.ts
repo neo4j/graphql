@@ -93,6 +93,8 @@ describe("Subscription auth roles", () => {
 
         const result = await createMovie("movie1", server);
 
+        await wsClient.waitForEvents(1);
+
         expect(result.body.errors).toBeUndefined();
         expect(wsClient.events).toEqual([
             {
@@ -119,7 +121,7 @@ describe("Subscription auth roles", () => {
             }
             `);
 
-        await wsClient.waitForNextEvent();
+        await wsClient.waitForEvents(1);
         expect(wsClient.events).toEqual([]);
         expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
     });
@@ -137,7 +139,7 @@ describe("Subscription auth roles", () => {
             }
             `);
 
-        await wsClient.waitForNextEvent();
+        await wsClient.waitForEvents(1);
         expect(wsClient.events).toEqual([]);
         expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
     });

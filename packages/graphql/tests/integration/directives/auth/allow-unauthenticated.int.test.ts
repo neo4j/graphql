@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Socket } from "net";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
@@ -79,10 +78,10 @@ describe("auth/allow-unauthenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -135,10 +134,10 @@ describe("auth/allow-unauthenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -193,10 +192,10 @@ describe("auth/allow-unauthenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -253,10 +252,10 @@ describe("auth/allow-unauthenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -309,10 +308,10 @@ describe("auth/allow-unauthenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -366,10 +365,10 @@ describe("auth/allow-unauthenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 
@@ -424,10 +423,10 @@ describe("auth/allow-unauthenticated", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
                 },
             });
 

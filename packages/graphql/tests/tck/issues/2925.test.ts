@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
@@ -83,8 +83,10 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            MATCH (this)-[:HAS_REQUIRED_GROUP]->(this0:\`Group\`)
-            WHERE this0.name IN $param0
+            OPTIONAL MATCH (this)-[:HAS_REQUIRED_GROUP]->(this0:\`Group\`)
+            WITH *, count(this0) AS hasRequiredGroupCount
+            WITH *
+            WHERE (hasRequiredGroupCount <> 0 AND this0.name IN $param0)
             RETURN this { .name } AS this"
         `);
 
@@ -142,9 +144,10 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[:HAS_GROUP]-(this0:\`User\`)
-                MATCH (this0)-[:HAS_REQUIRED_GROUP]->(this1:\`Group\`)
+                OPTIONAL MATCH (this0)-[:HAS_REQUIRED_GROUP]->(this1:\`Group\`)
+                WITH *, count(this1) AS hasRequiredGroupCount
                 WITH *
-                WHERE this1.name IN $param0
+                WHERE (hasRequiredGroupCount <> 0 AND this1.name IN $param0)
                 RETURN count(this0) > 0 AS var2
             }
             WITH *

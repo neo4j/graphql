@@ -17,15 +17,24 @@
  * limitations under the License.
  */
 
+import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { gql } from "graphql-tag";
-import neo4j from "./neo4j";
 import type { Model } from "../../src";
 import { OGM } from "../../src";
+import { cleanNodes } from "../utils/clean-nodes";
+import { UniqueType } from "../utils/utils";
+import neo4j from "./neo4j";
 
 describe("OGM", () => {
     let driver: Driver;
+    let typeMovie: UniqueType;
+    let typeActor: UniqueType;
+    let typeGenre: UniqueType;
+    let typeProduct: UniqueType;
+    let typeSize: UniqueType;
+    let typeColor: UniqueType;
+    let typePhoto: UniqueType;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -35,11 +44,27 @@ describe("OGM", () => {
         await driver.close();
     });
 
+    beforeEach(() => {
+        typeMovie = new UniqueType("Movie");
+        typeActor = new UniqueType("Actor");
+        typeGenre = new UniqueType("Genre");
+        typeProduct = new UniqueType("Product");
+        typeSize = new UniqueType("Size");
+        typeColor = new UniqueType("Color");
+        typePhoto = new UniqueType("Photo");
+    });
+
+    afterEach(async () => {
+        const session = driver.session();
+        await cleanNodes(session, [typeMovie, typeActor, typeGenre, typeProduct, typeSize, typeColor, typePhoto]);
+        await session.close();
+    });
+
     test("should specify the database via OGM construction", async () => {
         const session = driver.session();
 
         const typeDefs = `
-            type Movie {
+            type ${typeMovie} {
                 id: ID!
             }
         `;
@@ -48,7 +73,7 @@ describe("OGM", () => {
 
         await ogm.init();
 
-        await expect(ogm.model("Movie").find()).rejects.toThrow();
+        await expect(ogm.model(typeMovie.name).find()).rejects.toThrow();
 
         await session.close();
     });
@@ -57,7 +82,7 @@ describe("OGM", () => {
         const session = driver.session();
 
         const typeDefs = `
-            type Movie @auth(rules: [{ isAuthenticated: true }]){
+            type ${typeMovie} @auth(rules: [{ isAuthenticated: true }]){
                 id: ID
             }
         `;
@@ -74,10 +99,10 @@ describe("OGM", () => {
             await ogm.checkNeo4jCompat();
 
             await session.run(`
-                CREATE (:Movie {id: "${id}"})
+                CREATE (:${typeMovie} {id: "${id}"})
             `);
 
-            const Movie = ogm.model("Movie");
+            const Movie = ogm.model(typeMovie.name);
 
             const movies = await Movie.find({ where: { id } });
 
@@ -93,7 +118,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type Movie {
+                type ${typeMovie} {
                     id: ID
                 }
             `;
@@ -110,10 +135,10 @@ describe("OGM", () => {
                 await ogm.checkNeo4jCompat();
 
                 await session.run(`
-                    CREATE (:Movie {id: "${id}"})
+                    CREATE (:${typeMovie} {id: "${id}"})
                 `);
 
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
                 const movies = await Movie.find({ where: { id } });
 
@@ -127,7 +152,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type Movie {
+                type ${typeMovie} {
                     id: ID
                 }
             `;
@@ -142,14 +167,14 @@ describe("OGM", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Movie {id: "${id}"})
-                    CREATE (:Movie {id: "${id}"})
-                    CREATE (:Movie {id: "${id}"})
-                    CREATE (:Movie {id: "${id}"})
-                    CREATE (:Movie {id: "${id}"})
+                    CREATE (:${typeMovie} {id: "${id}"})
+                    CREATE (:${typeMovie} {id: "${id}"})
+                    CREATE (:${typeMovie} {id: "${id}"})
+                    CREATE (:${typeMovie} {id: "${id}"})
+                    CREATE (:${typeMovie} {id: "${id}"})
                 `);
 
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
                 const movies = await Movie.find({ where: { id }, options: { limit: 2 } });
 
@@ -163,20 +188,20 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type Genre {
+                type ${typeGenre} {
                     id: ID
                 }
 
-                type Movie {
+                type ${typeMovie} {
                     id: ID
-                    genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
+                    ${typeGenre.plural}: [${typeGenre}!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 }
             `;
 
             const selectionSet = `
                 {
                     id
-                    genres {
+                    ${typeGenre.plural} {
                         id
                     }
                 }
@@ -192,16 +217,16 @@ describe("OGM", () => {
 
             try {
                 await session.run(`
-                    CREATE (m:Movie {id: "${id}"})
-                    CREATE (g:Genre {id: "${id}"})
+                    CREATE (m:${typeMovie} {id: "${id}"})
+                    CREATE (g:${typeGenre} {id: "${id}"})
                     MERGE (m)-[:HAS_GENRE]->(g)
                 `);
 
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
                 const movies = await Movie.find({ where: { id }, selectionSet });
 
-                expect(movies).toEqual([{ id, genres: [{ id }] }]);
+                expect(movies).toEqual([{ id, [typeGenre.plural]: [{ id }] }]);
             } finally {
                 await session.close();
             }
@@ -213,7 +238,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = gql`
-                type Movie {
+                type ${typeMovie} {
                     id: ID
                 }
             `;
@@ -227,15 +252,15 @@ describe("OGM", () => {
             });
 
             try {
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
-                const { movies } = await Movie.create({ input: [{ id }] });
+                const createResult = await Movie.create({ input: [{ id }] });
 
-                expect(movies).toEqual([{ id }]);
+                expect(createResult[typeMovie.plural]).toEqual([{ id }]);
 
                 const reFind = await session.run(
                     `
-                        MATCH (m:Movie {id: $id})
+                        MATCH (m:${typeMovie} {id: $id})
                         RETURN m
                     `,
                     { id }
@@ -251,7 +276,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type Movie {
+                type ${typeMovie} {
                     id: ID!
                 }
             `;
@@ -268,11 +293,11 @@ describe("OGM", () => {
             });
 
             try {
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
-                const { movies } = await Movie.create({ input: [{ id: id1 }, { id: id2 }] });
+                const createResult = await Movie.create({ input: [{ id: id1 }, { id: id2 }] });
 
-                expect(movies).toEqual([{ id: id1 }, { id: id2 }]);
+                expect(createResult[typeMovie.plural]).toEqual([{ id: id1 }, { id: id2 }]);
             } finally {
                 await session.close();
             }
@@ -281,31 +306,31 @@ describe("OGM", () => {
         test("should create a pringles product", async () => {
             const session = driver.session();
 
-            const typeDefs = gql`
-                type Product {
+            const typeDefs = `
+                type ${typeProduct} {
                     id: ID!
                     name: String!
-                    sizes: [Size!]! @relationship(type: "HAS_SIZE", direction: OUT)
-                    colors: [Color!]! @relationship(type: "HAS_COLOR", direction: OUT)
-                    photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
+                    ${typeSize.plural}: [${typeSize}!]! @relationship(type: "HAS_SIZE", direction: OUT)
+                    ${typeColor.plural}: [${typeColor}!]! @relationship(type: "HAS_COLOR", direction: OUT)
+                    ${typePhoto.plural}: [${typePhoto}!]! @relationship(type: "HAS_PHOTO", direction: OUT)
                 }
 
-                type Size {
+                type ${typeSize} {
                     id: ID!
                     name: String!
                 }
 
-                type Color {
+                type ${typeColor} {
                     id: ID!
                     name: String!
-                    photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
+                    ${typePhoto.plural}: [${typePhoto}!]! @relationship(type: "OF_COLOR", direction: IN)
                 }
 
-                type Photo {
+                type ${typePhoto} {
                     id: ID!
                     description: String!
                     url: String!
-                    color: Color! @relationship(type: "OF_COLOR", direction: OUT)
+                    ${typeColor.plural}: ${typeColor}! @relationship(type: "OF_COLOR", direction: OUT)
                 }
             `;
 
@@ -367,26 +392,26 @@ describe("OGM", () => {
                 },
             ];
 
-            const Product = ogm.model("Product");
+            const Product = ogm.model(typeProduct.name);
 
-            const { products } = await Product.create({
+            const createResult = await Product.create({
                 input: [
                     {
                         ...product,
-                        sizes: { create: sizes.map((x) => ({ node: x })) },
-                        colors: { create: colors.map((x) => ({ node: x })) },
-                        photos: {
+                        [typeSize.plural]: { create: sizes.map((x) => ({ node: x })) },
+                        [typeColor.plural]: { create: colors.map((x) => ({ node: x })) },
+                        [typePhoto.plural]: {
                             create: [
                                 {
                                     node: {
                                         ...photos[0],
-                                        color: { connect: { where: { node: { id: colors[0].id } } } },
+                                        [typeColor.plural]: { connect: { where: { node: { id: colors[0].id } } } },
                                     },
                                 },
                                 {
                                     node: {
                                         ...photos[1],
-                                        color: { connect: { where: { node: { id: colors[1].id } } } },
+                                        [typeColor.plural]: { connect: { where: { node: { id: colors[1].id } } } },
                                     },
                                 },
                             ],
@@ -394,24 +419,24 @@ describe("OGM", () => {
                     },
                 ],
             });
-            const [createdProduct] = products;
+            const [createdProduct] = createResult[typeProduct.plural];
 
             expect(createdProduct.id).toEqual(product.id);
 
             const cypher = `
-                MATCH (product:Product {id: $id})
+                MATCH (product:${typeProduct} {id: $id})
                 CALL {
-                    MATCH (:Product {id: $id})-[:HAS_SIZE]->(size:Size)
+                    MATCH (:${typeProduct} {id: $id})-[:HAS_SIZE]->(size:${typeSize})
                     WITH collect(size.id) AS sizeIds
                     RETURN sizeIds
                 }
                 CALL {
-                    MATCH (:Product {id: $id})-[:HAS_COLOR]->(color:Color)
+                    MATCH (:${typeProduct} {id: $id})-[:HAS_COLOR]->(color:${typeColor})
                     WITH collect(color.id) AS colorIds
                     RETURN colorIds
                 }
                 CALL {
-                    MATCH (:Product {id: $id})-[:HAS_PHOTO]->(photo:Photo)-[:OF_COLOR]->(photoColor)
+                    MATCH (:${typeProduct} {id: $id})-[:HAS_PHOTO]->(photo:${typePhoto})-[:OF_COLOR]->(photoColor)
                     WITH collect(photo.id) AS photoIds, collect(photoColor.id) as photoColorIds
                     RETURN photoIds, photoColorIds
                 }
@@ -443,7 +468,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type Movie {
+                type ${typeMovie} {
                     id: ID!
                     name: String
                 }
@@ -468,7 +493,7 @@ describe("OGM", () => {
             try {
                 await session.run(
                     `
-                    CREATE (:Movie {id: $id, name: $initialName})
+                    CREATE (:${typeMovie} {id: $id, name: $initialName})
                 `,
                     {
                         id,
@@ -476,11 +501,11 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
-                const { movies } = await Movie.update({ where: { id }, update: { name: updatedName } });
+                const updateResult = await Movie.update({ where: { id }, update: { name: updatedName } });
 
-                expect(movies).toEqual([{ id, name: updatedName }]);
+                expect(updateResult[typeMovie.plural]).toEqual([{ id, name: updatedName }]);
             } finally {
                 await session.close();
             }
@@ -490,7 +515,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type Movie {
+                type ${typeMovie} {
                     id: ID!
                     name: String
                 }
@@ -519,8 +544,8 @@ describe("OGM", () => {
             try {
                 await session.run(
                     `
-                    CREATE (:Movie {id: $id1, name: $initialName})
-                    CREATE (:Movie {id: $id2, name: $initialName})
+                    CREATE (:${typeMovie} {id: $id1, name: $initialName})
+                    CREATE (:${typeMovie} {id: $id2, name: $initialName})
                 `,
                     {
                         id1,
@@ -529,14 +554,17 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
-                const { movies } = await Movie.update({ where: { id_IN: [id1, id2] }, update: { name: updatedName } });
+                const updateResult = await Movie.update({
+                    where: { id_IN: [id1, id2] },
+                    update: { name: updatedName },
+                });
 
-                const movie1 = movies.find((x) => x.id === id1);
+                const movie1 = updateResult[typeMovie.plural].find((x) => x.id === id1);
                 expect(movie1.name).toEqual(updatedName);
 
-                const movie2 = movies.find((x) => x.id === id2);
+                const movie2 = updateResult[typeMovie.plural].find((x) => x.id === id2);
                 expect(movie2.name).toEqual(updatedName);
             } finally {
                 await session.close();
@@ -546,15 +574,15 @@ describe("OGM", () => {
         test("should connect to a single node", async () => {
             const session = driver.session();
 
-            const typeDefs = gql`
-                type Actor {
+            const typeDefs = `
+                type ${typeActor} {
                     id: ID
-                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    ${typeMovie.plural}: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Movie {
+                type ${typeMovie} {
                     id: ID
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                    ${typeActor.plural}: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
 
@@ -573,8 +601,8 @@ describe("OGM", () => {
             try {
                 await session.run(
                     `
-                    CREATE (:Movie {id: $movieId})
-                    CREATE (:Actor {id: $actorId})
+                    CREATE (:${typeMovie} {id: $movieId})
+                    CREATE (:${typeActor} {id: $actorId})
                 `,
                     {
                         movieId,
@@ -582,16 +610,16 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
-                const { movies } = await Movie.update({
+                const updateResult = await Movie.update({
                     where: { id: movieId },
-                    connect: { actors: [{ where: { node: { id: actorId } } }] },
+                    connect: { [typeActor.plural]: [{ where: { node: { id: actorId } } }] },
                     selectionSet: `
                     {
-                        movies {
+                        ${typeMovie.plural} {
                             id
-                            actors {
+                            ${typeActor.plural} {
                                 id
                             }
                         }
@@ -599,7 +627,9 @@ describe("OGM", () => {
                 `,
                 });
 
-                expect(movies).toEqual([{ id: movieId, actors: [{ id: actorId }] }]);
+                expect(updateResult[typeMovie.plural]).toEqual([
+                    { id: movieId, [typeActor.plural]: [{ id: actorId }] },
+                ]);
             } finally {
                 await session.close();
             }
@@ -609,14 +639,14 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type Actor {
+                type ${typeActor} {
                     id: ID
-                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    ${typeMovie.plural}: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Movie {
+                type ${typeMovie} {
                     id: ID
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                    ${typeActor.plural}: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
 
@@ -635,23 +665,23 @@ describe("OGM", () => {
             try {
                 await session.run(
                     `
-                    CREATE (:Movie {id: $movieId})
+                    CREATE (:${typeMovie} {id: $movieId})
                 `,
                     {
                         movieId,
                     }
                 );
 
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
-                const { movies } = await Movie.update({
+                const updateResult = await Movie.update({
                     where: { id: movieId },
-                    create: { actors: [{ node: { id: actorId } }] },
+                    create: { [typeActor.plural]: [{ node: { id: actorId } }] },
                     selectionSet: `
                         {
-                            movies {
+                            ${typeMovie.plural} {
                                 id
-                                actors {
+                                ${typeActor.plural} {
                                     id
                                 }
                             }
@@ -659,7 +689,9 @@ describe("OGM", () => {
                     `,
                 });
 
-                expect(movies).toEqual([{ id: movieId, actors: [{ id: actorId }] }]);
+                expect(updateResult[typeMovie.plural]).toEqual([
+                    { id: movieId, [typeActor.plural]: [{ id: actorId }] },
+                ]);
             } finally {
                 await session.close();
             }
@@ -669,14 +701,14 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type Actor {
+                type ${typeActor} {
                     id: ID
-                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    ${typeMovie.plural}: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Movie {
+                type ${typeMovie} {
                     id: ID
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                    ${typeActor.plural}: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
 
@@ -695,8 +727,8 @@ describe("OGM", () => {
             try {
                 await session.run(
                     `
-                    CREATE (m:Movie {id: $movieId})
-                    CREATE (a:Actor {id: $actorId})
+                    CREATE (m:${typeMovie} {id: $movieId})
+                    CREATE (a:${typeActor} {id: $actorId})
                     MERGE (m)<-[:ACTED_IN]-(a)
                 `,
                     {
@@ -705,16 +737,16 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
-                const { movies } = await Movie.update({
+                const updateResult = await Movie.update({
                     where: { id: movieId },
-                    disconnect: { actors: [{ where: { node: { id: actorId } } }] },
+                    disconnect: { [typeActor.plural]: [{ where: { node: { id: actorId } } }] },
                     selectionSet: `
                         {
-                            movies {
+                            ${typeMovie.plural} {
                                 id
-                                actors {
+                                ${typeActor.plural} {
                                     id
                                 }
                             }
@@ -722,7 +754,7 @@ describe("OGM", () => {
                     `,
                 });
 
-                expect(movies).toEqual([{ id: movieId, actors: [] }]);
+                expect(updateResult[typeMovie.plural]).toEqual([{ id: movieId, [typeActor.plural]: [] }]);
             } finally {
                 await session.close();
             }
@@ -734,7 +766,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = gql`
-                type Movie {
+                type ${typeMovie} {
                     id: ID
                     name: String
                 }
@@ -750,12 +782,12 @@ describe("OGM", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Movie {id: "${id}"})
+                    CREATE (:${typeMovie} {id: "${id}"})
                 `);
 
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
-                const result = await Movie?.delete({ where: { id } });
+                const result = await Movie.delete({ where: { id } });
 
                 expect(result).toEqual({ nodesDeleted: 1, relationshipsDeleted: 0 });
             } finally {
@@ -766,13 +798,13 @@ describe("OGM", () => {
         test("should delete movie and nested genre", async () => {
             const session = driver.session();
 
-            const typeDefs = gql`
-                type Movie {
+            const typeDefs = `
+                type ${typeMovie} {
                     id: ID
-                    genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
+                    ${typeGenre.plural}: [${typeGenre}!]! @relationship(type: "IN_GENRE", direction: OUT)
                 }
 
-                type Genre {
+                type ${typeGenre} {
                     id: ID
                 }
             `;
@@ -790,14 +822,14 @@ describe("OGM", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Movie {id: "${movieId}"})-[:IN_GENRE]->(:Genre {id: "${genreId}"})
+                    CREATE (:${typeMovie} {id: "${movieId}"})-[:IN_GENRE]->(:${typeGenre} {id: "${genreId}"})
                 `);
 
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
-                const result = await Movie?.delete({
+                const result = await Movie.delete({
                     where: { id: movieId },
-                    delete: { genres: { where: { node: { id: genreId } } } },
+                    delete: { [typeGenre.plural]: { where: { node: { id: genreId } } } },
                 });
 
                 expect(result).toEqual({ nodesDeleted: 2, relationshipsDeleted: 1 });
@@ -847,7 +879,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = gql`
-                type Movie {
+                type ${typeMovie} {
                     testId: ID
                     title: String
                     imdbRating: Int
@@ -864,15 +896,15 @@ describe("OGM", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Movie {testId: "${testId}"})
-                    CREATE (:Movie {testId: "${testId}"})
-                    CREATE (:Movie {testId: "${testId}"})
-                    CREATE (:Movie {testId: "${testId}"})
+                    CREATE (:${typeMovie} {testId: "${testId}"})
+                    CREATE (:${typeMovie} {testId: "${testId}"})
+                    CREATE (:${typeMovie} {testId: "${testId}"})
+                    CREATE (:${typeMovie} {testId: "${testId}"})
                 `);
 
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
-                const result = await Movie?.aggregate({
+                const result = await Movie.aggregate({
                     where: { testId },
                     aggregate: {
                         count: true,
@@ -891,7 +923,7 @@ describe("OGM", () => {
             const session = driver.session();
 
             const typeDefs = gql`
-                type Movie {
+                type ${typeMovie} {
                     testId: ID
                     title: String
                     imdbRating: Int
@@ -908,15 +940,15 @@ describe("OGM", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Movie {testId: "${testId}", title: "1", imdbRating: 1})
-                    CREATE (:Movie {testId: "${testId}", title: "22", imdbRating: 2})
-                    CREATE (:Movie {testId: "${testId}", title: "333", imdbRating: 3})
-                    CREATE (:Movie {testId: "${testId}", title: "4444", imdbRating: 4})
+                    CREATE (:${typeMovie} {testId: "${testId}", title: "1", imdbRating: 1})
+                    CREATE (:${typeMovie} {testId: "${testId}", title: "22", imdbRating: 2})
+                    CREATE (:${typeMovie} {testId: "${testId}", title: "333", imdbRating: 3})
+                    CREATE (:${typeMovie} {testId: "${testId}", title: "4444", imdbRating: 4})
                 `);
 
-                const Movie = ogm.model("Movie");
+                const Movie = ogm.model(typeMovie.name);
 
-                const result = await Movie?.aggregate({
+                const result = await Movie.aggregate({
                     where: { testId },
                     aggregate: {
                         title: {

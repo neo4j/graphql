@@ -32,6 +32,7 @@ import type {
     EnumValueNode,
     UnionTypeDefinitionNode,
     ValueNode,
+    DirectiveNode,
 } from "graphql";
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
@@ -109,6 +110,7 @@ function getObjFieldMeta({
 }) {
     const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
     const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
+    const objIsJwtPayload = (obj.directives || []).find((d) => d.name.value === "jwtPayload");
 
     return obj?.fields?.reduce(
         (res: ObjectFields, field) => {
@@ -148,6 +150,7 @@ function getObjFieldMeta({
             const aliasDirective = directives.find((x) => x.name.value === "alias");
             const callbackDirective = directives.find((x) => x.name.value === "callback");
             const populatedByDirective = directives.find((x) => x.name.value === "populatedBy");
+            const jwtClaimDirective = directives.find((x) => x.name.value === "jwtClaim");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
@@ -168,6 +171,7 @@ function getObjFieldMeta({
                             "cypher",
                             "id",
                             "auth",
+                            "authorization",
                             "readonly",
                             "writeonly",
                             "computed",
@@ -179,6 +183,7 @@ function getObjFieldMeta({
                             "unique",
                             "callback",
                             "populatedBy",
+                            "jwtClaim",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -197,6 +202,17 @@ function getObjFieldMeta({
                 const aliasMeta = getAliasMeta(aliasDirective);
                 if (aliasMeta) {
                     baseField.dbPropertyName = aliasMeta.property;
+                }
+            }
+
+            if (jwtClaimDirective) {
+                if (!objIsJwtPayload) {
+                    throw new Error(
+                        "@jwtClaim directive can only be used on fields within a type annotated with @jwtPayload"
+                    );
+                }
+                if ((field.directives as DirectiveNode[]).length > 1) {
+                    throw new Error("@jwtClaim directive cannot be combined with other directives.");
                 }
             }
 
@@ -266,12 +282,17 @@ function getObjFieldMeta({
                 let connectionPrefix = obj.name.value;
 
                 if (obj.interfaces && obj.interfaces.length) {
+                    const firstInterface = obj.interfaces[0];
+                    if (!firstInterface) {
+                        throw new Error("Cannot get interface in getObjFieldMeta");
+                    }
+
                     const inter = interfaces.find(
-                        (i) => i.name.value === (obj.interfaces as NamedTypeNode[])[0].name.value
+                        (i) => i.name.value === firstInterface.name.value
                     ) as InterfaceTypeDefinitionNode;
 
                     if (inter.fields?.some((f) => f.name.value === baseField.fieldName)) {
-                        connectionPrefix = obj.interfaces[0].name.value;
+                        connectionPrefix = firstInterface.name.value;
                         relationField.inherited = true;
                     }
                 }

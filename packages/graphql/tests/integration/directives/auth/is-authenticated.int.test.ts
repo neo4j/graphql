@@ -35,6 +35,7 @@ describe("auth/is-authenticated", () => {
     let Product: UniqueType;
     let User: UniqueType;
 
+    const secret = "secret";
     const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
         secret: "secret",
     });
@@ -74,7 +75,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 {
@@ -113,7 +121,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 {
@@ -157,7 +172,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 mutation {
@@ -247,7 +269,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 mutation {
@@ -291,7 +320,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 mutation {
@@ -362,7 +398,14 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 mutation {
@@ -439,7 +482,14 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 mutation {
@@ -491,7 +541,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 mutation {
@@ -539,7 +596,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const userId = generate({
                 charset: "alphabetic",
@@ -596,7 +660,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 query {
@@ -639,7 +710,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 mutation {
@@ -685,7 +763,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 {

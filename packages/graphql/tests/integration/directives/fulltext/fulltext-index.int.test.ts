@@ -19,13 +19,12 @@
 
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
 import { delay } from "../../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
-import { testIf } from "../../../utils/test-if";
 
 describe("@fulltext directive - indexes constraints", () => {
     let driver: Driver;
@@ -75,7 +74,13 @@ describe("@fulltext directive - indexes constraints", () => {
         await driver.close();
     });
 
-    testIf(MULTIDB_SUPPORT)("should create index if it doesn't exist", async () => {
+    test("should create index if it doesn't exist", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
@@ -117,21 +122,23 @@ describe("@fulltext directive - indexes constraints", () => {
         `;
 
         try {
-            const result = await session.run(cypher);
+            const result = await session.run<{
+                result: {
+                    name: string;
+                    type: string;
+                    entityType: string;
+                    labelsOrTypes: string[];
+                    properties: string[];
+                };
+            }>(cypher);
 
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+            const record = result.records[0]?.get("result");
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([type.name]);
-            expect(record.properties).toEqual(["title"]);
+            expect(record?.name).toEqual(indexName);
+            expect(record?.type).toBe("FULLTEXT");
+            expect(record?.entityType).toBe("NODE");
+            expect(record?.labelsOrTypes).toEqual([type.name]);
+            expect(record?.properties).toEqual(["title"]);
 
             await session.run(`
                 CREATE (:${type.name} { title: "${title}" })
@@ -141,7 +148,12 @@ describe("@fulltext directive - indexes constraints", () => {
         }
     });
 
-    testIf(MULTIDB_SUPPORT)("should create index if it doesn't exist (using node label)", async () => {
+    test("should create index if it doesn't exist (using node label)", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const label = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
@@ -182,27 +194,34 @@ describe("@fulltext directive - indexes constraints", () => {
         `;
 
         try {
-            const result = await session.run(cypher);
+            const result = await session.run<{
+                result: {
+                    name: string;
+                    type: string;
+                    entityType: string;
+                    labelsOrTypes: string[];
+                    properties: string[];
+                };
+            }>(cypher);
 
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+            const record = result.records[0]?.get("result");
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([label]);
-            expect(record.properties).toEqual(["title"]);
+            expect(record?.name).toEqual(indexName);
+            expect(record?.type).toBe("FULLTEXT");
+            expect(record?.entityType).toBe("NODE");
+            expect(record?.labelsOrTypes).toEqual([label]);
+            expect(record?.properties).toEqual(["title"]);
         } finally {
             await session.close();
         }
     });
 
-    testIf(MULTIDB_SUPPORT)("should create index if it doesn't exist (using field alias)", async () => {
+    test("should create index if it doesn't exist (using field alias)", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const label = generate({ readable: true, charset: "alphabetic" });
@@ -244,21 +263,23 @@ describe("@fulltext directive - indexes constraints", () => {
         `;
 
         try {
-            const result = await session.run(cypher);
+            const result = await session.run<{
+                result: {
+                    name: string;
+                    type: string;
+                    entityType: string;
+                    labelsOrTypes: string[];
+                    properties: string[];
+                };
+            }>(cypher);
 
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+            const record = result.records[0]?.get("result");
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([label]);
-            expect(record.properties).toEqual(["newTitle"]);
+            expect(record?.name).toEqual(indexName);
+            expect(record?.type).toBe("FULLTEXT");
+            expect(record?.entityType).toBe("NODE");
+            expect(record?.labelsOrTypes).toEqual([label]);
+            expect(record?.properties).toEqual(["newTitle"]);
 
             await session.run(`
                 CREATE (:${label} { newTitle: "${title}" })
@@ -268,7 +289,12 @@ describe("@fulltext directive - indexes constraints", () => {
         }
     });
 
-    testIf(MULTIDB_SUPPORT)("should throw when missing index", async () => {
+    test("should throw when missing index", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
 
@@ -289,7 +315,12 @@ describe("@fulltext directive - indexes constraints", () => {
         ).rejects.toThrow(`Missing @fulltext index '${indexName}' on Node '${type.name}'`);
     });
 
-    testIf(MULTIDB_SUPPORT)("should throw when index is missing fields", async () => {
+    test("should throw when index is missing fields", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
 
@@ -323,7 +354,12 @@ describe("@fulltext directive - indexes constraints", () => {
         ).rejects.toThrow(`@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description'`);
     });
 
-    testIf(MULTIDB_SUPPORT)("should throw when index is missing fields (using field alias)", async () => {
+    test("should throw when index is missing fields (using field alias)", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const alias = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
@@ -362,7 +398,13 @@ describe("@fulltext directive - indexes constraints", () => {
         );
     });
 
-    testIf(MULTIDB_SUPPORT)("should create index if it doesn't exist and not throw if it does exist", async () => {
+    test("should create index if it doesn't exist and not throw if it does exist", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
         const title = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
@@ -413,21 +455,23 @@ describe("@fulltext directive - indexes constraints", () => {
         `;
 
         try {
-            const result = await session.run(cypher);
+            const result = await session.run<{
+                result: {
+                    name: string;
+                    type: string;
+                    entityType: string;
+                    labelsOrTypes: string[];
+                    properties: string[];
+                };
+            }>(cypher);
 
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+            const record = result.records[0]?.get("result");
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([type.name]);
-            expect(record.properties).toEqual(["title"]);
+            expect(record?.name).toEqual(indexName);
+            expect(record?.type).toBe("FULLTEXT");
+            expect(record?.entityType).toBe("NODE");
+            expect(record?.labelsOrTypes).toEqual([type.name]);
+            expect(record?.properties).toEqual(["title"]);
 
             await session.run(`
                 CREATE (:${type.name} { title: "${title}" })
@@ -437,7 +481,13 @@ describe("@fulltext directive - indexes constraints", () => {
         }
     });
 
-    testIf(MULTIDB_SUPPORT)("should throw when index is missing fields when used with create option", async () => {
+    test("should throw when index is missing fields when used with create option", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
 
@@ -474,7 +524,12 @@ describe("@fulltext directive - indexes constraints", () => {
         );
     });
 
-    testIf(MULTIDB_SUPPORT)("should create index for ID field if it doesn't exist", async () => {
+    test("should create index for ID field if it doesn't exist", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
         const id = generate({ readable: true, charset: "alphabetic" });
         const indexName = generate({ readable: true, charset: "alphabetic" });
         const type = new UniqueType("Movie");
@@ -516,21 +571,23 @@ describe("@fulltext directive - indexes constraints", () => {
         `;
 
         try {
-            const result = await session.run(cypher);
+            const result = await session.run<{
+                result: {
+                    name: string;
+                    type: string;
+                    entityType: string;
+                    labelsOrTypes: string[];
+                    properties: string[];
+                };
+            }>(cypher);
 
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
+            const record = result.records[0]?.get("result");
 
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([type.name]);
-            expect(record.properties).toEqual(["id"]);
+            expect(record?.name).toEqual(indexName);
+            expect(record?.type).toBe("FULLTEXT");
+            expect(record?.entityType).toBe("NODE");
+            expect(record?.labelsOrTypes).toEqual([type.name]);
+            expect(record?.properties).toEqual(["id"]);
 
             await session.run(`
                 CREATE (:${type.name} { id: "${id}" })

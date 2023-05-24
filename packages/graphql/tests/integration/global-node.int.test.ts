@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
@@ -80,11 +79,11 @@ describe("Global node resolution", () => {
 
             expect(mutationResult.errors).toBeUndefined();
 
-            const createdMovie = mutationResult.data[typeFilm.operations.create][typeFilm.plural][0];
+            const createdMovie = mutationResult.data[typeFilm.operations.create]?.[typeFilm.plural]?.[0];
 
-            const expectedId = toGlobalId({ typeName: typeFilm.name, field: "dbId", id: createdMovie.dbId });
+            const expectedId = toGlobalId({ typeName: typeFilm.name, field: "dbId", id: createdMovie?.dbId || "" });
 
-            expect(createdMovie.id).toEqual(expectedId);
+            expect(createdMovie?.id).toEqual(expectedId);
         } finally {
             await session.close();
         }
@@ -124,7 +123,7 @@ describe("Global node resolution", () => {
 
             const createdMovie = (mutationResult as { data: { [key: string]: Record<string, any> } }).data[
                 typeFilm.operations.create
-            ][typeFilm.plural][0];
+            ]?.[typeFilm.plural][0];
             expect(createdMovie).toEqual({ id: expectedId });
         } finally {
             await session.close();
@@ -178,7 +177,7 @@ describe("Global node resolution", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const movie = (gqlResult as { data: { [key: string]: Record<string, any>[] } }).data[typeFilm.plural][0];
+            const movie = (gqlResult as { data: { [key: string]: Record<string, any>[] } }).data[typeFilm.plural]?.[0];
             expect(movie).toEqual({ id: expectedId });
         } finally {
             await session.close();
@@ -476,10 +475,10 @@ describe("Global node resolution", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -487,9 +486,9 @@ describe("Global node resolution", () => {
             const mutation = `CREATE (this:${typeUser.name} { id: randomUUID(), name: "Johnny Appleseed" })-[:CREATED]->(film:${typeFilm.name} { title: randomUUID() }) RETURN this { id: this.dbId, film: film }`;
             const { records } = await session.run(mutation);
 
-            const record = records[0].toObject();
+            const record = records[0]?.toObject();
             // const dbId = record.this.dbId;
-            const filmTitle = record.this.film.properties.title;
+            const filmTitle = record?.this.film.properties.title;
 
             const req = createJwtRequest(secret, { sub: "invalid" });
 
@@ -530,19 +529,19 @@ describe("Global node resolution", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
         try {
             const mutation = `CREATE (this:${typeUser.name} { id: randomUUID(), name: "Johnny Appleseed" }) RETURN this`;
             const { records } = await session.run(mutation);
 
-            const record = records[0].toObject();
+            const record = records[0]?.toObject();
 
-            const userId = record.this.properties.id;
+            const userId = record?.this.properties.id;
             const relayId = toGlobalId({ typeName: typeUser.name, field: "dbId", id: userId });
 
             const req = createJwtRequest(secret, { sub: userId });
@@ -588,19 +587,19 @@ describe("Global node resolution", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
         try {
             const mutation = `CREATE (this:${typeUser.name} { id: randomUUID(), name: "Johnny Appleseed" }) RETURN this`;
             const { records } = await session.run(mutation);
 
-            const record = records[0].toObject();
+            const record = records[0]?.toObject();
 
-            const userId = record.this.properties.id;
+            const userId = record?.this.properties.id;
             const relayId = toGlobalId({ typeName: typeUser.name, field: "dbId", id: userId });
 
             const req = createJwtRequest(secret, { sub: userId });

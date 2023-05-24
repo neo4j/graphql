@@ -22,25 +22,19 @@ import { LOGICAL_OPERATORS } from "../../constants";
 
 export type LogicalOperator = (typeof LOGICAL_OPERATORS)[number];
 
-export function getCypherLogicalOperator(
-    graphQLOperator: LogicalOperator | string
-): (...predicates: Cypher.Predicate[]) => Cypher.BooleanOp;
-export function getCypherLogicalOperator(
-    graphQLOperator: LogicalOperator | string
-): (child: Cypher.Predicate) => Cypher.BooleanOp;
-export function getCypherLogicalOperator(
-    graphQLOperator: LogicalOperator | string
-): (
-    left: Cypher.Predicate,
-    right: Cypher.Predicate,
-    ...extra: Array<Cypher.Predicate | undefined>
-) => Cypher.BooleanOp {
+export function getLogicalPredicate(
+    graphQLOperator: LogicalOperator,
+    predicates: Cypher.Predicate[]
+): Cypher.Predicate | undefined {
+    if (predicates.length === 0) return undefined;
     if (graphQLOperator === "NOT") {
-        return Cypher.not;
+        const notPredicate = predicates[0];
+
+        return notPredicate ? Cypher.not(notPredicate) : undefined;
+    } else if (graphQLOperator === "AND") {
+        return Cypher.and(...predicates);
     } else if (graphQLOperator === "OR") {
-        return Cypher.or;
-    } else {
-        return Cypher.and;
+        return Cypher.or(...predicates);
     }
 }
 

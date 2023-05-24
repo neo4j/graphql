@@ -20,7 +20,6 @@
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { wrapSchema, FilterObjectFields } from "@graphql-tools/wrap";
 import { createData } from "./data";
 
 export async function startServer({ typeDefs, resolvers, driver }): Promise<string> {
@@ -28,19 +27,7 @@ export async function startServer({ typeDefs, resolvers, driver }): Promise<stri
 
     const neo4jgraphql = new Neo4jGraphQL({ typeDefs, resolvers, driver });
 
-    let schema = await neo4jgraphql.getSubgraphSchema();
-
-    const filter = (objectName, fieldName) => {
-        return !(
-            ["DeprecatedProduct", "Product", "ProductResearch"].includes(objectName) &&
-            (fieldName.endsWith("Aggregate") || fieldName.endsWith("Connection"))
-        );
-    };
-
-    schema = wrapSchema({
-        schema,
-        transforms: [new FilterObjectFields(filter)],
-    });
+    const schema = await neo4jgraphql.getSubgraphSchema();
 
     const server = new ApolloServer({
         schema,

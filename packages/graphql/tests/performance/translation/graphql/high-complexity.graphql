@@ -1,0 +1,29 @@
+query HighComplexityQuery {
+    movies {
+        released
+        tagline
+        title
+        actors {
+            born
+            name
+            movies {
+                released
+                tagline
+                title
+                actors {
+                    born
+                    name
+                    movies {
+                        released
+                        tagline
+                        title
+                        actors {
+                            born
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

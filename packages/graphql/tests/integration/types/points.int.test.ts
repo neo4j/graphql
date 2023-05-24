@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { int } from "neo4j-driver";
 import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
+import { int } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4j from "../neo4j";
 
 describe("[Point]", () => {
     let driver: Driver;
@@ -55,10 +55,10 @@ describe("[Point]", () => {
     });
 
     test("enables creation of a node with multiple wgs-84 points", async () => {
-        const id = faker.datatype.uuid();
-        const waypoints = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
+        const id = faker.string.uuid();
+        const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
+            longitude: parseFloat(faker.location.longitude().toString()),
+            latitude: parseFloat(faker.location.latitude().toString()),
         }));
 
         const create = `
@@ -96,7 +96,7 @@ describe("[Point]", () => {
             `);
 
         expect(
-            (result.records[0].toObject() as any).r.waypoints
+            (result.records[0]?.toObject() as any).r.waypoints
                 .map((waypoint) => {
                     expect(waypoint.srid).toEqual(int(4326));
                     return {
@@ -109,11 +109,11 @@ describe("[Point]", () => {
     });
 
     test("enables creation of a node with multiple wgs-84-3d points", async () => {
-        const id = faker.datatype.uuid();
-        const waypoints = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
-            height: faker.datatype.float(),
+        const id = faker.string.uuid();
+        const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
+            longitude: parseFloat(faker.location.longitude().toString()),
+            latitude: parseFloat(faker.location.latitude().toString()),
+            height: faker.number.float(),
         }));
 
         const create = `
@@ -151,7 +151,7 @@ describe("[Point]", () => {
             `);
 
         expect(
-            (result.records[0].toObject() as any).r.waypoints
+            (result.records[0]?.toObject() as any).r.waypoints
                 .map((waypoint) => {
                     expect(waypoint.srid).toEqual(int(4979));
                     return {
@@ -165,13 +165,13 @@ describe("[Point]", () => {
     });
 
     test("enables update of a node with multiple wgs-84 points", async () => {
-        const id = faker.datatype.uuid();
-        const waypoints = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
+        const id = faker.string.uuid();
+        const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
+            longitude: parseFloat(faker.location.longitude().toString()),
+            latitude: parseFloat(faker.location.latitude().toString()),
         }));
         const newWaypoints = waypoints.map((waypoint) => ({
-            longitude: parseFloat(faker.address.longitude()),
+            longitude: parseFloat(faker.location.longitude().toString()),
             latitude: waypoint.latitude,
         }));
 
@@ -191,7 +191,7 @@ describe("[Point]", () => {
         );
 
         expect(
-            (beforeResult.records[0].toObject() as any).r.waypoints
+            (beforeResult.records[0]?.toObject() as any).r.waypoints
                 .map((waypoint) => {
                     expect(waypoint.srid).toEqual(int(4326));
                     return {
@@ -237,7 +237,7 @@ describe("[Point]", () => {
             `);
 
         expect(
-            (result.records[0].toObject() as any).r.waypoints
+            (result.records[0]?.toObject() as any).r.waypoints
                 .map((waypoint) => {
                     expect(waypoint.srid).toEqual(int(4326));
                     return {
@@ -250,14 +250,14 @@ describe("[Point]", () => {
     });
 
     test("enables update of a node with multiple wgs-84-3d points", async () => {
-        const id = faker.datatype.uuid();
-        const waypoints = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
-            height: faker.datatype.float(),
+        const id = faker.string.uuid();
+        const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
+            longitude: parseFloat(faker.location.longitude().toString()),
+            latitude: parseFloat(faker.location.latitude().toString()),
+            height: faker.number.float(),
         }));
         const newWaypoints = waypoints.map((waypoint) => ({
-            longitude: parseFloat(faker.address.longitude()),
+            longitude: parseFloat(faker.location.longitude().toString()),
             latitude: waypoint.latitude,
             height: waypoint.height,
         }));
@@ -278,7 +278,7 @@ describe("[Point]", () => {
         );
 
         expect(
-            (beforeResult.records[0].toObject() as any).r.waypoints
+            (beforeResult.records[0]?.toObject() as any).r.waypoints
                 .map((waypoint) => {
                     expect(waypoint.srid).toEqual(int(4979));
                     return {
@@ -325,7 +325,7 @@ describe("[Point]", () => {
             `);
 
         expect(
-            (result.records[0].toObject() as any).r.waypoints
+            (result.records[0]?.toObject() as any).r.waypoints
                 .map((waypoint) => {
                     expect(waypoint.srid).toEqual(int(4979));
                     return {
@@ -340,10 +340,10 @@ describe("[Point]", () => {
 
     test("enables query of a node with multiple wgs-84 points", async () => {
         // Create test data and prepare for testing
-        const id = faker.datatype.uuid();
-        const waypoints = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
+        const id = faker.string.uuid();
+        const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
+            longitude: parseFloat(faker.location.longitude().toString()),
+            latitude: parseFloat(faker.location.latitude().toString()),
         }));
 
         await session.run(
@@ -438,8 +438,8 @@ describe("[Point]", () => {
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: {
                 waypoint: {
-                    longitude: parseFloat(faker.address.longitude()),
-                    latitude: parseFloat(faker.address.latitude()),
+                    longitude: parseFloat(faker.location.longitude().toString()),
+                    latitude: parseFloat(faker.location.latitude().toString()),
                 },
             },
         });
@@ -452,11 +452,11 @@ describe("[Point]", () => {
     });
 
     test("enables query of a node with multiple wgs-84-3d points", async () => {
-        const id = faker.datatype.uuid();
-        const waypoints = [...new Array(faker.datatype.number({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
-            height: faker.datatype.float(),
+        const id = faker.string.uuid();
+        const waypoints = [...new Array(faker.number.int({ min: 2, max: 10 }))].map(() => ({
+            longitude: parseFloat(faker.location.longitude().toString()),
+            latitude: parseFloat(faker.location.latitude().toString()),
+            height: faker.number.float(),
         }));
 
         await session.run(

@@ -96,6 +96,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ similarTitles: ["dummy", "movie"] });
         await createMovie({ similarTitles: ["mock"] });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -118,6 +120,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ similarIds: ["1", "12"] });
         await createMovie({ similarIds: ["11"] });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -142,6 +146,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ similarIds: [42] });
         await createMovie({ similarIds: [4, 2] });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -164,6 +170,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ allDates: [2020, 2019] });
         await createMovie({ allDates: [2019] });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -193,6 +201,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ allRatings: [6, 5.4] });
         await createMovie({ allRatings: [5.0] });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -217,6 +227,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
             allSizes: ["9223372036854775608", "922372036854775608"],
         });
         await createMovie({ allSizes: ["123"] });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -244,6 +256,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ similarTitles: ["movie", "movie"] });
         await createMovie({ similarTitles: ["mock"] });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -266,6 +280,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ similarIds: ["1", "12"] });
         await createMovie({ similarIds: ["11"] });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -290,6 +306,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ similarIds: [2, 4, 42] });
         await createMovie({ similarIds: [4, 2] });
 
+        await wsClient.waitForEvents(1);
+
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
@@ -312,6 +330,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         await createMovie({ allDates: [2020, 2018] });
         await createMovie({ allDates: [] });
+
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -359,6 +379,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
             allSizes: ["9223372036854775608", "922372036854775608"],
         });
         await createMovie({ allSizes: ["123"] });
+
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([

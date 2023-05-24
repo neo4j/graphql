@@ -132,7 +132,7 @@ describe("Enum Relationship Properties", () => {
                 RETURN ai
             `);
 
-            expect((result.records[0].toObject() as any).ai.properties).toEqual({ roleType: "Leading" });
+            expect((result.records[0]?.toObject() as any).ai.properties).toEqual({ roleType: "Leading" });
         } finally {
             await session.close();
         }

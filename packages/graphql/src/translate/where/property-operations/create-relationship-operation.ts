@@ -216,17 +216,22 @@ function createSimpleRelationshipPredicate({
             const isArray = relationField.typeMeta.array;
             const isRequired = relationField.typeMeta.required;
 
-            if (isArray || !isRequired) {
+            const isUnionField = Boolean(relationField.union);
+            if (isArray || !isRequired || isUnionField) {
                 const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1)).where(
                     innerOperation
                 );
                 return { predicate: Cypher.single(childNode, patternComprehension, new Cypher.Literal(true)) };
             }
 
-            const matchStatement = new Cypher.Match(matchPattern);
+            const matchStatement = new Cypher.OptionalMatch(matchPattern);
+            const countAlias = new Cypher.NamedVariable(`${relationField.fieldName}Count`);
+            const withStatement = new Cypher.With([Cypher.count(childNode), countAlias], "*");
+            const countNeqZero = Cypher.neq(countAlias, new Cypher.Literal(0));
+
             return {
-                predicate: innerOperation,
-                preComputedSubqueries: Cypher.concat(matchStatement),
+                predicate: Cypher.and(countNeqZero, innerOperation),
+                preComputedSubqueries: Cypher.concat(matchStatement, withStatement),
             };
         }
         case "not":

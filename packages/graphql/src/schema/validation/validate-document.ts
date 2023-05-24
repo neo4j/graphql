@@ -113,7 +113,7 @@ function filterDocument(document: DocumentNode): DocumentNode {
             .map((f) => ({
                 ...f,
                 arguments: filterInputTypes(f.arguments),
-                directives: f.directives?.filter((x) => !["auth"].includes(x.name.value)),
+                directives: f.directives?.filter((x) => !["auth", "authorization"].includes(x.name.value)),
             }));
     };
 
@@ -147,7 +147,7 @@ function filterDocument(document: DocumentNode): DocumentNode {
                     ...res,
                     {
                         ...def,
-                        directives: def.directives?.filter((x) => !["auth"].includes(x.name.value)),
+                        directives: def.directives?.filter((x) => !["auth", "authorization"].includes(x.name.value)),
                         fields,
                     },
                 ];

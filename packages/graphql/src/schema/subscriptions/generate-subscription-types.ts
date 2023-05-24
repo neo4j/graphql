@@ -35,17 +35,21 @@ import type {
 } from "../../types";
 import type { ObjectFields } from "../get-obj-field-meta";
 import { getConnectedTypes, hasProperties } from "./generate-subscription-connection-types";
+import type { SchemaConfiguration } from "../schema-configuration";
+import { getSchemaConfigurationFlags } from "../schema-configuration";
 
 export function generateSubscriptionTypes({
     schemaComposer,
     nodes,
     relationshipFields,
     interfaceCommonFields,
+    globalSchemaConfiguration,
 }: {
     schemaComposer: SchemaComposer;
     nodes: Node[];
     relationshipFields: Map<string, ObjectFields>;
     interfaceCommonFields: Map<string, ObjectFields>;
+    globalSchemaConfiguration: SchemaConfiguration;
 }): void {
     const subscriptionComposer = schemaComposer.Subscription;
 
@@ -64,7 +68,7 @@ export function generateSubscriptionTypes({
 
     const nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>> = new Map();
     nodesWithSubscriptionOperation.forEach((node) => {
-        const eventPayload = nodeNameToEventPayloadTypes[node.name];
+        const eventPayload = nodeNameToEventPayloadTypes[node.name] as ObjectTypeComposer;
         const where = generateSubscriptionWhereType(node, schemaComposer);
         const { subscriptionEventTypeNames, subscriptionEventPayloadFieldNames, rootTypeFieldNames } = node;
         const { subscribe: subscribeOperation } = rootTypeFieldNames;
@@ -254,26 +258,44 @@ export function generateSubscriptionTypes({
         }
 
         const whereArgument = where && { args: { where } };
-        subscriptionComposer.addFields({
-            [subscribeOperation.created]: {
-                ...whereArgument,
-                type: nodeCreatedEvent.NonNull,
-                subscribe: generateSubscribeMethod({ node, type: "create" }),
-                resolve: subscriptionResolve,
-            },
-            [subscribeOperation.updated]: {
-                ...whereArgument,
-                type: nodeUpdatedEvent.NonNull,
-                subscribe: generateSubscribeMethod({ node, type: "update" }),
-                resolve: subscriptionResolve,
-            },
-            [subscribeOperation.deleted]: {
-                ...whereArgument,
-                type: nodeDeletedEvent.NonNull,
-                subscribe: generateSubscribeMethod({ node, type: "delete" }),
-                resolve: subscriptionResolve,
-            },
+
+        const schemaConfigurationFlags = getSchemaConfigurationFlags({
+            globalSchemaConfiguration,
+            nodeSchemaConfiguration: node.schemaConfiguration,
+            excludeDirective: node.exclude,
         });
+        
+        if (schemaConfigurationFlags.subscribeCreate) {
+            subscriptionComposer.addFields({
+                [subscribeOperation.created]: {
+                    ...whereArgument,
+                    type: nodeCreatedEvent.NonNull,
+                    subscribe: generateSubscribeMethod({ node, type: "create" }),
+                    resolve: subscriptionResolve,
+                },
+            });
+        }
+        if (schemaConfigurationFlags.subscribeUpdate) {
+            subscriptionComposer.addFields({
+                [subscribeOperation.updated]: {
+                    ...whereArgument,
+                    type: nodeUpdatedEvent.NonNull,
+                    subscribe: generateSubscribeMethod({ node, type: "update" }),
+                    resolve: subscriptionResolve,
+                },
+            });
+        }
+
+        if (schemaConfigurationFlags.subscribeDelete) {
+            subscriptionComposer.addFields({
+                [subscribeOperation.deleted]: {
+                    ...whereArgument,
+                    type: nodeDeletedEvent.NonNull,
+                    subscribe: generateSubscribeMethod({ node, type: "delete" }),
+                    resolve: subscriptionResolve,
+                },
+            });
+        }
 
         const connectionWhere = generateSubscriptionConnectionWhereType({
             node,
@@ -282,30 +304,36 @@ export function generateSubscriptionTypes({
             interfaceCommonFields,
         });
         if (node.relationFields.length > 0) {
-            subscriptionComposer.addFields({
-                [subscribeOperation.relationship_created]: {
-                    ...(connectionWhere?.created && { args: { where: connectionWhere?.created } }),
-                    type: relationshipCreatedEvent.NonNull,
-                    subscribe: generateSubscribeMethod({
-                        node,
-                        type: "create_relationship",
-                        nodes,
-                        relationshipFields,
-                    }),
-                    resolve: subscriptionResolve,
-                },
-                [subscribeOperation.relationship_deleted]: {
-                    ...(connectionWhere?.deleted && { args: { where: connectionWhere?.deleted } }),
-                    type: relationshipDeletedEvent.NonNull,
-                    subscribe: generateSubscribeMethod({
-                        node,
-                        type: "delete_relationship",
-                        nodes,
-                        relationshipFields,
-                    }),
-                    resolve: subscriptionResolve,
-                },
-            });
+            if (schemaConfigurationFlags.subscribeCreateRelationship) {
+                subscriptionComposer.addFields({
+                    [subscribeOperation.relationship_created]: {
+                        ...(connectionWhere?.created && { args: { where: connectionWhere?.created } }),
+                        type: relationshipCreatedEvent.NonNull,
+                        subscribe: generateSubscribeMethod({
+                            node,
+                            type: "create_relationship",
+                            nodes,
+                            relationshipFields,
+                        }),
+                        resolve: subscriptionResolve,
+                    },
+                });
+            }
+            if (schemaConfigurationFlags.subscribeDeleteRelationship) {
+                subscriptionComposer.addFields({
+                    [subscribeOperation.relationship_deleted]: {
+                        ...(connectionWhere?.deleted && { args: { where: connectionWhere?.deleted } }),
+                        type: relationshipDeletedEvent.NonNull,
+                        subscribe: generateSubscribeMethod({
+                            node,
+                            type: "delete_relationship",
+                            nodes,
+                            relationshipFields,
+                        }),
+                        resolve: subscriptionResolve,
+                    },
+                });
+            }
         }
     });
 }

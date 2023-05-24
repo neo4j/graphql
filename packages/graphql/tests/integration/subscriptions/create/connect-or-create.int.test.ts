@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
+import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Integer, Session } from "neo4j-driver";
@@ -117,8 +117,8 @@ describe("Create -> ConnectOrCreate", () => {
         `);
 
         expect(movieTitleAndId.records).toHaveLength(1);
-        expect(movieTitleAndId.records[0].toObject().title).toBe("The Terminal");
-        expect((movieTitleAndId.records[0].toObject().id as Integer).toNumber()).toBe(5);
+        expect(movieTitleAndId.records[0]?.toObject().title).toBe("The Terminal");
+        expect((movieTitleAndId.records[0]?.toObject().id as Integer).toNumber()).toBe(5);
 
         const actedInRelation = await session.run(`
             MATCH (:${typeMovie.name} {id: 5})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks"})

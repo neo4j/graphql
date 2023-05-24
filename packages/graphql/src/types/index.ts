@@ -19,9 +19,10 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import type { EventEmitter } from "events";
-import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
+import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema, GraphQLResolveInfo } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
+import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
 import type { Node, Relationship } from "../classes";
 import type { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 import type { RelationshipQueryDirectionOption } from "../constants";
@@ -43,6 +44,7 @@ export interface Context {
     driver?: Driver;
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
+    info: GraphQLResolveInfo;
     neo4jDatabaseInfo: Neo4jDatabaseInfo;
     nodes: Node[];
     relationships: Relationship[];
@@ -53,8 +55,10 @@ export interface Context {
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
+    addMeasurementsToExtension: boolean;
     executionContext: Driver | Session | Transaction;
     executor: Executor;
+    extensions?: Record<string, any>;
     [k: string]: any;
 }
 
@@ -507,10 +511,26 @@ export interface Neo4jFiltersSettings {
 export interface Neo4jPopulatedBySettings {
     callbacks?: Neo4jGraphQLCallbacks;
 }
+export interface Neo4jAuthorizationSettings {
+    key: Key | ((req: RequestLike) => Key);
+    verify?: boolean;
+    verifyOptions?: JWTVerifyOptions;
+}
+export interface RemoteJWKS {
+    url: string | URL;
+    options?: RemoteJWKSetOptions;
+}
+export type Key = string | RemoteJWKS;
+export type RequestLike = {
+    headers?: { authorization?: string; Authorization?: string };
+    rawHeaders?: Array<string>;
+    cookies?: { token?: string };
+};
 
 export interface Neo4jFeaturesSettings {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
+    authorization?: Neo4jAuthorizationSettings;
 }
 
 export type PredicateReturn = {

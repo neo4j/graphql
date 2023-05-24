@@ -218,12 +218,12 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             },
         });
 
-        const dbResult = await session.run(`
+        const dbResult: any = await session.run(`
             MATCH (mandate:${Mandate.name})-[:HAS_VALUATION]->(valuation:${Valuation.name})-[:VALUATION_FOR]->(estate:${Estate.name})-[:HAS_ADDRESS]->(address:${Address.name})-[:HAS_POSTAL_CODE]->(postalCode:${PostalCode.name})
             RETURN mandate, valuation, estate, address, postalCode
         `);
         const nodes = Object.fromEntries(
-            Object.entries(dbResult.records[0].toObject()).map(([key, value]) => [key, value.properties])
+            Object.entries(dbResult.records[0].toObject()).map(([key, value]) => [key, (value as any).properties])
         );
 
         expect(nodes).toEqual({
@@ -346,12 +346,12 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             },
         });
 
-        const dbResult = await session.run(`
+        const dbResult: any = await session.run(`
             MATCH (mandate:${Mandate.name})-[:HAS_VALUATION]->(valuation:${Valuation.name})-[:VALUATION_FOR]->(estate:${Estate.name})-[:HAS_ADDRESS]->(address:${Address.name})<-[:HAS_ADDRESS]-(estate2:${Estate.name})
             RETURN mandate, valuation, estate, address, estate2
         `);
         const nodes = Object.fromEntries(
-            Object.entries(dbResult.records[0].toObject()).map(([key, value]) => [key, value.properties])
+            Object.entries(dbResult.records[0].toObject()).map(([key, value]) => [key, (value as any).properties])
         );
 
         expect(nodes).toEqual({

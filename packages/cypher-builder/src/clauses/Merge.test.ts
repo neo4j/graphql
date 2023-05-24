@@ -29,10 +29,10 @@ describe("CypherBuilder Merge", () => {
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-                "MERGE (this0:\`MyLabel\`)
-                ON CREATE SET
-                    this0.age = $param0"
-            `);
+            "MERGE (this0:\`MyLabel\`)
+            ON CREATE SET
+                this0.age = $param0"
+        `);
         expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
                   "param0": 23,
@@ -56,10 +56,10 @@ describe("CypherBuilder Merge", () => {
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-                "MERGE (this0:\`MyLabel\` { test: $param0 })
-                ON CREATE SET
-                    this0.age = $param1"
-            `);
+            "MERGE (this0:\`MyLabel\` { test: $param0 })
+            ON CREATE SET
+                this0.age = $param1"
+        `);
         expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
                   "param0": "test",
@@ -136,5 +136,20 @@ describe("CypherBuilder Merge", () => {
               "param2": 10,
             }
         `);
+    });
+
+    test("Merge node and delete", () => {
+        const node = new Cypher.Node({
+            labels: ["MyLabel"],
+        });
+
+        const query = new Cypher.Merge(node).delete(node);
+
+        const queryResult = query.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "MERGE (this0:\`MyLabel\`)
+            DELETE this0"
+        `);
+        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
 });

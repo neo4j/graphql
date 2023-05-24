@@ -484,8 +484,9 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
             const urlRegex = /url:(".+?")/;
             // skip definitions
             if (urlRegex.test(element)) {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const linkUrl = JSON.parse(element.match(urlRegex)![1]);
+                const rawLink = element.match(urlRegex)?.[1] as string;
+
+                const linkUrl = JSON.parse(rawLink);
                 const linkUrlSpecVersionRegex = /https:\/\/specs.apollo.dev\/federation\/v(.+)/;
                 // only verify federation spec @links
                 if (linkUrlSpecVersionRegex.test(linkUrl)) {
@@ -514,7 +515,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
                         ];
 
                         const linkImportsMatch = element.match(linkImportsRegex);
-                        const linkImports = linkImportsMatch?.[1].split(" ");
+                        const linkImports = (linkImportsMatch?.[1] as string).split(" ");
                         linkImports?.forEach((importedElement) => {
                             if (!expected.includes(importedElement.replaceAll('"', ""))) {
                                 // eslint-disable-next-line jest/no-conditional-expect

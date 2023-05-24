@@ -78,7 +78,7 @@ export function createMatchClause({
         if (Object.entries(fulltextInput).length > 1) {
             throw new Error("Can only call one search at any given time");
         }
-        const [indexName, indexInput] = Object.entries(fulltextInput)[0];
+        const [indexName, indexInput] = Object.entries(fulltextInput)[0] as [string, { phrase: string }];
         const phraseParam = new Cypher.Param(indexInput.phrase);
 
         matchClause = Cypher.db.index.fulltext.queryNodes(indexName, phraseParam).yield(["node", matchNode]);

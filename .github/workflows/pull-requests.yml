@@ -37,9 +37,6 @@ jobs:
   package-tests:
     uses: ./.github/workflows/reusable-package-tests.yml
 
-  neo-push-tests:
-    uses: ./.github/workflows/reusable-neo-push-tests.yml
-
   typescript-changes:
     runs-on: ubuntu-latest
 
@@ -99,7 +96,6 @@ jobs:
       - reviewdog-eslint
       - code-scanning
       - package-tests
-      - neo-push-tests
       - license-header-check
       - unit-tests
       - e2e-tests-plugins

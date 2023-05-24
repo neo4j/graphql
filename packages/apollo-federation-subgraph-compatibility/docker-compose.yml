@@ -14,7 +14,7 @@ services:
       interval: 1s
       timeout: 1s
       retries: 40
-  server:
+  products:
     build: .
     ports:
       - "4001:4001"

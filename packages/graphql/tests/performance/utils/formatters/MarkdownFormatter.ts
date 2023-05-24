@@ -67,6 +67,8 @@ ${nonDiffTable}
 
             if (key in comparisonData) {
                 const comparisonItem = comparisonData[key];
+                if (!comparisonItem) throw new Error("Performance test: comparisonData not found");
+
                 const diff = item.result.dbHits - comparisonItem.result.dbHits;
                 if (diff >= 0 && diff / comparisonItem.result.dbHits >= 0.1) {
                     prefix = "🟥";
@@ -81,8 +83,11 @@ ${nonDiffTable}
                 let oldTime = "N/A" as string | number;
                 let oldDbHits = "N/A" as string | number;
                 if (key in comparisonData) {
-                    oldTime = comparisonData[key].result.time;
-                    oldDbHits = comparisonData[key].result.dbHits;
+                    const comparisonItem = comparisonData[key];
+                    if (!comparisonItem) throw new Error("Performance test: comparisonData not found");
+
+                    oldTime = comparisonItem.result.time;
+                    oldDbHits = comparisonItem.result.dbHits;
                 }
 
                 table += `| ${prefix} ${key} | ${item.result.dbHits} | ${oldDbHits} | ${item.result.time} | ${oldTime} | ${item.result.maxRows} |\n`;

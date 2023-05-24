@@ -1,5 +1,69 @@
 # @neo4j/graphql
 
+## 3.19.0
+
+### Minor Changes
+
+-   [#3333](https://github.com/neo4j/graphql/pull/3333) [`cc08bcd8a`](https://github.com/neo4j/graphql/commit/cc08bcd8a07044e38380fada05893de980351644) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Introduced top-level schema configuration, `@query`, `@mutation`, `@subscription`.
+
+    Usage:
+
+    ```graphql
+    type User @query(read: false) @mutation(operations: [CREATE, DELETE]) {
+        name: String
+    }
+    extend schema @subscription(operations: [CREATE])
+    ```
+
+### Patch Changes
+
+-   [#3344](https://github.com/neo4j/graphql/pull/3344) [`dcfe28b49`](https://github.com/neo4j/graphql/commit/dcfe28b4912bb328a03caab48991f0903f000751) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix relationship validation when an update and connect are used in the same Mutation.
+
+-   [#3322](https://github.com/neo4j/graphql/pull/3322) [`ce573b770`](https://github.com/neo4j/graphql/commit/ce573b7705a01caadcc1ad10984f85976451ca2c) Thanks [@angrykoala](https://github.com/angrykoala)! - Optimise query source metadata in executor
+
+-   [#3341](https://github.com/neo4j/graphql/pull/3341) [`43e189c14`](https://github.com/neo4j/graphql/commit/43e189c14853cd626e14b53338b4ef0ca7e489b8) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Neo4jGraphQL class, added public method to validate the type definitions
+
+## 3.18.3
+
+### Patch Changes
+
+-   [#3264](https://github.com/neo4j/graphql/pull/3264) [`e8092aa85`](https://github.com/neo4j/graphql/commit/e8092aa855244f7da21bb82f874bfda534a6fa4b) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Federation: Setting `@key` resolvable to false no longer prevents queries and mutations for a type from being generated.
+
+-   [#3309](https://github.com/neo4j/graphql/pull/3309) [`99fe4b4b8`](https://github.com/neo4j/graphql/commit/99fe4b4b813538fa985111918bf6ffe2ef458f05) Thanks [@angrykoala](https://github.com/angrykoala)! - Improve server performance for large schemas when querying
+
+-   Updated dependencies [[`2d3661476`](https://github.com/neo4j/graphql/commit/2d3661476b78713d11b6d74a8db8c7af51d18989)]:
+    -   @neo4j/cypher-builder@0.4.2
+
+## 3.18.2
+
+### Patch Changes
+
+-   [#3216](https://github.com/neo4j/graphql/pull/3216) [`a8aabfeca`](https://github.com/neo4j/graphql/commit/a8aabfecad39b371fa82d16ea00e1e45d4044d05) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix error in logical operations on optional parameters #3215
+
+-   [#3192](https://github.com/neo4j/graphql/pull/3192) [`8657dff82`](https://github.com/neo4j/graphql/commit/8657dff8274ea3d3a4a42c18c8e81232748cbeff) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Source query and params are added to driver transaction config to aid with debugging the library from database query logs.
+
+-   Updated dependencies [[`f0d6d45b0`](https://github.com/neo4j/graphql/commit/f0d6d45b07cc65081ede71ce98efc916ce506977), [`f0d6d45b0`](https://github.com/neo4j/graphql/commit/f0d6d45b07cc65081ede71ce98efc916ce506977)]:
+    -   @neo4j/cypher-builder@0.4.1
+
+## 3.18.1
+
+### Patch Changes
+
+-   [#3183](https://github.com/neo4j/graphql/pull/3183) [`cbc15970c`](https://github.com/neo4j/graphql/commit/cbc15970cd87e5cdcfbae40ce5bacf1fb819ade8) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix query by edge property on union type
+
+## 3.18.0
+
+### Minor Changes
+
+-   [#3076](https://github.com/neo4j/graphql/pull/3076) [`7a2f2acc4`](https://github.com/neo4j/graphql/commit/7a2f2acc434d1996a4b3785416acb0c46ad7f199) Thanks [@mjfwebb](https://github.com/mjfwebb)! - enableRegex has been deprecated and replaced with MATCHES filters in the features configuration object.
+
+-   [#3085](https://github.com/neo4j/graphql/pull/3085) [`ce5fb9eb3`](https://github.com/neo4j/graphql/commit/ce5fb9eb36a08dde95de605b49f842876b1c1515) Thanks [@mjfwebb](https://github.com/mjfwebb)! - config.callbacks has been deprecated and replaced with features.populatedBy.callbacks. See https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby for more information.
+
+### Patch Changes
+
+-   Updated dependencies [[`2bc2c7019`](https://github.com/neo4j/graphql/commit/2bc2c70196c084f850aaf5b17838b0a66eaca79c), [`0d7a140ae`](https://github.com/neo4j/graphql/commit/0d7a140aea93eca94c03bcd49fda9ee9dfa5ae2b), [`d47624ea1`](https://github.com/neo4j/graphql/commit/d47624ea1b1b79401c59d326b4d0e31e64a1545d), [`bfae63097`](https://github.com/neo4j/graphql/commit/bfae6309717ab936768cab7e5e2a1a20bbff60da), [`b276bbae2`](https://github.com/neo4j/graphql/commit/b276bbae29ead5b110f28984cc77914755ac4c22), [`a04ef4469`](https://github.com/neo4j/graphql/commit/a04ef44692e744e3154a74c5ac2c73f323732fc7)]:
+    -   @neo4j/cypher-builder@0.4.0
+
 ## 3.17.2
 
 ### Patch Changes
