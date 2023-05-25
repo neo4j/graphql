@@ -24,13 +24,29 @@ import { ClauseMixin } from "./ClauseMixin";
 export abstract class WithReturn extends ClauseMixin {
     protected returnStatement: Return | undefined;
 
-    public return(...columns: Array<"*" | ProjectionColumn>): Return {
-        if (this.returnStatement) {
-            this.returnStatement.addColumns(...columns);
-        } else {
-            this.returnStatement = new Return(...columns);
-            this.addChildren(this.returnStatement);
+    public return(clause: Return): Return;
+    public return(...columns: Array<"*" | ProjectionColumn>): Return;
+    public return(clauseOrColumn: Return | "*" | ProjectionColumn, ...columns: Array<"*" | ProjectionColumn>): Return {
+        if (clauseOrColumn instanceof Return) {
+            return this.addReturnStatement(clauseOrColumn);
         }
-        return this.returnStatement;
+
+        return this.addColumnsToReturnClause(clauseOrColumn, ...columns);
+    }
+
+    private addColumnsToReturnClause(...columns: Array<"*" | ProjectionColumn>): Return {
+        let returnStatement = this.returnStatement;
+        if (!returnStatement) {
+            returnStatement = this.addReturnStatement(new Return());
+        }
+
+        returnStatement.addColumns(...columns);
+        return returnStatement;
+    }
+
+    private addReturnStatement(clause: Return): Return {
+        this.returnStatement = clause;
+        this.addChildren(this.returnStatement);
+        return clause;
     }
 }
