@@ -17,6 +17,7 @@
         "**/tests/**",
         "**/__fixtures__/**"
     ],
+    "ignoreDeps": ["neo4j"],
     "packageRules": [
         {
             "matchPackageNames": ["@neo4j/graphql-toolbox"],
