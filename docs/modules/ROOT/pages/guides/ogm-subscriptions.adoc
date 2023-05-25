@@ -26,7 +26,7 @@ const typeDefs = `#graphql
 const subscriptionsPlugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
 ----
 
-And a server that supports subscriptions, as per the xref:subscriptions/getting-started.adoc#setting-up-server[subscriptions reference usage].
+. Set up a server that supports subscriptions according to the xref:subscriptions/getting-started.adoc#setting-up-server[subscriptions reference usage].
 
 
 === Adding the OGM
@@ -46,7 +46,7 @@ Make sure you initialize the OGM instance before using it by adding the followin
 await ogm.init();
 ----
 
-=== The custom resolver
+=== Adding a custom resolver
 
 Custom resolvers can be used for multiple reasons such as performing data manipulation and checks, or interact with third party systems. 
 In this case, you only need to create a `User` node with the `password` field set.
@@ -84,7 +84,10 @@ const typeDefs = `
 `
 ----
 
-=== Putting it all together
+[discrete]
+=== Conclusion
+
+Altogether, it should look like this:
 
 [source, javascript, indent=0]
 ----
