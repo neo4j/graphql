@@ -77,6 +77,7 @@
 ** xref:driver-configuration.adoc[]
 ** xref:guides/index.adoc[]
 *** xref:guides/apollo-federation.adoc[]
+*** xref:guides/ogm-subscriptions.adoc[]
 *** xref:guides/frameworks/nextjs.adoc[]
 *** xref:guides/migration-guide/index.adoc[]
 **** xref:guides/migration-guide/server.adoc[]

@@ -1,0 +1,241 @@
+[[ogm-subscriptions]]
+= How to use the OGM with subscriptions
+
+The Neo4j GraphQL Library can be used in conjunction with the Neo4j OGM in order to extend the Library's functionalities, or to take advantage of the xref:ogm/private.adoc[`@private` directive]. 
+
+== Usage
+
+This section shows you how to use subscriptions with the OGM inside custom resolvers.
+
+=== Prerequisites
+
+Considering the following type definitions:
+[source, javascript, indent=0]
+----
+const typeDefs = `#graphql
+    type User {
+      email: String!
+      password: String! @private
+    }
+`;
+----
+
+A subscriptions plugin instance to be shared between the Library and the OGM constructors:
+[source, javascript, indent=0]
+----
+const subscriptionsPlugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
+----
+
+And a server that supports subscriptions, as per the xref:subscriptions/getting-started.adoc#setting-up-server[subscriptions reference usage].
+
+
+=== Adding in the OGM
+
+Two things here. 
+As we want to utilize the `@private` marked field on the `User` type, we need to create the `User` model.
+Also, in order to use the subscriptions, we need to pass in the subscriptions plugin instance to the OGM constructor:
+
+[source, javascript, indent=0]
+----
+const ogm = new OGM({ typeDefs, driver, plugins: { subscriptions: subscriptionsPlugin } });
+const Profile = ogm.model("Profile");
+----
+
+Make sure you initialize the ogm instance before using it by adding the following line to the `main()` function:
+[source, javascript, indent=0]
+----
+await ogm.init();
+----
+
+=== The custom resolver
+
+Custom resolvers can be utilized for multiple reasons: to perform data manipulation, perform checks or interact with 3rd party systems to list a few. In this case, we are only interested in creating a `User` node with the `password` field set.
+Let's add for example a sign-up mutation:
+
+[source, javascript, indent=0]
+----
+const resolvers = {
+  Mutation: {
+    signUp: async (_source, { username, password }) => {
+      const [existing] = await User.find({
+          where: {
+              username,
+          },
+      });
+      if (existing) {
+          throw new Error(`User with username ${username} already exists!`);
+      }
+      const { users } = await User.create({
+          input: [
+              {
+                  username,
+                  password,
+              }
+          ]
+      });
+      return createJWT({ sub: users[0].id });
+    },
+  },
+};
+const typeDefs = `
+   type Mutation {
+        signUp(username: String!, password: String!): String!
+    }
+`
+----
+
+=== Putting it all together
+
+[source, javascript, indent=0]
+----
+const subscriptionsPlugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
+const driver = neo4j.driver(
+  "bolt://localhost:7687",
+  neo4j.auth.basic("neo4j", "password")
+);
+const typeDefs = `
+  type User {
+   email: String!
+   password: String! @private
+  }
+  type Mutation {
+    signUp(username: String!, password: String!): String! # custom resolver
+  }
+`
+const resolvers = {
+  Mutation: {
+    signUp: async (_source, { username, password }) => {
+      const [existing] = await User.find({
+          where: {
+              username,
+          },
+      });
+      if (existing) {
+          throw new Error(`User with username ${username} already exists!`);
+      }
+      const { users } = await User.create({
+          input: [
+              {
+                  username,
+                  password,
+              }
+          ]
+      });
+      return createJWT({ sub: users[0].id });
+    },
+  },
+};
+// Share the subscriptions plugin instance across the Library and the OGM
+const neoSchema = new Neo4jGraphQL({
+  typeDefs,
+  driver,
+  resolvers,
+  plugins: {
+    subscriptions: subscriptionsPlugin,
+  },
+});
+const ogm = new OGM({ typeDefs, driver, plugins: { subscriptions: subscriptionsPlugin } });
+const Profile = ogm.model("Profile");
+
+async function main() {
+  // initialize the OGM instance
+  await ogm.init();
+
+   // Apollo server setup with WebSockets
+  const app = express();
+  const httpServer = createServer(app);
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/graphql",
+  });
+
+  // Neo4j schema
+  const schema = await neoSchema.getSchema();
+
+  const serverCleanup = useServer(
+    {
+      schema,
+      context: (ctx) => {
+        return ctx;
+      },
+    },
+    wsServer
+  );
+
+  const server = new ApolloServer({
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({
+        httpServer,
+      }),
+      {
+        async serverWillStart() {
+          return Promise.resolve({
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          });
+        },
+      },
+    ],
+  });
+  await server.start();
+
+  app.use(
+    "/graphql",
+    cors(),
+    bodyParser.json(),
+    expressMiddleware(server, {
+      context: async ({ req }) => ({ req }),
+    })
+  );
+
+  const PORT = 4000;
+  httpServer.listen(PORT, () => {
+    console.log(`Server is now running on http://localhost:${PORT}/graphql`);
+  });
+}
+----
+
+
+== Receiving the subscription events
+
+We first run the following subscription in order to receive `User` creation events:
+[source, gql, indent=0]
+----
+subscription {
+  userCreated {
+    createdUser {
+      email
+    }
+    event
+  }
+}
+----
+
+At this point, running the sign-up mutation:
+[source, gql, indent=0]
+----
+mutation {
+  signUp(email: "jon.doe@xyz.com", password: "jondoe") {
+    email
+    password
+  }
+}
+----
+
+Results in the following event:
+[source, gql, indent=0]
+----
+{
+  "data": {
+    "userCreated": {
+      "createdUser": {
+        "email": "jon.doe@xyz.com",
+        "password": "jondoe"
+      },
+      "event": "CREATE"
+    }
+  }
+}
+----

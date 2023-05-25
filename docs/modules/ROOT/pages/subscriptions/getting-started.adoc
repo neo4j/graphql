@@ -6,6 +6,7 @@ To get started with subscriptions you need a GraphQL server with subscription ca
 == Example using Apollo and WebSockets
 For this example, we will use link:https://www.apollographql.com/[Apollo] and link:https://github.com/enisdenjo/graphql-ws[graphql-ws].
 
+[setting-up-server]
 === Setting up the server
 
 Install the following dependencies:
