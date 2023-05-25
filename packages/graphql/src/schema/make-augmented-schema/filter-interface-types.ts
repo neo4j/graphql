@@ -32,19 +32,11 @@ export function filterInterfaceTypes(
     const interfaceRelationships: InterfaceTypeDefinitionNode[] = [];
     const filteredInterfaceTypes: InterfaceTypeDefinitionNode[] = [];
     for (const interfaceType of interfaceTypes) {
-        let matched = false;
-
         if (relationshipPropertyInterfaceNames.has(interfaceType.name.value)) {
             relationshipProperties.push(interfaceType);
-            matched = true;
-        }
-
-        if (interfaceRelationshipNames.has(interfaceType.name.value)) {
+        } else if (interfaceRelationshipNames.has(interfaceType.name.value)) {
             interfaceRelationships.push(interfaceType);
-            matched = true;
-        }
-
-        if (!matched) {
+        } else {
             filteredInterfaceTypes.push(interfaceType);
         }
     }
