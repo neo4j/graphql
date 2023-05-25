@@ -1,15 +1,15 @@
 [[ogm-subscriptions]]
 = How to use the OGM with subscriptions
 
-The Neo4j GraphQL Library can be used in conjunction with the Neo4j OGM in order to extend the Library's functionalities, or to take advantage of the xref:ogm/private.adoc[`@private` directive]. 
+The Neo4j GraphQL Library can be used in conjunction with the OGM in order to extend the Library's functionalities, or to take advantage of the xref:ogm/private.adoc[`@private` directive]. 
 
 == Usage
 
-This section shows you how to use subscriptions with the OGM inside custom resolvers.
+This section shows how to use subscriptions with the OGM inside custom resolvers.
 
 === Prerequisites
 
-Considering the following type definitions:
+. Use the following type definitions:
 [source, javascript, indent=0]
 ----
 const typeDefs = `#graphql
@@ -20,7 +20,7 @@ const typeDefs = `#graphql
 `;
 ----
 
-A subscriptions plugin instance to be shared between the Library and the OGM constructors:
+. Set up a subscriptions plugin instance to be shared between the Library and the OGM constructors:
 [source, javascript, indent=0]
 ----
 const subscriptionsPlugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
@@ -29,11 +29,10 @@ const subscriptionsPlugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
 And a server that supports subscriptions, as per the xref:subscriptions/getting-started.adoc#setting-up-server[subscriptions reference usage].
 
 
-=== Adding in the OGM
+=== Adding the OGM
 
-Two things here. 
-As we want to utilize the `@private` marked field on the `User` type, we need to create the `User` model.
-Also, in order to use the subscriptions, we need to pass in the subscriptions plugin instance to the OGM constructor:
+In order to utilize the `@private` marked field on the `User` type, you need to create the `User` model.
+Also, to use the subscriptions, you need to pass in the subscriptions plugin instance to the OGM constructor:
 
 [source, javascript, indent=0]
 ----
@@ -41,7 +40,7 @@ const ogm = new OGM({ typeDefs, driver, plugins: { subscriptions: subscriptionsP
 const Profile = ogm.model("Profile");
 ----
 
-Make sure you initialize the ogm instance before using it by adding the following line to the `main()` function:
+Make sure you initialize the OGM instance before using it by adding the following line to the `main()` function:
 [source, javascript, indent=0]
 ----
 await ogm.init();
@@ -49,8 +48,9 @@ await ogm.init();
 
 === The custom resolver
 
-Custom resolvers can be utilized for multiple reasons: to perform data manipulation, perform checks or interact with 3rd party systems to list a few. In this case, we are only interested in creating a `User` node with the `password` field set.
-Let's add for example a sign-up mutation:
+Custom resolvers can be used for multiple reasons such as performing data manipulation and checks, or interact with third party systems. 
+In this case, you only need to create a `User` node with the `password` field set.
+You can add a sign-up mutation, for example:
 
 [source, javascript, indent=0]
 ----
@@ -200,7 +200,7 @@ async function main() {
 
 == Receiving the subscription events
 
-We first run the following subscription in order to receive `User` creation events:
+First, run the following subscription to receive `User` creation events:
 [source, gql, indent=0]
 ----
 subscription {
@@ -213,7 +213,7 @@ subscription {
 }
 ----
 
-At this point, running the sign-up mutation:
+Then run the sign-up mutation:
 [source, gql, indent=0]
 ----
 mutation {
@@ -224,7 +224,7 @@ mutation {
 }
 ----
 
-Results in the following event:
+The results should look like this:
 [source, gql, indent=0]
 ----
 {
