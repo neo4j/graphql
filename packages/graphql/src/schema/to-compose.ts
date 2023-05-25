@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import type { InputValueDefinitionNode, DirectiveNode } from "graphql";
-import type { DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition, Directive } from "graphql-compose";
+import type { DirectiveNode, InputValueDefinitionNode } from "graphql";
+import type { Directive, DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
+import type { BaseField, InputField, PrimitiveField, TemporalField } from "../types";
+import { DEPRECATE_NOT } from "./constants";
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
-import type { BaseField, InputField, PrimitiveField, TemporalField } from "../types";
-import { numericalResolver } from "./resolvers/field/numerical";
 import { idResolver } from "./resolvers/field/id";
-import { DEPRECATE_NOT } from "./constants";
+import { numericalResolver } from "./resolvers/field/numerical";
 
 export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
     return args.reduce((res, arg) => {
@@ -46,7 +46,7 @@ export function graphqlDirectivesToCompose(directives: DirectiveNode[]): Directi
         args: (directive.arguments || [])?.reduce(
             (r: DirectiveArgs, d) => ({ ...r, [d.name.value]: parseValueNode(d.value) }),
             {}
-        ) as DirectiveArgs,
+        ),
         name: directive.name.value,
     }));
 }
@@ -59,11 +59,11 @@ export function objectFieldsToComposeFields(fields: BaseField[]): {
             return res;
         }
 
-        const newField = {
+        const newField: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> = {
             type: field.typeMeta.pretty,
             args: {},
             description: field.description,
-        } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
+        };
 
         if (field.otherDirectives.length) {
             newField.directives = graphqlDirectivesToCompose(field.otherDirectives);
@@ -93,7 +93,7 @@ export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<str
             const isTemporal = (f as TemporalField)?.timestamps;
             return !isAutogenerate && !isCallback && !isTemporal;
         })
-        .reduce((res, f) => {
+        .reduce((res: Record<string, InputField>, f) => {
             const fieldType = f.typeMeta.input.create.pretty;
             const defaultValue = (f as PrimitiveField)?.defaultValue;
             const deprecatedDirectives = graphqlDirectivesToCompose(
@@ -114,7 +114,7 @@ export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<str
             }
 
             return res;
-        }, {} as Record<string, InputField>);
+        }, {});
 }
 
 export function objectFieldsToSubscriptionsWhereInputFields(
