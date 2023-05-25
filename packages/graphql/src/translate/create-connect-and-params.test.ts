@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-import createConnectAndParams from "./create-connect-and-params";
-import { CallbackBucket } from "../classes/CallbackBucket";
-import { NodeBuilder } from "../../tests/utils/builders/node-builder";
-import { RelationshipQueryDirectionOption } from "../constants";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import { CallbackBucket } from "../classes/CallbackBucket";
 import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
+import { RelationshipQueryDirectionOption } from "../constants";
+import { defaultNestedOperations } from "../graphql/directives/relationship";
 import type { RelationField } from "../types";
+import createConnectAndParams from "./create-connect-and-params";
 
 describe("createConnectAndParams", () => {
     test("should return the correct connection", () => {
@@ -61,6 +62,7 @@ describe("createConnectAndParams", () => {
                     },
                     otherDirectives: [],
                     arguments: [],
+                    nestedOperations: defaultNestedOperations,
                 },
             ],
             cypherFields: [],

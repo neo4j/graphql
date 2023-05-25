@@ -3133,24 +3133,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.3.7, @neo4j-ndl/base@npm:^1.3.7":
-  version: 1.3.7
-  resolution: "@neo4j-ndl/base@npm:1.3.7"
-  checksum: 49a6372c9ff7a8274e497a4c11ce55956fd36f7142cdbb5d3cd43fa5640b9a42c5f3f728ffbe7c42e30d45fcddea65b281e23cd35aede06cdb067452b6800b88
+"@neo4j-ndl/base@npm:1.4.0, @neo4j-ndl/base@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "@neo4j-ndl/base@npm:1.4.0"
+  checksum: c6c0f09cee2d83a9f8512911a05341d45d1b7b7f8d49da6fa8a2f27ee3cf6251694910f38b4be4b2c80fc921f1d15dcf1d3cb5fe6424f41a5edec1c9d3389168
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.3.7":
-  version: 1.3.7
-  resolution: "@neo4j-ndl/react@npm:1.3.7"
+"@neo4j-ndl/react@npm:1.4.0":
+  version: 1.4.0
+  resolution: "@neo4j-ndl/react@npm:1.4.0"
   dependencies:
     "@floating-ui/react-dom-interactions": ^0.12.0
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^1.3.7
+    "@neo4j-ndl/base": ^1.4.0
     "@tanstack/react-table": ^8.5.22
     classnames: ^2.3.1
     detect-browser: ^5.3.0
+    re-resizable: ^6.9.9
     react-dropzone: ^14.0.0
     react-focus-lock: ^2.9.4
     react-select: 5.7.0
@@ -3161,7 +3162,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: 17.x
-  checksum: 6707765dd231fcc9c2e9723694fb2bd39865b45f6a3518d2765961323d5c8cde077576a7ca28a1870cfc6be4cd6e5b1add2465eaf78a7a150f65505fd27eb56b
+  checksum: 0c5805fc6e6090a2f2f1543942accff3c040b8be0177f7ec4e6ed2aff751387b29debfe2e620ff6cbf63002e8dabd35eb1c9fd4fc94d0adae7bde7f5be320f97
   languageName: node
   linkType: hard
 
@@ -3188,7 +3189,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^4.0.0
     "@graphql-codegen/typescript": ^3.0.0
     "@graphql-tools/merge": ^8.3.3
-    "@neo4j/graphql": ^3.19.0
+    "@neo4j/graphql": ^3.20.0
     "@neo4j/graphql-plugin-auth": ^2.2.0
     "@types/jest": 29.5.1
     "@types/node": 18.15.1
@@ -3262,11 +3263,11 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@graphiql/react": 0.17.5
-    "@neo4j-ndl/base": 1.3.7
-    "@neo4j-ndl/react": 1.3.7
-    "@neo4j/graphql": 3.19.0
+    "@neo4j-ndl/base": 1.4.0
+    "@neo4j-ndl/react": 1.4.0
+    "@neo4j/graphql": 3.20.0
     "@neo4j/introspector": 1.0.3
-    "@playwright/test": 1.34.2
+    "@playwright/test": 1.34.3
     "@tsconfig/create-react-app": 1.0.3
     "@types/codemirror": 5.60.7
     "@types/lodash.debounce": 4.0.7
@@ -3313,7 +3314,7 @@ __metadata:
     ts-node: 10.9.1
     tsconfig-paths-webpack-plugin: 4.0.1
     typescript: 5.0.4
-    webpack: 5.83.1
+    webpack: 5.84.0
     webpack-cli: 5.1.1
     webpack-dev-server: 4.15.0
     webpack-notifier: 1.15.0
@@ -3321,7 +3322,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@3.19.0, @neo4j/graphql@^3.13.0, @neo4j/graphql@^3.15.0, @neo4j/graphql@^3.16.0, @neo4j/graphql@^3.19.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@3.20.0, @neo4j/graphql@^3.13.0, @neo4j/graphql@^3.15.0, @neo4j/graphql@^3.16.0, @neo4j/graphql@^3.20.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -4244,19 +4245,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.34.2":
-  version: 1.34.2
-  resolution: "@playwright/test@npm:1.34.2"
+"@playwright/test@npm:1.34.3":
+  version: 1.34.3
+  resolution: "@playwright/test@npm:1.34.3"
   dependencies:
     "@types/node": "*"
     fsevents: 2.3.2
-    playwright-core: 1.34.2
+    playwright-core: 1.34.3
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 51e581386bebdd97a40c9d5304a04eb7e9ecf731206686a526e8990f2362174311ee681fa7cf4e58b103235e60232c326bfd6c764029ca9cbd69da55244cd2f9
+  checksum: b387d85f09d275ed49aac4f600c0657205b4c20979108a52e7072ef0c43ea9b2d3d6d7206869230634680ab1f8e7b03373c63555899da4293cae700320bd31e1
   languageName: node
   linkType: hard
 
@@ -6163,6 +6164,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"acorn-import-assertions@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "acorn-import-assertions@npm:1.9.0"
+  peerDependencies:
+    acorn: ^8
+  checksum: 944fb2659d0845c467066bdcda2e20c05abe3aaf11972116df457ce2627628a81764d800dd55031ba19de513ee0d43bb771bc679cc0eda66dc8b4fade143bc0c
+  languageName: node
+  linkType: hard
+
 "acorn-jsx@npm:^5.0.1, acorn-jsx@npm:^5.3.2":
   version: 5.3.2
   resolution: "acorn-jsx@npm:5.3.2"
@@ -6492,7 +6502,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": 1.2.2
     "@apollo/server": ^4.7.0
     "@graphql-tools/wrap": ^9.3.6
-    "@neo4j/graphql": ^3.19.0
+    "@neo4j/graphql": ^3.20.0
     fork-ts-checker-webpack-plugin: 8.0.0
     graphql: 16.6.0
     graphql-tag: ^2.12.6
@@ -6500,7 +6510,7 @@ __metadata:
     ts-loader: 9.4.3
     tsconfig-paths-webpack-plugin: 4.0.1
     typescript: 5.0.4
-    webpack: 5.83.1
+    webpack: 5.84.0
   languageName: unknown
   linkType: soft
 
@@ -10083,13 +10093,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:^5.14.0":
-  version: 5.14.0
-  resolution: "enhanced-resolve@npm:5.14.0"
+"enhanced-resolve@npm:^5.14.1":
+  version: 5.14.1
+  resolution: "enhanced-resolve@npm:5.14.1"
   dependencies:
     graceful-fs: ^4.2.4
     tapable: ^2.2.0
-  checksum: fff1aaebbf376371e5df4502e111967f6247c37611ad3550e4e7fca657f6dcb29ef7ffe88bf14e5010b78997f1ddd984a8db97af87ee0a5477771398fd326f5b
+  checksum: ad2a31928b6649eed40d364838449587f731baa63863e83d2629bebaa8be1eabac18b90f89c1784bc805b0818363e99b22547159edd485d7e5ccf18cdc640642
   languageName: node
   linkType: hard
 
@@ -16094,7 +16104,7 @@ __metadata:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     "@apollo/server": ^4.7.0
-    "@neo4j/graphql": ^3.19.0
+    "@neo4j/graphql": ^3.20.0
     graphql: 16.6.0
     neo4j-driver: 5.8.1
   languageName: unknown
@@ -18308,12 +18318,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.34.2":
-  version: 1.34.2
-  resolution: "playwright-core@npm:1.34.2"
+"playwright-core@npm:1.34.3":
+  version: 1.34.3
+  resolution: "playwright-core@npm:1.34.3"
   bin:
-    playwright: cli.js
-  checksum: 7902f973d47c3d6affb794f0120d9f318e9fb098606dc7152e18f254ed1ceb2bbeafc40620b12d48a14b628b31c1d7bd05cdfe920af085dadb21a51128684a4b
+    playwright-core: cli.js
+  checksum: eaf9e9b2d77b9726867dcbc641a1c72b0e8f680cdd71ff904366deea1c96141ff7563f6c6fb29f9975309d1b87dead97ea93f6f44953b59946882fb785b34867
   languageName: node
   linkType: hard
 
@@ -19444,6 +19454,16 @@ __metadata:
   bin:
     rc: ./cli.js
   checksum: 2e26e052f8be2abd64e6d1dabfbd7be03f80ec18ccbc49562d31f617d0015fbdbcf0f9eed30346ea6ab789e0fdfe4337f033f8016efdbee0df5354751842080e
+  languageName: node
+  linkType: hard
+
+"re-resizable@npm:^6.9.9":
+  version: 6.9.9
+  resolution: "re-resizable@npm:6.9.9"
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+  checksum: a2c8bfe86646fb02d5c9c624b1da26f9e6a5e2f552cd96ce4db690588bee6b21177065ce8e98646c6ca0b1a9c4ce233824b75eb346800d8248ac8a87b40f1b28
   languageName: node
   linkType: hard
 
@@ -23645,9 +23665,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.83.1":
-  version: 5.83.1
-  resolution: "webpack@npm:5.83.1"
+"webpack@npm:5.84.0":
+  version: 5.84.0
+  resolution: "webpack@npm:5.84.0"
   dependencies:
     "@types/eslint-scope": ^3.7.3
     "@types/estree": ^1.0.0
@@ -23655,10 +23675,10 @@ __metadata:
     "@webassemblyjs/wasm-edit": ^1.11.5
     "@webassemblyjs/wasm-parser": ^1.11.5
     acorn: ^8.7.1
-    acorn-import-assertions: ^1.7.6
+    acorn-import-assertions: ^1.9.0
     browserslist: ^4.14.5
     chrome-trace-event: ^1.0.2
-    enhanced-resolve: ^5.14.0
+    enhanced-resolve: ^5.14.1
     es-module-lexer: ^1.2.1
     eslint-scope: 5.1.1
     events: ^3.2.0
@@ -23678,7 +23698,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 219d5ef50380bc0fd3702ed17feddf13819d8173b78f7a5b857dc74ac177e63d1f79c050792754411cc088bbc02e0971b989efddadbb8e393cf27d64c0ad9ff8
+  checksum: 5837983d81d55edf621317f23de3a7ae49bbf24c9f8605beeba35ea62be5cc4b3b63ace0ec9785912b9ffe70fd969e613597fae21b2334a3913054c41189ef75
   languageName: node
   linkType: hard
 

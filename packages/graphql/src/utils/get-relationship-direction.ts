@@ -22,7 +22,7 @@ import { RelationshipQueryDirectionOption } from "../constants";
 import type { RelationField } from "../types";
 
 export type DirectionString = "-" | "->" | "<-";
-export type RelationshipDirection = "IN" | "OUT" | "undirected";
+export type QueryRelationshipDirection = "IN" | "OUT" | "undirected";
 export type CypherRelationshipDirection = "left" | "right" | "undirected";
 
 type DirectionResult = {
@@ -48,7 +48,7 @@ export function getCypherRelationshipDirection(
 export function getRelationshipDirection(
     relationField: RelationField,
     fieldArgs: { directed?: boolean }
-): RelationshipDirection {
+): QueryRelationshipDirection {
     const directedValue = relationField.direction;
     const undirectedValue = "undirected";
 

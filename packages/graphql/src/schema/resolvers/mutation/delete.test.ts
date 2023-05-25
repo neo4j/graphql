@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { deleteResolver } from "./delete";
+import { SchemaComposer } from "graphql-compose";
 import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
+import { deleteResolver } from "./delete";
 
 describe("Delete resolver", () => {
     test("should return the correct; type, args and resolve", () => {
@@ -27,7 +28,9 @@ describe("Delete resolver", () => {
             relationFields: [],
         }).instance();
 
-        const result = deleteResolver({ node });
+        const composer = new SchemaComposer();
+
+        const result = deleteResolver({ node, composer });
         expect(result.type).toBe(`DeleteInfo!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({

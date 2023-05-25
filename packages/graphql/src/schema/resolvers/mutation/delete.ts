@@ -18,14 +18,15 @@
  */
 
 import type { GraphQLResolveInfo } from "graphql";
-import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
-import { execute } from "../../../utils";
+import type { SchemaComposer } from "graphql-compose";
+import type { Node } from "../../../classes";
 import { translateDelete } from "../../../translate";
 import type { Context } from "../../../types";
-import type { Node } from "../../../classes";
+import { execute } from "../../../utils";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { publishEventsToPlugin } from "../../subscriptions/publish-events-to-plugin";
 
-export function deleteResolver({ node }: { node: Node }) {
+export function deleteResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });
@@ -42,12 +43,14 @@ export function deleteResolver({ node }: { node: Node }) {
         return { bookmark: executeResult.bookmark, ...executeResult.statistics };
     }
 
+    const hasDeleteInput = composer.has(`${node.name}DeleteInput`);
+
     return {
         type: `DeleteInfo!`,
         resolve,
         args: {
             where: `${node.name}Where`,
-            ...(node.relationFields.length
+            ...(hasDeleteInput
                 ? {
                       delete: `${node.name}DeleteInput`,
                   }
