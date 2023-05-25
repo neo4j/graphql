@@ -34,7 +34,7 @@ jobs:
 
     services:
       neo4j:
-        image: neo4j:4.4-enterprise
+        image: neo4j:4.3-enterprise
         env:
           NEO4J_AUTH: neo4j/password
           NEO4JLABS_PLUGINS: '["apoc"]'
