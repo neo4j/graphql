@@ -19,7 +19,7 @@
 
 import type { InterfaceTypeDefinitionNode } from "graphql";
 
-function filterInterfaceTypes(
+export function filterInterfaceTypes(
     interfaceTypes: InterfaceTypeDefinitionNode[],
     relationshipPropertyInterfaceNames: Set<string>,
     interfaceRelationshipNames: Set<string>
@@ -55,5 +55,3 @@ function filterInterfaceTypes(
         filteredInterfaceTypes,
     };
 }
-
-export default filterInterfaceTypes;
