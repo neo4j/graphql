@@ -3133,24 +3133,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.3.7, @neo4j-ndl/base@npm:^1.3.7":
-  version: 1.3.7
-  resolution: "@neo4j-ndl/base@npm:1.3.7"
-  checksum: 49a6372c9ff7a8274e497a4c11ce55956fd36f7142cdbb5d3cd43fa5640b9a42c5f3f728ffbe7c42e30d45fcddea65b281e23cd35aede06cdb067452b6800b88
+"@neo4j-ndl/base@npm:1.4.0, @neo4j-ndl/base@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "@neo4j-ndl/base@npm:1.4.0"
+  checksum: c6c0f09cee2d83a9f8512911a05341d45d1b7b7f8d49da6fa8a2f27ee3cf6251694910f38b4be4b2c80fc921f1d15dcf1d3cb5fe6424f41a5edec1c9d3389168
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.3.7":
-  version: 1.3.7
-  resolution: "@neo4j-ndl/react@npm:1.3.7"
+"@neo4j-ndl/react@npm:1.4.0":
+  version: 1.4.0
+  resolution: "@neo4j-ndl/react@npm:1.4.0"
   dependencies:
     "@floating-ui/react-dom-interactions": ^0.12.0
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^1.3.7
+    "@neo4j-ndl/base": ^1.4.0
     "@tanstack/react-table": ^8.5.22
     classnames: ^2.3.1
     detect-browser: ^5.3.0
+    re-resizable: ^6.9.9
     react-dropzone: ^14.0.0
     react-focus-lock: ^2.9.4
     react-select: 5.7.0
@@ -3161,7 +3162,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: 17.x
-  checksum: 6707765dd231fcc9c2e9723694fb2bd39865b45f6a3518d2765961323d5c8cde077576a7ca28a1870cfc6be4cd6e5b1add2465eaf78a7a150f65505fd27eb56b
+  checksum: 0c5805fc6e6090a2f2f1543942accff3c040b8be0177f7ec4e6ed2aff751387b29debfe2e620ff6cbf63002e8dabd35eb1c9fd4fc94d0adae7bde7f5be320f97
   languageName: node
   linkType: hard
 
@@ -3262,8 +3263,8 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@graphiql/react": 0.17.5
-    "@neo4j-ndl/base": 1.3.7
-    "@neo4j-ndl/react": 1.3.7
+    "@neo4j-ndl/base": 1.4.0
+    "@neo4j-ndl/react": 1.4.0
     "@neo4j/graphql": 3.19.0
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.34.2
@@ -19453,6 +19454,16 @@ __metadata:
   bin:
     rc: ./cli.js
   checksum: 2e26e052f8be2abd64e6d1dabfbd7be03f80ec18ccbc49562d31f617d0015fbdbcf0f9eed30346ea6ab789e0fdfe4337f033f8016efdbee0df5354751842080e
+  languageName: node
+  linkType: hard
+
+"re-resizable@npm:^6.9.9":
+  version: 6.9.9
+  resolution: "re-resizable@npm:6.9.9"
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+  checksum: a2c8bfe86646fb02d5c9c624b1da26f9e6a5e2f552cd96ce4db690588bee6b21177065ce8e98646c6ca0b1a9c4ce233824b75eb346800d8248ac8a87b40f1b28
   languageName: node
   linkType: hard
 
