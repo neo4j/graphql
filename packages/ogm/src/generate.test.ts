@@ -1389,11 +1389,11 @@ describe("generate", () => {
 
             export type MovieActorsUpdateFieldInput = {
               where?: InputMaybe<MovieActorsConnectionWhere>;
-              update?: InputMaybe<MovieActorsUpdateConnectionInput>;
-              connect?: InputMaybe<Array<MovieActorsConnectFieldInput>>;
-              disconnect?: InputMaybe<Array<MovieActorsDisconnectFieldInput>>;
               create?: InputMaybe<Array<MovieActorsCreateFieldInput>>;
+              connect?: InputMaybe<Array<MovieActorsConnectFieldInput>>;
+              update?: InputMaybe<MovieActorsUpdateConnectionInput>;
               delete?: InputMaybe<Array<MovieActorsDeleteFieldInput>>;
+              disconnect?: InputMaybe<Array<MovieActorsDisconnectFieldInput>>;
             };
 
             export type MovieConnectInput = {

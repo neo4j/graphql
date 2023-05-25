@@ -1,5 +1,24 @@
 # @neo4j/graphql
 
+## 3.20.0
+
+### Minor Changes
+
+-   [#3357](https://github.com/neo4j/graphql/pull/3357) [`a39b22fc1`](https://github.com/neo4j/graphql/commit/a39b22fc1f8f1227cac5a7efbaab1d855062054e) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Introduced relationship directive configuration with the new nestedOperations argument. This allows users to specify which nested operations they want to be built into the schema.
+
+    Usage:
+
+    ```graphql
+    type Movie {
+        id: ID
+        actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE, UPDATE, CONNECT])
+    }
+    ```
+
+### Patch Changes
+
+-   [#3358](https://github.com/neo4j/graphql/pull/3358) [`6cce9ffe0`](https://github.com/neo4j/graphql/commit/6cce9ffe0605795be8e2e1990860d4ea0bd256ec) Thanks [@a-alle](https://github.com/a-alle)! - Fix update mutation returning info object when subscriptions enabled
+
 ## 3.19.0
 
 ### Minor Changes

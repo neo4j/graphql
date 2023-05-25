@@ -18,8 +18,8 @@
  */
 
 import { SchemaComposer } from "graphql-compose";
-import { updateResolver } from "./update";
 import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
+import { updateResolver } from "./update";
 
 describe("Update resolver", () => {
     test("should return the correct; type, args and resolve", () => {
@@ -29,11 +29,50 @@ describe("Update resolver", () => {
             relationFields: [{}, {}],
         }).instance();
 
-        const schemaComposer = new SchemaComposer();
+        const composer = new SchemaComposer();
+        composer.createInputTC("MovieRelationInput");
+        composer.createInputTC("MovieDeleteInput");
+        composer.createInputTC("MovieConnectInput");
+        composer.createInputTC("MovieDisconnectInput");
+        composer.createInputTC("MovieConnectOrCreateInput");
 
-        const result = updateResolver({ node, schemaComposer });
+        const result = updateResolver({ node, composer });
         expect(result.type).toBe("UpdateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
+        expect(result.args).toMatchObject({
+            where: "MovieWhere",
+            update: "MovieUpdateInput",
+            connect: "MovieConnectInput",
+            disconnect: "MovieDisconnectInput",
+            create: "MovieRelationInput",
+            delete: "MovieDeleteInput",
+            connectOrCreate: "MovieConnectOrCreateInput",
+        });
+    });
+    test("should return fewer fields based on number of InputTCs created", () => {
+        const node = new NodeBuilder({
+            name: "Movie",
+            // @ts-ignore
+            relationFields: [{}, {}],
+        }).instance();
+
+        const composer = new SchemaComposer();
+        composer.createInputTC("MovieConnectInput");
+        composer.createInputTC("MovieDisconnectInput");
+
+        const result = updateResolver({ node, composer });
+        expect(result.type).toBe("UpdateMoviesMutationResponse!");
+        expect(result.resolve).toBeInstanceOf(Function);
+
+        expect(result.args).not.toMatchObject({
+            where: "MovieWhere",
+            update: "MovieUpdateInput",
+            connect: "MovieConnectInput",
+            disconnect: "MovieDisconnectInput",
+            create: "MovieRelationInput",
+            delete: "MovieDeleteInput",
+            connectOrCreate: "MovieConnectOrCreateInput",
+        });
         expect(result.args).toMatchObject({
             where: "MovieWhere",
             update: "MovieUpdateInput",

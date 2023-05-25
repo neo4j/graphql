@@ -80,12 +80,6 @@ export const LOGICAL_OPERATORS = ["AND", "OR", "NOT"] as const;
 export const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
 export const AGGREGATION_AGGREGATE_COUNT_OPERATORS = ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"];
 
-// Types that you can average
-// https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg
-// https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg-duration
-// String uses avg(size())
-export const WHERE_AGGREGATION_AVERAGE_TYPES = ["String", "Int", "Float", "BigInt", "Duration"];
-
 export const WHERE_AGGREGATION_TYPES = [
     "ID",
     "String",
@@ -104,6 +98,15 @@ export enum RelationshipQueryDirectionOption {
     DEFAULT_UNDIRECTED = "DEFAULT_UNDIRECTED",
     DIRECTED_ONLY = "DIRECTED_ONLY",
     UNDIRECTED_ONLY = "UNDIRECTED_ONLY",
+}
+
+export enum RelationshipNestedOperationsOption {
+    CREATE = "CREATE",
+    UPDATE = "UPDATE",
+    DELETE = "DELETE",
+    CONNECT = "CONNECT",
+    DISCONNECT = "DISCONNECT",
+    CONNECT_OR_CREATE = "CONNECT_OR_CREATE",
 }
 
 export const META_CYPHER_VARIABLE = "meta";
