@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { neo4jExpect } from "../utils/expect-neo4j/expect-neo4j";
 
 describe("create", () => {
     let driver: Driver;
@@ -77,15 +78,7 @@ describe("create", () => {
 
             expect(gqlResult?.data?.createMovies).toEqual({ movies: [{ id }] });
 
-            const reFind = await session.run(
-                `
-              MATCH (m:Movie {id: $id})
-              RETURN m
-            `,
-                { id }
-            );
-
-            expect((reFind.records[0]?.toObject() as any).m.properties).toMatchObject({ id });
+            await neo4jExpect(session).label("Movie").properties({ id });
         } finally {
             await session.close();
         }
