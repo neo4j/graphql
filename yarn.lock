@@ -274,15 +274,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/composition@npm:2.4.5":
-  version: 2.4.5
-  resolution: "@apollo/composition@npm:2.4.5"
+"@apollo/composition@npm:2.4.6":
+  version: 2.4.6
+  resolution: "@apollo/composition@npm:2.4.6"
   dependencies:
-    "@apollo/federation-internals": 2.4.5
-    "@apollo/query-graphs": 2.4.5
+    "@apollo/federation-internals": 2.4.6
+    "@apollo/query-graphs": 2.4.6
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 6ad3cd22127be01b821f58c96e10e2ead7153d97e094b23f03949cfc626a8ac90c08a612f5873a7a230add50b836ea446e8ad3192c43115ac1319ddce3b6c0f9
+  checksum: 1564236de50d02544f9c508e754ce506092a4922bad198dfbcb2828395d04f9d97df3191d639527c96ac3c19a4acdaab78a8ffefbcb6bc9cb6ccda58db4357e7
   languageName: node
   linkType: hard
 
@@ -298,9 +298,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/federation-internals@npm:2.4.5":
-  version: 2.4.5
-  resolution: "@apollo/federation-internals@npm:2.4.5"
+"@apollo/federation-internals@npm:2.4.6":
+  version: 2.4.6
+  resolution: "@apollo/federation-internals@npm:2.4.6"
   dependencies:
     "@types/uuid": ^9.0.0
     chalk: ^4.1.0
@@ -308,7 +308,7 @@ __metadata:
     uuid: ^9.0.0
   peerDependencies:
     graphql: ^16.5.0
-  checksum: ab44d4784ac790fed505ead4b653e17eb448678a50db764f584543d76986fb6b5290a8d292f1386e61abec6ba35ca47aad6a3e52a6b1dd3c5a615c3e7df92ea4
+  checksum: 96bf8e406f773de72b49ef393e12a055ff309dc2a46fb43b6028bd879a4ce81ea1bc2a6aa91459a95dddaabd93258b71f510cb1f03c1defc8229c19095c7e775
   languageName: node
   linkType: hard
 
@@ -341,13 +341,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/gateway@npm:2.4.5":
-  version: 2.4.5
-  resolution: "@apollo/gateway@npm:2.4.5"
+"@apollo/gateway@npm:2.4.6":
+  version: 2.4.6
+  resolution: "@apollo/gateway@npm:2.4.6"
   dependencies:
-    "@apollo/composition": 2.4.5
-    "@apollo/federation-internals": 2.4.5
-    "@apollo/query-planner": 2.4.5
+    "@apollo/composition": 2.4.6
+    "@apollo/federation-internals": 2.4.6
+    "@apollo/query-planner": 2.4.6
     "@apollo/server-gateway-interface": ^1.1.0
     "@apollo/usage-reporting-protobuf": ^4.1.0
     "@apollo/utils.createhash": ^2.0.0
@@ -365,7 +365,7 @@ __metadata:
     node-fetch: ^2.6.7
   peerDependencies:
     graphql: ^16.5.0
-  checksum: f6a29b5c127edeede2428221945f0005eb2b0cdbffef46b42c0199179b264bff3227cc09382dee60d649c4f868e85651846c3d3401778eef0d63732933f1e1bb
+  checksum: 999cf77b82b4739168e2d291d51793c0c539c8bc21af41f124e377dcf3566b1f0535546053ef5e906612827217213d1b1b311940d1a12b93ddfc05bb163cd78e
   languageName: node
   linkType: hard
 
@@ -392,33 +392,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/query-graphs@npm:2.4.5":
-  version: 2.4.5
-  resolution: "@apollo/query-graphs@npm:2.4.5"
+"@apollo/query-graphs@npm:2.4.6":
+  version: 2.4.6
+  resolution: "@apollo/query-graphs@npm:2.4.6"
   dependencies:
-    "@apollo/federation-internals": 2.4.5
+    "@apollo/federation-internals": 2.4.6
     deep-equal: ^2.0.5
     ts-graphviz: ^1.5.4
     uuid: ^9.0.0
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 76a1d4556148a7ba85c4c924a9198c15a1b73960efe7be15cc53bc2749afd368f46a80c79af52fb8cb56a2aa55814b74468244d9fbf44096a85782a0e9c1f66c
+  checksum: a81ea3c79132cdb4055f8052a8d76abb5d17d7ceb93c5130ed780393890bd3c31a5a484b2219c0ca07575dc2f070ff064fe41e3cd5bd59ef12dd19e2732db70f
   languageName: node
   linkType: hard
 
-"@apollo/query-planner@npm:2.4.5":
-  version: 2.4.5
-  resolution: "@apollo/query-planner@npm:2.4.5"
+"@apollo/query-planner@npm:2.4.6":
+  version: 2.4.6
+  resolution: "@apollo/query-planner@npm:2.4.6"
   dependencies:
-    "@apollo/federation-internals": 2.4.5
-    "@apollo/query-graphs": 2.4.5
+    "@apollo/federation-internals": 2.4.6
+    "@apollo/query-graphs": 2.4.6
     "@apollo/utils.keyvaluecache": ^2.1.0
     chalk: ^4.1.0
     deep-equal: ^2.0.5
     pretty-format: ^29.0.0
   peerDependencies:
     graphql: ^16.5.0
-  checksum: d8734c1e0ec395c182476f28c65a92c9f10a0d56d858f3053ddcd142ad5d8f1da9415fd4ccf981b59281bb9e9fcabf92f4a4ed8febcf151e16d7b07c0ed2fe87
+  checksum: 94edfe027c8222cee72ea6e38bbf4845aa08515ecf2229fb664eb2cab6aa082fad17dda970a159fc7662f6dcf0d516ea2fb7fb89e4e81662c2c3678ab25407e5
   languageName: node
   linkType: hard
 
@@ -3326,7 +3326,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
-    "@apollo/gateway": 2.4.5
+    "@apollo/gateway": 2.4.6
     "@apollo/server": 4.7.1
     "@apollo/subgraph": ^2.2.3
     "@faker-js/faker": 8.0.1
