@@ -20,3 +20,4 @@
 // Note: This file exists for exported utils to the user
 
 export { escapeLabel } from "./escape";
+export { toCypherParams } from "./to-cypher-params";

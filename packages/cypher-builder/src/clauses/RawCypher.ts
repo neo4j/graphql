@@ -18,7 +18,7 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import { convertToCypherParams } from "../utils/convert-to-cypher-params";
+import { toCypherParams } from "../utils/to-cypher-params";
 import { Clause } from "./Clause";
 
 type RawCypherCallback = (env: CypherEnvironment) => [string, Record<string, any>] | string | undefined;
@@ -46,7 +46,7 @@ export class RawCypher extends Clause {
             [query, params] = cbResult;
         }
 
-        const cypherParams = convertToCypherParams(params);
+        const cypherParams = toCypherParams(params);
         env.addExtraParams(cypherParams);
 
         return query;
