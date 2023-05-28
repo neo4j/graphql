@@ -50,24 +50,27 @@ class OGM<ModelMap = unknown> {
             });
         };
 
-        this.assertIndexesAndConstraints = function assertIndexesAndConstraints(input: {
-            options?: { create?: boolean; }
-        } = {}) {
-            return new Promise((resolve, reject) => {
-                this.neoSchema.assertIndexesAndConstraints({
+        this.assertIndexesAndConstraints = async (
+            input: {
+                options?: { create?: boolean };
+            } = {}
+        ): Promise<void> => {
+            try {
+                await this.neoSchema.assertIndexesAndConstraints({
                     ...input,
                     driver: rest.driver,
                     ...(rest.config?.driverConfig ? { driverConfig: rest.config.driverConfig } : {}),
-                }).then(() => {
-                    resolve();
-                }).catch((err) => {
-                    let e = err;
-                    if (err.message.includes("You must await `.getSchema()` before `.assertIndexesAndConstraints()`"))
-                        e = new Error("You must await `.init()` before `.assertIndexesAndConstraints()`");
-                    reject(e);
                 });
-            });
-        }
+            } catch (e: unknown) {
+                if (
+                    e instanceof Error &&
+                    e.message.includes("You must await `.getSchema()` before `.assertIndexesAndConstraints()`")
+                ) {
+                    throw new Error("You must await `.init()` before `.assertIndexesAndConstraints()`");
+                }
+                throw e;
+            }
+        };
     }
 
     public get schema(): GraphQLSchema {
