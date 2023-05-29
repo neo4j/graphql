@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { useHistoryContext } from "@graphiql/react";
 import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, Switch } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
@@ -58,7 +57,6 @@ export const Editor = ({ schema }: Props) => {
     const [output, setOutput] = useState<string>("");
     const [showDocs, setShowDocs] = useState<boolean>(false);
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
-    const historyContext = useHistoryContext();
 
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
@@ -95,10 +93,6 @@ export const Editor = ({ schema }: Props) => {
                 });
 
                 result = JSON.stringify(response);
-                historyContext?.addToHistory({
-                    query: override || query || "",
-                    variables: variableValues,
-                });
             } catch (error) {
                 result = JSON.stringify({ errors: [error] });
             }

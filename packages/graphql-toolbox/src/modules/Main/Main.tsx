@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { EditorContextProvider, HistoryContextProvider, StorageContextProvider } from "@graphiql/react";
+import { EditorContextProvider, StorageContextProvider } from "@graphiql/react";
 import type { GraphQLSchema } from "graphql";
 import { useContext, useEffect, useState } from "react";
 import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
@@ -97,23 +97,21 @@ export const Main = () => {
         <div className="flex w-full h-full flex-col">
             <EditorContextProvider>
                 <StorageContextProvider>
-                    <HistoryContextProvider>
-                        <Banner />
-                        <TopBar />
-                        <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
-                            {screen.view === Screen.TYPEDEFS ? (
-                                <SchemaView
-                                    hasSchema={!!schema}
-                                    onChange={(schema) => {
-                                        setSchema(schema);
-                                        screen.setScreen(Screen.EDITOR);
-                                    }}
-                                />
-                            ) : (
-                                <Editor schema={schema} />
-                            )}
-                        </div>
-                    </HistoryContextProvider>
+                    <Banner />
+                    <TopBar />
+                    <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
+                        {screen.view === Screen.TYPEDEFS ? (
+                            <SchemaView
+                                hasSchema={!!schema}
+                                onChange={(schema) => {
+                                    setSchema(schema);
+                                    screen.setScreen(Screen.EDITOR);
+                                }}
+                            />
+                        ) : (
+                            <Editor schema={schema} />
+                        )}
+                    </div>
                 </StorageContextProvider>
             </EditorContextProvider>
         </div>
