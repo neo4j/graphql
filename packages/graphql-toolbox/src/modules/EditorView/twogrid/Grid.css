@@ -41,38 +41,26 @@
   }
 
 
-  /* Generic drag bar for horizontal resizing */
 .graphiql-container .graphiql-horizontal-drag-bar {
-    width: var(--px-12);
-    cursor: col-resize;
-  }
-  .graphiql-container .graphiql-horizontal-drag-bar:hover::after {
-    border: var(--px-2) solid
-      hsla(var(--color-neutral), var(--alpha-background-heavy));
-    border-radius: var(--border-radius-2);
-    content: '';
-    display: block;
-    height: 25%;
-    margin: 0 auto;
-    position: relative;
-    top:  calc(100% - 25%) / 2;
-    width: 0;
-  }
+  cursor: col-resize;
+  bottom: 0;
+  right: 0;
+  width: 15px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  box-sizing: border-box;
+  background-position: center;
+}
 
-    /* Generic drag bar for vertical resizing */
 .graphiql-container .graphiql-vertical-drag-bar {
-    height: var(--px-12);
-    cursor: row-resize;
-  }
-  .graphiql-container .graphiql-vertical-drag-bar:hover::after {
-    border: var(--px-2) solid
-      hsla(var(--color-neutral), var(--alpha-background-heavy));
-    border-radius: var(--border-radius-2);
-    content: '';
-    display: block;
-    height: 25%;
-    margin: 0 auto;
-    position: relative;
-    top: calc(100% - 25%) / 2 ;
-    width: 0;
-  }
+  cursor: row-resize;
+  left: 0;
+  top: 0;
+  height: 15px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  box-sizing: border-box;
+  background-position: center;
+}

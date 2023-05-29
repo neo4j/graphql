@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useRef, useState } from "react";
-import type { GraphQLSchema } from "graphql";
 import type { EditorFromTextArea } from "codemirror";
-import { CodeMirror } from "../../utils/utils";
-import { EDITOR_QUERY_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
-import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
+import type { GraphQLSchema } from "graphql";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Extension, FileName } from "../../components/Filename";
-import { ThemeContext, Theme } from "../../contexts/theme";
+import { EDITOR_QUERY_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
 import { AppSettingsContext } from "../../contexts/appsettings";
+import { Theme, ThemeContext } from "../../contexts/theme";
+import { CodeMirror } from "../../utils/utils";
+import { ParserOptions, formatCode, handleEditorDisableState } from "./utils";
 
 export interface Props {
     schema: GraphQLSchema;

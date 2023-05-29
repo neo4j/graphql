@@ -1,6 +1,10 @@
 import { useDragResize } from "@graphiql/react";
 import type { GraphQLSchema } from "graphql";
 import "./Grid.css";
+// @ts-ignore - SVG Import
+import unionHorizontal from "./union_horizontal.svg";
+// @ts-ignore - SVG Import
+import unionVertical from "./union_vertical.svg";
 
 export interface Props {
     schema?: GraphQLSchema;
@@ -55,7 +59,10 @@ export const Grid = ({ schema }: Props) => {
                             <div className="w-full h-full bg-green-300">placeholder</div>
                         </div>
                         <div ref={editorToolsResize.dragBarRef}>
-                            <div className="graphiql-vertical-drag-bar" />
+                            <div
+                                className="graphiql-vertical-drag-bar"
+                                style={{ backgroundImage: `url(${unionHorizontal})` }}
+                            />
                         </div>
                         <div ref={editorToolsResize.secondRef}>
                             <div className="w-full h-full bg-yellow-300">placeholder</div>
@@ -63,7 +70,10 @@ export const Grid = ({ schema }: Props) => {
                     </div>
                 </div>
                 <div ref={editorResize.dragBarRef}>
-                    <div className="graphiql-horizontal-drag-bar" />
+                    <div
+                        className="graphiql-horizontal-drag-bar"
+                        style={{ backgroundImage: `url(${unionVertical})` }}
+                    />
                 </div>
                 <div ref={editorResize.secondRef}>
                     <div className="w-full h-full bg-blue-300">placeholder</div>
