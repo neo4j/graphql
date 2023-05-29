@@ -57,7 +57,6 @@ export const Editor = ({ schema }: Props) => {
     const [output, setOutput] = useState<string>("");
     const [showDocs, setShowDocs] = useState<boolean>(false);
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
-
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const debouncedSave = useCallback(
