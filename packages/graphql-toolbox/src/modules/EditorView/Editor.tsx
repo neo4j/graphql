@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { useDragResize } from "@graphiql/react";
 import { tokens } from "@neo4j-ndl/base";
 import { Switch } from "@neo4j-ndl/react";
 import type { EditorFromTextArea } from "codemirror";
@@ -34,7 +33,7 @@ import { useStore } from "../../store";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
-import "./Editor.css";
+import { Grid } from "./twogrid/Grid";
 import { calculateQueryComplexity, safeParse } from "./utils";
 
 const DEBOUNCE_TIMEOUT = 500;
@@ -112,34 +111,6 @@ export const Editor = ({ schema }: Props) => {
         setInitVariableValues(initParams);
     }, []);
 
-    const editorResize = useDragResize({
-        direction: "horizontal",
-        storageKey: "editorFlex",
-    });
-    const editorToolsResize = useDragResize({
-        defaultSizeRelation: 3,
-        direction: "vertical",
-        initiallyHidden: (() => {
-            //   if (
-            //     props.defaultEditorToolsVisibility === "variables" ||
-            //     props.defaultEditorToolsVisibility === "headers"
-            //   ) {
-            //     return;
-            //   }
-
-            //   if (typeof props.defaultEditorToolsVisibility === "boolean") {
-            //     return props.defaultEditorToolsVisibility ? undefined : "second";
-            //   }
-
-            //   return editorContext.initialVariables || editorContext.initialHeaders
-            //     ? undefined
-            //     : "second";
-            return undefined;
-        })(),
-        sizeThresholdSecond: 60,
-        storageKey: "secondaryEditorFlex",
-    });
-
     return (
         <div className="w-full h-full flex">
             <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
@@ -206,29 +177,7 @@ export const Editor = ({ schema }: Props) => {
                     ) : null}
 
                     <div className="w-content-container h-content-container-extended flex justify-start p-4">
-                        <div className="flex flex-col w-full graphiql-container">
-                            <div role="tabpanel" id="graphiql-session" className="graphiql-session">
-                                <div ref={editorResize.firstRef}>
-                                    <div className="graphiql-editors">
-                                        <div ref={editorToolsResize.firstRef}>
-                                            <div className="w-full h-full bg-green-300">placeholder</div>
-                                        </div>
-                                        <div ref={editorToolsResize.dragBarRef}>
-                                            <div className="h-8" />
-                                        </div>
-                                        <div ref={editorToolsResize.secondRef}>
-                                            <div className="w-full h-full bg-yellow-300">placeholder</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div ref={editorResize.dragBarRef}>
-                                    <div className="graphiql-horizontal-drag-bar" />
-                                </div>
-                                <div ref={editorResize.secondRef}>
-                                    <div className="w-full h-full bg-blue-600">placeholder</div>
-                                </div>
-                            </div>
-                        </div>
+                        <Grid />
                     </div>
                 </div>
             </div>

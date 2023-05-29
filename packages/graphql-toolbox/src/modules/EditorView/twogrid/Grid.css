@@ -55,7 +55,24 @@
     height: 25%;
     margin: 0 auto;
     position: relative;
-    /* (100% - 25%) / 2 = 37.5% */
-    top: 37.5%;
+    top:  calc(100% - 25%) / 2;
+    width: 0;
+  }
+
+    /* Generic drag bar for vertical resizing */
+.graphiql-container .graphiql-vertical-drag-bar {
+    height: var(--px-12);
+    cursor: row-resize;
+  }
+  .graphiql-container .graphiql-vertical-drag-bar:hover::after {
+    border: var(--px-2) solid
+      hsla(var(--color-neutral), var(--alpha-background-heavy));
+    border-radius: var(--border-radius-2);
+    content: '';
+    display: block;
+    height: 25%;
+    margin: 0 auto;
+    position: relative;
+    top: calc(100% - 25%) / 2 ;
     width: 0;
   }
