@@ -1,4 +1,4 @@
-.graphiql-horizontal-drag-bar {
+.horizontal-drag-bar {
   cursor: col-resize;
   bottom: 0;
   right: 0;
@@ -10,7 +10,7 @@
   background-position: center;
 }
 
-.graphiql-vertical-drag-bar {
+.vertical-drag-bar {
   cursor: row-resize;
   left: 0;
   top: 0;

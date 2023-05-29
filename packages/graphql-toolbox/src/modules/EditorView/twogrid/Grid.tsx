@@ -15,7 +15,9 @@ export const Grid = ({ queryEditor, resultView, parameterEditor }: Props) => {
     const editorResize = useDragResize({
         direction: "horizontal",
         storageKey: "editorFlex",
+        defaultSizeRelation: 1,
     });
+
     const editorToolsResize = useDragResize({
         direction: "vertical",
         sizeThresholdSecond: 60,
@@ -25,7 +27,6 @@ export const Grid = ({ queryEditor, resultView, parameterEditor }: Props) => {
 
     return (
         <div className="flex w-full h-full">
-            {/* The editors grid */}
             <div className="flex flex-1 grid-class">
                 <div ref={editorResize.firstRef}>
                     <div className="flex flex-1 flex-col">
@@ -33,10 +34,7 @@ export const Grid = ({ queryEditor, resultView, parameterEditor }: Props) => {
                             <div className="w-full h-full">{queryEditor}</div>
                         </div>
                         <div ref={editorToolsResize.dragBarRef}>
-                            <div
-                                className="graphiql-vertical-drag-bar"
-                                style={{ backgroundImage: `url(${unionHorizontal})` }}
-                            />
+                            <div className="vertical-drag-bar" style={{ backgroundImage: `url(${unionHorizontal})` }} />
                         </div>
                         <div ref={editorToolsResize.secondRef}>
                             <div className="w-full h-full">{parameterEditor}</div>
@@ -44,10 +42,7 @@ export const Grid = ({ queryEditor, resultView, parameterEditor }: Props) => {
                     </div>
                 </div>
                 <div ref={editorResize.dragBarRef}>
-                    <div
-                        className="graphiql-horizontal-drag-bar"
-                        style={{ backgroundImage: `url(${unionVertical})` }}
-                    />
+                    <div className="horizontal-drag-bar" style={{ backgroundImage: `url(${unionVertical})` }} />
                 </div>
                 <div ref={editorResize.secondRef}>
                     <div className="w-full h-full">{resultView}</div>
