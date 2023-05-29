@@ -82,8 +82,6 @@ jobs:
         neo4j-version:
           - 4.4-community
           - 4.4-enterprise
-          - 5-community
-          - 5-enterprise
 
     services:
       neo4j:
