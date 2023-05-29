@@ -17,29 +17,25 @@
  * limitations under the License.
  */
 
-import { useCallback, useState, useRef, useEffect, useContext } from "react";
+import { useDragResize } from "@graphiql/react";
+import { tokens } from "@neo4j-ndl/base";
+import { Switch } from "@neo4j-ndl/react";
+import type { EditorFromTextArea } from "codemirror";
+import GraphiQLExplorer from "graphiql-explorer";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import GraphiQLExplorer from "graphiql-explorer";
-import { Button, IconButton, Switch } from "@neo4j-ndl/react";
-import { PlayIconOutline } from "@neo4j-ndl/react/icons";
-import { tokens } from "@neo4j-ndl/base";
-import type { EditorFromTextArea } from "codemirror";
-import debounce from "lodash.debounce";
-import { JSONEditor } from "./JSONEditor";
-import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
-import { EDITOR_PARAMS_INPUT, DEFAULT_QUERY, EDITOR_RESPONSE_OUTPUT } from "../../constants";
-import { Grid } from "./grid/Grid";
-import { formatCode, safeParse, ParserOptions, calculateQueryComplexity } from "./utils";
-import { Extension } from "../../components/Filename";
-import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
-import { SettingsContext } from "../../contexts/settings";
-import { AppSettings } from "../AppSettings/AppSettings";
-import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
-import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { tracking } from "../../analytics/tracking";
+import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
+import { DEFAULT_QUERY } from "../../constants";
 import { Screen } from "../../contexts/screen";
+import { SettingsContext } from "../../contexts/settings";
 import { useStore } from "../../store";
+import { AppSettings } from "../AppSettings/AppSettings";
+import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
+import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
+import "./Editor.css";
+import { calculateQueryComplexity, safeParse } from "./utils";
 
 const DEBOUNCE_TIMEOUT = 500;
 
@@ -59,17 +55,17 @@ export const Editor = ({ schema }: Props) => {
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
-    const debouncedSave = useCallback(
-        debounce((nextState) => {
-            useStore.setState(nextState);
-        }, DEBOUNCE_TIMEOUT),
-        []
-    );
+    // const debouncedSave = useCallback(
+    //     debounce((nextState) => {
+    //         useStore.setState(nextState);
+    //     }, DEBOUNCE_TIMEOUT),
+    //     []
+    // );
 
-    const formatTheCode = (): void => {
-        if (!refForQueryEditorMirror.current) return;
-        formatCode(refForQueryEditorMirror.current, ParserOptions.GRAPH_QL);
-    };
+    // const formatTheCode = (): void => {
+    //     if (!refForQueryEditorMirror.current) return;
+    //     formatCode(refForQueryEditorMirror.current, ParserOptions.GRAPH_QL);
+    // };
 
     const handleShowDocs = () => {
         setShowDocs(!showDocs);
@@ -115,6 +111,34 @@ export const Editor = ({ schema }: Props) => {
         setVariableValues(initParams);
         setInitVariableValues(initParams);
     }, []);
+
+    const editorResize = useDragResize({
+        direction: "horizontal",
+        storageKey: "editorFlex",
+    });
+    const editorToolsResize = useDragResize({
+        defaultSizeRelation: 3,
+        direction: "vertical",
+        initiallyHidden: (() => {
+            //   if (
+            //     props.defaultEditorToolsVisibility === "variables" ||
+            //     props.defaultEditorToolsVisibility === "headers"
+            //   ) {
+            //     return;
+            //   }
+
+            //   if (typeof props.defaultEditorToolsVisibility === "boolean") {
+            //     return props.defaultEditorToolsVisibility ? undefined : "second";
+            //   }
+
+            //   return editorContext.initialVariables || editorContext.initialHeaders
+            //     ? undefined
+            //     : "second";
+            return undefined;
+        })(),
+        sizeThresholdSecond: 60,
+        storageKey: "secondaryEditorFlex",
+    });
 
     return (
         <div className="w-full h-full flex">
@@ -182,80 +206,28 @@ export const Editor = ({ schema }: Props) => {
                     ) : null}
 
                     <div className="w-content-container h-content-container-extended flex justify-start p-4">
-                        <div className="flex flex-col w-full">
-                            <Grid
-                                isRightPanelVisible={showRightPanel}
-                                queryEditor={
-                                    schema ? (
-                                        <GraphQLQueryEditor
-                                            schema={schema}
-                                            query={query}
-                                            loading={loading}
-                                            mirrorRef={refForQueryEditorMirror}
-                                            onChangeQuery={(query) => {
-                                                setQuery(query);
-                                                debouncedSave({ lastQuery: query });
-                                            }}
-                                            executeQuery={onSubmit}
-                                            buttons={
-                                                <>
-                                                    <Button
-                                                        aria-label="Prettify code"
-                                                        className="mr-2"
-                                                        color="neutral"
-                                                        fill="outlined"
-                                                        size="small"
-                                                        onClick={formatTheCode}
-                                                        disabled={loading}
-                                                    >
-                                                        Prettify
-                                                    </Button>
-                                                    <IconButton
-                                                        data-test-editor-query-button
-                                                        aria-label="Execute query"
-                                                        color="primary"
-                                                        clean
-                                                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                                        onClick={() => onSubmit()}
-                                                        disabled={!schema || loading}
-                                                    >
-                                                        <PlayIconOutline
-                                                            style={{
-                                                                color: tokens.colors.primary[50],
-                                                            }}
-                                                        />
-                                                    </IconButton>
-                                                </>
-                                            }
-                                        />
-                                    ) : null
-                                }
-                                parameterEditor={
-                                    <JSONEditor
-                                        id={EDITOR_PARAMS_INPUT}
-                                        fileName="params"
-                                        loading={loading}
-                                        fileExtension={Extension.JSON}
-                                        readonly={false}
-                                        initialValue={initVariableValues}
-                                        onChange={(params) => {
-                                            setVariableValues(params);
-                                            debouncedSave({ lastParams: params });
-                                        }}
-                                    />
-                                }
-                                resultView={
-                                    <JSONEditor
-                                        id={EDITOR_RESPONSE_OUTPUT}
-                                        fileName="response"
-                                        loading={loading}
-                                        fileExtension={Extension.JSON}
-                                        readonly={true}
-                                        json={output}
-                                        onChange={setOutput}
-                                    />
-                                }
-                            />
+                        <div className="flex flex-col w-full graphiql-container">
+                            <div role="tabpanel" id="graphiql-session" className="graphiql-session">
+                                <div ref={editorResize.firstRef}>
+                                    <div className="graphiql-editors">
+                                        <div ref={editorToolsResize.firstRef}>
+                                            <div className="w-full h-full bg-green-300">placeholder</div>
+                                        </div>
+                                        <div ref={editorToolsResize.dragBarRef}>
+                                            <div className="h-8" />
+                                        </div>
+                                        <div ref={editorToolsResize.secondRef}>
+                                            <div className="w-full h-full bg-yellow-300">placeholder</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ref={editorResize.dragBarRef}>
+                                    <div className="graphiql-horizontal-drag-bar" />
+                                </div>
+                                <div ref={editorResize.secondRef}>
+                                    <div className="w-full h-full bg-blue-600">placeholder</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
