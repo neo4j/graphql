@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { EditorContextProvider } from "@graphiql/react";
+import { EditorContextProvider, HistoryContextProvider, StorageContextProvider } from "@graphiql/react";
 import type { GraphQLSchema } from "graphql";
 import { useContext, useEffect, useState } from "react";
 import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
@@ -96,21 +96,25 @@ export const Main = () => {
     return (
         <div className="flex w-full h-full flex-col">
             <EditorContextProvider>
-                <Banner />
-                <TopBar />
-                <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
-                    {screen.view === Screen.TYPEDEFS ? (
-                        <SchemaView
-                            hasSchema={!!schema}
-                            onChange={(schema) => {
-                                setSchema(schema);
-                                screen.setScreen(Screen.EDITOR);
-                            }}
-                        />
-                    ) : (
-                        <Editor schema={schema} />
-                    )}
-                </div>
+                <StorageContextProvider>
+                    <HistoryContextProvider>
+                        <Banner />
+                        <TopBar />
+                        <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
+                            {screen.view === Screen.TYPEDEFS ? (
+                                <SchemaView
+                                    hasSchema={!!schema}
+                                    onChange={(schema) => {
+                                        setSchema(schema);
+                                        screen.setScreen(Screen.EDITOR);
+                                    }}
+                                />
+                            ) : (
+                                <Editor schema={schema} />
+                            )}
+                        </div>
+                    </HistoryContextProvider>
+                </StorageContextProvider>
             </EditorContextProvider>
         </div>
     );

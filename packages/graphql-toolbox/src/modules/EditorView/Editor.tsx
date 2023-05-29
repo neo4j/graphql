@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { useHistoryContext } from "@graphiql/react";
 import { tokens } from "@neo4j-ndl/base";
 import { Switch } from "@neo4j-ndl/react";
 import type { EditorFromTextArea } from "codemirror";
@@ -52,6 +53,8 @@ export const Editor = ({ schema }: Props) => {
     const [output, setOutput] = useState<string>("");
     const [showDocs, setShowDocs] = useState<boolean>(false);
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
+    const historyContext = useHistoryContext();
+
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     // const debouncedSave = useCallback(
@@ -87,6 +90,10 @@ export const Editor = ({ schema }: Props) => {
                 });
 
                 result = JSON.stringify(response);
+                historyContext?.addToHistory({
+                    query: override || query || "",
+                    variables: variableValues,
+                });
             } catch (error) {
                 result = JSON.stringify({ errors: [error] });
             }

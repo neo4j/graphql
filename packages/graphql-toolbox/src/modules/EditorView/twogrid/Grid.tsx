@@ -7,6 +7,15 @@ export interface Props {
 }
 
 export const Grid = ({ schema }: Props) => {
+    // INFO: we cannot use the the provders/context as it requires a HTTP(S) endpoint to execute the queries against
+    //
+    // const editorContext = useEditorContext({ nonNull: true });
+    // const executionContext = useExecutionContext({ nonNull: true });
+    // const schemaContext = useSchemaContext({ nonNull: true });
+    // const storageContext = useStorageContext();
+    // const pluginContext = usePluginContext();
+    //
+
     const editorResize = useDragResize({
         direction: "horizontal",
         storageKey: "editorFlex",
@@ -36,7 +45,7 @@ export const Grid = ({ schema }: Props) => {
     });
 
     return (
-        <div className="flex  w-full h-full graphiql-container">
+        <div className="flex w-full h-full graphiql-container">
             {/* TODO: insert query tabs here */}
             {/* The editors grid */}
             <div role="tabpanel" id="graphiql-session" className="graphiql-session">
@@ -57,7 +66,7 @@ export const Grid = ({ schema }: Props) => {
                     <div className="graphiql-horizontal-drag-bar" />
                 </div>
                 <div ref={editorResize.secondRef}>
-                    <div className="w-full h-full bg-blue-600">placeholder</div>
+                    <div className="w-full h-full bg-blue-300">placeholder</div>
                 </div>
             </div>
         </div>
