@@ -1,47 +1,4 @@
-/* The current session and tabs */
-.graphiql-container .graphiql-sessions {
-    background-color: hsla(var(--color-neutral), var(--alpha-background-light));
-    /* Adding the 8px of padding to the inner border radius of the query editor */
-    border-radius: calc(var(--border-radius-12) + var(--px-8));
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    max-height: 100%;
-    margin: var(--px-16);
-    margin-left: 0;
-    min-width: 0;
-  }
-  
-  /* The session header containing tabs and the logo */
-  .graphiql-container .graphiql-session-header {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    height: var(--session-header-height);
-  }
-
-  .graphiql-container .graphiql-session {
-    display: flex;
-    flex: 1;
-    padding: 0 var(--px-8) var(--px-8);
-  }
-
-
-  /* All editors (query, variable, headers) */
-.graphiql-container .graphiql-editors {
-    background-color: hsl(var(--color-base));
-    border-radius: calc(var(--border-radius-12));
-    box-shadow: var(--popover-box-shadow);
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-  }
-  .graphiql-container .graphiql-editors.full-height {
-    margin-top: calc(var(--px-8) - var(--session-header-height));
-  }
-
-
-.graphiql-container .graphiql-horizontal-drag-bar {
+.graphiql-horizontal-drag-bar {
   cursor: col-resize;
   bottom: 0;
   right: 0;
@@ -53,7 +10,7 @@
   background-position: center;
 }
 
-.graphiql-container .graphiql-vertical-drag-bar {
+.graphiql-vertical-drag-bar {
   cursor: row-resize;
   left: 0;
   top: 0;

@@ -1,62 +1,36 @@
 import { useDragResize } from "@graphiql/react";
-import type { GraphQLSchema } from "graphql";
-import "./Grid.css";
+import "./grid.css";
 // @ts-ignore - SVG Import
 import unionHorizontal from "./union_horizontal.svg";
 // @ts-ignore - SVG Import
 import unionVertical from "./union_vertical.svg";
 
 export interface Props {
-    schema?: GraphQLSchema;
+    queryEditor: React.ReactNode | null;
+    resultView: React.ReactNode;
+    parameterEditor: React.ReactNode;
 }
 
-export const Grid = ({ schema }: Props) => {
-    // INFO: we cannot use the the provders/context as it requires a HTTP(S) endpoint to execute the queries against
-    //
-    // const editorContext = useEditorContext({ nonNull: true });
-    // const executionContext = useExecutionContext({ nonNull: true });
-    // const schemaContext = useSchemaContext({ nonNull: true });
-    // const storageContext = useStorageContext();
-    // const pluginContext = usePluginContext();
-    //
-
+export const Grid = ({ queryEditor, resultView, parameterEditor }: Props) => {
     const editorResize = useDragResize({
         direction: "horizontal",
         storageKey: "editorFlex",
     });
     const editorToolsResize = useDragResize({
-        defaultSizeRelation: 3,
         direction: "vertical",
-        initiallyHidden: (() => {
-            //   if (
-            //     props.defaultEditorToolsVisibility === "variables" ||
-            //     props.defaultEditorToolsVisibility === "headers"
-            //   ) {
-            //     return;
-            //   }
-
-            //   if (typeof props.defaultEditorToolsVisibility === "boolean") {
-            //     return props.defaultEditorToolsVisibility ? undefined : "second";
-            //   }
-
-            //   return editorContext.initialVariables || editorContext.initialHeaders
-            //     ? undefined
-            //     : "second";
-            return undefined;
-        })(),
         sizeThresholdSecond: 60,
         storageKey: "secondaryEditorFlex",
+        defaultSizeRelation: 3,
     });
 
     return (
-        <div className="flex w-full h-full graphiql-container">
-            {/* TODO: insert query tabs here */}
+        <div className="flex w-full h-full">
             {/* The editors grid */}
-            <div role="tabpanel" id="graphiql-session" className="graphiql-session">
+            <div className="flex flex-1 grid-class">
                 <div ref={editorResize.firstRef}>
-                    <div className="graphiql-editors">
+                    <div className="flex flex-1 flex-col">
                         <div ref={editorToolsResize.firstRef}>
-                            <div className="w-full h-full bg-green-300">placeholder</div>
+                            <div className="w-full h-full">{queryEditor}</div>
                         </div>
                         <div ref={editorToolsResize.dragBarRef}>
                             <div
@@ -65,7 +39,7 @@ export const Grid = ({ schema }: Props) => {
                             />
                         </div>
                         <div ref={editorToolsResize.secondRef}>
-                            <div className="w-full h-full bg-yellow-300">placeholder</div>
+                            <div className="w-full h-full">{parameterEditor}</div>
                         </div>
                     </div>
                 </div>
@@ -76,7 +50,7 @@ export const Grid = ({ schema }: Props) => {
                     />
                 </div>
                 <div ref={editorResize.secondRef}>
-                    <div className="w-full h-full bg-blue-300">placeholder</div>
+                    <div className="w-full h-full">{resultView}</div>
                 </div>
             </div>
         </div>
