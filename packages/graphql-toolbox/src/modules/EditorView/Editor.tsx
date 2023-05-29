@@ -38,7 +38,7 @@ import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import { JSONEditor } from "./JSONEditor";
-import { Grid } from "./twogrid/Grid";
+import { Grid } from "./grid/Grid";
 import { ParserOptions, calculateQueryComplexity, formatCode, safeParse } from "./utils";
 
 const DEBOUNCE_TIMEOUT = 500;
