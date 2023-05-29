@@ -1,7 +1,12 @@
 import { useDragResize } from "@graphiql/react";
+import type { GraphQLSchema } from "graphql";
 import "./Grid.css";
 
-export const Grid = () => {
+export interface Props {
+    schema?: GraphQLSchema;
+}
+
+export const Grid = ({ schema }: Props) => {
     const editorResize = useDragResize({
         direction: "horizontal",
         storageKey: "editorFlex",
@@ -32,6 +37,7 @@ export const Grid = () => {
 
     return (
         <div className="flex  w-full h-full graphiql-container">
+            {/* TODO: insert query tabs here */}
             {/* The editors grid */}
             <div role="tabpanel" id="graphiql-session" className="graphiql-session">
                 <div ref={editorResize.firstRef}>

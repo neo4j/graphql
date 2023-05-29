@@ -177,7 +177,7 @@ export const Editor = ({ schema }: Props) => {
                     ) : null}
 
                     <div className="w-content-container h-content-container-extended flex justify-start p-4">
-                        <Grid />
+                        <Grid schema={schema} />
                     </div>
                 </div>
             </div>

@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useState } from "react";
-import type { GraphQLSchema } from "graphql";
 import { EditorContextProvider } from "@graphiql/react";
-import { TopBar } from "../TopBar/TopBar";
-import { Login } from "../Login/Login";
-import { SchemaView } from "../SchemaView/SchemaView";
-import { Editor } from "../EditorView/Editor";
-import { AuthContext } from "../../contexts/auth";
-import { ScreenContext, Screen } from "../../contexts/screen";
+import type { GraphQLSchema } from "graphql";
+import { useContext, useEffect, useState } from "react";
 import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
 import { tracking } from "../../analytics/tracking";
 import { CannySDK } from "../../common/canny";
+import { AuthContext } from "../../contexts/auth";
+import { Screen, ScreenContext } from "../../contexts/screen";
+import { Editor } from "../EditorView/Editor";
+import { Login } from "../Login/Login";
+import { SchemaView } from "../SchemaView/SchemaView";
+import { TopBar } from "../TopBar/TopBar";
 
 export const Main = () => {
     const auth = useContext(AuthContext);
