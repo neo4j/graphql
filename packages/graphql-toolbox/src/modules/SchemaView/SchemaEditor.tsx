@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
 import { useContext, useEffect, useRef, useState } from "react";
 
 import { tokens } from "@neo4j-ndl/base";
+import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
 import { StarIconOutline } from "@neo4j-ndl/react/icons";
 import type { EditorFromTextArea } from "codemirror";
 

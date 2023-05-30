@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { Banner } from "@neo4j-ndl/react";
 import { useCallback, useContext, useRef, useState } from "react";
 
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
+import { Banner } from "@neo4j-ndl/react";
 import type { EditorFromTextArea } from "codemirror";
 import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";

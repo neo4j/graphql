@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { Checkbox, Radio } from "@neo4j-ndl/react";
 import { useContext } from "react";
+
+import { Checkbox, Radio } from "@neo4j-ndl/react";
 
 import { AppSettingsContext } from "../..//contexts/appsettings";
 import { tracking } from "../../analytics/tracking";

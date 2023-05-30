@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Button, IconButton, Switch } from "@neo4j-ndl/react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 import { tokens } from "@neo4j-ndl/base";
+import { Button, IconButton, Switch } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
 import type { EditorFromTextArea } from "codemirror";
 import GraphiQLExplorer from "graphiql-explorer";
