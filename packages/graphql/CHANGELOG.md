@@ -1,5 +1,14 @@
 # @neo4j/graphql
 
+## 3.20.1
+
+### Patch Changes
+
+-   [#3396](https://github.com/neo4j/graphql/pull/3396) [`449d66fbd`](https://github.com/neo4j/graphql/commit/449d66fbddb061c40bfd3df10c8c12bf037960d7) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix sorting fields with @alias directive
+
+-   Updated dependencies [[`ddae88e48`](https://github.com/neo4j/graphql/commit/ddae88e48a2e13ea9b6f4d9b39c46c52cf35a17e), [`42d2f6938`](https://github.com/neo4j/graphql/commit/42d2f6938df2b728c5ed552200565d1f8145e8bd)]:
+    -   @neo4j/cypher-builder@0.4.3
+
 ## 3.20.0
 
 ### Minor Changes
