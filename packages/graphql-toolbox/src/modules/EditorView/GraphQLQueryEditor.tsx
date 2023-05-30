@@ -24,28 +24,20 @@ import { Extension, FileName } from "../../components/Filename";
 import { EDITOR_QUERY_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
 import { AppSettingsContext } from "../../contexts/appsettings";
 import { Theme, ThemeContext } from "../../contexts/theme";
+import { useStore } from "../../store";
 import { CodeMirror } from "../../utils/utils";
 import { ParserOptions, formatCode, handleEditorDisableState } from "./utils";
 
 export interface Props {
     schema: GraphQLSchema;
-    query: string;
     loading: boolean;
     buttons: any;
     mirrorRef: React.MutableRefObject<EditorFromTextArea | null>;
     executeQuery: (override?: string) => Promise<void>;
-    onChangeQuery: (query: string) => void;
 }
 
-export const GraphQLQueryEditor = ({
-    schema,
-    mirrorRef,
-    query,
-    loading,
-    buttons,
-    executeQuery,
-    onChangeQuery,
-}: Props) => {
+export const GraphQLQueryEditor = ({ schema, mirrorRef, loading, buttons, executeQuery }: Props) => {
+    const store = useStore();
     const theme = useContext(ThemeContext);
     const appsettings = useContext(AppSettingsContext);
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
@@ -124,15 +116,22 @@ export const GraphQLQueryEditor = ({
         mirrorRef.current = mirror;
 
         mirror.on("change", (event: any) => {
-            onChangeQuery(event.getValue());
+            let newValue = event.getValue();
+            if (newValue === "") {
+                newValue = " ";
+            }
+            console.log(useStore.getState().activeTabIndex);
+            store.updateQuery(newValue, useStore.getState().activeTabIndex);
         });
     }, [ref, schema]);
 
     useEffect(() => {
-        const cursor = mirror?.getCursor();
-        mirror?.setValue(query);
-        if (cursor) mirror?.setCursor(cursor);
-    }, [query]);
+        if (store.activeTab?.query) {
+            const cursor = mirror?.getCursor();
+            mirror?.setValue(store.activeTab.query);
+            if (cursor) mirror?.setCursor(cursor);
+        }
+    }, [store.activeTab?.query]);
 
     useEffect(() => {
         handleEditorDisableState(mirror, loading);

@@ -42,6 +42,7 @@ export interface Store {
     setHideIntrospectionPrompt: (hideIntrospectionPrompt: boolean) => void;
     setSelectedDatabaseName: (selectedDatabaseName: string) => void;
     tabs: EditorTab[];
+    activeTab: EditorTab;
     activeTabIndex: number;
     addTab: () => void;
     closeTab: (index: number) => void;
@@ -49,7 +50,6 @@ export interface Store {
     updateQuery: (query: string, updatedTabIndex: number) => void;
     updateVariables: (variables: string, updatedTabIndex: number) => void;
     updateResponse: (response: string, updatedTabIndex: number) => void;
-    getActiveTab: () => EditorTab;
 }
 
 const defaultValues = {
@@ -75,6 +75,13 @@ const defaultValues = {
             headers: [],
         },
     ],
+    activeTab: {
+        title: "Unnamed",
+        query: DEFAULT_QUERY,
+        variables: "",
+        response: "",
+        headers: [],
+    },
     activeTabIndex: 0,
 };
 
@@ -90,32 +97,50 @@ export const useStore = create<Store>()(
                 const currentTabs = get().tabs;
                 const newTab: EditorTab = {
                     title: "Unnamed",
-                    query: "",
+                    query: " ",
                     variables: "",
                     response: "",
                     headers: [],
                 };
-                set({ tabs: [...currentTabs, newTab], activeTabIndex: currentTabs.length });
+                set({
+                    tabs: [...currentTabs, newTab],
+                    activeTabIndex: currentTabs.length,
+                    activeTab: newTab,
+                });
             },
             closeTab: (index) => {
                 const currentTabs = get().tabs;
                 if (currentTabs.length <= 1) {
                     return;
                 }
-                set({ tabs: currentTabs.filter((_, idx) => idx !== index) });
+                const nextTabs = currentTabs.filter((_, idx) => idx !== index);
+                let nextActiveIdx = index - 1;
+                if (get().activeTabIndex === index) {
+                    nextActiveIdx = index - 2;
+                }
+                set({
+                    tabs: nextTabs,
+                    activeTabIndex: nextActiveIdx,
+                    activeTab: nextTabs[nextActiveIdx],
+                });
             },
-            changeActiveTabIndex: (index) => set({ activeTabIndex: index }),
-            updateQuery: (query: string, updatedTabIndex: number) =>
-                set({ tabs: [...get().tabs.map((tab, idx) => (idx !== updatedTabIndex ? tab : { ...tab, query }))] }),
+            changeActiveTabIndex: (index) => set({ activeTabIndex: index, activeTab: get().tabs[index] }),
+            updateQuery: (query: string, updatedTabIndex: number) => {
+                set({
+                    tabs: [...get().tabs.map((tab, idx) => (idx === updatedTabIndex ? { ...tab, query } : tab))],
+                    activeTab: { ...get().tabs[updatedTabIndex], query },
+                });
+            },
             updateVariables: (variables: string, updatedTabIndex: number) =>
                 set({
-                    tabs: [...get().tabs.map((tab, idx) => (idx !== updatedTabIndex ? tab : { ...tab, variables }))],
+                    tabs: [...get().tabs.map((tab, idx) => (idx === updatedTabIndex ? { ...tab, variables } : tab))],
+                    activeTab: { ...get().tabs[updatedTabIndex], variables },
                 }),
             updateResponse: (response: string, updatedTabIndex: number) =>
                 set({
-                    tabs: [...get().tabs.map((tab, idx) => (idx !== updatedTabIndex ? tab : { ...tab, response }))],
+                    tabs: [...get().tabs.map((tab, idx) => (idx === updatedTabIndex ? { ...tab, response } : tab))],
+                    activeTab: { ...get().tabs[updatedTabIndex], response },
                 }),
-            getActiveTab: () => get().tabs[get().activeTabIndex],
         }),
         {
             name: "neo4j-graphql-toolbox", // a unique name

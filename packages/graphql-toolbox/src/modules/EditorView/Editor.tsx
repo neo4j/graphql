@@ -78,9 +78,9 @@ export const Editor = ({ schema }: Props) => {
             try {
                 const response = await graphql({
                     schema: schema,
-                    source: override || store.getActiveTab().query || "",
+                    source: override || useStore.getState().activeTab.query || "",
                     contextValue: {},
-                    variableValues: safeParse(store.getActiveTab().variables, {}),
+                    variableValues: safeParse(useStore.getState().activeTab.variables, {}),
                 });
 
                 result = JSON.stringify(response);
@@ -90,13 +90,13 @@ export const Editor = ({ schema }: Props) => {
 
             const complexity = calculateQueryComplexity(
                 schema,
-                override || store.getActiveTab().query || "",
-                store.getActiveTab().variables
+                override || useStore.getState().activeTab.query || "",
+                useStore.getState().activeTab.variables
             );
             tracking.trackExecuteQuery({ screen: "query editor", queryComplexity: complexity });
 
             setTimeout(() => {
-                store.updateResponse(result, store.activeTabIndex);
+                store.updateResponse(result, useStore.getState().activeTabIndex);
                 setLoading(false);
             }, 500);
         },
@@ -134,7 +134,7 @@ export const Editor = ({ schema }: Props) => {
                                     </div>
                                     <GraphiQLExplorer
                                         schema={schema}
-                                        query={store.getActiveTab().query}
+                                        query={store.activeTab?.query}
                                         onEdit={(query: string) => {
                                             store.updateQuery(query, store.activeTabIndex);
                                         }}
@@ -180,12 +180,8 @@ export const Editor = ({ schema }: Props) => {
                                 schema ? (
                                     <GraphQLQueryEditor
                                         schema={schema}
-                                        query={initialLoad ? store.getActiveTab().query : ""}
                                         loading={loading}
                                         mirrorRef={refForQueryEditorMirror}
-                                        onChangeQuery={(query: string) => {
-                                            store.updateQuery(query, store.activeTabIndex);
-                                        }}
                                         executeQuery={onSubmit}
                                         buttons={
                                             <>
@@ -227,7 +223,7 @@ export const Editor = ({ schema }: Props) => {
                                     loading={loading}
                                     fileExtension={Extension.JSON}
                                     readonly={false}
-                                    initialValue={store.getActiveTab().variables}
+                                    initialValue={store.activeTab?.variables}
                                     onChange={(params) => {
                                         store.updateVariables(params, store.activeTabIndex);
                                     }}
@@ -240,7 +236,7 @@ export const Editor = ({ schema }: Props) => {
                                     loading={loading}
                                     fileExtension={Extension.JSON}
                                     readonly={true}
-                                    json={store.getActiveTab().response}
+                                    json={store.activeTab?.response}
                                 />
                             }
                         />
