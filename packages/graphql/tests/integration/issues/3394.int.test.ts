@@ -28,11 +28,37 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
     let neo4j: Neo4j;
     let session: Session;
 
+    let neoSchema: Neo4jGraphQL;
+
     const Product = new UniqueType("Product");
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+
+        const typeDefs = `#graphql
+            type ${Product} {
+                id: String! @alias(property: "fg_item_id")
+                description: String!
+                partNumber: ID! @alias(property: "fg_item")
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const session = await neo4j.getSession();
+        try {
+            await session.run(
+                `
+                    CREATE (:${Product} {fg_item_id: "p1", description: "a p1", fg_item: "part1"})
+                    CREATE (:${Product} {fg_item_id: "p2", description: "a p2", fg_item: "part2"})
+                `
+            );
+        } finally {
+            await session.close();
+        }
     });
 
     beforeEach(async () => {
@@ -47,18 +73,6 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
     });
 
     test("should sort elements by aliased field", async () => {
-        const typeDefs = `#graphql
-            type ${Product} {
-                id: String! @alias(property: "fg_item_id")
-                description: String!
-                partNumber: ID! @alias(property: "fg_item")
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-        });
-
         const query = `#graphql
             query listProducts {
                 ${Product.plural}(options: { sort: { partNumber: DESC } }) {
@@ -68,13 +82,6 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                 }
             }
         `;
-
-        await session.run(
-            `
-                CREATE (:${Product} {fg_item_id: "p1", description: "a p1", fg_item: "part1"})
-                CREATE (:${Product} {fg_item_id: "p2", description: "a p2", fg_item: "part2"})
-            `
-        );
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
@@ -95,5 +102,47 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                 partNumber: "part1",
             },
         ]);
+    });
+
+    test("should sort elements by aliased field in connection", async () => {
+        const query = `#graphql
+            query listProducts {
+                ${Product.operations.connection}(sort: { partNumber: DESC } ) {
+                    edges {
+                        node {
+                            id
+                            partNumber
+                            description
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[Product.operations.connection]).toEqual({
+            edges: [
+                {
+                    node: {
+                        id: "p2",
+                        description: "a p2",
+                        partNumber: "part2",
+                    },
+                },
+                {
+                    node: {
+                        id: "p1",
+                        description: "a p1",
+                        partNumber: "part1",
+                    },
+                },
+            ],
+        });
     });
 });

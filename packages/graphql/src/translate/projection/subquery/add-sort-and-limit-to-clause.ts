@@ -28,7 +28,7 @@ import type {
 } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { SCORE_FIELD } from "../../../graphql/directives/fulltext";
-import { GraphElement } from "../../../classes";
+import type { GraphElement } from "../../../classes";
 
 export function addLimitOrOffsetOptionsToClause({
     optionsInput,

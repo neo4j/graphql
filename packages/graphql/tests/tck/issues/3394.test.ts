@@ -60,4 +60,37 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
+
+    test("should sort by aliased field in connection", async () => {
+        const query = gql`
+            query listProducts {
+                productsConnection(sort: { partNumber: DESC }) {
+                    edges {
+                        node {
+                            id
+                            partNumber
+                            description
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Product\`)
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
+            WITH this, totalCount
+            WITH *
+            ORDER BY this.fg_item DESC
+            WITH { node: this { id: this.fg_item_id, partNumber: this.fg_item, .description } } AS edge, totalCount, this
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
 });
