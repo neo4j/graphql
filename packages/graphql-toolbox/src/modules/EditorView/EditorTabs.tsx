@@ -14,8 +14,14 @@ export const EditorTabs = () => {
         store.changeActiveTabIndex(idx);
     };
 
+    // TODO:
+    // add max amount of tabs
+    // title ellipse
+    // too many tabs -> scroll horizontal
+    // icons need to change bg color when hovered
+
     return (
-        <>
+        <div className="mb-1">
             {store.tabs ? (
                 <Tabs size="small" fill="underline" value={store.activeTabIndex} onChange={handleTabsChange}>
                     {store.tabs.map((tab, idx) => {
@@ -37,6 +43,6 @@ export const EditorTabs = () => {
                     </Tab>
                 </Tabs>
             ) : null}
-        </>
+        </div>
     );
 };
