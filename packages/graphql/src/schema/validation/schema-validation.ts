@@ -24,7 +24,7 @@ import type {
     GraphQLNamedType,
     ObjectTypeDefinitionNode,
 } from "graphql";
-import { specifiedDirectives, GraphQLSchema } from "graphql";
+import { specifiedDirectives, GraphQLSchema, visit } from "graphql";
 import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/authorization";
 import { authorizationDefinitionsEnricher, authorizationUsageEnricher } from "./enrichers/authorization";
 import { EnricherContext } from "./EnricherContext";
@@ -33,6 +33,7 @@ import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import type { SDLValidationRule } from "graphql/validation/ValidationContext";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
 import { validateSDL } from "./validate-sdl";
+import { makeReplaceWildcardVisitor } from "./custom-rules/replace-wildcard-value";
 
 function getAdditionalDefinitions(jwtPayload?: ObjectTypeDefinitionNode): DefinitionNode[] {
     return getStaticAuthorizationDefinitions(jwtPayload);
@@ -89,7 +90,13 @@ export function validateUserDefinition({
         types: [...additionalTypes],
     });
 
-    const errors = validateSDL(validationDocument, rules, schemaToExtend);
+    let editedAST: DocumentNode | undefined = validationDocument;
+    if (jwtPayload) {
+        const ReplaceWildcardValue = makeReplaceWildcardVisitor(jwtPayload);
+        editedAST = visit(validationDocument, ReplaceWildcardValue());
+    }
+
+    const errors = validateSDL(editedAST, rules, schemaToExtend);
     if (errors.length) {
         throw new Error(errors.join("\n"));
     }
