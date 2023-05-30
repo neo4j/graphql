@@ -38,5 +38,15 @@ export const FormInput = (props: Props) => {
     if (props.testtag) {
         options[props.testtag] = true;
     }
-    return <TextInput aria-label={props.name} fluid {...props} {...options} />;
+    return (
+        <TextInput
+            content={undefined}
+            rel={undefined}
+            rev={undefined}
+            aria-label={props.name}
+            fluid
+            {...props}
+            {...options}
+        />
+    );
 };
