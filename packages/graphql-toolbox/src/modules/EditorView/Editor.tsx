@@ -17,29 +17,29 @@
  * limitations under the License.
  */
 
-import { useCallback, useState, useRef, useEffect, useContext } from "react";
-import type { GraphQLSchema } from "graphql";
-import { graphql } from "graphql";
-import GraphiQLExplorer from "graphiql-explorer";
+import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, Switch } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
-import { tokens } from "@neo4j-ndl/base";
 import type { EditorFromTextArea } from "codemirror";
+import GraphiQLExplorer from "graphiql-explorer";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
 import debounce from "lodash.debounce";
-import { JSONEditor } from "./JSONEditor";
-import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
-import { EDITOR_PARAMS_INPUT, DEFAULT_QUERY, EDITOR_RESPONSE_OUTPUT } from "../../constants";
-import { Grid } from "./grid/Grid";
-import { formatCode, safeParse, ParserOptions, calculateQueryComplexity } from "./utils";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { tracking } from "../../analytics/tracking";
 import { Extension } from "../../components/Filename";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
-import { SettingsContext } from "../../contexts/settings";
-import { AppSettings } from "../AppSettings/AppSettings";
-import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
-import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
-import { tracking } from "../../analytics/tracking";
+import { DEFAULT_QUERY, EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
 import { Screen } from "../../contexts/screen";
+import { SettingsContext } from "../../contexts/settings";
 import { useStore } from "../../store";
+import { AppSettings } from "../AppSettings/AppSettings";
+import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
+import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
+import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
+import { JSONEditor } from "./JSONEditor";
+import { Grid } from "./grid/Grid";
+import { ParserOptions, calculateQueryComplexity, formatCode, safeParse } from "./utils";
 
 const DEBOUNCE_TIMEOUT = 500;
 
@@ -140,6 +140,9 @@ export const Editor = ({ schema }: Props) => {
                                             label="Docs"
                                             checked={showDocs}
                                             onChange={handleShowDocs}
+                                            content={undefined}
+                                            rel={undefined}
+                                            rev={undefined}
                                         />
                                     </div>
                                     <GraphiQLExplorer

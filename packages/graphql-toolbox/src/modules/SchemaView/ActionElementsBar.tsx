@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { useRef } from "react";
+import { tokens } from "@neo4j-ndl/base";
 import { Button, SmartTooltip } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
-import { tokens } from "@neo4j-ndl/base";
+import { useRef } from "react";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 
 interface Props {
@@ -40,7 +40,12 @@ export const ActionElementsBar = ({ hasSchema, loading, onSubmit }: Props) => {
                     isEditorDisabled={!hasSchema}
                 />
                 {!hasSchema ? (
-                    <SmartTooltip allowedPlacements={["right"]} style={{ width: "14rem" }} ref={tooltipRef}>
+                    <SmartTooltip
+                        allowedPlacements={["right"]}
+                        style={{ width: "14rem" }}
+                        ref={tooltipRef}
+                        rev={undefined}
+                    >
                         {"Build the schema to use the editor"}
                     </SmartTooltip>
                 ) : null}
