@@ -83,20 +83,19 @@ export function validateUserDefinition({
     jwtPayload?: ObjectTypeDefinitionNode;
 }): void {
     rules = rules ? rules : [...specifiedSDLRules, DirectiveArgumentOfCorrectType];
-    const validationDocument = makeValidationDocument(userDocument, augmentedDocument, jwtPayload);
+    let validationDocument = makeValidationDocument(userDocument, augmentedDocument, jwtPayload);
 
     const schemaToExtend = new GraphQLSchema({
         directives: [...specifiedDirectives, ...additionalDirectives],
         types: [...additionalTypes],
     });
 
-    let editedAST: DocumentNode | undefined = validationDocument;
     if (jwtPayload) {
         const ReplaceWildcardValue = makeReplaceWildcardVisitor(jwtPayload);
-        editedAST = visit(validationDocument, ReplaceWildcardValue());
+        validationDocument = visit(validationDocument, ReplaceWildcardValue());
     }
 
-    const errors = validateSDL(editedAST, rules, schemaToExtend);
+    const errors = validateSDL(validationDocument, rules, schemaToExtend);
     if (errors.length) {
         throw new Error(errors.join("\n"));
     }
