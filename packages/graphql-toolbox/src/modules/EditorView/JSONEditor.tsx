@@ -19,12 +19,12 @@
 
 import type { EditorFromTextArea } from "codemirror";
 import { useContext, useEffect, useRef } from "react";
-import { THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
-import { ThemeContext, Theme } from "../../contexts/theme";
-import { CodeMirror } from "../../utils/utils";
-import type { Extension} from "../../components/Filename";
+import type { Extension } from "../../components/Filename";
 import { FileName } from "../../components/Filename";
-import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
+import { THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
+import { Theme, ThemeContext } from "../../contexts/theme";
+import { CodeMirror } from "../../utils/utils";
+import { ParserOptions, formatCode, handleEditorDisableState } from "./utils";
 
 export interface Props {
     id: string;
@@ -103,7 +103,7 @@ export const JSONEditor = (props: Props) => {
     return (
         <div style={{ width: "100%", height: "100%" }}>
             <FileName extension={props.fileExtension} name={props.fileName}></FileName>
-            <textarea id={props.id} style={{ width: "100%", height: "100%" }} ref={ref} />
+            <textarea id={props.id} ref={ref} />
         </div>
     );
 };
