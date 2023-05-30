@@ -95,7 +95,7 @@ module.exports = {
                     "error",
                     {
                         groups: [
-                            // Matches any import statement that ends with 'react'
+                            // Matches any import statement that are 'react'
                             ["^react$"],
 
                             // Matches any import statement that starts with '@' followed by any word character
