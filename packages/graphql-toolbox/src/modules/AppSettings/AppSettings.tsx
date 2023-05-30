@@ -126,8 +126,8 @@ export const AppSettings = ({ onClickClose }: Props) => {
             </div>
             <div className="absolute bottom-2 right-28 font-bold text-xs flex flex-col">
                 <span>Made by Neo4j, Inc</span>
-                <span data-test-copyright-information>Copyright &copy; 2002-2023</span>{" "}
-                {/* explicitly hard code values */}
+                {/* explicitly hard coded values for copyright */}
+                <span data-test-copyright-information>Copyright &copy; 2002-2023</span>
                 <div className="flex">
                     <span>App version:</span>&nbsp;
                     <pre>{process.env.VERSION}</pre>
