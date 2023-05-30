@@ -132,7 +132,7 @@ export const GraphQLQueryEditor = ({
         const cursor = mirror?.getCursor();
         mirror?.setValue(query);
         if (cursor) mirror?.setCursor(cursor);
-    }, [query]);
+    }, [query, mirror]);
 
     useEffect(() => {
         handleEditorDisableState(mirror, loading);

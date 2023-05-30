@@ -56,6 +56,7 @@ export const Editor = ({ schema }: Props) => {
 
     useEffect(() => {
         setInitialLoad(true);
+        // store.changeActiveTabIndex(useStore.getState().activeTabIndex);
     }, []);
 
     const formatTheCode = (): void => {
