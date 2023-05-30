@@ -63,7 +63,7 @@ export abstract class GraphElement {
 
     public getField(name: string): BaseField | undefined {
         for (const fieldList of this.getAllFields()) {
-            const field = this.searchField(fieldList, name);
+            const field = this.searchFieldInList(name, fieldList);
             if (field) return field;
         }
     }
@@ -79,7 +79,7 @@ export abstract class GraphElement {
         ];
     }
 
-    private searchField(fields: BaseField[], fieldName: string): BaseField | undefined {
+    private searchFieldInList(fieldName: string, fields: BaseField[]): BaseField | undefined {
         return fields.find((field) => {
             return field.fieldName === fieldName;
         });
