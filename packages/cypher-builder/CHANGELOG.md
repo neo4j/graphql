@@ -1,5 +1,13 @@
 # @neo4j/cypher-builder
 
+## 0.4.3
+
+### Patch Changes
+
+-   [#3370](https://github.com/neo4j/graphql/pull/3370) [`ddae88e48`](https://github.com/neo4j/graphql/commit/ddae88e48a2e13ea9b6f4d9b39c46c52cf35a17e) Thanks [@angrykoala](https://github.com/angrykoala)! - Exports utility "toCypherParams"
+
+-   [#3369](https://github.com/neo4j/graphql/pull/3369) [`42d2f6938`](https://github.com/neo4j/graphql/commit/42d2f6938df2b728c5ed552200565d1f8145e8bd) Thanks [@angrykoala](https://github.com/angrykoala)! - Add support for clauses as input of sub-clauses methods where possible
+
 ## 0.4.2
 
 ### Patch Changes
