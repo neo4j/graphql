@@ -20,6 +20,7 @@
 import { tokens } from "@neo4j-ndl/base";
 import { IconButton } from "@neo4j-ndl/react";
 import { StarIconOutline, TrashIconOutline } from "@neo4j-ndl/react/icons";
+
 import { useStore } from "../../store";
 import type { Favorite } from "../../types";
 import { FavoriteNameEdit } from "./FavoriteNameEdit";

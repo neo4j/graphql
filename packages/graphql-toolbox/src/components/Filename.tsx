@@ -18,9 +18,10 @@
  */
 
 import { useContext } from "react";
-import { ThemeContext, Theme } from "../contexts/theme";
+
 // @ts-ignore - SVG Import
 import GraphQLIcon from "../assets/graphql-icon.svg";
+import { Theme, ThemeContext } from "../contexts/theme";
 
 export enum Extension {
     JSON,

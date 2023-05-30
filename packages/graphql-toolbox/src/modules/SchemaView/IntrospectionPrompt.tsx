@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
+import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, Modal } from "@neo4j-ndl/react";
 import { XMarkIconOutline } from "@neo4j-ndl/react/icons";
-import { tokens } from "@neo4j-ndl/base";
 
 interface Props {
     open: boolean;
