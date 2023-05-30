@@ -125,6 +125,7 @@ export function translateRead(
             fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
             cypherFields: node.cypherFields,
             cypherFieldAliasMap,
+            graphElement: node,
         });
     }
 

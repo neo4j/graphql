@@ -25,6 +25,7 @@ import type {
     TemporalField,
     PointField,
     CustomResolverField,
+    BaseField,
 } from "../types";
 
 export interface GraphElementConstructor {
@@ -58,5 +59,29 @@ export abstract class GraphElement {
         this.temporalFields = input.temporalFields;
         this.pointFields = input.pointFields;
         this.customResolverFields = input.customResolverFields;
+    }
+
+    public getField(name: string): BaseField | undefined {
+        for (const fieldList of this.getAllFields()) {
+            const field = this.searchField(fieldList, name);
+            if (field) return field;
+        }
+    }
+
+    private getAllFields(): Array<BaseField[]> {
+        return [
+            this.primitiveFields,
+            this.scalarFields,
+            this.enumFields,
+            this.temporalFields,
+            this.pointFields,
+            this.customResolverFields,
+        ];
+    }
+
+    private searchField(fields: BaseField[], fieldName: string): BaseField | undefined {
+        return fields.find((field) => {
+            return field.fieldName === fieldName;
+        });
     }
 }
