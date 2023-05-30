@@ -42,6 +42,14 @@ export interface Neo4jDatabase {
     role: string;
 }
 
+export interface EditorTab {
+    title: string;
+    query: string;
+    variables: string;
+    response: string;
+    headers: Record<string, string>[];
+}
+
 export enum ConstraintState {
     check,
     create,

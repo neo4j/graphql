@@ -19,7 +19,7 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import type { Favorite } from "../types";
+import type { EditorTab, Favorite } from "../types";
 import { ConstraintState } from "../types";
 import { DEFAULT_QUERY, DEFAULT_TYPE_DEFS } from "./../constants";
 
@@ -43,6 +43,12 @@ export interface Store {
     setConnectionUrl: (connectionUrl: string | null) => void;
     setHideIntrospectionPrompt: (hideIntrospectionPrompt: boolean) => void;
     setSelectedDatabaseName: (selectedDatabaseName: string) => void;
+    tabs: EditorTab[];
+    activeTabIndex: number;
+    addTab: () => void;
+    closeTab: (index: number) => void;
+    changeActiveTab: (index: number) => void;
+    updateTab: (tab: EditorTab, index: number) => void;
 }
 
 const defaultValues = {
@@ -61,16 +67,32 @@ const defaultValues = {
     enableProductUsageTracking: true,
     hideProductUsageTrackingMessage: false,
     selectedDatabaseName: null,
+    tabs: [],
+    activeTabIndex: 0,
 };
 
 export const useStore = create<Store>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             ...defaultValues,
             setConnectionUsername: (connectionUsername) => set({ connectionUsername }),
             setConnectionUrl: (connectionUrl) => set({ connectionUrl }),
             setHideIntrospectionPrompt: (hideIntrospectionPrompt) => set({ hideIntrospectionPrompt }),
             setSelectedDatabaseName: (selectedDatabaseName) => set({ selectedDatabaseName }),
+            addTab: () => {
+                const newTab: EditorTab = {
+                    title: "Unnamed",
+                    query: "",
+                    variables: "",
+                    response: "",
+                    headers: [],
+                };
+                set({ tabs: [...get().tabs, newTab] });
+            },
+            closeTab: (index) => set({ tabs: get().tabs.filter((_, idx) => idx !== index) }),
+            changeActiveTab: (index) => set({ activeTabIndex: index }),
+            updateTab: (updatedTab, updatedTabIndex) =>
+                set({ tabs: [...get().tabs.map((tab, idx) => (idx !== updatedTabIndex ? tab : updatedTab))] }),
         }),
         {
             name: "neo4j-graphql-toolbox", // a unique name
