@@ -23,6 +23,13 @@ export const AuthorizationAnnotationArguments = ["filter", "validate"] as const;
 
 export type AuthorizationFilterOperation = "READ" | "UPDATE" | "DELETE" | "CREATE_RELATIONSHIP" | "DELETE_RELATIONSHIP";
 
+export type AuthorizationFilterSubscriptionsEvent =
+    | "CREATE"
+    | "UPDATE"
+    | "DELETE"
+    | "CREATE_RELATIONSHIP"
+    | "DELETE_RELATIONSHIP";
+
 export type AuthorizationValidateOperation =
     | "READ"
     | "CREATE"
@@ -41,8 +48,25 @@ export type AuthorizationWhere = {
     node?: GraphQLWhereArg;
 };
 
+export type AuthorizationSubscriptionWhere = {
+    AND?: AuthorizationWhere[];
+    OR?: AuthorizationWhere[];
+    NOT?: AuthorizationWhere;
+    jwtPayload?: GraphQLWhereArg;
+    node?: GraphQLWhereArg;
+    relationship?: GraphQLWhereArg;
+};
+
 export const AuthorizationFilterOperationRule: ReadonlyArray<AuthorizationFilterOperation> = [
     "READ",
+    "UPDATE",
+    "DELETE",
+    "CREATE_RELATIONSHIP",
+    "DELETE_RELATIONSHIP",
+];
+
+export const AuthorizationFilterSubscriptionsEventRule: ReadonlyArray<AuthorizationFilterSubscriptionsEvent> = [
+    "CREATE",
     "UPDATE",
     "DELETE",
     "CREATE_RELATIONSHIP",
@@ -60,10 +84,20 @@ export const AuthorizationValidateOperationRule: ReadonlyArray<AuthorizationVali
 
 export class AuthorizationAnnotation {
     public filter?: AuthorizationFilterRule[];
+    public filterSubscriptions?: AuthorizationFilterSubscriptionsRule[];
     public validate?: AuthorizationValidateRule[];
 
-    constructor({ filter, validate }: { filter?: AuthorizationFilterRule[]; validate?: AuthorizationValidateRule[] }) {
+    constructor({
+        filter,
+        filterSubscriptions,
+        validate,
+    }: {
+        filter?: AuthorizationFilterRule[];
+        filterSubscriptions?: AuthorizationFilterSubscriptionsRule[];
+        validate?: AuthorizationValidateRule[];
+    }) {
         this.filter = filter;
+        this.filterSubscriptions = filterSubscriptions;
         this.validate = validate;
     }
 }
@@ -81,6 +115,24 @@ export class AuthorizationFilterRule {
 
     constructor({ operations, requireAuthentication, where }: AuthorizationFilterRuleConstructor) {
         this.operations = operations ?? [...AuthorizationFilterOperationRule];
+        this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
+        this.where = where;
+    }
+}
+
+export type AuthorizationFilterSubscriptionsRuleConstructor = {
+    events?: AuthorizationFilterSubscriptionsEvent[];
+    requireAuthentication?: boolean;
+    where: AuthorizationSubscriptionWhere;
+};
+
+export class AuthorizationFilterSubscriptionsRule {
+    public events: AuthorizationFilterSubscriptionsEvent[];
+    public requireAuthentication: boolean;
+    public where: AuthorizationSubscriptionWhere;
+
+    constructor({ events, requireAuthentication, where }: AuthorizationFilterSubscriptionsRuleConstructor) {
+        this.events = events ?? [...AuthorizationFilterSubscriptionsEventRule];
         this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
         this.where = where;
     }
