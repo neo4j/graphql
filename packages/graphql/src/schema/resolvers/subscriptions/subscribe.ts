@@ -74,12 +74,11 @@ export function generateSubscribeMethod({
                 }
             }
         }
-        console.log("here", type);
+
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
 
         if (["create", "update", "delete"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
-                console.log(">", data[0], node.name);
                 return (
                     (data[0] as NodeSubscriptionsEvent).typename === node.name &&
                     subscriptionWhere({ where: args.where, event: data[0], node }) &&
@@ -90,7 +89,6 @@ export function generateSubscribeMethod({
 
         if (["create_relationship", "delete_relationship"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
-                console.log(">>", data[0], node.name);
                 const relationEventPayload = data[0] as RelationshipSubscriptionsEvent;
                 const isOfRelevantType =
                     relationEventPayload.toTypename === node.name || relationEventPayload.fromTypename === node.name;
