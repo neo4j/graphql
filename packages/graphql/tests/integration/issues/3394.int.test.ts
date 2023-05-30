@@ -31,12 +31,17 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
     let neoSchema: Neo4jGraphQL;
 
     const Product = new UniqueType("Product");
+    const Employee = new UniqueType("Employee");
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
 
         const typeDefs = `#graphql
+            type ${Employee} {
+                products: [${Product}!]! @relationship(type: "CAN_ACCESS", direction: OUT)
+            }
+
             type ${Product} {
                 id: String! @alias(property: "fg_item_id")
                 description: String!
@@ -52,8 +57,12 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
         try {
             await session.run(
                 `
-                    CREATE (:${Product} {fg_item_id: "p1", description: "a p1", fg_item: "part1"})
-                    CREATE (:${Product} {fg_item_id: "p2", description: "a p2", fg_item: "part2"})
+                    CREATE (e:${Employee} {fg_item_id: "p1", description: "a p1", fg_item: "part1"})
+                    CREATE (p1:${Product} {fg_item_id: "p1", description: "a p1", fg_item: "part1"})
+                    CREATE (p2:${Product} {fg_item_id: "p2", description: "a p2", fg_item: "part2"})
+
+                    CREATE (e)-[:CAN_ACCESS]->(p1)
+                    CREATE (e)-[:CAN_ACCESS]->(p2)
                 `
             );
         } finally {
@@ -104,8 +113,47 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
         ]);
     });
 
-    test("should sort elements by aliased field in connection", async () => {
+    test("should sort elements by aliased field in relationship", async () => {
         const query = `#graphql
+            query listProducts {
+                ${Employee.plural} {
+                    products(options: { sort: { partNumber: DESC } }) {
+                        id
+                        partNumber
+                        description
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[Employee.plural]).toEqual([
+            {
+                products: [
+                    {
+                        id: "p2",
+                        description: "a p2",
+                        partNumber: "part2",
+                    },
+                    {
+                        id: "p1",
+                        description: "a p1",
+                        partNumber: "part1",
+                    },
+                ],
+            },
+        ]);
+    });
+
+    describe("Connection sort", () => {
+        test("should sort elements by aliased field in connection", async () => {
+            const query = `#graphql
             query listProducts {
                 ${Product.operations.connection}(sort: { partNumber: DESC } ) {
                     edges {
@@ -119,30 +167,79 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             }
         `;
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.[Product.operations.connection]).toEqual({
+                edges: [
+                    {
+                        node: {
+                            id: "p2",
+                            description: "a p2",
+                            partNumber: "part2",
+                        },
+                    },
+                    {
+                        node: {
+                            id: "p1",
+                            description: "a p1",
+                            partNumber: "part1",
+                        },
+                    },
+                ],
+            });
         });
 
-        expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data?.[Product.operations.connection]).toEqual({
-            edges: [
+        test("should sort elements by aliased field in nested  connection", async () => {
+            const query = `#graphql
+            query listProducts {
+                ${Employee.plural}{
+                    productsConnection(sort: { node: { partNumber: DESC } } ) {
+                        edges {
+                            node {
+                                id
+                                partNumber
+                                description
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.[Employee.plural]).toEqual([
                 {
-                    node: {
-                        id: "p2",
-                        description: "a p2",
-                        partNumber: "part2",
+                    productsConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    id: "p2",
+                                    description: "a p2",
+                                    partNumber: "part2",
+                                },
+                            },
+                            {
+                                node: {
+                                    id: "p1",
+                                    description: "a p1",
+                                    partNumber: "part1",
+                                },
+                            },
+                        ],
                     },
                 },
-                {
-                    node: {
-                        id: "p1",
-                        description: "a p1",
-                        partNumber: "part1",
-                    },
-                },
-            ],
+            ]);
         });
     });
 });
