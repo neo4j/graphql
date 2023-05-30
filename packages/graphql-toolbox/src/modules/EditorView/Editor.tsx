@@ -119,7 +119,7 @@ export const Editor = ({ schema }: Props) => {
                 <div className="w-full h-full flex">
                     <div className="h-full w-96 bg-white border-t border-gray-100">
                         <div className="h-content-docs-container p-6">
-                            {schema && initialLoad ? (
+                            {schema ? (
                                 <>
                                     <div className="flex justify-end">
                                         <Switch
@@ -134,9 +134,9 @@ export const Editor = ({ schema }: Props) => {
                                     </div>
                                     <GraphiQLExplorer
                                         schema={schema}
-                                        query={store.activeTab?.query}
+                                        query={useStore.getState().activeTab.query}
                                         onEdit={(query: string) => {
-                                            store.updateQuery(query, store.activeTabIndex);
+                                            store.updateQuery(query, useStore.getState().activeTabIndex);
                                         }}
                                         onRunOperation={onSubmit}
                                         explorerIsOpen={true}
@@ -183,6 +183,10 @@ export const Editor = ({ schema }: Props) => {
                                         loading={loading}
                                         mirrorRef={refForQueryEditorMirror}
                                         executeQuery={onSubmit}
+                                        query={useStore.getState().activeTab.query}
+                                        onChangeQuery={(query) => {
+                                            store.updateQuery(query, useStore.getState().activeTabIndex);
+                                        }}
                                         buttons={
                                             <>
                                                 <Button
@@ -223,9 +227,9 @@ export const Editor = ({ schema }: Props) => {
                                     loading={loading}
                                     fileExtension={Extension.JSON}
                                     readonly={false}
-                                    initialValue={store.activeTab?.variables}
+                                    initialValue={useStore.getState().activeTab.variables}
                                     onChange={(params) => {
-                                        store.updateVariables(params, store.activeTabIndex);
+                                        store.updateVariables(params, useStore.getState().activeTabIndex);
                                     }}
                                 />
                             }
@@ -236,7 +240,7 @@ export const Editor = ({ schema }: Props) => {
                                     loading={loading}
                                     fileExtension={Extension.JSON}
                                     readonly={true}
-                                    json={store.activeTab?.response}
+                                    json={useStore.getState().activeTab.response}
                                 />
                             }
                         />

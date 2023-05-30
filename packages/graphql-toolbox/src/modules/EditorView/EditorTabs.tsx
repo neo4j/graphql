@@ -37,7 +37,10 @@ export const EditorTabs = () => {
                                     <XMarkIconOutline
                                         className="h-5 w-5"
                                         aria-label="Close Icon"
-                                        onClick={() => closeTab(idx)}
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            closeTab(idx);
+                                        }}
                                     />
                                 </div>
                             </Tab>

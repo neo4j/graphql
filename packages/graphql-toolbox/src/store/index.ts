@@ -97,7 +97,7 @@ export const useStore = create<Store>()(
                 const currentTabs = get().tabs;
                 const newTab: EditorTab = {
                     title: "Unnamed",
-                    query: " ",
+                    query: "",
                     variables: "",
                     response: "",
                     headers: [],
@@ -113,15 +113,12 @@ export const useStore = create<Store>()(
                 if (currentTabs.length <= 1) {
                     return;
                 }
+                const nextActiveIdx = index - 1;
                 const nextTabs = currentTabs.filter((_, idx) => idx !== index);
-                let nextActiveIdx = index - 1;
-                if (get().activeTabIndex === index) {
-                    nextActiveIdx = index - 2;
-                }
                 set({
                     tabs: nextTabs,
                     activeTabIndex: nextActiveIdx,
-                    activeTab: nextTabs[nextActiveIdx],
+                    activeTab: currentTabs[nextActiveIdx],
                 });
             },
             changeActiveTabIndex: (index) => set({ activeTabIndex: index, activeTab: get().tabs[index] }),
