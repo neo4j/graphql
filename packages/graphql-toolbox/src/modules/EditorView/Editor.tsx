@@ -79,9 +79,9 @@ export const Editor = ({ schema }: Props) => {
             try {
                 const response = await graphql({
                     schema: schema,
-                    source: override || useStore.getState().activeTab.query || "",
+                    source: override || useStore.getState().getActiveTab().query || "",
                     contextValue: {},
-                    variableValues: safeParse(useStore.getState().activeTab.variables, {}),
+                    variableValues: safeParse(useStore.getState().getActiveTab().variables, {}),
                 });
 
                 result = JSON.stringify(response);
@@ -91,8 +91,8 @@ export const Editor = ({ schema }: Props) => {
 
             const complexity = calculateQueryComplexity(
                 schema,
-                override || useStore.getState().activeTab.query || "",
-                useStore.getState().activeTab.variables
+                override || useStore.getState().getActiveTab().query || "",
+                useStore.getState().getActiveTab().variables
             );
             tracking.trackExecuteQuery({ screen: "query editor", queryComplexity: complexity });
 
@@ -135,7 +135,7 @@ export const Editor = ({ schema }: Props) => {
                                     </div>
                                     <GraphiQLExplorer
                                         schema={schema}
-                                        query={useStore.getState().activeTab.query}
+                                        query={useStore.getState().getActiveTab().query}
                                         onEdit={(query: string) => {
                                             store.updateQuery(query, useStore.getState().activeTabIndex);
                                         }}
@@ -184,7 +184,7 @@ export const Editor = ({ schema }: Props) => {
                                         loading={loading}
                                         mirrorRef={refForQueryEditorMirror}
                                         executeQuery={onSubmit}
-                                        query={useStore.getState().activeTab.query}
+                                        query={useStore.getState().getActiveTab().query}
                                         onChangeQuery={(query) => {
                                             store.updateQuery(query, useStore.getState().activeTabIndex);
                                         }}
@@ -228,7 +228,7 @@ export const Editor = ({ schema }: Props) => {
                                     loading={loading}
                                     fileExtension={Extension.JSON}
                                     readonly={false}
-                                    initialValue={useStore.getState().activeTab.variables}
+                                    initialValue={useStore.getState().getActiveTab().variables}
                                     onChange={(params) => {
                                         store.updateVariables(params, useStore.getState().activeTabIndex);
                                     }}
@@ -241,7 +241,7 @@ export const Editor = ({ schema }: Props) => {
                                     loading={loading}
                                     fileExtension={Extension.JSON}
                                     readonly={true}
-                                    json={useStore.getState().activeTab.response}
+                                    json={useStore.getState().getActiveTab().response}
                                 />
                             }
                         />

@@ -42,10 +42,10 @@ export interface Store {
     setHideIntrospectionPrompt: (hideIntrospectionPrompt: boolean) => void;
     setSelectedDatabaseName: (selectedDatabaseName: string) => void;
     tabs: EditorTab[];
-    activeTab: EditorTab;
     activeTabIndex: number;
     addTab: () => void;
     closeTab: (index: number) => void;
+    getActiveTab: () => EditorTab;
     changeActiveTabIndex: (index: number) => void;
     updateQuery: (query: string, updatedTabIndex: number) => void;
     updateVariables: (variables: string, updatedTabIndex: number) => void;
@@ -75,13 +75,6 @@ const defaultValues = {
             headers: [],
         },
     ],
-    activeTab: {
-        title: "Unnamed",
-        query: DEFAULT_QUERY,
-        variables: "",
-        response: "",
-        headers: [],
-    },
     activeTabIndex: 0,
 };
 
@@ -105,7 +98,6 @@ export const useStore = create<Store>()(
                 set({
                     tabs: [...currentTabs, newTab],
                     activeTabIndex: currentTabs.length,
-                    activeTab: newTab,
                 });
             },
             closeTab: (index) => {
@@ -120,25 +112,22 @@ export const useStore = create<Store>()(
                 set({
                     tabs: currentTabs.filter((_, idx) => idx !== index),
                     activeTabIndex: nextActiveTabIdx,
-                    activeTab: currentTabs[nextActiveTabIdx],
                 });
             },
-            changeActiveTabIndex: (index) => set({ activeTabIndex: index, activeTab: get().tabs[index] }),
+            getActiveTab: () => get().tabs[get().activeTabIndex],
+            changeActiveTabIndex: (index) => set({ activeTabIndex: index }),
             updateQuery: (query: string, updatedTabIndex: number) => {
                 set({
                     tabs: [...get().tabs.map((tab, idx) => (idx === updatedTabIndex ? { ...tab, query } : tab))],
-                    activeTab: { ...get().tabs[updatedTabIndex], query },
                 });
             },
             updateVariables: (variables: string, updatedTabIndex: number) =>
                 set({
                     tabs: [...get().tabs.map((tab, idx) => (idx === updatedTabIndex ? { ...tab, variables } : tab))],
-                    activeTab: { ...get().tabs[updatedTabIndex], variables },
                 }),
             updateResponse: (response: string, updatedTabIndex: number) =>
                 set({
                     tabs: [...get().tabs.map((tab, idx) => (idx === updatedTabIndex ? { ...tab, response } : tab))],
-                    activeTab: { ...get().tabs[updatedTabIndex], response },
                 }),
         }),
         {
