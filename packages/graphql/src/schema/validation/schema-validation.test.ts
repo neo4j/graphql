@@ -158,6 +158,40 @@ describe("schema validation", () => {
                 expect(executeValidate).not.toThrow();
             });
 
+            test("should not returns errors when is correctly used: standard field sub on OBJECT", () => {
+                const userDocument = gql`
+                    type User @authorization(filter: [{ where: { node: { testStr: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                        testStr: String
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when is correctly used: List[Int] on OBJECT", () => {
+                const jwtType = `
+                    type JWTPayload @jwtPayload {
+                        intClaim: [Int]
+                    }
+                `;
+                const userDocument = gql`
+                    type User @authorization(filter: [{ where: { node: { testInt: "$jwt.intClaim" } } }]) {
+                        id: ID!
+                        name: String!
+                        testInt: [Int]
+                    }
+                `;
+
+                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                expect(executeValidate).not.toThrow();
+            });
+
             test("should not returns errors when is correctly used: Boolean on OBJECT", () => {
                 const jwtType = `
                     type JWTPayload @jwtPayload {
@@ -176,6 +210,44 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
                 expect(executeValidate).not.toThrow();
+            });
+
+            test("should return error when types do not match: standard field sub on OBJECT", () => {
+                const userDocument = gql`
+                    type User @authorization(filter: [{ where: { node: { testInt: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                        testInt: Int
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"Invalid argument: filter, error: Int cannot represent non-integer value: \\"\\""`
+                );
+            });
+
+            test("should return error when types do not match: Int compared with List[Int] on OBJECT", () => {
+                const jwtType = `
+                    type JWTPayload @jwtPayload {
+                        intClaim: [Int]
+                    }
+                `;
+                const userDocument = gql`
+                    type User @authorization(filter: [{ where: { node: { testInts: "$jwt.intClaim" } } }]) {
+                        id: ID!
+                        name: String!
+                        testInts: Int
+                    }
+                `;
+
+                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"Invalid argument: filter, error: Int cannot represent non-integer value: []"`
+                );
             });
 
             test("should return error when types do not match: Int compared with String on OBJECT", () => {

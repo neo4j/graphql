@@ -90,10 +90,8 @@ export function validateUserDefinition({
         types: [...additionalTypes],
     });
 
-    if (jwtPayload) {
-        const ReplaceWildcardValue = makeReplaceWildcardVisitor(jwtPayload);
-        validationDocument = visit(validationDocument, ReplaceWildcardValue());
-    }
+    const ReplaceWildcardValue = makeReplaceWildcardVisitor({ jwtPayload, schema: schemaToExtend });
+    validationDocument = visit(validationDocument, ReplaceWildcardValue());
 
     const errors = validateSDL(validationDocument, rules, schemaToExtend);
     if (errors.length) {

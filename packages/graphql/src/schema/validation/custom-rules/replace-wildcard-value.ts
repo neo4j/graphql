@@ -18,10 +18,13 @@
  */
 
 import { astFromValueUntyped } from "@graphql-tools/utils";
-import type { ASTVisitor, ObjectTypeDefinitionNode } from "graphql";
+import type { ASTVisitor, GraphQLSchema, ObjectTypeDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
+import { getStandardJwtDefinition } from "../../../graphql/directives/type-dependant-directives/jwt-payload";
 
-function getDefaultValueForTypename(typeName: string) {
+type DefaultValue = false | 0 | never[] | "" | null;
+
+function getDefaultValueForTypename(typeName: string): DefaultValue {
     switch (typeName) {
         case "Boolean":
             return false;
@@ -30,12 +33,30 @@ function getDefaultValueForTypename(typeName: string) {
         case "Int":
         case "Float":
             return 0;
+        case "List":
+            return [];
         default:
             return null;
     }
 }
+function makeReplacementFieldNode(fieldType: TypeNode) {
+    let replacementValue: DefaultValue = null;
+    if (fieldType.kind === Kind.NAMED_TYPE) {
+        replacementValue = getDefaultValueForTypename(fieldType.name.value);
+    }
+    if (fieldType.kind === Kind.LIST_TYPE) {
+        replacementValue = getDefaultValueForTypename("List");
+    }
+    return astFromValueUntyped(replacementValue);
+}
 
-export function makeReplaceWildcardVisitor(jwtPayload?: ObjectTypeDefinitionNode) {
+export function makeReplaceWildcardVisitor({
+    jwtPayload,
+    schema,
+}: {
+    jwtPayload?: ObjectTypeDefinitionNode;
+    schema: GraphQLSchema;
+}) {
     return function ReplaceWildcardValue(): ASTVisitor {
         return {
             ObjectField: {
@@ -48,10 +69,11 @@ export function makeReplaceWildcardVisitor(jwtPayload?: ObjectTypeDefinitionNode
                         return;
                     }
                     const jwtFieldName = fieldValue.substring(5);
-                    const jwtField = jwtPayload?.fields?.find((f) => f.name.value === jwtFieldName);
-                    if (jwtField && jwtField.type.kind === Kind.NAMED_TYPE) {
-                        const replacementValue = getDefaultValueForTypename(jwtField.type.name.value);
-                        const fieldWithReplacedValue = astFromValueUntyped(replacementValue) || node.value;
+                    const jwtField =
+                        jwtPayload?.fields?.find((f) => f.name.value === jwtFieldName) ||
+                        getStandardJwtDefinition(schema)?.fields?.find((f) => f.name.value === jwtFieldName);
+                    if (jwtField) {
+                        const fieldWithReplacedValue = makeReplacementFieldNode(jwtField.type) || node.value;
                         return { ...node, value: fieldWithReplacedValue };
                     }
                 },
