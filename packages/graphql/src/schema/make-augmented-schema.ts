@@ -106,7 +106,7 @@ function makeAugmentedSchema(
     }: {
         features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
-        validateResolvers: boolean;
+        validateResolvers?: boolean;
         generateSubscriptions?: boolean;
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;

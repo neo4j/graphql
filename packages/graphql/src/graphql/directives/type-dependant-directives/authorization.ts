@@ -66,7 +66,11 @@ const AUTHORIZATION_FILTER_OPERATION = new GraphQLEnumType({
     },
 });
 
-function createAuthorizationWhere(typeDefinitionName: string, schema: GraphQLSchema): GraphQLInputObjectType {
+function createAuthorizationWhere(
+    typeDefinitionName: string,
+    schema: GraphQLSchema,
+    jwtPayloadWhere: GraphQLInputObjectType
+): GraphQLInputObjectType {
     /**
      * Both inputWhere and JWTPayloadWhere can be undefined,
      * JWTPayload can be not defined by the User in the user document,
@@ -94,12 +98,62 @@ function createAuthorizationWhere(typeDefinitionName: string, schema: GraphQLSch
                       }
                     : {}),
                 jwtPayload: {
-                    type: new GraphQLInputObjectType({ name: "JWTPayloadWhere", fields: {} }),
+                    type: jwtPayloadWhere,
                 },
             };
         },
     });
     return authorizationWhere;
+}
+
+function createAuthorizationSubscriptionWhere(
+    typeDefinitionName: string,
+    schema: GraphQLSchema,
+    jwtPayloadWhere: GraphQLInputObjectType
+): GraphQLInputObjectType {
+    /**
+     * Both inputWhere and JWTPayloadWhere can be undefined,
+     * JWTPayload can be not defined by the User in the user document,
+     * and unused interface will not generate the {typeDefinitionName}Where making the inputWhere undefined
+     * */
+    const nodeWhere = schema.getType(`${typeDefinitionName}SubscriptionWhere`) as GraphQLInputObjectType | undefined;
+    const relationshipWhere = schema.getType(`${typeDefinitionName}RelationshipsSubscriptionWhere`) as
+        | GraphQLInputObjectType
+        | undefined;
+    const authorizationSubscriptionWhere = new GraphQLInputObjectType({
+        name: `${typeDefinitionName}AuthorizationSubscriptionWhere`,
+        fields() {
+            return {
+                AND: {
+                    type: new GraphQLList(authorizationSubscriptionWhere),
+                },
+                OR: {
+                    type: new GraphQLList(authorizationSubscriptionWhere),
+                },
+                NOT: {
+                    type: authorizationSubscriptionWhere,
+                },
+                ...(nodeWhere
+                    ? {
+                          node: {
+                              type: nodeWhere,
+                          },
+                      }
+                    : {}),
+                ...(relationshipWhere
+                    ? {
+                          relationship: {
+                              type: relationshipWhere,
+                          },
+                      }
+                    : {}),
+                jwtPayload: {
+                    type: jwtPayloadWhere,
+                },
+            };
+        },
+    });
+    return authorizationSubscriptionWhere;
 }
 
 function createAuthorizationFilterRule(
@@ -114,6 +168,26 @@ function createAuthorizationFilterRule(
                     type: new GraphQLList(AUTHORIZATION_FILTER_OPERATION),
                     defaultValue: ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"],
                 },
+                requireAuthentication: {
+                    type: GraphQLBoolean,
+                    defaultValue: true,
+                },
+                where: {
+                    type: inputWhere,
+                },
+            };
+        },
+    });
+}
+
+function createAuthorizationFilterSubscriptionsRule(
+    typeDefinitionName: string,
+    inputWhere: GraphQLInputObjectType
+): GraphQLInputObjectType {
+    return new GraphQLInputObjectType({
+        name: `${typeDefinitionName}AuthorizationFilterSubscriptionsRule`,
+        fields() {
+            return {
                 requireAuthentication: {
                     type: GraphQLBoolean,
                     defaultValue: true,
@@ -154,11 +228,17 @@ function createAuthorizationValidateRule(
     });
 }
 
-function createAuthorization(
-    typeDefinitionName: string,
-    filterRule: GraphQLInputObjectType,
-    validateRule: GraphQLInputObjectType
-): GraphQLDirective {
+function createAuthorization({
+    typeDefinitionName,
+    filterRule,
+    filterSubscriptionsRule,
+    validateRule,
+}: {
+    typeDefinitionName: string;
+    filterRule: GraphQLInputObjectType;
+    filterSubscriptionsRule: GraphQLInputObjectType;
+    validateRule: GraphQLInputObjectType;
+}): GraphQLDirective {
     return new GraphQLDirective({
         name: `${typeDefinitionName}Authorization`,
         locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION, DirectiveLocation.INTERFACE],
@@ -166,6 +246,10 @@ function createAuthorization(
             filter: {
                 description: "filter",
                 type: new GraphQLList(filterRule),
+            },
+            filterSubscriptions: {
+                description: "filterSubscriptions",
+                type: new GraphQLList(filterSubscriptionsRule),
             },
             validate: {
                 description: "validate",
@@ -195,20 +279,56 @@ export function createAuthorizationDefinitions(
     typeDefinitionName: string,
     schema: GraphQLSchema
 ): (TypeDefinitionNode | DirectiveDefinitionNode)[] {
-    const authorizationWhere = createAuthorizationWhere(typeDefinitionName, schema);
+    const jwtPayloadWhere = new GraphQLInputObjectType({ name: "JWTPayloadWhere", fields: {} });
+
+    const authorizationWhere = createAuthorizationWhere(typeDefinitionName, schema, jwtPayloadWhere);
     const authorizationFilterRule = createAuthorizationFilterRule(typeDefinitionName, authorizationWhere);
     const authorizationValidateRule = createAuthorizationValidateRule(typeDefinitionName, authorizationWhere);
-    const authorization = createAuthorization(typeDefinitionName, authorizationFilterRule, authorizationValidateRule);
+
+    const authorizationSubscriptionWhere = createAuthorizationSubscriptionWhere(
+        typeDefinitionName,
+        schema,
+        jwtPayloadWhere
+    );
+    const authorizationFilterSubscriptionsRule = createAuthorizationFilterSubscriptionsRule(
+        typeDefinitionName,
+        authorizationSubscriptionWhere
+    );
+
+    const authorization = createAuthorization({
+        typeDefinitionName,
+        filterRule: authorizationFilterRule,
+        filterSubscriptionsRule: authorizationFilterSubscriptionsRule,
+        validateRule: authorizationValidateRule,
+    });
 
     const authorizationSchema = new GraphQLSchema({
         directives: [authorization],
         types: [authorizationWhere, authorizationFilterRule, authorizationValidateRule],
     });
+
     const authorizationWhereAST = astFromInputObjectType(authorizationWhere, authorizationSchema);
     const authorizationFilterRuleAST = astFromInputObjectType(authorizationFilterRule, authorizationSchema);
     const authorizationValidateRuleAST = astFromInputObjectType(authorizationValidateRule, authorizationSchema);
+
+    const authorizationSubscriptionWhereAST = astFromInputObjectType(
+        authorizationSubscriptionWhere,
+        authorizationSchema
+    );
+    const authorizationFilterSubscriptionsRuleAST = astFromInputObjectType(
+        authorizationFilterSubscriptionsRule,
+        authorizationSchema
+    );
+
     const authorizationAST = astFromDirective(authorization);
-    return [authorizationWhereAST, authorizationFilterRuleAST, authorizationValidateRuleAST, authorizationAST];
+    return [
+        authorizationWhereAST,
+        authorizationFilterRuleAST,
+        authorizationValidateRuleAST,
+        authorizationSubscriptionWhereAST,
+        authorizationFilterSubscriptionsRuleAST,
+        authorizationAST,
+    ];
 }
 
 export function getStaticAuthorizationDefinitions(
