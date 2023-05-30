@@ -47,8 +47,9 @@ export interface Store {
     activeTabIndex: number;
     addTab: () => void;
     closeTab: (index: number) => void;
-    changeActiveTab: (index: number) => void;
+    changeActiveTabIndex: (index: number) => void;
     updateTab: (tab: EditorTab, index: number) => void;
+    getActiveTab: () => EditorTab;
 }
 
 const defaultValues = {
@@ -90,9 +91,10 @@ export const useStore = create<Store>()(
                 set({ tabs: [...get().tabs, newTab] });
             },
             closeTab: (index) => set({ tabs: get().tabs.filter((_, idx) => idx !== index) }),
-            changeActiveTab: (index) => set({ activeTabIndex: index }),
+            changeActiveTabIndex: (index) => set({ activeTabIndex: index }),
             updateTab: (updatedTab, updatedTabIndex) =>
                 set({ tabs: [...get().tabs.map((tab, idx) => (idx !== updatedTabIndex ? tab : updatedTab))] }),
+            getActiveTab: () => get().tabs[get().activeTabIndex],
         }),
         {
             name: "neo4j-graphql-toolbox", // a unique name
