@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 
+import { useRef } from "react";
+
 import { Checkbox, Radio, SmartTooltip } from "@neo4j-ndl/react";
 import { QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
 import type React from "react";
-import { useRef } from "react";
+
 import { tracking } from "../../analytics/tracking";
 import { useStore } from "../../store";
 import { ConstraintState } from "../../types";
