@@ -17,13 +17,15 @@
  * limitations under the License.
  */
 
-import { Banner } from "@neo4j-ndl/react";
+import { useCallback, useContext, useRef, useState } from "react";
+
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
+import { Banner } from "@neo4j-ndl/react";
 import type { EditorFromTextArea } from "codemirror";
 import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
-import { useCallback, useContext, useRef, useState } from "react";
+
 import { rudimentaryTypeDefinitionsAnalytics } from "../../analytics/analytics";
 import { tracking } from "../../analytics/tracking";
 import { DEFAULT_DATABASE_NAME } from "../../constants";
@@ -34,7 +36,7 @@ import { useStore } from "../../store";
 import type { Favorite } from "../../types";
 import { ConstraintState } from "../../types";
 import { AppSettings } from "../AppSettings/AppSettings";
-import { ParserOptions, formatCode } from "../EditorView/utils";
+import { formatCode, ParserOptions } from "../EditorView/utils";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { ActionElementsBar } from "./ActionElementsBar";
 import { Favorites } from "./Favorites";

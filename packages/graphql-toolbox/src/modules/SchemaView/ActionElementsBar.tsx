@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 
+import { useRef } from "react";
+
 import { tokens } from "@neo4j-ndl/base";
 import { Button, SmartTooltip } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
-import { useRef } from "react";
+
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 
 interface Props {

@@ -1,6 +1,7 @@
-import type { GraphQLSchema } from "graphql";
-import { DocExplorer, SchemaContextProvider, ExplorerContextProvider } from "@graphiql/react";
+import { DocExplorer, ExplorerContextProvider, SchemaContextProvider } from "@graphiql/react";
 import { createGraphiQLFetcher } from "@graphiql/toolkit";
+import type { GraphQLSchema } from "graphql";
+
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
 
