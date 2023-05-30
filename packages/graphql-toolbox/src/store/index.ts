@@ -25,8 +25,6 @@ import { DEFAULT_QUERY, DEFAULT_TYPE_DEFS } from "./../constants";
 
 export interface Store {
     typeDefinitions: string;
-    lastQuery: string;
-    lastParams: string;
     connectionUsername: string | null;
     connectionUrl: string | null;
     enableDebug: boolean;
@@ -48,14 +46,14 @@ export interface Store {
     addTab: () => void;
     closeTab: (index: number) => void;
     changeActiveTabIndex: (index: number) => void;
-    updateTab: (tab: EditorTab, index: number) => void;
+    updateQuery: (query: string, updatedTabIndex: number) => void;
+    updateVariables: (variables: string, updatedTabIndex: number) => void;
+    updateResponse: (response: string, updatedTabIndex: number) => void;
     getActiveTab: () => EditorTab;
 }
 
 const defaultValues = {
     typeDefinitions: DEFAULT_TYPE_DEFS,
-    lastQuery: DEFAULT_QUERY,
-    lastParams: "",
     connectionUsername: null,
     connectionUrl: null,
     enableDebug: false,
@@ -68,7 +66,15 @@ const defaultValues = {
     enableProductUsageTracking: true,
     hideProductUsageTrackingMessage: false,
     selectedDatabaseName: null,
-    tabs: [],
+    tabs: [
+        {
+            title: "Unnamed",
+            query: DEFAULT_QUERY,
+            variables: "",
+            response: "",
+            headers: [],
+        },
+    ],
     activeTabIndex: 0,
 };
 
@@ -92,8 +98,16 @@ export const useStore = create<Store>()(
             },
             closeTab: (index) => set({ tabs: get().tabs.filter((_, idx) => idx !== index) }),
             changeActiveTabIndex: (index) => set({ activeTabIndex: index }),
-            updateTab: (updatedTab, updatedTabIndex) =>
-                set({ tabs: [...get().tabs.map((tab, idx) => (idx !== updatedTabIndex ? tab : updatedTab))] }),
+            updateQuery: (query: string, updatedTabIndex: number) =>
+                set({ tabs: [...get().tabs.map((tab, idx) => (idx !== updatedTabIndex ? tab : { ...tab, query }))] }),
+            updateVariables: (variables: string, updatedTabIndex: number) =>
+                set({
+                    tabs: [...get().tabs.map((tab, idx) => (idx !== updatedTabIndex ? tab : { ...tab, variables }))],
+                }),
+            updateResponse: (response: string, updatedTabIndex: number) =>
+                set({
+                    tabs: [...get().tabs.map((tab, idx) => (idx !== updatedTabIndex ? tab : { ...tab, response }))],
+                }),
             getActiveTab: () => get().tabs[get().activeTabIndex],
         }),
         {

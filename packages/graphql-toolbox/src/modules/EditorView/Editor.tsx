@@ -29,7 +29,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { tracking } from "../../analytics/tracking";
 import { Extension } from "../../components/Filename";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
-import { DEFAULT_QUERY, EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
+import { EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
 import { Screen } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
 import { useStore } from "../../store";
@@ -51,10 +51,6 @@ export const Editor = ({ schema }: Props) => {
     const settings = useContext(SettingsContext);
     const [initialLoad, setInitialLoad] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [query, setQuery] = useState<string>("");
-    const [variableValues, setVariableValues] = useState<string>("");
-    const [initVariableValues, setInitVariableValues] = useState<string>("");
-    const [output, setOutput] = useState<string>("");
     const [showDocs, setShowDocs] = useState<boolean>(false);
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
@@ -86,9 +82,9 @@ export const Editor = ({ schema }: Props) => {
             try {
                 const response = await graphql({
                     schema: schema,
-                    source: override || query || "",
+                    source: override || useStore().getActiveTab().query || "",
                     contextValue: {},
-                    variableValues: safeParse(variableValues, {}),
+                    variableValues: safeParse(useStore().getActiveTab().variables, {}),
                 });
 
                 result = JSON.stringify(response);
@@ -96,24 +92,23 @@ export const Editor = ({ schema }: Props) => {
                 result = JSON.stringify({ errors: [error] });
             }
 
-            const complexity = calculateQueryComplexity(schema, override || query || "", variableValues);
+            const complexity = calculateQueryComplexity(
+                schema,
+                override || useStore().getActiveTab().query || "",
+                useStore().getActiveTab().variables
+            );
             tracking.trackExecuteQuery({ screen: "query editor", queryComplexity: complexity });
 
             setTimeout(() => {
-                setOutput(result);
+                useStore().updateVariables(result, useStore().activeTabIndex);
                 setLoading(false);
             }, 500);
         },
-        [query, setOutput, setLoading, variableValues]
+        [setLoading]
     );
 
     useEffect(() => {
-        const initQuery = useStore.getState().lastQuery || DEFAULT_QUERY;
-        const initParams = useStore.getState().lastParams || "";
         setInitialLoad(true);
-        setQuery(initQuery);
-        setVariableValues(initParams);
-        setInitVariableValues(initParams);
     }, []);
 
     return (
@@ -147,8 +142,10 @@ export const Editor = ({ schema }: Props) => {
                                     </div>
                                     <GraphiQLExplorer
                                         schema={schema}
-                                        query={query}
-                                        onEdit={setQuery}
+                                        query={useStore().getActiveTab().query}
+                                        onEdit={(query: string) => {
+                                            useStore().updateQuery(query, useStore().activeTabIndex);
+                                        }}
                                         onRunOperation={onSubmit}
                                         explorerIsOpen={true}
                                         styles={{
@@ -190,11 +187,13 @@ export const Editor = ({ schema }: Props) => {
                                 schema ? (
                                     <GraphQLQueryEditor
                                         schema={schema}
-                                        query={query}
+                                        query={useStore().getActiveTab().query}
                                         loading={loading}
                                         mirrorRef={refForQueryEditorMirror}
                                         onChangeQuery={(query) => {
-                                            setQuery(query);
+                                            (query: string) => {
+                                                useStore().updateQuery(query, useStore().activeTabIndex);
+                                            };
                                             debouncedSave({ lastQuery: query });
                                         }}
                                         executeQuery={onSubmit}
@@ -238,9 +237,9 @@ export const Editor = ({ schema }: Props) => {
                                     loading={loading}
                                     fileExtension={Extension.JSON}
                                     readonly={false}
-                                    initialValue={initVariableValues}
+                                    initialValue={useStore().getActiveTab().variables}
                                     onChange={(params) => {
-                                        setVariableValues(params);
+                                        useStore().updateVariables(params, useStore().activeTabIndex);
                                         debouncedSave({ lastParams: params });
                                     }}
                                 />
@@ -252,8 +251,10 @@ export const Editor = ({ schema }: Props) => {
                                     loading={loading}
                                     fileExtension={Extension.JSON}
                                     readonly={true}
-                                    json={output}
-                                    onChange={setOutput}
+                                    json={useStore().getActiveTab().response}
+                                    onChange={(response: string) =>
+                                        useStore().updateVariables(response, useStore().activeTabIndex)
+                                    }
                                 />
                             }
                         />
