@@ -17,8 +17,10 @@ export const EditorTabs = () => {
     // TODO:
     // add max amount of tabs. if max reached, remove "add" button
     // title ellipse
+    // update tabs title automatically?? -> use updateQuery()
     // too many tabs -> scroll horizontal
     // icons need to change bg color when hovered
+    //
 
     return (
         <div className="mb-1">

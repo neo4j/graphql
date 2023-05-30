@@ -24,7 +24,7 @@ import type { EditorFromTextArea } from "codemirror";
 import GraphiQLExplorer from "graphiql-explorer";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
 import { tracking } from "../../analytics/tracking";
 import { Extension } from "../../components/Filename";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
@@ -48,16 +48,10 @@ export interface Props {
 export const Editor = ({ schema }: Props) => {
     const store = useStore();
     const settings = useContext(SettingsContext);
-    const [initialLoad, setInitialLoad] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [showDocs, setShowDocs] = useState<boolean>(false);
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
-
-    useEffect(() => {
-        setInitialLoad(true);
-        // store.changeActiveTabIndex(useStore.getState().activeTabIndex);
-    }, []);
 
     const formatTheCode = (): void => {
         if (!refForQueryEditorMirror.current) return;
