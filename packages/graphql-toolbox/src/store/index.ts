@@ -18,10 +18,10 @@
  */
 
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import type { Favorite, GridState } from "../types";
+import { createJSONStorage, persist } from "zustand/middleware";
+import type { Favorite } from "../types";
 import { ConstraintState } from "../types";
-import { DEFAULT_TYPE_DEFS, DEFAULT_QUERY } from "./../constants";
+import { DEFAULT_QUERY, DEFAULT_TYPE_DEFS } from "./../constants";
 
 export interface Store {
     typeDefinitions: string;
@@ -38,7 +38,6 @@ export interface Store {
     hideIntrospectionPrompt: boolean;
     enableProductUsageTracking: boolean;
     hideProductUsageTrackingMessage: boolean;
-    gridState: GridState | null;
     selectedDatabaseName: string | null;
     setConnectionUsername: (connectionUsername: string | null) => void;
     setConnectionUrl: (connectionUrl: string | null) => void;
@@ -62,7 +61,6 @@ const defaultValues = {
     enableProductUsageTracking: true,
     hideProductUsageTrackingMessage: false,
     selectedDatabaseName: null,
-    gridState: null,
 };
 
 export const useStore = create<Store>()(
