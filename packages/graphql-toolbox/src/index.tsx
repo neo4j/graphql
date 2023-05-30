@@ -28,3 +28,4 @@ const root = ReactDOM.createRoot(container);
 root.render(<App />);
 
 // TODO: uninstall lodash.debounce ??
+// TODO: update tabs title automatically??

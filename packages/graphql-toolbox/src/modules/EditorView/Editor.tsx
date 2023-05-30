@@ -35,6 +35,7 @@ import { useStore } from "../../store";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
+import { EditorTabs } from "./EditorTabs";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import { JSONEditor } from "./JSONEditor";
 import { Grid } from "./grid/Grid";
@@ -52,6 +53,10 @@ export const Editor = ({ schema }: Props) => {
     const [showDocs, setShowDocs] = useState<boolean>(false);
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
+
+    useEffect(() => {
+        setInitialLoad(true);
+    }, []);
 
     const formatTheCode = (): void => {
         if (!refForQueryEditorMirror.current) return;
@@ -97,10 +102,6 @@ export const Editor = ({ schema }: Props) => {
         },
         [setLoading]
     );
-
-    useEffect(() => {
-        setInitialLoad(true);
-    }, []);
 
     return (
         <div className="w-full h-full flex">
@@ -172,7 +173,8 @@ export const Editor = ({ schema }: Props) => {
                         </div>
                     ) : null}
 
-                    <div className="w-content-container h-content-container-extended flex justify-start p-4">
+                    <div className="w-content-container h-content-container-extended flex flex-col justify-start p-4">
+                        <EditorTabs />
                         <Grid
                             queryEditor={
                                 schema ? (

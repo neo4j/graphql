@@ -87,6 +87,7 @@ export const useStore = create<Store>()(
             setHideIntrospectionPrompt: (hideIntrospectionPrompt) => set({ hideIntrospectionPrompt }),
             setSelectedDatabaseName: (selectedDatabaseName) => set({ selectedDatabaseName }),
             addTab: () => {
+                const currentTabs = get().tabs;
                 const newTab: EditorTab = {
                     title: "Unnamed",
                     query: "",
@@ -94,9 +95,15 @@ export const useStore = create<Store>()(
                     response: "",
                     headers: [],
                 };
-                set({ tabs: [...get().tabs, newTab] });
+                set({ tabs: [...currentTabs, newTab], activeTabIndex: currentTabs.length });
             },
-            closeTab: (index) => set({ tabs: get().tabs.filter((_, idx) => idx !== index) }),
+            closeTab: (index) => {
+                const currentTabs = get().tabs;
+                if (currentTabs.length <= 1) {
+                    return;
+                }
+                set({ tabs: currentTabs.filter((_, idx) => idx !== index) });
+            },
             changeActiveTabIndex: (index) => set({ activeTabIndex: index }),
             updateQuery: (query: string, updatedTabIndex: number) =>
                 set({ tabs: [...get().tabs.map((tab, idx) => (idx !== updatedTabIndex ? tab : { ...tab, query }))] }),
