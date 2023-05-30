@@ -17,150 +17,56 @@
  * limitations under the License.
  */
 
-import { useState, useEffect, useMemo } from "react";
-import { ResizableBox } from "react-resizable";
-import debounce from "lodash.debounce";
-import { useStore } from "../../../store";
-import type { GridState } from "../../../types";
-import { usePrevious } from "../../..//utils/utils";
+import { useDragResize } from "@graphiql/react";
+import "./grid.css";
 // @ts-ignore - SVG Import
 import unionHorizontal from "./union_horizontal.svg";
 // @ts-ignore - SVG Import
 import unionVertical from "./union_vertical.svg";
-import "./grid.css";
-
-const DEBOUNCE_LOCAL_STORE_TIMEOUT = 300;
-const DEBOUNCE_WINDOW_RESIZE_TIMEOUT = 200;
 
 interface Props {
     queryEditor: React.ReactNode | null;
     resultView: React.ReactNode;
     parameterEditor: React.ReactNode;
-    isRightPanelVisible: boolean;
 }
 
-const initialState: GridState = {
-    maxWidth: 700,
-    maxHeight: 700,
-    leftTop: {
-        width: 200,
-        height: 400,
-    },
-    leftBottom: {
-        width: 200,
-        height: 300,
-    },
-    right: {
-        width: 200,
-        height: 200,
-    },
-};
+export const Grid = ({ queryEditor, resultView, parameterEditor }: Props) => {
+    const editorResize = useDragResize({
+        direction: "horizontal",
+        storageKey: "editorFlex",
+        defaultSizeRelation: 1,
+    });
 
-export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVisible }: Props) => {
-    const [values, setValues] = useState<GridState>(useStore.getState().gridState || initialState);
-    const prevIsRightPanelVisible = usePrevious(isRightPanelVisible);
-
-    const debouncedBoxResize = useMemo(
-        () =>
-            debounce((nextState: GridState) => {
-                useStore.setState({ gridState: nextState });
-            }, DEBOUNCE_LOCAL_STORE_TIMEOUT),
-        []
-    );
-
-    const debouncedWindowResize = useMemo(
-        () =>
-            debounce(() => {
-                handleResize();
-            }, DEBOUNCE_WINDOW_RESIZE_TIMEOUT),
-        []
-    );
-
-    const onResizeBox = (boxName: string, size: { width: number; height: number }) => {
-        const nextState: GridState = {
-            ...values,
-            [boxName]: { ...size },
-        };
-        setValues(nextState);
-        debouncedBoxResize(nextState);
-    };
-
-    const handleResize = () => {
-        const gridElement = window.document.getElementById("theGridId");
-        if (!gridElement) return;
-
-        const { clientHeight, clientWidth } = gridElement;
-        const nextState: GridState = {
-            ...values,
-            maxWidth: clientWidth * 0.6,
-            maxHeight: clientHeight * 0.8,
-            right: {
-                width: clientWidth * 0.5,
-                height: values.right.height,
-            },
-        };
-        setValues(nextState);
-        useStore.setState({ gridState: nextState });
-    };
-
-    useEffect(() => {
-        if (prevIsRightPanelVisible === undefined) return;
-        handleResize();
-    }, [isRightPanelVisible]);
-
-    window.addEventListener("resize", debouncedWindowResize);
+    const editorToolsResize = useDragResize({
+        direction: "vertical",
+        sizeThresholdSecond: 60,
+        storageKey: "secondaryEditorFlex",
+        defaultSizeRelation: 3,
+    });
 
     return (
-        <div className="the-grid" id="theGridId" style={{ width: isRightPanelVisible ? "100%" : "unset" }}>
-            <section className="left-top">
-                <ResizableBox
-                    className="left-top-inner"
-                    width={values.leftTop.width}
-                    height={values.leftTop.height}
-                    axis="y"
-                    resizeHandles={["s"]}
-                    maxConstraints={[Infinity, values.maxHeight]}
-                    onResize={(_, { size }) => onResizeBox("leftTop", size)}
-                    handle={
-                        <div
-                            className="react-resizable-handle react-resizable-handle-s"
-                            style={{ backgroundImage: `url(${unionHorizontal})` }}
-                        />
-                    }
-                >
-                    {queryEditor}
-                </ResizableBox>
-            </section>
-            <section className="left-bottom">
-                <ResizableBox
-                    className="left-bottom-inner"
-                    width={values.leftBottom.width}
-                    height={values.leftBottom.height}
-                    axis="none"
-                    maxConstraints={[Infinity, values.maxHeight]}
-                >
-                    {parameterEditor}
-                </ResizableBox>
-            </section>
-            <section className="right">
-                <ResizableBox
-                    className="right-inner"
-                    width={values.right.width}
-                    height={values.right.height}
-                    axis="x"
-                    resizeHandles={["w"]}
-                    maxConstraints={[values.maxWidth, Infinity]}
-                    onResize={(_, { size }) => onResizeBox("right", size)}
-                    handle={
-                        <div
-                            className="react-resizable-handle react-resizable-handle-w"
-                            style={{ backgroundImage: `url(${unionVertical})` }}
-                        />
-                    }
-                >
-                    {resultView}
-                </ResizableBox>
-            </section>
+        <div className="flex w-full h-full">
+            <div className="flex flex-1 grid-class">
+                <div ref={editorResize.firstRef}>
+                    <div className="flex flex-1 flex-col">
+                        <div ref={editorToolsResize.firstRef}>
+                            <div className="w-full h-full">{queryEditor}</div>
+                        </div>
+                        <div ref={editorToolsResize.dragBarRef}>
+                            <div className="vertical-drag-bar" style={{ backgroundImage: `url(${unionHorizontal})` }} />
+                        </div>
+                        <div ref={editorToolsResize.secondRef}>
+                            <div className="w-full h-full">{parameterEditor}</div>
+                        </div>
+                    </div>
+                </div>
+                <div ref={editorResize.dragBarRef}>
+                    <div className="horizontal-drag-bar" style={{ backgroundImage: `url(${unionVertical})` }} />
+                </div>
+                <div ref={editorResize.secondRef}>
+                    <div className="w-full h-full">{resultView}</div>
+                </div>
+            </div>
         </div>
     );
 };

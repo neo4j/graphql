@@ -41,6 +41,24 @@ describe("CypherBuilder Match", () => {
         `);
     });
 
+    test("Match node with return passing a Clause", () => {
+        const movieNode = new Cypher.Node({
+            labels: ["Movie"],
+        });
+
+        const returnClause = new Cypher.Return(movieNode);
+
+        const matchQuery = new Cypher.Match(movieNode).return(returnClause);
+
+        const queryResult = matchQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            RETURN this0"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+    });
+
     test("Match with remove", () => {
         const idParam = new Cypher.Param("my-id");
         const nameParam = new Cypher.Param("my-name");

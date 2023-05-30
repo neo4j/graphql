@@ -25,13 +25,29 @@ import { With } from "../With";
 export abstract class WithWith extends ClauseMixin {
     protected withStatement: With | undefined;
 
-    public with(...columns: ("*" | WithProjection)[]): With {
-        if (this.withStatement) {
-            this.withStatement.addColumns(...columns);
-        } else {
-            this.withStatement = new With(...columns);
-            this.addChildren(this.withStatement);
+    public with(clause: With): With;
+    public with(...columns: Array<"*" | WithProjection>): With;
+    public with(clauseOrColumn: With | "*" | WithProjection, ...columns: Array<"*" | WithProjection>): With {
+        if (clauseOrColumn instanceof With) {
+            return this.addWithStatement(clauseOrColumn);
         }
-        return this.withStatement;
+
+        return this.addColumnsToWithClause(clauseOrColumn, ...columns);
+    }
+
+    private addColumnsToWithClause(...columns: Array<"*" | WithProjection>): With {
+        let withStatement = this.withStatement;
+        if (!withStatement) {
+            withStatement = this.addWithStatement(new With());
+        }
+
+        withStatement.addColumns(...columns);
+        return withStatement;
+    }
+
+    private addWithStatement(clause: With): With {
+        this.withStatement = clause;
+        this.addChildren(this.withStatement);
+        return clause;
     }
 }

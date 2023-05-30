@@ -17,11 +17,6 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import type { DocumentNode, GraphQLSchema } from "graphql";
-import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
-import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
-import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
@@ -49,8 +44,13 @@ import type { ExecutorConstructorParam } from "./Executor";
 import { Executor } from "./Executor";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import { composeResolvers } from "@graphql-tools/resolvers-composition";
+import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
+import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import type { TypeSource } from "@graphql-tools/utils";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
+import type { DocumentNode, GraphQLSchema } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
 import { makeDocumentToAugment } from "../schema/make-document-to-augment";
@@ -217,6 +217,38 @@ class Neo4jGraphQL {
             options: input.options,
             dbInfo: this.dbInfo,
         });
+    }
+
+    public neo4jValidateGraphQLDocument(): { isValid: boolean; validationErrors: string[] } {
+        try {
+            const initialDocument = this.getDocument(this.schemaDefinition.typeDefs);
+
+            validateDocument(initialDocument);
+
+            const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
+            const { jwtPayload } = typesExcludedFromGeneration;
+
+            const { typeDefs } = makeAugmentedSchema(document, {
+                features: this.features,
+                enableRegex: false,
+                validateResolvers: true,
+                generateSubscriptions: true,
+                userCustomResolvers: undefined,
+            });
+
+            validateUserDefinition({
+                userDocument: document,
+                augmentedDocument: typeDefs,
+                jwtPayload: jwtPayload?.type,
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                const validationErrors = error.message.split("\n\n");
+                return { isValid: false, validationErrors };
+            }
+            return { isValid: false, validationErrors: [] };
+        }
+        return { isValid: true, validationErrors: [] };
     }
 
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {

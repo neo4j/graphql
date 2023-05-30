@@ -69,6 +69,9 @@ export const AppSettings = ({ onClickClose }: Props) => {
                         label="Light theme"
                         checked={theme.theme === Theme.LIGHT}
                         onChange={handleOnChangeEditorTheme}
+                        content={undefined}
+                        rel={undefined}
+                        rev={undefined}
                     />
                     <Radio
                         id={Theme.DARK.toString()}
@@ -76,6 +79,9 @@ export const AppSettings = ({ onClickClose }: Props) => {
                         label="Dark theme"
                         checked={theme.theme === Theme.DARK}
                         onChange={handleOnChangeEditorTheme}
+                        content={undefined}
+                        rel={undefined}
+                        rev={undefined}
                     />
                     <div className="mt-3">
                         <Checkbox
@@ -85,6 +91,9 @@ export const AppSettings = ({ onClickClose }: Props) => {
                             label="Show lint markers"
                             checked={appSettings.showLintMarkers}
                             onChange={onChangeShowLintMarkers}
+                            content={undefined}
+                            rel={undefined}
+                            rev={undefined}
                         />
                     </div>
                 </div>
@@ -102,6 +111,9 @@ export const AppSettings = ({ onClickClose }: Props) => {
                         }`}
                         checked={appSettings.enableProductUsageTracking}
                         onChange={onChangeProductUsageTracking}
+                        content={undefined}
+                        rel={undefined}
+                        rev={undefined}
                     />
                     <div className="ml-3">
                         <p className="text-sm">Product usage</p>
@@ -114,7 +126,8 @@ export const AppSettings = ({ onClickClose }: Props) => {
             </div>
             <div className="absolute bottom-2 right-28 font-bold text-xs flex flex-col">
                 <span>Made by Neo4j, Inc</span>
-                <span data-test-copyright-information>Copyright &copy; 2002-2023</span>  {/* explicitly hard code values */}
+                {/* explicitly hard coded values for copyright */}
+                <span data-test-copyright-information>Copyright &copy; 2002-2023</span>
                 <div className="flex">
                     <span>App version:</span>&nbsp;
                     <pre>{process.env.VERSION}</pre>

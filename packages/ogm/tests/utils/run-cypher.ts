@@ -17,11 +17,16 @@
  * limitations under the License.
  */
 
-import { Param } from "../references/Param";
+import type { Result, Session } from "neo4j-driver";
 
-export function convertToCypherParams<T>(original: Record<string, T>): Record<string, Param<T>> {
-    return Object.entries(original).reduce((acc, [key, value]) => {
-        acc[key] = new Param(value);
-        return acc;
-    }, {});
+/** Runs cypher safely, cleaning session afterwards */
+export async function runCypher(session: Session, cypher: string, parameters?: any): Promise<Result> {
+    try {
+        const result = await session.run(cypher, parameters);
+        await session.close();
+        return result;
+    } catch (err: unknown) {
+        await session.close();
+        throw err;
+    }
 }

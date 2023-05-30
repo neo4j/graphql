@@ -221,7 +221,9 @@ export const wrapSubscription =
             schemaModel,
         };
 
-        if (!context?.jwt) {
+        if (context?.jwt) {
+            subscriptionContext.jwt = context.jwt;
+        } else if (!context?.jwt) {
             if (resolverArgs.authorizationSettings) {
                 if (!contextParams.authorization) {
                     if (resolverArgs.authorizationSettings.globalAuthentication) {

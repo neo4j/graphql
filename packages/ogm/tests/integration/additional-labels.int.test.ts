@@ -18,11 +18,11 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import type { Driver, Session } from "neo4j-driver";
 import { gql } from "graphql-tag";
-import neo4j from "./neo4j";
+import type { Driver, Session } from "neo4j-driver";
 import { OGM } from "../../src";
-import { createJwtRequest, UniqueType } from "../utils";
+import { UniqueType, createJwtRequest } from "../utils/utils";
+import neo4j from "./neo4j";
 
 describe("Additional Labels", () => {
     const secret = "secret";

@@ -21,7 +21,7 @@ import { CypherASTNode } from "../CypherASTNode";
 import type { EnvPrefix } from "../Environment";
 import { CypherEnvironment } from "../Environment";
 import type { CypherResult } from "../types";
-import { convertToCypherParams } from "../utils/convert-to-cypher-params";
+import { toCypherParams } from "../utils/to-cypher-params";
 import { padBlock } from "../utils/pad-block";
 
 const customInspectSymbol = Symbol.for("nodejs.util.inspect.custom");
@@ -36,7 +36,7 @@ export abstract class Clause extends CypherASTNode {
             const env = this.getEnv(prefix);
             const cypher = this.getCypher(env);
 
-            const cypherParams = convertToCypherParams(extraParams);
+            const cypherParams = toCypherParams(extraParams);
             env.addExtraParams(cypherParams);
             return {
                 cypher,

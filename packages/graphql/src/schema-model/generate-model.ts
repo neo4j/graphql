@@ -38,6 +38,7 @@ import { parseAuthorizationAnnotation } from "./parser/authorization-annotation"
 import { parseCypherAnnotation } from "./parser/cypher-annotation";
 import { parseKeyAnnotation } from "./parser/key-annotation";
 import { parseArguments } from "./parser/utils";
+import type { RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
 import { parseAuthenticationAnnotation } from "./parser/authentication-annotation";
 import { Operation } from "./Operation";
@@ -199,11 +200,15 @@ function generateRelationshipField(
     if (!relatedToEntity) throw new Error(`Entity ${relatedEntityName} Not Found`);
 
     const { type, direction, properties } = parseArguments(relationshipDirective);
+
     let attributes: Attribute[] = [];
-    if (properties) {
-        const propertyInterface = propertyInterfaces.get(properties as string);
-        if (!propertyInterface) throw new Error("Property interfaces not defined with @relationshipProperties");
-        const fields = (propertyInterface?.fields || []).map((field) => generateAttribute(field));
+    if (properties && typeof properties === "string") {
+        const propertyInterface = propertyInterfaces.get(properties);
+        if (!propertyInterface)
+            throw new Error(
+                `There is no matching interface defined with @relationshipProperties for properties "${properties}"`
+            );
+        const fields = (propertyInterface.fields || []).map((field) => generateAttribute(field));
         attributes = filterTruthy(fields);
     }
     return new Relationship({
@@ -212,7 +217,7 @@ function generateRelationshipField(
         attributes,
         source,
         target: relatedToEntity,
-        direction: direction as "IN" | "OUT",
+        direction: direction as RelationshipDirection,
     });
 }
 

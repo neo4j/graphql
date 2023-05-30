@@ -533,7 +533,7 @@ describe("Cypher Auth Roles", () => {
             	}
             	RETURN count(*) AS update_this_post0
             }
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)<-[this_post_Post_unique:HAS_COMMENT]-(:Post)
@@ -681,7 +681,7 @@ describe("Cypher Auth Roles", () => {
             	}
             	RETURN count(*) AS update_this_post0
             }
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)<-[this_post_Post_unique:HAS_COMMENT]-(:Post)

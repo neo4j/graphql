@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useRef, useState } from "react";
 import { Button, SmartTooltip } from "@neo4j-ndl/react";
 import { ExclamationTriangleIconOutline } from "@neo4j-ndl/react/icons";
-import { FormInput } from "./FormInput";
+import { useCallback, useContext, useRef, useState } from "react";
 import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
+import { FormInput } from "./FormInput";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
@@ -66,7 +66,7 @@ export const Login = () => {
         return (
             <>
                 <ExclamationTriangleIconOutline className="n-text-warning-50" ref={tooltipRef} />
-                <SmartTooltip allowedPlacements={["right"]} style={{ width: "20rem" }} ref={tooltipRef}>
+                <SmartTooltip allowedPlacements={["right"]} style={{ width: "20rem" }} rev={undefined}>
                     {text}
                 </SmartTooltip>
             </>
