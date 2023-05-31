@@ -22,6 +22,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import type { EditorTab, Favorite } from "../types";
 import { ConstraintState } from "../types";
 import { DEFAULT_QUERY, DEFAULT_TYPE_DEFS } from "./../constants";
+import { getQueryOrMutationName } from "./utils";
 
 export interface Store {
     typeDefinitions: string;
@@ -120,9 +121,9 @@ export const useStore = create<Store>()(
             getActiveTab: () => get().tabs[get().activeTabIndex],
             changeActiveTabIndex: (index) => set({ activeTabIndex: index }),
             updateQuery: (query: string, updatedTabIndex: number) => {
-                typeDefinitions.match(/type (.*?){/g) || [];
+                const title = getQueryOrMutationName(query);
                 set({
-                    tabs: [...get().tabs.map((tab, idx) => (idx === updatedTabIndex ? { ...tab, query } : tab))],
+                    tabs: [...get().tabs.map((tab, idx) => (idx === updatedTabIndex ? { ...tab, query, title } : tab))],
                 });
             },
             updateVariables: (variables: string, updatedTabIndex: number) =>

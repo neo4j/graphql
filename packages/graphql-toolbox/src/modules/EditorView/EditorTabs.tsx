@@ -52,7 +52,12 @@ export const EditorTabs = () => {
                             return (
                                 <Tab key={idx.toString()} tabId={idx.toString()}>
                                     <div className="flex justify-center items-center">
-                                        <span className="overflow-ellipsis w-32">{tab.title}</span>
+                                        <span
+                                            className="overflow-ellipsis overflow-hidden"
+                                            style={{ maxWidth: "7rem" }}
+                                        >
+                                            {tab.title}
+                                        </span>
                                         <XMarkIconOutline
                                             className="h-5 w-5 ml-2 hover:bg-gray-200"
                                             aria-label="Close Icon"
