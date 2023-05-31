@@ -235,6 +235,7 @@ export const Editor = ({ schema }: Props) => {
                                     loading={loading}
                                     fileExtension={Extension.JSON}
                                     readonly={true}
+                                    borderRadiusTop={false}
                                     json={useStore.getState().getActiveTab().response}
                                 />
                             }

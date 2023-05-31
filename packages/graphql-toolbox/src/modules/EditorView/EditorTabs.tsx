@@ -33,14 +33,10 @@ export const EditorTabs = () => {
         store.changeActiveTabIndex(Number.parseInt(idx));
     };
 
-    // TODO:
-    // e2e test using tabs
-    //
-
     return (
-        <div className="mb-1">
+        <>
             {useStore.getState().tabs.length ? (
-                <div className="w-full overflow-auto whitespace-nowrap">
+                <div className="w-full overflow-auto whitespace-nowrap rounded-t border-b pt-2 bg-white">
                     <Tabs
                         size="small"
                         fill="underline"
@@ -81,6 +77,6 @@ export const EditorTabs = () => {
                     </Tabs>
                 </div>
             ) : null}
-        </div>
+        </>
     );
 };

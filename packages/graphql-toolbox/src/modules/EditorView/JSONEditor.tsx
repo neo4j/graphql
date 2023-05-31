@@ -34,6 +34,7 @@ export interface Props {
     fileName: string;
     initialValue?: string;
     fileExtension: Extension;
+    borderRadiusTop?: boolean;
     onChange?: (json: string) => void;
 }
 
@@ -102,7 +103,11 @@ export const JSONEditor = (props: Props) => {
 
     return (
         <div style={{ width: "100%", height: "100%" }}>
-            <FileName extension={props.fileExtension} name={props.fileName}></FileName>
+            <FileName
+                extension={props.fileExtension}
+                name={props.fileName}
+                borderRadiusTop={props.borderRadiusTop}
+            ></FileName>
             <textarea id={props.id} ref={ref} />
         </div>
     );

@@ -159,7 +159,7 @@ export const GraphQLQueryEditor = ({
 
     return (
         <div className="rounded-b-xl" style={{ width: "100%", height: "100%" }}>
-            <FileName name={"query"} extension={Extension.GRAPHQL} buttons={buttons}></FileName>
+            <FileName name={"query"} extension={Extension.GRAPHQL} buttons={buttons} borderRadiusTop={false}></FileName>
             <textarea id={EDITOR_QUERY_INPUT} ref={ref} />
         </div>
     );

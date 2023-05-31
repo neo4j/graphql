@@ -18,7 +18,7 @@
  */
 
 import { useContext } from "react";
-import { ThemeContext, Theme } from "../contexts/theme";
+import { Theme, ThemeContext } from "../contexts/theme";
 // @ts-ignore - SVG Import
 import GraphQLIcon from "../assets/graphql-icon.svg";
 
@@ -32,6 +32,7 @@ interface Props {
     name: string;
     extension: Extension;
     buttons?: any;
+    borderRadiusTop?: boolean;
 }
 
 const Icon = (props: { extension: Extension }) => {
@@ -61,14 +62,14 @@ const Ending = (props: { extension: Extension }) => {
     return <span>{content}</span>;
 };
 
-export const FileName = ({ extension, name, buttons }: Props) => {
+export const FileName = ({ extension, name, buttons, borderRadiusTop }: Props) => {
     const theme = useContext(ThemeContext);
 
     return (
         <div
-            className={`w-full h-12 m-0 pt-3 pb-3 pl-4 ${
-                theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"
-            } rounded-tl-xl rounded-tr-xl flex justify-between items-center`}
+            className={`w-full h-12 m-0 pt-3 pb-3 pl-4 ${theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"}${
+                borderRadiusTop ? " rounded-t-xl" : ""
+            } flex justify-between items-center`}
         >
             <div className={`${theme.theme === Theme.LIGHT ? "text-black" : "text-white"} text-sm`}>
                 <Icon extension={extension}></Icon> <span className="pl-1">{name}</span>
