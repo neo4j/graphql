@@ -34,7 +34,6 @@ export const EditorTabs = () => {
     };
 
     // TODO:
-    // uncontrolled-controlled state error
     // e2e test using tabs
     //
 
@@ -50,7 +49,7 @@ export const EditorTabs = () => {
                     >
                         {useStore.getState().tabs.map((tab, idx) => {
                             return (
-                                <Tab key={idx.toString()} tabId={idx.toString()}>
+                                <Tab data-test-query-editor-tab={tab.title} key={idx.toString()} tabId={idx.toString()}>
                                     <div className="flex justify-center items-center">
                                         <span
                                             className="overflow-ellipsis overflow-hidden"
@@ -59,6 +58,7 @@ export const EditorTabs = () => {
                                             {tab.title}
                                         </span>
                                         <XMarkIconOutline
+                                            data-test-close-icon-query-editor-tab
                                             className="h-5 w-5 ml-2 hover:bg-gray-200"
                                             aria-label="Close Icon"
                                             onClick={(event) => {
@@ -72,6 +72,7 @@ export const EditorTabs = () => {
                         })}
                         <Tab key={"new"} tabId={"new"} className="pos-absolute">
                             <PlusIconOutline
+                                data-test-new-query-editor-tab
                                 className="h-5 w-5 hover:bg-gray-200"
                                 aria-label="Add tab Icon"
                                 onClick={() => store.addTab()}
