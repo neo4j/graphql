@@ -17,9 +17,8 @@
  * limitations under the License.
  */
 
-import { whereRegEx } from "../../../../../translate/where/utils";
-import type { WhereRegexGroups } from "../../../../../translate/where/utils";
 import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
+import { parseFilterProperty } from "../utils/parse-filter-property";
 
 type ComparatorFn<T> = (received: T, filtered: T) => boolean;
 
@@ -61,18 +60,6 @@ function getFilteringFn<T>(operator: string | undefined): ComparatorFn<T> {
         return (received: T, filtered: T) => received === filtered;
     }
     return operatorCheckMap[operator];
-}
-
-function parseFilterProperty(key: string): { fieldName: string; operator: string | undefined } {
-    const match = whereRegEx.exec(key);
-    if (!match) {
-        throw new Error(`Failed to match key in filter: ${key}`);
-    }
-    const { fieldName, operator } = match.groups as WhereRegexGroups;
-    if (!fieldName) {
-        throw new Error(`Failed to find field name in filter: ${key}`);
-    }
-    return { fieldName, operator };
 }
 
 export function filterByValues<T>(
