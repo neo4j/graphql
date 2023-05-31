@@ -17,38 +17,31 @@
  * limitations under the License.
  */
 
-import { int } from "neo4j-driver";
 import type { PrimitiveField } from "../../../../../types";
-import { isFloatType, isIDAsString, isStringType } from "./type-checks";
 
 type ComparatorFn<T> = (received: T, filtered: T, fieldMeta?: PrimitiveField | undefined) => boolean;
 
 const operatorCheckMap = {
     NOT: (received: string, filtered: string) => received !== filtered,
-    LT: (received: number | string, filtered: number | string, fieldMeta: PrimitiveField | undefined) => {
-        if (isFloatType(fieldMeta)) {
-            return received < filtered;
-        }
-        return int(received).lessThan(int(filtered));
+    LT: (received: number | string, filtered: number) => {
+        const parsed = typeof received === "string" ? BigInt(received) : received;
+
+        return parsed < filtered;
     },
-    LTE: (received: number, filtered: number, fieldMeta: PrimitiveField | undefined) => {
-        if (isFloatType(fieldMeta)) {
-            return received <= filtered;
-        }
-        return int(received).lessThanOrEqual(int(filtered));
+    LTE: (received: number, filtered: number) => {
+        const parsed = typeof received === "string" ? BigInt(received) : received;
+
+        return parsed <= filtered;
     },
-    GT: (received: number, filtered: number, fieldMeta: PrimitiveField | undefined) => {
-        if (isFloatType(fieldMeta)) {
-            return received > filtered;
-        }
-        return int(received).greaterThan(int(filtered));
+    GT: (received: number, filtered: number) => {
+        const parsed = typeof received === "string" ? BigInt(received) : received;
+
+        return parsed > filtered;
     },
-    GTE: (received: number | string, filtered: number | string, fieldMeta: PrimitiveField | undefined) => {
-        if (isFloatType(fieldMeta)) {
-            return received >= filtered;
-        }
-        // int/ bigint
-        return int(received).greaterThanOrEqual(int(filtered));
+    GTE: (received: number | string, filtered: number) => {
+        const parsed = typeof received === "string" ? BigInt(received) : received;
+
+        return parsed >= filtered;
     },
     STARTS_WITH: (received: string, filtered: string) => received.startsWith(filtered),
     NOT_STARTS_WITH: (received: string, filtered: string) => !received.startsWith(filtered),
@@ -56,43 +49,29 @@ const operatorCheckMap = {
     NOT_ENDS_WITH: (received: string, filtered: string) => !received.endsWith(filtered),
     CONTAINS: (received: string, filtered: string) => received.includes(filtered),
     NOT_CONTAINS: (received: string, filtered: string) => !received.includes(filtered),
-    INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: PrimitiveField | undefined) => {
-        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, filtered)) {
-            return received.findIndex((v) => v === filtered) !== -1;
-        }
-        // int/ bigint
-        const filteredAsNeo4jInteger = int(filtered);
-        return received.findIndex((r) => int(r).equals(filteredAsNeo4jInteger)) !== -1;
+    INCLUDES: (received: [string | number], filtered: string | number) => {
+        return received.findIndex((v) => v === filtered) !== -1;
     },
-    NOT_INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: PrimitiveField | undefined) => {
-        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, filtered)) {
-            return received.findIndex((v) => v === filtered) === -1;
-        }
-        // int/ bigint
-        const filteredAsNeo4jInteger = int(filtered);
-        return received.findIndex((r) => int(r).equals(filteredAsNeo4jInteger)) === -1;
+    NOT_INCLUDES: (received: [string | number], filtered: string | number) => {
+        return received.findIndex((v) => v === filtered) === -1;
     },
-    IN: (received: string | number, filtered: [string | number], fieldMeta: PrimitiveField | undefined) => {
-        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, received)) {
-            return filtered.findIndex((v) => v === received) !== -1;
-        }
-        // int/ bigint
-        const receivedAsNeo4jInteger = int(received);
-        return filtered.findIndex((r) => int(r).equals(receivedAsNeo4jInteger)) !== -1;
+    IN: (received: string | number, filtered: [string | number]) => {
+        return filtered.findIndex((v) => v === received) !== -1;
     },
-    NOT_IN: (received: string | number, filtered: [string | number], fieldMeta: PrimitiveField | undefined) => {
-        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, received)) {
-            return filtered.findIndex((v) => v === received) === -1;
-        }
-        // int/ bigint
-        const receivedAsNeo4jInteger = int(received);
-        return filtered.findIndex((r) => int(r).equals(receivedAsNeo4jInteger)) === -1;
+    NOT_IN: (received: string | number, filtered: [string | number]) => {
+        return filtered.findIndex((v) => v === received) === -1;
     },
 };
 
-export function getFilteringFn<T>(operator: string | undefined): ComparatorFn<T> {
+export function getFilteringFn<T>(
+    operator: string | undefined,
+    overrides?: Record<string, (received: any, filtered: any, fieldMeta?: any) => boolean>
+): ComparatorFn<T> {
     if (!operator) {
         return (received: T, filtered: T) => received === filtered;
     }
-    return operatorCheckMap[operator];
+
+    const operators = overrides ? { ...operatorCheckMap, ...overrides } : operatorCheckMap;
+
+    return operators[operator];
 }

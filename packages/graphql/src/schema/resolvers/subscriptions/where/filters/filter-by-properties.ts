@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 
-import type { Node } from "../../../../../types";
+import { int } from "neo4j-driver";
+import type { Node, PrimitiveField } from "../../../../../types";
 import { getFilteringFn } from "../utils/get-filtering-fn";
 import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
 import { parseFilterProperty } from "../utils/parse-filter-property";
+import { isFloatType, isIDAsString, isStringType } from "../utils/type-checks";
 
 /** Returns true if receivedProperties comply with filters specified in whereProperties, false otherwise. */
 export function filterByProperties<T>(
@@ -50,7 +52,8 @@ export function filterByProperties<T>(
                 return false;
             }
             const fieldMeta = node.primitiveFields.find((f) => f.fieldName === fieldName);
-            const checkFilterPasses = getFilteringFn(operator);
+            const checkFilterPasses = getFilteringFn(operator, operatorMapOverrides);
+
             if (!checkFilterPasses(receivedValue, v, fieldMeta)) {
                 return false;
             }
@@ -58,3 +61,38 @@ export function filterByProperties<T>(
     }
     return true;
 }
+
+const operatorMapOverrides = {
+    INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: PrimitiveField | undefined) => {
+        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, filtered)) {
+            return received.findIndex((v) => v === filtered) !== -1;
+        }
+        // int/ bigint
+        const filteredAsNeo4jInteger = int(filtered);
+        return received.findIndex((r) => int(r).equals(filteredAsNeo4jInteger)) !== -1;
+    },
+    NOT_INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: PrimitiveField | undefined) => {
+        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, filtered)) {
+            return received.findIndex((v) => v === filtered) === -1;
+        }
+        // int/ bigint
+        const filteredAsNeo4jInteger = int(filtered);
+        return received.findIndex((r) => int(r).equals(filteredAsNeo4jInteger)) === -1;
+    },
+    IN: (received: string | number, filtered: [string | number], fieldMeta: PrimitiveField | undefined) => {
+        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, received)) {
+            return filtered.findIndex((v) => v === received) !== -1;
+        }
+        // int/ bigint
+        const receivedAsNeo4jInteger = int(received);
+        return filtered.findIndex((r) => int(r).equals(receivedAsNeo4jInteger)) !== -1;
+    },
+    NOT_IN: (received: string | number, filtered: [string | number], fieldMeta: PrimitiveField | undefined) => {
+        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, received)) {
+            return filtered.findIndex((v) => v === received) === -1;
+        }
+        // int/ bigint
+        const receivedAsNeo4jInteger = int(received);
+        return filtered.findIndex((r) => int(r).equals(receivedAsNeo4jInteger)) === -1;
+    },
+};
