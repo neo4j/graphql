@@ -33,7 +33,6 @@ import type {
     UnionTypeDefinitionNode,
     ValueNode,
     DirectiveNode,
-    ConstDirectiveNode,
 } from "graphql";
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
@@ -661,7 +660,7 @@ function isListValue(value: ValueNode): value is ListValueNode {
 
 export default getObjFieldMeta;
 
-function parseSelectableDirective(directive: ConstDirectiveNode | undefined): SelectableOptions {
+function parseSelectableDirective(directive: DirectiveNode | undefined): SelectableOptions {
     const defaultArguments = {
         onRead: true,
         onAggregate: true,
