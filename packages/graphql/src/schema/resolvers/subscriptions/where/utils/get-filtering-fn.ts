@@ -71,7 +71,7 @@ export function getFilteringFn<T>(
         return (received: T, filtered: T) => received === filtered;
     }
 
-    const operators = overrides ? { ...operatorCheckMap, ...overrides } : operatorCheckMap;
+    const operators = { ...operatorCheckMap, ...overrides };
 
     return operators[operator];
 }
