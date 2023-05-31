@@ -50,16 +50,16 @@ const operatorCheckMap = {
     CONTAINS: (received: string, filtered: string) => received.includes(filtered),
     NOT_CONTAINS: (received: string, filtered: string) => !received.includes(filtered),
     INCLUDES: (received: [string | number], filtered: string | number) => {
-        return received.findIndex((v) => v === filtered) !== -1;
+        return received.some((v) => v === filtered);
     },
     NOT_INCLUDES: (received: [string | number], filtered: string | number) => {
-        return received.findIndex((v) => v === filtered) === -1;
+        return !received.some((v) => v === filtered);
     },
     IN: (received: string | number, filtered: [string | number]) => {
-        return filtered.findIndex((v) => v === received) !== -1;
+        return filtered.some((v) => v === received);
     },
     NOT_IN: (received: string | number, filtered: [string | number]) => {
-        return filtered.findIndex((v) => v === received) === -1;
+        return !filtered.some((v) => v === received);
     },
 };
 

@@ -65,34 +65,34 @@ export function filterByProperties<T>(
 const operatorMapOverrides = {
     INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: PrimitiveField | undefined) => {
         if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, filtered)) {
-            return received.findIndex((v) => v === filtered) !== -1;
+            return received.some((v) => v === filtered);
         }
         // int/ bigint
         const filteredAsNeo4jInteger = int(filtered);
-        return received.findIndex((r) => int(r).equals(filteredAsNeo4jInteger)) !== -1;
+        return received.some((r) => int(r).equals(filteredAsNeo4jInteger));
     },
     NOT_INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: PrimitiveField | undefined) => {
         if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, filtered)) {
-            return received.findIndex((v) => v === filtered) === -1;
+            return !received.some((v) => v === filtered);
         }
         // int/ bigint
         const filteredAsNeo4jInteger = int(filtered);
-        return received.findIndex((r) => int(r).equals(filteredAsNeo4jInteger)) === -1;
+        return !received.some((r) => int(r).equals(filteredAsNeo4jInteger));
     },
     IN: (received: string | number, filtered: [string | number], fieldMeta: PrimitiveField | undefined) => {
         if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, received)) {
-            return filtered.findIndex((v) => v === received) !== -1;
+            return filtered.some((v) => v === received);
         }
         // int/ bigint
         const receivedAsNeo4jInteger = int(received);
-        return filtered.findIndex((r) => int(r).equals(receivedAsNeo4jInteger)) !== -1;
+        return filtered.some((r) => int(r).equals(receivedAsNeo4jInteger));
     },
     NOT_IN: (received: string | number, filtered: [string | number], fieldMeta: PrimitiveField | undefined) => {
         if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, received)) {
-            return filtered.findIndex((v) => v === received) === -1;
+            return !filtered.some((v) => v === received);
         }
         // int/ bigint
         const receivedAsNeo4jInteger = int(received);
-        return filtered.findIndex((r) => int(r).equals(receivedAsNeo4jInteger)) === -1;
+        return !filtered.some((r) => int(r).equals(receivedAsNeo4jInteger));
     },
 };
