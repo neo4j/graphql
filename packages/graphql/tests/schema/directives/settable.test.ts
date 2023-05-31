@@ -21,13 +21,13 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 
 describe("@settable", () => {
-    let subscriptionPlugin: TestSubscriptionsMechanism;
+    let subscriptionPlugin: TestSubscriptionsPlugin;
 
     beforeAll(() => {
-        subscriptionPlugin = new TestSubscriptionsMechanism();
+        subscriptionPlugin = new TestSubscriptionsPlugin();
     });
 
     test("Disable create fields", async () => {
@@ -353,7 +353,7 @@ describe("@settable", () => {
                 description: String @settable(onCreate: false, onUpdate: false)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
