@@ -26,7 +26,7 @@ import type {
 } from "graphql";
 import { specifiedDirectives, GraphQLSchema } from "graphql";
 import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/authorization";
-import { authorizationDefinitionsEnricher, authorizationUsageEnricher } from "./enrichers/authorization";
+import { authorizationDefinitionsEnricher, authorizationDirectiveEnricher } from "./enrichers/authorization";
 import { EnricherContext } from "./EnricherContext";
 import type { Enricher } from "./types";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
@@ -61,7 +61,7 @@ function makeValidationDocument(
     const enricherContext = new EnricherContext(userDocument, augmentedDocument);
     const enrichers: Enricher[] = [];
     enrichers.push(authorizationDefinitionsEnricher(enricherContext)); // Add Authorization directive definitions, for instance UserAuthorization
-    enrichers.push(authorizationUsageEnricher(enricherContext)); // Apply the previously generated directive definitions to the authorized types
+    enrichers.push(authorizationDirectiveEnricher(enricherContext)); // Apply the previously generated directive definitions to the authorized types
     const additionalDefinitions = getAdditionalDefinitions(jwtPayload);
     return enrichDocument(enrichers, additionalDefinitions, augmentedDocument);
 }
