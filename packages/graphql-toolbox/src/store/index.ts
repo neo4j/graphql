@@ -105,9 +105,12 @@ export const useStore = create<Store>()(
                 if (currentTabs.length <= 1) {
                     return;
                 }
+                const isClosedTabActiveTab = get().activeTabIndex === index;
                 let nextActiveTabIdx = index - 1;
                 if (index === 0) {
                     nextActiveTabIdx = 0;
+                } else if (isClosedTabActiveTab) {
+                    nextActiveTabIdx = get().activeTabIndex - 1;
                 }
                 set({
                     tabs: currentTabs.filter((_, idx) => idx !== index),
@@ -117,6 +120,7 @@ export const useStore = create<Store>()(
             getActiveTab: () => get().tabs[get().activeTabIndex],
             changeActiveTabIndex: (index) => set({ activeTabIndex: index }),
             updateQuery: (query: string, updatedTabIndex: number) => {
+                typeDefinitions.match(/type (.*?){/g) || [];
                 set({
                     tabs: [...get().tabs.map((tab, idx) => (idx === updatedTabIndex ? { ...tab, query } : tab))],
                 });

@@ -11,6 +11,10 @@
     padding-top: 0.2rem;
 }
 
+.pos-absolute {
+    position: absolute !important;
+}
+
 /* ----------------------*/
 
 /* Global settings for all CodeMirror editors */
