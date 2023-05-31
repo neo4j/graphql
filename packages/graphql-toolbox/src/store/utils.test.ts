@@ -80,6 +80,24 @@ describe("getQueryOrMutationName", () => {
         expect(getQueryOrMutationName(query)).toBe("MyMutationM");
     });
 
+    test("query with no name", () => {
+        const query = `
+          query {
+            __typename
+          }
+          `;
+        expect(getQueryOrMutationName(query)).toBe("Unnamed");
+    });
+
+    test("query with one letter name", () => {
+        const query = `
+          query P {
+            __typename
+          }
+          `;
+        expect(getQueryOrMutationName(query)).toBe("P");
+    });
+
     test("random text", () => {
         const query = `
         ekjbtehrdfg

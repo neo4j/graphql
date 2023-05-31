@@ -34,8 +34,8 @@ export const EditorTabs = () => {
     };
 
     // TODO:
-    // title ellipse
-    // update tabs title automatically?? -> use updateQuery()
+    // uncontrolled-controlled state error
+    // e2e test using tabs
     //
 
     return (
