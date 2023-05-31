@@ -92,8 +92,8 @@ export const useStore = create<Store>()(
                 const newTab: EditorTab = {
                     title: "Unnamed",
                     query: "",
-                    variables: " ",
-                    response: " ",
+                    variables: " ", // explicitly set to non-empty
+                    response: " ", // explicitly set to non-empty
                     headers: [],
                 };
                 set({
