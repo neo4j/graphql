@@ -21,7 +21,7 @@ import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQL
 import type { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
 import type { JwtPayload } from "../../../types/jwt-payload";
 
-export type EventType = "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
+export type SubscriptionEventType = "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
 
 export type SubscriptionContext = {
     plugin: Neo4jGraphQLSubscriptionsPlugin;

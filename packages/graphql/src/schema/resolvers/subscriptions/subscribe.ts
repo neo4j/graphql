@@ -24,7 +24,7 @@ import type Node from "../../../classes/Node";
 import type { NodeSubscriptionsEvent, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
 import { SubscriptionAuth } from "./subscription-auth";
-import type { EventType, SubscriptionContext } from "./types";
+import type { SubscriptionEventType, SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where/where";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
@@ -47,7 +47,7 @@ export function generateSubscribeMethod({
     relationshipFields,
 }: {
     node: Node;
-    type: EventType;
+    type: SubscriptionEventType;
     nodes?: Node[];
     relationshipFields?: Map<string, ObjectFields>;
 }) {
