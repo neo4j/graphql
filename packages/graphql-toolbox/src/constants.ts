@@ -40,7 +40,7 @@ export const DEFAULT_QUERY = `# Type queries into this side of the screen, and y
 # see intelligent typeaheads aware of the current GraphQL type schema.
 # Try the Explorer and use the Documentation
 
-query MyQuery {
+query {
     __typename
 }
 `;
