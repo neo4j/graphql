@@ -31,6 +31,28 @@ describe("getQueryOrMutationName", () => {
         expect(getQueryOrMutationName(query)).toBe("MyQuery");
     });
 
+    test("query with parameter", () => {
+        const query = `
+        query MyTest2 ($moviesWhere: MovieWhere) {
+          movies(where: $moviesWhere) {
+              id
+          }
+      }
+      `;
+        expect(getQueryOrMutationName(query)).toBe("MyTest2");
+    });
+
+    test("query with parameter no white space", () => {
+        const query = `
+      query MyTest2($moviesWhere: MovieWhere) {
+        movies(where: $moviesWhere) {
+            id
+        }
+    }
+    `;
+        expect(getQueryOrMutationName(query)).toBe("MyTest2");
+    });
+
     test("two well named queries", () => {
         const query = `
         query MyQuery0 {

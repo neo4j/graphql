@@ -19,7 +19,7 @@
 
 export const getQueryOrMutationName = (query: string): string => {
     if (!query) return "Unnamed";
-    const myRegexp = new RegExp("(query|mutation) (.*?|$){", "g");
+    const myRegexp = new RegExp("(query|mutation) (.*?|$)[ {(]", "g");
     const matches = myRegexp.exec(query);
     if (!matches || matches?.length < 3) return "Unnamed";
     return matches[2].trim() || "Unnamed";
