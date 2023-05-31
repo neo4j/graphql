@@ -17,63 +17,9 @@
  * limitations under the License.
  */
 
-import { whereRegEx } from "../../../../../translate/where/utils";
-import type { WhereRegexGroups } from "../../../../../translate/where/utils";
+import { getFilteringFn } from "../utils/get-filtering-fn";
 import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
-
-type ComparatorFn<T> = (received: T, filtered: T) => boolean;
-
-const operatorCheckMap = {
-    NOT: (received: string, filtered: string) => received !== filtered,
-    LT: (received: number | string, filtered: number | string) => {
-        return received < filtered;
-    },
-    LTE: (received: number, filtered: number) => {
-        return received <= filtered;
-    },
-    GT: (received: number, filtered: number) => {
-        return received > filtered;
-    },
-    GTE: (received: number | string, filtered: number | string) => {
-        return received >= filtered;
-    },
-    STARTS_WITH: (received: string, filtered: string) => received.startsWith(filtered),
-    NOT_STARTS_WITH: (received: string, filtered: string) => !received.startsWith(filtered),
-    ENDS_WITH: (received: string, filtered: string) => received.endsWith(filtered),
-    NOT_ENDS_WITH: (received: string, filtered: string) => !received.endsWith(filtered),
-    CONTAINS: (received: string, filtered: string) => received.includes(filtered),
-    NOT_CONTAINS: (received: string, filtered: string) => !received.includes(filtered),
-    INCLUDES: (received: [string | number], filtered: string | number) => {
-        return received.findIndex((v) => v === filtered) !== -1;
-    },
-    NOT_INCLUDES: (received: [string | number], filtered: string | number) => {
-        return received.findIndex((v) => v === filtered) === -1;
-    },
-    IN: (received: string | number, filtered: [string | number]) => {
-        return filtered.findIndex((v) => v === received) !== -1;
-    },
-    NOT_IN: (received: string | number, filtered: [string | number]) => {
-        return filtered.findIndex((v) => v === received) === -1;
-    },
-};
-function getFilteringFn<T>(operator: string | undefined): ComparatorFn<T> {
-    if (!operator) {
-        return (received: T, filtered: T) => received === filtered;
-    }
-    return operatorCheckMap[operator];
-}
-
-function parseFilterProperty(key: string): { fieldName: string; operator: string | undefined } {
-    const match = whereRegEx.exec(key);
-    if (!match) {
-        throw new Error(`Failed to match key in filter: ${key}`);
-    }
-    const { fieldName, operator } = match.groups as WhereRegexGroups;
-    if (!fieldName) {
-        throw new Error(`Failed to find field name in filter: ${key}`);
-    }
-    return { fieldName, operator };
-}
+import { parseFilterProperty } from "../utils/parse-filter-property";
 
 export function filterByValues<T>(
     whereInput: Record<string, T | Array<Record<string, T>> | Record<string, T>>,
