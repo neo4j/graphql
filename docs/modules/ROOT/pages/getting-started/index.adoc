@@ -107,9 +107,6 @@ Add the following to the bottom of `index.js`:
 
 [source, javascript, indent=0]
 ----
-
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
 const server = new ApolloServer({
     schema: await neoSchema.getSchema(),
 });

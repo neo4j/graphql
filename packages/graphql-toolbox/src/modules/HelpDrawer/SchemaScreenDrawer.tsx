@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import type { Dispatch, SetStateAction } from "react";
 import { ComputerDesktopIconOutline } from "@neo4j-ndl/react/icons";
-import { Resources } from "./Resources";
+import type { Dispatch, SetStateAction } from "react";
+
 import { Keybindings } from "./Keybindings";
+import { Resources } from "./Resources";
 
 export const SchemaScreenDrawer = ({
     showSubComponent,

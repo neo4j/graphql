@@ -91,6 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
 
             type Post {
               author(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
+              authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               content: String!
             }
@@ -98,6 +99,18 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
             type PostAggregateSelection {
               content: StringAggregateSelectionNonNullable!
               count: Int!
+            }
+
+            input PostAuthorAggregateInput {
+              AND: [PostAuthorAggregateInput!]
+              NOT: PostAuthorAggregateInput
+              OR: [PostAuthorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: PostAuthorNodeAggregationWhereInput
             }
 
             input PostAuthorConnectFieldInput {
@@ -144,6 +157,48 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
             input PostAuthorFieldInput {
               connect: PostAuthorConnectFieldInput
               create: PostAuthorCreateFieldInput
+            }
+
+            input PostAuthorNodeAggregationWhereInput {
+              AND: [PostAuthorNodeAggregationWhereInput!]
+              NOT: PostAuthorNodeAggregationWhereInput
+              OR: [PostAuthorNodeAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LENGTH_EQUAL: Float
+              name_AVERAGE_LENGTH_GT: Float
+              name_AVERAGE_LENGTH_GTE: Float
+              name_AVERAGE_LENGTH_LT: Float
+              name_AVERAGE_LENGTH_LTE: Float
+              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LENGTH_EQUAL: Int
+              name_LONGEST_LENGTH_GT: Int
+              name_LONGEST_LENGTH_GTE: Int
+              name_LONGEST_LENGTH_LT: Int
+              name_LONGEST_LENGTH_LTE: Int
+              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int
+              name_SHORTEST_LENGTH_GT: Int
+              name_SHORTEST_LENGTH_GTE: Int
+              name_SHORTEST_LENGTH_LT: Int
+              name_SHORTEST_LENGTH_LTE: Int
+              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type PostAuthorRelationship {
@@ -215,11 +270,22 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               content: String
             }
 
+            type PostUserAuthorAggregationSelection {
+              count: Int!
+              node: PostUserAuthorNodeAggregateSelection
+            }
+
+            type PostUserAuthorNodeAggregateSelection {
+              id: IDAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
+            }
+
             input PostWhere {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
               author: UserWhere
+              authorAggregate: PostAuthorAggregateInput
               authorConnection: PostAuthorConnectionWhere
               authorConnection_NOT: PostAuthorConnectionWhere
               author_NOT: UserWhere

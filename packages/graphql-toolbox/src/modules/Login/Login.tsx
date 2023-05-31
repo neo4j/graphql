@@ -18,15 +18,17 @@
  */
 
 import { useCallback, useContext, useRef, useState } from "react";
+
 import { Button, SmartTooltip } from "@neo4j-ndl/react";
 import { ExclamationTriangleIconOutline } from "@neo4j-ndl/react/icons";
-import { FormInput } from "./FormInput";
-import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
+
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
+import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
 import { AuthContext } from "../../contexts/auth";
 import { getConnectUrlSearchParamValue } from "../../contexts/utils";
 import { getURLProtocolFromText } from "../../utils/utils";
+import { FormInput } from "./FormInput";
 
 export const Login = () => {
     const auth = useContext(AuthContext);
@@ -66,7 +68,7 @@ export const Login = () => {
         return (
             <>
                 <ExclamationTriangleIconOutline className="n-text-warning-50" ref={tooltipRef} />
-                <SmartTooltip allowedPlacements={["right"]} style={{ width: "20rem" }} ref={tooltipRef}>
+                <SmartTooltip allowedPlacements={["right"]} style={{ width: "20rem" }} rev={undefined}>
                     {text}
                 </SmartTooltip>
             </>

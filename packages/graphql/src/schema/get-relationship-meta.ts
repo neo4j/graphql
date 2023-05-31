@@ -18,15 +18,20 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { DirectiveNode, FieldDefinitionNode, StringValueNode } from "graphql";
-import { RelationshipQueryDirectionOption } from "../constants";
+import type { ArgumentNode, FieldDefinitionNode, StringValueNode } from "graphql";
+import { Kind } from "graphql";
+import { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
+import { defaultNestedOperations } from "../graphql/directives/relationship";
+
+type RelationshipDirection = "IN" | "OUT";
 
 type RelationshipMeta = {
-    direction: "IN" | "OUT";
+    direction: RelationshipDirection;
     type: string;
     typeUnescaped: string;
     properties?: string;
     queryDirection: RelationshipQueryDirectionOption;
+    nestedOperations: RelationshipNestedOperationsOption[];
 };
 
 function getRelationshipMeta(
@@ -40,18 +45,13 @@ function getRelationshipMeta(
         return undefined;
     }
 
-    const directionArg = directive.arguments?.find((x) => x.name.value === "direction");
-    if (!directionArg) {
-        throw new Error("@relationship direction required");
-    }
-    if (directionArg.value.kind !== "EnumValue") {
-        throw new Error("@relationship direction not a enum");
-    }
-    if (!["IN", "OUT"].includes(directionArg.value.value)) {
-        throw new Error("@relationship direction invalid");
+    if (!directive.arguments) {
+        throw new Error("@relationship has no arguments");
     }
 
-    const queryDirection = getQueryDirection(directive);
+    // Fail earlier if required arguments are missing: direction, type
+    const direction = getDirection(directive.arguments);
+    const type = getType(directive.arguments);
 
     const typeArg = directive.arguments?.find((x) => x.name.value === "type");
     if (!typeArg) {
@@ -61,15 +61,12 @@ function getRelationshipMeta(
         throw new Error("@relationship type not a string");
     }
 
-    const propertiesArg = directive.arguments?.find((x) => x.name.value === "properties");
-    if (propertiesArg && propertiesArg.value.kind !== "StringValue") {
-        throw new Error("@relationship properties not a string");
-    }
-
-    const direction = directionArg.value.value as "IN" | "OUT";
-    const type = Cypher.utils.escapeLabel(typeArg.value.value);
     const typeUnescaped = typeArg.value.value;
-    const properties = (propertiesArg?.value as StringValueNode)?.value;
+
+    // Optional arguments
+    const queryDirection = getQueryDirection(directive.arguments);
+    const properties = getProperties(directive.arguments);
+    const nestedOperations = getNestedOperations(directive.arguments);
 
     return {
         direction,
@@ -77,27 +74,88 @@ function getRelationshipMeta(
         typeUnescaped,
         properties,
         queryDirection,
+        nestedOperations,
     };
 }
 
-function getQueryDirection(directive: DirectiveNode): RelationshipQueryDirectionOption {
-    const queryDirectionArg = directive.arguments?.find((x) => x.name.value === "queryDirection");
+function getType(directiveArguments: Readonly<ArgumentNode[]>) {
+    const typeArg = directiveArguments.find((x) => x.name.value === "type");
+    if (!typeArg) {
+        throw new Error("@relationship type required");
+    }
+    if (typeArg.value.kind !== Kind.STRING) {
+        throw new Error("@relationship type not a string");
+    }
+
+    return Cypher.utils.escapeLabel(typeArg.value.value);
+}
+
+function getProperties(directiveArguments: Readonly<ArgumentNode[]>) {
+    const propertiesArg = directiveArguments.find((x) => x.name.value === "properties");
+    if (propertiesArg && propertiesArg.value.kind !== Kind.STRING) {
+        throw new Error("@relationship properties not a string");
+    }
+    return (propertiesArg?.value as StringValueNode)?.value;
+}
+
+function getDirection(directiveArguments: Readonly<ArgumentNode[]>): RelationshipDirection {
+    const directionArg = directiveArguments.find((x) => x.name.value === "direction");
+    if (!directionArg) {
+        throw new Error("@relationship direction required");
+    }
+    if (directionArg.value.kind !== Kind.ENUM) {
+        throw new Error("@relationship direction not a enum");
+    }
+    if (!["IN", "OUT"].includes(directionArg.value.value)) {
+        throw new Error("@relationship direction invalid");
+    }
+
+    return directionArg.value.value as RelationshipDirection;
+}
+
+function getQueryDirection(directiveArguments: Readonly<ArgumentNode[]>): RelationshipQueryDirectionOption {
+    const queryDirectionArg = directiveArguments.find((x) => x.name.value === "queryDirection");
     let queryDirection = RelationshipQueryDirectionOption.DEFAULT_DIRECTED;
 
     if (queryDirectionArg) {
-        if (queryDirectionArg.value.kind !== "EnumValue") {
-            throw new Error("@relationship queryDirection is not a enum");
+        if (queryDirectionArg.value.kind !== Kind.ENUM) {
+            throw new Error("@relationship queryDirection not an enum");
         }
 
-        const queryDirectionValue = RelationshipQueryDirectionOption[
-            queryDirectionArg.value.value
-        ] as RelationshipQueryDirectionOption;
+        const queryDirectionValue = RelationshipQueryDirectionOption[queryDirectionArg.value.value];
         if (!Object.values(RelationshipQueryDirectionOption).includes(queryDirectionValue)) {
             throw new Error("@relationship queryDirection invalid");
         }
         queryDirection = queryDirectionArg.value.value as RelationshipQueryDirectionOption;
     }
     return queryDirection;
+}
+
+function getNestedOperations(directiveArguments: Readonly<ArgumentNode[]>): RelationshipNestedOperationsOption[] {
+    const nestedOperations: RelationshipNestedOperationsOption[] = [];
+
+    const nestedOperationsArg = directiveArguments.find((x) => x.name.value === "nestedOperations");
+
+    if (!nestedOperationsArg) {
+        return defaultNestedOperations;
+    }
+
+    if (nestedOperationsArg.value.kind !== Kind.LIST) {
+        throw new Error("@relationship nestedOperations not a list");
+    }
+
+    for (const [index, nestedOperationsArgValue] of nestedOperationsArg.value.values.entries()) {
+        if (nestedOperationsArgValue.kind !== Kind.ENUM) {
+            throw new Error(`@relationship nestedOperations value at index position ${index} not an enum`);
+        }
+
+        const nestedOperationsValue = RelationshipNestedOperationsOption[nestedOperationsArgValue.value];
+        if (!Object.values(RelationshipNestedOperationsOption).includes(nestedOperationsValue)) {
+            throw new Error(`@relationship nestedOperations value at index position ${index} invalid`);
+        }
+        nestedOperations.push(nestedOperationsValue);
+    }
+    return nestedOperations;
 }
 
 export default getRelationshipMeta;

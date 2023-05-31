@@ -19,14 +19,14 @@
 
 import type { FieldNode, GraphQLResolveInfo } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
-import { execute } from "../../../utils";
-import { translateUpdate } from "../../../translate";
 import type { Node } from "../../../classes";
+import { translateUpdate } from "../../../translate";
 import type { Context } from "../../../types";
+import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
 
-export function updateResolver({ node, schemaComposer }: { node: Node; schemaComposer: SchemaComposer }) {
+export function updateResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });
@@ -54,18 +54,31 @@ export function updateResolver({ node, schemaComposer }: { node: Node; schemaCom
             ...(nodeProjection ? { [nodeKey]: executeResult.records[0]?.data || [] } : {}),
         };
     }
-    const relationFields: Record<string, string> = node.relationFields.length
-        ? {
-              connect: `${node.name}ConnectInput`,
-              disconnect: `${node.name}DisconnectInput`,
-              create: `${node.name}RelationInput`,
-              delete: `${node.name}DeleteInput`,
-          }
-        : {};
 
-    if (schemaComposer.has(`${node.name}ConnectOrCreateInput`)) {
-        relationFields.connectOrCreate = `${node.name}ConnectOrCreateInput`;
+    const relationFields: Record<string, string> = {};
+
+    const connectInput = `${node.name}ConnectInput`;
+    const disconnectInput = `${node.name}DisconnectInput`;
+    const createInput = `${node.name}RelationInput`;
+    const deleteInput = `${node.name}DeleteInput`;
+    const connectOrCreateInput = `${node.name}ConnectOrCreateInput`;
+
+    if (composer.has(connectInput)) {
+        relationFields.connect = connectInput;
     }
+    if (composer.has(disconnectInput)) {
+        relationFields.disconnect = disconnectInput;
+    }
+    if (composer.has(createInput)) {
+        relationFields.create = createInput;
+    }
+    if (composer.has(deleteInput)) {
+        relationFields.delete = deleteInput;
+    }
+    if (composer.has(connectOrCreateInput)) {
+        relationFields.connectOrCreate = connectOrCreateInput;
+    }
+
     return {
         type: `${node.mutationResponseTypeNames.update}!`,
         resolve,

@@ -328,7 +328,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:\`Post\`)
             WHERE (exists((this)<-[:\`HAS_CONTENT\`]-(:\`User\`)) AND all(auth_this0 IN [(this)<-[:\`HAS_CONTENT\`]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $auth_param0)))
             SET this.content = $this_update_content
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:\`HAS_CONTENT\`]-(:User)
@@ -368,7 +368,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:\`Post\`)
             WHERE (this.content = $param0 AND (exists((this)<-[:\`HAS_CONTENT\`]-(:\`User\`)) AND all(auth_this0 IN [(this)<-[:\`HAS_CONTENT\`]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $auth_param0))))
             SET this.content = $this_update_content
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:\`HAS_CONTENT\`]-(:User)

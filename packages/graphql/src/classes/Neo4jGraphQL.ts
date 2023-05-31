@@ -88,8 +88,8 @@ export const defaultValidationConfig: ValidationConfig = {
 };
 
 class Neo4jGraphQL {
-    typeDefs: TypeSource;
-    resolvers?: IExecutableSchemaDefinition["resolvers"];
+    private typeDefs: TypeSource;
+    private resolvers?: IExecutableSchemaDefinition["resolvers"];
 
     private config: Neo4jGraphQLConfig;
     private driver?: Driver;
@@ -208,6 +208,34 @@ class Neo4jGraphQL {
             nodes: this.nodes,
             options: input.options,
         });
+    }
+
+    public neo4jValidateGraphQLDocument(): { isValid: boolean; validationErrors: string[] } {
+        try {
+            const initialDocument = this.getDocument(this.typeDefs);
+
+            validateDocument({ document: initialDocument });
+
+            const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
+            const { jwtPayload } = typesExcludedFromGeneration;
+
+            const { typeDefs } = makeAugmentedSchema(document, {
+                features: this.features,
+                // enableRegex: false,
+                validateResolvers: true,
+                generateSubscriptions: true,
+                userCustomResolvers: undefined,
+            });
+
+            validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwtPayload });
+        } catch (error) {
+            if (error instanceof Error) {
+                const validationErrors = error.message.split("\n\n");
+                return { isValid: false, validationErrors };
+            }
+            return { isValid: false, validationErrors: [] };
+        }
+        return { isValid: true, validationErrors: [] };
     }
 
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {

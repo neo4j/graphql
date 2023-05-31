@@ -82,7 +82,8 @@ describe("Subscriptions metadata on update", () => {
             WITH *
             UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
             RETURN collect(DISTINCT this { .id }) AS data
-            , collect(DISTINCT m) as meta"
+            ,
+            collect(DISTINCT m) as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -147,7 +148,8 @@ describe("Subscriptions metadata on update", () => {
             WITH *
             UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
             RETURN collect(DISTINCT this { .id }) AS data
-            , collect(DISTINCT m) as meta"
+            ,
+            collect(DISTINCT m) as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

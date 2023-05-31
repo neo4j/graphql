@@ -28,10 +28,9 @@ import type {
     SchemaExtensionNode,
 } from "graphql";
 import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
-import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
+import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
-import type { BaseField, Neo4jFeaturesSettings } from "../types";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { numericalResolver } from "./resolvers/field/numerical";
 import { aggregateResolver } from "./resolvers/query/aggregate";
@@ -47,7 +46,6 @@ import * as Scalars from "../graphql/scalars";
 import type { Node } from "../classes";
 import type Relationship from "../classes/Relationship";
 import createConnectionFields from "./create-connection-fields";
-import createRelationshipFields from "./create-relationship-fields";
 import getCustomResolvers from "./get-custom-resolvers";
 import type { ObjectFields } from "./get-obj-field-meta";
 import getObjFieldMeta from "./get-obj-field-meta";
@@ -84,9 +82,16 @@ import { addArrayMethodsToITC } from "./array-methods";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
+import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { addMathOperatorsToITC } from "./math";
-import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 import { getSchemaConfigurationFlags, schemaConfigurationFromSchemaExtensions } from "./schema-configuration";
+import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
+import type { BaseField, Neo4jFeaturesSettings } from "../types";
+import createRelationshipFields from "./create-relationship-fields/create-relationship-fields";
+
+function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
+    return "name" in x;
+}
 
 function makeAugmentedSchema(
     document: DocumentNode,
@@ -137,12 +142,18 @@ function makeAugmentedSchema(
 
     const definitionNodes = getDefinitionNodes(document);
 
-    const { scalarTypes, objectTypes, enumTypes, inputObjectTypes, directives, unionTypes, schemaExtensions } =
-        definitionNodes;
+    const {
+        interfaceTypes,
+        scalarTypes,
+        objectTypes,
+        enumTypes,
+        inputObjectTypes,
+        directives,
+        unionTypes,
+        schemaExtensions,
+    } = definitionNodes;
 
     const globalSchemaConfiguration = schemaConfigurationFromSchemaExtensions(schemaExtensions);
-
-    let { interfaceTypes } = definitionNodes;
 
     const extraDefinitions = [
         ...enumTypes,
@@ -150,11 +161,7 @@ function makeAugmentedSchema(
         ...inputObjectTypes,
         ...unionTypes,
         ...directives,
-        ...([
-            customResolvers.customQuery,
-            customResolvers.customMutation,
-            customResolvers.customSubscription,
-        ] as ObjectTypeDefinitionNode[]),
+        ...[customResolvers.customQuery, customResolvers.customMutation, customResolvers.customSubscription],
     ].filter(Boolean) as DefinitionNode[];
 
     Object.values(Scalars).forEach((scalar: GraphQLScalarType) => composer.addTypeDefs(`scalar ${scalar.name}`));
@@ -176,10 +183,10 @@ function makeAugmentedSchema(
 
     const hasGlobalNodes = addGlobalNodeFields(nodes, composer);
 
-    const relationshipProperties = interfaceTypes.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
-    const interfaceRelationships = interfaceTypes.filter((i) => interfaceRelationshipNames.has(i.name.value));
-    interfaceTypes = interfaceTypes.filter(
-        (i) => !(relationshipPropertyInterfaceNames.has(i.name.value) || interfaceRelationshipNames.has(i.name.value))
+    const { relationshipProperties, interfaceRelationships, filteredInterfaceTypes } = filterInterfaceTypes(
+        interfaceTypes,
+        relationshipPropertyInterfaceNames,
+        interfaceRelationshipNames
     );
 
     const relationshipFields = new Map<string, ObjectFields>();
@@ -211,7 +218,7 @@ function makeAugmentedSchema(
 
         const relFields = getObjFieldMeta({
             enums: enumTypes,
-            interfaces: interfaceTypes,
+            interfaces: filteredInterfaceTypes,
             objects: objectTypes,
             scalars: scalarTypes,
             unions: unionTypes,
@@ -299,7 +306,7 @@ function makeAugmentedSchema(
 
         const interfaceFields = getObjFieldMeta({
             enums: enumTypes,
-            interfaces: [...interfaceTypes, ...interfaceRelationships],
+            interfaces: [...filteredInterfaceTypes, ...interfaceRelationships],
             objects: objectTypes,
             scalars: scalarTypes,
             unions: unionTypes,
@@ -579,7 +586,7 @@ function makeAugmentedSchema(
         }
 
         const sortFields = getSortableFields(node).reduce(
-            (res, f) => ({
+            (res: InputTypeComposerFieldConfigMapDefinition, f) => ({
                 ...res,
                 [f.fieldName]: {
                     type: sortDirection.getTypeName(),
@@ -794,7 +801,7 @@ function makeAugmentedSchema(
 
         if (schemaConfigurationFlags.delete) {
             composer.Mutation.addFields({
-                [rootTypeFieldNames.delete]: deleteResolver({ node }),
+                [rootTypeFieldNames.delete]: deleteResolver({ node, composer }),
             });
             composer.Mutation.setFieldDirectives(
                 rootTypeFieldNames.delete,
@@ -806,7 +813,7 @@ function makeAugmentedSchema(
             composer.Mutation.addFields({
                 [rootTypeFieldNames.update]: updateResolver({
                     node,
-                    schemaComposer: composer,
+                    composer,
                 }),
             });
             composer.Mutation.setFieldDirectives(
@@ -821,7 +828,7 @@ function makeAugmentedSchema(
             throw new Error(`Union ${union.name.value} has no types`);
         }
 
-        const fields = union.types.reduce((f, type) => {
+        const fields = union.types.reduce((f: Record<string, string>, type) => {
             return { ...f, [type.name.value]: `${type.name.value}Where` };
         }, {});
 
@@ -850,7 +857,7 @@ function makeAugmentedSchema(
                 obj: cypherType,
                 scalars: scalarTypes,
                 enums: enumTypes,
-                interfaces: interfaceTypes,
+                interfaces: filteredInterfaceTypes,
                 unions: unionTypes,
                 objects: objectTypes,
                 callbacks,
@@ -884,12 +891,12 @@ function makeAugmentedSchema(
         }
     });
 
-    interfaceTypes.forEach((inter) => {
+    filteredInterfaceTypes.forEach((inter) => {
         const objectFields = getObjFieldMeta({
             obj: inter,
             scalars: scalarTypes,
             enums: enumTypes,
-            interfaces: interfaceTypes,
+            interfaces: filteredInterfaceTypes,
             unions: unionTypes,
             objects: objectTypes,
             callbacks,
@@ -917,15 +924,12 @@ function makeAugmentedSchema(
 
     let parsedDoc = parse(generatedTypeDefs);
 
-    function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
-        return "name" in x;
-    }
-
-    const emptyObjectsInterfaces = (
-        parsedDoc.definitions.filter(
-            (x) => (x.kind === "ObjectTypeDefinition" && !isRootType(x)) || x.kind === "InterfaceTypeDefinition"
-        ) as (InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode)[]
-    ).filter((x) => !x.fields?.length);
+    const emptyObjectsInterfaces = parsedDoc.definitions
+        .filter(
+            (x): x is InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode =>
+                (x.kind === Kind.OBJECT_TYPE_DEFINITION && !isRootType(x)) || x.kind === Kind.INTERFACE_TYPE_DEFINITION
+        )
+        .filter((x) => !x.fields?.length);
 
     if (emptyObjectsInterfaces.length) {
         throw new Error(

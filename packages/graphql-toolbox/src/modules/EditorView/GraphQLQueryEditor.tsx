@@ -18,14 +18,16 @@
  */
 
 import { useContext, useEffect, useRef, useState } from "react";
-import type { GraphQLSchema } from "graphql";
+
 import type { EditorFromTextArea } from "codemirror";
-import { CodeMirror } from "../../utils/utils";
-import { EDITOR_QUERY_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
-import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
+import type { GraphQLSchema } from "graphql";
+
 import { Extension, FileName } from "../../components/Filename";
-import { ThemeContext, Theme } from "../../contexts/theme";
+import { EDITOR_QUERY_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
 import { AppSettingsContext } from "../../contexts/appsettings";
+import { Theme, ThemeContext } from "../../contexts/theme";
+import { CodeMirror } from "../../utils/utils";
+import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 
 export interface Props {
     schema: GraphQLSchema;
@@ -160,7 +162,7 @@ export const GraphQLQueryEditor = ({
     return (
         <div className="rounded-b-xl" style={{ width: "100%", height: "100%" }}>
             <FileName name={"query"} extension={Extension.GRAPHQL} buttons={buttons}></FileName>
-            <textarea id={EDITOR_QUERY_INPUT} ref={ref} className="w-full h-full" />
+            <textarea id={EDITOR_QUERY_INPUT} ref={ref} />
         </div>
     );
 };

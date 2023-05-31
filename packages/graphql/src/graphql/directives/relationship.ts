@@ -17,10 +17,20 @@
  * limitations under the License.
  */
 
-import { DirectiveLocation, GraphQLDirective, GraphQLNonNull, GraphQLString } from "graphql";
+import { DirectiveLocation, GraphQLDirective, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
+import { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../../constants";
 import { RelationshipDirectionEnum } from "./arguments/enums/RelationshipDirection";
+import { RelationshipNestedOperationsEnum } from "./arguments/enums/RelationshipNestedOperations";
 import { RelationshipQueryDirectionEnum } from "./arguments/enums/RelationshipQueryDirection";
-import { RelationshipQueryDirectionOption } from "../../constants";
+
+export const defaultNestedOperations = [
+    RelationshipNestedOperationsOption.CREATE,
+    RelationshipNestedOperationsOption.UPDATE,
+    RelationshipNestedOperationsOption.DELETE,
+    RelationshipNestedOperationsOption.CONNECT,
+    RelationshipNestedOperationsOption.DISCONNECT,
+    RelationshipNestedOperationsOption.CONNECT_OR_CREATE,
+];
 
 export const relationshipDirective = new GraphQLDirective({
     name: "relationship",
@@ -42,6 +52,11 @@ export const relationshipDirective = new GraphQLDirective({
         properties: {
             type: GraphQLString,
             description: "The name of the interface containing the properties for this relationship.",
+        },
+        nestedOperations: {
+            type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(RelationshipNestedOperationsEnum))),
+            defaultValue: defaultNestedOperations,
+            description: "Prevent all but these operations from being generated for this relationship",
         },
     },
 });

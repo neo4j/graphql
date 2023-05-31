@@ -24,13 +24,29 @@ import { Unwind } from "../Unwind";
 export abstract class WithUnwind extends ClauseMixin {
     protected unwindStatement: Unwind | undefined;
 
-    public unwind(...columns: Array<ProjectionColumn>): Unwind {
-        if (this.unwindStatement) {
-            this.unwindStatement.addColumns(...columns);
-        } else {
-            this.unwindStatement = new Unwind(...columns);
-            this.addChildren(this.unwindStatement);
+    public unwind(clause: Unwind): Unwind;
+    public unwind(...columns: Array<ProjectionColumn>): Unwind;
+    public unwind(clauseOrColumn: Unwind | ProjectionColumn, ...columns: Array<ProjectionColumn>): Unwind {
+        if (clauseOrColumn instanceof Unwind) {
+            return this.addUnwindStatement(clauseOrColumn);
         }
-        return this.unwindStatement;
+
+        return this.addColumnsToUnwindClause(clauseOrColumn, ...columns);
+    }
+
+    private addColumnsToUnwindClause(...columns: Array<"*" | ProjectionColumn>): Unwind {
+        let unwindStatement = this.unwindStatement;
+        if (!unwindStatement) {
+            unwindStatement = this.addUnwindStatement(new Unwind());
+        }
+
+        unwindStatement.addColumns(...columns);
+        return unwindStatement;
+    }
+
+    private addUnwindStatement(clause: Unwind): Unwind {
+        this.unwindStatement = clause;
+        this.addChildren(this.unwindStatement);
+        return clause;
     }
 }

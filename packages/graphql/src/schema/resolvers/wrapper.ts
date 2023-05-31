@@ -176,7 +176,9 @@ export const wrapSubscription =
             plugin: subscriptionsConfig,
         };
 
-        if (!context?.jwt && contextParams.authorization) {
+        if (context?.jwt) {
+            subscriptionContext.jwt = context.jwt;
+        } else if (!context?.jwt && contextParams.authorization) {
             if (resolverArgs.features.authorization) {
                 subscriptionContext.jwt = new Neo4jGraphQLAuthorization(
                     resolverArgs.features.authorization
