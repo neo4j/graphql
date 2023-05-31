@@ -662,17 +662,15 @@ function isListValue(value: ValueNode): value is ListValueNode {
 export default getObjFieldMeta;
 
 function parseSelectableDirective(directive: ConstDirectiveNode | undefined): SelectableOptions {
-    if (!directive) {
-        return {
-            onRead: true,
-            onAggregate: false,
-        };
-    } else {
-        const args: Partial<SelectableOptions> = parseArguments(directive);
+    const defaultArguments = {
+        onRead: true,
+        onAggregate: true,
+    };
 
-        return {
-            onRead: args.onRead ?? true,
-            onAggregate: args.onAggregate ?? false,
-        };
-    }
+    const args: Partial<SelectableOptions> = directive ? parseArguments(directive) : {};
+
+    return {
+        onRead: args.onRead ?? defaultArguments.onRead,
+        onAggregate: args.onAggregate ?? defaultArguments.onAggregate,
+    };
 }
