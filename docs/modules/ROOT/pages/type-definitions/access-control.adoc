@@ -117,7 +117,7 @@ This directive controls if the field will be available on queries and aggregatio
 
 It has two arguments:
 
-* onRead: If disabled, this field will not be available on queries.
+* onRead: If disabled, this field will not be available on queries and subscriptions.
 * onAggregation: If disabled, aggregations will not be available for this field
 
 
@@ -161,4 +161,48 @@ type MovieAggregateSelection {
 }
 ----
 
+[[type-definitions-access-control-settable]]
+== `@settable`
 
+This directive controls if the input field will be available on creation and update mutations.
+
+It has two arguments:
+
+* onCreate: If disabled, this field will not be available to be set on creation.
+* onCreate: If disabled, this field will not be available to be set on update.
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+"""Instructs @neo4j/graphql to generate this input field for mutation."""
+directive @settable(onCreate: Boolean! = true, onUpdate: Boolean! = true) on FIELD_DEFINITION
+----
+
+=== Usage
+
+With the following definition:
+
+[source, graphql, indent=0]
+----
+type Movie {
+    title: String!
+    description: String @settable(onCreate: true, onUpdate: false)
+}
+----
+
+The following input fields will be generated:
+
+[source, graphql, indent=0]
+----
+input MovieCreateInput {
+    description: String
+    title: String!
+}
+
+input MovieUpdateInput {
+    title: String
+}
+----
+
+This means the description can be set on creation, but it will not be available for update operations.

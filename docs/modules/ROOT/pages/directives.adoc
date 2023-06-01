@@ -156,3 +156,15 @@ Reference: xref::type-definitions/indexes-and-constraints.adoc#type-definitions-
 The `@writeonly` directive marks fields as write-only.
 
 Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-writeonly[`@writeonly`]
+
+== `@selectable`
+
+The `@selectable` directive controls if the field will be available on queries and aggregations. 
+
+Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-selectable[`@selectable`]
+
+== `@settable`
+
+The `@settable` directive controls if the input field will be available on creation and update mutations. 
+
+Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-settable[`@settable`]
