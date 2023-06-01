@@ -26,6 +26,7 @@ import type { EditorFromTextArea } from "codemirror";
 import GraphiQLExplorer from "graphiql-explorer";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
+
 import { tracking } from "../../analytics/tracking";
 import { Extension } from "../../components/Filename";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
@@ -38,9 +39,9 @@ import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { EditorTabs } from "./EditorTabs";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
-import { JSONEditor } from "./JSONEditor";
 import { Grid } from "./grid/Grid";
-import { ParserOptions, calculateQueryComplexity, formatCode, safeParse } from "./utils";
+import { JSONEditor } from "./JSONEditor";
+import { calculateQueryComplexity, formatCode, ParserOptions, safeParse } from "./utils";
 
 export interface Props {
     schema?: GraphQLSchema;
