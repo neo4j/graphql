@@ -55,7 +55,7 @@ export function objectFieldsToComposeFields(fields: BaseField[]): {
     [k: string]: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
 } {
     return fields.reduce((res, field) => {
-        if (field.writeonly) {
+        if (field.writeonly || field.selectableOptions.onRead === false) {
             return res;
         }
 

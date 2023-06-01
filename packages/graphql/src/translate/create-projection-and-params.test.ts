@@ -65,6 +65,10 @@ describe("createProjectionAndParams", () => {
                             update: { type: "String", pretty: "String" },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
                     otherDirectives: [],
                     arguments: [],
                 },
@@ -87,7 +91,7 @@ describe("createProjectionAndParams", () => {
             expect(result.projection.getCypher(env)).toBe(`{ .title }`);
             return "";
         }).build();
-       
+
         expect(result.params).toMatchObject({});
     });
     test("should return the correct projection when querying for a global with id in the selection set", () => {
@@ -126,6 +130,10 @@ describe("createProjectionAndParams", () => {
                             create: { type: "String", pretty: "String" },
                             update: { type: "String", pretty: "String" },
                         },
+                    },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
                     },
                     otherDirectives: [],
                     arguments: [],

@@ -34,6 +34,10 @@ export class RelationFieldBuilder extends Builder<RelationField, RelationField> 
                 pretty: "",
                 input: {} as any,
             },
+            selectableOptions: {
+                onRead: true,
+                onAggregate: true,
+            },
             otherDirectives: [],
             arguments: [],
             inherited: false,
