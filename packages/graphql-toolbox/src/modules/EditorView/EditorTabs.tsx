@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
+import { useContext } from "react";
+
 import { Tab, Tabs } from "@neo4j-ndl/react";
 import { PlusIconOutline, XMarkIconOutline } from "@neo4j-ndl/react/icons";
-import { useContext } from "react";
+
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 
