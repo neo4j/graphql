@@ -19,7 +19,7 @@
 
 import { useContext, useEffect } from "react";
 
-import { Button, IconButton, Label } from "@neo4j-ndl/react";
+import { Button, IconButton, Label, StatusIndicator } from "@neo4j-ndl/react";
 import {
     ArrowRightOnRectangleIconOutline,
     Cog8ToothIconOutline,
@@ -41,8 +41,6 @@ export const TopBar = () => {
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const screen = useContext(ScreenContext);
-    const greenDot = <span className="ml-1 mr-1 h-2 w-2 bg-green-400 rounded-full inline-block" />;
-    const redDot = <span className="ml-1 mr-1 h-2 w-2 bg-red-400 rounded-full inline-block" />;
 
     useEffect(() => {
         if (window.Canny && window.CannyIsLoaded) {
@@ -97,7 +95,9 @@ export const TopBar = () => {
             </div>
             <div className="flex-1 flex justify-center">
                 <div className="flex items-center">
-                    <p className="mr-2">{auth?.isConnected ? greenDot : redDot} </p>
+                    <p className="mr-2">
+                        {auth?.isConnected ? <StatusIndicator type="success" /> : <StatusIndicator type="danger" />}{" "}
+                    </p>
                     <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
                     {auth.databases?.length ? (
                         <>
