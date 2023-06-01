@@ -205,7 +205,7 @@ describe("Cypher Auth Allow", () => {
             		MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
             		SET this_content0_creator0.id = $this_update_content0_creator0_id
             		WITH this, this_content0, this_content0_creator0
-            		CALL apoc.util.validate(NOT ((this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            		WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this_content0_creator0.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             		RETURN count(*) AS update_this_content0_creator0
             	}
             	WITH this, this_content0
@@ -233,7 +233,7 @@ describe("Cypher Auth Allow", () => {
             		MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
             		SET this_content0_creator0.id = $this_update_content0_creator0_id
             		WITH this, this_content0, this_content0_creator0
-            		CALL apoc.util.validate(NOT ((this_content0_creator0.id IS NOT NULL AND this_content0_creator0.id = $this_content0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            		WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this_content0_creator0.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             		RETURN count(*) AS update_this_content0_creator0
             	}
             	WITH this, this_content0
@@ -249,7 +249,7 @@ describe("Cypher Auth Allow", () => {
             RETURN count(*) AS update_this_Post
             }
             WITH this
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -258,8 +258,13 @@ describe("Cypher Auth Allow", () => {
                 \\"param0\\": \\"id-01\\",
                 \\"updateUsers_args_update_content0_where_this_content0param0\\": \\"post-id\\",
                 \\"this_update_content0_creator0_id\\": \\"not bound\\",
-                \\"this_content0_creator0auth_param0\\": \\"id-01\\",
-                \\"thisauth_param0\\": \\"id-01\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"id-01\\"
+                },
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"update\\": {

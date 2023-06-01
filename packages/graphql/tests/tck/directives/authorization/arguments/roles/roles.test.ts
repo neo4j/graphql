@@ -118,23 +118,20 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE apoc.util.validatePredicate(NOT (any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"param1\\": \\"admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
+                    \\"sub\\": \\"super_admin\\"
                 }
             }"
         `);
@@ -158,26 +155,24 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE apoc.util.validatePredicate(NOT (any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            WHERE apoc.util.validatePredicate(NOT (any(var3 IN [\\"super-admin\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, .name, .password } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"param1\\": \\"admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
-                }
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"param3\\": \\"super-admin\\"
             }"
         `);
     });
@@ -200,30 +195,32 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE apoc.util.validatePredicate(NOT (any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            WHERE apoc.util.validatePredicate(NOT (any(var3 IN [\\"super-admin\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h\\", { this: this, auth: $auth }) AS this4
-                RETURN collect(this4 { .url }) AS this4
+                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h\\", { this: this, auth: $auth }) AS this0
+                RETURN collect(this0 { .url }) AS this0
             }
-            RETURN this { history: this4 } AS this"
+            RETURN this { history: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"param1\\": \\"admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"param3\\": \\"super-admin\\",
+                \\"auth\\": {
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
@@ -253,7 +250,7 @@ describe("Cypher Auth Roles", () => {
                 SET
                     create_this1.id = create_var0.id
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT (any(create_var3 IN [\\"admin\\"] WHERE any(create_var2 IN $auth.roles WHERE create_var2 = create_var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $create_param2 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -266,19 +263,15 @@ describe("Cypher Auth Roles", () => {
                         \\"id\\": \\"1\\"
                     }
                 ],
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"create_param2\\": \\"admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
-                }
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -308,9 +301,9 @@ describe("Cypher Auth Roles", () => {
                     create_this1.id = create_var0.id,
                     create_this1.password = create_var0.password
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT (any(create_var3 IN [\\"admin\\"] WHERE any(create_var2 IN $auth.roles WHERE create_var2 = create_var3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $create_param2 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT (create_var0.password IS NULL OR any(create_var5 IN [\\"super-admin\\"] WHERE any(create_var4 IN $auth.roles WHERE create_var4 = create_var5))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate((create_var0.password IS NOT NULL AND NOT ($isAuthenticated = true AND $create_param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -324,19 +317,16 @@ describe("Cypher Auth Roles", () => {
                         \\"password\\": \\"super-password\\"
                     }
                 ],
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"create_param2\\": \\"admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
-                }
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"create_param4\\": \\"super-admin\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -359,30 +349,28 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id = $param0
-            WITH this
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param2 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             SET this.id = $this_update_id
+            WITH this
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_update_id\\": \\"id-1\\",
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"param2\\": \\"admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
-                }
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"this_update_id\\": \\"id-1\\",
+                \\"authorization_param1\\": \\"admin\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -451,12 +439,13 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
-            	WITH this, this_connect_posts0_node
-            	CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	CALL {
             		WITH *
             		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
@@ -470,6 +459,8 @@ describe("Cypher Auth Roles", () => {
             		RETURN count(*) AS _
             	}
             WITH this, this_connect_posts0_node
+            WITH this, this_connect_posts0_node
+            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
@@ -478,19 +469,17 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"param1\\": \\"admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
-                }
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"authorization_param1\\": \\"admin\\",
+                \\"authorization_param3\\": \\"super-admin\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -525,9 +514,7 @@ describe("Cypher Auth Roles", () => {
             	CALL {
             		WITH this, this_post0
             		OPTIONAL MATCH (this_post0_creator0_connect0_node:User)
-            		WHERE this_post0_creator0_connect0_node.id = $this_post0_creator0_connect0_node_param0
-            		WITH this, this_post0, this_post0_creator0_connect0_node
-            		CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            		WHERE this_post0_creator0_connect0_node.id = $this_post0_creator0_connect0_node_param0 AND (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             		CALL {
             			WITH *
             			WITH this, collect(this_post0_creator0_connect0_node) as connectedNodes, collect(this_post0) as parentNodes
@@ -541,6 +528,8 @@ describe("Cypher Auth Roles", () => {
             			RETURN count(*) AS _
             		}
             	WITH this, this_post0, this_post0_creator0_connect0_node
+            	WITH this, this_post0, this_post0_creator0_connect0_node
+            	WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             		RETURN count(*) AS connect_this_post0_creator0_connect_User
             	}
             	WITH this, this_post0
@@ -553,7 +542,7 @@ describe("Cypher Auth Roles", () => {
             	}
             	RETURN count(*) AS update_this_post0
             }
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)<-[this_post_Post_unique:HAS_COMMENT]-(:Post)
@@ -567,19 +556,16 @@ describe("Cypher Auth Roles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_post0_creator0_connect0_node_param0\\": \\"user-id\\",
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"authorization_param1\\": \\"super-admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
-                }
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"authorization_param3\\": \\"admin\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -602,12 +588,13 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
-            WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
             	WITH this_disconnect_posts0, this_disconnect_posts0_rel, this
             	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
@@ -615,6 +602,8 @@ describe("Cypher Auth Roles", () => {
             	DELETE this_disconnect_posts0_rel
             	RETURN count(*) AS _
             }
+            WITH this, this_disconnect_posts0
+            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
             WITH *
@@ -623,6 +612,16 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"isAuthenticated\\": true,
+                \\"param1\\": \\"admin\\",
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"authorization_param1\\": \\"admin\\",
+                \\"authorization_param3\\": \\"super-admin\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -632,19 +631,7 @@ describe("Cypher Auth Roles", () => {
                         }
                     }
                 },
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
-                }
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -679,9 +666,7 @@ describe("Cypher Auth Roles", () => {
             	CALL {
             	WITH this, this_post0
             	OPTIONAL MATCH (this_post0)-[this_post0_creator0_disconnect0_rel:HAS_POST]->(this_post0_creator0_disconnect0:User)
-            	WHERE this_post0_creator0_disconnect0.id = $updateComments_args_update_post_update_node_creator_disconnect_where_User_this_post0_creator0_disconnect0param0
-            	WITH this, this_post0, this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel
-            	CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE this_post0_creator0_disconnect0.id = $updateComments_args_update_post_update_node_creator_disconnect_where_User_this_post0_creator0_disconnect0param0 AND (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	CALL {
             		WITH this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel, this_post0
             		WITH collect(this_post0_creator0_disconnect0) as this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel, this_post0
@@ -689,6 +674,8 @@ describe("Cypher Auth Roles", () => {
             		DELETE this_post0_creator0_disconnect0_rel
             		RETURN count(*) AS _
             	}
+            	WITH this, this_post0, this_post0_creator0_disconnect0
+            	WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	RETURN count(*) AS disconnect_this_post0_creator0_disconnect_User
             	}
             	WITH this, this_post0
@@ -701,7 +688,7 @@ describe("Cypher Auth Roles", () => {
             	}
             	RETURN count(*) AS update_this_post0
             }
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)<-[this_post_Post_unique:HAS_COMMENT]-(:Post)
@@ -715,6 +702,15 @@ describe("Cypher Auth Roles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"updateComments_args_update_post_update_node_creator_disconnect_where_User_this_post0_creator0_disconnect0param0\\": \\"user-id\\",
+                \\"isAuthenticated\\": true,
+                \\"authorization_param1\\": \\"super-admin\\",
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"authorization_param3\\": \\"admin\\",
                 \\"updateComments\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -736,19 +732,7 @@ describe("Cypher Auth Roles", () => {
                         }
                     }
                 },
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
-                }
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -769,24 +753,20 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH this
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"param1\\": \\"admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
+                    \\"sub\\": \\"super_admin\\"
                 }
             }"
         `);
@@ -808,10 +788,11 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-            WITH this, this_posts0
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this, collect(DISTINCT this_posts0) AS this_posts0_to_delete
             CALL {
             	WITH this_posts0_to_delete
@@ -819,25 +800,20 @@ describe("Cypher Auth Roles", () => {
             	DETACH DELETE x
             	RETURN count(*) AS _
             }
-            WITH this
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"param1\\": \\"admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
-                }
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"authorization_param1\\": \\"super-admin\\"
             }"
         `);
     });
