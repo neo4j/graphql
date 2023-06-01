@@ -36,7 +36,7 @@ export const EditorTabs = () => {
     return (
         <>
             {useStore.getState().tabs.length ? (
-                <div className="w-full overflow-auto whitespace-nowrap rounded-t border-b pt-2 bg-white">
+                <div className="w-full overflow-auto whitespace-nowrap rounded-t-xl border-b pt-2 bg-white">
                     <Tabs
                         size="small"
                         fill="underline"
@@ -66,7 +66,7 @@ export const EditorTabs = () => {
                                 </Tab>
                             );
                         })}
-                        <Tab key={"new"} tabId={"new"} className="pos-absolute">
+                        <Tab key={"new"} tabId={"new"} className="pos-absolute pl-0">
                             <PlusIconOutline
                                 data-test-new-query-editor-tab
                                 className="h-5 w-5 hover:bg-gray-200"

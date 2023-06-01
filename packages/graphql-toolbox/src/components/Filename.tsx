@@ -62,7 +62,7 @@ const Ending = (props: { extension: Extension }) => {
     return <span>{content}</span>;
 };
 
-export const FileName = ({ extension, name, buttons, borderRadiusTop }: Props) => {
+export const FileName = ({ extension, name, buttons, borderRadiusTop = true }: Props) => {
     const theme = useContext(ThemeContext);
 
     return (
