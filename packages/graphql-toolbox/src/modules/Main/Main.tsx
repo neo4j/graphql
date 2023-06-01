@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
+import { useContext, useEffect, useState } from "react";
+
 import { EditorContextProvider, StorageContextProvider } from "@graphiql/react";
 import type { GraphQLSchema } from "graphql";
-import { useContext, useEffect, useState } from "react";
+
 import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
 import { tracking } from "../../analytics/tracking";
 import { CannySDK } from "../../common/canny";

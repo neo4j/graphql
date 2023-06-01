@@ -17,23 +17,25 @@
  * limitations under the License.
  */
 
+import { useContext, useEffect } from "react";
+
 import { Button, IconButton, Label } from "@neo4j-ndl/react";
 import {
+    ArrowRightOnRectangleIconOutline,
+    Cog8ToothIconOutline,
     QuestionMarkCircleIconOutline,
     SparklesIconOutline,
-    Cog8ToothIconOutline,
-    ArrowRightOnRectangleIconOutline,
 } from "@neo4j-ndl/react/icons";
-import { useContext, useEffect } from "react";
-import { DEFAULT_BOLT_URL } from "../../constants";
+
+import { tracking } from "../../analytics/tracking";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../../assets/neo4j-logo-color.svg";
+import { cannySettings } from "../../common/canny";
 import { CustomSelect } from "../../components/CustomSelect";
+import { DEFAULT_BOLT_URL } from "../../constants";
 import { AuthContext } from "../../contexts/auth";
 import { Screen, ScreenContext } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
-import { tracking } from "../../analytics/tracking";
-import { cannySettings } from "../../common/canny";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);

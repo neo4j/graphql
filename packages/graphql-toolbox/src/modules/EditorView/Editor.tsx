@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { useCallback, useContext, useRef, useState } from "react";
+
 import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, Switch } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
@@ -24,7 +26,6 @@ import type { EditorFromTextArea } from "codemirror";
 import GraphiQLExplorer from "graphiql-explorer";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import { useCallback, useContext, useRef, useState } from "react";
 import { tracking } from "../../analytics/tracking";
 import { Extension } from "../../components/Filename";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";

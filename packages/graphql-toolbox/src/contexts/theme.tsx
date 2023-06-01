@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
 import { useStore } from "../store";
 
 export enum Theme {
