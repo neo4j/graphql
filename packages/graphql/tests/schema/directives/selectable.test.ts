@@ -32,7 +32,7 @@ describe("@selectable", () => {
 
     test("Disable read fields", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @query(aggregate: true) {
                 title: String!
                 description: String @selectable(onRead: false, onAggregate: true)
             }
