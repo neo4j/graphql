@@ -19,10 +19,13 @@
 
 import { Tab, Tabs } from "@neo4j-ndl/react";
 import { PlusIconOutline, XMarkIconOutline } from "@neo4j-ndl/react/icons";
+import { useContext } from "react";
+import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 
 export const EditorTabs = () => {
     const store = useStore();
+    const theme = useContext(ThemeContext);
 
     const closeTab = (idx: number) => {
         store.closeTab(idx);
@@ -36,26 +39,33 @@ export const EditorTabs = () => {
     return (
         <>
             {useStore.getState().tabs.length ? (
-                <div className="w-full overflow-auto whitespace-nowrap rounded-t-xl border-b pt-2 bg-white">
+                <div
+                    className={`w-full overflow-auto whitespace-nowrap rounded-t-xl border-b pt-2 ${
+                        theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"
+                    }`}
+                >
                     <Tabs
                         size="small"
                         fill="underline"
                         value={useStore.getState().activeTabIndex.toString()}
                         onChange={handleTabsChange}
+                        className="mb-01"
                     >
                         {useStore.getState().tabs.map((tab, idx) => {
                             return (
-                                <Tab data-test-query-editor-tab={tab.title} key={idx.toString()} tabId={idx.toString()}>
+                                <Tab
+                                    data-test-query-editor-tab={tab.title}
+                                    key={idx.toString()}
+                                    tabId={idx.toString()}
+                                    className={`${theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"}`}
+                                >
                                     <div className="flex justify-center items-center">
-                                        <span
-                                            className="overflow-ellipsis overflow-hidden"
-                                            style={{ maxWidth: "7rem" }}
-                                        >
-                                            {tab.title}
-                                        </span>
+                                        <span style={{ maxWidth: "7rem" }}>{tab.title}</span>
                                         <XMarkIconOutline
                                             data-test-close-icon-query-editor-tab
-                                            className="h-5 w-5 ml-2 hover:bg-gray-200"
+                                            className={`h-5 w-5 ml-2 ${
+                                                theme.theme === Theme.LIGHT ? "hover:bg-gray-100" : "hover:bg-gray-500"
+                                            }`}
                                             aria-label="Close Icon"
                                             onClick={(event) => {
                                                 event.stopPropagation();
@@ -69,7 +79,9 @@ export const EditorTabs = () => {
                         <Tab key={"new"} tabId={"new"} className="pos-absolute pl-0">
                             <PlusIconOutline
                                 data-test-new-query-editor-tab
-                                className="h-5 w-5 hover:bg-gray-200"
+                                className={`h-5 w-5 ${
+                                    theme.theme === Theme.LIGHT ? "hover:bg-gray-100" : "text-white hover:bg-gray-500"
+                                }`}
                                 aria-label="Add tab Icon"
                                 onClick={() => store.addTab()}
                             />
