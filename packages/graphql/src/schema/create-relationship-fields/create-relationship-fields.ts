@@ -192,7 +192,7 @@ function createRelationshipFields({
                 });
             }
 
-            if (composeNode instanceof ObjectTypeComposer && rel.selectableOptions.onAggregate) {
+            if (composeNode instanceof ObjectTypeComposer) {
                 const baseTypeName = `${sourceName}${node.name}${upperFieldName}`;
                 const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, subgraph);
 
