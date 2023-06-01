@@ -95,7 +95,9 @@ export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
                     })}
                 </ul>
             ) : (
-                <EmptyState />
+                <div className="flex items-center justify-center pt-40">
+                    <EmptyState />
+                </div>
             )}
         </div>
     );
