@@ -56,6 +56,7 @@ describe("Edge subquery", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             config: { startupValidation: false },
+            features: { authorization: { key: "secret" } },
         });
     });
 

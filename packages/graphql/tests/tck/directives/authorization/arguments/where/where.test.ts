@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
@@ -31,6 +30,10 @@ describe("Cypher Auth Where", () => {
 
     beforeAll(() => {
         typeDefs = gql`
+            type JWTPayload @jwtPayload {
+                roles: [String!]!
+            }
+
             union Search = Post
 
             type User {
@@ -46,33 +49,18 @@ describe("Cypher Auth Where", () => {
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            extend type User
-                @auth(
-                    rules: [
-                        {
-                            operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { id: "$jwt.sub" }
-                        }
-                    ]
-                )
+            extend type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
 
             extend type User {
-                password: String! @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
+                password: String! @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
 
             extend type Post {
-                secretKey: String! @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
+                secretKey: String!
+                    @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
             }
 
-            extend type Post
-                @auth(
-                    rules: [
-                        {
-                            operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { creator: { id: "$jwt.sub" } }
-                        }
-                    ]
-                )
+            extend type Post @authorization(filter: [{ where: { node: { creator: { id: "$jwt.sub" } } } }])
         `;
 
         neoSchema = new Neo4jGraphQL({
