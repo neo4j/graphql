@@ -21,7 +21,7 @@ import { DirectiveLocation, GraphQLBoolean, GraphQLDirective, GraphQLNonNull } f
 
 export const selectableDirective = new GraphQLDirective({
     name: "selectable",
-    description: "Instructs @neo4j/graphql to generate this field for read operations.",
+    description: "Instructs @neo4j/graphql to generate this field for selectable types.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
         onRead: {
