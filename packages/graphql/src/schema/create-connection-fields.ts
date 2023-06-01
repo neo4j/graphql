@@ -50,6 +50,7 @@ function createConnectionFields({
     const whereInput = schemaComposer.getITC(`${composeNode.getTypeName()}Where`);
 
     connectionFields.forEach((connectionField) => {
+        // console.log(connectionField);
         const relationship = schemaComposer.getOrCreateOTC(connectionField.relationshipTypeName, (tc) => {
             tc.addFields({
                 cursor: "String!",
@@ -241,7 +242,7 @@ function createConnectionFields({
             }
         }
 
-        if (!connectionField.relationship.writeonly) {
+        if (!connectionField.relationship.writeonly && connectionField.selectableOptions.onRead) {
             const deprecatedDirectives = graphqlDirectivesToCompose(
                 connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated")
             );

@@ -186,11 +186,13 @@ function createRelationshipFields({
                 relationshipField.args = nodeFieldsArgs;
             }
 
-            composeNode.addFields({
-                [rel.fieldName]: relationshipField,
-            });
+            if (rel.selectableOptions.onRead) {
+                composeNode.addFields({
+                    [rel.fieldName]: relationshipField,
+                });
+            }
 
-            if (composeNode instanceof ObjectTypeComposer) {
+            if (composeNode instanceof ObjectTypeComposer && rel.selectableOptions.onAggregate) {
                 const baseTypeName = `${sourceName}${node.name}${upperFieldName}`;
                 const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, subgraph);
 
