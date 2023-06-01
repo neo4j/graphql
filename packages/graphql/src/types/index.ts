@@ -32,7 +32,6 @@ import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchema
 import type { Auth } from "./deprecated/auth/auth";
 import type { JwtPayload } from "./jwt-payload";
 import type { AuthContext } from "./deprecated/auth/auth-context";
-import type { JwtPayload } from "./deprecated/auth/jwt-payload";
 
 export { Node } from "../classes";
 

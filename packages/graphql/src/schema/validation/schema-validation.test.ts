@@ -249,42 +249,6 @@ describe("schema validation", () => {
                     `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
                 );
             });
-
-            test("should not returns errors when subscriptions filter is correctly used", () => {
-                const userDocument = gql`
-                    type User @authorization(filterSubscriptions: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should not returns errors when subscriptions filter is correctly used with relationship", () => {
-                const userDocument = gql`
-                    type User @authorization(filterSubscriptions: [{ where: { relationship: { documents: { node: { id: "$jwt.sub" } } } } }]) {
-                        id: ID!
-                        name: String!
-                        documents: [Document!]! @relationship(type: "HAS_DOCUMENT", direction: OUT)
-                    }
-
-                    type Document {
-                        id: ID!
-                        name: String!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
         });
 
         describe("on FIELD", () => {

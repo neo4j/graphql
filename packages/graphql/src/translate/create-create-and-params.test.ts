@@ -23,6 +23,8 @@ import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { CallbackBucket } from "../classes/CallbackBucket";
+import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 
 describe("createCreateAndParams", () => {
     test("should return the correct projection with 1 selection", () => {
@@ -75,6 +77,11 @@ describe("createCreateAndParams", () => {
         };
         const context = new ContextBuilder({
             neoSchema,
+            schemaModel: new Neo4jGraphQLSchemaModel({
+                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
+                compositeEntities: [],
+                operations: {},
+            }),
         }).instance();
 
         const result = createCreateAndParams({

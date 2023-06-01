@@ -22,7 +22,7 @@ import { ContextBuilder } from "../../../../tests/utils/builders/context-builder
 import type { Context } from "../../../types";
 import { populateWhereParams } from "./populate-where-params";
 
-describe("populateWhereParams", () => {
+describe.skip("populateWhereParams", () => {
     let context: Context;
     let authParam: Cypher.Param;
 

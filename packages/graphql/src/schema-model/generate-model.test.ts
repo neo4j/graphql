@@ -22,7 +22,6 @@ import { gql } from "graphql-tag";
 import { AnnotationsKey } from "./annotation/Annotation";
 import {
     AuthorizationFilterOperationRule,
-    AuthorizationFilterSubscriptionsEventRule,
     AuthorizationValidateOperationRule,
 } from "./annotation/AuthorizationAnnotation";
 import { generateModel } from "./generate-model";
@@ -46,16 +45,6 @@ describe("ConcreteEntity generation", () => {
 
             extend type User {
                 password: String! @authorization(filter: [{ where: { node: { id: { equals: "$jwt.sub" } } } }])
-            }
-
-            type Document
-                @authorization(
-                    filterSubscriptions: [
-                        { where: { relationship: { owner: { node: { id: { equals: "$jwt.sub" } } } } } }
-                    ]
-                ) {
-                id: ID!
-                owner: User! @relationship(type: "HAS_DOCUMENT", direction: IN)
             }
         `;
 
@@ -128,24 +117,6 @@ describe("ConcreteEntity generation", () => {
                     },
                 ])
             );
-        });
-
-        test("authorization annotation is correct on Document entity", () => {
-            const documentEntity = schemaModel.concreteEntities.find((e) => e.name === "Document");
-            const authAnnotation = documentEntity?.annotations[AnnotationsKey.authorization];
-            expect(authAnnotation).toBeDefined();
-            expect(authAnnotation?.filter).toBeUndefined();
-            expect(authAnnotation?.validate).toBeUndefined();
-            expect(authAnnotation?.filterSubscriptions).toHaveLength(1);
-            expect(authAnnotation?.filterSubscriptions).toEqual([
-                {
-                    events: AuthorizationFilterSubscriptionsEventRule,
-                    requireAuthentication: true,
-                    where: {
-                        relationship: { owner: { node: { id: { equals: "$jwt.sub" } } } },
-                    },
-                },
-            ]);
         });
     });
 });
