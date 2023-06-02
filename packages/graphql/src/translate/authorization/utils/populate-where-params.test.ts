@@ -57,7 +57,7 @@ describe("populateWhereParams", () => {
         };
 
         expect(populateWhereParams({ where, context })).toEqual({
-            id: Cypher.coalesce(authParam.property("some.other.claim"), new Cypher.Literal("")),
+            id: Cypher.coalesce(authParam.property("some", "other", "claim"), new Cypher.Literal("")),
         });
     });
 
