@@ -35,7 +35,7 @@ base.test.describe("login", () => {
         await loginPage.awaitSuccess();
     });
 
-    test("should be able to disconnect from database", async ({ loginPage, topBarPage }) => {
+    test("should be able to disconnect from a database", async ({ loginPage, topBarPage }) => {
         await loginPage.loginDismissIntrospection();
 
         await topBarPage.clickConnectionInformation();
