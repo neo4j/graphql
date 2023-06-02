@@ -169,7 +169,7 @@ function createAuthorization({
 }): GraphQLDirective {
     return new GraphQLDirective({
         name: `${typeDefinitionName}Authorization`,
-        locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION, DirectiveLocation.INTERFACE],
+        locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION],
         args: {
             filter: {
                 description: "filter",
