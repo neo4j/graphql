@@ -157,7 +157,7 @@ describe("schema validation", () => {
             const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
             expect(executeValidate).not.toThrow();
         });
-        
+
         describe("JWT wildcard", () => {
             test("should not returns errors when is correctly used: Int on OBJECT", () => {
                 const jwtType = `
@@ -431,15 +431,6 @@ describe("schema validation", () => {
         });
     });
 
-    describe("on OBJECT", () => {
-        test("should not returns errors when is correctly used", () => {
-            const userDocument = gql`
-                type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                    id: ID!
-                    name: String!
-                }
-            `;
-
     describe("@authorization", () => {
         describe("on OBJECT", () => {
             test("should not returns errors when is correctly used", () => {
@@ -612,7 +603,7 @@ describe("schema validation", () => {
         });
 
         describe("on INTERFACE", () => {
-            test("should not returns errors when is correctly used", () => {
+            test("should error", () => {
                 const userDocument = gql`
                     type User implements Member {
                         id: ID!
@@ -630,100 +621,7 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should validate directive argument name", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Member @authorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@MemberAuthorization\\". Did you mean \\"filter\\"?"`
-                );
-            });
-
-            test("should not returns errors when is correctly used, with specifiedDirective", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID! @deprecated(reason: "name is deprecated")
-                    }
-
-                    type Post {
-                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should not returns errors when used correctly in several place", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Media {
-                        id: ID!
-                    }
-
-                    type Post implements Media @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
-                    }
-
-                    interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should not fails when an interface has no implementations", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Media @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                    }
-
-                    interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                    }
-
-                    type Post {
-                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
-                        media: Media @relationship(type: "HAS_MEDIA", direction: IN)
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
+                expect(executeValidate).toThrow('Directive "@MemberAuthorization" may not be used on INTERFACE.');
             });
         });
 
@@ -931,7 +829,7 @@ describe("schema validation", () => {
         });
 
         describe("on INTERFACE_EXTENSION", () => {
-            test("should not returns errors when is correctly used", () => {
+            test("should error", () => {
                 const userDocument = gql`
                     type User implements Member {
                         id: ID!
@@ -950,234 +848,7 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should validate directive argument name", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Member {
-                        id: ID!
-                    }
-                    extend interface Member @authorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@MemberAuthorization\\". Did you mean \\"filter\\"?"`
-                );
-            });
-
-            test("should returns errors when used correctly in both interface and extension", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                    }
-                    extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-
-                    type Post {
-                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@MemberAuthorization\\" can only be used once at this location."`
-                );
-            });
-
-            test("should returns errors when used correctly in both a interface field and an extension for the same field", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Member {
-                        id: ID! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-
-                    extend interface Member {
-                        id: ID! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-
-                    type Post {
-                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@MemberAuthorization\\" can only be used once at this location."`
-                );
-            });
-
-            test("should not returns errors when used correctly in different type and field across several extensions", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    extend interface Member {
-                        name: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-
-                    extend interface Member {
-                        id: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-
-                    type Post {
-                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should not returns errors when used correctly in several place", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Media {
-                        id: ID!
-                    }
-
-                    type Post implements Media {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Member {
-                        id: ID!
-                    }
-                    extend interface Media @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-
-                    type Post {
-                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
-                        media: Media @relationship(type: "HAS_MEDIA", direction: IN)
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should not fails when an interface has no implementations", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Media {
-                        id: ID!
-                    }
-
-                    interface Member {
-                        id: ID!
-                    }
-                    extend interface Media @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-
-                    type Post {
-                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
-                        media: Media @relationship(type: "HAS_MEDIA", direction: IN)
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should returns errors when used correctly in more than one extension", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-                    interface Member {
-                        id: ID!
-                    }
-                    extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-
-                    type Post {
-                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@MemberAuthorization\\" can only be used once at this location."`
-                );
-            });
-
-            test("validation should works when used with other directives", () => {
-                const userDocument = gql`
-                    type User implements Member @plural(value: "Users") {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Member {
-                        id: ID!
-                    }
-                    type Post {
-                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
-                    }
-                    extend interface Member @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should validate directive argument name, when used with other directives", () => {
-                const userDocument = gql`
-                    interface Member {
-                        id: ID!
-                    }
-                    type User implements Member @plural(value: "Users") {
-                        id: ID!
-                        name: String!
-                    }
-                    extend interface Member @authorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@MemberAuthorization\\". Did you mean \\"filter\\"?"`
-                );
+                expect(executeValidate).toThrow('Directive "@MemberAuthorization" may not be used on INTERFACE.');
             });
         });
 
