@@ -20,13 +20,13 @@
 import createUpdateAndParams from "./create-update-and-params";
 import type { Neo4jGraphQL } from "../classes";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import type { Context } from "../types";
+import type { BaseField, Context } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 
 describe("createUpdateAndParams", () => {
     test("should return the correct update and params", () => {
-        const idField = {
+        const idField: BaseField = {
             fieldName: "id",
             typeMeta: {
                 name: "String",
@@ -47,6 +47,10 @@ describe("createUpdateAndParams", () => {
                         pretty: "String",
                     },
                 },
+            },
+            selectableOptions: {
+                onRead: true,
+                onAggregate: false,
             },
             otherDirectives: [],
             arguments: [],

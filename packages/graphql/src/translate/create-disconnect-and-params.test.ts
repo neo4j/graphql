@@ -56,6 +56,10 @@ describe("createDisconnectAndParams", () => {
                             },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
                     otherDirectives: [],
                     arguments: [],
                     nestedOperations: defaultNestedOperations,

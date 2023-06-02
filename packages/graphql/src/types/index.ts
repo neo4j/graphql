@@ -109,6 +109,11 @@ export interface Callback {
     callbackName: string;
 }
 
+export type SelectableOptions = {
+    onRead: boolean;
+    onAggregate: boolean;
+};
+
 /**
  * Representation a ObjectTypeDefinitionNode field.
  */
@@ -124,6 +129,7 @@ export interface BaseField {
     writeonly?: boolean;
     dbPropertyName?: string;
     unique?: Unique;
+    selectableOptions: SelectableOptions;
 }
 
 /**
