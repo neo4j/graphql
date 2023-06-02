@@ -129,7 +129,7 @@ export const TopBar = () => {
                     </Button>
                     <IconButton
                         data-test-send-feedback-topbar
-                        className="ndl-theme-dark block lg:hidden"
+                        className="ndl-theme-dark flex lg:hidden"
                         aria-label="Send feedback"
                         onClick={handleSendFeedbackClick}
                         size="large"
@@ -169,5 +169,4 @@ export const TopBar = () => {
     );
 };
 
-// TODO: tablet width, check alignment
 // TODO: tooltip with connection info
