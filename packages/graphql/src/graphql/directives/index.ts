@@ -24,6 +24,7 @@ export { computedDirective } from "./computed";
 export { customResolverDirective } from "./customResolver";
 export { cypherDirective } from "./cypher";
 export { selectableDirective } from "./selectable";
+export { settableDirective } from "./settable";
 export { defaultDirective } from "./default";
 export { excludeDirective } from "./exclude";
 export { fulltextDirective } from "./fulltext";
