@@ -723,7 +723,7 @@ describe("@selectable", () => {
                     description: String
                 }
 
-                type Actor {
+                type Actor @query(aggregate: true) {
                     name: String!
                     actedIn: [Movie!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -1160,7 +1160,7 @@ describe("@selectable", () => {
                     description: String
                 }
 
-                type Actor {
+                type Actor @query(aggregate: true) {
                     name: String!
                     actedIn: [Movie!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
