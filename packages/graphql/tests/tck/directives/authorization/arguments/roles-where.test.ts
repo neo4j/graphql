@@ -97,25 +97,22 @@ describe("Cypher Auth Where with Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $auth_param1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3))) AND apoc.util.validatePredicate(NOT ((any(var1 IN [\\"user\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) OR any(var3 IN [\\"admin\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (this.id = coalesce($jwt.sub, \\"\\") AND $param2 IN $jwt.roles)) OR ($isAuthenticated = true AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth_param1\\": \\"id-01\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"id-01\\"
-                    }
-                }
+                    \\"sub\\": \\"id-01\\"
+                },
+                \\"param2\\": \\"user\\",
+                \\"param3\\": \\"admin\\"
             }"
         `);
     });

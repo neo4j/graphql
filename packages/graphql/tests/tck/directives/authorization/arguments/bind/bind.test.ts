@@ -100,7 +100,7 @@ describe("Cypher Auth Allow", () => {
                     create_this1.id = create_var0.id,
                     create_this1.name = create_var0.name
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ((create_this1.id IS NOT NULL AND create_this1.id = $create_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this1.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -114,7 +114,13 @@ describe("Cypher Auth Allow", () => {
                         \\"name\\": \\"bob\\"
                     }
                 ],
-                \\"create_param1\\": \\"id-01\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"id-01\\"
+                },
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -175,11 +181,14 @@ describe("Cypher Auth Allow", () => {
                             create_this10.id = create_var8.id
                         MERGE (create_this5)<-[create_this11:HAS_POST]-(create_this10)
                         WITH *
-                        WHERE apoc.util.validatePredicate(NOT ((create_this10.id IS NOT NULL AND create_this10.id = $create_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this10.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         RETURN collect(NULL) AS create_var12
                     }
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ((exists((create_this5)<-[:HAS_POST]-(:\`User\`)) AND all(create_this13 IN [(create_this5)<-[:HAS_POST]-(create_this13:\`User\`) | create_this13] WHERE (create_this13.id IS NOT NULL AND create_this13.id = $create_param2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    OPTIONAL MATCH (create_this5)<-[:HAS_POST]-(create_this13:\`User\`)
+                    WITH *, count(create_this13) AS creatorCount
+                    WITH *
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND create_this13.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH create_this5
                     CALL {
                     	WITH create_this5
@@ -191,7 +200,7 @@ describe("Cypher Auth Allow", () => {
                     RETURN collect(NULL) AS create_var14
                 }
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ((create_this1.id IS NOT NULL AND create_this1.id = $create_param3)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this1.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -221,9 +230,13 @@ describe("Cypher Auth Allow", () => {
                         }
                     }
                 ],
-                \\"create_param1\\": \\"id-01\\",
-                \\"create_param2\\": \\"id-01\\",
-                \\"create_param3\\": \\"id-01\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"id-01\\"
+                },
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -250,7 +263,7 @@ describe("Cypher Auth Allow", () => {
             WHERE this.id = $param0
             SET this.id = $this_update_id
             WITH this
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -258,7 +271,13 @@ describe("Cypher Auth Allow", () => {
             "{
                 \\"param0\\": \\"id-01\\",
                 \\"this_update_id\\": \\"not bound\\",
-                \\"thisauth_param0\\": \\"id-01\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"id-01\\"
+                },
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -302,7 +321,7 @@ describe("Cypher Auth Allow", () => {
             		MATCH (this_posts0)<-[this_posts0_has_post0_relationship:HAS_POST]-(this_posts0_creator0:User)
             		SET this_posts0_creator0.id = $this_update_posts0_creator0_id
             		WITH this, this_posts0, this_posts0_creator0
-            		CALL apoc.util.validate(NOT ((this_posts0_creator0.id IS NOT NULL AND this_posts0_creator0.id = $this_posts0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            		WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this_posts0_creator0.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             		RETURN count(*) AS update_this_posts0_creator0
             	}
             	WITH this, this_posts0
@@ -316,7 +335,7 @@ describe("Cypher Auth Allow", () => {
             	RETURN count(*) AS update_this_posts0
             }
             WITH this
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -325,8 +344,13 @@ describe("Cypher Auth Allow", () => {
                 \\"param0\\": \\"id-01\\",
                 \\"updateUsers_args_update_posts0_where_this_posts0param0\\": \\"post-id\\",
                 \\"this_update_posts0_creator0_id\\": \\"not bound\\",
-                \\"this_posts0_creator0auth_param0\\": \\"id-01\\",
-                \\"thisauth_param0\\": \\"id-01\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"id-01\\"
+                },
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -395,8 +419,11 @@ describe("Cypher Auth Allow", () => {
             		RETURN count(*) AS _
             	}
             WITH this, this_connect_creator0_node
-            	WITH this, this_connect_creator0_node
-            	CALL apoc.util.validate(NOT ((exists((this_connect_creator0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_creator0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_creator0_nodeauth_param0))) AND (this_connect_creator0_node.id IS NOT NULL AND this_connect_creator0_node.id = $this_connect_creator0_nodeauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            OPTIONAL MATCH (this)<-[:HAS_POST]-(authorization_this0:\`User\`)
+            WITH *, count(authorization_this0) AS creatorCount
+            WITH *
+            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this_connect_creator0_node.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	RETURN count(*) AS connect_this_connect_creator_User
             }
             WITH *
@@ -415,7 +442,13 @@ describe("Cypher Auth Allow", () => {
             "{
                 \\"param0\\": \\"post-id\\",
                 \\"this_connect_creator0_node_param0\\": \\"user-id\\",
-                \\"this_connect_creator0_nodeauth_param0\\": \\"id-01\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"id-01\\"
+                },
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -452,8 +485,11 @@ describe("Cypher Auth Allow", () => {
             	DELETE this_disconnect_creator0_rel
             	RETURN count(*) AS _
             }
-            WITH this, this_disconnect_creator0
-            CALL apoc.util.validate(NOT ((exists((this_disconnect_creator0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_creator0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_creator0auth_param0))) AND (this_disconnect_creator0.id IS NOT NULL AND this_disconnect_creator0.id = $this_disconnect_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            OPTIONAL MATCH (this)<-[:HAS_POST]-(authorization_this0:\`User\`)
+            WITH *, count(authorization_this0) AS creatorCount
+            WITH *
+            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this_disconnect_creator0.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             RETURN count(*) AS disconnect_this_disconnect_creator_User
             }
             WITH *
@@ -472,7 +508,13 @@ describe("Cypher Auth Allow", () => {
             "{
                 \\"param0\\": \\"post-id\\",
                 \\"updatePosts_args_disconnect_creator_where_User_this_disconnect_creator0param0\\": \\"user-id\\",
-                \\"this_disconnect_creator0auth_param0\\": \\"id-01\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"id-01\\"
+                },
                 \\"updatePosts\\": {
                     \\"args\\": {
                         \\"disconnect\\": {

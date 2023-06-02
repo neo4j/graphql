@@ -52,7 +52,7 @@ describe("Edge subquery", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             config: { startupValidation: false },
-            features:{authorization:{key:"secret"}}
+            features: { authorization: { key: "secret" } },
         });
     });
 
@@ -84,7 +84,7 @@ describe("Edge subquery", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE (this1.name = $param1.sub AND apoc.util.validatePredicate(NOT (this1.name = $param1.sub), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WHERE (($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -95,7 +95,11 @@ describe("Edge subquery", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                }
             }"
         `);
     });

@@ -70,18 +70,23 @@ describe("Cypher Auth Projection", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WITH this
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $update_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"update_param0\\": \\"super_admin\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"super_admin\\"
+                },
                 \\"this_update_id\\": \\"new-id\\",
-                \\"thisauth_param0\\": \\"super_admin\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -104,20 +109,29 @@ describe("Cypher Auth Projection", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "UNWIND $create_param2 AS create_var1
             CALL {
-                WITH create_var0
-                CREATE (create_this1:\`User\`)
+                WITH create_var1
+                CREATE (create_this0:\`User\`)
                 SET
-                    create_this1.id = create_var0.id
-                RETURN create_this1
+                    create_this0.id = create_var1.id
+                RETURN create_this0
             }
-            RETURN collect(create_this1 { .id }) AS data"
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this0.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            RETURN collect(create_this0 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": [
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"create_param2\\": [
                     {
                         \\"id\\": \\"id-1\\"
                     },

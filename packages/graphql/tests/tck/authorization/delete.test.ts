@@ -80,10 +80,11 @@ describe("Edge subquery", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE (this.title = $param0.sub AND apoc.util.validatePredicate(NOT (this.title = $param0.sub), "@neo4j/graphql/FORBIDDEN", [0]))
+            WITH *
+            WHERE (($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE (this_actors0.name = $param0.sub AND apoc.util.validatePredicate(NOT (this_actors0.name = $param0.sub), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE (($isAuthenticated = true AND this_actors0.name = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this_actors0.name = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             WITH this, collect(DISTINCT this_actors0) AS this_actors0_to_delete
             CALL {
             	WITH this_actors0_to_delete
@@ -94,7 +95,15 @@ describe("Edge subquery", () => {
             DETACH DELETE this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"user\\"
+                }
+            }"
+        `);
     });
 
     // test("Projecting node and relationship properties with where argument", async () => {

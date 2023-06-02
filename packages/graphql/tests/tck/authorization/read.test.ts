@@ -76,11 +76,19 @@ describe("Edge subquery", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE (this.title = $param0.sub AND apoc.util.validatePredicate(NOT (this.title = $param0.sub), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH *
+            WHERE (($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             RETURN this { .title } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                }
+            }"
+        `);
     });
 
     test("Projecting node and relationship properties with where argument", async () => {
@@ -107,11 +115,12 @@ describe("Edge subquery", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WITH *
+            WHERE (this.title = $param0 AND (($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])))
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
-                WHERE this1.name = $param1
+                WHERE (this1.name = $param3 AND (($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])))
                 WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -123,7 +132,11 @@ describe("Edge subquery", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"param1\\": \\"Tom Hanks\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
+                \\"param3\\": \\"Tom Hanks\\"
             }"
         `);
     });
@@ -152,10 +165,12 @@ describe("Edge subquery", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WITH *
+            WHERE (this.title = $param0 AND (($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])))
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE (($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 WITH this0, this1
                 ORDER BY this0.screenTime DESC
                 WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
@@ -176,7 +191,11 @@ describe("Edge subquery", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                }
             }"
         `);
     });
@@ -204,9 +223,12 @@ describe("Edge subquery", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
+            WHERE (($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE (($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 WITH this0, this1
                 ORDER BY this0.year DESC, this1.name ASC
                 WITH { year: this0.year, node: { name: this1.name } } AS edge
@@ -225,7 +247,14 @@ describe("Edge subquery", () => {
             RETURN this { actorsConnection: var3 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                }
+            }"
+        `);
     });
     test("Projecting node and relationship properties with sort argument ordered node first", async () => {
         const query = gql`
@@ -250,9 +279,12 @@ describe("Edge subquery", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
+            WITH *
+            WHERE (($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE (($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 WITH this0, this1
                 ORDER BY this1.name ASC, this0.year DESC
                 WITH { year: this0.year, node: { name: this1.name } } AS edge
@@ -271,7 +303,14 @@ describe("Edge subquery", () => {
             RETURN this { actorsConnection: var3 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                }
+            }"
+        `);
     });
 
     test("Projecting twice nested node and relationship properties with no arguments", async () => {
@@ -306,13 +345,16 @@ describe("Edge subquery", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WITH *
+            WHERE (this.title = $param0 AND (($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])))
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE (($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 CALL {
                     WITH this1
                     MATCH (this1:\`Actor\`)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    WHERE (($isAuthenticated = true AND this3.title = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this3.title = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     WITH { screenTime: this2.screenTime, node: { title: this3.title } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
@@ -328,7 +370,11 @@ describe("Edge subquery", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                }
             }"
         `);
     });
@@ -373,16 +419,20 @@ describe("Edge subquery", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
+            WITH *
+            WHERE (this.title = $param0 AND (($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.title = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])))
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                WHERE (($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this1.name = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 CALL {
                     WITH this1
                     MATCH (this1:\`Actor\`)-[this2:ACTED_IN]->(this3:\`Movie\`)
+                    WHERE (($isAuthenticated = true AND this3.title = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this3.title = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     CALL {
                         WITH this3
                         MATCH (this3:\`Movie\`)<-[this4:ACTED_IN]-(this5:\`Actor\`)
+                        WHERE (($isAuthenticated = true AND this5.name = coalesce($jwt.sub, \\"\\")) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this5.name = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                         WITH { screenTime: this4.screenTime, node: { name: this5.name } } AS edge
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
@@ -403,7 +453,11 @@ describe("Edge subquery", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                }
             }"
         `);
     });

@@ -84,7 +84,7 @@ describe("Edge subquery", () => {
                 SET
                     create_this1.title = create_var0.title
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT (create_this1.title = $create_param1.sub), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this1.title = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .title }) AS data"
@@ -97,6 +97,10 @@ describe("Edge subquery", () => {
                         \\"title\\": \\"BANANA\\"
                     }
                 ],
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
                 \\"resolvedCallbacks\\": {}
             }"
         `);
