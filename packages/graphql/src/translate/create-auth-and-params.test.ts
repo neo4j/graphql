@@ -53,6 +53,10 @@ describe("createAuthAndParams", () => {
                     onRead: true,
                     onAggregate: false,
                 },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
+                },
                 otherDirectives: [],
                 arguments: [],
             };
@@ -124,6 +128,10 @@ describe("createAuthAndParams", () => {
                 selectableOptions: {
                     onRead: true,
                     onAggregate: false,
+                },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -202,6 +210,10 @@ describe("createAuthAndParams", () => {
                     onRead: true,
                     onAggregate: false,
                 },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
+                },
                 otherDirectives: [],
                 arguments: [],
             };
@@ -271,6 +283,10 @@ describe("createAuthAndParams", () => {
                 selectableOptions: {
                     onRead: true,
                     onAggregate: false,
+                },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -343,6 +359,10 @@ describe("createAuthAndParams", () => {
                     onRead: true,
                     onAggregate: false,
                 },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
+                },
                 otherDirectives: [],
                 arguments: [],
             };
@@ -413,6 +433,10 @@ describe("createAuthAndParams", () => {
                     onRead: true,
                     onAggregate: false,
                 },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
+                },
                 otherDirectives: [],
                 arguments: [],
             };
@@ -481,6 +505,10 @@ describe("createAuthAndParams", () => {
                 selectableOptions: {
                     onRead: true,
                     onAggregate: false,
+                },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -563,6 +591,10 @@ describe("createAuthAndParams", () => {
                     onRead: true,
                     onAggregate: false,
                 },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
+                },
                 otherDirectives: [],
                 arguments: [],
             };
@@ -597,6 +629,10 @@ describe("createAuthAndParams", () => {
                         selectableOptions: {
                             onRead: true,
                             onAggregate: false,
+                        },
+                        settableOptions: {
+                            onCreate: true,
+                            onUpdate: true,
                         },
                         otherDirectives: [],
                         arguments: [],
@@ -671,6 +707,10 @@ describe("createAuthAndParams", () => {
                     onRead: true,
                     onAggregate: false,
                 },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
+                },
                 otherDirectives: [],
                 arguments: [],
             };
@@ -705,6 +745,10 @@ describe("createAuthAndParams", () => {
                         selectableOptions: {
                             onRead: true,
                             onAggregate: false,
+                        },
+                        settableOptions: {
+                            onCreate: true,
+                            onUpdate: true,
                         },
                         otherDirectives: [],
                         arguments: [],
@@ -780,6 +824,10 @@ describe("createAuthAndParams", () => {
                     onRead: true,
                     onAggregate: false,
                 },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
+                },
                 otherDirectives: [],
                 arguments: [],
             };
@@ -842,6 +890,10 @@ describe("createAuthAndParams", () => {
                     onRead: true,
                     onAggregate: false,
                 },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
+                },
                 otherDirectives: [],
                 arguments: [],
             };
@@ -903,6 +955,10 @@ describe("createAuthAndParams", () => {
                 selectableOptions: {
                     onRead: true,
                     onAggregate: false,
+                },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -968,6 +1024,10 @@ describe("createAuthAndParams", () => {
                 selectableOptions: {
                     onRead: true,
                     onAggregate: false,
+                },
+                settableOptions: {
+                    onCreate: true,
+                    onUpdate: true,
                 },
                 otherDirectives: [],
                 arguments: [],

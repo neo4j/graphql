@@ -223,15 +223,17 @@ function createRelationshipFields({
             where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere`,
         });
 
-        // Interface CreateInput does not require relationship input fields
-        // These are specified on the concrete nodes.
-        if (!(composeNode instanceof InterfaceTypeComposer)) {
-            nodeCreateInput.addFields({
-                [rel.fieldName]: {
-                    type: nodeFieldInputName,
-                    directives: deprecatedDirectives,
-                },
-            });
+        if (rel.settableOptions.onCreate) {
+            // Interface CreateInput does not require relationship input fields
+            // These are specified on the concrete nodes.
+            if (!(composeNode instanceof InterfaceTypeComposer)) {
+                nodeCreateInput.addFields({
+                    [rel.fieldName]: {
+                        type: nodeFieldInputName,
+                        directives: deprecatedDirectives,
+                    },
+                });
+            }
         }
 
         if (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE)) {
@@ -325,8 +327,7 @@ function createRelationshipFields({
                 },
             });
         }
-
-        if (nestedOperations.has(RelationshipNestedOperationsOption.UPDATE)) {
+        if (nestedOperations.has(RelationshipNestedOperationsOption.UPDATE) && rel.settableOptions.onUpdate) {
             const connectionUpdateInputName = `${rel.connectionPrefix}${upperFieldName}UpdateConnectionInput`;
 
             nodeUpdateInput.addFields({
