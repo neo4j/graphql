@@ -22,11 +22,12 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import type { Neo4jGraphQL } from "../classes";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
+import type { BaseField } from "../types";
 
 describe("createAuthAndParams", () => {
     describe("operations", () => {
         test("should cover all rules when using operations *", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -47,6 +48,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -94,7 +99,7 @@ describe("createAuthAndParams", () => {
         });
 
         test("should combine roles with where across rules", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -115,6 +120,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -167,7 +176,7 @@ describe("createAuthAndParams", () => {
 
     describe("rules", () => {
         test("should showcase the default OR behavior of stacked rules", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -188,6 +197,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -233,7 +246,7 @@ describe("createAuthAndParams", () => {
         });
 
         test("should showcase the default AND default behavior of the keys in the rule", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -254,6 +267,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -300,7 +317,7 @@ describe("createAuthAndParams", () => {
 
     describe("top-level keys", () => {
         test("AND", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -321,6 +338,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -366,7 +387,7 @@ describe("createAuthAndParams", () => {
         });
 
         test("OR", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -387,6 +408,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -431,7 +456,7 @@ describe("createAuthAndParams", () => {
         });
 
         test("all keys used together", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -452,6 +477,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -508,7 +537,7 @@ describe("createAuthAndParams", () => {
 
     describe("allow", () => {
         test("AND", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -529,6 +558,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -560,6 +593,10 @@ describe("createAuthAndParams", () => {
                                     pretty: "String",
                                 },
                             },
+                        },
+                        selectableOptions: {
+                            onRead: true,
+                            onAggregate: false,
                         },
                         otherDirectives: [],
                         arguments: [],
@@ -608,7 +645,7 @@ describe("createAuthAndParams", () => {
         });
 
         test("OR", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -629,6 +666,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -660,6 +701,10 @@ describe("createAuthAndParams", () => {
                                     pretty: "String",
                                 },
                             },
+                        },
+                        selectableOptions: {
+                            onRead: true,
+                            onAggregate: false,
                         },
                         otherDirectives: [],
                         arguments: [],
@@ -709,7 +754,7 @@ describe("createAuthAndParams", () => {
 
     describe("params", () => {
         test("should throw if $jwt value is undefined", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -730,6 +775,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -767,7 +816,7 @@ describe("createAuthAndParams", () => {
         });
 
         test("should throw if $context value is undefined", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -788,6 +837,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -825,7 +878,7 @@ describe("createAuthAndParams", () => {
         });
 
         test("should showcase the allowUnauthenticated behavior with undefined $jwt", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -846,6 +899,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],
@@ -886,7 +943,7 @@ describe("createAuthAndParams", () => {
         });
 
         test("should showcase the allowUnauthenticated behavior with undefined $context", () => {
-            const idField = {
+            const idField: BaseField = {
                 fieldName: "id",
                 typeMeta: {
                     name: "ID",
@@ -907,6 +964,10 @@ describe("createAuthAndParams", () => {
                             pretty: "String",
                         },
                     },
+                },
+                selectableOptions: {
+                    onRead: true,
+                    onAggregate: false,
                 },
                 otherDirectives: [],
                 arguments: [],

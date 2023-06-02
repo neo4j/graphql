@@ -186,9 +186,11 @@ function createRelationshipFields({
                 relationshipField.args = nodeFieldsArgs;
             }
 
-            composeNode.addFields({
-                [rel.fieldName]: relationshipField,
-            });
+            if (rel.selectableOptions.onRead) {
+                composeNode.addFields({
+                    [rel.fieldName]: relationshipField,
+                });
+            }
 
             if (composeNode instanceof ObjectTypeComposer) {
                 const baseTypeName = `${sourceName}${node.name}${upperFieldName}`;
