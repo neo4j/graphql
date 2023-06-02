@@ -21,7 +21,7 @@ import { DirectiveLocation, GraphQLBoolean, GraphQLDirective, GraphQLNonNull } f
 
 export const settableDirective = new GraphQLDirective({
     name: "settable",
-    description: "Instructs @neo4j/graphql to generate this field for mutations input.",
+    description: "Instructs @neo4j/graphql to generate this field for mutation inputs.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
         onCreate: {
