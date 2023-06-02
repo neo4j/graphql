@@ -59,6 +59,7 @@ function createNodePredicate({
             context: context,
             operations: ["CREATE"],
             fieldName,
+            conditionForEvaluation,
         });
     if (authenticationPredicate) {
         authPredicates.push(authenticationPredicate);
