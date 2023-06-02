@@ -107,6 +107,7 @@ export const TopBar = () => {
                     onClick={() => setOpenConnectionMenu(!openConnectionMenu)}
                     onKeyDown={() => setOpenConnectionMenu(!openConnectionMenu)}
                     ref={menuButtonRef}
+                    data-test-topbar-connection-information
                     className="flex items-center n-text-dark-neutral-text-weaker cursor-pointer"
                     role="button"
                     tabIndex={0}
@@ -115,7 +116,10 @@ export const TopBar = () => {
                     <div className="items-center hidden lg:flex">
                         <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
                         <span className="mx-2">/</span>
-                        <span className="max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden">
+                        <span
+                            data-test-topbar-selected-database
+                            className="max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden"
+                        >
                             {auth.selectedDatabaseName}
                         </span>
                     </div>

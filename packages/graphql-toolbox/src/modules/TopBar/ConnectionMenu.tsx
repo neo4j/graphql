@@ -77,12 +77,13 @@ export const ConnectionMenu = ({
             <MenuItems rev={undefined}>
                 {auth.databases?.length ? (
                     <>
-                        <Menu.Subheader title="Databases" data-test-topbar-database-selection />
+                        <Menu.Subheader title="Databases" />
                         {auth.databases.map((db) => {
                             return (
                                 <MenuItem
                                     rev={undefined}
                                     key={db.name}
+                                    data-test-topbar-database={db.name}
                                     title={db.name.length > 50 ? `${db.name.substring(0, 48)}...` : db.name}
                                     disabled={screen.view !== Screen.TYPEDEFS}
                                     icon={db.name === auth.selectedDatabaseName ? <CheckIconOutline /> : <span />}
@@ -97,6 +98,7 @@ export const ConnectionMenu = ({
                         <Menu.Divider />
                         <MenuItem
                             rev={undefined}
+                            data-test-topbar-disconnect
                             className="n-text-danger-50"
                             title="Disconnect"
                             description={<span className="n-text-neutral-80">{dbmsUrlWithUsername}</span>}
