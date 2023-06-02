@@ -29,7 +29,7 @@ import {
 
 import { tracking } from "../../analytics/tracking";
 // @ts-ignore - SVG Import
-import Neo4jLogoIcon from "../../assets/neo4j-logo-color.svg";
+import Neo4jLogoIcon from "../../assets/neo4j-logo-white.svg";
 import { cannySettings } from "../../common/canny";
 import { CustomSelect } from "../../components/CustomSelect";
 import { DEFAULT_BOLT_URL } from "../../constants";
@@ -85,18 +85,18 @@ export const TopBar = () => {
     };
 
     return (
-        <div className="flex w-full h-16 bg-white border-b border-gray-100">
+        <div className="flex w-full h-16 n-bg-neutral-90 border-b border-gray-100">
             <div className="flex-1 flex justify-start">
                 <div className="flex items-center">
                     <img src={Neo4jLogoIcon} alt="Neo4j logo Icon" className="ml-8 w-24" />
-                    <p className="ml-6 text-base whitespace-nowrap">GraphQL Toolbox</p>
+                    <p className="ml-6 n-text-neutral-50 text-base whitespace-nowrap">GraphQL Toolbox</p>
                     <Label className="ml-3" color="info" fill="outlined">
                         Beta
                     </Label>
                 </div>
             </div>
             <div className="flex-1 flex justify-center">
-                <div className="flex items-center">
+                <div className="flex items-center n-text-neutral-40">
                     <p className="mr-2">{auth?.isConnected ? greenDot : redDot} </p>
                     <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
                     {auth.databases?.length ? (
