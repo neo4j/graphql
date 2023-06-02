@@ -19,13 +19,8 @@
 
 import { useContext, useEffect, useRef, useState } from "react";
 
-import { Button, IconButton, Menu, MenuItem, MenuItems } from "@neo4j-ndl/react";
-import {
-    CheckIconOutline,
-    ChevronDownIconOutline,
-    Cog8ToothIconOutline,
-    QuestionMarkCircleIconOutline,
-} from "@neo4j-ndl/react/icons";
+import { Button, IconButton } from "@neo4j-ndl/react";
+import { ChevronDownIconOutline, Cog8ToothIconOutline, QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
 
 import { tracking } from "../../analytics/tracking";
 // @ts-ignore - SVG Import
@@ -33,8 +28,9 @@ import Neo4jLogoIcon from "../../assets/neo4j-logo-white.svg";
 import { cannySettings } from "../../common/canny";
 import { DEFAULT_BOLT_URL } from "../../constants";
 import { AuthContext } from "../../contexts/auth";
-import { Screen, ScreenContext } from "../../contexts/screen";
+import { ScreenContext } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
+import { ConnectionMenu } from "./ConnectionMenu";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
@@ -80,11 +76,6 @@ export const TopBar = () => {
         settings.setIsShowSettingsDrawer(!settings.isShowSettingsDrawer);
     };
 
-    const handleSetSelectedDatabaseName = (databaseName: string) => {
-        auth.setSelectedDatabaseName(databaseName);
-        tracking.trackChangeDatabase({ screen: "type definitions" });
-    };
-
     const handleSendFeedbackClick = () => {
         window.open("https://feedback.neo4j.com/graphql", "SendFeedback");
         tracking.trackHelpLearnFeatureLinks({ screen: screen.view, actionLabel: "Send Feedback" });
@@ -99,49 +90,6 @@ export const TopBar = () => {
         if (!protocol || !host) return DEFAULT_BOLT_URL;
 
         return `${protocol}://${modifiedUsername}@${host}`;
-    };
-
-    const ConnectionMenu = () => {
-        return (
-            <Menu
-                rev={undefined}
-                id="connection-menu"
-                open={openConnectionMenu}
-                anchorEl={menuButtonRef.current}
-                className="mt-2"
-                onClick={() => setOpenConnectionMenu(false)}
-            >
-                <MenuItems rev={undefined}>
-                    {auth.databases?.length ? (
-                        <>
-                            <Menu.Subheader title="Databases" data-test-topbar-database-selection />
-                            {auth.databases.map((db) => {
-                                return (
-                                    <MenuItem
-                                        rev={undefined}
-                                        key={db.name}
-                                        title={db.name.length > 50 ? `${db.name.substring(0, 48)}...` : db.name}
-                                        disabled={screen.view !== Screen.TYPEDEFS}
-                                        icon={db.name === auth.selectedDatabaseName ? <CheckIconOutline /> : <span />}
-                                        onClick={() => handleSetSelectedDatabaseName(db.name)}
-                                    />
-                                );
-                            })}
-                        </>
-                    ) : null}
-                    <Menu.Divider />
-                    {!auth.isNeo4jDesktop ? (
-                        <MenuItem
-                            rev={undefined}
-                            className="n-text-danger-50"
-                            title="Disconnect"
-                            description={<span className="n-text-neutral-50">{constructDbmsUrlWithUsername()}</span>}
-                            onClick={() => auth?.logout()}
-                        />
-                    ) : null}
-                </MenuItems>
-            </Menu>
-        );
     };
 
     return (
@@ -169,7 +117,12 @@ export const TopBar = () => {
                     </span>
                     <ChevronDownIconOutline className="ml-2 w-4 h-4" />
                 </div>
-                <ConnectionMenu />
+                <ConnectionMenu
+                    menuButtonRef={menuButtonRef}
+                    openConnectionMenu={openConnectionMenu}
+                    setOpenConnectionMenu={setOpenConnectionMenu}
+                    dbmsUrlWithUsername={constructDbmsUrlWithUsername()}
+                />
             </div>
             <div className="flex-1 flex justify-end">
                 <div className="flex items-center text-sm">
@@ -215,3 +168,5 @@ export const TopBar = () => {
 };
 
 // TODO: remove that 30 seconds check if there have been new databases? Instead check it on load of the connection menu?
+// TODO: tablet width, check alignment
+// TODO: tooltip with connection info
