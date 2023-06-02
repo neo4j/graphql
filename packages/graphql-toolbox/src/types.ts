@@ -42,6 +42,11 @@ export interface Neo4jDatabase {
     role: string;
 }
 
+export interface Neo4jDatabaseInfo {
+    version: string;
+    edition: string;
+}
+
 export enum ConstraintState {
     check,
     create,

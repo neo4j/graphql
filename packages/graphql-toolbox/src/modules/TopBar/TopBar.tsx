@@ -19,7 +19,7 @@
 
 import { useContext, useEffect, useRef, useState } from "react";
 
-import { Button, IconButton } from "@neo4j-ndl/react";
+import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
 import {
     ChatBubbleOvalLeftEllipsisIconOutline,
     ChevronDownIconOutline,
@@ -81,6 +81,19 @@ export const TopBar = () => {
         return `${protocol}://${modifiedUsername}@${host}`;
     };
 
+    const ConnectionTooltip = () => {
+        return (
+            <SmartTooltip ref={menuButtonRef} allowedPlacements={["bottom"]} rev={undefined}>
+                <>
+                    <p>Username: {auth.username}</p>
+                    <p>Connection Url: {auth.connectUrl}</p>
+                    <p>Neo4j Database Version: {auth.databaseInformation?.version}</p>
+                    <p>Neo4j Database Edition: {auth.databaseInformation?.edition}</p>
+                </>
+            </SmartTooltip>
+        );
+    };
+
     return (
         <div className="flex w-full h-16 n-bg-neutral-90 border-b border-gray-100">
             <div className="flex-1 flex justify-start">
@@ -89,7 +102,7 @@ export const TopBar = () => {
                     <p className="ml-6 n-text-neutral-50 text-base whitespace-nowrap">GraphQL Toolbox</p>
                 </div>
             </div>
-            <div className="flex-1 flex justify-center">
+            <div className="flex-1 flex justify-center items-center">
                 <div
                     onClick={() => setOpenConnectionMenu(!openConnectionMenu)}
                     onKeyDown={() => setOpenConnectionMenu(!openConnectionMenu)}
@@ -109,6 +122,7 @@ export const TopBar = () => {
                     <div className="block lg:hidden">Connection</div>
                     <ChevronDownIconOutline className="ml-2 w-4 h-4" />
                 </div>
+                <ConnectionTooltip />
                 <ConnectionMenu
                     menuButtonRef={menuButtonRef}
                     openConnectionMenu={openConnectionMenu}

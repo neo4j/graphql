@@ -77,7 +77,7 @@ export const ConnectionMenu = ({
                         rev={undefined}
                         className="n-text-danger-50"
                         title="Disconnect"
-                        description={<span className="n-text-neutral-50">{dbmsUrlWithUsername}</span>}
+                        description={<span className="n-text-neutral-80">{dbmsUrlWithUsername}</span>}
                         onClick={() => auth?.logout()}
                     />
                 ) : null}
