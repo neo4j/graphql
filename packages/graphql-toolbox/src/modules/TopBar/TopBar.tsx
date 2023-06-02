@@ -19,12 +19,11 @@
 
 import { useContext, useEffect } from "react";
 
-import { Button, IconButton, Label } from "@neo4j-ndl/react";
+import { Button, IconButton } from "@neo4j-ndl/react";
 import {
     ArrowRightOnRectangleIconOutline,
     Cog8ToothIconOutline,
     QuestionMarkCircleIconOutline,
-    SparklesIconOutline,
 } from "@neo4j-ndl/react/icons";
 
 import { tracking } from "../../analytics/tracking";
@@ -90,13 +89,10 @@ export const TopBar = () => {
                 <div className="flex items-center">
                     <img src={Neo4jLogoIcon} alt="Neo4j logo Icon" className="ml-8 w-24" />
                     <p className="ml-6 n-text-neutral-50 text-base whitespace-nowrap">GraphQL Toolbox</p>
-                    <Label className="ml-3" color="info" fill="outlined">
-                        Beta
-                    </Label>
                 </div>
             </div>
             <div className="flex-1 flex justify-center">
-                <div className="flex items-center n-text-neutral-40">
+                <div className="flex items-center n-text-dark-neutral-text-weaker">
                     <p className="mr-2">{auth?.isConnected ? greenDot : redDot} </p>
                     <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
                     {auth.databases?.length ? (
@@ -124,19 +120,18 @@ export const TopBar = () => {
                 <div className="flex items-center text-sm">
                     <Button
                         data-test-send-feedback-topbar
-                        className="w-44 mr-4"
+                        className="ndl-theme-dark"
                         color="primary"
                         fill="outlined"
                         onClick={handleSendFeedbackClick}
                     >
-                        <SparklesIconOutline />
-                        <span className="whitespace-nowrap">Send feedback</span>
+                        Send feedback
                     </Button>
                     {!auth.isNeo4jDesktop ? (
-                        <div className="mr-4 pr-4 border-r border-gray-700">
+                        <div className="mr-4 ml-2">
                             <Button
                                 data-test-topbar-disconnect-button
-                                className="w-36"
+                                className="w-36 ndl-theme-dark"
                                 color="primary"
                                 fill="text"
                                 onClick={() => auth?.logout()}
@@ -153,6 +148,7 @@ export const TopBar = () => {
                         </div>
                         <IconButton
                             data-test-topbar-help-button
+                            className="ndl-theme-dark"
                             aria-label="Help and learn drawer"
                             onClick={handleHelpClick}
                             size="large"
@@ -163,6 +159,7 @@ export const TopBar = () => {
                         <IconButton
                             clean
                             data-test-topbar-settings-button
+                            className="ndl-theme-dark"
                             aria-label="Application settings"
                             onClick={handleSettingsClick}
                             size="large"
