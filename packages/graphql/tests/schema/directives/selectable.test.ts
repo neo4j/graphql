@@ -190,7 +190,7 @@ describe("@selectable", () => {
 
     test("Disable aggregation fields", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @query(aggregate: true) {
                 title: String!
                 description: String @selectable(onRead: true, onAggregate: false)
             }
@@ -343,7 +343,7 @@ describe("@selectable", () => {
 
     test("Disable read and aggregate fields", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @query(aggregate: true) {
                 title: String!
                 description: String @selectable(onRead: false, onAggregate: false)
             }
@@ -495,7 +495,7 @@ describe("@selectable", () => {
 
     test("Disable read fields on subscriptions", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @query(aggregate: true) {
                 title: String!
                 description: String @selectable(onRead: false, onAggregate: true)
             }
