@@ -257,7 +257,7 @@ function createRelationshipFields({
             }
         }
 
-        if (nestedOperations.has(RelationshipNestedOperationsOption.CREATE) && rel.settableOptions.onCreate) {
+        if (nestedOperations.has(RelationshipNestedOperationsOption.CREATE)) {
             const createName = `${rel.connectionPrefix}${upperFieldName}CreateFieldInput`;
             const create = rel.typeMeta.array ? `[${createName}!]` : createName;
             schemaComposer.getOrCreateITC(createName, (tc) => {
@@ -328,7 +328,7 @@ function createRelationshipFields({
             });
         }
 
-        if (nestedOperations.has(RelationshipNestedOperationsOption.UPDATE) && rel.settableOptions.onUpdate) {
+        if (nestedOperations.has(RelationshipNestedOperationsOption.UPDATE)) {
             const connectionUpdateInputName = `${rel.connectionPrefix}${upperFieldName}UpdateConnectionInput`;
 
             nodeUpdateInput.addFields({

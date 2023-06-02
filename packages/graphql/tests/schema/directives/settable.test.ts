@@ -636,6 +636,10 @@ describe("@settable", () => {
                   node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
+                input ActorActedInCreateFieldInput {
+                  node: MovieCreateInput!
+                }
+
                 input ActorActedInDeleteFieldInput {
                   where: ActorActedInConnectionWhere
                 }
@@ -731,6 +735,7 @@ describe("@settable", () => {
 
                 input ActorActedInUpdateFieldInput {
                   connect: [ActorActedInConnectFieldInput!]
+                  create: [ActorActedInCreateFieldInput!]
                   delete: [ActorActedInDeleteFieldInput!]
                   disconnect: [ActorActedInDisconnectFieldInput!]
                   update: ActorActedInUpdateConnectionInput
@@ -780,6 +785,10 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                input ActorRelationInput {
+                  actedIn: [ActorActedInCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -951,7 +960,7 @@ describe("@settable", () => {
                   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                   deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
                   deleteMovies(where: MovieWhere): DeleteInfo!
-                  updateActors(connect: ActorConnectInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+                  updateActors(connect: ActorConnectInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
                   updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                 }
 
@@ -1174,6 +1183,19 @@ describe("@settable", () => {
                   node: Movie!
                 }
 
+                input ActorActedInUpdateConnectionInput {
+                  node: MovieUpdateInput
+                }
+
+                input ActorActedInUpdateFieldInput {
+                  connect: [ActorActedInConnectFieldInput!]
+                  create: [ActorActedInCreateFieldInput!]
+                  delete: [ActorActedInDeleteFieldInput!]
+                  disconnect: [ActorActedInDisconnectFieldInput!]
+                  update: ActorActedInUpdateConnectionInput
+                  where: ActorActedInConnectionWhere
+                }
+
                 type ActorAggregateSelection {
                   count: Int!
                   name: StringAggregateSelectionNonNullable!
@@ -1232,6 +1254,7 @@ describe("@settable", () => {
                 }
 
                 input ActorUpdateInput {
+                  actedIn: [ActorActedInUpdateFieldInput!]
                   name: String
                 }
 
