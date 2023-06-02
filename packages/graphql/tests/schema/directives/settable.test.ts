@@ -32,7 +32,7 @@ describe("@settable", () => {
 
     test("Disable create fields", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @query(aggregate: true) {
                 title: String!
                 description: String @settable(onCreate: false, onUpdate: true)
             }
@@ -190,7 +190,7 @@ describe("@settable", () => {
 
     test("Disable update fields", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @query(aggregate: true) {
                 title: String!
                 description: String @settable(onCreate: true, onUpdate: false)
             }
@@ -348,7 +348,7 @@ describe("@settable", () => {
 
     test("Disable create and update fields", async () => {
         const typeDefs = gql`
-            type Movie {
+            type Movie @query(aggregate: true) {
                 title: String!
                 description: String @settable(onCreate: false, onUpdate: false)
             }
@@ -571,12 +571,12 @@ describe("@settable", () => {
     describe("Relationships", () => {
         test("Prevent relationship field creation", async () => {
             const typeDefs = gql`
-                type Movie {
+                type Movie @query(aggregate: true) {
                     title: String!
                     description: String
                 }
 
-                type Actor {
+                type Actor @query(aggregate: true) {
                     name: String!
                     actedIn: [Movie!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
@@ -1011,12 +1011,12 @@ describe("@settable", () => {
 
         test("Prevent relationship field update", async () => {
             const typeDefs = gql`
-                type Movie {
+                type Movie @query(aggregate: true) {
                     title: String!
                     description: String
                 }
 
-                type Actor {
+                type Actor @query(aggregate: true) {
                     name: String!
                     actedIn: [Movie!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
