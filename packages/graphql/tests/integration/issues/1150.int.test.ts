@@ -21,7 +21,6 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";

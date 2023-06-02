@@ -20,7 +20,7 @@
 import createUpdateAndParams from "./create-update-and-params";
 import type { Neo4jGraphQL } from "../classes";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import type { BaseField, Context } from "../types";
+import type { BaseField } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";

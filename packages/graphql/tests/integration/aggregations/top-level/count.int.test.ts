@@ -20,11 +20,9 @@
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import { gql } from "graphql-tag";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("Aggregate -> count", () => {
     let driver: Driver;
