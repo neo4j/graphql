@@ -67,6 +67,10 @@ describe("createProjectionAndParams", () => {
                             update: { type: "String", pretty: "String" },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
                     otherDirectives: [],
                     arguments: [],
                 },
@@ -133,6 +137,10 @@ describe("createProjectionAndParams", () => {
                             create: { type: "String", pretty: "String" },
                             update: { type: "String", pretty: "String" },
                         },
+                    },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
                     },
                     otherDirectives: [],
                     arguments: [],

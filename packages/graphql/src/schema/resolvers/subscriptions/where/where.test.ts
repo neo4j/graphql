@@ -65,6 +65,10 @@ describe("subscriptionWhere", () => {
                             },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
                     otherDirectives: [],
                     arguments: [],
                 },
@@ -116,6 +120,10 @@ describe("subscriptionWhere", () => {
                                 pretty: "String",
                             },
                         },
+                    },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
                     },
                     otherDirectives: [],
                     arguments: [],
