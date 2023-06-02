@@ -56,6 +56,22 @@ export const TopBar = () => {
         };
     }, []);
 
+    useEffect(() => {
+        function handleClickOutsideComponent(event) {
+            if (
+                !menuButtonRef?.current?.contains(event.target) &&
+                !document.getElementById("connection-menu")?.contains(event.target)
+            ) {
+                setOpenConnectionMenu(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutsideComponent);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutsideComponent);
+        };
+    }, [menuButtonRef]);
+
     const handleHelpClick = () => {
         settings.setIsShowHelpDrawer(!settings.isShowHelpDrawer);
     };
