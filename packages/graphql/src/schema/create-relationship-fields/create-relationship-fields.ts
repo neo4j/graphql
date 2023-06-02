@@ -327,8 +327,7 @@ function createRelationshipFields({
                 },
             });
         }
-
-        if (nestedOperations.has(RelationshipNestedOperationsOption.UPDATE)) {
+        if (nestedOperations.has(RelationshipNestedOperationsOption.UPDATE) && rel.settableOptions.onUpdate) {
             const connectionUpdateInputName = `${rel.connectionPrefix}${upperFieldName}UpdateConnectionInput`;
 
             nodeUpdateInput.addFields({

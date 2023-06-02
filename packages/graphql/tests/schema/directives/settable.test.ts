@@ -1183,19 +1183,6 @@ describe("@settable", () => {
                   node: Movie!
                 }
 
-                input ActorActedInUpdateConnectionInput {
-                  node: MovieUpdateInput
-                }
-
-                input ActorActedInUpdateFieldInput {
-                  connect: [ActorActedInConnectFieldInput!]
-                  create: [ActorActedInCreateFieldInput!]
-                  delete: [ActorActedInDeleteFieldInput!]
-                  disconnect: [ActorActedInDisconnectFieldInput!]
-                  update: ActorActedInUpdateConnectionInput
-                  where: ActorActedInConnectionWhere
-                }
-
                 type ActorAggregateSelection {
                   count: Int!
                   name: StringAggregateSelectionNonNullable!
@@ -1254,7 +1241,6 @@ describe("@settable", () => {
                 }
 
                 input ActorUpdateInput {
-                  actedIn: [ActorActedInUpdateFieldInput!]
                   name: String
                 }
 
