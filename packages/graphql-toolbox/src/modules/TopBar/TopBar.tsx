@@ -20,7 +20,12 @@
 import { useContext, useEffect, useRef, useState } from "react";
 
 import { Button, IconButton, Menu, MenuItem, MenuItems } from "@neo4j-ndl/react";
-import { Cog8ToothIconOutline, QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
+import {
+    CheckIconOutline,
+    ChevronDownIconOutline,
+    Cog8ToothIconOutline,
+    QuestionMarkCircleIconOutline,
+} from "@neo4j-ndl/react/icons";
 
 import { tracking } from "../../analytics/tracking";
 // @ts-ignore - SVG Import
@@ -28,7 +33,7 @@ import Neo4jLogoIcon from "../../assets/neo4j-logo-white.svg";
 import { cannySettings } from "../../common/canny";
 import { DEFAULT_BOLT_URL } from "../../constants";
 import { AuthContext } from "../../contexts/auth";
-import { ScreenContext } from "../../contexts/screen";
+import { Screen, ScreenContext } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
 
 export const TopBar = () => {
@@ -83,50 +88,39 @@ export const TopBar = () => {
     const ConnectionMenu = () => {
         return (
             <Menu
-                id="connection-menu"
                 rev={undefined}
+                id="connection-menu"
                 open={openConnectionMenu}
                 anchorEl={menuButtonRef.current}
                 className="mt-2"
-                onClick={() => setOpenConnectionMenu(!openConnectionMenu)}
+                onClick={() => setOpenConnectionMenu(false)}
             >
                 <MenuItems rev={undefined}>
                     {auth.databases?.length ? (
-                        // TODO: disabled={screen.view !== Screen.TYPEDEFS}
-                        // TODO: db name text ellipse
                         <>
                             <Menu.Subheader title="Databases" data-test-topbar-database-selection />
                             {auth.databases.map((db) => {
                                 return (
                                     <MenuItem
                                         rev={undefined}
-                                        onClick={() => handleSetSelectedDatabaseName(db.name)}
                                         key={db.name}
-                                        title={db.name}
+                                        title={db.name.length > 50 ? `${db.name.substring(0, 48)}...` : db.name}
+                                        disabled={screen.view !== Screen.TYPEDEFS}
+                                        icon={db.name === auth.selectedDatabaseName ? <CheckIconOutline /> : <span />}
+                                        onClick={() => handleSetSelectedDatabaseName(db.name)}
                                     />
                                 );
                             })}
-
-                            {/* // <span className="mx-2">/</span>
-                            // <CustomSelect
-                            //     value={auth.selectedDatabaseName}
-                            //     disabled={screen.view !== Screen.TYPEDEFS}
-                            //     onChange={(event) => handleSetSelectedDatabaseName(event.target.value)}
-                            //     testTag="data-test-topbar-database-selection"
-                            // >
-                               
-                            // </CustomSelect> */}
                         </>
                     ) : null}
-
                     <Menu.Divider />
                     {!auth.isNeo4jDesktop ? (
                         <MenuItem
                             rev={undefined}
-                            description={constructDbmsUrlWithUsername()}
-                            onClick={() => () => auth?.logout()}
-                            className="text-color-danger-50"
+                            className="n-text-danger-50"
                             title="Disconnect"
+                            description={<span className="n-text-neutral-50">{constructDbmsUrlWithUsername()}</span>}
+                            onClick={() => auth?.logout()}
                         />
                     ) : null}
                 </MenuItems>
@@ -154,7 +148,10 @@ export const TopBar = () => {
                     <p className="mr-2">{auth?.isConnected ? greenDot : redDot} </p>
                     <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
                     <span className="mx-2">/</span>
-                    <span>{auth.selectedDatabaseName}</span>
+                    <span className="max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden">
+                        {auth.selectedDatabaseName}
+                    </span>
+                    <ChevronDownIconOutline className="ml-2 w-4 h-4" />
                 </div>
                 <ConnectionMenu />
             </div>
@@ -200,3 +197,5 @@ export const TopBar = () => {
         </div>
     );
 };
+
+// TODO: remove that 30 seconds check if there have been new databases? Instead check it on load of the connection menu?
