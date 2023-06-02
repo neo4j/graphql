@@ -87,8 +87,8 @@ export const TopBar = () => {
                 <>
                     <p>Username: {auth.username}</p>
                     <p>Connection Url: {auth.connectUrl}</p>
-                    <p>Neo4j Database Version: {auth.databaseInformation?.version}</p>
-                    <p>Neo4j Database Edition: {auth.databaseInformation?.edition}</p>
+                    <p>Neo4j Database Version: {auth.databaseInformation?.version || "-"}</p>
+                    <p>Neo4j Database Edition: {auth.databaseInformation?.edition || "-"}</p>
                 </>
             </SmartTooltip>
         );
@@ -182,5 +182,3 @@ export const TopBar = () => {
         </div>
     );
 };
-
-// TODO: tooltip with connection info

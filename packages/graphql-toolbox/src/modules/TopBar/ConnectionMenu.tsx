@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { useContext, useEffect } from "react";
 
 import { Menu, MenuItem, MenuItems } from "@neo4j-ndl/react";
@@ -14,6 +33,8 @@ interface Props {
     setOpenConnectionMenu: (v: boolean) => void;
 }
 
+const CONNECTION_MENU_ID = "connection-menu";
+
 export const ConnectionMenu = ({
     menuButtonRef,
     dbmsUrlWithUsername,
@@ -27,7 +48,7 @@ export const ConnectionMenu = ({
         function handleClickOutsideComponent(event) {
             if (
                 !menuButtonRef?.current?.contains(event.target) &&
-                !document.getElementById("connection-menu")?.contains(event.target)
+                !document.getElementById(CONNECTION_MENU_ID)?.contains(event.target)
             ) {
                 setOpenConnectionMenu(false);
             }
@@ -47,7 +68,7 @@ export const ConnectionMenu = ({
     return (
         <Menu
             rev={undefined}
-            id="connection-menu"
+            id={CONNECTION_MENU_ID}
             open={openConnectionMenu}
             anchorEl={menuButtonRef.current}
             className="mt-2"
@@ -71,15 +92,17 @@ export const ConnectionMenu = ({
                         })}
                     </>
                 ) : null}
-                <Menu.Divider />
                 {!auth.isNeo4jDesktop ? (
-                    <MenuItem
-                        rev={undefined}
-                        className="n-text-danger-50"
-                        title="Disconnect"
-                        description={<span className="n-text-neutral-80">{dbmsUrlWithUsername}</span>}
-                        onClick={() => auth?.logout()}
-                    />
+                    <>
+                        <Menu.Divider />
+                        <MenuItem
+                            rev={undefined}
+                            className="n-text-danger-50"
+                            title="Disconnect"
+                            description={<span className="n-text-neutral-80">{dbmsUrlWithUsername}</span>}
+                            onClick={() => auth?.logout()}
+                        />
+                    </>
                 ) : null}
             </MenuItems>
         </Menu>
