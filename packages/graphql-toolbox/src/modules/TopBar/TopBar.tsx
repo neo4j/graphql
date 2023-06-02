@@ -20,7 +20,12 @@
 import { useContext, useEffect, useRef, useState } from "react";
 
 import { Button, IconButton } from "@neo4j-ndl/react";
-import { ChevronDownIconOutline, Cog8ToothIconOutline, QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
+import {
+    ChatBubbleOvalLeftEllipsisIconOutline,
+    ChevronDownIconOutline,
+    Cog8ToothIconOutline,
+    QuestionMarkCircleIconOutline,
+} from "@neo4j-ndl/react/icons";
 
 import { tracking } from "../../analytics/tracking";
 // @ts-ignore - SVG Import
@@ -51,22 +56,6 @@ export const TopBar = () => {
             }
         };
     }, []);
-
-    useEffect(() => {
-        function handleClickOutsideComponent(event) {
-            if (
-                !menuButtonRef?.current?.contains(event.target) &&
-                !document.getElementById("connection-menu")?.contains(event.target)
-            ) {
-                setOpenConnectionMenu(false);
-            }
-        }
-
-        document.addEventListener("mousedown", handleClickOutsideComponent);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutsideComponent);
-        };
-    }, [menuButtonRef]);
 
     const handleHelpClick = () => {
         settings.setIsShowHelpDrawer(!settings.isShowHelpDrawer);
@@ -110,11 +99,14 @@ export const TopBar = () => {
                     tabIndex={0}
                 >
                     <p className="mr-2">{auth?.isConnected ? greenDot : redDot} </p>
-                    <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
-                    <span className="mx-2">/</span>
-                    <span className="max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden">
-                        {auth.selectedDatabaseName}
-                    </span>
+                    <div className="items-center hidden lg:flex">
+                        <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
+                        <span className="mx-2">/</span>
+                        <span className="max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden">
+                            {auth.selectedDatabaseName}
+                        </span>
+                    </div>
+                    <div className="block lg:hidden">Connection</div>
                     <ChevronDownIconOutline className="ml-2 w-4 h-4" />
                 </div>
                 <ConnectionMenu
@@ -128,13 +120,23 @@ export const TopBar = () => {
                 <div className="flex items-center text-sm">
                     <Button
                         data-test-send-feedback-topbar
-                        className="ndl-theme-dark mr-2"
+                        className="ndl-theme-dark mr-2 hidden lg:block"
                         color="primary"
                         fill="outlined"
                         onClick={handleSendFeedbackClick}
                     >
                         Send feedback
                     </Button>
+                    <IconButton
+                        data-test-send-feedback-topbar
+                        className="ndl-theme-dark block lg:hidden"
+                        aria-label="Send feedback"
+                        onClick={handleSendFeedbackClick}
+                        size="large"
+                        clean
+                    >
+                        <ChatBubbleOvalLeftEllipsisIconOutline />
+                    </IconButton>
                     <div className="flex items-center mr-6">
                         <div className="canny-indication-wrapper pb-8 pl-10 pointer-events-none absolute">
                             {/* This element is not clickable as we do not want to show the changelog here */}
@@ -167,6 +169,5 @@ export const TopBar = () => {
     );
 };
 
-// TODO: remove that 30 seconds check if there have been new databases? Instead check it on load of the connection menu?
 // TODO: tablet width, check alignment
 // TODO: tooltip with connection info

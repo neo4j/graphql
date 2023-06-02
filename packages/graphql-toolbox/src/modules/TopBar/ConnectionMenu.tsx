@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 import { Menu, MenuItem, MenuItems } from "@neo4j-ndl/react";
 import { CheckIconOutline } from "@neo4j-ndl/react/icons";
@@ -22,6 +22,22 @@ export const ConnectionMenu = ({
 }: Props) => {
     const auth = useContext(AuthContext);
     const screen = useContext(ScreenContext);
+
+    useEffect(() => {
+        function handleClickOutsideComponent(event) {
+            if (
+                !menuButtonRef?.current?.contains(event.target) &&
+                !document.getElementById("connection-menu")?.contains(event.target)
+            ) {
+                setOpenConnectionMenu(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutsideComponent);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutsideComponent);
+        };
+    }, [menuButtonRef]);
 
     const handleSetSelectedDatabaseName = (databaseName: string) => {
         auth.setSelectedDatabaseName(databaseName);
