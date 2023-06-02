@@ -22,7 +22,7 @@ import { ContextBuilder } from "../../../../tests/utils/builders/context-builder
 import type { Context } from "../../../types";
 import { populateWhereParams } from "./populate-where-params";
 
-describe.skip("populateWhereParams", () => {
+describe("populateWhereParams", () => {
     let context: Context;
     let authParam: Cypher.Param;
 
@@ -47,7 +47,7 @@ describe.skip("populateWhereParams", () => {
         };
 
         expect(populateWhereParams({ where, context })).toEqual({
-            id: authParam.property("sub"),
+            id: Cypher.coalesce(authParam.property("sub"), new Cypher.Literal("")),
         });
     });
 
@@ -57,7 +57,7 @@ describe.skip("populateWhereParams", () => {
         };
 
         expect(populateWhereParams({ where, context })).toEqual({
-            id: authParam.property("some.other.claim"),
+            id: Cypher.coalesce(authParam.property("some.other.claim"), new Cypher.Literal("")),
         });
     });
 
@@ -70,7 +70,7 @@ describe.skip("populateWhereParams", () => {
 
         expect(populateWhereParams({ where, context })).toEqual({
             user: {
-                id: authParam.property("sub"),
+                id: Cypher.coalesce(authParam.property("sub"), new Cypher.Literal("")),
             },
         });
     });
@@ -95,12 +95,12 @@ describe.skip("populateWhereParams", () => {
             AND: [
                 {
                     user: {
-                        id: authParam.property("sub"),
+                        id: Cypher.coalesce(authParam.property("sub"), new Cypher.Literal("")),
                     },
                 },
                 {
                     user: {
-                        role_IN: authParam.property("roles"),
+                        role_IN: Cypher.coalesce(authParam.property("roles"), new Cypher.Literal("")),
                     },
                 },
             ],
@@ -149,26 +149,26 @@ describe.skip("populateWhereParams", () => {
                             AND: [
                                 {
                                     user: {
-                                        id: authParam.property("sub"),
+                                        id: Cypher.coalesce(authParam.property("sub"), new Cypher.Literal("")),
                                     },
                                 },
                                 {
                                     user: {
-                                        role_IN: authParam.property("roles"),
+                                        role_IN: Cypher.coalesce(authParam.property("roles"), new Cypher.Literal("")),
                                     },
                                 },
                             ],
                         },
                         {
                             user: {
-                                role_IN: authParam.property("roles"),
+                                role_IN: Cypher.coalesce(authParam.property("roles"), new Cypher.Literal("")),
                             },
                         },
                     ],
                 },
                 {
                     user: {
-                        role_IN: authParam.property("roles"),
+                        role_IN: Cypher.coalesce(authParam.property("roles"), new Cypher.Literal("")),
                     },
                 },
             ],
