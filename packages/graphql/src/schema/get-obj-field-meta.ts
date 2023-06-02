@@ -59,11 +59,13 @@ import type {
     ConnectionField,
     CustomResolverField,
     Neo4jGraphQLCallbacks,
+    SelectableOptions,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
 import { getCallbackMeta, getPopulatedByMeta } from "./get-populated-by-meta";
+import { parseArguments } from "../schema-model/parser/utils";
 
 const deprecationWarning =
     "The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead." +
@@ -151,7 +153,7 @@ function getObjFieldMeta({
             const callbackDirective = directives.find((x) => x.name.value === "callback");
             const populatedByDirective = directives.find((x) => x.name.value === "populatedBy");
             const jwtClaimDirective = directives.find((x) => x.name.value === "jwtClaim");
-
+            const selectableDirective = directives.find((x) => x.name.value === "selectable");
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
@@ -164,6 +166,7 @@ function getObjFieldMeta({
                 fieldName: field.name.value,
                 dbPropertyName: field.name.value,
                 typeMeta,
+                selectableOptions: parseSelectableDirective(selectableDirective),
                 otherDirectives: (directives || []).filter(
                     (x) =>
                         ![
@@ -184,6 +187,7 @@ function getObjFieldMeta({
                             "callback",
                             "populatedBy",
                             "jwtClaim",
+                            "selectable",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -305,6 +309,7 @@ function getObjFieldMeta({
                 const connectionField: ConnectionField = {
                     fieldName: `${baseField.fieldName}Connection`,
                     relationshipTypeName,
+                    selectableOptions: parseSelectableDirective(selectableDirective),
                     typeMeta: {
                         name: connectionTypeName,
                         required: true,
@@ -654,3 +659,17 @@ function isListValue(value: ValueNode): value is ListValueNode {
 }
 
 export default getObjFieldMeta;
+
+function parseSelectableDirective(directive: DirectiveNode | undefined): SelectableOptions {
+    const defaultArguments = {
+        onRead: true,
+        onAggregate: true,
+    };
+
+    const args: Partial<SelectableOptions> = directive ? parseArguments(directive) : {};
+
+    return {
+        onRead: args.onRead ?? defaultArguments.onRead,
+        onAggregate: args.onAggregate ?? defaultArguments.onAggregate,
+    };
+}
