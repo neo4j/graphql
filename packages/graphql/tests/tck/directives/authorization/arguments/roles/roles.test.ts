@@ -78,7 +78,6 @@ describe("Cypher Auth Roles", () => {
                     @authorization(
                         validate: [
                             {
-                                when: [BEFORE]
                                 operations: [READ, CREATE, UPDATE]
                                 where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
                             }
@@ -393,30 +392,30 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id = $param0
+            WITH *
+            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param2 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             WITH this
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.password = $this_update_password
+            WITH this
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_update_password\\": \\"password\\",
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"param2\\": \\"admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
-                }
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"this_update_password\\": \\"password\\",
+                \\"authorization_param1\\": \\"admin\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -238,9 +238,9 @@ describe("Cypher Auth isAuthenticated", () => {
                     create_this1.id = create_var0.id,
                     create_this1.password = create_var0.password
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate($isAuthenticated = false, "@neo4j/graphql/UNAUTHENTICATED", [0])
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT (create_var0.password IS NULL OR apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate((create_var0.password IS NOT NULL AND $isAuthenticated = false), "@neo4j/graphql/UNAUTHENTICATED", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -254,19 +254,8 @@ describe("Cypher Auth isAuthenticated", () => {
                         \\"password\\": \\"super-password\\"
                     }
                 ],
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"super_admin\\"
-                    }
-                }
+                \\"isAuthenticated\\": true,
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
