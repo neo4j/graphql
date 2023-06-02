@@ -59,7 +59,7 @@ export function getJwtFields(
     };
 }
 
-function getStandardJwtDefinition(schema: GraphQLSchema): ObjectTypeDefinitionNode {
+export function getStandardJwtDefinition(schema: GraphQLSchema): ObjectTypeDefinitionNode {
     const jwtStandardType = new GraphQLObjectType({
         name: "JWTStandard",
         fields: {

@@ -71,6 +71,10 @@ describe("createProjectionAndParams", () => {
                         onRead: true,
                         onAggregate: false,
                     },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                 },
@@ -141,6 +145,10 @@ describe("createProjectionAndParams", () => {
                     selectableOptions: {
                         onRead: true,
                         onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
                     },
                     otherDirectives: [],
                     arguments: [],

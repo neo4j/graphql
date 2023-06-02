@@ -60,6 +60,7 @@ import type {
     CustomResolverField,
     Neo4jGraphQLCallbacks,
     SelectableOptions,
+    SettableOptions,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
@@ -154,6 +155,7 @@ function getObjFieldMeta({
             const populatedByDirective = directives.find((x) => x.name.value === "populatedBy");
             const jwtClaimDirective = directives.find((x) => x.name.value === "jwtClaim");
             const selectableDirective = directives.find((x) => x.name.value === "selectable");
+            const settableDirective = directives.find((x) => x.name.value === "settable");
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
@@ -167,6 +169,7 @@ function getObjFieldMeta({
                 dbPropertyName: field.name.value,
                 typeMeta,
                 selectableOptions: parseSelectableDirective(selectableDirective),
+                settableOptions: parseSettableDirective(settableDirective),
                 otherDirectives: (directives || []).filter(
                     (x) =>
                         ![
@@ -189,6 +192,7 @@ function getObjFieldMeta({
                             "populatedBy",
                             "jwtClaim",
                             "selectable",
+                            "settable",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -311,6 +315,7 @@ function getObjFieldMeta({
                     fieldName: `${baseField.fieldName}Connection`,
                     relationshipTypeName,
                     selectableOptions: parseSelectableDirective(selectableDirective),
+                    settableOptions: parseSettableDirective(settableDirective),
                     typeMeta: {
                         name: connectionTypeName,
                         required: true,
@@ -672,5 +677,19 @@ function parseSelectableDirective(directive: DirectiveNode | undefined): Selecta
     return {
         onRead: args.onRead ?? defaultArguments.onRead,
         onAggregate: args.onAggregate ?? defaultArguments.onAggregate,
+    };
+}
+
+function parseSettableDirective(directive: DirectiveNode | undefined): SettableOptions {
+    const defaultArguments = {
+        onCreate: true,
+        onUpdate: true,
+    };
+
+    const args: Partial<SettableOptions> = directive ? parseArguments(directive) : {};
+
+    return {
+        onCreate: args.onCreate ?? defaultArguments.onCreate,
+        onUpdate: args.onUpdate ?? defaultArguments.onUpdate,
     };
 }
