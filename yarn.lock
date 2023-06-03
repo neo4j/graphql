@@ -3201,7 +3201,7 @@ __metadata:
     npm-run-all: 4.1.5
     pluralize: 8.0.0
     prettier: ^2.7.1
-    randomstring: 1.2.3
+    randomstring: 1.3.0
     semver: 7.5.1
     ts-jest: 29.1.0
     typescript: 5.0.4
@@ -3248,7 +3248,7 @@ __metadata:
     jest: 29.5.0
     neo4j-driver: 5.9.0
     pluralize: 8.0.0
-    randomstring: 1.2.3
+    randomstring: 1.3.0
     supertest: 6.3.3
     ts-jest: 29.1.0
     typescript: 5.0.4
@@ -3302,7 +3302,7 @@ __metadata:
     postcss-loader: 7.3.2
     prettier: 2.8.8
     process: 0.11.10
-    randomstring: 1.2.3
+    randomstring: 1.3.0
     react: 18.2.0
     react-dom: 18.2.0
     style-loader: 3.3.3
@@ -3368,7 +3368,7 @@ __metadata:
     nock: 13.3.1
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
-    randomstring: 1.2.3
+    randomstring: 1.3.0
     rimraf: 5.0.1
     semver: ^7.3.7
     supertest: 6.3.3
@@ -6779,13 +6779,6 @@ __metadata:
   version: 2.1.0
   resolution: "array-union@npm:2.1.0"
   checksum: 5bee12395cba82da674931df6d0fea23c4aa4660cb3b338ced9f828782a65caa232573e6bf3968f23e0c5eb301764a382cef2f128b170a9dc59de0e36c39f98d
-  languageName: node
-  linkType: hard
-
-"array-uniq@npm:1.0.2":
-  version: 1.0.2
-  resolution: "array-uniq@npm:1.0.2"
-  checksum: 8c4beb94aa183791da1e155935aba4df3fe2eeb6f491c69e666ca7351f897b9b260fa04d016e0ce766ae8280129c16f11071e17359c81c01741289009bb5ac6d
   languageName: node
   linkType: hard
 
@@ -19575,15 +19568,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"randomstring@npm:1.2.3":
-  version: 1.2.3
-  resolution: "randomstring@npm:1.2.3"
+"randomstring@npm:1.3.0":
+  version: 1.3.0
+  resolution: "randomstring@npm:1.3.0"
   dependencies:
-    array-uniq: 1.0.2
     randombytes: 2.0.3
   bin:
     randomstring: bin/randomstring
-  checksum: 9f201638d1a51091b0262fae062bec53a94636dd1f193c703245eaa7676ee8de22f6e7d35075cfe49ba446999f0d6f1032fb7a50a99a2a80d8c28145748a4d67
+  checksum: ec89fd1337b197edea5a7f60686cc674170f6f0424cb8ac025f7acb043d906fdd30b4a3b21073d0c566efec4921be9e87749b41609954f6656c9d5f3278e2284
   languageName: node
   linkType: hard
 
