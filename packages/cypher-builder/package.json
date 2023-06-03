@@ -43,6 +43,6 @@
         "jest-extended": "3.2.4",
         "ts-jest": "29.1.0",
         "typedoc": "0.24.7",
-        "typescript": "5.0.4"
+        "typescript": "5.1.3"
     }
 }
