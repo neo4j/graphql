@@ -23,6 +23,8 @@ import type { JwtPayload } from "../../../types/jwt-payload";
 
 export type SubscriptionEventType = "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
 
+export type SubscriptionEventType = "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
+
 export type SubscriptionContext = {
     plugin: Neo4jGraphQLSubscriptionsPlugin;
     jwt?: JwtPayload;
