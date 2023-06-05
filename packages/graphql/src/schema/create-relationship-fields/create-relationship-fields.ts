@@ -327,7 +327,7 @@ function createRelationshipFields({
                 },
             });
         }
-        if (nestedOperations.has(RelationshipNestedOperationsOption.UPDATE) && rel.settableOptions.onUpdate) {
+        if (rel.settableOptions.onUpdate) {
             const connectionUpdateInputName = `${rel.connectionPrefix}${upperFieldName}UpdateConnectionInput`;
 
             nodeUpdateInput.addFields({
@@ -344,9 +344,11 @@ function createRelationshipFields({
                 });
             });
 
-            nodeFieldUpdateInput.addFields({
-                update: connectionUpdateInputName,
-            });
+            if (nestedOperations.has(RelationshipNestedOperationsOption.UPDATE)) {
+                nodeFieldUpdateInput.addFields({
+                    update: connectionUpdateInputName,
+                });
+            }
         }
 
         if (nestedOperations.has(RelationshipNestedOperationsOption.DELETE)) {
