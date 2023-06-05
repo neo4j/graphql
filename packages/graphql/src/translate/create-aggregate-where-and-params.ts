@@ -166,8 +166,8 @@ function createCountPredicateAndProjection(
     const operator = whereRegEx.exec(filterKey)?.groups?.operator || "EQ";
     const operation = createBaseOperation({
         operator,
-        property: count,
-        param: paramName,
+        target: count,
+        value: paramName,
     });
     const operationVar = new Cypher.Variable();
 
@@ -233,14 +233,14 @@ function createEntityOperation(
     if (fieldType === "String" && aggregationOperator) {
         return createBaseOperation({
             operator: logicalOperator || "EQ",
-            property: getAggregateOperation(Cypher.size(target.property(fieldName)), aggregationOperator),
-            param: paramName,
+            target: getAggregateOperation(Cypher.size(target.property(fieldName)), aggregationOperator),
+            value: paramName,
         });
     } else if (aggregationOperator) {
         return createBaseOperation({
             operator: logicalOperator || "EQ",
-            property: getAggregateOperation(target.property(fieldName), aggregationOperator),
-            param: paramName,
+            target: getAggregateOperation(target.property(fieldName), aggregationOperator),
+            value: paramName,
         });
     } else {
         const innerVar = new Cypher.Variable();

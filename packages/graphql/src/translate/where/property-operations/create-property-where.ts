@@ -155,7 +155,12 @@ export function createPropertyWhere({
 
     const comparisonOp = createComparisonOperation({
         propertyRefOrCoalesce: propertyRef,
-        param: new Cypher.Param(value),
+        // When dealing with authorization input, references to JWT will already be a param
+        // TODO: Pre-parse all where input in a manner similar to populateWhereParams, which substitutes all values for params
+        param:
+            value instanceof Cypher.Param || value instanceof Cypher.Property || value instanceof Cypher.Function
+                ? value
+                : new Cypher.Param(value),
         operator,
         durationField,
         pointField,

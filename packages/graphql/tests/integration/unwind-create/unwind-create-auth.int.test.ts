@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -56,16 +55,16 @@ describe("unwind-create field-level auth rules", () => {
                     id: ID
                 }
                 extend type ${User} {
-                    id: ID @auth(rules: [{ operations: [CREATE], bind: { id: "$jwt.sub" } }])
+                    id: ID @authorization(validate: [{ operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
                 }
             `;
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
 
@@ -114,16 +113,16 @@ describe("unwind-create field-level auth rules", () => {
                 name: String
             }
             extend type ${User} {
-                id: ID @auth(rules: [{ operations: [CREATE], bind: { id: "$jwt.sub" } }])
+                id: ID @authorization(validate: [{ operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
             }
         `;
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
 
@@ -160,30 +159,105 @@ describe("unwind-create field-level auth rules", () => {
                 await session.close();
             }
         });
-    });
 
-    describe("role", () => {
-        test("should raise an error if a user is created with a role different from the JWT", async () => {
+        test("should not raise an error if a nested user is created without id", async () => {
             const session = await neo4j.getSession();
+
             const User = new UniqueType("User");
-            const roles = ["admin"];
+            const Post = new UniqueType("Post");
 
             const typeDefs = `
             type ${User} {
                 id: ID
                 name: String
             }
+            type ${Post} {
+                title: String
+                creator: ${User} @relationship(type: "HAS_POST", direction: IN)
+            }
             extend type ${User} {
-                id: ID @auth(rules: [{ operations: [CREATE], roles: [${roles}] }])
+                id: ID @authorization(validate: [{ operations: [CREATE], where: { node: { id: "$jwt.sub" } } }])
+            }
+        `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const id = generate({
+                charset: "alphabetic",
+            });
+
+            const name = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+            mutation($id: ID!, $name: String!) {
+                ${Post.operations.create}(input: [{
+                    title: "one", 
+                    creator: { create: { node: { id: $id } } }
+                }, { 
+                    title: "two", 
+                    creator: { create: { node: { name: $name } } }
+                }]) {
+                    ${Post.plural} {
+                        title 
+                        creator {
+                            id
+                        }
+                    }
+                }
+            }
+            `;
+
+            try {
+                const req = createJwtRequest("secret", { sub: id });
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    variableValues: { id, name },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
+    describe("role", () => {
+        test("should raise an error if a user is created with a role different from the JWT", async () => {
+            const session = await neo4j.getSession();
+            const User = new UniqueType("User");
+
+            const typeDefs = `
+            type JWTPayload @jwtPayload {
+                roles: [String!]!
+            }
+
+            type ${User} {
+                id: ID
+                name: String
+            }
+            extend type ${User} {
+                id: ID @authorization(validate: [{ operations: [CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
             }
             `;
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
 
@@ -225,23 +299,27 @@ describe("unwind-create field-level auth rules", () => {
             const session = await neo4j.getSession();
 
             const User = new UniqueType("User");
-            const roles = ["admin"];
+
             const typeDefs = `
+            type JWTPayload @jwtPayload {
+                roles: [String!]!
+            }
+
             type ${User} {
                 id: ID
                 name: String
             }
             extend type ${User} {
-                id: ID @auth(rules: [{ operations: [CREATE], roles: [${roles}] }])
+                id: ID @authorization(validate: [{ operations: [CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
             }
             `;
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
 

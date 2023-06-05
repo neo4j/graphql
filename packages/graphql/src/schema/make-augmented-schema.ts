@@ -106,7 +106,7 @@ function makeAugmentedSchema(
     }: {
         features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
-        validateResolvers: boolean;
+        validateResolvers?: boolean;
         generateSubscriptions?: boolean;
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
@@ -658,6 +658,9 @@ function makeAugmentedSchema(
                 count: countField,
                 ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
                     if (field.typeMeta.array) {
+                        return res;
+                    }
+                    if (!field.selectableOptions.onAggregate) {
                         return res;
                     }
                     const objectTypeComposer = aggregationTypesMapper.getAggregationType({

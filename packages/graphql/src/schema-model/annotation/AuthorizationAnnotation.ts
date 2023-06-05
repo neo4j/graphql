@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import type { GraphQLWhereArg } from "../../types";
+
 export const AuthorizationAnnotationArguments = ["filter", "validate"] as const;
 
 export type AuthorizationFilterOperation = "READ" | "UPDATE" | "DELETE" | "CREATE_RELATIONSHIP" | "DELETE_RELATIONSHIP";
@@ -30,6 +32,14 @@ export type AuthorizationValidateOperation =
     | "DELETE_RELATIONSHIP";
 
 export type ValidateWhen = "BEFORE" | "AFTER";
+
+export type AuthorizationWhere = {
+    AND?: AuthorizationWhere[];
+    OR?: AuthorizationWhere[];
+    NOT?: AuthorizationWhere;
+    jwtPayload?: GraphQLWhereArg;
+    node?: GraphQLWhereArg;
+};
 
 export const AuthorizationFilterOperationRule: ReadonlyArray<AuthorizationFilterOperation> = [
     "READ",
@@ -63,6 +73,7 @@ export type AuthorizationFilterRuleConstructor = {
     requireAuthentication?: boolean;
     where: AuthorizationWhere;
 };
+
 export class AuthorizationFilterRule {
     public operations: AuthorizationFilterOperation[];
     public requireAuthentication: boolean;
@@ -71,7 +82,7 @@ export class AuthorizationFilterRule {
     constructor({ operations, requireAuthentication, where }: AuthorizationFilterRuleConstructor) {
         this.operations = operations ?? [...AuthorizationFilterOperationRule];
         this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
-        this.where = new AuthorizationWhere(where);
+        this.where = where;
     }
 }
 
@@ -91,17 +102,7 @@ export class AuthorizationValidateRule {
     constructor({ operations, requireAuthentication, where, when }: AuthorizationValidateRuleConstructor) {
         this.operations = operations ?? [...AuthorizationValidateOperationRule];
         this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
-        this.where = new AuthorizationWhere(where);
+        this.where = where;
         this.when = when ?? ["BEFORE", "AFTER"];
-    }
-}
-
-export class AuthorizationWhere {
-    public jwtPayload?: Record<string, any>;
-    public node?: Record<string, any>;
-
-    constructor(where: { jwtPayload?: Record<string, any>; node?: Record<string, any> }) {
-        this.jwtPayload = where.jwtPayload;
-        this.node = where.node;
     }
 }

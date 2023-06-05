@@ -41,7 +41,7 @@ describe("Subscription global authentication", () => {
         type ${typeMovie} {
             title: String!
         }
-
+     
         extend type ${typeMovie} @auth(rules: [{ isAuthenticated: true }])
     `;
 

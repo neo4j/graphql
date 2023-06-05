@@ -19,11 +19,12 @@
 
 import Debug from "debug";
 import type { Key, Neo4jAuthorizationSettings, RequestLike } from "../../types";
-import { Neo4jError } from "neo4j-driver";
-import { AUTH_FORBIDDEN_ERROR, DEBUG_AUTH } from "../../constants";
-import { createRemoteJWKSet, decodeJwt, jwtVerify, errors } from "jose";
+
+import { AUTHORIZATION_UNAUTHENTICATED, DEBUG_AUTH } from "../../constants";
+import { createRemoteJWKSet, decodeJwt, jwtVerify } from "jose";
 import type { JWTPayload } from "jose";
 import { getToken, parseBearerToken } from "./parse-request-token";
+import { Neo4jGraphQLError } from "../Error";
 
 const debug = Debug(DEBUG_AUTH);
 
@@ -37,11 +38,11 @@ export class Neo4jGraphQLAuthorization {
     public async decode(req: RequestLike): Promise<JWTPayload | undefined> {
         const bearerToken = getToken(req);
         if (!bearerToken) {
-            return;
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
         }
         const token = parseBearerToken(bearerToken);
         if (!token) {
-            throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
         }
         try {
             if (this.authorization.verify === false) {
@@ -52,17 +53,38 @@ export class Neo4jGraphQLAuthorization {
             return await this.verify(token, secret);
         } catch (error) {
             debug("%s", error);
-            if (error instanceof errors.JWSInvalid) {
-                throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
-            }
-            throw new Neo4jError("Forbidden", AUTH_FORBIDDEN_ERROR);
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
         }
     }
 
     public decodeBearerToken(bearerToken: string): JWTPayload | undefined {
         const token = parseBearerToken(bearerToken);
-        if (!token) throw new Error();
-        return decodeJwt(token);
+        if (!token) {
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+        }
+        try {
+            return decodeJwt(token);
+        } catch (error) {
+            debug("%s", error);
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+        }
+    }
+
+    public async decodeBearerTokenWithVerify(bearerToken: string): Promise<JWTPayload | undefined> {
+        const token = parseBearerToken(bearerToken);
+        if (!token) {
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+        }
+        try {
+            if (this.authorization.verify === false) {
+                debug("Skipping verifying JWT as verify is set to false");
+                return decodeJwt(token);
+            }
+            return await this.verify(token, this.authorization.key as Key);
+        } catch (error) {
+            debug("%s", error);
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+        }
     }
 
     private resolveKey(req: RequestLike): Key {

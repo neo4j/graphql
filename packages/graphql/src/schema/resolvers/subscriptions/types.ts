@@ -17,12 +17,16 @@
  * limitations under the License.
  */
 
+import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 import type { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
-import type { JwtPayload } from "../../../types/deprecated/auth/jwt-payload";
+import type { JwtPayload } from "../../../types/jwt-payload";
+
+export type SubscriptionEventType = "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
 
 export type SubscriptionContext = {
     plugin: Neo4jGraphQLSubscriptionsPlugin;
     jwt?: JwtPayload;
+    schemaModel: Neo4jGraphQLSchemaModel;
 };
 
 export type SubscriptionConnectionContext = {
@@ -31,3 +35,10 @@ export type SubscriptionConnectionContext = {
     };
     jwt?: JwtPayload;
 };
+
+export type StandardType = Record<string, Record<string, unknown>>;
+export type UnionType = Record<string, StandardType>;
+export type InterfaceType = Record<string, unknown | InterfaceSpecificType>;
+export type InterfaceSpecificType = Record<string, Record<string, unknown>>;
+export type RecordType = Record<string, unknown>;
+export type RelationshipType = Record<string, Record<string, UnionType | InterfaceType | StandardType>>;

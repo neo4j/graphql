@@ -30,14 +30,22 @@ import type { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { Auth } from "./deprecated/auth/auth";
+import type { JwtPayload } from "./jwt-payload";
 import type { AuthContext } from "./deprecated/auth/auth-context";
-import type { JwtPayload } from "./deprecated/auth/jwt-payload";
 
 export { Node } from "../classes";
 
 export type DriverConfig = {
     database?: string;
     bookmarks?: string | string[];
+};
+
+type AuthorizationContext = {
+    jwt?: JwtPayload;
+    jwtParam: Cypher.Param;
+    isAuthenticated: boolean;
+    isAuthenticatedParam: Cypher.Param;
+    claims?: Map<string, string>;
 };
 
 export interface Context {
@@ -59,6 +67,7 @@ export interface Context {
     executionContext: Driver | Session | Transaction;
     executor: Executor;
     extensions?: Record<string, any>;
+    authorization: AuthorizationContext;
     [k: string]: any;
 }
 
@@ -109,6 +118,16 @@ export interface Callback {
     callbackName: string;
 }
 
+export type SelectableOptions = {
+    onRead: boolean;
+    onAggregate: boolean;
+};
+
+export type SettableOptions = {
+    onCreate: boolean;
+    onUpdate: boolean;
+};
+
 /**
  * Representation a ObjectTypeDefinitionNode field.
  */
@@ -124,6 +143,8 @@ export interface BaseField {
     writeonly?: boolean;
     dbPropertyName?: string;
     unique?: Unique;
+    selectableOptions: SelectableOptions;
+    settableOptions: SettableOptions;
 }
 
 /**
@@ -516,6 +537,7 @@ export interface Neo4jAuthorizationSettings {
     key: Key | ((req: RequestLike) => Key);
     verify?: boolean;
     verifyOptions?: JWTVerifyOptions;
+    globalAuthentication?: boolean;
 }
 export interface RemoteJWKS {
     url: string | URL;

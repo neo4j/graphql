@@ -66,9 +66,9 @@ describe("Interfaces tests", () => {
                 id: ID! @id
             }
 
-            extend type ${SomeNodeType} @auth(rules: [{ isAuthenticated: true }])
+            extend type ${SomeNodeType} @authentication
 
-            extend type ${OtherNodeType} @auth(rules: [{ isAuthenticated: true }])
+            extend type ${OtherNodeType} @authentication
         `;
 
         session = await neo4j.getSession();

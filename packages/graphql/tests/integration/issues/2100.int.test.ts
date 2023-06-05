@@ -54,13 +54,13 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             serviceDate: ${TimeGraphType}! @relationship(type: "BUSSED_ON", direction: OUT)
         }
 
-        interface Church @auth(rules: [{ isAuthenticated: true }]) {
+        interface Church {
             id: ID @id
             name: String!
             serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
         }
 
-        type ${BacentaType} implements Church {
+        type ${BacentaType} implements Church @authentication {
             id: ID @id
             name: String!
             serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 )
         }
 
-        type ${TimeGraphType} @auth(rules: [{ isAuthenticated: true }]) {
+        type ${TimeGraphType} @authentication {
             date: Date
         }
 

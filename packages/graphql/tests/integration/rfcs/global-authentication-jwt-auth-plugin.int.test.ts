@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
@@ -26,8 +25,7 @@ import type { Neo4jGraphQLAuthenticationError } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
-// TODO: fix this file with global auth
-describe("Global authentication - Auth JWT plugin", () => {
+describe("Global authentication - Authorization JWT plugin", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
@@ -61,11 +59,8 @@ describe("Global authentication - Auth JWT plugin", () => {
         const neoSchema = new Neo4jGraphQL({
             driver,
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                    globalAuthentication: true,
-                }),
+            features: {
+                authorization: { key: secret, globalAuthentication: true },
             },
         });
 
@@ -88,11 +83,8 @@ describe("Global authentication - Auth JWT plugin", () => {
         const neoSchema = new Neo4jGraphQL({
             driver,
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                    globalAuthentication: true,
-                }),
+            features: {
+                authorization: { key: secret, globalAuthentication: true },
             },
         });
 
@@ -117,11 +109,8 @@ describe("Global authentication - Auth JWT plugin", () => {
         const neoSchema = new Neo4jGraphQL({
             driver,
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                    globalAuthentication: true,
-                }),
+            features: {
+                authorization: { key: secret, globalAuthentication: true },
             },
         });
 
@@ -148,12 +137,8 @@ describe("Global authentication - Auth JWT plugin", () => {
             const neoSchema = new Neo4jGraphQL({
                 driver,
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                        noVerify: true,
-                        globalAuthentication: true,
-                    }),
+                features: {
+                    authorization: { key: secret, verify: false, globalAuthentication: true },
                 },
             });
 
@@ -168,11 +153,9 @@ describe("Global authentication - Auth JWT plugin", () => {
         }
 
         expect(initError).toBeDefined();
-        expect(
-            (initError as Error)?.message.includes(
-                "Neo4jGraphQLAuthJWTPlugin, noVerify and globalAuthentication can not both be enabled simultaneously."
-            )
-        ).toBeTruthy();
+        expect((initError as Error)?.message).toInclude(
+            "`globalAuthentication` option requires the `verify` option to be enabled."
+        );
     });
 
     test("should not fail if noVerify is false and global authentication is true", async () => {
@@ -181,12 +164,8 @@ describe("Global authentication - Auth JWT plugin", () => {
             const neoSchema = new Neo4jGraphQL({
                 driver,
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                        noVerify: false,
-                        globalAuthentication: true,
-                    }),
+                features: {
+                    authorization: { key: secret, globalAuthentication: true },
                 },
             });
 
@@ -210,11 +189,8 @@ describe("Global authentication - Auth JWT plugin", () => {
         const neoSchema = new Neo4jGraphQL({
             driver,
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                    globalAuthentication: true,
-                }),
+            features: {
+                authorization: { key: secret, globalAuthentication: true },
             },
         });
 

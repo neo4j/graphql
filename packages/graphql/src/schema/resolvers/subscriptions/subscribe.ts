@@ -24,9 +24,10 @@ import type Node from "../../../classes/Node";
 import type { NodeSubscriptionsEvent, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
 import { SubscriptionAuth } from "./subscription-auth";
-import type { SubscriptionContext } from "./types";
+import type { SubscriptionEventType, SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
-import { subscriptionWhere } from "./where";
+import { subscriptionWhere } from "./where/where";
+import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) {
@@ -46,11 +47,22 @@ export function generateSubscribeMethod({
     relationshipFields,
 }: {
     node: Node;
-    type: "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
+    type: SubscriptionEventType;
     nodes?: Node[];
     relationshipFields?: Map<string, ObjectFields>;
 }) {
     return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
+        const entities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
+        if (entities.length) {
+            const concreteEntity = entities[0] as ConcreteEntity;
+            const hasAuthentication = concreteEntity.annotations.authentication;
+            if (hasAuthentication && hasAuthentication.operations.includes("SUBSCRIBE")) {
+                if (!context.jwt) {
+                    throw new Error("Error, request not authenticated");
+                }
+            }
+        }
+
         if (node.auth) {
             const authRules = node.auth.getRules(["SUBSCRIBE"]);
             for (const rule of authRules) {

@@ -22,6 +22,8 @@ import createProjectionAndParams from "./create-projection-and-params";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import Cypher from "@neo4j/cypher-builder";
+import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -65,6 +67,14 @@ describe("createProjectionAndParams", () => {
                             update: { type: "String", pretty: "String" },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                 },
@@ -73,6 +83,11 @@ describe("createProjectionAndParams", () => {
 
         const context = new ContextBuilder({
             neoSchema: { nodes: [node] },
+            schemaModel: new Neo4jGraphQLSchemaModel({
+                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
+                compositeEntities: [],
+                operations: {},
+            }),
             resolveTree,
         }).instance();
 
@@ -87,7 +102,7 @@ describe("createProjectionAndParams", () => {
             expect(result.projection.getCypher(env)).toBe(`{ .title }`);
             return "";
         }).build();
-       
+
         expect(result.params).toMatchObject({});
     });
     test("should return the correct projection when querying for a global with id in the selection set", () => {
@@ -127,6 +142,14 @@ describe("createProjectionAndParams", () => {
                             update: { type: "String", pretty: "String" },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                     isGlobalIdField: true,
@@ -138,6 +161,11 @@ describe("createProjectionAndParams", () => {
 
         const context = new ContextBuilder({
             neoSchema: { nodes: [node] },
+            schemaModel: new Neo4jGraphQLSchemaModel({
+                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
+                compositeEntities: [],
+                operations: {},
+            }),
             resolveTree,
         }).instance();
 

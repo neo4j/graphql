@@ -63,59 +63,61 @@ describe("ConcreteEntity generation", () => {
         expect(userEntity?.attributes.has("password")).toBeTrue();
     });
 
-    test("creates the authorization annotation on password field", () => {
-        const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-        expect(userEntity?.attributes.get("password")?.annotations).toHaveProperty(AnnotationsKey.authorization);
-        const authAnnotation = userEntity?.attributes.get("password")?.annotations[AnnotationsKey.authorization];
+    describe("authorization annotation", () => {
+        test("creates the authorization annotation on User entity", () => {
+            const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+            expect(userEntity?.annotations[AnnotationsKey.authorization]).toBeDefined();
+        });
 
-        expect(authAnnotation).toBeDefined();
-        expect(authAnnotation?.filter).toHaveLength(1);
-        expect(authAnnotation?.filter).toEqual([
-            {
-                operations: AuthorizationFilterOperationRule,
-                requireAuthentication: true,
-                where: {
-                    jwtPayload: undefined,
-                    node: { id: { equals: "$jwt.sub" } },
-                },
-            },
-        ]);
-        expect(authAnnotation?.validate).toBeUndefined();
-    });
+        test("creates the authorization annotation on password field", () => {
+            const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+            expect(userEntity?.attributes.get("password")?.annotations).toHaveProperty(AnnotationsKey.authorization);
+            const authAnnotation = userEntity?.attributes.get("password")?.annotations[AnnotationsKey.authorization];
 
-    test("creates the authorization annotation on User entity", () => {
-        const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-        expect(userEntity?.annotations[AnnotationsKey.authorization]).toBeDefined();
-    });
-
-    test("authorization annotation is correct on User entity", () => {
-        const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-        const authAnnotation = userEntity?.annotations[AnnotationsKey.authorization];
-        expect(authAnnotation).toBeDefined();
-        expect(authAnnotation?.filter).toBeUndefined();
-        expect(authAnnotation?.validate).toHaveLength(2);
-        expect(authAnnotation?.validate).toEqual(
-            expect.arrayContaining([
+            expect(authAnnotation).toBeDefined();
+            expect(authAnnotation?.filter).toHaveLength(1);
+            expect(authAnnotation?.filter).toEqual([
                 {
-                    operations: AuthorizationValidateOperationRule,
-                    when: ["BEFORE"],
+                    operations: AuthorizationFilterOperationRule,
                     requireAuthentication: true,
                     where: {
                         jwtPayload: undefined,
                         node: { id: { equals: "$jwt.sub" } },
                     },
                 },
-                {
-                    operations: AuthorizationValidateOperationRule,
-                    when: ["AFTER"],
-                    requireAuthentication: true,
-                    where: {
-                        jwtPayload: undefined,
-                        node: { id: { equals: "$jwt.sub" } },
+            ]);
+            expect(authAnnotation?.validate).toBeUndefined();
+        });
+
+        test("authorization annotation is correct on User entity", () => {
+            const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+            const authAnnotation = userEntity?.annotations[AnnotationsKey.authorization];
+            expect(authAnnotation).toBeDefined();
+            expect(authAnnotation?.filter).toBeUndefined();
+            expect(authAnnotation?.validate).toHaveLength(2);
+            expect(authAnnotation?.validate).toEqual(
+                expect.arrayContaining([
+                    {
+                        operations: AuthorizationValidateOperationRule,
+                        when: ["BEFORE"],
+                        requireAuthentication: true,
+                        where: {
+                            jwtPayload: undefined,
+                            node: { id: { equals: "$jwt.sub" } },
+                        },
                     },
-                },
-            ])
-        );
+                    {
+                        operations: AuthorizationValidateOperationRule,
+                        when: ["AFTER"],
+                        requireAuthentication: true,
+                        where: {
+                            jwtPayload: undefined,
+                            node: { id: { equals: "$jwt.sub" } },
+                        },
+                    },
+                ])
+            );
+        });
     });
 });
 

@@ -21,6 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import type { BaseField, Context, GraphQLWhereArg, PrimitiveField, TemporalField } from "../types";
+import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import { translateTopLevelMatch } from "./translate-top-level-match";
@@ -38,6 +39,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     cypherStrs.push(new Cypher.RawCypher(topLevelMatch.cypher));
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
+    // TODO: Authorization - delete for 4.0.0 (provided by translateTopLevelMatch)
     const { cypher: nodeAuthCypher, params: nodeAuthParams } = createAuthAndParams({
         operations: "READ",
         entity: node,
@@ -66,21 +68,44 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     Object.entries(selections).forEach((selection) => {
         const authField = node.authableFields.find((x) => x.fieldName === selection[0]);
         if (authField) {
-            if (authField.auth) {
-                const { cypher: fieldAuthCypher, params: fieldAuthParams } = createAuthAndParams({
-                    entity: authField,
-                    operations: "READ",
-                    context,
-                    allow: { node, varName },
-                });
-                if (fieldAuthCypher) {
-                    authStrs.push(fieldAuthCypher);
-                    cypherParams = { ...cypherParams, ...fieldAuthParams };
+            const authorizationPredicateReturn = createAuthorizationBeforePredicate({
+                context,
+                nodes: [
+                    {
+                        variable: new Cypher.NamedNode(varName),
+                        node,
+                        fieldName: authField.fieldName,
+                    },
+                ],
+                operations: ["READ"],
+            });
+            if (authorizationPredicateReturn) {
+                const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
+                if (predicate) {
+                    if (preComputedSubqueries && !preComputedSubqueries.empty) {
+                        cypherStrs.push(preComputedSubqueries);
+                    }
+                    cypherStrs.push(new Cypher.With("*").where(predicate));
+                }
+            } else {
+                // TODO: Authorization - delete for 4.0.0
+                if (authField.auth) {
+                    const { cypher: fieldAuthCypher, params: fieldAuthParams } = createAuthAndParams({
+                        entity: authField,
+                        operations: "READ",
+                        context,
+                        allow: { node, varName },
+                    });
+                    if (fieldAuthCypher) {
+                        authStrs.push(fieldAuthCypher);
+                        cypherParams = { ...cypherParams, ...fieldAuthParams };
+                    }
                 }
             }
         }
     });
 
+    // TODO: Authorization - delete for 4.0.0
     if (authStrs.length) {
         cypherStrs.push(
             Cypher.apoc.util.validate(

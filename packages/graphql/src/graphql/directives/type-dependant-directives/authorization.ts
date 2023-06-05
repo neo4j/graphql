@@ -55,7 +55,22 @@ const AUTHORIZATION_VALIDATE_OPERATION = new GraphQLEnumType({
     },
 });
 
-function createAuthorizationWhere(typeDefinitionName: string, schema: GraphQLSchema): GraphQLInputObjectType {
+const AUTHORIZATION_FILTER_OPERATION = new GraphQLEnumType({
+    name: "AuthorizationFilterOperation",
+    values: {
+        READ: { value: "READ" },
+        UPDATE: { value: "UPDATE" },
+        DELETE: { value: "DELETE" },
+        CREATE_RELATIONSHIP: { value: "CREATE_RELATIONSHIP" },
+        DELETE_RELATIONSHIP: { value: "DELETE_RELATIONSHIP" },
+    },
+});
+
+function createAuthorizationWhere(
+    typeDefinitionName: string,
+    schema: GraphQLSchema,
+    jwtPayloadWhere: GraphQLInputObjectType
+): GraphQLInputObjectType {
     /**
      * Both inputWhere and JWTPayloadWhere can be undefined,
      * JWTPayload can be not defined by the User in the user document,
@@ -83,7 +98,7 @@ function createAuthorizationWhere(typeDefinitionName: string, schema: GraphQLSch
                       }
                     : {}),
                 jwtPayload: {
-                    type: new GraphQLInputObjectType({ name: "JWTPayloadWhere", fields: {} }),
+                    type: jwtPayloadWhere,
                 },
             };
         },
@@ -100,7 +115,7 @@ function createAuthorizationFilterRule(
         fields() {
             return {
                 operations: {
-                    type: new GraphQLList(AUTHORIZATION_VALIDATE_OPERATION),
+                    type: new GraphQLList(AUTHORIZATION_FILTER_OPERATION),
                     defaultValue: ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"],
                 },
                 requireAuthentication: {
@@ -143,14 +158,18 @@ function createAuthorizationValidateRule(
     });
 }
 
-function createAuthorization(
-    typeDefinitionName: string,
-    filterRule: GraphQLInputObjectType,
-    validateRule: GraphQLInputObjectType
-): GraphQLDirective {
+function createAuthorization({
+    typeDefinitionName,
+    filterRule,
+    validateRule,
+}: {
+    typeDefinitionName: string;
+    filterRule: GraphQLInputObjectType;
+    validateRule: GraphQLInputObjectType;
+}): GraphQLDirective {
     return new GraphQLDirective({
         name: `${typeDefinitionName}Authorization`,
-        locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION, DirectiveLocation.INTERFACE],
+        locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION],
         args: {
             filter: {
                 description: "filter",
@@ -184,18 +203,27 @@ export function createAuthorizationDefinitions(
     typeDefinitionName: string,
     schema: GraphQLSchema
 ): (TypeDefinitionNode | DirectiveDefinitionNode)[] {
-    const authorizationWhere = createAuthorizationWhere(typeDefinitionName, schema);
+    const jwtPayloadWhere = new GraphQLInputObjectType({ name: "JWTPayloadWhere", fields: {} });
+
+    const authorizationWhere = createAuthorizationWhere(typeDefinitionName, schema, jwtPayloadWhere);
     const authorizationFilterRule = createAuthorizationFilterRule(typeDefinitionName, authorizationWhere);
     const authorizationValidateRule = createAuthorizationValidateRule(typeDefinitionName, authorizationWhere);
-    const authorization = createAuthorization(typeDefinitionName, authorizationFilterRule, authorizationValidateRule);
+
+    const authorization = createAuthorization({
+        typeDefinitionName,
+        filterRule: authorizationFilterRule,
+        validateRule: authorizationValidateRule,
+    });
 
     const authorizationSchema = new GraphQLSchema({
         directives: [authorization],
         types: [authorizationWhere, authorizationFilterRule, authorizationValidateRule],
     });
+
     const authorizationWhereAST = astFromInputObjectType(authorizationWhere, authorizationSchema);
     const authorizationFilterRuleAST = astFromInputObjectType(authorizationFilterRule, authorizationSchema);
     const authorizationValidateRuleAST = astFromInputObjectType(authorizationValidateRule, authorizationSchema);
+
     const authorizationAST = astFromDirective(authorization);
     return [authorizationWhereAST, authorizationFilterRuleAST, authorizationValidateRuleAST, authorizationAST];
 }
@@ -206,9 +234,11 @@ export function getStaticAuthorizationDefinitions(
     const schema = new GraphQLSchema({});
     const authorizationValidateStage = astFromEnumType(AUTHORIZATION_VALIDATE_STAGE, schema);
     const authorizationValidateOperation = astFromEnumType(AUTHORIZATION_VALIDATE_OPERATION, schema);
+    const authorizationFilterOperation = astFromEnumType(AUTHORIZATION_FILTER_OPERATION, schema);
     const ASTs: Array<InputObjectTypeDefinitionNode | EnumTypeDefinitionNode> = [
         authorizationValidateStage,
         authorizationValidateOperation,
+        authorizationFilterOperation,
     ];
 
     const JWTPayloadWere = createJWTPayloadWhere(schema, JWTPayloadDefinition);

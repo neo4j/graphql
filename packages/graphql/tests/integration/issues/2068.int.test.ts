@@ -64,10 +64,10 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             }
 
             extend type ${userType.name}
-                @auth(rules: [{ operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT], where: { id: "$jwt.sub" } }])
+                @authorization(filter: [{ operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
 
             extend type ${userType.name} {
-                password: String! @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
+                password: String! @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
         `;
 
@@ -402,12 +402,16 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             const movieType = new UniqueType("Movie");
             const genreType = new UniqueType("Genre");
             const typeDefs = `
+                type JWTPayload @jwtPayload {
+                    roles: [String!]!
+                }
+                
                 type ${movieType.name} {
                     title: String
                     genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                 }
         
-                type ${genreType.name} @auth(rules: [{ operations: ${operations}, roles: ["${requiredRole}"] }]) {
+                type ${genreType.name} @authorization(validate: [{ operations: ${operations}, where: { jwtPayload: { roles_INCLUDES: "${requiredRole}" } } }]) {
                     name: String @unique
                 }
             `;
@@ -447,8 +451,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 }
             `;
         }
-        test("Create with createOrConnect and CONNECT operation rule - valid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CONNECT]");
+        test("Create with createOrConnect and CREATE_RELATIONSHIP operation rule - valid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE_RELATIONSHIP]");
             const createOperation = movieType.operations.create;
 
             const neoSchema = new Neo4jGraphQL({
@@ -479,8 +483,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Create with createOrConnect and CONNECT operation rule - invalid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CONNECT]");
+        test("Create with createOrConnect and CREATE_RELATIONSHIP operation rule - invalid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE_RELATIONSHIP]");
             const createOperation = movieType.operations.create;
 
             const neoSchema = new Neo4jGraphQL({
@@ -557,8 +561,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Create with createOrConnect and CREATE, CONNECT operation rule - valid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CREATE, CONNECT]");
+        test("Create with createOrConnect and CREATE, CREATE_RELATIONSHIP operation rule - valid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE, CREATE_RELATIONSHIP]");
             const createOperation = movieType.operations.create;
 
             const neoSchema = new Neo4jGraphQL({
@@ -589,8 +593,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Create with createOrConnect and CREATE, CONNECT operation rule - invalid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CREATE, CONNECT]");
+        test("Create with createOrConnect and CREATE, CREATE_RELATIONSHIP operation rule - invalid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE, CREATE_RELATIONSHIP]");
             const createOperation = movieType.operations.create;
 
             const neoSchema = new Neo4jGraphQL({
@@ -644,8 +648,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Update with createOrConnect and CONNECT operation rule - valid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CONNECT]");
+        test("Update with createOrConnect and CREATE_RELATIONSHIP operation rule - valid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE_RELATIONSHIP]");
             const updateOperation = movieType.operations.update;
 
             const neoSchema = new Neo4jGraphQL({
@@ -678,8 +682,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Update with createOrConnect and CONNECT operation rule - invalid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CONNECT]");
+        test("Update with createOrConnect and CREATE_RELATIONSHIP operation rule - invalid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE_RELATIONSHIP]");
             const updateOperation = movieType.operations.update;
 
             const neoSchema = new Neo4jGraphQL({
@@ -762,8 +766,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Update with createOrConnect and CREATE, CONNECT operation rule - valid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CREATE, CONNECT]");
+        test("Update with createOrConnect and CREATE, CREATE_RELATIONSHIP operation rule - valid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE, CREATE_RELATIONSHIP]");
             const updateOperation = movieType.operations.update;
 
             const neoSchema = new Neo4jGraphQL({
@@ -796,8 +800,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Update with createOrConnect and CREATE, CONNECT operation rule - invalid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CREATE, CONNECT]");
+        test("Update with createOrConnect and CREATE, CREATE_RELATIONSHIP operation rule - invalid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE, CREATE_RELATIONSHIP]");
             const updateOperation = movieType.operations.update;
 
             const neoSchema = new Neo4jGraphQL({

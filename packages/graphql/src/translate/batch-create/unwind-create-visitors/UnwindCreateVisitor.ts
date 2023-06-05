@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Context, RelationField } from "../../../types";
+import type { Context, PredicateReturn, RelationField } from "../../../types";
 import type { CallbackBucket } from "../../../classes/CallbackBucket";
 import type {
     Visitor,
@@ -36,6 +36,7 @@ import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createAuthPredicates } from "../../create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
+import { createAuthorizationAfterPredicate } from "../../authorization/create-authorization-after-predicate";
 
 type UnwindCreateScopeDefinition = {
     unwindVar: Cypher.Variable;
@@ -109,12 +110,39 @@ export class UnwindCreateVisitor implements Visitor {
         });
 
         const authNodeClause = this.getAuthNodeClause(create.node, this.context, currentNode);
+
+        let authorizationFieldsClause: Cypher.CompositeClause | Cypher.With | undefined;
+
+        const authorizationPredicateReturn = this.getAuthorizationFieldClause({
+            astNode: create,
+            nodeRef: currentNode,
+            unwindVar: this.unwindVar,
+        });
+        if (authorizationPredicateReturn) {
+            const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
+
+            if (predicate) {
+                if (preComputedSubqueries && !preComputedSubqueries.empty) {
+                    authorizationFieldsClause = Cypher.concat(
+                        new Cypher.With("*"),
+                        preComputedSubqueries,
+                        new Cypher.With("*").where(predicate)
+                    );
+                }
+
+                authorizationFieldsClause = new Cypher.With("*").where(predicate);
+            }
+        }
+
+        // TODO: Authorization - delete for 4.0.0
         const authFieldsClause = this.getAuthFieldClause(create, this.context, currentNode, this.unwindVar);
+
         const clause = Cypher.concat(
             ...filterTruthy([
                 createClause,
                 ...nestedClauses,
                 authNodeClause,
+                authorizationFieldsClause,
                 authFieldsClause,
                 relationshipValidationClause,
                 new Cypher.Return(currentNode),
@@ -203,9 +231,36 @@ export class UnwindCreateVisitor implements Visitor {
         });
 
         const authNodeClause = this.getAuthNodeClause(nestedCreate.node, this.context, currentNode);
+
+        let authorizationFieldsClause: Cypher.CompositeClause | Cypher.With | undefined;
+
+        const authorizationPredicateReturn = this.getAuthorizationFieldClause({
+            astNode: nestedCreate,
+            nodeRef: currentNode,
+            unwindVar: nodeVar,
+        });
+        if (authorizationPredicateReturn) {
+            const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
+
+            if (predicate) {
+                if (preComputedSubqueries && !preComputedSubqueries.empty) {
+                    authorizationFieldsClause = Cypher.concat(
+                        new Cypher.With("*"),
+                        preComputedSubqueries,
+                        new Cypher.With("*").where(predicate)
+                    );
+                }
+
+                authorizationFieldsClause = new Cypher.With("*").where(predicate);
+            }
+        }
+
+        // TODO: Authorization - delete for 4.0.0
         const authFieldsClause = this.getAuthFieldClause(nestedCreate, this.context, currentNode, nodeVar);
+
         subQueryStatements.push(...nestedClauses);
         subQueryStatements.push(authNodeClause);
+        subQueryStatements.push(authorizationFieldsClause);
         subQueryStatements.push(authFieldsClause);
         subQueryStatements.push(relationshipValidationClause);
         subQueryStatements.push(new Cypher.Return([Cypher.collect(new Cypher.Literal(null)), new Cypher.Variable()]));
@@ -220,7 +275,34 @@ export class UnwindCreateVisitor implements Visitor {
     }
 
     private getAuthNodeClause(node: Node, context: Context, nodeRef: Cypher.Node): Cypher.Clause | undefined {
-        if (node.auth) {
+        const authorizationPredicateReturn = createAuthorizationAfterPredicate({
+            context,
+            nodes: [
+                {
+                    variable: nodeRef,
+                    node,
+                },
+            ],
+            operations: ["CREATE"],
+            includeAuthenticationPredicate: true,
+        });
+
+        if (authorizationPredicateReturn) {
+            const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
+
+            if (predicate) {
+                if (preComputedSubqueries && !preComputedSubqueries.empty) {
+                    return Cypher.concat(
+                        new Cypher.With("*"),
+                        preComputedSubqueries,
+                        new Cypher.With("*").where(predicate)
+                    );
+                }
+
+                return new Cypher.With("*").where(predicate);
+            }
+        } else if (node.auth) {
+            // TODO: Authorization - delete for 4.0.0
             const authExpr = createAuthPredicates({
                 entity: node,
                 operations: "CREATE",
@@ -237,6 +319,7 @@ export class UnwindCreateVisitor implements Visitor {
         }
     }
 
+    // TODO: Authorization - delete for 4.0.0
     private getAuthFieldClause(
         astNode: CreateAST | NestedCreateAST,
         context: Context,
@@ -284,6 +367,55 @@ export class UnwindCreateVisitor implements Visitor {
                 }
             });
         }
+    }
+
+    private getAuthorizationFieldClause({
+        astNode,
+        nodeRef,
+        unwindVar,
+    }: {
+        astNode: CreateAST | NestedCreateAST;
+        nodeRef: Cypher.Node;
+        unwindVar: Cypher.Variable;
+    }): PredicateReturn | undefined {
+        const authorizationPredicates: Cypher.Predicate[] = [];
+        let authorizationSubquery: Cypher.CompositeClause | undefined = undefined;
+
+        const usedAuthFields = astNode.nodeProperties
+            .flatMap((property) => {
+                return astNode.node.primitiveFields.filter((authField) => authField.fieldName === property);
+            })
+            .filter((n) => n);
+
+        for (const field of usedAuthFields) {
+            const authorizationPredicateReturn = createAuthorizationAfterPredicate({
+                context: this.context,
+                nodes: [
+                    {
+                        variable: nodeRef,
+                        node: astNode.node,
+                        fieldName: field.fieldName,
+                    },
+                ],
+                operations: ["CREATE"],
+                conditionForEvaluation: Cypher.isNotNull(unwindVar.property(field.fieldName)),
+                includeAuthenticationPredicate: true,
+            });
+            if (authorizationPredicateReturn) {
+                const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
+                if (predicate) {
+                    if (preComputedSubqueries && !preComputedSubqueries.empty) {
+                        authorizationSubquery = Cypher.concat(authorizationSubquery, preComputedSubqueries);
+                    }
+                    authorizationPredicates.push(predicate);
+                }
+            }
+        }
+
+        return {
+            predicate: Cypher.and(...authorizationPredicates),
+            preComputedSubqueries: authorizationSubquery,
+        };
     }
 
     /*

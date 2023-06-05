@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
 import { useContext, useEffect } from "react";
+
 import {
     AcademicCapIconOutline,
     ArrowSmallUpIconOutline,
@@ -10,10 +10,12 @@ import {
     SpeakerWaveIconOutline,
     VariableIconOutline,
 } from "@neo4j-ndl/react/icons";
+import type { ReactNode } from "react";
+
 import { tracking } from "../../analytics/tracking";
+import { cannySettings } from "../../common/canny";
 import type { Screen } from "../../contexts/screen";
 import { ScreenContext } from "../../contexts/screen";
-import { cannySettings } from "../../common/canny";
 
 interface Props {
     showSchemaView: boolean;

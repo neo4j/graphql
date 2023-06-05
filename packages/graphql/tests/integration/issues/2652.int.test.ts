@@ -45,12 +45,12 @@ describe("https://github.com/neo4j/graphql/issues/2652", () => {
         reviewType = new UniqueType("Review");
 
         const typeDefs = `
-            type Location @auth(rules: [{ isAuthenticated: true }]) {
+            type Location {
                 id: ID!
                 reviews: [LocationReview!]! @relationship(type: "HAS_REVIEW", direction: OUT)
             }
 
-            type LocationReview @auth(rules: [{ isAuthenticated: true }]) {
+            type LocationReview {
                 id: ID!
                 rating: Int!
             }

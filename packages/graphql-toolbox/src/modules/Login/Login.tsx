@@ -17,16 +17,18 @@
  * limitations under the License.
  */
 
+import { useCallback, useContext, useRef, useState } from "react";
+
 import { Button, SmartTooltip } from "@neo4j-ndl/react";
 import { ExclamationTriangleIconOutline } from "@neo4j-ndl/react/icons";
-import { useCallback, useContext, useRef, useState } from "react";
-import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
-import { FormInput } from "./FormInput";
+
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
+import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
 import { AuthContext } from "../../contexts/auth";
 import { getConnectUrlSearchParamValue } from "../../contexts/utils";
 import { getURLProtocolFromText } from "../../utils/utils";
+import { FormInput } from "./FormInput";
 
 export const Login = () => {
     const auth = useContext(AuthContext);
