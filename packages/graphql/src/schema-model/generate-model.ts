@@ -43,6 +43,7 @@ import { Relationship } from "./relationship/Relationship";
 import { parseAuthenticationAnnotation } from "./parser/authentication-annotation";
 import { Operation } from "./Operation";
 import { Field } from "./attribute/Field";
+import { parseSubscriptionsAuthorizationAnnotation } from "./parser/subscriptions-authorization-annotation";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionNodes = getDefinitionNodes(document);
@@ -291,6 +292,8 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
                     return parseAuthorizationAnnotation(directive);
                 case "authentication":
                     return parseAuthenticationAnnotation(directive);
+                case "subscriptionsAuthorization":
+                    return parseSubscriptionsAuthorizationAnnotation(directive);
                 default:
                     return undefined;
             }
@@ -314,6 +317,8 @@ function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotati
                     return parseAuthorizationAnnotation(directive);
                 case "authentication":
                     return parseAuthenticationAnnotation(directive);
+                case "subscriptionsAuthorization":
+                    return parseSubscriptionsAuthorizationAnnotation(directive);
                 default:
                     return undefined;
             }
