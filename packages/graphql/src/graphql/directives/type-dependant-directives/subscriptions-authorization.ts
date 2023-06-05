@@ -128,7 +128,7 @@ function createSubscriptionsAuthorization({
 }): GraphQLDirective {
     return new GraphQLDirective({
         name: `${typeDefinitionName}SubscriptionsAuthorization`,
-        locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION, DirectiveLocation.INTERFACE],
+        locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION],
         args: {
             filter: {
                 description: "filter",
@@ -154,7 +154,7 @@ function createJWTPayloadWhere(
     return inputTC.getType();
 }
 
-export function createAuthorizationDefinitions(
+export function createSubscriptionsAuthorizationDefinitions(
     typeDefinitionName: string,
     schema: GraphQLSchema
 ): (TypeDefinitionNode | DirectiveDefinitionNode)[] {

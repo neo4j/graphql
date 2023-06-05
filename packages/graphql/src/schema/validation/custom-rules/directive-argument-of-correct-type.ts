@@ -27,7 +27,7 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
 
     return {
         Directive(directiveNode: DirectiveNode) {
-            // Validate only Authorization usage
+            // Validate only Authorization or SubscriptionsAuthorization usage
             if (!directiveNode.name.value.includes("Authorization")) {
                 return;
             }

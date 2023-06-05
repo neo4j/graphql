@@ -25,9 +25,9 @@ import type {
     ObjectTypeExtensionNode,
     InterfaceTypeExtensionNode,
 } from "graphql";
-import { createAuthorizationDefinitions } from "../../../graphql/directives/type-dependant-directives/authorization";
 import type { EnricherContext } from "../EnricherContext";
 import type { Enricher } from "../types";
+import { createSubscriptionsAuthorizationDefinitions } from "../../../graphql/directives/type-dependant-directives/subscriptions-authorization";
 
 type ObjectOrInterfaceDefinitionNode = ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
 type ObjectOrInterfaceExtensionNode = ObjectTypeExtensionNode | InterfaceTypeExtensionNode;
@@ -55,49 +55,56 @@ function containsSubscriptionsAuthorization(object: ObjectLikeDefinitionNode): b
     }
 }
 
-function getSubscriptionsAuthorizationUsage(currentDirectiveUsage: any, typeName: string) {
+function getSubscriptionsAuthorizationDirective(currentDirectiveDirective: any, typeName: string) {
     return {
-        ...currentDirectiveUsage,
+        ...currentDirectiveDirective,
         name: {
             kind: Kind.NAME,
-            value: `${typeName}Authorization`,
+            value: `${typeName}SubscriptionsAuthorization`,
         },
     };
 }
 
-function changeSubscriptionsAuthorizationUsageOnField(
+function changeSubscriptionsAuthorizationDirectiveOnField(
     field: FieldDefinitionNode,
     userDocumentObject: ObjectLikeDefinitionNode
 ): FieldDefinitionNode {
     const userField = userDocumentObject.fields?.find(
         (userDefinitionField) => field.name.value === userDefinitionField.name.value
     );
-    const userFieldAuthorizationUsage = userField && getSubscriptionsAuthorizationDirectiveDefinition(userField);
-    if (!userFieldAuthorizationUsage) {
+    const userFieldAuthorizationDirective = userField && getSubscriptionsAuthorizationDirectiveDefinition(userField);
+    if (!userFieldAuthorizationDirective) {
         return field;
     }
-    const fieldAuthorizationUsage = getAuthorizationUsage(userFieldAuthorizationUsage, userDocumentObject.name.value);
-    return { ...field, directives: (field.directives ?? []).concat(fieldAuthorizationUsage) };
+    const fieldAuthorizationDirective = getSubscriptionsAuthorizationDirective(
+        userFieldAuthorizationDirective,
+        userDocumentObject.name.value
+    );
+    return { ...field, directives: (field.directives ?? []).concat(fieldAuthorizationDirective) };
 }
 
-function changeSubscriptionsAuthorizationUsageOnObject(
+function changeSubscriptionsAuthorizationDirectiveOnObject(
     object: ObjectOrInterfaceDefinitionNode,
     userDocumentObject: ObjectLikeDefinitionNode
 ): ObjectOrInterfaceDefinitionNode {
-    const userAuthorizationUsage = getAuthorizationDirectiveDefinition(userDocumentObject);
-    const fieldsWithNewAuthorizationUsage = object.fields?.map((field) =>
-        changeAuthorizationUsageOnField(field, userDocumentObject)
+    const userAuthorizationDirective = getSubscriptionsAuthorizationDirectiveDefinition(userDocumentObject);
+    const fieldsWithNewAuthorizationDirective = object.fields?.map((field) =>
+        changeSubscriptionsAuthorizationDirectiveOnField(field, userDocumentObject)
     );
-    const newDirectiveUsage =
-        userAuthorizationUsage && getAuthorizationUsage(userAuthorizationUsage, object.name.value);
+    const newDirectiveDirective =
+        userAuthorizationDirective &&
+        getSubscriptionsAuthorizationDirective(userAuthorizationDirective, object.name.value);
     return {
         ...object,
-        directives: newDirectiveUsage ? (object.directives ?? []).concat(newDirectiveUsage) : object.directives,
-        fields: fieldsWithNewAuthorizationUsage,
+        directives: newDirectiveDirective ? (object.directives ?? []).concat(newDirectiveDirective) : object.directives,
+        fields: fieldsWithNewAuthorizationDirective,
     };
 }
 
-function findSubscriptionsAuthorizationUsageByTypeName(typeName: string, enricherContext: EnricherContext): boolean {
+function findSubscriptionsAuthorizationDirectiveByTypeName(
+    typeName: string,
+    enricherContext: EnricherContext
+): boolean {
     const userDocumentObject = enricherContext.userDefinitionNodeMap[typeName] as
         | ObjectOrInterfaceDefinitionNode
         | undefined;
@@ -105,8 +112,8 @@ function findSubscriptionsAuthorizationUsageByTypeName(typeName: string, enriche
         `${userDocumentObject?.name.value}_EXTENSIONS`
     ] as Array<ObjectOrInterfaceExtensionNode> | undefined;
     if (
-        (userDocumentObject && containsAuthorization(userDocumentObject)) ||
-        (userDocumentExtensions && userDocumentExtensions.find(containsAuthorization))
+        (userDocumentObject && containsSubscriptionsAuthorization(userDocumentObject)) ||
+        (userDocumentExtensions && userDocumentExtensions.find(containsSubscriptionsAuthorization))
     ) {
         return true;
     }
@@ -119,9 +126,12 @@ export function subscriptionsAuthorizationDefinitionsEnricher(enricherContext: E
             case Kind.INTERFACE_TYPE_DEFINITION:
             case Kind.OBJECT_TYPE_DEFINITION: {
                 const typeName = definition.name.value;
-                const hasAuthorization = findAuthorizationUsageByTypeName(typeName, enricherContext);
+                const hasAuthorization = findSubscriptionsAuthorizationDirectiveByTypeName(typeName, enricherContext);
                 if (hasAuthorization) {
-                    const authDefinitions = createAuthorizationDefinitions(typeName, enricherContext.augmentedSchema);
+                    const authDefinitions = createSubscriptionsAuthorizationDefinitions(
+                        typeName,
+                        enricherContext.augmentedSchema
+                    );
                     accumulatedDefinitions.push(...authDefinitions);
                 }
             }
@@ -131,7 +141,7 @@ export function subscriptionsAuthorizationDefinitionsEnricher(enricherContext: E
     };
 }
 
-export function subscriptionsAuthorizationUsageEnricher(enricherContext: EnricherContext): Enricher {
+export function subscriptionsAuthorizationDirectiveEnricher(enricherContext: EnricherContext): Enricher {
     return (accumulatedDefinitions: DefinitionNode[], definition: DefinitionNode) => {
         switch (definition.kind) {
             case Kind.INTERFACE_TYPE_DEFINITION:
@@ -144,12 +154,14 @@ export function subscriptionsAuthorizationUsageEnricher(enricherContext: Enriche
                     | Array<ObjectOrInterfaceExtensionNode>
                     | undefined;
                 if (userDocumentObject) {
-                    let definitionWithEnrichedAuthorization = containsAuthorization(userDocumentObject)
-                        ? changeAuthorizationUsageOnObject(definition, userDocumentObject)
+                    let definitionWithEnrichedAuthorization = containsSubscriptionsAuthorization(userDocumentObject)
+                        ? changeSubscriptionsAuthorizationDirectiveOnObject(definition, userDocumentObject)
                         : definition;
                     if (userDocumentExtensions) {
                         definitionWithEnrichedAuthorization = userDocumentExtensions.reduce((prev, curr) => {
-                            return containsAuthorization(curr) ? changeAuthorizationUsageOnObject(prev, curr) : prev;
+                            return containsSubscriptionsAuthorization(curr)
+                                ? changeSubscriptionsAuthorizationDirectiveOnObject(prev, curr)
+                                : prev;
                         }, definitionWithEnrichedAuthorization);
                     }
                     accumulatedDefinitions.push(definitionWithEnrichedAuthorization);
