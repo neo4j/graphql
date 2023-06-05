@@ -75,10 +75,16 @@ export function generateSubscriptionConnectionWhereType({
         return;
     }
 
+    const relationshipCreatedWhere = `${typeName}RelationshipCreatedSubscriptionWhere`;
+    const relationshipDeletedWhere = `${typeName}RelationshipDeletedSubscriptionWhere`;
+
     return {
         created: schemaComposer.createInputTC({
-            name: `${typeName}RelationshipCreatedSubscriptionWhere`,
+            name: relationshipCreatedWhere,
             fields: {
+                AND: `[${relationshipCreatedWhere}!]`,
+                OR: `[${relationshipCreatedWhere}!]`,
+                NOT: relationshipCreatedWhere,
                 ...(isConnectedNodeTypeNotExcluded && {
                     [fieldName]: schemaComposer.getITC(`${typeName}SubscriptionWhere`),
                 }),
@@ -86,8 +92,11 @@ export function generateSubscriptionConnectionWhereType({
             },
         }),
         deleted: schemaComposer.createInputTC({
-            name: `${typeName}RelationshipDeletedSubscriptionWhere`,
+            name: relationshipDeletedWhere,
             fields: {
+                AND: `[${relationshipDeletedWhere}!]`,
+                OR: `[${relationshipDeletedWhere}!]`,
+                NOT: relationshipDeletedWhere,
                 ...(isConnectedNodeTypeNotExcluded && {
                     [fieldName]: schemaComposer.getITC(`${typeName}SubscriptionWhere`),
                 }),
