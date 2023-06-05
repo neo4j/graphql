@@ -37,7 +37,7 @@ export type SubscriptionsAuthorizationWhere = {
     relationship?: GraphQLWhereArg;
 };
 
-export const SubscriptionsAuthorizationFilterOperationRule: ReadonlyArray<SubscriptionsAuthorizationFilterEvent> = [
+export const SubscriptionsAuthorizationFilterEventRule: ReadonlyArray<SubscriptionsAuthorizationFilterEvent> = [
     "CREATE",
     "UPDATE",
     "DELETE",
@@ -65,7 +65,7 @@ export class SubscriptionsAuthorizationFilterRule {
     public where: SubscriptionsAuthorizationWhere;
 
     constructor({ events, requireAuthentication, where }: SubscriptionsAuthorizationFilterRuleConstructor) {
-        this.events = events ?? [...SubscriptionsAuthorizationFilterOperationRule];
+        this.events = events ?? [...SubscriptionsAuthorizationFilterEventRule];
         this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
         this.where = where;
     }
