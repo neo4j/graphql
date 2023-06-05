@@ -54,6 +54,14 @@ describe("createRelationshipPropertyElement", () => {
                             },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                     description: undefined,
@@ -85,6 +93,14 @@ describe("createRelationshipPropertyElement", () => {
                             },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                     description: undefined,
@@ -115,6 +131,14 @@ describe("createRelationshipPropertyElement", () => {
                                 pretty: "DateTime",
                             },
                         },
+                    },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
                     },
                     otherDirectives: [],
                     arguments: [],
