@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import type { ArgumentNode, DirectiveNode, FieldDefinitionNode, StringValueNode } from "graphql";
-import { Kind } from "graphql";
-import { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
-import { defaultNestedOperations, relationshipDirective } from "../graphql/directives/relationship";
+import type { DirectiveNode, FieldDefinitionNode } from "graphql";
+import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
+import { relationshipDirective } from "../graphql/directives/relationship";
 import { getArgumentValues } from "../utils/get-argument-values";
 
 type RelationshipDirection = "IN" | "OUT";
@@ -48,7 +47,7 @@ function getRelationshipMeta(
 }
 
 function getRelationshipDirectiveArguments(directiveNode: DirectiveNode): RelationshipMeta {
-    return  getArgumentValues(relationshipDirective, directiveNode) as RelationshipMeta;
+    return getArgumentValues(relationshipDirective, directiveNode) as RelationshipMeta;
 }
 
 export default getRelationshipMeta;
