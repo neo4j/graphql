@@ -73,6 +73,7 @@ function getNodes(
                     "queryOptions",
                     "plural",
                     "shareable",
+                    "subscriptionsAuthorization",
                     "deprecated",
                     "query",
                     "mutation",

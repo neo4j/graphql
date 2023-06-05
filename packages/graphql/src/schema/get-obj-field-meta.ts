@@ -193,6 +193,7 @@ function getObjFieldMeta({
                             "jwtClaim",
                             "selectable",
                             "settable",
+                            "subscriptionsAuthorization",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
