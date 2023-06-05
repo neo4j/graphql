@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { SubscriptionsEvent } from "../../../types";
-import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
+import type { SubscriptionsEvent } from "../../../../types";
+import { NodeBuilder } from "../../../../../tests/utils/builders/node-builder";
 import { subscriptionWhere } from "./where";
 
 describe("subscriptionWhere", () => {
