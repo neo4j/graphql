@@ -17,15 +17,17 @@
  * limitations under the License.
  */
 
-import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
-import type { GraphQLSchema } from "graphql";
+
 import { ComputerDesktopIconOutline, SwatchIconOutline } from "@neo4j-ndl/react/icons";
-import { Resources } from "./Resources";
-import { Keybindings } from "./Keybindings";
-import { DocExplorerComponent } from "./DocExplorerComponent";
-import type { Screen } from "../../contexts/screen";
+import type { GraphQLSchema } from "graphql";
+import type { Dispatch, SetStateAction } from "react";
+
 import { tracking } from "../../analytics/tracking";
+import type { Screen } from "../../contexts/screen";
+import { DocExplorerComponent } from "./DocExplorerComponent";
+import { Keybindings } from "./Keybindings";
+import { Resources } from "./Resources";
 
 enum EditorViewTiles {
     SCHEMA_DOCS,

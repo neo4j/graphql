@@ -241,7 +241,7 @@ function createConnectionFields({
             }
         }
 
-        if (!connectionField.relationship.writeonly) {
+        if (!connectionField.relationship.writeonly && connectionField.selectableOptions.onRead) {
             const deprecatedDirectives = graphqlDirectivesToCompose(
                 connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated")
             );
