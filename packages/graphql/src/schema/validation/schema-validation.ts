@@ -25,7 +25,7 @@ import type {
     ObjectTypeDefinitionNode,
 } from "graphql";
 import { specifiedDirectives, GraphQLSchema, visit } from "graphql";
-import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/authorization";
+import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/static-definitions";
 import { authorizationDefinitionsEnricher, authorizationDirectiveEnricher } from "./enrichers/authorization";
 import { EnricherContext } from "./EnricherContext";
 import type { Enricher } from "./types";
@@ -34,9 +34,10 @@ import type { SDLValidationRule } from "graphql/validation/ValidationContext";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
 import { validateSDL } from "./validate-sdl";
 import { makeReplaceWildcardVisitor } from "./custom-rules/replace-wildcard-value";
+import { createAuthenticationDirectiveDefinition } from "../../graphql/directives/type-dependant-directives/authentication";
 
 function getAdditionalDefinitions(jwtPayload?: ObjectTypeDefinitionNode): DefinitionNode[] {
-    return getStaticAuthorizationDefinitions(jwtPayload);
+    return [...getStaticAuthorizationDefinitions(jwtPayload), createAuthenticationDirectiveDefinition()];
 }
 function enrichDocument(
     enrichers: Enricher[],
