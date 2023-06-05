@@ -23,6 +23,7 @@ import type { InterfaceType, RecordType, RelationshipType, StandardType, UnionTy
 import { filterByProperties } from "./filter-by-properties";
 import { parseFilterProperty } from "../utils/parse-filter-property";
 import { isInterfaceSpecificFieldType, isInterfaceType, isStandardType } from "../utils/type-checks";
+import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
 
 type EventProperties = {
     from: Record<string, unknown>;
@@ -38,7 +39,10 @@ export function filterByRelationshipProperties({
     relationshipFields,
 }: {
     node: Node;
-    whereProperties: Record<string, RecordType | Record<string, RecordType | RelationshipType>>;
+    whereProperties: Record<
+        string,
+        RecordType | Record<string, RecordType | RelationshipType> | Array<Record<string, RecordType>>
+    >;
     receivedEvent: RelationshipSubscriptionsEvent;
     nodes: Node[];
     relationshipFields: Map<string, ObjectFields>;
@@ -52,6 +56,34 @@ export function filterByRelationshipProperties({
     const receivedEventRelationship = relationships[0] as RelationField; // ONE relationship only possible
 
     for (const [wherePropertyKey, wherePropertyValue] of Object.entries(whereProperties)) {
+        if (Object.keys(multipleConditionsAggregationMap).includes(wherePropertyKey)) {
+            const comparisonResultsAggregationFn = multipleConditionsAggregationMap[wherePropertyKey];
+            let comparisonResults;
+            if (wherePropertyKey === "NOT") {
+                comparisonResults = filterByRelationshipProperties({
+                    node,
+                    whereProperties: wherePropertyValue as Record<string, RecordType>,
+                    receivedEvent,
+                    nodes,
+                    relationshipFields,
+                });
+            } else {
+                comparisonResults = (wherePropertyValue as Array<Record<string, RecordType>>).map((whereCl) => {
+                    return filterByRelationshipProperties({
+                        node,
+                        whereProperties: whereCl,
+                        receivedEvent,
+                        nodes,
+                        relationshipFields,
+                    });
+                });
+            }
+
+            if (!comparisonResultsAggregationFn(comparisonResults)) {
+                return false;
+            }
+        }
+
         const { fieldName } = parseFilterProperty(wherePropertyKey);
 
         const connectedNodeFieldName = node.subscriptionEventPayloadFieldNames.create_relationship;
