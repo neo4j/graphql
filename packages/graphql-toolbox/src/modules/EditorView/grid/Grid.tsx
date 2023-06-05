@@ -18,11 +18,13 @@
  */
 
 import { useDragResize } from "@graphiql/react";
-import "./grid.css";
+
 // @ts-ignore - SVG Import
 import unionHorizontal from "./union_horizontal.svg";
 // @ts-ignore - SVG Import
 import unionVertical from "./union_vertical.svg";
+
+import "./grid.css";
 
 interface Props {
     queryEditor: React.ReactNode | null;
