@@ -24,7 +24,7 @@ import { populateWhereParams } from "./populate-where-params";
 
 describe("populateWhereParams", () => {
     let context: Context;
-    let authParam: Cypher.Param;
+    let jwtParam: Cypher.Param;
 
     beforeAll(() => {
         const jwt = {
@@ -37,8 +37,10 @@ describe("populateWhereParams", () => {
             },
         };
 
-        authParam = new Cypher.Param(jwt);
-        context = new ContextBuilder({ authParam }).instance();
+        jwtParam = new Cypher.Param(jwt);
+        context = new ContextBuilder({
+            authorization: { jwtParam, isAuthenticated: true, isAuthenticatedParam: new Cypher.Param(true) },
+        }).instance();
     });
 
     test("populated simple $jwt with Cypher param", () => {
@@ -47,7 +49,7 @@ describe("populateWhereParams", () => {
         };
 
         expect(populateWhereParams({ where, context })).toEqual({
-            id: Cypher.coalesce(authParam.property("sub"), new Cypher.Literal("")),
+            id: Cypher.coalesce(jwtParam.property("sub"), new Cypher.Literal("")),
         });
     });
 
@@ -57,7 +59,7 @@ describe("populateWhereParams", () => {
         };
 
         expect(populateWhereParams({ where, context })).toEqual({
-            id: Cypher.coalesce(authParam.property("some", "other", "claim"), new Cypher.Literal("")),
+            id: Cypher.coalesce(jwtParam.property("some", "other", "claim"), new Cypher.Literal("")),
         });
     });
 
@@ -70,7 +72,7 @@ describe("populateWhereParams", () => {
 
         expect(populateWhereParams({ where, context })).toEqual({
             user: {
-                id: Cypher.coalesce(authParam.property("sub"), new Cypher.Literal("")),
+                id: Cypher.coalesce(jwtParam.property("sub"), new Cypher.Literal("")),
             },
         });
     });
@@ -95,12 +97,12 @@ describe("populateWhereParams", () => {
             AND: [
                 {
                     user: {
-                        id: Cypher.coalesce(authParam.property("sub"), new Cypher.Literal("")),
+                        id: Cypher.coalesce(jwtParam.property("sub"), new Cypher.Literal("")),
                     },
                 },
                 {
                     user: {
-                        role_IN: Cypher.coalesce(authParam.property("roles"), new Cypher.Literal("")),
+                        role_IN: Cypher.coalesce(jwtParam.property("roles"), new Cypher.Literal("")),
                     },
                 },
             ],
@@ -149,26 +151,26 @@ describe("populateWhereParams", () => {
                             AND: [
                                 {
                                     user: {
-                                        id: Cypher.coalesce(authParam.property("sub"), new Cypher.Literal("")),
+                                        id: Cypher.coalesce(jwtParam.property("sub"), new Cypher.Literal("")),
                                     },
                                 },
                                 {
                                     user: {
-                                        role_IN: Cypher.coalesce(authParam.property("roles"), new Cypher.Literal("")),
+                                        role_IN: Cypher.coalesce(jwtParam.property("roles"), new Cypher.Literal("")),
                                     },
                                 },
                             ],
                         },
                         {
                             user: {
-                                role_IN: Cypher.coalesce(authParam.property("roles"), new Cypher.Literal("")),
+                                role_IN: Cypher.coalesce(jwtParam.property("roles"), new Cypher.Literal("")),
                             },
                         },
                     ],
                 },
                 {
                     user: {
-                        role_IN: Cypher.coalesce(authParam.property("roles"), new Cypher.Literal("")),
+                        role_IN: Cypher.coalesce(jwtParam.property("roles"), new Cypher.Literal("")),
                     },
                 },
             ],
