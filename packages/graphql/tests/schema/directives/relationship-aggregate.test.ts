@@ -108,7 +108,7 @@ describe("@relationship directive, aggregate argument", () => {
         expect(movieActorActorsAggregationSelection).toBeDefined();
     });
 
-    test("should works in conjunction with @query aggregate:false and @relationship aggregate:true", async () => {
+    test("should work in conjunction with @query aggregate:false and @relationship aggregate:true", async () => {
         const typeDefs = gql`
             type Actor @query(aggregate: false) {
                 username: String!
@@ -156,7 +156,7 @@ describe("@relationship directive, aggregate argument", () => {
         expect(movieActorActorsAggregationSelection).toBeDefined();
     });
 
-    test("should works in conjunction with @query aggregate:true and @relationship aggregate:false", async () => {
+    test("should work in conjunction with @query aggregate:true and @relationship aggregate:false", async () => {
         const typeDefs = gql`
             type Actor @query(aggregate: true) {
                 username: String!
