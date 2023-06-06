@@ -21,19 +21,22 @@ import { getFilteringFn } from "../utils/get-filtering-fn";
 import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
 import { parseFilterProperty } from "../utils/parse-filter-property";
 
-export function filterByValues<T>(
-    whereInput: Record<string, T | Array<Record<string, T>> | Record<string, T>>,
-    receivedValues: Record<string, T>
-): boolean {
+export function filterByValues<T>({
+    whereInput,
+    receivedValues,
+}: {
+    whereInput: Record<string, T | Array<Record<string, T>> | Record<string, T>>;
+    receivedValues: Record<string, T>;
+}): boolean {
     for (const [k, v] of Object.entries(whereInput)) {
         if (Object.keys(multipleConditionsAggregationMap).includes(k)) {
             const comparisonResultsAggregationFn = multipleConditionsAggregationMap[k];
             let comparisonResults;
             if (k === "NOT") {
-                comparisonResults = filterByValues(v as Record<string, T>, receivedValues);
+                comparisonResults = filterByValues({ whereInput: v as Record<string, T>, receivedValues });
             } else {
                 comparisonResults = (v as Array<Record<string, T>>).map((whereCl) => {
-                    return filterByValues(whereCl, receivedValues);
+                    return filterByValues({ whereInput: whereCl, receivedValues });
                 });
             }
 
