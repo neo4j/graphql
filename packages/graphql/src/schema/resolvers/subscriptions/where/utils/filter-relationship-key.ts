@@ -87,7 +87,13 @@ export function filterRelationshipKey({
         } else if (isStandardType(nodeProperty, receivedEventRelationship)) {
             // standard type fields
             const nodeTo = nodes.find((n) => n.name === receivedEventRelationship.typeMeta.name) as Node;
-            if (!filterByProperties(nodeTo, nodeProperty, receivedEventProperties[key])) {
+            if (
+                !filterByProperties({
+                    node: nodeTo,
+                    whereProperties: nodeProperty,
+                    receivedProperties: receivedEventProperties[key],
+                })
+            ) {
                 return false;
             }
         }
@@ -137,7 +143,13 @@ function filterRelationshipUnionProperties({
     for (const [propertyName, propertyValueAsUnionTypeData] of Object.entries(targetNodePropsByTypename)) {
         if (propertyName === "node") {
             const nodeTo = nodes.find((n) => targetNodeTypename === n.name) as Node;
-            if (!filterByProperties(nodeTo, propertyValueAsUnionTypeData, receivedEventProperties[key])) {
+            if (
+                !filterByProperties({
+                    node: nodeTo,
+                    whereProperties: propertyValueAsUnionTypeData,
+                    receivedProperties: receivedEventProperties[key],
+                })
+            ) {
                 return false;
             }
         }
@@ -172,7 +184,13 @@ function filterRelationshipInterfaceProperty({
     const { _on, ...commonFields } = nodeProperty;
     const targetNode = nodes.find((n) => n.name === targetNodeTypename) as Node;
     if (commonFields && !_on) {
-        if (!filterByProperties(targetNode, commonFields, receivedEventProperties[key])) {
+        if (
+            !filterByProperties({
+                node: targetNode,
+                whereProperties: commonFields,
+                receivedProperties: receivedEventProperties[key],
+            })
+        ) {
             return false;
         }
     }
@@ -183,7 +201,13 @@ function filterRelationshipInterfaceProperty({
         }
         const commonFieldsMergedWithSpecificFields = { ...commonFields, ..._on[targetNodeTypename] }; //override common <fields, filter> combination with specific <fields, filter>
 
-        if (!filterByProperties(targetNode, commonFieldsMergedWithSpecificFields, receivedEventProperties[key])) {
+        if (
+            !filterByProperties({
+                node: targetNode,
+                whereProperties: commonFieldsMergedWithSpecificFields,
+                receivedProperties: receivedEventProperties[key],
+            })
+        ) {
             return false;
         }
     }
@@ -206,5 +230,9 @@ function filterRelationshipEdgeProperty({
     if (noRelationshipPropertiesFound) {
         return true;
     }
-    return filterByProperties(relationship as Node, edgeProperty, receivedEventProperties.relationship);
+    return filterByProperties({
+        node: relationship as Node,
+        whereProperties: edgeProperty,
+        receivedProperties: receivedEventProperties.relationship,
+    });
 }

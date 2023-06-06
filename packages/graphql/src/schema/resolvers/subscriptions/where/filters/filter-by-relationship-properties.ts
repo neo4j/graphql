@@ -83,7 +83,13 @@ export function filterByRelationshipProperties({
         const connectedNodeFieldName = node.subscriptionEventPayloadFieldNames.create_relationship;
         if (fieldName === connectedNodeFieldName) {
             const key = receivedEventRelationship.direction === "IN" ? "to" : "from";
-            if (!filterByProperties(node, wherePropertyValue, receivedEventProperties[key])) {
+            if (
+                !filterByProperties({
+                    node,
+                    whereProperties: wherePropertyValue,
+                    receivedProperties: receivedEventProperties[key],
+                })
+            ) {
                 return false;
             }
         }

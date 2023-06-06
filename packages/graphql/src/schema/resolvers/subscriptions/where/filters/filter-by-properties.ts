@@ -25,20 +25,28 @@ import { parseFilterProperty } from "../utils/parse-filter-property";
 import { isFloatType, isIDAsString, isStringType } from "../utils/type-checks";
 
 /** Returns true if receivedProperties comply with filters specified in whereProperties, false otherwise. */
-export function filterByProperties<T>(
-    node: Node,
-    whereProperties: Record<string, T | Array<Record<string, T>> | Record<string, T>>,
-    receivedProperties: Record<string, T>
-): boolean {
+export function filterByProperties<T>({
+    node,
+    whereProperties,
+    receivedProperties,
+}: {
+    node: Node;
+    whereProperties: Record<string, T | Array<Record<string, T>> | Record<string, T>>;
+    receivedProperties: Record<string, T>;
+}): boolean {
     for (const [k, v] of Object.entries(whereProperties)) {
         if (Object.keys(multipleConditionsAggregationMap).includes(k)) {
             const comparisonResultsAggregationFn = multipleConditionsAggregationMap[k];
             let comparisonResults;
             if (k === "NOT") {
-                comparisonResults = filterByProperties(node, v as Record<string, T>, receivedProperties);
+                comparisonResults = filterByProperties({
+                    node,
+                    whereProperties,
+                    receivedProperties,
+                });
             } else {
                 comparisonResults = (v as Array<Record<string, T>>).map((whereCl) => {
-                    return filterByProperties(node, whereCl, receivedProperties);
+                    return filterByProperties({ node, whereProperties: whereCl, receivedProperties });
                 });
             }
 
