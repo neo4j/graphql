@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-import createDisconnectAndParams from "./create-disconnect-and-params";
-import type { Neo4jGraphQL } from "../classes";
-import type { Context, RelationField } from "../types";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
-import { RelationshipQueryDirectionOption } from "../constants";
+import type { Neo4jGraphQL } from "../classes";
 import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
+import { RelationshipQueryDirectionOption } from "../constants";
+import { defaultNestedOperations } from "../graphql/directives/relationship";
+import type { Context, RelationField } from "../types";
+import createDisconnectAndParams from "./create-disconnect-and-params";
 
 describe("createDisconnectAndParams", () => {
     test("should return the correct disconnect", () => {
@@ -55,8 +56,17 @@ describe("createDisconnectAndParams", () => {
                             },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
+                    nestedOperations: defaultNestedOperations,
                 },
             ],
             cypherFields: [],

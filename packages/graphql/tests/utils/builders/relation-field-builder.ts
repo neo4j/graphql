@@ -18,6 +18,7 @@
  */
 
 import { RelationshipQueryDirectionOption } from "../../../src/constants";
+import { defaultNestedOperations } from "../../../src/graphql/directives/relationship";
 import type { RelationField } from "../../../src/types";
 import { Builder } from "./builder";
 
@@ -33,10 +34,19 @@ export class RelationFieldBuilder extends Builder<RelationField, RelationField> 
                 pretty: "",
                 input: {} as any,
             },
+            selectableOptions: {
+                onRead: true,
+                onAggregate: true,
+            },
+            settableOptions: {
+                onCreate: true,
+                onUpdate: true,
+            },
             otherDirectives: [],
             arguments: [],
             inherited: false,
             queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
+            nestedOperations: defaultNestedOperations,
             ...newOptions,
         });
     }

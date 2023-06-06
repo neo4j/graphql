@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import type { SubscriptionsEvent } from "../../../types";
-import type Node from "../../../classes/Node";
-import type { RecordType, RelationshipType } from "./utils/compare-properties";
-import { filterByProperties, filterByRelationshipProperties } from "./utils/compare-properties";
-import type { ObjectFields } from "../../../schema/get-obj-field-meta";
+import type { SubscriptionsEvent } from "../../../../types";
+import type Node from "../../../../classes/Node";
+import type { ObjectFields } from "../../../get-obj-field-meta";
+import { filterByProperties } from "./filters/filter-by-properties";
+import { filterByRelationshipProperties } from "./filters/filter-by-relationship-properties";
+import type { RecordType, RelationshipType } from "../types";
 
 export function subscriptionWhere({
     where,
@@ -39,12 +40,15 @@ export function subscriptionWhere({
     if (!where) {
         return true;
     }
+
     if (event.event === "create") {
         return filterByProperties(node, where, event.properties.new);
     }
+
     if (event.event === "update" || event.event === "delete") {
         return filterByProperties(node, where, event.properties.old);
     }
+
     if (event.event === "create_relationship" || event.event === "delete_relationship") {
         if (!nodes || !relationshipFields) {
             return false;
@@ -57,5 +61,6 @@ export function subscriptionWhere({
             relationshipFields,
         });
     }
+
     return false;
 }

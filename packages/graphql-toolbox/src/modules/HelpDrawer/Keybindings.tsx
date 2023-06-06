@@ -1,7 +1,8 @@
 import { useContext } from "react";
-import { Screen, ScreenContext } from "../../contexts/screen";
+
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
+import { Screen, ScreenContext } from "../../contexts/screen";
 
 interface RowEntryType {
     label: string;

@@ -25,9 +25,10 @@ import type {
     InterfaceTypeDefinitionNode,
     NameNode,
     ObjectTypeDefinitionNode,
+    SchemaExtensionNode,
 } from "graphql";
 import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
-import type { InputTypeComposer, ObjectTypeComposer } from "graphql-compose";
+import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import type { Node } from "../classes";
@@ -40,7 +41,7 @@ import { upperFirst } from "../utils/upper-first";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import { augmentFulltextSchema } from "./augment/fulltext";
 import createConnectionFields from "./create-connection-fields";
-import createRelationshipFields from "./create-relationship-fields";
+import createRelationshipFields from "./create-relationship-fields/create-relationship-fields";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import getCustomResolvers from "./get-custom-resolvers";
 import { getDefinitionNodes } from "./get-definition-nodes";
@@ -83,8 +84,14 @@ import { addArrayMethodsToITC } from "./array-methods";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
+import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { addMathOperatorsToITC } from "./math";
+import { getSchemaConfigurationFlags, schemaConfigurationFromSchemaExtensions } from "./schema-configuration";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
+
+function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
+    return "name" in x;
+}
 
 function makeAugmentedSchema(
     document: DocumentNode,
@@ -138,10 +145,18 @@ function makeAugmentedSchema(
 
     const definitionNodes = getDefinitionNodes(document);
 
-    const { scalarTypes, objectTypes, enumTypes, inputObjectTypes, directives, unionTypes, schemaExtensions } =
-        definitionNodes;
+    const {
+        interfaceTypes,
+        scalarTypes,
+        objectTypes,
+        enumTypes,
+        inputObjectTypes,
+        directives,
+        unionTypes,
+        schemaExtensions,
+    } = definitionNodes;
 
-    let { interfaceTypes } = definitionNodes;
+    const globalSchemaConfiguration = schemaConfigurationFromSchemaExtensions(schemaExtensions);
 
     const extraDefinitions = [
         ...enumTypes,
@@ -149,11 +164,7 @@ function makeAugmentedSchema(
         ...inputObjectTypes,
         ...unionTypes,
         ...directives,
-        ...([
-            customResolvers.customQuery,
-            customResolvers.customMutation,
-            customResolvers.customSubscription,
-        ] as ObjectTypeDefinitionNode[]),
+        ...[customResolvers.customQuery, customResolvers.customMutation, customResolvers.customSubscription],
     ].filter(Boolean) as DefinitionNode[];
 
     Object.values(Scalars).forEach((scalar: GraphQLScalarType) => composer.addTypeDefs(`scalar ${scalar.name}`));
@@ -175,10 +186,10 @@ function makeAugmentedSchema(
 
     const hasGlobalNodes = addGlobalNodeFields(nodes, composer);
 
-    const relationshipProperties = interfaceTypes.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
-    const interfaceRelationships = interfaceTypes.filter((i) => interfaceRelationshipNames.has(i.name.value));
-    interfaceTypes = interfaceTypes.filter(
-        (i) => !(relationshipPropertyInterfaceNames.has(i.name.value) || interfaceRelationshipNames.has(i.name.value))
+    const { relationshipProperties, interfaceRelationships, filteredInterfaceTypes } = filterInterfaceTypes(
+        interfaceTypes,
+        relationshipPropertyInterfaceNames,
+        interfaceRelationshipNames
     );
 
     const relationshipFields = new Map<string, ObjectFields>();
@@ -186,7 +197,7 @@ function makeAugmentedSchema(
 
     relationshipProperties.forEach((relationship) => {
         const authDirective = (relationship.directives || []).find((x) =>
-            ["auth", "authoization"].includes(x.name.value)
+            ["auth", "authorization"].includes(x.name.value)
         );
         if (authDirective) {
             throw new Error("Cannot have @auth directive on relationship properties interface");
@@ -210,7 +221,7 @@ function makeAugmentedSchema(
 
         const relFields = getObjFieldMeta({
             enums: enumTypes,
-            interfaces: interfaceTypes,
+            interfaces: filteredInterfaceTypes,
             objects: objectTypes,
             scalars: scalarTypes,
             unions: unionTypes,
@@ -299,7 +310,7 @@ function makeAugmentedSchema(
 
         const interfaceFields = getObjFieldMeta({
             enums: enumTypes,
-            interfaces: [...interfaceTypes, ...interfaceRelationships],
+            interfaces: [...filteredInterfaceTypes, ...interfaceRelationships],
             objects: objectTypes,
             scalars: scalarTypes,
             unions: unionTypes,
@@ -580,7 +591,7 @@ function makeAugmentedSchema(
         }
 
         const sortFields = getSortableFields(node).reduce(
-            (res, f) => ({
+            (res: InputTypeComposerFieldConfigMapDefinition, f) => ({
                 ...res,
                 [f.fieldName]: {
                     type: sortDirection.getTypeName(),
@@ -647,6 +658,9 @@ function makeAugmentedSchema(
                 count: countField,
                 ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
                     if (field.typeMeta.array) {
+                        return res;
+                    }
+                    if (!field.selectableOptions.onAggregate) {
                         return res;
                     }
                     const objectTypeComposer = aggregationTypesMapper.getAggregationType({
@@ -752,7 +766,13 @@ function makeAugmentedSchema(
 
         const rootTypeFieldNames = node.rootTypeFieldNames;
 
-        if (!node.exclude?.operations.includes("read")) {
+        const schemaConfigurationFlags = getSchemaConfigurationFlags({
+            globalSchemaConfiguration,
+            nodeSchemaConfiguration: node.schemaConfiguration,
+            excludeDirective: node.exclude,
+        });
+
+        if (schemaConfigurationFlags.read) {
             composer.Query.addFields({
                 [rootTypeFieldNames.read]: findResolver({ node }),
             });
@@ -760,15 +780,6 @@ function makeAugmentedSchema(
                 rootTypeFieldNames.read,
                 graphqlDirectivesToCompose(node.propagatedDirectives)
             );
-
-            composer.Query.addFields({
-                [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
-            });
-            composer.Query.setFieldDirectives(
-                rootTypeFieldNames.aggregate,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
-            );
-
             composer.Query.addFields({
                 [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
             });
@@ -777,8 +788,17 @@ function makeAugmentedSchema(
                 graphqlDirectivesToCompose(node.propagatedDirectives)
             );
         }
+        if (schemaConfigurationFlags.aggregate) {
+            composer.Query.addFields({
+                [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
+            });
+            composer.Query.setFieldDirectives(
+                rootTypeFieldNames.aggregate,
+                graphqlDirectivesToCompose(node.propagatedDirectives)
+            );
+        }
 
-        if (!node.exclude?.operations.includes("create")) {
+        if (schemaConfigurationFlags.create) {
             composer.Mutation.addFields({
                 [rootTypeFieldNames.create]: createResolver({ node }),
             });
@@ -788,9 +808,9 @@ function makeAugmentedSchema(
             );
         }
 
-        if (!node.exclude?.operations.includes("delete")) {
+        if (schemaConfigurationFlags.delete) {
             composer.Mutation.addFields({
-                [rootTypeFieldNames.delete]: deleteResolver({ node }),
+                [rootTypeFieldNames.delete]: deleteResolver({ node, composer }),
             });
             composer.Mutation.setFieldDirectives(
                 rootTypeFieldNames.delete,
@@ -798,11 +818,11 @@ function makeAugmentedSchema(
             );
         }
 
-        if (!node.exclude?.operations.includes("update")) {
+        if (schemaConfigurationFlags.update) {
             composer.Mutation.addFields({
                 [rootTypeFieldNames.update]: updateResolver({
                     node,
-                    schemaComposer: composer,
+                    composer,
                 }),
             });
             composer.Mutation.setFieldDirectives(
@@ -817,7 +837,7 @@ function makeAugmentedSchema(
             throw new Error(`Union ${union.name.value} has no types`);
         }
 
-        const fields = union.types.reduce((f, type) => {
+        const fields = union.types.reduce((f: Record<string, string>, type) => {
             return { ...f, [type.name.value]: `${type.name.value}Where` };
         }, {});
 
@@ -828,7 +848,13 @@ function makeAugmentedSchema(
     });
 
     if (generateSubscriptions && nodes.length) {
-        generateSubscriptionTypes({ schemaComposer: composer, nodes, relationshipFields, interfaceCommonFields });
+        generateSubscriptionTypes({
+            schemaComposer: composer,
+            nodes,
+            relationshipFields,
+            interfaceCommonFields,
+            globalSchemaConfiguration,
+        });
     }
 
     ["Mutation", "Query"].forEach((type) => {
@@ -840,7 +866,7 @@ function makeAugmentedSchema(
                 obj: cypherType,
                 scalars: scalarTypes,
                 enums: enumTypes,
-                interfaces: interfaceTypes,
+                interfaces: filteredInterfaceTypes,
                 unions: unionTypes,
                 objects: objectTypes,
                 callbacks,
@@ -874,12 +900,12 @@ function makeAugmentedSchema(
         }
     });
 
-    interfaceTypes.forEach((inter) => {
+    filteredInterfaceTypes.forEach((inter) => {
         const objectFields = getObjFieldMeta({
             obj: inter,
             scalars: scalarTypes,
             enums: enumTypes,
-            interfaces: interfaceTypes,
+            interfaces: filteredInterfaceTypes,
             unions: unionTypes,
             objects: objectTypes,
             callbacks,
@@ -907,15 +933,12 @@ function makeAugmentedSchema(
 
     let parsedDoc = parse(generatedTypeDefs);
 
-    function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
-        return "name" in x;
-    }
-
-    const emptyObjectsInterfaces = (
-        parsedDoc.definitions.filter(
-            (x) => (x.kind === "ObjectTypeDefinition" && !isRootType(x)) || x.kind === "InterfaceTypeDefinition"
-        ) as (InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode)[]
-    ).filter((x) => !x.fields?.length);
+    const emptyObjectsInterfaces = parsedDoc.definitions
+        .filter(
+            (x): x is InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode =>
+                (x.kind === Kind.OBJECT_TYPE_DEFINITION && !isRootType(x)) || x.kind === Kind.INTERFACE_TYPE_DEFINITION
+        )
+        .filter((x) => !x.fields?.length);
 
     if (emptyObjectsInterfaces.length) {
         throw new Error(
@@ -925,7 +948,7 @@ function makeAugmentedSchema(
         );
     }
 
-    const documentNames = new Set(parsedDoc.definitions.filter(definionNodeHasName).map((x) => x.name.value));
+    const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));
     const resolveMethods = getResolveAndSubscriptionMethods(composer);
 
     const generatedResolveMethods: Record<string, any> = {};
@@ -959,6 +982,17 @@ function makeAugmentedSchema(
         }
     });
 
+    // do not propagate Neo4jGraphQL directives on schema extensions
+    const schemaExtensionsWithoutNeo4jDirectives = schemaExtensions.map((schemaExtension): SchemaExtensionNode => {
+        return {
+            kind: schemaExtension.kind,
+            loc: schemaExtension.loc,
+            operationTypes: schemaExtension.operationTypes,
+            directives: schemaExtension.directives?.filter(
+                (schemaDirective) => !["query", "mutation", "subscription"].includes(schemaDirective.name.value)
+            ),
+        };
+    });
     const seen = {};
     parsedDoc = {
         ...parsedDoc,
@@ -985,7 +1019,7 @@ function makeAugmentedSchema(
 
                 return true;
             }),
-            ...schemaExtensions,
+            ...schemaExtensionsWithoutNeo4jDirectives,
         ],
     };
 

@@ -19,19 +19,19 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import type { EventEmitter } from "events";
-import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema, GraphQLResolveInfo } from "graphql";
-import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
-import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
-import type { Node, Relationship } from "../classes";
-import type { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
-import type { RelationshipQueryDirectionOption } from "../constants";
-import type { Executor } from "../classes/Executor";
+import type { DirectiveNode, GraphQLResolveInfo, GraphQLSchema, InputValueDefinitionNode, TypeNode } from "graphql";
 import type { Directive } from "graphql-compose";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
+import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
+import type { Node, Relationship } from "../classes";
+import type { Executor } from "../classes/Executor";
+import type { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
+import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { Auth } from "./deprecated/auth/auth";
-import type { JwtPayload } from "./deprecated/auth/jwt-payload";
 import type { AuthContext } from "./deprecated/auth/auth-context";
+import type { JwtPayload } from "./deprecated/auth/jwt-payload";
 
 export { Node } from "../classes";
 
@@ -109,6 +109,16 @@ export interface Callback {
     callbackName: string;
 }
 
+export type SelectableOptions = {
+    onRead: boolean;
+    onAggregate: boolean;
+};
+
+export type SettableOptions = {
+    onCreate: boolean;
+    onUpdate: boolean;
+};
+
 /**
  * Representation a ObjectTypeDefinitionNode field.
  */
@@ -124,6 +134,8 @@ export interface BaseField {
     writeonly?: boolean;
     dbPropertyName?: string;
     unique?: Unique;
+    selectableOptions: SelectableOptions;
+    settableOptions: SettableOptions;
 }
 
 /**
@@ -138,6 +150,7 @@ export interface RelationField extends BaseField {
     union?: UnionField;
     interface?: InterfaceField;
     queryDirection: RelationshipQueryDirectionOption;
+    nestedOperations: RelationshipNestedOperationsOption[];
 }
 
 export interface ConnectionField extends BaseField {

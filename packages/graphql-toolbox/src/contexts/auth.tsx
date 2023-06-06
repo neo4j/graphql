@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
 import * as neo4j from "neo4j-driver";
+
 import { VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
+import { useStore } from "../store";
+import type { LoginPayload, Neo4jDatabase } from "../types";
+import { getURLProtocolFromText } from "../utils/utils";
 import {
     checkDatabaseHasData,
     getDatabases,
     resolveNeo4jDesktopLoginPayload,
     resolveSelectedDatabaseName,
 } from "./utils";
-import type { LoginPayload, Neo4jDatabase } from "../types";
-import { getURLProtocolFromText } from "../utils/utils";
-import { useStore } from "../store";
 
 interface LoginOptions {
     username: string;

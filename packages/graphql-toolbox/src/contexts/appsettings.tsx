@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 
-import type { Dispatch, SetStateAction } from "react";
 import React, { useState } from "react";
+
+import type { Dispatch, SetStateAction } from "react";
+
 import { useStore } from "../store";
 
 export interface State {

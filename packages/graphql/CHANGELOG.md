@@ -1,5 +1,56 @@
 # @neo4j/graphql
 
+## 3.20.1
+
+### Patch Changes
+
+-   [#3396](https://github.com/neo4j/graphql/pull/3396) [`449d66fbd`](https://github.com/neo4j/graphql/commit/449d66fbddb061c40bfd3df10c8c12bf037960d7) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix sorting fields with @alias directive
+
+-   Updated dependencies [[`ddae88e48`](https://github.com/neo4j/graphql/commit/ddae88e48a2e13ea9b6f4d9b39c46c52cf35a17e), [`42d2f6938`](https://github.com/neo4j/graphql/commit/42d2f6938df2b728c5ed552200565d1f8145e8bd)]:
+    -   @neo4j/cypher-builder@0.4.3
+
+## 3.20.0
+
+### Minor Changes
+
+-   [#3357](https://github.com/neo4j/graphql/pull/3357) [`a39b22fc1`](https://github.com/neo4j/graphql/commit/a39b22fc1f8f1227cac5a7efbaab1d855062054e) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Introduced relationship directive configuration with the new nestedOperations argument. This allows users to specify which nested operations they want to be built into the schema.
+
+    Usage:
+
+    ```graphql
+    type Movie {
+        id: ID
+        actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE, UPDATE, CONNECT])
+    }
+    ```
+
+### Patch Changes
+
+-   [#3358](https://github.com/neo4j/graphql/pull/3358) [`6cce9ffe0`](https://github.com/neo4j/graphql/commit/6cce9ffe0605795be8e2e1990860d4ea0bd256ec) Thanks [@a-alle](https://github.com/a-alle)! - Fix update mutation returning info object when subscriptions enabled
+
+## 3.19.0
+
+### Minor Changes
+
+-   [#3333](https://github.com/neo4j/graphql/pull/3333) [`cc08bcd8a`](https://github.com/neo4j/graphql/commit/cc08bcd8a07044e38380fada05893de980351644) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Introduced top-level schema configuration, `@query`, `@mutation`, `@subscription`.
+
+    Usage:
+
+    ```graphql
+    type User @query(read: false) @mutation(operations: [CREATE, DELETE]) {
+        name: String
+    }
+    extend schema @subscription(operations: [CREATE])
+    ```
+
+### Patch Changes
+
+-   [#3344](https://github.com/neo4j/graphql/pull/3344) [`dcfe28b49`](https://github.com/neo4j/graphql/commit/dcfe28b4912bb328a03caab48991f0903f000751) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix relationship validation when an update and connect are used in the same Mutation.
+
+-   [#3322](https://github.com/neo4j/graphql/pull/3322) [`ce573b770`](https://github.com/neo4j/graphql/commit/ce573b7705a01caadcc1ad10984f85976451ca2c) Thanks [@angrykoala](https://github.com/angrykoala)! - Optimise query source metadata in executor
+
+-   [#3341](https://github.com/neo4j/graphql/pull/3341) [`43e189c14`](https://github.com/neo4j/graphql/commit/43e189c14853cd626e14b53338b4ef0ca7e489b8) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Neo4jGraphQL class, added public method to validate the type definitions
+
 ## 3.18.3
 
 ### Patch Changes

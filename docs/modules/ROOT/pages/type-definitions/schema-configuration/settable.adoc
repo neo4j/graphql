@@ -1,0 +1,76 @@
+[[type-definitions-access-control-settable]]
+== `@settable`
+
+This directive controls if the input field will be available on creation and update mutations.
+
+It has two arguments:
+
+* **onCreate**: If disabled, this field will not be available to be set on creation.
+* **onUpdate**: If disabled, this field will not be available to be set on update.
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+"""Instructs @neo4j/graphql to generate this input field for mutation."""
+directive @settable(onCreate: Boolean! = true, onUpdate: Boolean! = true) on FIELD_DEFINITION
+----
+
+=== Usage
+
+With this definition:
+
+[source, graphql, indent=0]
+----
+type Movie {
+    title: String!
+    description: String @settable(onCreate: true, onUpdate: false)
+}
+----
+
+The following input fields will be generated:
+
+[source, graphql, indent=0]
+----
+input MovieCreateInput {
+    description: String
+    title: String!
+}
+
+input MovieUpdateInput {
+    title: String
+}
+----
+
+This means the description can be set on creation, but it will not be available for update operations.
+
+=== `@settable` with Relationships
+Settable can be used along with relationship fields. When an operation over a field is disabled this way, that relationship won't be available on top level operations. For example:
+
+[source, graphql, indent=0]
+----
+type Movie {
+    title: String!
+    description: String
+}
+
+type Actor {
+    name: String!
+    actedIn: [Movie!]!
+        @relationship(type: "ACTED_IN", direction: OUT)
+        @settable(onCreate: false, onUpdate: true)
+}
+----
+
+In this case this query is invalid, as the field `actedIn` is not available for `createActors`:
+
+[source, graphql, indent=0]
+----
+mutation {
+  createActors(input: { actedIn: { create: { node: { title: "ABC" } } } }) {
+    actors {
+      name
+    }
+  }
+}
+----
