@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { Directive, SchemaComposer } from "graphql-compose";
-import { InterfaceTypeComposer, ObjectTypeComposer, InputTypeComposer } from "graphql-compose";
+import type { Directive, SchemaComposer, InputTypeComposer } from "graphql-compose";
+import { InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import type { Subgraph } from "../../classes/Subgraph";
 import { RelationshipNestedOperationsOption } from "../../constants";
@@ -106,8 +106,11 @@ function createRelationshipFields({
         const nestedOperations = new Set(rel.nestedOperations);
         const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
         const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
-
         const upperFieldName = upperFirst(rel.fieldName);
+        const nodeFieldUpdateInputName = `${rel.connectionPrefix}${upperFieldName}UpdateFieldInput`;
+        const nodeFieldUpdateInput = schemaComposer.getOrCreateITC(nodeFieldUpdateInputName);
+        const relationshipWhereTypeInputName = `${sourceName}${upperFieldName}AggregateInput`;
+
         let nodeFieldInput: InputTypeComposer<any> | undefined;
         if (
             nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
@@ -118,10 +121,6 @@ function createRelationshipFields({
             const nodeFieldInputName = `${rel.connectionPrefix}${upperFieldName}FieldInput`;
             nodeFieldInput = schemaComposer.getOrCreateITC(nodeFieldInputName);
         }
-
-        const nodeFieldUpdateInputName = `${rel.connectionPrefix}${upperFieldName}UpdateFieldInput`;
-        const nodeFieldUpdateInput = schemaComposer.getOrCreateITC(nodeFieldUpdateInputName);
-        const relationshipWhereTypeInputName = `${sourceName}${upperFieldName}AggregateInput`;
 
         const nodeWhereAggregationInput = createAggregationInputFields(node, sourceName, rel, schemaComposer);
         const edgeWhereAggregationInput =
