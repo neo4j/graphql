@@ -8,7 +8,6 @@ on:
       - 4.0.0
     paths:
       - "packages/graphql/**"
-      - "packages/cypher-builder/**"
 
 jobs:
   performance-tests:

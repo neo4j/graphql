@@ -6,9 +6,5 @@
         "outDir": "./dist",
         "rootDir": "./src"
     },
-    "paths": {
-        "@neo4j/cypher-builder": ["../../cypher-builder/src"]
-    },
-    "include": ["src/**/*"],
-    "references": [{ "path": "../../cypher-builder/tsconfig.json" }]
+    "include": ["src/**/*"]
 }
