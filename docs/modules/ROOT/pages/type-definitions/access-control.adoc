@@ -205,3 +205,34 @@ input MovieUpdateInput {
 ----
 
 This means the description can be set on creation, but it will not be available for update operations.
+
+=== `@settable` with Relationships
+Settable can be used along with relationship fields. When an operation over a field is disabled this way, that relationship won't be available on top level operations. For example:
+
+[source, graphql, indent=0]
+----
+type Movie {
+    title: String!
+    description: String
+}
+
+type Actor {
+    name: String!
+    actedIn: [Movie!]!
+        @relationship(type: "ACTED_IN", direction: OUT)
+        @settable(onCreate: false, onUpdate: true)
+}
+----
+
+In this case this query is invalid, as the field `actedIn` is not available for `createActors`:
+
+[source, graphql, indent=0]
+----
+mutation {
+  createActors(input: { actedIn: { create: { node: { title: "ABC" } } } }) {
+    actors {
+      name
+    }
+  }
+}
+----
