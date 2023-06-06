@@ -161,6 +161,11 @@ describe("Relationship nested operations", () => {
               node: Person!
             }
 
+            input MovieActorsUpdateFieldInput {
+              create: [MovieActorsCreateFieldInput!]
+              where: MovieActorsConnectionWhere
+            }
+
             type MovieAggregateSelection {
               count: Int!
               id: IDAggregateSelectionNullable!
@@ -206,6 +211,7 @@ describe("Relationship nested operations", () => {
             }
 
             input MovieUpdateInput {
+              actors: [MovieActorsUpdateFieldInput!]
               id: ID
             }
 
@@ -879,7 +885,12 @@ describe("Relationship nested operations", () => {
               node: Person!
             }
 
+            input MovieActorsUpdateConnectionInput {
+              node: PersonUpdateInput
+            }
+
             input MovieActorsUpdateFieldInput {
+              update: MovieActorsUpdateConnectionInput
               where: MovieActorsConnectionWhere
             }
 
@@ -1181,6 +1192,10 @@ describe("Relationship nested operations", () => {
               node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
+            input MovieActorsDeleteFieldInput {
+              where: MovieActorsConnectionWhere
+            }
+
             input MovieActorsFieldInput
 
             input MovieActorsNodeAggregationWhereInput {
@@ -1230,6 +1245,7 @@ describe("Relationship nested operations", () => {
             }
 
             input MovieActorsUpdateFieldInput {
+              delete: [MovieActorsDeleteFieldInput!]
               where: MovieActorsConnectionWhere
             }
 
@@ -1241,6 +1257,10 @@ describe("Relationship nested operations", () => {
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               id: ID
+            }
+
+            input MovieDeleteInput {
+              actors: [MovieActorsDeleteFieldInput!]
             }
 
             type MovieEdge {
@@ -1332,9 +1352,9 @@ describe("Relationship nested operations", () => {
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(where: PersonWhere): DeleteInfo!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateMovies(delete: MovieDeleteInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
             }
 
@@ -2123,6 +2143,11 @@ describe("Relationship nested operations", () => {
               node: Person!
             }
 
+            input MovieActorsUpdateFieldInput {
+              create: [MovieActorsCreateFieldInput!]
+              where: MovieActorsConnectionWhere
+            }
+
             type MovieAggregateSelection {
               count: Int!
               id: IDAggregateSelectionNullable!
@@ -2252,6 +2277,11 @@ describe("Relationship nested operations", () => {
               node: Person!
             }
 
+            input MovieProducersUpdateFieldInput {
+              disconnect: [MovieProducersDisconnectFieldInput!]
+              where: MovieProducersConnectionWhere
+            }
+
             input MovieRelationInput {
               actors: [MovieActorsCreateFieldInput!]
             }
@@ -2264,7 +2294,9 @@ describe("Relationship nested operations", () => {
             }
 
             input MovieUpdateInput {
+              actors: [MovieActorsUpdateFieldInput!]
               id: ID
+              producers: [MovieProducersUpdateFieldInput!]
             }
 
             input MovieWhere {
