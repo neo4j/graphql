@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import type { GraphQLWhereArg } from "../../types";
 import type { AuthenticationOperation } from "../annotation/AuthenticationAnnotation";
 import { AuthenticationAnnotation } from "../annotation/AuthenticationAnnotation";
 
@@ -34,15 +33,11 @@ const authenticationDefaultOperations: AuthenticationOperation[] = [
 export function parseAuthenticationAnnotation(directive: DirectiveNode): AuthenticationAnnotation {
     const args = parseArguments(directive) as {
         operations?: AuthenticationOperation[];
-        jwtPayload?: GraphQLWhereArg;
     };
 
-    const constructorArgs: [AuthenticationOperation[], GraphQLWhereArg?] = [
-        args.operations || authenticationDefaultOperations,
-    ];
-    if (args.jwtPayload) {
-        constructorArgs.push(args.jwtPayload);
+    if (args.operations) {
+        return new AuthenticationAnnotation(args.operations);
     }
 
-    return new AuthenticationAnnotation(...constructorArgs);
+    return new AuthenticationAnnotation(authenticationDefaultOperations);
 }
