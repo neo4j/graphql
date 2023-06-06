@@ -113,7 +113,7 @@ function createRelationshipFields({
         if (
             nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
             nestedOperations.has(RelationshipNestedOperationsOption.CREATE) ||
-            nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE)
+            (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) && node.uniqueFields.length)
         ) {
             const nodeFieldInputName = `${rel.connectionPrefix}${upperFieldName}FieldInput`;
             nodeFieldInput = schemaComposer.getOrCreateITC(nodeFieldInputName);
