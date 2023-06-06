@@ -1851,6 +1851,11 @@ describe("Relationship nested operations", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
+            }
+
             type IDAggregateSelectionNullable {
               longest: ID
               shortest: ID
@@ -1875,6 +1880,15 @@ describe("Relationship nested operations", () => {
               node: MovieActorsNodeAggregationWhereInput
             }
 
+            input MovieActorsConnectOrCreateFieldInput {
+              onCreate: MovieActorsConnectOrCreateFieldInputOnCreate!
+              where: PersonConnectOrCreateWhere!
+            }
+
+            input MovieActorsConnectOrCreateFieldInputOnCreate {
+              node: PersonOnCreateInput!
+            }
+
             type MovieActorsConnection {
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
@@ -1893,10 +1907,15 @@ describe("Relationship nested operations", () => {
               node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
+            input MovieActorsFieldInput {
+              connectOrCreate: [MovieActorsConnectOrCreateFieldInput!]
+            }
+
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
               name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
@@ -1940,6 +1959,7 @@ describe("Relationship nested operations", () => {
             }
 
             input MovieActorsUpdateFieldInput {
+              connectOrCreate: [MovieActorsConnectOrCreateFieldInput!]
               where: MovieActorsConnectionWhere
             }
 
@@ -1948,7 +1968,12 @@ describe("Relationship nested operations", () => {
               id: IDAggregateSelectionNullable!
             }
 
+            input MovieConnectOrCreateInput {
+              actors: [MovieActorsConnectOrCreateFieldInput!]
+            }
+
             input MovieCreateInput {
+              actors: MovieActorsFieldInput
               id: ID
             }
 
@@ -1972,6 +1997,7 @@ describe("Relationship nested operations", () => {
             }
 
             type MoviePersonActorsNodeAggregateSelection {
+              id: IDAggregateSelectionNonNullable!
               name: StringAggregateSelectionNullable!
             }
 
@@ -2043,7 +2069,7 @@ describe("Relationship nested operations", () => {
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               deletePeople(where: PersonWhere): DeleteInfo!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateMovies(connectOrCreate: MovieConnectOrCreateInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
             }
 
@@ -2062,12 +2088,18 @@ describe("Relationship nested operations", () => {
             }
 
             type Person {
+              id: ID!
               name: String
             }
 
             type PersonAggregateSelection {
               count: Int!
+              id: IDAggregateSelectionNonNullable!
               name: StringAggregateSelectionNullable!
+            }
+
+            input PersonConnectOrCreateWhere {
+              node: PersonUniqueWhere!
             }
 
             input PersonCreateInput {
@@ -2077,6 +2109,10 @@ describe("Relationship nested operations", () => {
             type PersonEdge {
               cursor: String!
               node: Person!
+            }
+
+            input PersonOnCreateInput {
+              name: String
             }
 
             input PersonOptions {
@@ -2092,7 +2128,12 @@ describe("Relationship nested operations", () => {
             Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
             \\"\\"\\"
             input PersonSort {
+              id: SortDirection
               name: SortDirection
+            }
+
+            input PersonUniqueWhere {
+              id: ID
             }
 
             input PersonUpdateInput {
@@ -2103,6 +2144,16 @@ describe("Relationship nested operations", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID!]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

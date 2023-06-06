@@ -77,7 +77,7 @@ describe("@relationhip - nestedOperations", () => {
                         id: "1"
                         actors: {
                             connectOrCreate: {
-                                where: { node: { name: "someName" } }
+                                where: { node: { id: "1" } }
                                 onCreate: { node: { name: "someName" } }
                             }
                         }
@@ -118,7 +118,7 @@ describe("@relationhip - nestedOperations", () => {
                     update: {
                     actors: {
                         connectOrCreate: {
-                        where: { node: { name: "someName" } }
+                        where: { node: { id: "1" } }
                         onCreate: { node: { name: "someName" } }
                         }
                     }
@@ -361,6 +361,105 @@ describe("@relationhip - nestedOperations", () => {
         expect((updateWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
             'Field "connectOrCreate" is not defined by type'
         );
+        expect(updateWithNestedUpdateResult.errors).toBeDefined();
+        expect((updateWithNestedUpdateResult.errors as any)[0].message).toInclude(
+            'Field "update" is not defined by type'
+        );
+        expect(updateWithNestedDisconnectResult.errors).toBeDefined();
+        expect((updateWithNestedDisconnectResult.errors as any)[0].message).toInclude(
+            'Field "disconnect" is not defined by type'
+        );
+        expect(updateWithNestedDeleteResult.errors).toBeDefined();
+        expect((updateWithNestedDeleteResult.errors as any)[0].message).toInclude(
+            'Field "delete" is not defined by type'
+        );
+        expect(deleteWithNestedDeleteResult.errors).toBeDefined();
+        expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude('Unknown argument "delete" on field');
+    });
+
+    test("Single relationship with nested operation unique field and CONNECT_OR_CREATE specified", async () => {
+        const typeDefs = `#graphql
+            type ${Person} {
+                id: ID! @id
+                name: String
+            }
+
+            type ${Movie} {
+                id: ID
+                actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const createWithNestedCreateResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: createMutationWithNestedCreate,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        const createWithNestedConnectResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: createMutationWithNestedConnect,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        const createWithNestedConnectOrCreateResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: createMutationWithNestedConnectOrCreate,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        const updateWithNestedCreateResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: updateMutationWithNestedCreate,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        const updateWithNestedConnectResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: updateMutationWithNestedConnect,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        const updateWithNestedConnectOrCreateResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: updateMutationWithNestedConnectOrCreate,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        const updateWithNestedUpdateResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: updateMutationWithNestedUpdate,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        const updateWithNestedDisconnectResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: updateMutationWithNestedDisconnect,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        const updateWithNestedDeleteResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: updateMutationWithNestedDelete,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        const deleteWithNestedDeleteResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: deleteMutationWithNestedDelete,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(createWithNestedCreateResult.errors).toBeDefined();
+        expect((createWithNestedCreateResult.errors as any)[0].message).toInclude(
+            'Field "create" is not defined by type'
+        );
+        expect(createWithNestedConnectResult.errors).toBeDefined();
+        expect((createWithNestedConnectResult.errors as any)[0].message).toInclude(
+            'Field "connect" is not defined by type'
+        );
+        expect(createWithNestedConnectOrCreateResult.errors).toBeFalsy();
+        expect(updateWithNestedCreateResult.errors).toBeDefined();
+        expect((updateWithNestedCreateResult.errors as any)[0].message).toInclude(
+            'Field "create" is not defined by type'
+        );
+        expect(updateWithNestedConnectResult.errors).toBeDefined();
+        expect((updateWithNestedConnectResult.errors as any)[0].message).toInclude(
+            'Field "connect" is not defined by type'
+        );
+        expect(updateWithNestedConnectOrCreateResult.errors).toBeFalsy();
         expect(updateWithNestedUpdateResult.errors).toBeDefined();
         expect((updateWithNestedUpdateResult.errors as any)[0].message).toInclude(
             'Field "update" is not defined by type'
