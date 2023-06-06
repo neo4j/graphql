@@ -43,7 +43,7 @@ function createNodePredicate({
     conditionForEvaluation?: Cypher.Predicate;
     includeAuthenticationPredicate?: boolean;
 }): PredicateReturn | undefined {
-    const concreteEntities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
+    const concreteEntities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
 
     if (concreteEntities.length !== 1) {
         throw new Error("Couldn't match entity");

@@ -40,7 +40,7 @@ function createNodePredicate({
     operations: AuthorizationOperation[];
     fieldName?: string;
 }): PredicateReturn {
-    const concreteEntities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
+    const concreteEntities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
 
     if (concreteEntities.length !== 1) {
         throw new Error("Couldn't match entity");
@@ -153,7 +153,6 @@ export function createAuthorizationBeforePredicate({
 }): PredicateReturn | undefined {
     const predicates: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
-
     for (const nodeEntry of nodes) {
         const { node, variable, fieldName } = nodeEntry;
 

@@ -58,7 +58,7 @@ export default async function translateCreate({
 
     // TODO: break this into a separate utility function
     if (mutationInputs.length) {
-        const concreteEntities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
+        const concreteEntities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
 
         if (concreteEntities.length !== 1) {
             throw new Error("Couldn't match entity");
