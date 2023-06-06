@@ -18,11 +18,10 @@
  */
 
 import type { Node } from "../classes";
-import { Neo4jGraphQLError } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import type { Context } from "../types";
-import { AUTH_FORBIDDEN_ERROR, AUTHORIZATION_UNAUTHENTICATED, META_CYPHER_VARIABLE } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
@@ -30,7 +29,6 @@ import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { addMeasurementField, Measurement } from "../utils/add-measurement-field";
-import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 
 type ProjectionAndParamsResult = {
     projection: Cypher.Expr;
@@ -55,25 +53,6 @@ export default async function translateCreate({
 
     const { resolveTree } = context;
     const mutationInputs = resolveTree.args.input as any[];
-
-    // TODO: break this into a separate utility function
-    if (mutationInputs.length) {
-        const concreteEntities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
-
-        if (concreteEntities.length !== 1) {
-            throw new Error("Couldn't match entity");
-        }
-
-        const entity = concreteEntities[0] as ConcreteEntity;
-
-        const annotation = entity.annotations.authentication;
-        if (annotation) {
-            const requiresAuthentication = annotation.operations.some((operation) => operation === "CREATE");
-            if (requiresAuthentication && !context.authorization.isAuthenticated) {
-                throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
-            }
-        }
-    }
 
     try {
         return await unwindCreate({ context, node });

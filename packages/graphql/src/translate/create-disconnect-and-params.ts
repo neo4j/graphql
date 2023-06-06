@@ -28,6 +28,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 interface Res {
     disconnects: string[];
@@ -59,11 +60,15 @@ function createDisconnectAndParams({
     parameterPrefix: string;
     isFirstLevel?: boolean;
 }): [string, any] {
+    checkAuthentication({ context, node: parentNode, targetOperation: "DELETE_RELATIONSHIP" });
+
     function createSubqueryContents(
         relatedNode: Node,
         disconnect: any,
         index: number
     ): { subquery: string; params: Record<string, any> } {
+        checkAuthentication({ context, node: relatedNode, targetOperation: "DELETE_RELATIONSHIP" });
+
         const variableName = `${varName}${index}`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";

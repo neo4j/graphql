@@ -65,7 +65,8 @@ function createNodePredicate({
     });
 
     return {
-        predicate: Cypher.and(authenticationPredicate, authorizationPredicate),
+        // predicate: Cypher.and(authenticationPredicate, authorizationPredicate),
+        predicate: authorizationPredicate,
         preComputedSubqueries,
     };
 }

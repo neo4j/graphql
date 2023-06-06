@@ -37,6 +37,7 @@ import { createAuthPredicates } from "../../create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { createAuthorizationAfterPredicate } from "../../authorization/create-authorization-after-predicate";
+import { checkAuthentication } from "../../authorization/check-authentication";
 
 type UnwindCreateScopeDefinition = {
     unwindVar: Cypher.Variable;
@@ -109,6 +110,7 @@ export class UnwindCreateVisitor implements Visitor {
             return cypher.join("\n");
         });
 
+        checkAuthentication({ context: this.context, node: create.node, targetOperation: "CREATE" });
         const authNodeClause = this.getAuthNodeClause(create.node, this.context, currentNode);
 
         let authorizationFieldsClause: Cypher.CompositeClause | Cypher.With | undefined;
@@ -230,6 +232,7 @@ export class UnwindCreateVisitor implements Visitor {
             return cypher.join("\n");
         });
 
+        checkAuthentication({ context: this.context, node: nestedCreate.node, targetOperation: "CREATE" });
         const authNodeClause = this.getAuthNodeClause(nestedCreate.node, this.context, currentNode);
 
         let authorizationFieldsClause: Cypher.CompositeClause | Cypher.With | undefined;
@@ -388,6 +391,12 @@ export class UnwindCreateVisitor implements Visitor {
             .filter((n) => n);
 
         for (const field of usedAuthFields) {
+            checkAuthentication({
+                context: this.context,
+                node: astNode.node,
+                targetOperation: "CREATE",
+                field: field.fieldName,
+            });
             const authorizationPredicateReturn = createAuthorizationAfterPredicate({
                 context: this.context,
                 nodes: [

@@ -133,7 +133,7 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
         });
 
         test("unauthenticated subscription fails", async () => {
@@ -150,7 +150,7 @@ describe("Subscription authentication", () => {
 
             await wsClient.waitForEvents(1);
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
         });
 
         test("authentication fails with wrong secret", async () => {
@@ -167,7 +167,7 @@ describe("Subscription authentication", () => {
                             `);
             await wsClient.waitForEvents(1);
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
         });
     });
 
@@ -258,7 +258,7 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
         });
     });
 
@@ -503,7 +503,7 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
         });
 
         test("authentication pass - create_relationship", async () => {
@@ -657,7 +657,7 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
         });
     });
 
@@ -749,7 +749,7 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
         });
     });
 

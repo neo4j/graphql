@@ -45,6 +45,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 interface Res {
     strs: string[];
@@ -95,6 +96,8 @@ export default function createUpdateAndParams({
             }`
         );
     }
+
+    checkAuthentication({ context, node, targetOperation: "UPDATE" });
 
     function reducer(res: Res, [key, value]: [string, any]) {
         let param: string;
@@ -662,6 +665,7 @@ export default function createUpdateAndParams({
             }
 
             validateNonNullProperty(res, varName, pushField);
+            checkAuthentication({ context, node, targetOperation: "UPDATE", field: pushField.fieldName });
 
             const pointArrayField = node.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
             if (pointArrayField) {
@@ -687,12 +691,17 @@ export default function createUpdateAndParams({
             }
 
             validateNonNullProperty(res, varName, popField);
+            checkAuthentication({ context, node, targetOperation: "UPDATE", field: popField.fieldName });
 
             res.strs.push(
                 `SET ${varName}.${popField.dbPropertyName} = ${varName}.${popField.dbPropertyName}[0..-$${param}]`
             );
 
             res.params[param] = value;
+        }
+
+        if (!pushField && !popField) {
+            checkAuthentication({ context, node, targetOperation: "UPDATE", field: key });
         }
 
         return res;

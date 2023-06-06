@@ -62,7 +62,7 @@ function createNodePredicate({
             conditionForEvaluation,
         });
     if (authenticationPredicate) {
-        authPredicates.push(authenticationPredicate);
+        // authPredicates.push(authenticationPredicate);
     }
 
     const authorizationPredicate = createNodeAuthorizationPredicate({
