@@ -117,8 +117,8 @@ This directive controls if the field will be available on queries and aggregatio
 
 It has two arguments:
 
-* onRead: If disabled, this field will not be available on queries and subscriptions.
-* onAggregation: If disabled, aggregations will not be available for this field
+* **onRead****: If disabled, this field will not be available on queries and subscriptions.
+* **onAggregation**: If disabled, aggregations will not be available for this field
 
 
 === Definition
@@ -150,8 +150,7 @@ type Movie {
 }
 ----
 
-This means that descriptions cannot be queries, neither on top or nested levels. Aggregations, however, are available for both:
-
+This means that descriptions cannot be queries, neither on top or on nested levels. Aggregations, however, are available for both:
 [source, graphql, indent=0]
 ----
 type MovieAggregateSelection {
@@ -168,8 +167,8 @@ This directive controls if the input field will be available on creation and upd
 
 It has two arguments:
 
-* onCreate: If disabled, this field will not be available to be set on creation.
-* onCreate: If disabled, this field will not be available to be set on update.
+* **onCreate**: If disabled, this field will not be available to be set on creation.
+* **onUpdate**: If disabled, this field will not be available to be set on update.
 
 === Definition
 
@@ -181,7 +180,7 @@ directive @settable(onCreate: Boolean! = true, onUpdate: Boolean! = true) on FIE
 
 === Usage
 
-With the following definition:
+With this definition:
 
 [source, graphql, indent=0]
 ----
