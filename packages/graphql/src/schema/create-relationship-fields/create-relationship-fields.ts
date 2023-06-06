@@ -109,10 +109,10 @@ function createRelationshipFields({
 
         const upperFieldName = upperFirst(rel.fieldName);
         let nodeFieldInput: InputTypeComposer<any> | undefined;
-        // TODO CONNECT_OR_CREATE but not related to a unique type
         if (
             nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
             nestedOperations.has(RelationshipNestedOperationsOption.CREATE) ||
+            // The connectOrCreate field is not generated if the related type does not have a unique field
             (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) && node.uniqueFields.length)
         ) {
             const nodeFieldInputName = `${rel.connectionPrefix}${upperFieldName}FieldInput`;
