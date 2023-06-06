@@ -41,7 +41,7 @@ export function filterByProperties<T>({
             if (k === "NOT") {
                 comparisonResults = filterByProperties({
                     node,
-                    whereProperties,
+                    whereProperties: v as Record<string, T>,
                     receivedProperties,
                 });
             } else {
