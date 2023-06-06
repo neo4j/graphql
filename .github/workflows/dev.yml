@@ -51,9 +51,6 @@ jobs:
   toolbox-tests:
     uses: ./.github/workflows/reusable-toolbox-tests.yml
 
-  cypher-builder-tests:
-    uses: ./.github/workflows/reusable-cypher-builder-tests.yml
-
   notification:
     runs-on: ubuntu-latest
 
@@ -65,7 +62,6 @@ jobs:
       - integration-tests-on-prem
       - integration-tests-on-prem-nightly
       - toolbox-tests
-      - cypher-builder-tests
 
     if: always()
 
