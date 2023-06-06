@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import type { GraphQLObjectType } from "graphql";
+import type { GraphQLFieldMap, GraphQLObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 
@@ -45,6 +45,9 @@ describe("@relationship directive, aggregate argument", () => {
         const movieFields = movieType.getFields();
         const movieActorsAggregate = movieFields["actorsAggregate"];
         expect(movieActorsAggregate).toBeDefined();
+
+        const movieActorActorsAggregationSelection = schema.getType("MovieActorActorsAggregationSelection") as GraphQLObjectType;
+        expect(movieActorActorsAggregationSelection).toBeDefined();
     });
 
     test("should disable nested aggregation", async () => {
@@ -68,6 +71,9 @@ describe("@relationship directive, aggregate argument", () => {
         const movieFields = movieType.getFields();
         const movieActorsAggregate = movieFields["actorsAggregate"];
         expect(movieActorsAggregate).toBeUndefined();
+
+        const movieActorActorsAggregationSelection = schema.getType("MovieActorActorsAggregationSelection") as GraphQLObjectType;
+        expect(movieActorActorsAggregationSelection).toBeUndefined();
     });
 
     test("should enable nested aggregation", async () => {
@@ -91,7 +97,102 @@ describe("@relationship directive, aggregate argument", () => {
         const movieFields = movieType.getFields();
         const movieActorsAggregate = movieFields["actorsAggregate"];
         expect(movieActorsAggregate).toBeDefined();
+
+        const movieActorActorsAggregationSelection = schema.getType("MovieActorActorsAggregationSelection") as GraphQLObjectType;
+        expect(movieActorActorsAggregationSelection).toBeDefined();
     });
+
+    test("should works in conjunction with @query aggregate:false and @relationship aggregate:true", async () => {
+        const typeDefs = gql`
+            type Actor @query(aggregate: false) {
+                username: String!
+                password: String!
+            }
+
+            type Movie {
+                title: String
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
+        const movieType = schema.getType("Movie") as GraphQLObjectType;
+        expect(movieType).toBeDefined();
+
+        const movieFields = movieType.getFields();
+        const movieActorsAggregate = movieFields["actorsAggregate"];
+        expect(movieActorsAggregate).toBeDefined();
+
+        const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
+
+        const movies = queryFields["movies"];
+        const actors = queryFields["actors"];
+
+        expect(movies).toBeDefined();
+        expect(actors).toBeDefined();
+
+        const moviesConnection = queryFields["moviesConnection"];
+        const actorsConnection = queryFields["actorsConnection"];
+
+        expect(moviesConnection).toBeDefined();
+        expect(actorsConnection).toBeDefined();
+
+        const moviesAggregate = queryFields["moviesAggregate"];
+        const actorsAggregate = queryFields["actorsAggregate"];
+
+        expect(moviesAggregate).toBeDefined();
+        expect(actorsAggregate).toBeUndefined();
+
+        const movieActorActorsAggregationSelection = schema.getType("MovieActorActorsAggregationSelection") as GraphQLObjectType;
+        expect(movieActorActorsAggregationSelection).toBeDefined();
+    });
+
+    test("should works in conjunction with @query aggregate:true and @relationship aggregate:false", async () => {
+      const typeDefs = gql`
+          type Actor @query(aggregate: true) {
+              username: String!
+              password: String!
+          }
+
+          type Movie {
+              title: String
+              actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: false)
+          }
+      `;
+
+      const neoSchema = new Neo4jGraphQL({ typeDefs });
+      const schema = await neoSchema.getSchema();
+      const movieType = schema.getType("Movie") as GraphQLObjectType;
+      expect(movieType).toBeDefined();
+
+      const movieFields = movieType.getFields();
+      const movieActorsAggregate = movieFields["actorsAggregate"];
+      expect(movieActorsAggregate).toBeUndefined();
+
+      const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
+
+      const movies = queryFields["movies"];
+      const actors = queryFields["actors"];
+
+      expect(movies).toBeDefined();
+      expect(actors).toBeDefined();
+
+      const moviesConnection = queryFields["moviesConnection"];
+      const actorsConnection = queryFields["actorsConnection"];
+
+      expect(moviesConnection).toBeDefined();
+      expect(actorsConnection).toBeDefined();
+
+      const moviesAggregate = queryFields["moviesAggregate"];
+      const actorsAggregate = queryFields["actorsAggregate"];
+
+      expect(moviesAggregate).toBeDefined();
+      expect(actorsAggregate).toBeDefined();
+
+      const movieActorActorsAggregationSelection = schema.getType("MovieActorActorsAggregationSelection") as GraphQLObjectType;
+      expect(movieActorActorsAggregationSelection).toBeUndefined();
+  });
 
     test("snapshot test with aggregate argument set as false", async () => {
         const typeDefs = gql`
