@@ -18,7 +18,7 @@
  */
 
 import type { Directive, SchemaComposer } from "graphql-compose";
-import { InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
+import { InterfaceTypeComposer, ObjectTypeComposer, InputTypeComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import type { Subgraph } from "../../classes/Subgraph";
 import { RelationshipNestedOperationsOption } from "../../constants";
@@ -108,8 +108,16 @@ function createRelationshipFields({
         const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
 
         const upperFieldName = upperFirst(rel.fieldName);
-        const nodeFieldInputName = `${rel.connectionPrefix}${upperFieldName}FieldInput`;
-        const nodeFieldInput = schemaComposer.getOrCreateITC(nodeFieldInputName);
+        let nodeFieldInput: InputTypeComposer<any> | undefined;
+        // TODO CONNECT_OR_CREATE but not related to a unique type
+        if (
+            nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
+            nestedOperations.has(RelationshipNestedOperationsOption.CREATE) ||
+            nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE)
+        ) {
+            const nodeFieldInputName = `${rel.connectionPrefix}${upperFieldName}FieldInput`;
+            nodeFieldInput = schemaComposer.getOrCreateITC(nodeFieldInputName);
+        }
 
         const nodeFieldUpdateInputName = `${rel.connectionPrefix}${upperFieldName}UpdateFieldInput`;
         const nodeFieldUpdateInput = schemaComposer.getOrCreateITC(nodeFieldUpdateInputName);
@@ -226,17 +234,17 @@ function createRelationshipFields({
         if (rel.settableOptions.onCreate) {
             // Interface CreateInput does not require relationship input fields
             // These are specified on the concrete nodes.
-            if (!(composeNode instanceof InterfaceTypeComposer)) {
+            if (!(composeNode instanceof InterfaceTypeComposer) && nodeFieldInput) {
                 nodeCreateInput.addFields({
                     [rel.fieldName]: {
-                        type: nodeFieldInputName,
+                        type: nodeFieldInput,
                         directives: deprecatedDirectives,
                     },
                 });
             }
         }
 
-        if (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE)) {
+        if (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) && nodeFieldInput) {
             // createConnectOrCreateField return undefined if the node has no uniqueFields
             const connectOrCreate = createConnectOrCreateField({
                 relationField: rel,
@@ -257,7 +265,7 @@ function createRelationshipFields({
             }
         }
 
-        if (nestedOperations.has(RelationshipNestedOperationsOption.CREATE)) {
+        if (nestedOperations.has(RelationshipNestedOperationsOption.CREATE) && nodeFieldInput) {
             const createName = `${rel.connectionPrefix}${upperFieldName}CreateFieldInput`;
             const create = rel.typeMeta.array ? `[${createName}!]` : createName;
             schemaComposer.getOrCreateITC(createName, (tc) => {
@@ -286,7 +294,7 @@ function createRelationshipFields({
             });
         }
 
-        if (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT)) {
+        if (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) && nodeFieldInput) {
             const connectName = `${rel.connectionPrefix}${upperFieldName}ConnectFieldInput`;
             const connect = rel.typeMeta.array ? `[${connectName}!]` : connectName;
             const connectWhereName = `${node.name}ConnectWhere`;

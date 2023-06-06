@@ -443,15 +443,15 @@ describe("@relationhip - nestedOperations", () => {
 
         expect(createWithNestedCreateResult.errors).toBeDefined();
         expect((createWithNestedCreateResult.errors as any)[0].message).toInclude(
-            'Field "create" is not defined by type'
+            'Field "actors" is not defined by type'
         );
         expect(createWithNestedConnectResult.errors).toBeDefined();
         expect((createWithNestedConnectResult.errors as any)[0].message).toInclude(
-            'Field "connect" is not defined by type'
+            'Field "actors" is not defined by type'
         );
         expect(createWithNestedConnectOrCreateResult.errors).toBeDefined();
         expect((createWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-            'Field "connectOrCreate" is not defined by type'
+            'Field "actors" is not defined by type'
         );
         expect(updateWithNestedCreateResult.errors).toBeDefined();
         expect((updateWithNestedCreateResult.errors as any)[0].message).toInclude(
@@ -544,15 +544,15 @@ describe("@relationhip - nestedOperations", () => {
 
         expect(createWithNestedCreateResult.errors).toBeDefined();
         expect((createWithNestedCreateResult.errors as any)[0].message).toInclude(
-            'Field "create" is not defined by type'
+            'Field "actors" is not defined by type'
         );
         expect(createWithNestedConnectResult.errors).toBeDefined();
         expect((createWithNestedConnectResult.errors as any)[0].message).toInclude(
-            'Field "connect" is not defined by type'
+            'Field "actors" is not defined by type'
         );
         expect(createWithNestedConnectOrCreateResult.errors).toBeDefined();
         expect((createWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-            'Field "connectOrCreate" is not defined by type'
+            'Field "actors" is not defined by type'
         );
         expect(updateWithNestedCreateResult.errors).toBeDefined();
         expect((updateWithNestedCreateResult.errors as any)[0].message).toInclude(
@@ -645,15 +645,15 @@ describe("@relationhip - nestedOperations", () => {
 
         expect(createWithNestedCreateResult.errors).toBeDefined();
         expect((createWithNestedCreateResult.errors as any)[0].message).toInclude(
-            'Field "create" is not defined by type'
+            'Field "actors" is not defined by type'
         );
         expect(createWithNestedConnectResult.errors).toBeDefined();
         expect((createWithNestedConnectResult.errors as any)[0].message).toInclude(
-            'Field "connect" is not defined by type'
+            'Field "actors" is not defined by type'
         );
         expect(createWithNestedConnectOrCreateResult.errors).toBeDefined();
         expect((createWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-            'Field "connectOrCreate" is not defined by type'
+            'Field "actors" is not defined by type'
         );
         expect(updateWithNestedCreateResult.errors).toBeDefined();
         expect((updateWithNestedCreateResult.errors as any)[0].message).toInclude(

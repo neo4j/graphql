@@ -837,8 +837,6 @@ describe("Relationship nested operations", () => {
               node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            input MovieActorsFieldInput
-
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
@@ -900,7 +898,6 @@ describe("Relationship nested operations", () => {
             }
 
             input MovieCreateInput {
-              actors: MovieActorsFieldInput
               id: ID
             }
 
@@ -1196,8 +1193,6 @@ describe("Relationship nested operations", () => {
               where: MovieActorsConnectionWhere
             }
 
-            input MovieActorsFieldInput
-
             input MovieActorsNodeAggregationWhereInput {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
@@ -1255,7 +1250,6 @@ describe("Relationship nested operations", () => {
             }
 
             input MovieCreateInput {
-              actors: MovieActorsFieldInput
               id: ID
             }
 
@@ -1651,7 +1645,6 @@ describe("Relationship nested operations", () => {
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               id: ID
-              producers: MovieProducersFieldInput
             }
 
             input MovieDeleteInput {
@@ -1728,8 +1721,6 @@ describe("Relationship nested operations", () => {
             input MovieProducersDisconnectFieldInput {
               where: MovieProducersConnectionWhere
             }
-
-            input MovieProducersFieldInput
 
             input MovieProducersNodeAggregationWhereInput {
               AND: [MovieProducersNodeAggregationWhereInput!]
@@ -2156,7 +2147,6 @@ describe("Relationship nested operations", () => {
             input MovieCreateInput {
               actors: MovieActorsFieldInput
               id: ID
-              producers: MovieProducersFieldInput
             }
 
             input MovieDisconnectInput {
@@ -2228,8 +2218,6 @@ describe("Relationship nested operations", () => {
             input MovieProducersDisconnectFieldInput {
               where: MovieProducersConnectionWhere
             }
-
-            input MovieProducersFieldInput
 
             input MovieProducersNodeAggregationWhereInput {
               AND: [MovieProducersNodeAggregationWhereInput!]
