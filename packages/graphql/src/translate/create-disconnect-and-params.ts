@@ -60,14 +60,14 @@ function createDisconnectAndParams({
     parameterPrefix: string;
     isFirstLevel?: boolean;
 }): [string, any] {
-    checkAuthentication({ context, node: parentNode, targetOperation: "DELETE_RELATIONSHIP" });
+    checkAuthentication({ context, node: parentNode, targetOperations: ["DELETE_RELATIONSHIP"] });
 
     function createSubqueryContents(
         relatedNode: Node,
         disconnect: any,
         index: number
     ): { subquery: string; params: Record<string, any> } {
-        checkAuthentication({ context, node: relatedNode, targetOperation: "DELETE_RELATIONSHIP" });
+        checkAuthentication({ context, node: relatedNode, targetOperations: ["DELETE_RELATIONSHIP"] });
 
         const variableName = `${varName}${index}`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";

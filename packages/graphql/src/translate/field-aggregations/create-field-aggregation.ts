@@ -63,7 +63,7 @@ export function createFieldAggregation({
 
     if (!referenceNode || !referenceRelation) return undefined;
 
-    checkAuthentication({ context, node: referenceNode, targetOperation: "READ" });
+    checkAuthentication({ context, node: referenceNode, targetOperations: ["READ"] });
 
     const sourceRef = nodeVar;
     const targetRef = new Cypher.Node({ labels: referenceNode.getLabels(context) });

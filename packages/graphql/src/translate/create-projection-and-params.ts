@@ -86,13 +86,13 @@ export default function createProjectionAndParams({
     resolveType?: boolean;
     cypherFieldAliasMap: CypherFieldReferenceMap;
 }): ProjectionResult {
-    checkAuthentication({ context, node, targetOperation: "READ" });
+    checkAuthentication({ context, node, targetOperations: ["READ"] });
 
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
 
         // if not aggregation/ connection
-        checkAuthentication({ context, node, targetOperation: "READ", field: field.name });
+        checkAuthentication({ context, node, targetOperations: ["READ"], field: field.name });
 
         const whereInput = field.args.where as GraphQLWhereArg;
         const optionsInput = (field.args.options || {}) as GraphQLOptionsArg;

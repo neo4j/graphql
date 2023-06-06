@@ -56,10 +56,10 @@ function createDeleteAndParams({
     parameterPrefix: string;
     recursing?: boolean;
 }): [string, any] {
-    checkAuthentication({ context, node, targetOperation: "DELETE" });
+    checkAuthentication({ context, node, targetOperations: ["DELETE"] });
 
     function reducer(res: Res, [key, value]: [string, any]) {
-        checkAuthentication({ context, node, targetOperation: "DELETE", field: key });
+        checkAuthentication({ context, node, targetOperations: ["DELETE"], field: key });
 
         const relationField = node.relationFields.find((x) => key === x.fieldName);
 
@@ -86,7 +86,7 @@ function createDeleteAndParams({
             const outStr = relationField.direction === "OUT" ? "->" : "-";
 
             refNodes.forEach((refNode) => {
-                checkAuthentication({ context, node: refNode, targetOperation: "DELETE" });
+                checkAuthentication({ context, node: refNode, targetOperations: ["DELETE"] });
 
                 const v = relationField.union ? value[refNode.name] : value;
                 const deletes = relationField.typeMeta.array ? v : [v];

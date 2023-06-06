@@ -59,7 +59,7 @@ export function createConnectionClause({
     const firstArg = resolveTree.args.first as Integer | number | undefined;
     const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
 
-    checkAuthentication({ context, node: relatedNode, targetOperation: "READ" });
+    checkAuthentication({ context, node: relatedNode, targetOperations: ["READ"] });
 
     const edgeItem = new Cypher.NamedVariable("edge");
     const edgeSubquery = createEdgeSubquery({

@@ -88,7 +88,7 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
             ...deleteAndParams[1],
         };
     } else {
-        checkAuthentication({ context, node, targetOperation: "DELETE" });
+        checkAuthentication({ context, node, targetOperations: ["DELETE"] });
     }
 
     if (context.subscriptionsEnabled && !deleteInput) {

@@ -110,7 +110,7 @@ export class UnwindCreateVisitor implements Visitor {
             return cypher.join("\n");
         });
 
-        checkAuthentication({ context: this.context, node: create.node, targetOperation: "CREATE" });
+        checkAuthentication({ context: this.context, node: create.node, targetOperations: ["CREATE"] });
         const authNodeClause = this.getAuthNodeClause(create.node, this.context, currentNode);
 
         let authorizationFieldsClause: Cypher.CompositeClause | Cypher.With | undefined;
@@ -232,7 +232,7 @@ export class UnwindCreateVisitor implements Visitor {
             return cypher.join("\n");
         });
 
-        checkAuthentication({ context: this.context, node: nestedCreate.node, targetOperation: "CREATE" });
+        checkAuthentication({ context: this.context, node: nestedCreate.node, targetOperations: ["CREATE"] });
         const authNodeClause = this.getAuthNodeClause(nestedCreate.node, this.context, currentNode);
 
         let authorizationFieldsClause: Cypher.CompositeClause | Cypher.With | undefined;
@@ -394,7 +394,7 @@ export class UnwindCreateVisitor implements Visitor {
             checkAuthentication({
                 context: this.context,
                 node: astNode.node,
-                targetOperation: "CREATE",
+                targetOperations: ["CREATE"],
                 field: field.fieldName,
             });
             const authorizationPredicateReturn = createAuthorizationAfterPredicate({

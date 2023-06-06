@@ -97,7 +97,7 @@ export default function createUpdateAndParams({
         );
     }
 
-    checkAuthentication({ context, node, targetOperation: "UPDATE" });
+    checkAuthentication({ context, node, targetOperations: ["UPDATE"] });
 
     function reducer(res: Res, [key, value]: [string, any]) {
         let param: string;
@@ -665,7 +665,7 @@ export default function createUpdateAndParams({
             }
 
             validateNonNullProperty(res, varName, pushField);
-            checkAuthentication({ context, node, targetOperation: "UPDATE", field: pushField.fieldName });
+            checkAuthentication({ context, node, targetOperations: ["UPDATE"], field: pushField.fieldName });
 
             const pointArrayField = node.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
             if (pointArrayField) {
@@ -691,7 +691,7 @@ export default function createUpdateAndParams({
             }
 
             validateNonNullProperty(res, varName, popField);
-            checkAuthentication({ context, node, targetOperation: "UPDATE", field: popField.fieldName });
+            checkAuthentication({ context, node, targetOperations: ["UPDATE"], field: popField.fieldName });
 
             res.strs.push(
                 `SET ${varName}.${popField.dbPropertyName} = ${varName}.${popField.dbPropertyName}[0..-$${param}]`
@@ -701,7 +701,7 @@ export default function createUpdateAndParams({
         }
 
         if (!pushField && !popField) {
-            checkAuthentication({ context, node, targetOperation: "UPDATE", field: key });
+            checkAuthentication({ context, node, targetOperations: ["UPDATE"], field: key });
         }
 
         return res;

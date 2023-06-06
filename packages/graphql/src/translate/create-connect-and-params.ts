@@ -67,14 +67,14 @@ function createConnectAndParams({
     includeRelationshipValidation?: boolean;
     isFirstLevel?: boolean;
 }): [string, any] {
-    checkAuthentication({ context, node: parentNode, targetOperation: "CREATE_RELATIONSHIP" });
+    checkAuthentication({ context, node: parentNode, targetOperations: ["CREATE_RELATIONSHIP"] });
 
     function createSubqueryContents(
         relatedNode: Node,
         connect: any,
         index: number
     ): { subquery: string; params: Record<string, any> } {
-        checkAuthentication({ context, node: relatedNode, targetOperation: "CREATE_RELATIONSHIP" });
+        checkAuthentication({ context, node: relatedNode, targetOperations: ["CREATE_RELATIONSHIP"] });
 
         let params = {};
         const baseName = `${varName}${index}`;

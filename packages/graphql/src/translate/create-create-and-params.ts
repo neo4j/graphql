@@ -75,7 +75,7 @@ function createCreateAndParams({
             }`
         );
     }
-    checkAuthentication({ context, node, targetOperation: "CREATE" });
+    checkAuthentication({ context, node, targetOperations: ["CREATE"] });
 
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
@@ -85,7 +85,7 @@ function createCreateAndParams({
         const dbFieldName = mapToDbProperty(node, key);
 
         if (primitiveField) {
-            checkAuthentication({ context, node, targetOperation: "CREATE", field: primitiveField.fieldName });
+            checkAuthentication({ context, node, targetOperations: ["CREATE"], field: primitiveField.fieldName });
         }
 
         if (relationField) {

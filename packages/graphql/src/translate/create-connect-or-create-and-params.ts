@@ -32,6 +32,7 @@ import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import { createAuthorizationAfterPredicate } from "./authorization/create-authorization-after-predicate";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 type CreateOrConnectInput = {
     where?: {
@@ -77,6 +78,10 @@ export function createConnectOrCreateAndParams({
             );
         }
     });
+
+    // todo: add create
+    checkAuthentication({ context, node, targetOperations: ["CREATE", "CREATE_RELATIONSHIP"] });
+    checkAuthentication({ context, node: refNode, targetOperations: ["CREATE", "CREATE_RELATIONSHIP"] });
 
     const withVarsVariables = withVars.map((name) => new Cypher.NamedVariable(name));
 

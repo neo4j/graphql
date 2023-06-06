@@ -29,12 +29,12 @@ import type { Annotation } from "../../schema-model/annotation/Annotation";
 export function checkAuthentication({
     context,
     node,
-    targetOperation,
+    targetOperations,
     field,
 }: {
     context: Context;
     node: Node;
-    targetOperation: string;
+    targetOperations: string[]; // one of these have to be present in the authentication.operations options
     field?: string;
 }) {
     const concreteEntities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
@@ -53,7 +53,9 @@ export function checkAuthentication({
     }
 
     if (annotation) {
-        const requiresAuthentication = annotation.operations.some((operation) => operation === targetOperation);
+        const requiresAuthentication = targetOperations.some(
+            (targetOperation) => annotation && annotation.operations.some((operation) => operation === targetOperation)
+        );
         if (requiresAuthentication) {
             applyAuthentication({ context, annotation });
         }

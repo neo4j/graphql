@@ -1961,8 +1961,530 @@ describe("auth/is-authenticated", () => {
                 await session.close();
             }
         });
+    });
 
-        // TODO: revisit field-level auth tests
+    describe("connectOrCreate", () => {
+        test("should not throw if authenticated", async () => {
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+            const Post = new UniqueType("Post");
+
+            const typeDefs = `
+                type ${Post} {
+                    id: String @unique
+                    content: String
+                }
+
+                type ${User} {
+                    id: ID
+                    name: String
+                    password: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                extend type ${User}
+                    @authentication(operations: [CREATE_RELATIONSHIP]) 
+
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP]) 
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, connectOrCreate: { posts: { where: { node: { id: "${postId}" } }, onCreate: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            try {
+                await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
+                req.headers.authorization = jwtToken;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not throw if authenticated with correct role", async () => {
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+            const Post = new UniqueType("Post");
+
+            const typeDefs = `
+                type JWTPayload @jwtPayload {
+                    roles: [String!]!
+                }
+
+                type ${Post} {
+                    id: String  @unique
+                    content: String
+                }
+
+                type ${User} {
+                    id: ID
+                    name: String
+                    password: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                extend type ${User}
+                    @authentication(operations: [CREATE_RELATIONSHIP], jwtPayload: {roles_INCLUDES:"admin"}) 
+
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP]) 
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, connectOrCreate: { posts: { where: { node: { id: "${postId}" } }, onCreate: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            try {
+                await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
+                req.headers.authorization = jwtToken;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not throw if authenticated with correct role at nested level", async () => {
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+            const Post = new UniqueType("Post");
+
+            const typeDefs = `
+                type JWTPayload @jwtPayload {
+                    roles: [String!]!
+                }
+
+                type ${Post} {
+                    id: String  @unique
+                    content: String
+                }
+
+                type ${User} {
+                    id: ID
+                    name: String
+                    password: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP], jwtPayload: {roles_INCLUDES:"admin"}) 
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, connectOrCreate: { posts: { where: { node: { id: "${postId}" } }, onCreate: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            try {
+                await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
+                req.headers.authorization = jwtToken;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw if not authenticated", async () => {
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+            const Post = new UniqueType("Post");
+
+            const typeDefs = `
+                type ${Post} {
+                    id: String  @unique
+                    content: String
+                }
+
+                type ${User} {
+                    id: ID
+                    name: String
+                    password: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                extend type ${User}
+                    @authentication(operations: [CREATE_RELATIONSHIP]) 
+
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP]) 
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, connectOrCreate: { posts: { where: { node: { id: "${postId}" } }, onCreate: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            // missing super-admin
+            const token = "not valid token";
+
+            try {
+                await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw if not authenticated at nested level", async () => {
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+            const Post = new UniqueType("Post");
+
+            const typeDefs = `
+                type ${Post} {
+                    id: String  @unique
+                    content: String
+                }
+
+                type ${User} {
+                    id: ID
+                    name: String
+                    password: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP]) 
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, connectOrCreate: { posts: { where: { node: { id: "${postId}" } }, onCreate: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            // missing super-admin
+            const token = "not valid token";
+
+            try {
+                await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw if authenticated with incorrect roles", async () => {
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+            const Post = new UniqueType("Post");
+
+            const typeDefs = `
+                type JWTPayload @jwtPayload {
+                    roles: [String!]!
+                }
+
+                type ${Post} {
+                    id: String  @unique
+                    content: String
+                }
+
+                type ${User} {
+                    id: ID
+                    name: String
+                    password: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                extend type ${User}
+                    @authentication(operations: [CREATE_RELATIONSHIP],  jwtPayload: { roles_INCLUDES: "admin" }) 
+
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP]) 
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, connectOrCreate: { posts: { where: { node: { id: "${postId}" } }, onCreate: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            try {
+                await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
+                req.headers.authorization = jwtToken;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw if authenticated with incorrect roles at nested level", async () => {
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+            const Post = new UniqueType("Post");
+
+            const typeDefs = `
+                type JWTPayload @jwtPayload {
+                    roles: [String!]!
+                }
+
+                type ${Post} {
+                    id: String  @unique
+                    content: String
+                }
+
+                type ${User} {
+                    id: ID
+                    name: String
+                    password: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP],  jwtPayload: { roles_INCLUDES: "admin" }) 
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, connectOrCreate: { posts: { where: { node: { id: "${postId}" } }, onCreate: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            try {
+                await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
+                req.headers.authorization = jwtToken;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("disconnect", () => {
