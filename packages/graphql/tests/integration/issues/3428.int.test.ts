@@ -181,7 +181,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
         await driver.close();
     });
 
-    test("Nested operation DISCONNECT specified and related unique field", async () => {
+    test("Should not error and should only be able to perform the disconnect nested op when only the DISCONNECT nestedOperation is specified on rel to a type with a unique field", async () => {
         const typeDefs = `#graphql
             type ${Person} {
                 id: ID! @id
@@ -283,7 +283,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
         expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude('Unknown argument "delete" on field');
     });
 
-    test("Nested operation CONNECT_OR_CREATE and DISCONNECT specified and related unique field", async () => {
+    test("Should only be able to perform the disconnect and connectOrCreate nested ops when DISCONNECT and CONNECT_OR_CREATE are the only nestedOperations specified", async () => {
         const typeDefs = `#graphql
             type ${Person} {
                 id: ID! @id
