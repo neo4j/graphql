@@ -20,7 +20,7 @@
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
-import { Neo4jGraphQL } from "../../src";
+import { Neo4jGraphQL } from "../../../src";
 
 describe("Relationship nested operations", () => {
     test("Single relationship with nested operation CREATE specified", async () => {
