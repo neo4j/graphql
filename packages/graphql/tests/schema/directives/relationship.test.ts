@@ -20,7 +20,7 @@
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
-import { Neo4jGraphQL } from "../../src";
+import { Neo4jGraphQL } from "../../../src";
 
 describe("Relationship", () => {
     test("Single Relationship", async () => {

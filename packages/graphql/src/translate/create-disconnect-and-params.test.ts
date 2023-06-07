@@ -35,6 +35,7 @@ describe("createDisconnectAndParams", () => {
                     type: "SIMILAR",
                     fieldName: "similarMovies",
                     queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
+                    aggregate: true,
                     inherited: false,
                     typeMeta: {
                         name: "Movie",

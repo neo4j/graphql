@@ -214,14 +214,15 @@ function createRelationshipFields({
                 };
 
                 const aggregationFieldsArgs = addDirectedArgument(aggregationFieldsBaseArgs, rel);
-
-                composeNode.addFields({
-                    [`${rel.fieldName}Aggregate`]: {
-                        type: aggregationTypeObject,
-                        args: aggregationFieldsArgs,
-                        directives: deprecatedDirectives,
-                    },
-                });
+                if (rel.aggregate) {
+                    composeNode.addFields({
+                        [`${rel.fieldName}Aggregate`]: {
+                            type: aggregationTypeObject,
+                            args: aggregationFieldsArgs,
+                            directives: deprecatedDirectives,
+                        },
+                    });
+                }
             }
         }
 
@@ -261,6 +262,8 @@ function createRelationshipFields({
                 nodeFieldInput.addFields({
                     connectOrCreate,
                 });
+
+                createTopLevelConnectOrCreateInput({ schemaComposer, sourceName, rel });
             }
         }
 
@@ -406,10 +409,6 @@ function createRelationshipFields({
                     directives: deprecatedDirectives,
                 },
             });
-        }
-
-        if (node.uniqueFields.length) {
-            createTopLevelConnectOrCreateInput({ schemaComposer, sourceName, rel });
         }
     });
 }

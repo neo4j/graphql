@@ -18,8 +18,7 @@
  */
 
 import { tokens } from "@neo4j-ndl/base";
-import { Button, IconButton, Modal } from "@neo4j-ndl/react";
-import { XMarkIconOutline } from "@neo4j-ndl/react/icons";
+import { Button, Dialog } from "@neo4j-ndl/react";
 
 interface Props {
     open: boolean;
@@ -30,30 +29,22 @@ interface Props {
 
 export const IntrospectionPrompt = ({ open, onClose, onDisconnect, onIntrospect }: Props) => {
     return (
-        <Modal
-            className="w-introspection-prompt p-12 n-bg-neutral-10 rounded-lg"
-            id="introspection-prompt"
-            data-test-introspect-prompt
-            open={open}
-            onClose={() => onClose()}
-        >
-            <div className="flex w-full">
+        <Dialog id="introspection-prompt" data-test-introspect-prompt open={open} onClose={() => onClose()}>
+            <Dialog.Header>
                 <span className="h4">Generate type definitions</span>
-                <IconButton
-                    aria-label="Close introspection modal"
-                    className="mr-0 ml-auto"
-                    onClick={() => onClose()}
-                    clean
-                >
-                    <XMarkIconOutline />
-                </IconButton>
-            </div>
-            <div className="mt-6 mb-20">
+            </Dialog.Header>
+            <Dialog.Description>
                 Your current connection already has data. Would you like to introspect this database to generate type
                 definitions automatically?
-            </div>
-            <div className="flex w-full">
-                <Button data-test-introspect-prompt-cancel fill="outlined" color="neutral" onClick={() => onClose()}>
+            </Dialog.Description>
+            <Dialog.Actions className="flex w-full">
+                <Button
+                    data-test-introspect-prompt-cancel
+                    fill="outlined"
+                    color="neutral"
+                    aria-label="Close introspection prompt"
+                    onClick={() => onClose()}
+                >
                     Cancel
                 </Button>
                 <div className="mr-0 ml-auto">
@@ -62,6 +53,7 @@ export const IntrospectionPrompt = ({ open, onClose, onDisconnect, onIntrospect 
                         className="mr-3"
                         fill="outlined"
                         color="primary"
+                        aria-label="Switch connection"
                         onClick={() => onDisconnect()}
                     >
                         Switch connection
@@ -71,12 +63,13 @@ export const IntrospectionPrompt = ({ open, onClose, onDisconnect, onIntrospect 
                         style={{ backgroundColor: tokens.colors.primary[50] }}
                         fill="filled"
                         color="primary"
+                        aria-label="Introspect database"
                         onClick={() => onIntrospect()}
                     >
                         Introspect
                     </Button>
                 </div>
-            </div>
-        </Modal>
+            </Dialog.Actions>
+        </Dialog>
     );
 };
