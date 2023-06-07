@@ -109,6 +109,7 @@ function createRelationshipFields({
         const upperFieldName = upperFirst(rel.fieldName);
         const relationshipWhereTypeInputName = `${sourceName}${upperFieldName}AggregateInput`;
 
+        // Don't generate empty input type
         let nodeFieldInput: InputTypeComposer<any> | undefined;
         if (
             nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
@@ -119,6 +120,7 @@ function createRelationshipFields({
             const nodeFieldInputName = `${rel.connectionPrefix}${upperFieldName}FieldInput`;
             nodeFieldInput = schemaComposer.getOrCreateITC(nodeFieldInputName);
         }
+        // Don't generate an empty input type
         let nodeFieldUpdateInput: InputTypeComposer<any> | undefined;
         if (
             nestedOperations.size != 0 &&
