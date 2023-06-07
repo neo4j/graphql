@@ -17,16 +17,34 @@
  * limitations under the License.
  */
 
+import { expect } from "@playwright/test";
 import { Screen } from "./Screen";
 
 export class TopBar extends Screen {
-    public async getSelectedDatabase(): Promise<string> {
-        const element = await this.page.$("[data-test-topbar-database-selection]");
-        const text = await this.page.evaluate((element) => {
-            // @ts-ignore - Find a better solution
-            return element.value;
-        }, element);
+    public async waitForTopBarVisibility() {
+        await this.page.locator("[data-test-topbar-connection-information]").waitFor({ state: "visible" });
+        const topBarConnectionInfo = this.page.locator("[data-test-topbar-connection-information]");
+        await expect(topBarConnectionInfo).toBeVisible();
+    }
 
-        return text as string;
+    public async getSelectedDatabase(): Promise<string> {
+        const element = this.page.locator("[data-test-topbar-selected-database]");
+        const text = await element.innerText();
+        return text;
+    }
+
+    public async clickConnectionInformation() {
+        await this.page.waitForSelector("[data-test-topbar-connection-information]");
+        await this.page.click("[data-test-topbar-connection-information]");
+    }
+
+    public async selectDatabaseByName(name: string) {
+        await this.page.waitForSelector(`[data-test-topbar-database="${name}"]`);
+        await this.page.click(`[data-test-topbar-database="${name}"]`);
+    }
+
+    public async clickDisconnect() {
+        await this.page.waitForSelector(`[data-test-topbar-disconnect]`);
+        await this.page.click(`[data-test-topbar-disconnect]`);
     }
 }
