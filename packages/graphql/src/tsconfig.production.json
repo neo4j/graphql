@@ -2,15 +2,11 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
         "rootDir": ".",
-        "outDir": "../dist",
-        "paths": {
-            "@neo4j/cypher-builder": ["../../cypher-builder/src"]
-        }
+        "outDir": "../dist"
     },
     "exclude": ["**/*.test.ts", "test-api.ts"],
     "references": [
         // allows for the import of package.json without it being bundled into dist
-        { "path": "../tsconfig.package.json" },
-        { "path": "../../cypher-builder/tsconfig.production.json" }
+        { "path": "../tsconfig.package.json" }
     ]
 }
