@@ -660,6 +660,9 @@ function makeAugmentedSchema(
                     if (field.typeMeta.array) {
                         return res;
                     }
+                    if (!field.selectableOptions.onAggregate) {
+                        return res;
+                    }
                     const objectTypeComposer = aggregationTypesMapper.getAggregationType({
                         fieldName: field.typeMeta.name,
                         nullable: !field.typeMeta.required,
