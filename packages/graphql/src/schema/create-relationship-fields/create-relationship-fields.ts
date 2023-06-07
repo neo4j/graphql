@@ -240,6 +240,11 @@ function createRelationshipFields({
             }
         }
 
+        // Add where fields
+        nodeFieldUpdateInput.addFields({
+            where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere`,
+        });
+
         if (rel.settableOptions.onCreate) {
             // Interface CreateInput does not require relationship input fields
             // These are specified on the concrete nodes.

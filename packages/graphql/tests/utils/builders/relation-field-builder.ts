@@ -47,6 +47,7 @@ export class RelationFieldBuilder extends Builder<RelationField, RelationField> 
             inherited: false,
             queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
             nestedOperations: defaultNestedOperations,
+            aggregate: true,
             ...newOptions,
         });
     }

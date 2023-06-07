@@ -60,12 +60,7 @@ export const SchemaSettings = () => {
         return (
             <>
                 <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" ref={tooltipRef} />
-                <SmartTooltip
-                    allowedPlacements={["right"]}
-                    style={{ width: `${width || 200}px` }}
-                    ref={tooltipRef}
-                    rev={undefined}
-                >
+                <SmartTooltip allowedPlacements={["right"]} style={{ width: `${width || 200}px` }} ref={tooltipRef}>
                     {text}
                 </SmartTooltip>
             </>
@@ -82,9 +77,6 @@ export const SchemaSettings = () => {
                     label="Enable Regex"
                     checked={enableRegex}
                     onChange={onChangeRegexCheckbox}
-                    content={undefined}
-                    rel={undefined}
-                    rev={undefined}
                 />
                 <InfoToolTip
                     text={
@@ -111,9 +103,6 @@ export const SchemaSettings = () => {
                     label="Enable Debug"
                     checked={enableDebug}
                     onChange={onChangeDebugCheckbox}
-                    content={undefined}
-                    rel={undefined}
-                    rev={undefined}
                 />
                 <InfoToolTip
                     text={
@@ -158,27 +147,18 @@ export const SchemaSettings = () => {
                         className="my-3"
                         checked={constraint === ConstraintState.check.toString()}
                         onChange={() => onChangeConstraintState(ConstraintState.check.toString())}
-                        content={undefined}
-                        rel={undefined}
-                        rev={undefined}
                     />
                     <Radio
                         label="Create"
                         className="my-3"
                         checked={constraint === ConstraintState.create.toString()}
                         onChange={() => onChangeConstraintState(ConstraintState.create.toString())}
-                        content={undefined}
-                        rel={undefined}
-                        rev={undefined}
                     />
                     <Radio
                         label="Ignore"
                         className="my-3"
                         checked={constraint === ConstraintState.ignore.toString()}
                         onChange={() => onChangeConstraintState(ConstraintState.ignore.toString())}
-                        content={undefined}
-                        rel={undefined}
-                        rev={undefined}
                     />
                 </div>
             </div>
