@@ -87,7 +87,7 @@ export default async function unwindCreate({
         const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
 
         const cypher = filterTruthy([
-            unwindCreate.getCypher(env),
+            compileCypher(unwindCreate, env),
             projectionWithStr,
             projectionSubqueryStr,
             compileCypher(returnStatement, env),

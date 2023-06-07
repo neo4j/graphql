@@ -439,7 +439,7 @@ export default async function translateUpdate({
     const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
 
     const updateQuery = new Cypher.RawCypher((env: Cypher.Environment) => {
-        const projectionSubqueryStr = projectionSubquery ? projectionSubquery.getCypher(env) : "";
+        const projectionSubqueryStr = projectionSubquery ? compileCypher(projectionSubquery, env) : "";
 
         const cypher = [
             ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
@@ -459,7 +459,7 @@ export default async function translateUpdate({
 
             projectionSubqueryStr,
             ...(connectionStrs.length ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
-            ...(projAuth ? [projAuth.getCypher(env)] : []),
+            ...(projAuth ? [compileCypher(projAuth, env)] : []),
             ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,
             ...interfaceStrs,
@@ -469,7 +469,7 @@ export default async function translateUpdate({
                       `UNWIND (CASE ${META_CYPHER_VARIABLE} WHEN [] then [null] else ${META_CYPHER_VARIABLE} end) AS m`,
                   ]
                 : []),
-            returnStatement.getCypher(env),
+            compileCypher(returnStatement, env),
         ]
             .filter(Boolean)
             .join("\n");

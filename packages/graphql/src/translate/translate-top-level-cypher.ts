@@ -137,7 +137,7 @@ export function translateTopLevelCypher({
         });
 
         projectionStr = new Cypher.RawCypher(
-            (env) => `${headStrs.map((headStr) => headStr.getCypher(env)).join(" + ")}`
+            (env) => `${headStrs.map((headStr) => compileCypher(headStr, env)).join(" + ")}`
         );
     }
 
@@ -197,10 +197,10 @@ export function translateTopLevelCypher({
                 Cypher.not(Cypher.and(...projectionAuthStrs)),
                 AUTH_FORBIDDEN_ERROR
             );
-            cypherStrs.push(`WHERE ${validatePred.getCypher(env)}`);
+            cypherStrs.push(`WHERE ${compileCypher(validatePred, env)}`);
         }
 
-        const subqueriesStr = projectionSubquery ? `\n${projectionSubquery.getCypher(env)}` : "";
+        const subqueriesStr = projectionSubquery ? `\n${compileCypher(projectionSubquery, env)}` : "";
         if (subqueriesStr) cypherStrs.push(subqueriesStr);
 
         if (field.isScalar || field.isEnum) {

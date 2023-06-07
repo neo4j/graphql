@@ -21,6 +21,7 @@ import type { GraphQLWhereArg, Context } from "../../types";
 import type { Node } from "../../classes";
 import { createWherePredicate } from "./create-where-predicate";
 import Cypher from "@neo4j/cypher-builder";
+import { compileCypherIfExists } from "../../utils/compile-cypher";
 
 // TODO: Remove this method and replace for directly using createWherePredicate
 /** Wraps createCypherWhereParams with the old interface for compatibility with old way of composing cypher */
@@ -51,7 +52,7 @@ export default function createWhereAndParams({
     let preComputedWhereFieldsResult = "";
 
     const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
-        preComputedWhereFieldsResult = preComputedSubqueries?.getCypher(env) || "";
+        preComputedWhereFieldsResult = compileCypherIfExists(preComputedSubqueries, env);
         const cypher = (wherePredicate as any)?.getCypher(env) || "";
         return [cypher, {}];
     });
