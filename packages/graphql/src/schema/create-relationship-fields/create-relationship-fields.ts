@@ -262,6 +262,8 @@ function createRelationshipFields({
                 nodeFieldInput.addFields({
                     connectOrCreate,
                 });
+
+                createTopLevelConnectOrCreateInput({ schemaComposer, sourceName, rel });
             }
         }
 
@@ -407,10 +409,6 @@ function createRelationshipFields({
                     directives: deprecatedDirectives,
                 },
             });
-        }
-
-        if (node.uniqueFields.length) {
-            createTopLevelConnectOrCreateInput({ schemaComposer, sourceName, rel });
         }
     });
 }
