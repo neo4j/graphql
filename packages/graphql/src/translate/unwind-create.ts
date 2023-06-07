@@ -75,7 +75,7 @@ export default async function unwindCreate({
         });
         projectionSubquery = Cypher.concat(...projection.subqueries);
         projectionCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
-            return `${rootNodeVariable.getCypher(env)} ${projection.projection.getCypher(env)}`;
+            return `${(rootNodeVariable as any).getCypher(env)} ${(projection.projection as any).getCypher(env)}`;
         });
     }
 
@@ -90,7 +90,7 @@ export default async function unwindCreate({
             unwindCreate.getCypher(env),
             projectionWithStr,
             projectionSubqueryStr,
-            returnStatement.getCypher(env),
+            (returnStatement as any).getCypher(env),
         ])
             .filter(Boolean)
             .join("\n");
@@ -119,7 +119,7 @@ function generateCreateReturnStatementCypher(
         const statements: string[] = [];
 
         if (projection) {
-            statements.push(`collect(${projection.getCypher(env)}) AS data`);
+            statements.push(`collect(${(projection as any).getCypher(env)}) AS data`);
         }
 
         if (subscriptionsEnabled) {

@@ -77,7 +77,7 @@ export function createAuthPredicates({
     if (!orPredicates) return undefined;
 
     const authPredicate = new Cypher.RawCypher((env: Cypher.Environment) => {
-        return orPredicates.getCypher(env);
+        return (orPredicates as any).getCypher(env);
     });
     return authPredicate;
 }

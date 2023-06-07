@@ -36,9 +36,11 @@ export function createDatetimeElement({
     const dbFieldName = field.dbPropertyName || resolveTree.name;
     return new Cypher.RawCypher((env) =>
         field.typeMeta.array
-            ? `${resolveTree.alias}: [ dt in ${variable.getCypher(env)}.${dbFieldName} | ${wrapApocConvertDate("dt")} ]`
+            ? `${resolveTree.alias}: [ dt in ${(variable as any).getCypher(env)}.${dbFieldName} | ${wrapApocConvertDate(
+                  "dt"
+              )} ]`
             : `${resolveTree.alias}: ${wrapApocConvertDate(
-                  valueOverride || `${variable.getCypher(env)}.${dbFieldName}`
+                  valueOverride || `${(variable as any).getCypher(env)}.${dbFieldName}`
               )}`
     );
 }

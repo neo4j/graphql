@@ -499,7 +499,9 @@ function generateUpdateReturnStatement(
 ): Cypher.Clause {
     let statements;
     if (varName && projStr) {
-        statements = new Cypher.RawCypher((env) => `collect(DISTINCT ${varName} ${projStr.getCypher(env)}) AS data`);
+        statements = new Cypher.RawCypher(
+            (env) => `collect(DISTINCT ${varName} ${(projStr as any).getCypher(env)}) AS data`
+        );
     }
 
     if (subscriptionsEnabled) {

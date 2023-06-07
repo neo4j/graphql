@@ -172,7 +172,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             );
             projections.set(
                 `${selection[1].alias || selection[1].name}`,
-                new Cypher.RawCypher((env) => `{ ${thisProjections.map((p) => p.getCypher(env)).join(", ")} }`)
+                new Cypher.RawCypher((env) => `{ ${thisProjections.map((p) => (p as any).getCypher(env)).join(", ")} }`)
             );
         }
     });

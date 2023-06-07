@@ -135,7 +135,7 @@ export default async function translateCreate({
             });
 
             const projectionExpr = new Cypher.RawCypher(
-                (env) => `${varName.getCypher(env)} ${projection.projection.getCypher(env)}`
+                (env) => `${(varName as any).getCypher(env)} ${(projection.projection as any).getCypher(env)}`
             );
             const projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
 
@@ -220,7 +220,7 @@ function generateCreateReturnStatement(
     const statements = new Cypher.RawCypher((env) => {
         let statStr;
         if (projectionExpr) {
-            statStr = `${projectionExpr.getCypher(env)} AS data`;
+            statStr = `${(projectionExpr as any).getCypher(env)} AS data`;
         }
 
         if (subscriptionsEnabled) {

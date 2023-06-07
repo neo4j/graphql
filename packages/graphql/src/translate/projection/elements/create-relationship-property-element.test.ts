@@ -160,7 +160,7 @@ describe("createRelationshipPropertyElement", () => {
 
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
         new Cypher.RawCypher((env) => {
-            expect(element.getCypher(env)).toBe("int: this.int");
+            expect((element as any).getCypher(env)).toBe("int: this.int");
             return "";
         }).build();
     });
@@ -175,7 +175,7 @@ describe("createRelationshipPropertyElement", () => {
 
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
         new Cypher.RawCypher((env) => {
-            expect(element.getCypher(env)).toBe(
+            expect((element as any).getCypher(env)).toBe(
                 'datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time")'
             );
             return "";
@@ -207,7 +207,7 @@ describe("createRelationshipPropertyElement", () => {
 
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
         new Cypher.RawCypher((env) => {
-            expect(element.getCypher(env)).toMatchInlineSnapshot(`
+            expect((element as any).getCypher(env)).toMatchInlineSnapshot(`
             "point: (CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
                 ELSE NULL

@@ -127,7 +127,7 @@ export function translateTopLevelCypher({
                         new Cypher.RawCypher((env) => {
                             return innerNodePartialProjection
                                 .concat(`| this { __resolveType: "${node.name}", `)
-                                .concat(str.getCypher(env).replace("{", ""))
+                                .concat((str as any).getCypher(env).replace("{", ""))
                                 .concat("]");
                         })
                     );

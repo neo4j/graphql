@@ -73,7 +73,7 @@ export function createProjectionSubquery({
 
     const projection = new Cypher.RawCypher((env) => {
         // TODO: use MapProjection
-        return `${targetNode.getCypher(env)} ${nestedProjection.getCypher(env)}`;
+        return `${(targetNode as any).getCypher(env)} ${(nestedProjection as any).getCypher(env)}`;
     });
 
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;

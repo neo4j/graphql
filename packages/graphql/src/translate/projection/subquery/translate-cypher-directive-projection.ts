@@ -83,7 +83,7 @@ export function translateCypherDirectiveProjection({
         });
 
         projectionExpr = new Cypher.RawCypher((env) => {
-            return `${resultVariable.getCypher(env)} ${str.getCypher(env)}`;
+            return `${(resultVariable as any).getCypher(env)} ${(str as any).getCypher(env)}`;
         });
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
@@ -132,7 +132,7 @@ export function translateCypherDirectiveProjection({
                         subqueries.push(withAndSubqueries);
                     }
                     const projection = new Cypher.RawCypher(
-                        (env) => `{ __resolveType: "${refNode.name}", ${str.getCypher(env).replace("{", "")}`
+                        (env) => `{ __resolveType: "${refNode.name}", ${(str as any).getCypher(env).replace("{", "")}`
                     );
                     unionProjections.push({
                         projection,
@@ -155,7 +155,11 @@ export function translateCypherDirectiveProjection({
         for (const { projection, predicate } of unionProjections) {
             projectionExpr
                 .when(predicate)
-                .then(new Cypher.RawCypher((env) => `${resultVariable.getCypher(env)} ${projection.getCypher(env)}`));
+                .then(
+                    new Cypher.RawCypher(
+                        (env) => `${(resultVariable as any).getCypher(env)} ${(projection as any).getCypher(env)}`
+                    )
+                );
         }
     }
 
@@ -212,7 +216,9 @@ export function translateCypherDirectiveProjection({
         res.subqueries.push(callSt);
     }
     const aliasVar = new Cypher.NamedVariable(alias);
-    res.projection.push(new Cypher.RawCypher((env) => `${aliasVar.getCypher(env)}: ${resultVariable.getCypher(env)}`));
+    res.projection.push(
+        new Cypher.RawCypher((env) => `${(aliasVar as any).getCypher(env)}: ${(resultVariable as any).getCypher(env)}`)
+    );
     return res;
 }
 
@@ -228,7 +234,7 @@ function createCypherDirectiveApocProcedure({
     context: Context;
     nodeRef: Cypher.Node;
     extraArgs: Record<string, any>;
-}): Cypher.apoc.RunFirstColumn {
+}): Cypher.Function {
     const rawApocParams = Object.entries(extraArgs);
 
     const apocParams: Record<string, Cypher.Param> = rawApocParams.reduce((acc, [key, value]) => {
@@ -242,12 +248,10 @@ function createCypherDirectiveApocProcedure({
         ...(context.auth && { auth: new Cypher.NamedParam("auth") }),
         ...(Boolean(context.cypherParams) && { cypherParams: new Cypher.NamedParam("cypherParams") }),
     });
-    const apocClause = new Cypher.apoc.RunFirstColumn(
-        cypherField.statement,
-        apocParamsMap,
-        Boolean(expectMultipleValues)
-    );
-    return apocClause;
+    if (expectMultipleValues) {
+        return Cypher.apoc.cypher.runFirstColumnMany(cypherField.statement, apocParamsMap);
+    }
+    return Cypher.apoc.cypher.runFirstColumnSingle(cypherField.statement, apocParamsMap);
 }
 
 function createCypherDirectiveSubquery({

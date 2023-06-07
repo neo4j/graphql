@@ -130,7 +130,7 @@ export function translateRead(
     }
 
     const projectionExpression = new Cypher.RawCypher((env) => {
-        return [`${varName} ${projection.projection.getCypher(env)}`, projection.params];
+        return [`${varName} ${(projection.projection as any).getCypher(env)}`, projection.params];
     });
 
     let returnClause = new Cypher.Return([projectionExpression, varName]);

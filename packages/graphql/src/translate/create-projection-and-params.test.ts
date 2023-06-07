@@ -92,7 +92,7 @@ describe("createProjectionAndParams", () => {
             cypherFieldAliasMap: {},
         });
         new Cypher.RawCypher((env) => {
-            expect(result.projection.getCypher(env)).toBe(`{ .title }`);
+            expect((result.projection as any).getCypher(env)).toBe(`{ .title }`);
             return "";
         }).build();
 
@@ -165,7 +165,7 @@ describe("createProjectionAndParams", () => {
             cypherFieldAliasMap: {},
         });
         new Cypher.RawCypher((env) => {
-            expect(result.projection.getCypher(env)).toBe(`{ .title }`);
+            expect((result.projection as any).getCypher(env)).toBe(`{ .title }`);
             return "";
         }).build();
     });

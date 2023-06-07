@@ -34,7 +34,7 @@ export default function createPointElement({
     const expression = createPointExpression({ resolveTree, field, variable });
 
     const cypherClause = new Cypher.RawCypher((env) => {
-        return expression.getCypher(env);
+        return (expression as any).getCypher(env);
     });
     const { cypher } = cypherClause.build("p_");
     return new Cypher.RawCypher(`${resolveTree.alias}: (${cypher})`);

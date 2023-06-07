@@ -66,7 +66,7 @@ export function createAuthAndParams({
     }
 
     const authPredicateExpr = new Cypher.RawCypher((env: Cypher.Environment) => {
-        return authPredicate.getCypher(env);
+        return (authPredicate as any).getCypher(env);
     });
 
     const chainStr = generateUniqueChainStr([where?.varName, allow?.varName, bind?.varName]);
