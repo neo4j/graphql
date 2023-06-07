@@ -68,7 +68,7 @@ export const Login = () => {
         return (
             <>
                 <ExclamationTriangleIconOutline className="n-text-warning-50" ref={tooltipRef} />
-                <SmartTooltip allowedPlacements={["right"]} style={{ width: "20rem" }} rev={undefined}>
+                <SmartTooltip allowedPlacements={["right"]} style={{ width: "20rem" }}>
                     {text}
                 </SmartTooltip>
             </>

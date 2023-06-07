@@ -17,32 +17,32 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
-import { Button, IconButton, Label } from "@neo4j-ndl/react";
+import { Button, IconButton, SmartTooltip, StatusIndicator } from "@neo4j-ndl/react";
 import {
-    ArrowRightOnRectangleIconOutline,
+    ChatBubbleOvalLeftEllipsisIconOutline,
+    ChevronDownIconOutline,
     Cog8ToothIconOutline,
     QuestionMarkCircleIconOutline,
-    SparklesIconOutline,
 } from "@neo4j-ndl/react/icons";
 
 import { tracking } from "../../analytics/tracking";
 // @ts-ignore - SVG Import
-import Neo4jLogoIcon from "../../assets/neo4j-logo-color.svg";
+import Neo4jLogoIcon from "../../assets/neo4j-logo-white.svg";
 import { cannySettings } from "../../common/canny";
-import { CustomSelect } from "../../components/CustomSelect";
 import { DEFAULT_BOLT_URL } from "../../constants";
 import { AuthContext } from "../../contexts/auth";
-import { Screen, ScreenContext } from "../../contexts/screen";
+import { ScreenContext } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
+import { ConnectionMenu } from "./ConnectionMenu";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const screen = useContext(ScreenContext);
-    const greenDot = <span className="ml-1 mr-1 h-2 w-2 bg-green-400 rounded-full inline-block" />;
-    const redDot = <span className="ml-1 mr-1 h-2 w-2 bg-red-400 rounded-full inline-block" />;
+    const menuButtonRef = useRef<HTMLDivElement>(null);
+    const [openConnectionMenu, setOpenConnectionMenu] = useState<boolean>(false);
 
     useEffect(() => {
         if (window.Canny && window.CannyIsLoaded) {
@@ -63,11 +63,6 @@ export const TopBar = () => {
         settings.setIsShowSettingsDrawer(!settings.isShowSettingsDrawer);
     };
 
-    const handleSetSelectedDatabaseName = (databaseName: string) => {
-        auth.setSelectedDatabaseName(databaseName);
-        tracking.trackChangeDatabase({ screen: "type definitions" });
-    };
-
     const handleSendFeedbackClick = () => {
         window.open("https://feedback.neo4j.com/graphql", "SendFeedback");
         tracking.trackHelpLearnFeatureLinks({ screen: screen.view, actionLabel: "Send Feedback" });
@@ -84,68 +79,82 @@ export const TopBar = () => {
         return `${protocol}://${modifiedUsername}@${host}`;
     };
 
+    const ConnectionTooltip = () => {
+        return (
+            <SmartTooltip ref={menuButtonRef} allowedPlacements={["bottom"]}>
+                <>
+                    <p>Username: {auth.username}</p>
+                    <p>Connection Url: {auth.connectUrl}</p>
+                    <p>Neo4j Database Version: {auth.databaseInformation?.version || "-"}</p>
+                    <p>Neo4j Database Edition: {auth.databaseInformation?.edition || "-"}</p>
+                </>
+            </SmartTooltip>
+        );
+    };
+
     return (
-        <div className="flex w-full h-16 bg-white border-b border-gray-100">
+        <div className="flex w-full h-16 n-bg-neutral-90 border-b border-gray-100">
             <div className="flex-1 flex justify-start">
                 <div className="flex items-center">
                     <img src={Neo4jLogoIcon} alt="Neo4j logo Icon" className="ml-8 w-24" />
-                    <p className="ml-6 text-base whitespace-nowrap">GraphQL Toolbox</p>
-                    <Label className="ml-3" color="info" fill="outlined">
-                        Beta
-                    </Label>
+                    <p className="ml-6 n-text-neutral-50 text-base whitespace-nowrap">GraphQL Toolbox</p>
                 </div>
             </div>
-            <div className="flex-1 flex justify-center">
-                <div className="flex items-center">
-                    <p className="mr-2">{auth?.isConnected ? greenDot : redDot} </p>
-                    <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
-                    {auth.databases?.length ? (
-                        <>
-                            <span className="mx-2">/</span>
-                            <CustomSelect
-                                value={auth.selectedDatabaseName}
-                                disabled={screen.view !== Screen.TYPEDEFS}
-                                onChange={(event) => handleSetSelectedDatabaseName(event.target.value)}
-                                testTag="data-test-topbar-database-selection"
-                            >
-                                {auth.databases.map((db) => {
-                                    return (
-                                        <option key={db.name} value={db.name}>
-                                            {db.name}
-                                        </option>
-                                    );
-                                })}
-                            </CustomSelect>
-                        </>
-                    ) : null}
+            <div className="flex-1 flex justify-center items-center">
+                <div
+                    onClick={() => setOpenConnectionMenu(!openConnectionMenu)}
+                    onKeyDown={() => setOpenConnectionMenu(!openConnectionMenu)}
+                    ref={menuButtonRef}
+                    data-test-topbar-connection-information
+                    className="flex items-center n-text-dark-neutral-text-weaker cursor-pointer"
+                    role="button"
+                    tabIndex={0}
+                >
+                    <p className="mr-2">
+                        <StatusIndicator type={auth?.isConnected ? "success" : "danger"} />
+                    </p>
+                    <div className="items-center hidden lg:flex">
+                        <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
+                        <span className="mx-2">/</span>
+                        <span
+                            data-test-topbar-selected-database
+                            className="max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden"
+                        >
+                            {auth.selectedDatabaseName}
+                        </span>
+                    </div>
+                    <div className="block lg:hidden">Connection</div>
+                    <ChevronDownIconOutline className="ml-2 w-4 h-4" />
                 </div>
+                <ConnectionTooltip />
+                <ConnectionMenu
+                    menuButtonRef={menuButtonRef}
+                    openConnectionMenu={openConnectionMenu}
+                    setOpenConnectionMenu={setOpenConnectionMenu}
+                    dbmsUrlWithUsername={constructDbmsUrlWithUsername()}
+                />
             </div>
             <div className="flex-1 flex justify-end">
                 <div className="flex items-center text-sm">
                     <Button
                         data-test-send-feedback-topbar
-                        className="w-44 mr-4"
+                        className="ndl-theme-dark mr-2 hidden lg:block"
                         color="primary"
                         fill="outlined"
                         onClick={handleSendFeedbackClick}
                     >
-                        <SparklesIconOutline />
-                        <span className="whitespace-nowrap">Send feedback</span>
+                        Send feedback
                     </Button>
-                    {!auth.isNeo4jDesktop ? (
-                        <div className="mr-4 pr-4 border-r border-gray-700">
-                            <Button
-                                data-test-topbar-disconnect-button
-                                className="w-36"
-                                color="primary"
-                                fill="text"
-                                onClick={() => auth?.logout()}
-                            >
-                                <ArrowRightOnRectangleIconOutline className="w-full h-full" />
-                                <span>Disconnect</span>
-                            </Button>
-                        </div>
-                    ) : null}
+                    <IconButton
+                        data-test-send-feedback-topbar
+                        className="ndl-theme-dark flex lg:hidden"
+                        aria-label="Send feedback"
+                        onClick={handleSendFeedbackClick}
+                        size="large"
+                        clean
+                    >
+                        <ChatBubbleOvalLeftEllipsisIconOutline />
+                    </IconButton>
                     <div className="flex items-center mr-6">
                         <div className="canny-indication-wrapper pb-8 pl-10 pointer-events-none absolute">
                             {/* This element is not clickable as we do not want to show the changelog here */}
@@ -153,6 +162,7 @@ export const TopBar = () => {
                         </div>
                         <IconButton
                             data-test-topbar-help-button
+                            className="ndl-theme-dark"
                             aria-label="Help and learn drawer"
                             onClick={handleHelpClick}
                             size="large"
@@ -163,6 +173,7 @@ export const TopBar = () => {
                         <IconButton
                             clean
                             data-test-topbar-settings-button
+                            className="ndl-theme-dark"
                             aria-label="Application settings"
                             onClick={handleSettingsClick}
                             size="large"

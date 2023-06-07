@@ -111,11 +111,5 @@ module.exports = {
                 ],
             },
         },
-        {
-            files: ["packages/graphql/src/translate/cypher-builder/**/*.ts"],
-            rules: {
-                "@typescript-eslint/no-empty-interface": "off",
-            },
-        },
     ],
 };
