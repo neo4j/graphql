@@ -19,7 +19,7 @@
 
 import { useContext, useEffect, useRef, useState } from "react";
 
-import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
+import { Button, IconButton, SmartTooltip, StatusIndicator } from "@neo4j-ndl/react";
 import {
     ChatBubbleOvalLeftEllipsisIconOutline,
     ChevronDownIconOutline,
@@ -43,8 +43,6 @@ export const TopBar = () => {
     const screen = useContext(ScreenContext);
     const menuButtonRef = useRef<HTMLDivElement>(null);
     const [openConnectionMenu, setOpenConnectionMenu] = useState<boolean>(false);
-    const greenDot = <span className="ml-1 mr-1 h-2 w-2 bg-green-400 rounded-full inline-block" />;
-    const redDot = <span className="ml-1 mr-1 h-2 w-2 bg-red-400 rounded-full inline-block" />;
 
     useEffect(() => {
         if (window.Canny && window.CannyIsLoaded) {
@@ -112,7 +110,9 @@ export const TopBar = () => {
                     role="button"
                     tabIndex={0}
                 >
-                    <p className="mr-2">{auth?.isConnected ? greenDot : redDot} </p>
+                    <p className="mr-2">
+                        <StatusIndicator type={auth?.isConnected ? "success" : "danger"} />
+                    </p>
                     <div className="items-center hidden lg:flex">
                         <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
                         <span className="mx-2">/</span>
