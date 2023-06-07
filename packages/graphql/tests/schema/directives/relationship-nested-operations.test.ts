@@ -1808,7 +1808,7 @@ describe("Relationship nested operations", () => {
         `);
     });
 
-    test("Single relationship with nested operation CONNECT_OR_CREATE specified", async () => {
+    test("Should not generate any nested operations if only CONNECT_OR_CREATE is specified and the related type does not have a unique field", async () => {
         const typeDefs = gql`
             type Person {
                 name: String
@@ -1820,7 +1820,12 @@ describe("Relationship nested operations", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+        const schema = await neoSchema.getSchema();
+
+        const updateFieldInput = schema.getType("MovieActorsUpdateFieldInput") as GraphQLNamedInputType;
+        expect(updateFieldInput).toBeUndefined();
+
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
