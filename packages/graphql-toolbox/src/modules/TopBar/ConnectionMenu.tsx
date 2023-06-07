@@ -67,21 +67,19 @@ export const ConnectionMenu = ({
 
     return (
         <Menu
-            rev={undefined}
             id={CONNECTION_MENU_ID}
             open={openConnectionMenu}
             anchorEl={menuButtonRef.current}
             className="mt-2"
             onClick={() => setOpenConnectionMenu(false)}
         >
-            <MenuItems rev={undefined}>
+            <MenuItems>
                 {auth.databases?.length ? (
                     <>
                         <Menu.Subheader title="Databases" />
                         {auth.databases.map((db) => {
                             return (
                                 <MenuItem
-                                    rev={undefined}
                                     key={db.name}
                                     data-test-topbar-database={db.name}
                                     title={db.name.length > 50 ? `${db.name.substring(0, 48)}...` : db.name}
@@ -97,7 +95,6 @@ export const ConnectionMenu = ({
                     <>
                         <Menu.Divider />
                         <MenuItem
-                            rev={undefined}
                             data-test-topbar-disconnect
                             className="n-text-danger-50"
                             title="Disconnect"

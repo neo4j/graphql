@@ -186,7 +186,6 @@ export const SchemaEditor = ({
                             allowedPlacements={["bottom"]}
                             style={{ width: "19rem" }}
                             ref={introspectionTooltipRef}
-                            rev={undefined}
                         >
                             {"This will overwrite your current type definitions!"}
                         </SmartTooltip>
@@ -219,12 +218,7 @@ export const SchemaEditor = ({
                                 }}
                             />
                         </IconButton>
-                        <SmartTooltip
-                            allowedPlacements={["left"]}
-                            style={{ width: "8rem" }}
-                            ref={favoritesTooltipRef}
-                            rev={undefined}
-                        >
+                        <SmartTooltip allowedPlacements={["left"]} style={{ width: "8rem" }} ref={favoritesTooltipRef}>
                             {"Save as Favorite"}
                         </SmartTooltip>
                     </>
