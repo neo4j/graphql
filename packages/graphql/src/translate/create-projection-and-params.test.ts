@@ -22,6 +22,7 @@ import createProjectionAndParams from "./create-projection-and-params";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import Cypher from "@neo4j/cypher-builder";
+import { compileCypher } from "../utils/compile-cypher";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -92,7 +93,7 @@ describe("createProjectionAndParams", () => {
             cypherFieldAliasMap: {},
         });
         new Cypher.RawCypher((env) => {
-            expect((result.projection as any).getCypher(env)).toBe(`{ .title }`);
+            expect(compileCypher(result.projection, env)).toBe(`{ .title }`);
             return "";
         }).build();
 
@@ -165,7 +166,7 @@ describe("createProjectionAndParams", () => {
             cypherFieldAliasMap: {},
         });
         new Cypher.RawCypher((env) => {
-            expect((result.projection as any).getCypher(env)).toBe(`{ .title }`);
+            expect(compileCypher(result.projection, env)).toBe(`{ .title }`);
             return "";
         }).build();
     });

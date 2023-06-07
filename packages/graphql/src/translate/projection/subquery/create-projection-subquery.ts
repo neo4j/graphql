@@ -25,6 +25,7 @@ import type { CypherRelationshipDirection } from "../../../utils/get-relationshi
 import { createAuthPredicates } from "../../create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
+import { compileCypher } from "../../../utils/compile-cypher";
 
 export function createProjectionSubquery({
     parentNode,
@@ -73,7 +74,7 @@ export function createProjectionSubquery({
 
     const projection = new Cypher.RawCypher((env) => {
         // TODO: use MapProjection
-        return `${(targetNode as any).getCypher(env)} ${(nestedProjection as any).getCypher(env)}`;
+        return `${compileCypher(targetNode, env)} ${compileCypher(nestedProjection, env)}`;
     });
 
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;

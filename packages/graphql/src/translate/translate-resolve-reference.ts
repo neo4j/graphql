@@ -22,6 +22,7 @@ import createProjectionAndParams from "./create-projection-and-params";
 import type { Context } from "../types";
 import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
+import { compileCypher } from "../utils/compile-cypher";
 
 export function translateResolveReference({
     node,
@@ -63,7 +64,7 @@ export function translateResolveReference({
     const projectionSubqueries = Cypher.concat(...projection.subqueries, ...projection.subqueriesBeforeSort);
 
     const projectionExpression = new Cypher.RawCypher((env) => {
-        return [`${varName} ${(projection.projection as any).getCypher(env)}`, projection.params];
+        return [`${varName} ${compileCypher(projection.projection, env)}`, projection.params];
     });
 
     const returnClause = new Cypher.Return([projectionExpression, varName]);

@@ -35,6 +35,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMeta } from "../translate/subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
 import { Measurement, addMeasurementField } from "../utils/add-measurement-field";
+import { compileCypher } from "../utils/compile-cypher";
 
 export default async function translateUpdate({
     node,
@@ -500,7 +501,7 @@ function generateUpdateReturnStatement(
     let statements;
     if (varName && projStr) {
         statements = new Cypher.RawCypher(
-            (env) => `collect(DISTINCT ${varName} ${(projStr as any).getCypher(env)}) AS data`
+            (env) => `collect(DISTINCT ${varName} ${compileCypher(projStr, env)}) AS data`
         );
     }
 

@@ -25,6 +25,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ProjectionMeta } from "../../create-projection-and-params";
 import createProjectionAndParams from "../../create-projection-and-params";
 import { CompositeEntity } from "../../../schema-model/entity/CompositeEntity";
+import { compileCypher } from "../../../utils/compile-cypher";
 
 interface Res {
     projection: Cypher.Expr[];
@@ -83,7 +84,7 @@ export function translateCypherDirectiveProjection({
         });
 
         projectionExpr = new Cypher.RawCypher((env) => {
-            return `${(resultVariable as any).getCypher(env)} ${(str as any).getCypher(env)}`;
+            return `${compileCypher(resultVariable, env)} ${compileCypher(str, env)}`;
         });
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
@@ -132,7 +133,7 @@ export function translateCypherDirectiveProjection({
                         subqueries.push(withAndSubqueries);
                     }
                     const projection = new Cypher.RawCypher(
-                        (env) => `{ __resolveType: "${refNode.name}", ${(str as any).getCypher(env).replace("{", "")}`
+                        (env) => `{ __resolveType: "${refNode.name}", ${compileCypher(str, env).replace("{", "")}`
                     );
                     unionProjections.push({
                         projection,
@@ -157,7 +158,7 @@ export function translateCypherDirectiveProjection({
                 .when(predicate)
                 .then(
                     new Cypher.RawCypher(
-                        (env) => `${(resultVariable as any).getCypher(env)} ${(projection as any).getCypher(env)}`
+                        (env) => `${compileCypher(resultVariable, env)} ${compileCypher(projection, env)}`
                     )
                 );
         }
@@ -217,7 +218,7 @@ export function translateCypherDirectiveProjection({
     }
     const aliasVar = new Cypher.NamedVariable(alias);
     res.projection.push(
-        new Cypher.RawCypher((env) => `${(aliasVar as any).getCypher(env)}: ${(resultVariable as any).getCypher(env)}`)
+        new Cypher.RawCypher((env) => `${compileCypher(aliasVar, env)}: ${compileCypher(resultVariable, env)}`)
     );
     return res;
 }

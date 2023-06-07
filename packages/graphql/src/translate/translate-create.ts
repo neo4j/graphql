@@ -29,6 +29,7 @@ import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { addMeasurementField, Measurement } from "../utils/add-measurement-field";
+import { compileCypher } from "../utils/compile-cypher";
 
 type ProjectionAndParamsResult = {
     projection: Cypher.Expr;
@@ -135,8 +136,9 @@ export default async function translateCreate({
             });
 
             const projectionExpr = new Cypher.RawCypher(
-                (env) => `${(varName as any).getCypher(env)} ${(projection.projection as any).getCypher(env)}`
+                (env) => `${compileCypher(varName, env)} ${compileCypher(projection.projection, env)}`
             );
+
             const projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
 
             if (projection.meta?.authValidatePredicates?.length) {
@@ -220,7 +222,7 @@ function generateCreateReturnStatement(
     const statements = new Cypher.RawCypher((env) => {
         let statStr;
         if (projectionExpr) {
-            statStr = `${(projectionExpr as any).getCypher(env)} AS data`;
+            statStr = `${compileCypher(projectionExpr, env)} AS data`;
         }
 
         if (subscriptionsEnabled) {

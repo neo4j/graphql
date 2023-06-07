@@ -26,6 +26,7 @@ import Cypher from "@neo4j/cypher-builder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
+import { compileCypher } from "../utils/compile-cypher";
 
 export function translateTopLevelCypher({
     context,
@@ -127,7 +128,7 @@ export function translateTopLevelCypher({
                         new Cypher.RawCypher((env) => {
                             return innerNodePartialProjection
                                 .concat(`| this { __resolveType: "${node.name}", `)
-                                .concat((str as any).getCypher(env).replace("{", ""))
+                                .concat(compileCypher(str, env).replace("{", ""))
                                 .concat("]");
                         })
                     );

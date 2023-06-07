@@ -25,6 +25,7 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { Measurement, addMeasurementField } from "../utils/add-measurement-field";
+import { compileCypher } from "../utils/compile-cypher";
 
 function translateAggregate({ node, context }: { node: Node; context: Context }): [Cypher.Clause, any] {
     const p1 = performance.now();
@@ -172,7 +173,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             );
             projections.set(
                 `${selection[1].alias || selection[1].name}`,
-                new Cypher.RawCypher((env) => `{ ${thisProjections.map((p) => (p as any).getCypher(env)).join(", ")} }`)
+                new Cypher.RawCypher((env) => `{ ${thisProjections.map((p) => compileCypher(p, env)).join(", ")} }`)
             );
         }
     });

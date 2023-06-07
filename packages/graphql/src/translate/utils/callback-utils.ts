@@ -20,6 +20,7 @@
 import type { CallbackBucket } from "../../classes/CallbackBucket";
 import type { PrimitiveField } from "../../types";
 import Cypher from "@neo4j/cypher-builder";
+import { compileCypher } from "../../utils/compile-cypher";
 
 export const addCallbackAndSetParam = (
     field: PrimitiveField,
@@ -58,7 +59,7 @@ export const addCallbackAndSetParamCypher = (
 
     const propRef = node.property(field.dbPropertyName as string);
     const rawCypherStatement = new Cypher.RawCypher((env: Cypher.Environment) => {
-        const variableCypher = (variable as any).getCypher(env);
+        const variableCypher = compileCypher(variable, env);
         const paramName = `${variableCypher}_${field.fieldName}_${field.callback?.callbackName}`;
 
         callbackBucket.addCallback({
