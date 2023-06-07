@@ -29,6 +29,14 @@ export interface Favorite {
     typeDefs: string;
 }
 
+export interface EditorTab {
+    title: string;
+    query: string;
+    variables: string;
+    response: string;
+    headers: Record<string, string>[];
+}
+
 export interface Neo4jDatabase {
     access: string;
     address: string;

@@ -76,4 +76,19 @@ export class Editor extends Screen {
         await this.page.waitForSelector("[data-test-view-selector-type-defs]");
         await this.page.click("[data-test-view-selector-type-defs]");
     }
+
+    public async addNewTab() {
+        await this.page.waitForSelector("[data-test-new-query-editor-tab]");
+        await this.page.click("[data-test-new-query-editor-tab]");
+    }
+
+    public async closeTabByTabName(tabName: string) {
+        await this.page.waitForSelector(`[data-test-query-editor-tab="${tabName}"]`);
+        await this.page.click(`[data-test-query-editor-tab="${tabName}"] [data-test-close-icon-query-editor-tab]`);
+    }
+
+    public async selectTabByTabName(tabName: string) {
+        await this.page.waitForSelector(`[data-test-query-editor-tab="${tabName}"]`);
+        await this.page.click(`[data-test-query-editor-tab="${tabName}"]`);
+    }
 }
