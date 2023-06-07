@@ -40,8 +40,9 @@ import { PointDistance } from "../../graphql/input-objects/PointDistance";
 import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPointDistance";
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import { isRootType } from "../../utils/is-root-type";
+import type { Neo4jFeaturesSettings } from "../../types";
 
-function filterDocument(document: DocumentNode): DocumentNode {
+function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
         .filter((definition) => {
             if (
@@ -98,7 +99,10 @@ function filterDocument(document: DocumentNode): DocumentNode {
         });
     };
 
-    const filterFields = (fields: readonly FieldDefinitionNode[] | undefined) => {
+    const filterFields = (
+        fields: readonly FieldDefinitionNode[] | undefined,
+        features: Neo4jFeaturesSettings | undefined
+    ) => {
         return fields
             ?.filter((f) => {
                 const type = getArgumentType(f.type);
@@ -110,13 +114,22 @@ function filterDocument(document: DocumentNode): DocumentNode {
                 }
                 return true;
             })
-            .map((f) => ({
-                ...f,
-                arguments: filterInputTypes(f.arguments),
-                directives: f.directives?.filter(
-                    (x) => !["auth", "authorization", "authentication"].includes(x.name.value)
-                ),
-            }));
+            .map((f) => {
+                if (
+                    f.directives?.some((x) => ["authentication", "authorization"].includes(x.name.value)) &&
+                    !features?.authorization
+                ) {
+                    throw new Error(
+                        "features.authorization must be configured in order to use @authentication and/or @authorization"
+                    );
+                }
+
+                return {
+                    ...f,
+                    arguments: filterInputTypes(f.arguments),
+                    directives: f.directives?.filter((x) => !["auth", "authorization"].includes(x.name.value)),
+                };
+            });
     };
 
     return {
@@ -139,10 +152,19 @@ function filterDocument(document: DocumentNode): DocumentNode {
             }
 
             if (def.kind === "ObjectTypeDefinition" || def.kind === "InterfaceTypeDefinition") {
-                const fields = filterFields(def.fields);
+                const fields = filterFields(def.fields, features);
 
                 if (!fields?.length) {
                     return res;
+                }
+
+                if (
+                    def.directives?.some((x) => ["authentication", "authorization"].includes(x.name.value)) &&
+                    !features?.authorization
+                ) {
+                    throw new Error(
+                        "features.authorization must be configured in order to use @authentication and/or @authorization"
+                    );
                 }
 
                 return [
@@ -162,12 +184,18 @@ function filterDocument(document: DocumentNode): DocumentNode {
     };
 }
 
-function validateDocument(
-    document: DocumentNode,
-    additionalDirectives: Array<GraphQLDirective> = [],
-    additionalTypes: Array<GraphQLNamedType> = []
-): void {
-    const doc = filterDocument(document);
+function validateDocument({
+    document,
+    features,
+    additionalDirectives = [],
+    additionalTypes = [],
+}: {
+    document: DocumentNode;
+    features: Neo4jFeaturesSettings | undefined;
+    additionalDirectives?: Array<GraphQLDirective>;
+    additionalTypes?: Array<GraphQLNamedType>;
+}): void {
+    const doc = filterDocument(document, features);
 
     const schemaToExtend = new GraphQLSchema({
         directives: [...Object.values(directives), ...specifiedDirectives, ...additionalDirectives],
