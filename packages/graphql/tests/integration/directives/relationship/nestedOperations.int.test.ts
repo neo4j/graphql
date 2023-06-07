@@ -929,7 +929,7 @@ describe("@relationhip - nestedOperations", () => {
                 }
             `;
         });
-        test("Single relationship with nested operation CREATE specified", async () => {
+        test("Should only be able to perform the create nested op when CREATE is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 type ${PersonOne} {
                     name: String
@@ -1035,7 +1035,7 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-        test("Single relationship with nested operation CONNECT specified", async () => {
+        test("Should only be able to perform the connect nested op when CONNECT is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 type ${PersonOne} {
                     name: String
@@ -1141,7 +1141,7 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-        test("Single relationship with nested operation unique field and CONNECT_OR_CREATE specified", async () => {
+        test("Should only be able to perform the connectOrCreate nested op when CONNECT_OR_CREATE is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 type ${PersonOne} {
                     name: String
@@ -1247,7 +1247,7 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-        test("Single relationship with nested operation UPDATE specified", async () => {
+        test("Should only be able to perform the update nested op when UPDATE is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 type ${PersonOne} {
                     name: String
@@ -1356,7 +1356,7 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-        test("Single relationship with nested operation DISCONNECT specified", async () => {
+        test("Should only be able to perform the disconnect nested op when DISCONNECT is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 type ${PersonOne} {
                     name: String
@@ -1465,7 +1465,7 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-        test("Single relationship with nested operation DELETE specified", async () => {
+        test("Should only be able to perform the delete nested op when DELETE is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 type ${PersonOne} {
                     name: String
@@ -1711,7 +1711,7 @@ describe("@relationhip - nestedOperations", () => {
                 }
             `;
         });
-        test("Single relationship with nested operation CREATE specified", async () => {
+        test("Should only be able to perform the create nested op when CREATE is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 interface ${Person} {
                     name: String
@@ -1931,7 +1931,7 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-        test("Single relationship with nested operation unique field and CONNECT_OR_CREATE specified", async () => {
+        test("Should only be able to perform the connectOrCreate nested op when CONNECT_OR_CREATE is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 interface ${Person} {
                     name: String
@@ -2040,7 +2040,7 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-        test("Single relationship with nested operation UPDATE specified", async () => {
+        test("Should only be able to perform the update nested op when UPDATE is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 interface ${Person} {
                     name: String
@@ -2152,7 +2152,7 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-        test("Single relationship with nested operation DISCONNECT specified", async () => {
+        test("Should only be able to perform the disconnect nested op when DISCONNECT is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 interface ${Person} {
                     name: String
@@ -2264,7 +2264,7 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-        test("Single relationship with nested operation DELETE specified", async () => {
+        test("Should only be able to perform the delete nested op when DELETE is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 interface ${Person} {
                     name: String
