@@ -83,7 +83,7 @@ export const TopBar = () => {
 
     const ConnectionTooltip = () => {
         return (
-            <SmartTooltip ref={menuButtonRef} allowedPlacements={["bottom"]} rev={undefined}>
+            <SmartTooltip ref={menuButtonRef} allowedPlacements={["bottom"]}>
                 <>
                     <p>Username: {auth.username}</p>
                     <p>Connection Url: {auth.connectUrl}</p>
