@@ -60,7 +60,12 @@ export const SchemaSettings = () => {
         return (
             <>
                 <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" ref={tooltipRef} />
-                <SmartTooltip allowedPlacements={["right"]} style={{ width: `${width || 200}px` }} ref={tooltipRef}>
+                <SmartTooltip
+                    allowedPlacements={["right"]}
+                    className="py-4"
+                    style={{ width: `${width || 200}px` }}
+                    ref={tooltipRef}
+                >
                     {text}
                 </SmartTooltip>
             </>
