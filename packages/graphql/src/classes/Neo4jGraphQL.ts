@@ -223,7 +223,7 @@ class Neo4jGraphQL {
         try {
             const initialDocument = this.getDocument(this.schemaDefinition.typeDefs);
 
-            validateDocument(initialDocument);
+            validateDocument({ document: initialDocument, features: this.features });
 
             const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
             const { jwtPayload } = typesExcludedFromGeneration;
@@ -355,7 +355,7 @@ class Neo4jGraphQL {
             const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
             if (validateTypeDefs) {
-                validateDocument(initialDocument);
+                validateDocument({ document: initialDocument, features: this.features });
             }
 
             const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
@@ -412,7 +412,12 @@ class Neo4jGraphQL {
         const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
         if (validateTypeDefs) {
-            validateDocument(initialDocument, directives, types);
+            validateDocument({
+                document: initialDocument,
+                features: this.features,
+                additionalDirectives: directives,
+                additionalTypes: types,
+            });
         }
 
         const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
