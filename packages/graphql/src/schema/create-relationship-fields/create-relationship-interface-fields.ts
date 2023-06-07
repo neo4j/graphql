@@ -45,12 +45,18 @@ export function createRelationshipInterfaceFields({
     const nestedOperations = new Set(rel.nestedOperations);
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
     const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
-    const nodeConnectInput = schemaComposer.getOrCreateITC(`${sourceName}ConnectInput`);
+    let nodeConnectInput: InputTypeComposer<any> | undefined;
+    if (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT)) {
+        nodeConnectInput = schemaComposer.getOrCreateITC(`${sourceName}ConnectInput`);
+    }
     let nodeDeleteInput: InputTypeComposer<any> | undefined;
     if (nestedOperations.has(RelationshipNestedOperationsOption.DELETE)) {
         nodeDeleteInput = schemaComposer.getOrCreateITC(`${sourceName}DeleteInput`);
     }
-    const nodeDisconnectInput = schemaComposer.getOrCreateITC(`${sourceName}DisconnectInput`);
+    let nodeDisconnectInput: InputTypeComposer<any> | undefined;
+    if (nestedOperations.has(RelationshipNestedOperationsOption.DISCONNECT)) {
+        nodeDisconnectInput = schemaComposer.getOrCreateITC(`${sourceName}DisconnectInput`);
+    }
     const nodeRelationInput = schemaComposer.getOrCreateITC(`${sourceName}RelationInput`);
 
     const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
@@ -222,9 +228,11 @@ export function createRelationshipInterfaceFields({
         }
     }
 
-    nodeConnectInput.addFields({
-        [rel.fieldName]: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
-    });
+    if (nodeConnectInput) {
+        nodeConnectInput.addFields({
+            [rel.fieldName]: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
+        });
+    }
 
     if (nodeDeleteInput) {
         nodeDeleteInput.addFields({
@@ -232,9 +240,11 @@ export function createRelationshipInterfaceFields({
         });
     }
 
-    nodeDisconnectInput.addFields({
-        [rel.fieldName]: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
-    });
+    if (nodeDisconnectInput) {
+        nodeDisconnectInput.addFields({
+            [rel.fieldName]: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
+        });
+    }
 
     nodeRelationInput.addFields({
         [rel.fieldName]: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
