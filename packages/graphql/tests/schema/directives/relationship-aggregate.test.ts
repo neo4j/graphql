@@ -1105,7 +1105,7 @@ describe("@relationship directive, aggregate argument", () => {
         });
 
         describe("on INTERFACE", () => {
-            test("aggregate argument set as false", async () => {
+            test("aggregate argument set as false, (no-op as abstract does not support aggregation)", async () => {
                 const typeDefs = gql`
                     type Actor implements Person {
                         username: String!
@@ -1926,7 +1926,7 @@ describe("@relationship directive, aggregate argument", () => {
         });
 
         describe("on UNION", () => {
-            test("aggregate argument set as false", async () => {
+            test("aggregate argument set as false, (no-op as abstract does not support aggregation)", async () => {
                 const typeDefs = gql`
                     type Actor {
                         username: String!
@@ -2437,7 +2437,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }"
                 `);
             });
-            test("aggregate argument set as true, (no-op as abstract does not support aggregation", async () => {
+            test("aggregate argument set as true, (no-op as abstract does not support aggregation)", async () => {
                 const typeDefs = gql`
                     type Actor {
                         username: String!
