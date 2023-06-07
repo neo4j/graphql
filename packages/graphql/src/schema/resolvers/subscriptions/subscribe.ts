@@ -28,6 +28,7 @@ import type { SubscriptionEventType, SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where/where";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
+import { subscriptionAuthorization } from "./where/authorization";
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) {
@@ -53,13 +54,17 @@ export function generateSubscribeMethod({
 }) {
     return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
         const entities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
-        if (entities.length) {
-            const concreteEntity = entities[0] as ConcreteEntity;
-            const hasAuthentication = concreteEntity.annotations.authentication;
-            if (hasAuthentication && hasAuthentication.operations.includes("SUBSCRIBE")) {
-                if (!context.jwt) {
-                    throw new Error("Error, request not authenticated");
-                }
+
+        if (!entities.length) {
+            throw new Error("Could not find entity");
+        }
+
+        const concreteEntity = entities[0] as ConcreteEntity;
+
+        const hasAuthentication = concreteEntity.annotations.authentication;
+        if (hasAuthentication && hasAuthentication.operations.includes("SUBSCRIBE")) {
+            if (!context.jwt) {
+                throw new Error("Error, request not authenticated");
             }
         }
 
@@ -81,6 +86,7 @@ export function generateSubscribeMethod({
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 return (
                     (data[0] as NodeSubscriptionsEvent).typename === node.name &&
+                    subscriptionAuthorization({ event: data[0], node, entity: concreteEntity, context }) &&
                     subscriptionWhere({ where: args.where, event: data[0], node }) &&
                     updateDiffFilter(data[0])
                 );
@@ -101,6 +107,14 @@ export function generateSubscribeMethod({
 
                 return (
                     !!relationFieldName &&
+                    subscriptionAuthorization({
+                        event: data[0],
+                        node,
+                        entity: concreteEntity,
+                        nodes,
+                        relationshipFields,
+                        context,
+                    }) &&
                     subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields })
                 );
             });
