@@ -208,7 +208,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     <ActionElementsBar hasSchema={hasSchema} loading={loading} onSubmit={onSubmit} />
                 </div>
                 <div className="flex">
-                    <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100">
+                    <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100 overflow-y-auto">
                         <div className="w-full">
                             <SchemaSettings />
                             <hr />

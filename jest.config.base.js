@@ -17,7 +17,6 @@ module.exports = {
     moduleNameMapper: {
         "@neo4j/graphql/dist/types": "<rootDir>/packages/graphql/src/types",
         "@neo4j/introspector(.*)$": "<rootDir>/packages/introspector/src/$1",
-        "@neo4j/cypher-builder(.*)$": "<rootDir>/packages/cypher-builder/src/$1",
         "@neo4j/graphql-ogm(.*)$": "<rootDir>/packages/ogm/src/$1",
         "@neo4j/graphql-plugin-auth(.*)$": "<rootDir>/packages/plugins/graphql-plugin-auth/src/$1",
         "@neo4j/graphql-plugin-subscriptions-amqp(.*)$":

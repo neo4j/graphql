@@ -55,7 +55,7 @@ export function objectFieldsToComposeFields(fields: BaseField[]): {
     [k: string]: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
 } {
     return fields.reduce((res, field) => {
-        if (field.writeonly) {
+        if (field.writeonly || field.selectableOptions.onRead === false) {
             return res;
         }
 
@@ -91,7 +91,8 @@ export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<str
             const isAutogenerate = (f as PrimitiveField)?.autogenerate;
             const isCallback = (f as PrimitiveField)?.callback;
             const isTemporal = (f as TemporalField)?.timestamps;
-            return !isAutogenerate && !isCallback && !isTemporal;
+            const isSettable = f.settableOptions.onCreate;
+            return !isAutogenerate && !isCallback && !isTemporal && isSettable;
         })
         .reduce((res: Record<string, InputField>, f) => {
             const fieldType = f.typeMeta.input.create.pretty;
@@ -190,8 +191,10 @@ export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<str
         const deprecatedDirectives = graphqlDirectivesToCompose(
             f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
         );
+
         const staticField = f.readonly || (f as PrimitiveField)?.autogenerate;
-        if (staticField) {
+        const isSettable = f.settableOptions.onUpdate;
+        if (staticField || !isSettable) {
             return res;
         }
 
