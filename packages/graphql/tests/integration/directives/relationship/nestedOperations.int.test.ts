@@ -811,7 +811,7 @@ describe("@relationhip - nestedOperations", () => {
 
             createMutationWithNestedCreate = `#graphql
                 mutation {
-                    ${Movie.operations.create}(input: { id: "1", actors: { PersonOne: { create: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.create}(input: { id: "1", actors: { ${PersonOne}: { create: { node: { name: "someName" } } } } }) {
                         info {
                             nodesCreated
                         }
@@ -820,7 +820,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             createMutationWithNestedConnect = `#graphql
                 mutation {
-                    ${Movie.operations.create}(input: { id: "1", actors: { PersonOne: { connect: { where: { node: { name: "someName" } } } } } }) {
+                    ${Movie.operations.create}(input: { id: "1", actors: { ${PersonOne}: { connect: { where: { node: { name: "someName" } } } } } }) {
                         info {
                             nodesCreated
                         }
@@ -833,7 +833,7 @@ describe("@relationhip - nestedOperations", () => {
                         input: {
                             id: "1"
                             actors: {
-                                PersonOne: {
+                                ${PersonOne}: {
                                     connectOrCreate: {
                                         where: { node: { id: "1" } }
                                         onCreate: { node: { name: "someName" } }
@@ -861,7 +861,7 @@ describe("@relationhip - nestedOperations", () => {
             updateMutationWithNestedConnect = `#graphql
                 mutation {
                     ${Movie.operations.update}(
-                        update: { actors: { PersonOne: { connect: { where: { node: { name: "someName" } } } } } }
+                        update: { actors: { ${PersonOne}: { connect: { where: { node: { name: "someName" } } } } } }
                     ) {
                         info {
                             nodesCreated
@@ -875,7 +875,7 @@ describe("@relationhip - nestedOperations", () => {
                     ${Movie.operations.update}(
                         update: {
                             actors: {
-                                PersonOne: {
+                                ${PersonOne}: {
                                     connectOrCreate: {
                                         where: { node: { id: "1" } }
                                         onCreate: { node: { name: "someName" } }
@@ -895,7 +895,7 @@ describe("@relationhip - nestedOperations", () => {
                 mutation {
                     ${Movie.operations.update}(
                         update: {
-                        actors: { PersonOne: { disconnect: { where: { node: { name: "someName" } } } } }
+                            actors: { ${PersonOne}: { disconnect: { where: { node: { name: "someName" } } } } }
                         }
                     ) {
                         info {
@@ -907,7 +907,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             updateMutationWithNestedUpdate = `#graphql
                 mutation {
-                    ${Movie.operations.update}(update: { actors: { PersonOne: { update: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.update}(update: { actors: { ${PersonOne}: { update: { node: { name: "someName" } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -917,7 +917,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             updateMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.update}(update: { actors: { PersonOne: { delete: { where: { node: { name: "someName" } } } } } }) {
+                    ${Movie.operations.update}(update: { actors: { ${PersonOne}: { delete: { where: { node: { name: "someName" } } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -927,7 +927,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             deleteMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.delete}(delete: { actors: { PersonOne: { where: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.delete}(delete: { actors: { ${PersonOne}: { where: { node: { name: "someName" } } } } }) {
                         nodesDeleted
                     }
                 }
@@ -1596,7 +1596,7 @@ describe("@relationhip - nestedOperations", () => {
 
             createMutationWithNestedCreate = `#graphql
                 mutation {
-                    ${Movie.operations.create}(input: { id: "1", actors: { create: { node: { PersonOne: { name: "someName" } } } } }) {
+                    ${Movie.operations.create}(input: { id: "1", actors: { create: { node: { ${PersonOne}: { name: "someName" } } } } }) {
                         info {
                             nodesCreated
                         }
@@ -1614,7 +1614,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             updateMutationWithNestedCreate = `#graphql
                 mutation {
-                    ${Movie.operations.update}(update: { actors: { create: { node: { PersonOne: { name: "someName" } } } } }) {
+                    ${Movie.operations.update}(update: { actors: { create: { node: { ${PersonOne}: { name: "someName" } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
