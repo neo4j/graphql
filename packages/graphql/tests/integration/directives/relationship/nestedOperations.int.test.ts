@@ -1782,8 +1782,6 @@ describe("@relationhip - nestedOperations", () => {
                     someOtherProperty: Int!
                 }
 
-                union ${Person} = ${PersonOne} | ${PersonTwo}
-
                 type ${Movie} {
                     id: ID
                     actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])

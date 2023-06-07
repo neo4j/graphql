@@ -389,11 +389,11 @@ describe("Relationship nested operations", () => {
     test("Single relationship to union with unique fields with no nested operation specified", async () => {
         const typeDefs = gql`
             type PersonOne {
-                name: String
+                name: String @unique
             }
 
             type PersonTwo {
-                nameTwo: String
+                nameTwo: String @unique
             }
 
             union Person = PersonOne | PersonTwo
@@ -455,6 +455,11 @@ describe("Relationship nested operations", () => {
               PersonTwo: [MovieActorsPersonTwoConnectFieldInput!]
             }
 
+            input MovieActorsConnectOrCreateInput {
+              PersonOne: [MovieActorsPersonOneConnectOrCreateFieldInput!]
+              PersonTwo: [MovieActorsPersonTwoConnectOrCreateFieldInput!]
+            }
+
             type MovieActorsConnection {
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
@@ -490,6 +495,15 @@ describe("Relationship nested operations", () => {
               where: PersonOneConnectWhere
             }
 
+            input MovieActorsPersonOneConnectOrCreateFieldInput {
+              onCreate: MovieActorsPersonOneConnectOrCreateFieldInputOnCreate!
+              where: PersonOneConnectOrCreateWhere!
+            }
+
+            input MovieActorsPersonOneConnectOrCreateFieldInputOnCreate {
+              node: PersonOneOnCreateInput!
+            }
+
             input MovieActorsPersonOneConnectionWhere {
               AND: [MovieActorsPersonOneConnectionWhere!]
               NOT: MovieActorsPersonOneConnectionWhere
@@ -512,6 +526,7 @@ describe("Relationship nested operations", () => {
 
             input MovieActorsPersonOneFieldInput {
               connect: [MovieActorsPersonOneConnectFieldInput!]
+              connectOrCreate: [MovieActorsPersonOneConnectOrCreateFieldInput!]
               create: [MovieActorsPersonOneCreateFieldInput!]
             }
 
@@ -521,6 +536,7 @@ describe("Relationship nested operations", () => {
 
             input MovieActorsPersonOneUpdateFieldInput {
               connect: [MovieActorsPersonOneConnectFieldInput!]
+              connectOrCreate: [MovieActorsPersonOneConnectOrCreateFieldInput!]
               create: [MovieActorsPersonOneCreateFieldInput!]
               delete: [MovieActorsPersonOneDeleteFieldInput!]
               disconnect: [MovieActorsPersonOneDisconnectFieldInput!]
@@ -530,6 +546,15 @@ describe("Relationship nested operations", () => {
 
             input MovieActorsPersonTwoConnectFieldInput {
               where: PersonTwoConnectWhere
+            }
+
+            input MovieActorsPersonTwoConnectOrCreateFieldInput {
+              onCreate: MovieActorsPersonTwoConnectOrCreateFieldInputOnCreate!
+              where: PersonTwoConnectOrCreateWhere!
+            }
+
+            input MovieActorsPersonTwoConnectOrCreateFieldInputOnCreate {
+              node: PersonTwoOnCreateInput!
             }
 
             input MovieActorsPersonTwoConnectionWhere {
@@ -554,6 +579,7 @@ describe("Relationship nested operations", () => {
 
             input MovieActorsPersonTwoFieldInput {
               connect: [MovieActorsPersonTwoConnectFieldInput!]
+              connectOrCreate: [MovieActorsPersonTwoConnectOrCreateFieldInput!]
               create: [MovieActorsPersonTwoCreateFieldInput!]
             }
 
@@ -563,6 +589,7 @@ describe("Relationship nested operations", () => {
 
             input MovieActorsPersonTwoUpdateFieldInput {
               connect: [MovieActorsPersonTwoConnectFieldInput!]
+              connectOrCreate: [MovieActorsPersonTwoConnectOrCreateFieldInput!]
               create: [MovieActorsPersonTwoCreateFieldInput!]
               delete: [MovieActorsPersonTwoDeleteFieldInput!]
               disconnect: [MovieActorsPersonTwoDisconnectFieldInput!]
@@ -587,6 +614,10 @@ describe("Relationship nested operations", () => {
 
             input MovieConnectInput {
               actors: MovieActorsConnectInput
+            }
+
+            input MovieConnectOrCreateInput {
+              actors: MovieActorsConnectOrCreateInput
             }
 
             input MovieCreateInput {
@@ -679,7 +710,7 @@ describe("Relationship nested operations", () => {
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePersonOnes(where: PersonOneWhere): DeleteInfo!
               deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-              updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateMovies(connect: MovieConnectInput, connectOrCreate: MovieConnectOrCreateInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
               updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
             }
@@ -703,6 +734,10 @@ describe("Relationship nested operations", () => {
               name: StringAggregateSelectionNullable!
             }
 
+            input PersonOneConnectOrCreateWhere {
+              node: PersonOneUniqueWhere!
+            }
+
             input PersonOneConnectWhere {
               node: PersonOneWhere!
             }
@@ -714,6 +749,10 @@ describe("Relationship nested operations", () => {
             type PersonOneEdge {
               cursor: String!
               node: PersonOne!
+            }
+
+            input PersonOneOnCreateInput {
+              name: String
             }
 
             input PersonOneOptions {
@@ -730,6 +769,10 @@ describe("Relationship nested operations", () => {
             \\"\\"\\"
             input PersonOneSort {
               name: SortDirection
+            }
+
+            input PersonOneUniqueWhere {
+              name: String
             }
 
             input PersonOneUpdateInput {
@@ -767,6 +810,10 @@ describe("Relationship nested operations", () => {
               nameTwo: StringAggregateSelectionNullable!
             }
 
+            input PersonTwoConnectOrCreateWhere {
+              node: PersonTwoUniqueWhere!
+            }
+
             input PersonTwoConnectWhere {
               node: PersonTwoWhere!
             }
@@ -778,6 +825,10 @@ describe("Relationship nested operations", () => {
             type PersonTwoEdge {
               cursor: String!
               node: PersonTwo!
+            }
+
+            input PersonTwoOnCreateInput {
+              nameTwo: String
             }
 
             input PersonTwoOptions {
@@ -794,6 +845,10 @@ describe("Relationship nested operations", () => {
             \\"\\"\\"
             input PersonTwoSort {
               nameTwo: SortDirection
+            }
+
+            input PersonTwoUniqueWhere {
+              nameTwo: String
             }
 
             input PersonTwoUpdateInput {
