@@ -125,12 +125,12 @@ describe("@relationhip - nestedOperations", () => {
                 mutation {
                     ${Movie.operations.update}(
                         update: {
-                        actors: {
-                            connectOrCreate: {
-                            where: { node: { id: "1" } }
-                            onCreate: { node: { name: "someName" } }
+                            actors: {
+                                connectOrCreate: {
+                                    where: { node: { id: "1" } }
+                                    onCreate: { node: { name: "someName" } }
+                                }
                             }
-                        }
                         }
                     ) {
                         info {
@@ -144,7 +144,7 @@ describe("@relationhip - nestedOperations", () => {
                 mutation {
                     ${Movie.operations.update}(
                         update: {
-                        actors: { disconnect: { where: { node: { name: "someName" } } } }
+                            actors: { disconnect: { where: { node: { name: "someName" } } } }
                         }
                     ) {
                         info {
@@ -282,8 +282,8 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-    test("Should only be able to perform the connect nested op when CONNECT is the only nestedOperation specified", async () => {
-        const typeDefs = `#graphql
+        test("Should only be able to perform the connect nested op when CONNECT is the only nestedOperation specified", async () => {
+            const typeDefs = `#graphql
             type ${Person} {
                 name: String
             }
@@ -382,12 +382,12 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-    test("Should only be able to perform the connectOrCreate nested op when CONNECT_OR_CREATE is the only nestedOperation specified", async () => {
-        const typeDefs = `#graphql
-            type ${Person} {
-                id: ID! @id
-                name: String
-            }
+        test("Should only be able to perform the connectOrCreate nested op when CONNECT_OR_CREATE is the only nestedOperation specified", async () => {
+            const typeDefs = `#graphql
+                type ${Person} {
+                    id: ID! @id
+                    name: String
+                }
 
                 type ${Movie} {
                     id: ID
@@ -483,11 +483,11 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-    test("Should only be able to perform the update nested op when UPDATE is the only nestedOperation specified", async () => {
-        const typeDefs = `#graphql
-            type ${Person} {
-                name: String
-            }
+        test("Should only be able to perform the update nested op when UPDATE is the only nestedOperation specified", async () => {
+            const typeDefs = `#graphql
+                type ${Person} {
+                    name: String
+                }
 
                 type ${Movie} {
                     id: ID
@@ -586,11 +586,11 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-    test("Should only be able to perform the disconnect nested op when DISCONNECT is the only nestedOperation specified", async () => {
-        const typeDefs = `#graphql
-            type ${Person} {
-                name: String
-            }
+        test("Should only be able to perform the disconnect nested op when DISCONNECT is the only nestedOperation specified", async () => {
+            const typeDefs = `#graphql
+                type ${Person} {
+                    name: String
+                }
 
                 type ${Movie} {
                     id: ID
@@ -689,11 +689,11 @@ describe("@relationhip - nestedOperations", () => {
             );
         });
 
-    test("Should only be able to perform the delete nested op when DELETE is the only nestedOperation specified", async () => {
-        const typeDefs = `#graphql
-            type ${Person} {
-                name: String
-            }
+        test("Should only be able to perform the delete nested op when DELETE is the only nestedOperation specified", async () => {
+            const typeDefs = `#graphql
+                type ${Person} {
+                    name: String
+                }
 
                 type ${Movie} {
                     id: ID
@@ -811,7 +811,7 @@ describe("@relationhip - nestedOperations", () => {
 
             createMutationWithNestedCreate = `#graphql
                 mutation {
-                    ${Movie.operations.create}(input: { id: "1", actors: { create: { node: { name: "someName" } } } }) {
+                    ${Movie.operations.create}(input: { id: "1", actors: { PersonOne: { create: { node: { name: "someName" } } } } }) {
                         info {
                             nodesCreated
                         }
@@ -820,7 +820,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             createMutationWithNestedConnect = `#graphql
                 mutation {
-                    ${Movie.operations.create}(input: { id: "1", actors: { connect: { where: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.create}(input: { id: "1", actors: { PersonOne: { connect: { where: { node: { name: "someName" } } } } } }) {
                         info {
                             nodesCreated
                         }
@@ -833,9 +833,11 @@ describe("@relationhip - nestedOperations", () => {
                         input: {
                             id: "1"
                             actors: {
-                                connectOrCreate: {
-                                    where: { node: { id: "1" } }
-                                    onCreate: { node: { name: "someName" } }
+                                PersonOne: {
+                                    connectOrCreate: {
+                                        where: { node: { id: "1" } }
+                                        onCreate: { node: { name: "someName" } }
+                                    }
                                 }
                             }
                         }
@@ -859,7 +861,7 @@ describe("@relationhip - nestedOperations", () => {
             updateMutationWithNestedConnect = `#graphql
                 mutation {
                     ${Movie.operations.update}(
-                        update: { actors: { connect: { where: { node: { name: "someName" } } } } }
+                        update: { actors: { PersonOne: { connect: { where: { node: { name: "someName" } } } } } }
                     ) {
                         info {
                             nodesCreated
@@ -872,12 +874,14 @@ describe("@relationhip - nestedOperations", () => {
                 mutation {
                     ${Movie.operations.update}(
                         update: {
-                        actors: {
-                            connectOrCreate: {
-                            where: { node: { id: "1" } }
-                            onCreate: { node: { name: "someName" } }
+                            actors: {
+                                PersonOne: {
+                                    connectOrCreate: {
+                                        where: { node: { id: "1" } }
+                                        onCreate: { node: { name: "someName" } }
+                                    }
+                                }
                             }
-                        }
                         }
                     ) {
                         info {
@@ -891,7 +895,7 @@ describe("@relationhip - nestedOperations", () => {
                 mutation {
                     ${Movie.operations.update}(
                         update: {
-                        actors: { disconnect: { where: { node: { name: "someName" } } } }
+                        actors: { PersonOne: { disconnect: { where: { node: { name: "someName" } } } } }
                         }
                     ) {
                         info {
@@ -903,7 +907,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             updateMutationWithNestedUpdate = `#graphql
                 mutation {
-                    ${Movie.operations.update}(update: { actors: { update: { node: { name: "someName" } } } }) {
+                    ${Movie.operations.update}(update: { actors: { PersonOne: { update: { node: { name: "someName" } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -913,7 +917,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             updateMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.update}(update: { actors: { delete: { where: { node: { name: "someName" } } } } }) {
+                    ${Movie.operations.update}(update: { actors: { PersonOne: { delete: { where: { node: { name: "someName" } } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -923,7 +927,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             deleteMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.delete}(delete: { actors: { where: { node: { name: "someName" } } } }) {
+                    ${Movie.operations.delete}(delete: { actors: { PersonOne: { where: { node: { name: "someName" } } } } }) {
                         nodesDeleted
                     }
                 }
@@ -1573,15 +1577,14 @@ describe("@relationhip - nestedOperations", () => {
     });
 
     describe("Related to an interface type", () => {
+        // TODO: add tests/expects for connectOrCreate once implemented for interfaces
         let PersonOne: UniqueType;
         let PersonTwo: UniqueType;
 
         let createMutationWithNestedCreate: string;
         let createMutationWithNestedConnect: string;
-        let createMutationWithNestedConnectOrCreate: string;
         let updateMutationWithNestedCreate: string;
         let updateMutationWithNestedConnect: string;
-        let updateMutationWithNestedConnectOrCreate: string;
         let updateMutationWithNestedDisconnect: string;
         let updateMutationWithNestedUpdate: string;
         let updateMutationWithNestedDelete: string;
@@ -1593,7 +1596,7 @@ describe("@relationhip - nestedOperations", () => {
 
             createMutationWithNestedCreate = `#graphql
                 mutation {
-                    ${Movie.operations.create}(input: { id: "1", actors: { create: { node: { name: "someName" } } } }) {
+                    ${Movie.operations.create}(input: { id: "1", actors: { create: { node: { PersonOne: { name: "someName" } } } } }) {
                         info {
                             nodesCreated
                         }
@@ -1609,28 +1612,9 @@ describe("@relationhip - nestedOperations", () => {
                     }
                 }
             `;
-            createMutationWithNestedConnectOrCreate = `#graphql
-                mutation {
-                    ${Movie.operations.create}(
-                        input: {
-                            id: "1"
-                            actors: {
-                                connectOrCreate: {
-                                    where: { node: { id: "1" } }
-                                    onCreate: { node: { name: "someName" } }
-                                }
-                            }
-                        }
-                    ) {
-                        info {
-                            nodesCreated
-                        }
-                    }
-                }
-            `;
             updateMutationWithNestedCreate = `#graphql
                 mutation {
-                    ${Movie.operations.update}(update: { actors: { create: { node: { name: "someName" } } } }) {
+                    ${Movie.operations.update}(update: { actors: { create: { node: { PersonOne: { name: "someName" } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -1650,30 +1634,11 @@ describe("@relationhip - nestedOperations", () => {
                     }
                 }
             `;
-            updateMutationWithNestedConnectOrCreate = `#graphql
-                mutation {
-                    ${Movie.operations.update}(
-                        update: {
-                        actors: {
-                            connectOrCreate: {
-                            where: { node: { id: "1" } }
-                            onCreate: { node: { name: "someName" } }
-                            }
-                        }
-                        }
-                    ) {
-                        info {
-                            nodesCreated
-                            nodesDeleted
-                        }
-                    }
-                }
-            `;
             updateMutationWithNestedDisconnect = `#graphql
                 mutation {
                     ${Movie.operations.update}(
                         update: {
-                        actors: { disconnect: { where: { node: { name: "someName" } } } }
+                            actors: { disconnect: { where: { node: { name: "someName" } } } }
                         }
                     ) {
                         info {
@@ -1743,11 +1708,6 @@ describe("@relationhip - nestedOperations", () => {
                 source: createMutationWithNestedConnect,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
-            const createWithNestedConnectOrCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: createMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
             const updateWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedCreate,
@@ -1756,11 +1716,6 @@ describe("@relationhip - nestedOperations", () => {
             const updateWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const updateWithNestedConnectOrCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: updateMutationWithNestedConnectOrCreate,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
             const updateWithNestedUpdateResult = await graphql({
@@ -1789,18 +1744,10 @@ describe("@relationhip - nestedOperations", () => {
             expect((createWithNestedConnectResult.errors as any)[0].message).toInclude(
                 'Field "connect" is not defined by type'
             );
-            expect(createWithNestedConnectOrCreateResult.errors).toBeDefined();
-            expect((createWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-                'Field "connectOrCreate" is not defined by type'
-            );
             expect(updateWithNestedCreateResult.errors).toBeFalsy();
             expect(updateWithNestedConnectResult.errors).toBeDefined();
             expect((updateWithNestedConnectResult.errors as any)[0].message).toInclude(
                 'Field "connect" is not defined by type'
-            );
-            expect(updateWithNestedConnectOrCreateResult.errors).toBeDefined();
-            expect((updateWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-                'Field "connectOrCreate" is not defined by type'
             );
             expect(updateWithNestedUpdateResult.errors).toBeDefined();
             expect((updateWithNestedUpdateResult.errors as any)[0].message).toInclude(
@@ -1854,11 +1801,6 @@ describe("@relationhip - nestedOperations", () => {
                 source: createMutationWithNestedConnect,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
-            const createWithNestedConnectOrCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: createMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
             const updateWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedCreate,
@@ -1867,11 +1809,6 @@ describe("@relationhip - nestedOperations", () => {
             const updateWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const updateWithNestedConnectOrCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: updateMutationWithNestedConnectOrCreate,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
             const updateWithNestedUpdateResult = await graphql({
@@ -1900,19 +1837,11 @@ describe("@relationhip - nestedOperations", () => {
                 'Field "create" is not defined by type'
             );
             expect(createWithNestedConnectResult.errors).toBeFalsy();
-            expect(createWithNestedConnectOrCreateResult.errors).toBeDefined();
-            expect((createWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-                'Field "connectOrCreate" is not defined by type'
-            );
             expect(updateWithNestedCreateResult.errors).toBeDefined();
             expect((updateWithNestedCreateResult.errors as any)[0].message).toInclude(
                 'Field "create" is not defined by type'
             );
             expect(updateWithNestedConnectResult.errors).toBeFalsy();
-            expect(updateWithNestedConnectOrCreateResult.errors).toBeDefined();
-            expect((updateWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-                'Field "connectOrCreate" is not defined by type'
-            );
             expect(updateWithNestedUpdateResult.errors).toBeDefined();
             expect((updateWithNestedUpdateResult.errors as any)[0].message).toInclude(
                 'Field "update" is not defined by type'
@@ -1930,116 +1859,6 @@ describe("@relationhip - nestedOperations", () => {
                 'Unknown argument "delete" on field'
             );
         });
-
-        test("Should only be able to perform the connectOrCreate nested op when CONNECT_OR_CREATE is the only nestedOperation specified", async () => {
-            const typeDefs = `#graphql
-                interface ${Person} {
-                    name: String
-                }
-
-                type ${PersonOne} implements ${Person} {
-                    name: String
-                }
-
-                type ${PersonTwo} implements ${Person} {
-                    name: String
-                    someOtherProperty: Int!
-                }
-
-                type ${Movie} {
-                    id: ID
-                    actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
-                }
-            `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-            const createWithNestedCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: createMutationWithNestedCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const createWithNestedConnectResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: createMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const createWithNestedConnectOrCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: createMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const updateWithNestedCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: updateMutationWithNestedCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const updateWithNestedConnectResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: updateMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const updateWithNestedConnectOrCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: updateMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const updateWithNestedUpdateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: updateMutationWithNestedUpdate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const updateWithNestedDisconnectResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: updateMutationWithNestedDisconnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const updateWithNestedDeleteResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: updateMutationWithNestedDelete,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const deleteWithNestedDeleteResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: deleteMutationWithNestedDelete,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-
-            expect(createWithNestedCreateResult.errors).toBeDefined();
-            expect((createWithNestedCreateResult.errors as any)[0].message).toInclude(
-                'Field "create" is not defined by type'
-            );
-            expect(createWithNestedConnectResult.errors).toBeDefined();
-            expect((createWithNestedConnectResult.errors as any)[0].message).toInclude(
-                'Field "connect" is not defined by type'
-            );
-            expect(createWithNestedConnectOrCreateResult.errors).toBeFalsy();
-            expect(updateWithNestedCreateResult.errors).toBeDefined();
-            expect((updateWithNestedCreateResult.errors as any)[0].message).toInclude(
-                'Field "create" is not defined by type'
-            );
-            expect(updateWithNestedConnectResult.errors).toBeDefined();
-            expect((updateWithNestedConnectResult.errors as any)[0].message).toInclude(
-                'Field "connect" is not defined by type'
-            );
-            expect(updateWithNestedConnectOrCreateResult.errors).toBeFalsy();
-            expect(updateWithNestedUpdateResult.errors).toBeDefined();
-            expect((updateWithNestedUpdateResult.errors as any)[0].message).toInclude(
-                'Field "update" is not defined by type'
-            );
-            expect(updateWithNestedDisconnectResult.errors).toBeDefined();
-            expect((updateWithNestedDisconnectResult.errors as any)[0].message).toInclude(
-                'Field "disconnect" is not defined by type'
-            );
-            expect(updateWithNestedDeleteResult.errors).toBeDefined();
-            expect((updateWithNestedDeleteResult.errors as any)[0].message).toInclude(
-                'Field "delete" is not defined by type'
-            );
-            expect(deleteWithNestedDeleteResult.errors).toBeDefined();
-            expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude(
-                'Unknown argument "delete" on field'
-            );
-        });
-
         test("Should only be able to perform the update nested op when UPDATE is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 interface ${Person} {
@@ -2072,11 +1891,6 @@ describe("@relationhip - nestedOperations", () => {
                 source: createMutationWithNestedConnect,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
-            const createWithNestedConnectOrCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: createMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
             const updateWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedCreate,
@@ -2085,11 +1899,6 @@ describe("@relationhip - nestedOperations", () => {
             const updateWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const updateWithNestedConnectOrCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: updateMutationWithNestedConnectOrCreate,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
             const updateWithNestedUpdateResult = await graphql({
@@ -2121,10 +1930,6 @@ describe("@relationhip - nestedOperations", () => {
             expect((createWithNestedConnectResult.errors as any)[0].message).toInclude(
                 'Field "actors" is not defined by type'
             );
-            expect(createWithNestedConnectOrCreateResult.errors).toBeDefined();
-            expect((createWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-                'Field "actors" is not defined by type'
-            );
             expect(updateWithNestedCreateResult.errors).toBeDefined();
             expect((updateWithNestedCreateResult.errors as any)[0].message).toInclude(
                 'Field "create" is not defined by type'
@@ -2132,10 +1937,6 @@ describe("@relationhip - nestedOperations", () => {
             expect(updateWithNestedConnectResult.errors).toBeDefined();
             expect((updateWithNestedConnectResult.errors as any)[0].message).toInclude(
                 'Field "connect" is not defined by type'
-            );
-            expect(updateWithNestedConnectOrCreateResult.errors).toBeDefined();
-            expect((updateWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-                'Field "connectOrCreate" is not defined by type'
             );
             expect(updateWithNestedUpdateResult.errors).toBeFalsy();
             expect(updateWithNestedDisconnectResult.errors).toBeDefined();
@@ -2184,11 +1985,6 @@ describe("@relationhip - nestedOperations", () => {
                 source: createMutationWithNestedConnect,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
-            const createWithNestedConnectOrCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: createMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
             const updateWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedCreate,
@@ -2197,11 +1993,6 @@ describe("@relationhip - nestedOperations", () => {
             const updateWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const updateWithNestedConnectOrCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: updateMutationWithNestedConnectOrCreate,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
             const updateWithNestedUpdateResult = await graphql({
@@ -2233,10 +2024,6 @@ describe("@relationhip - nestedOperations", () => {
             expect((createWithNestedConnectResult.errors as any)[0].message).toInclude(
                 'Field "actors" is not defined by type'
             );
-            expect(createWithNestedConnectOrCreateResult.errors).toBeDefined();
-            expect((createWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-                'Field "actors" is not defined by type'
-            );
             expect(updateWithNestedCreateResult.errors).toBeDefined();
             expect((updateWithNestedCreateResult.errors as any)[0].message).toInclude(
                 'Field "create" is not defined by type'
@@ -2244,10 +2031,6 @@ describe("@relationhip - nestedOperations", () => {
             expect(updateWithNestedConnectResult.errors).toBeDefined();
             expect((updateWithNestedConnectResult.errors as any)[0].message).toInclude(
                 'Field "connect" is not defined by type'
-            );
-            expect(updateWithNestedConnectOrCreateResult.errors).toBeDefined();
-            expect((updateWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-                'Field "connectOrCreate" is not defined by type'
             );
             expect(updateWithNestedUpdateResult.errors).toBeDefined();
             expect((updateWithNestedUpdateResult.errors as any)[0].message).toInclude(
@@ -2296,11 +2079,6 @@ describe("@relationhip - nestedOperations", () => {
                 source: createMutationWithNestedConnect,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
-            const createWithNestedConnectOrCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: createMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
             const updateWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedCreate,
@@ -2309,11 +2087,6 @@ describe("@relationhip - nestedOperations", () => {
             const updateWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
-            const updateWithNestedConnectOrCreateResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: updateMutationWithNestedConnectOrCreate,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
             const updateWithNestedUpdateResult = await graphql({
@@ -2345,10 +2118,6 @@ describe("@relationhip - nestedOperations", () => {
             expect((createWithNestedConnectResult.errors as any)[0].message).toInclude(
                 'Field "actors" is not defined by type'
             );
-            expect(createWithNestedConnectOrCreateResult.errors).toBeDefined();
-            expect((createWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-                'Field "actors" is not defined by type'
-            );
             expect(updateWithNestedCreateResult.errors).toBeDefined();
             expect((updateWithNestedCreateResult.errors as any)[0].message).toInclude(
                 'Field "create" is not defined by type'
@@ -2356,10 +2125,6 @@ describe("@relationhip - nestedOperations", () => {
             expect(updateWithNestedConnectResult.errors).toBeDefined();
             expect((updateWithNestedConnectResult.errors as any)[0].message).toInclude(
                 'Field "connect" is not defined by type'
-            );
-            expect(updateWithNestedConnectOrCreateResult.errors).toBeDefined();
-            expect((updateWithNestedConnectOrCreateResult.errors as any)[0].message).toInclude(
-                'Field "connectOrCreate" is not defined by type'
             );
             expect(updateWithNestedUpdateResult.errors).toBeDefined();
             expect((updateWithNestedUpdateResult.errors as any)[0].message).toInclude(
