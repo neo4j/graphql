@@ -114,6 +114,11 @@ export type SelectableOptions = {
     onAggregate: boolean;
 };
 
+export type SettableOptions = {
+    onCreate: boolean;
+    onUpdate: boolean;
+};
+
 /**
  * Representation a ObjectTypeDefinitionNode field.
  */
@@ -130,6 +135,7 @@ export interface BaseField {
     dbPropertyName?: string;
     unique?: Unique;
     selectableOptions: SelectableOptions;
+    settableOptions: SettableOptions;
 }
 
 /**

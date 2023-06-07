@@ -63,6 +63,10 @@ describe("createCreateAndParams", () => {
                         onRead: true,
                         onAggregate: false,
                     },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                 },
