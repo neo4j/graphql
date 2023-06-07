@@ -232,13 +232,15 @@ function createRelationshipFields({
 
                 const aggregationFieldsArgs = addDirectedArgument(aggregationFieldsBaseArgs, rel);
 
-                composeNode.addFields({
-                    [`${rel.fieldName}Aggregate`]: {
-                        type: aggregationTypeObject,
-                        args: aggregationFieldsArgs,
-                        directives: deprecatedDirectives,
-                    },
-                });
+                if (rel.aggregate) {
+                    composeNode.addFields({
+                        [`${rel.fieldName}Aggregate`]: {
+                            type: aggregationTypeObject,
+                            args: aggregationFieldsArgs,
+                            directives: deprecatedDirectives,
+                        },
+                    });
+                }
             }
         }
 
