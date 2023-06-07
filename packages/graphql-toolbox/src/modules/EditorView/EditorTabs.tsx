@@ -21,6 +21,7 @@ import { useContext } from "react";
 
 import { Tab, Tabs } from "@neo4j-ndl/react";
 import { PlusIconOutline, XMarkIconOutline } from "@neo4j-ndl/react/icons";
+import classNames from "classnames";
 
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
@@ -42,9 +43,10 @@ export const EditorTabs = () => {
         <>
             {useStore.getState().tabs.length ? (
                 <div
-                    className={`w-full overflow-auto whitespace-nowrap rounded-t-xl border-b pt-2 ${
+                    className={classNames(
+                        "w-full overflow-auto whitespace-nowrap rounded-t-xl border-b pt-2",
                         theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"
-                    }`}
+                    )}
                 >
                     <Tabs
                         size="small"
@@ -65,9 +67,10 @@ export const EditorTabs = () => {
                                         <span style={{ maxWidth: "7rem" }}>{tab.title}</span>
                                         <XMarkIconOutline
                                             data-test-close-icon-query-editor-tab
-                                            className={`h-5 w-5 ml-2 ${
+                                            className={classNames(
+                                                "h-5 w-5 ml-2",
                                                 theme.theme === Theme.LIGHT ? "hover:bg-gray-100" : "hover:bg-gray-500"
-                                            }`}
+                                            )}
                                             aria-label="Close Icon"
                                             onClick={(event) => {
                                                 event.stopPropagation();
@@ -81,9 +84,10 @@ export const EditorTabs = () => {
                         <Tab key={"new"} tabId={"new"} className="pos-absolute pl-0">
                             <PlusIconOutline
                                 data-test-new-query-editor-tab
-                                className={`h-5 w-5 ${
+                                className={classNames(
+                                    "h-5 w-5",
                                     theme.theme === Theme.LIGHT ? "hover:bg-gray-100" : "text-white hover:bg-gray-500"
-                                }`}
+                                )}
                                 aria-label="Add tab Icon"
                                 onClick={() => store.addTab()}
                             />

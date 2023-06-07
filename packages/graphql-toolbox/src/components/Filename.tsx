@@ -18,6 +18,9 @@
  */
 
 import { useContext } from "react";
+
+import classNames from "classnames";
+
 // @ts-ignore - SVG Import
 import GraphQLIcon from "../assets/graphql-icon.svg";
 import { Theme, ThemeContext } from "../contexts/theme";
@@ -67,9 +70,11 @@ export const FileName = ({ extension, name, buttons, borderRadiusTop = true }: P
 
     return (
         <div
-            className={`w-full h-12 m-0 pt-3 pb-3 pl-4 ${theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"}${
-                borderRadiusTop ? " rounded-t-xl" : ""
-            } flex justify-between items-center`}
+            className={classNames(
+                "w-full flex justify-between items-center h-12 m-0 pt-3 pb-3 pl-4",
+                theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark",
+                borderRadiusTop && "rounded-t-xl"
+            )}
         >
             <div className={`${theme.theme === Theme.LIGHT ? "text-black" : "text-white"} text-sm`}>
                 <Icon extension={extension}></Icon> <span className="pl-1">{name}</span>
