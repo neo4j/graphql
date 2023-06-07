@@ -142,9 +142,6 @@ export const Editor = ({ schema }: Props) => {
                                             label="Docs"
                                             checked={showDocs}
                                             onChange={handleShowDocs}
-                                            content={undefined}
-                                            rel={undefined}
-                                            rev={undefined}
                                         />
                                     </div>
                                     <GraphiQLExplorer
