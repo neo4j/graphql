@@ -17,9 +17,16 @@
  * limitations under the License.
  */
 
+import { expect } from "@playwright/test";
 import { Screen } from "./Screen";
 
 export class TopBar extends Screen {
+    public async waitForTopBarVisibility() {
+        await this.page.locator("[data-test-topbar-connection-information]").waitFor({ state: "visible" });
+        const topBarConnectionInfo = this.page.locator("[data-test-topbar-connection-information]");
+        await expect(topBarConnectionInfo).toBeVisible();
+    }
+
     public async getSelectedDatabase(): Promise<string> {
         const element = this.page.locator("[data-test-topbar-selected-database]");
         const text = await element.innerText();

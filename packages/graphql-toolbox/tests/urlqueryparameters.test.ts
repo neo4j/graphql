@@ -94,8 +94,7 @@ base.test.describe("URL query parameters", () => {
         const login = new Login(page);
         await login.login();
 
-        // We need some waiting time after loading the application for a dbms query checking for available databases to resolve.
-        await page.waitForTimeout(2000);
+        await topBarPage.waitForTopBarVisibility();
 
         const selectedDatabase = await topBarPage.getSelectedDatabase();
 
@@ -111,8 +110,7 @@ base.test.describe("URL query parameters", () => {
         const login = new Login(page);
         await login.login();
 
-        // We need some waiting time after loading the application for a dbms query checking for available databases to resolve.
-        await page.waitForTimeout(2000);
+        await topBarPage.waitForTopBarVisibility();
 
         let selectedDatabase = await topBarPage.getSelectedDatabase();
         expect(selectedDatabase).toEqual(databaseName);
