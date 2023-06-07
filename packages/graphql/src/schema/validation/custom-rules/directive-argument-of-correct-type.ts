@@ -22,6 +22,7 @@ import { GraphQLError, coerceInputValue, valueFromASTUntyped, buildASTSchema } f
 
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 
+export const AUTHORIZATION_ERROR_CODE = "Authorization";
 export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): ASTVisitor {
     const schema = buildASTSchema(context.getDocument(), { assumeValid: true, assumeValidSDL: true });
 
@@ -40,14 +41,20 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
             }
 
             directiveNode.arguments?.forEach((argument) => {
-                const argumentDefinition = findArgumentDefinitionNodeByName(directiveDefinition.args, argument.name.value);
+                const argumentDefinition = findArgumentDefinitionNodeByName(
+                    directiveDefinition.args,
+                    argument.name.value
+                );
                 if (!argumentDefinition) {
                     return;
                 }
                 const { isValid, errorMsg } = assertArgumentType(argument, argumentDefinition);
                 if (!isValid) {
                     context.reportError(
-                        new GraphQLError(`Invalid argument: ${argument.name.value}, error: ${errorMsg}`)
+                        new GraphQLError(`Invalid argument: ${argument.name.value}, error: ${errorMsg}`, {
+                            nodes: [argument, directiveNode],
+                            extensions: { exception: { code: AUTHORIZATION_ERROR_CODE } },
+                        })
                     );
                 }
             });

@@ -263,7 +263,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                `"Invalid argument: testValue, error: Value \\"CREATE\\" does not exist in \\"WonderfulKind\\" enum."`
+                `"Invalid argument: testValue, error: Value \\"CREATE\\" does not exist in \\"WonderfulKind\\" enum. Location: Directive \\"@authorization\\" on type \`Wonderful\`."`
             );
         });
     });
@@ -325,7 +325,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                `"Invalid argument: testValue, error: Value \\"CREATE\\" does not exist in \\"WonderfulKind\\" enum."`
+                `"Invalid argument: testValue, error: Value \\"CREATE\\" does not exist in \\"WonderfulKind\\" enum. Location: Directive \\"@authorization\\" on type \`Wonderful\`."`
             );
         });
 
@@ -468,7 +468,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                `"Invalid argument: testValue, error: Expected type \\"NestedWonderfulInput\\" to be an object."`
+                `"Invalid argument: testValue, error: Expected type in argument testValue to be an object. Location: Directive \\"@authorization\\" on type \`Wonderful\`."`
             );
         });
 
@@ -494,7 +494,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                `"Invalid argument: testValue, error: Field \\"nested\\" of required type \\"NestedWonderfulInput!\\" was not provided."`
+                `"Invalid argument: testValue, error: Field \\"nested\\" of required type in argument testValue was not provided. Location: Directive \\"@authorization\\" on type \`Wonderful\`."`
             );
         });
     });

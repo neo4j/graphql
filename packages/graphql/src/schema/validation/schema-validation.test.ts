@@ -90,7 +90,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Field \\"thisClaimDoesNotExist\\" is not defined by type \\"JWTPayloadWhere\\"."`
+                    `"Invalid argument: filter, error: Field \\"thisClaimDoesNotExist\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`User\`."`
                 );
             });
 
@@ -132,7 +132,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Field \\"myClaim\\" is not defined by type \\"UserWhere\\"."`
+                    `"Invalid argument: filter, error: Field \\"myClaim\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`User\`."`
                 );
             });
         });
@@ -488,7 +488,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
                 );
             });
 
@@ -521,7 +521,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
                 );
             });
         });
@@ -553,7 +553,7 @@ describe("schema validation", () => {
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
                 );
             });
 
@@ -597,7 +597,7 @@ describe("schema validation", () => {
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
                 );
             });
         });
@@ -621,7 +621,9 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrow('Directive "@MemberAuthorization" may not be used on INTERFACE.');
+                expect(executeValidate).toThrow(
+                    'Directive "@authorization" may not be used on INTERFACE. Location: type `Member`.'
+                );
             });
         });
 
@@ -657,7 +659,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@UserAuthorization\\" can only be used once at this location."`
+                    `"The directive \\"@authorization\\" can only be used once at this location. Location: type \`User\`."`
                 );
             });
 
@@ -680,7 +682,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@UserAuthorization\\" can only be used once at this location."`
+                    `"The directive \\"@authorization\\" can only be used once at this location. Location: type \`User\`."`
                 );
             });
 
@@ -772,7 +774,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@UserAuthorization\\" can only be used once at this location."`
+                    `"The directive \\"@authorization\\" can only be used once at this location. Location: type \`User\`."`
                 );
             });
 
@@ -788,7 +790,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
                 );
             });
 
@@ -823,7 +825,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
                 );
             });
         });
@@ -848,7 +850,9 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrow('Directive "@MemberAuthorization" may not be used on INTERFACE.');
+                expect(executeValidate).toThrow(
+                    'Directive "@authorization" may not be used on INTERFACE. Location: type `Member`.'
+                );
             });
         });
 
@@ -914,7 +918,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@PostAuthorization\\". Did you mean \\"filter\\"?"`
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`Post\`."`
                 );
             });
         });
@@ -1031,7 +1035,7 @@ describe("schema validation", () => {
                     });
 
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
                 );
             });
 
@@ -1095,7 +1099,7 @@ describe("schema validation", () => {
                         additionalTypes: types,
                     });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
                 );
             });
         });
@@ -1257,7 +1261,7 @@ describe("schema validation", () => {
                             additionalTypes: [],
                         });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type \\"UserAuthorizationFilterRule\\"."`
+                        `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`User\`."`
                     );
                 });
 
@@ -1278,7 +1282,7 @@ describe("schema validation", () => {
                             additionalTypes: [],
                         });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type \\"UserAuthorizationWhere\\". Did you mean \\"node\\"?"`
+                        `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type in argument filter. Did you mean \\"node\\"? Location: Directive \\"@authorization\\" on type \`User\`."`
                     );
                 });
 
@@ -1299,7 +1303,7 @@ describe("schema validation", () => {
                             additionalTypes: [],
                         });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type \\"UserWhere\\"."`
+                        `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`User\`."`
                     );
                 });
 
@@ -1325,7 +1329,7 @@ describe("schema validation", () => {
                             additionalTypes: [],
                         });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"content\\" is not defined by type \\"UserWhere\\"."`
+                        `"Invalid argument: filter, error: Field \\"content\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`Post\`."`
                     );
                 });
 
@@ -1354,7 +1358,7 @@ describe("schema validation", () => {
                             additionalTypes: [],
                         });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type \\"PostWhere\\"."`
+                        `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`Post\`."`
                     );
                 });
             });
@@ -1471,7 +1475,7 @@ describe("schema validation", () => {
                             additionalTypes: [],
                         });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type \\"UserAuthorizationFilterRule\\"."`
+                        `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`User\`."`
                     );
                 });
 
@@ -1492,7 +1496,7 @@ describe("schema validation", () => {
                             additionalTypes: [],
                         });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type \\"UserAuthorizationWhere\\". Did you mean \\"node\\"?"`
+                        `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type in argument filter. Did you mean \\"node\\"? Location: Directive \\"@authorization\\" on type \`User\`."`
                     );
                 });
 
@@ -1513,7 +1517,7 @@ describe("schema validation", () => {
                             additionalTypes: [],
                         });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type \\"UserWhere\\"."`
+                        `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`User\`."`
                     );
                 });
 
@@ -1541,7 +1545,7 @@ describe("schema validation", () => {
                             additionalTypes: [],
                         });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"content\\" is not defined by type \\"UserWhere\\"."`
+                        `"Invalid argument: filter, error: Field \\"content\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`Post\`."`
                     );
                 });
 
@@ -1571,7 +1575,7 @@ describe("schema validation", () => {
                             additionalTypes: [],
                         });
                     expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type \\"PostWhere\\"."`
+                        `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`Post\`."`
                     );
                 });
             });

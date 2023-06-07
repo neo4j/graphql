@@ -18,7 +18,7 @@
  */
 
 import { astFromValueUntyped } from "@graphql-tools/utils";
-import type { ASTVisitor, GraphQLSchema, ObjectTypeDefinitionNode, TypeNode } from "graphql";
+import type { ASTVisitor, GraphQLSchema, ObjectTypeDefinitionNode, TypeNode, ValueNode } from "graphql";
 import { Kind } from "graphql";
 import { getStandardJwtDefinition } from "../../../graphql/directives/type-dependant-directives/jwt-payload";
 
@@ -39,7 +39,7 @@ function getDefaultValueForTypename(typeName: string): DefaultValue {
             return null;
     }
 }
-function makeReplacementFieldNode(fieldType: TypeNode) {
+function makeReplacementFieldNode(fieldType: TypeNode): ValueNode | null {
     let replacementValue: DefaultValue = null;
     if (fieldType.kind === Kind.NAMED_TYPE) {
         replacementValue = getDefaultValueForTypename(fieldType.name.value);
