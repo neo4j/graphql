@@ -94,11 +94,31 @@ base.test.describe("URL query parameters", () => {
         const login = new Login(page);
         await login.login();
 
-        // We need some waiting time after loading the application for a dbms query checking for available databases to resolve.
-        await page.waitForTimeout(2000);
+        await topBarPage.waitForTopBarVisibility();
 
         const selectedDatabase = await topBarPage.getSelectedDatabase();
 
         expect(selectedDatabase).toEqual(databaseName);
+    });
+
+    test("should be able to select default database when a database was provided in url query parameter", async ({
+        page,
+        topBarPage,
+    }) => {
+        await page.goto(`/?db=${databaseName}`);
+
+        const login = new Login(page);
+        await login.login();
+
+        await topBarPage.waitForTopBarVisibility();
+
+        let selectedDatabase = await topBarPage.getSelectedDatabase();
+        expect(selectedDatabase).toEqual(databaseName);
+
+        await topBarPage.clickConnectionInformation();
+        await topBarPage.selectDatabaseByName("neo4j");
+
+        selectedDatabase = await topBarPage.getSelectedDatabase();
+        expect(selectedDatabase).toEqual("neo4j");
     });
 });

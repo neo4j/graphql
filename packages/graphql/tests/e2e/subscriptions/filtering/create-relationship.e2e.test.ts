@@ -1973,4 +1973,316 @@ subscription SubscriptionMovie {
             },
         ]);
     });
+
+    describe("boolean operators", () => {
+        test("OR", async () => {
+            const where = `{ OR: [ { ${typeMovie.operations.subscribe.payload.relationship_created}: { title: "The Matrix" } }, { createdRelationship: { actors: { node: { name: "Keanu" } } } } ]}`;
+            await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
+
+            await supertest(server.path)
+                .post("")
+                .send({
+                    query: `
+                        mutation {
+                            ${typeMovie.operations.create}(
+                                input: [
+                                    {
+                                        actors: {
+                                            create: [
+                                                {
+                                                    node: {
+                                                        name: "Lawrence"
+                                                    },
+                                                    edge: {
+                                                        screenTime: 1000
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        title: "The Matrix",
+                                    },
+                                    {
+                                        actors: {
+                                            create: [
+                                                {
+                                                    node: {
+                                                        name: "Keanu"
+                                                    },
+                                                    edge: {
+                                                        screenTime: 1000
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        title: "John Wick",
+                                    },
+                                    {
+                                        actors: {
+                                            create: [
+                                                {
+                                                    node: {
+                                                        name: "Hugh Grant"
+                                                    },
+                                                    edge: {
+                                                        screenTime: 1000
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        title: "Paddington",
+                                    }
+                                ]
+                            ) {
+                                ${typeMovie.plural} {
+                                    title
+                                }
+                            }
+                        }
+                    `,
+                })
+                .expect(200);
+
+            await wsClient.waitForEvents(2);
+
+            expect(wsClient.errors).toEqual([]);
+            expect(wsClient.events).toHaveLength(2);
+            expect(wsClient.events).toIncludeSameMembers([
+                {
+                    [typeMovie.operations.subscribe.relationship_created]: {
+                        [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
+                        event: "CREATE_RELATIONSHIP",
+                        relationshipFieldName: "actors",
+                        createdRelationship: {
+                            actors: {
+                                screenTime: 1000,
+                                node: {
+                                    name: "Lawrence",
+                                },
+                            },
+                            directors: null,
+                            reviewers: null,
+                        },
+                    },
+                },
+                {
+                    [typeMovie.operations.subscribe.relationship_created]: {
+                        [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
+                        event: "CREATE_RELATIONSHIP",
+                        relationshipFieldName: "actors",
+                        createdRelationship: {
+                            actors: {
+                                screenTime: 1000,
+                                node: {
+                                    name: "Keanu",
+                                },
+                            },
+                            directors: null,
+                            reviewers: null,
+                        },
+                    },
+                },
+            ]);
+        });
+
+        test("NOT", async () => {
+            const where = `{ NOT: { ${typeMovie.operations.subscribe.payload.relationship_created}: { title: "The Matrix" } } }`;
+            await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
+
+            await supertest(server.path)
+                .post("")
+                .send({
+                    query: `
+                        mutation {
+                            ${typeMovie.operations.create}(
+                                input: [
+                                    {
+                                        actors: {
+                                            create: [
+                                                {
+                                                    node: {
+                                                        name: "Lawrence"
+                                                    },
+                                                    edge: {
+                                                        screenTime: 1000
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        title: "The Matrix",
+                                    },
+                                    {
+                                        actors: {
+                                            create: [
+                                                {
+                                                    node: {
+                                                        name: "Keanu"
+                                                    },
+                                                    edge: {
+                                                        screenTime: 1000
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        title: "John Wick",
+                                    },
+                                    {
+                                        actors: {
+                                            create: [
+                                                {
+                                                    node: {
+                                                        name: "Hugh Grant"
+                                                    },
+                                                    edge: {
+                                                        screenTime: 1000
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        title: "Paddington",
+                                    }
+                                ]
+                            ) {
+                                ${typeMovie.plural} {
+                                    title
+                                }
+                            }
+                        }
+                    `,
+                })
+                .expect(200);
+
+            await wsClient.waitForEvents(2);
+
+            expect(wsClient.errors).toEqual([]);
+            expect(wsClient.events).toHaveLength(2);
+            expect(wsClient.events).toIncludeSameMembers([
+                {
+                    [typeMovie.operations.subscribe.relationship_created]: {
+                        [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Paddington" },
+                        event: "CREATE_RELATIONSHIP",
+                        relationshipFieldName: "actors",
+                        createdRelationship: {
+                            actors: {
+                                screenTime: 1000,
+                                node: {
+                                    name: "Hugh Grant",
+                                },
+                            },
+                            directors: null,
+                            reviewers: null,
+                        },
+                    },
+                },
+                {
+                    [typeMovie.operations.subscribe.relationship_created]: {
+                        [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
+                        event: "CREATE_RELATIONSHIP",
+                        relationshipFieldName: "actors",
+                        createdRelationship: {
+                            actors: {
+                                screenTime: 1000,
+                                node: {
+                                    name: "Keanu",
+                                },
+                            },
+                            directors: null,
+                            reviewers: null,
+                        },
+                    },
+                },
+            ]);
+        });
+
+        test("Hybrid", async () => {
+            const where = `{ AND: [{ OR: [{ ${typeMovie.operations.subscribe.payload.relationship_created}: { title: "The Matrix" } }, { ${typeMovie.operations.subscribe.payload.relationship_created}: { title: "Paddington" } }] }, { createdRelationship: { actors: { node: { name: "Lawrence" } } } }] }`;
+            await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
+
+            await supertest(server.path)
+                .post("")
+                .send({
+                    query: `
+                        mutation {
+                            ${typeMovie.operations.create}(
+                                input: [
+                                    {
+                                        actors: {
+                                            create: [
+                                                {
+                                                    node: {
+                                                        name: "Lawrence"
+                                                    },
+                                                    edge: {
+                                                        screenTime: 1000
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        title: "The Matrix",
+                                    },
+                                    {
+                                        actors: {
+                                            create: [
+                                                {
+                                                    node: {
+                                                        name: "Keanu"
+                                                    },
+                                                    edge: {
+                                                        screenTime: 1000
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        title: "John Wick",
+                                    },
+                                    {
+                                        actors: {
+                                            create: [
+                                                {
+                                                    node: {
+                                                        name: "Hugh Grant"
+                                                    },
+                                                    edge: {
+                                                        screenTime: 1000
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        title: "Paddington",
+                                    }
+                                ]
+                            ) {
+                                ${typeMovie.plural} {
+                                    title
+                                }
+                            }
+                        }
+                    `,
+                })
+                .expect(200);
+
+            await wsClient.waitForEvents(1);
+
+            expect(wsClient.errors).toEqual([]);
+            expect(wsClient.events).toHaveLength(1);
+            expect(wsClient.events).toIncludeSameMembers([
+                {
+                    [typeMovie.operations.subscribe.relationship_created]: {
+                        [typeMovie.operations.subscribe.payload.relationship_created]: { title: "The Matrix" },
+                        event: "CREATE_RELATIONSHIP",
+                        relationshipFieldName: "actors",
+                        createdRelationship: {
+                            actors: {
+                                screenTime: 1000,
+                                node: {
+                                    name: "Lawrence",
+                                },
+                            },
+                            directors: null,
+                            reviewers: null,
+                        },
+                    },
+                },
+            ]);
+        });
+    });
 });

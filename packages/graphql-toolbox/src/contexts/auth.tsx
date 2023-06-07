@@ -17,18 +17,21 @@
  * limitations under the License.
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
 import * as neo4j from "neo4j-driver";
+
 import { VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
+import { useStore } from "../store";
+import type { LoginPayload, Neo4jDatabase, Neo4jDatabaseInfo } from "../types";
+import { getURLProtocolFromText } from "../utils/utils";
 import {
     checkDatabaseHasData,
+    getDatabaseInformation,
     getDatabases,
     resolveNeo4jDesktopLoginPayload,
     resolveSelectedDatabaseName,
 } from "./utils";
-import type { LoginPayload, Neo4jDatabase } from "../types";
-import { getURLProtocolFromText } from "../utils/utils";
-import { useStore } from "../store";
 
 interface LoginOptions {
     username: string;
@@ -43,6 +46,7 @@ export interface State {
     isConnected?: boolean;
     isNeo4jDesktop?: boolean;
     databases?: Neo4jDatabase[];
+    databaseInformation?: Neo4jDatabaseInfo;
     selectedDatabaseName?: string;
     showIntrospectionPrompt?: boolean;
     login: (options: LoginOptions) => Promise<void>;
@@ -69,6 +73,7 @@ export function AuthProvider(props: any) {
             await driver.verifyConnectivity();
 
             const databases = await getDatabases(driver);
+            const databaseInformation = await getDatabaseInformation(driver);
             const selectedDatabaseName = resolveSelectedDatabaseName(databases || []);
 
             let isShowIntrospectionPrompt = false;
@@ -93,6 +98,7 @@ export function AuthProvider(props: any) {
                 isConnected: true,
                 showIntrospectionPrompt: isShowIntrospectionPrompt,
                 databases,
+                databaseInformation,
                 selectedDatabaseName,
             }));
         },

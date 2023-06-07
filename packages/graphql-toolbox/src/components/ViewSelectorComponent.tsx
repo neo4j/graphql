@@ -18,8 +18,10 @@
  */
 
 import { Fragment, useContext } from "react";
-import { ViewSelector, ViewSelectorItem } from "@neo4j-ndl/react";
+
 import { tokens } from "@neo4j-ndl/base";
+import { ViewSelector, ViewSelectorItem } from "@neo4j-ndl/react";
+
 import { Screen, ScreenContext } from "../contexts/screen";
 
 interface Props {

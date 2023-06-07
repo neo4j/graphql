@@ -18,12 +18,14 @@
  */
 
 import { useContext, useState } from "react";
-import type { GraphQLSchema } from "graphql";
+
 import { ChatBubbleOvalLeftEllipsisIconOutline } from "@neo4j-ndl/react/icons";
+import type { GraphQLSchema } from "graphql";
+
+import { tracking } from "../../analytics/tracking";
+import { Screen, ScreenContext } from "../../contexts/screen";
 import { EditorScreenDrawer } from "./EditorScreenDrawer";
 import { SchemaScreenDrawer } from "./SchemaScreenDrawer";
-import { Screen, ScreenContext } from "../../contexts/screen";
-import { tracking } from "../../analytics/tracking";
 
 interface Props {
     onClickClose: () => void;
