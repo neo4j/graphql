@@ -22,8 +22,8 @@ import { useCallback, useContext, useRef, useState } from "react";
 import { Button, SmartTooltip } from "@neo4j-ndl/react";
 import { ExclamationTriangleIconOutline } from "@neo4j-ndl/react/icons";
 
-// @ts-ignore - SVG Import
-import Icon from "../../assets/neo4j-color.svg";
+// @ts-ignore - PNG Import
+import neo4jIcon from "../../assets/neo4j-full-color.png";
 import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
 import { AuthContext } from "../../contexts/auth";
 import { getConnectUrlSearchParamValue } from "../../contexts/utils";
@@ -77,16 +77,28 @@ export const Login = () => {
 
     return (
         <div data-test-login-form className="grid place-items-center h-screen bg-white">
-            <div className="w-[600px] h-[740px] flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
+            <div className="w-[600px] h-[740px] login-window flex flex-col align-center justify-center shadow-2xl rounded-3xl py-8 px-16">
                 <div className="mb-6 text-center">
-                    <img src={Icon} alt="Neo4j Logo" className="h-12 w-12 mb-3 mx-auto" />
+                    <img src={neo4jIcon} alt="Neo4j Logo" className="mb-3 mx-auto" />
                     <h2 className="mt-1 text-3xl">Neo4j GraphQL Toolbox</h2>
                 </div>
                 {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-                <form onSubmit={onSubmit} className="flex flex-col gap-4">
+                <form onSubmit={onSubmit} className="flex flex-col items-center gap-4">
+                    <FormInput
+                        testtag="data-test-login-url"
+                        label="Connection URL"
+                        name="url"
+                        value={url}
+                        onChange={(event) => setUrl(event.currentTarget.value)}
+                        placeholder={DEFAULT_BOLT_URL}
+                        required={true}
+                        type="text"
+                        disabled={loading}
+                    />
+
                     <FormInput
                         testtag="data-test-login-username"
-                        label="Username"
+                        label="Database user"
                         name="username"
                         placeholder="neo4j"
                         value={username}
@@ -108,23 +120,11 @@ export const Login = () => {
                         autoComplete="current-password"
                     />
 
-                    <FormInput
-                        testtag="data-test-login-url"
-                        label="Connection URI"
-                        name="url"
-                        value={url}
-                        onChange={(event) => setUrl(event.currentTarget.value)}
-                        placeholder={DEFAULT_BOLT_URL}
-                        required={true}
-                        type="text"
-                        disabled={loading}
-                    />
-
                     <div className="flex items-center">
                         <Button
                             data-test-login-button
-                            color="neutral"
-                            fill="outlined"
+                            className="w-60"
+                            fill="filled"
                             type="submit"
                             loading={loading}
                             disabled={loading}
