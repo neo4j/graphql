@@ -10,8 +10,6 @@ module.exports = {
             width: {
                 "content-container": "calc(100% - 24rem)",
                 "editor-container": "calc(100% - (24rem + 24rem))",
-                "introspection-prompt": "750px",
-                login: "30rem",
             },
             colors: {
                 draculaDark: "#282A36",

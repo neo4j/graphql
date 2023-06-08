@@ -76,8 +76,8 @@ export const Login = () => {
     };
 
     return (
-        <div data-test-login-form className="grid place-items-center h-screen n-bg-neutral-90">
-            <div className="w-login flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
+        <div data-test-login-form className="grid place-items-center h-screen bg-white">
+            <div className="w-[600px] h-[740px] flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
                 <div className="mb-6 text-center">
                     <img src={Icon} alt="Neo4j Logo" className="h-12 w-12 mb-3 mx-auto" />
                     <h2 className="mt-1 text-3xl">Neo4j GraphQL Toolbox</h2>
