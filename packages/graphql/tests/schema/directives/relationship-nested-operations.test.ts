@@ -4499,11 +4499,6 @@ describe("Relationship nested operations", () => {
                   id: ID
                 }
 
-                input MovieActorsConnectInput {
-                  PersonOne: [MovieActorsPersonOneConnectFieldInput!]
-                  PersonTwo: [MovieActorsPersonTwoConnectFieldInput!]
-                }
-
                 type MovieActorsConnection {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
@@ -4525,20 +4520,6 @@ describe("Relationship nested operations", () => {
                   PersonTwo: MovieActorsPersonTwoFieldInput
                 }
 
-                input MovieActorsDeleteInput {
-                  PersonOne: [MovieActorsPersonOneDeleteFieldInput!]
-                  PersonTwo: [MovieActorsPersonTwoDeleteFieldInput!]
-                }
-
-                input MovieActorsDisconnectInput {
-                  PersonOne: [MovieActorsPersonOneDisconnectFieldInput!]
-                  PersonTwo: [MovieActorsPersonTwoDisconnectFieldInput!]
-                }
-
-                input MovieActorsPersonOneConnectFieldInput {
-                  where: PersonOneConnectWhere
-                }
-
                 input MovieActorsPersonOneConnectionWhere {
                   AND: [MovieActorsPersonOneConnectionWhere!]
                   NOT: MovieActorsPersonOneConnectionWhere
@@ -4551,34 +4532,8 @@ describe("Relationship nested operations", () => {
                   node: PersonOneCreateInput!
                 }
 
-                input MovieActorsPersonOneDeleteFieldInput {
-                  where: MovieActorsPersonOneConnectionWhere
-                }
-
-                input MovieActorsPersonOneDisconnectFieldInput {
-                  where: MovieActorsPersonOneConnectionWhere
-                }
-
                 input MovieActorsPersonOneFieldInput {
-                  connect: [MovieActorsPersonOneConnectFieldInput!]
                   create: [MovieActorsPersonOneCreateFieldInput!]
-                }
-
-                input MovieActorsPersonOneUpdateConnectionInput {
-                  node: PersonOneUpdateInput
-                }
-
-                input MovieActorsPersonOneUpdateFieldInput {
-                  connect: [MovieActorsPersonOneConnectFieldInput!]
-                  create: [MovieActorsPersonOneCreateFieldInput!]
-                  delete: [MovieActorsPersonOneDeleteFieldInput!]
-                  disconnect: [MovieActorsPersonOneDisconnectFieldInput!]
-                  update: MovieActorsPersonOneUpdateConnectionInput
-                  where: MovieActorsPersonOneConnectionWhere
-                }
-
-                input MovieActorsPersonTwoConnectFieldInput {
-                  where: PersonTwoConnectWhere
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -4593,30 +4548,8 @@ describe("Relationship nested operations", () => {
                   node: PersonTwoCreateInput!
                 }
 
-                input MovieActorsPersonTwoDeleteFieldInput {
-                  where: MovieActorsPersonTwoConnectionWhere
-                }
-
-                input MovieActorsPersonTwoDisconnectFieldInput {
-                  where: MovieActorsPersonTwoConnectionWhere
-                }
-
                 input MovieActorsPersonTwoFieldInput {
-                  connect: [MovieActorsPersonTwoConnectFieldInput!]
                   create: [MovieActorsPersonTwoCreateFieldInput!]
-                }
-
-                input MovieActorsPersonTwoUpdateConnectionInput {
-                  node: PersonTwoUpdateInput
-                }
-
-                input MovieActorsPersonTwoUpdateFieldInput {
-                  connect: [MovieActorsPersonTwoConnectFieldInput!]
-                  create: [MovieActorsPersonTwoCreateFieldInput!]
-                  delete: [MovieActorsPersonTwoDeleteFieldInput!]
-                  disconnect: [MovieActorsPersonTwoDisconnectFieldInput!]
-                  update: MovieActorsPersonTwoUpdateConnectionInput
-                  where: MovieActorsPersonTwoConnectionWhere
                 }
 
                 type MovieActorsRelationship {
@@ -4624,31 +4557,14 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                input MovieActorsUpdateInput {
-                  PersonOne: [MovieActorsPersonOneUpdateFieldInput!]
-                  PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
-                }
-
                 type MovieAggregateSelection {
                   count: Int!
                   id: IDAggregateSelectionNullable!
                 }
 
-                input MovieConnectInput {
-                  actors: MovieActorsConnectInput
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsCreateInput
                   id: ID
-                }
-
-                input MovieDeleteInput {
-                  actors: MovieActorsDeleteInput
-                }
-
-                input MovieDisconnectInput {
-                  actors: MovieActorsDisconnectInput
                 }
 
                 type MovieEdge {
@@ -4677,7 +4593,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieUpdateInput {
-                  actors: MovieActorsUpdateInput
                   id: ID
                 }
 
@@ -4725,10 +4640,10 @@ describe("Relationship nested operations", () => {
                   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                   createPersonOnes(input: [PersonOneCreateInput!]!): CreatePersonOnesMutationResponse!
                   createPersonTwos(input: [PersonTwoCreateInput!]!): CreatePersonTwosMutationResponse!
-                  deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+                  deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(create: MovieRelationInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -4750,10 +4665,6 @@ describe("Relationship nested operations", () => {
                 type PersonOneAggregateSelection {
                   count: Int!
                   name: StringAggregateSelectionNullable!
-                }
-
-                input PersonOneConnectWhere {
-                  node: PersonOneWhere!
                 }
 
                 input PersonOneCreateInput {
@@ -4814,10 +4725,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoAggregateSelection {
                   count: Int!
                   nameTwo: StringAggregateSelectionNullable!
-                }
-
-                input PersonTwoConnectWhere {
-                  node: PersonTwoWhere!
                 }
 
                 input PersonTwoCreateInput {
@@ -5010,26 +4917,6 @@ describe("Relationship nested operations", () => {
                   PersonTwo: MovieActorsPersonTwoConnectionWhere
                 }
 
-                input MovieActorsCreateFieldInput {
-                  PersonOne: [MovieActorsPersonOneCreateFieldInput!]
-                  PersonTwo: [MovieActorsPersonTwoCreateFieldInput!]
-                }
-
-                input MovieActorsCreateInput {
-                  PersonOne: MovieActorsPersonOneFieldInput
-                  PersonTwo: MovieActorsPersonTwoFieldInput
-                }
-
-                input MovieActorsDeleteInput {
-                  PersonOne: [MovieActorsPersonOneDeleteFieldInput!]
-                  PersonTwo: [MovieActorsPersonTwoDeleteFieldInput!]
-                }
-
-                input MovieActorsDisconnectInput {
-                  PersonOne: [MovieActorsPersonOneDisconnectFieldInput!]
-                  PersonTwo: [MovieActorsPersonTwoDisconnectFieldInput!]
-                }
-
                 input MovieActorsPersonOneConnectFieldInput {
                   where: PersonOneConnectWhere
                 }
@@ -5042,33 +4929,8 @@ describe("Relationship nested operations", () => {
                   node_NOT: PersonOneWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
-                input MovieActorsPersonOneCreateFieldInput {
-                  node: PersonOneCreateInput!
-                }
-
-                input MovieActorsPersonOneDeleteFieldInput {
-                  where: MovieActorsPersonOneConnectionWhere
-                }
-
-                input MovieActorsPersonOneDisconnectFieldInput {
-                  where: MovieActorsPersonOneConnectionWhere
-                }
-
-                input MovieActorsPersonOneFieldInput {
-                  connect: [MovieActorsPersonOneConnectFieldInput!]
-                  create: [MovieActorsPersonOneCreateFieldInput!]
-                }
-
-                input MovieActorsPersonOneUpdateConnectionInput {
-                  node: PersonOneUpdateInput
-                }
-
                 input MovieActorsPersonOneUpdateFieldInput {
                   connect: [MovieActorsPersonOneConnectFieldInput!]
-                  create: [MovieActorsPersonOneCreateFieldInput!]
-                  delete: [MovieActorsPersonOneDeleteFieldInput!]
-                  disconnect: [MovieActorsPersonOneDisconnectFieldInput!]
-                  update: MovieActorsPersonOneUpdateConnectionInput
                   where: MovieActorsPersonOneConnectionWhere
                 }
 
@@ -5084,33 +4946,8 @@ describe("Relationship nested operations", () => {
                   node_NOT: PersonTwoWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
-                input MovieActorsPersonTwoCreateFieldInput {
-                  node: PersonTwoCreateInput!
-                }
-
-                input MovieActorsPersonTwoDeleteFieldInput {
-                  where: MovieActorsPersonTwoConnectionWhere
-                }
-
-                input MovieActorsPersonTwoDisconnectFieldInput {
-                  where: MovieActorsPersonTwoConnectionWhere
-                }
-
-                input MovieActorsPersonTwoFieldInput {
-                  connect: [MovieActorsPersonTwoConnectFieldInput!]
-                  create: [MovieActorsPersonTwoCreateFieldInput!]
-                }
-
-                input MovieActorsPersonTwoUpdateConnectionInput {
-                  node: PersonTwoUpdateInput
-                }
-
                 input MovieActorsPersonTwoUpdateFieldInput {
                   connect: [MovieActorsPersonTwoConnectFieldInput!]
-                  create: [MovieActorsPersonTwoCreateFieldInput!]
-                  delete: [MovieActorsPersonTwoDeleteFieldInput!]
-                  disconnect: [MovieActorsPersonTwoDisconnectFieldInput!]
-                  update: MovieActorsPersonTwoUpdateConnectionInput
                   where: MovieActorsPersonTwoConnectionWhere
                 }
 
@@ -5134,16 +4971,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieCreateInput {
-                  actors: MovieActorsCreateInput
                   id: ID
-                }
-
-                input MovieDeleteInput {
-                  actors: MovieActorsDeleteInput
-                }
-
-                input MovieDisconnectInput {
-                  actors: MovieActorsDisconnectInput
                 }
 
                 type MovieEdge {
@@ -5158,10 +4986,6 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
-                }
-
-                input MovieRelationInput {
-                  actors: MovieActorsCreateFieldInput
                 }
 
                 \\"\\"\\"
@@ -5220,10 +5044,10 @@ describe("Relationship nested operations", () => {
                   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
                   createPersonOnes(input: [PersonOneCreateInput!]!): CreatePersonOnesMutationResponse!
                   createPersonTwos(input: [PersonTwoCreateInput!]!): CreatePersonTwosMutationResponse!
-                  deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+                  deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(connect: MovieConnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }

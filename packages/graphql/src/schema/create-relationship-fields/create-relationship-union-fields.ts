@@ -25,6 +25,7 @@ import { DEPRECATE_NOT } from "../constants";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
+import { RelationshipNestedOperationsOption } from "../../constants";
 
 export function createRelationshipUnionFields({
     nodes,
@@ -43,12 +44,8 @@ export function createRelationshipUnionFields({
     hasNonGeneratedProperties: boolean;
     hasNonNullNonGeneratedProperties: boolean;
 }) {
+    const nestedOperations = new Set(rel.nestedOperations);
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
-    const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
-    const nodeConnectInput = schemaComposer.getOrCreateITC(`${sourceName}ConnectInput`);
-    const nodeDeleteInput = schemaComposer.getOrCreateITC(`${sourceName}DeleteInput`);
-    const nodeDisconnectInput = schemaComposer.getOrCreateITC(`${sourceName}DisconnectInput`);
-    const nodeRelationInput = schemaComposer.getOrCreateITC(`${sourceName}RelationInput`);
 
     const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
@@ -73,18 +70,43 @@ export function createRelationshipUnionFields({
     const upperNodeName = upperFirst(sourceName);
     const typePrefix = `${upperNodeName}${upperFieldName}`;
 
-    const [unionConnectInput, unionCreateInput, unionDeleteInput, unionDisconnectInput, unionUpdateInput] = [
-        "Connect",
-        "Create",
-        "Delete",
-        "Disconnect",
-        "Update",
-    ].map((operation) =>
-        schemaComposer.createInputTC({
-            name: `${typePrefix}${operation}Input`,
+    const unionConnectInput = nestedOperations.has(RelationshipNestedOperationsOption.CONNECT)
+        ? schemaComposer.createInputTC({
+              name: `${typePrefix}ConnectInput`,
+              fields: {},
+          })
+        : undefined;
+
+    const unionDeleteInput = nestedOperations.has(RelationshipNestedOperationsOption.DELETE)
+        ? schemaComposer.createInputTC({
+              name: `${typePrefix}DeleteInput`,
+              fields: {},
+          })
+        : undefined;
+    const unionDisconnectInput = nestedOperations.has(RelationshipNestedOperationsOption.DISCONNECT)
+        ? schemaComposer.createInputTC({
+              name: `${typePrefix}DisconnectInput`,
+              fields: {},
+          })
+        : undefined;
+    // TODO: only if a nestedOp
+    let unionCreateInput: InputTypeComposer<any> | undefined;
+    if (
+        nestedOperations.has(RelationshipNestedOperationsOption.CREATE) ||
+        nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
+        (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
+            refNodes.find((n) => n.uniqueFields.length))
+    ) {
+        unionCreateInput = schemaComposer.createInputTC({
+            name: `${typePrefix}CreateInput`,
             fields: {},
-        })
-    ) as [InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer];
+        });
+    }
+    // TODO: only if conn, create, connOrCreate
+    const unionUpdateInput = schemaComposer.createInputTC({
+        name: `${typePrefix}UpdateInput`,
+        fields: {},
+    });
 
     const unionCreateFieldInput = schemaComposer.createInputTC({
         name: `${typePrefix}CreateFieldInput`,
@@ -105,8 +127,21 @@ export function createRelationshipUnionFields({
 
         const connectionUpdateInputName = `${unionPrefix}UpdateConnectionInput`;
 
+        const updateFields: Record<string, string> = {
+            where: whereName,
+            // update: connectionUpdateInputName,
+            // connect,
+            // disconnect: rel.typeMeta.array ? `[${disconnectName}!]` : disconnectName,
+            // create,
+            // delete: rel.typeMeta.array ? `[${deleteName}!]` : deleteName,
+        };
+
+        const fieldInputFields: Record<string, string> = {
+            // create,
+            // connect,
+        };
+
         const createName = `${sourceName}${upperFirst(rel.fieldName)}${n.name}CreateFieldInput`;
-        const create = rel.typeMeta.array ? `[${createName}!]` : createName;
         if (!schemaComposer.has(createName)) {
             schemaComposer.createInputTC({
                 name: createName,
@@ -120,105 +155,161 @@ export function createRelationshipUnionFields({
                 },
             });
 
-            unionCreateInput.addFields({
-                [n.name]: nodeFieldInputName,
-            });
+            if (
+                unionCreateInput &&
+                (nestedOperations.has(RelationshipNestedOperationsOption.CREATE) ||
+                    nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
+                    (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
+                        n.uniqueFields.length))
+            ) {
+                unionCreateInput.addFields({
+                    [n.name]: nodeFieldInputName,
+                });
+            }
 
             unionCreateFieldInput.addFields({
                 [n.name]: rel.typeMeta.array ? `[${createName}!]` : createName,
             });
         }
+        if (nestedOperations.has(RelationshipNestedOperationsOption.CREATE)) {
+            const create = rel.typeMeta.array ? `[${createName}!]` : createName;
+            updateFields.create = create;
+            fieldInputFields.create = create;
+        }
 
-        const connectWhereName = `${n.name}ConnectWhere`;
-        if (!schemaComposer.has(connectWhereName)) {
+        if (unionConnectInput) {
+            const connectWhereName = `${n.name}ConnectWhere`;
+            if (!schemaComposer.has(connectWhereName)) {
+                schemaComposer.createInputTC({
+                    name: connectWhereName,
+                    fields: {
+                        node: `${n.name}Where!`,
+                    },
+                });
+            }
+
+            const connectName = `${unionPrefix}ConnectFieldInput`;
+            const connect = rel.typeMeta.array ? `[${connectName}!]` : `${connectName}`;
+            if (!schemaComposer.has(connectName)) {
+                schemaComposer.createInputTC({
+                    name: connectName,
+                    fields: {
+                        where: connectWhereName,
+                        ...(n.relationFields.length
+                            ? {
+                                  connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput`,
+                              }
+                            : {}),
+                        ...(hasNonGeneratedProperties
+                            ? {
+                                  edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
+                              }
+                            : {}),
+                    },
+                });
+
+                unionConnectInput.addFields({
+                    [n.name]: connect,
+                });
+
+                updateFields.connect = connect;
+                fieldInputFields.connect = connect;
+            }
+        }
+
+        if (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE)) {
+            const connectOrCreate = createConnectOrCreateField({
+                relationField: rel,
+                node: n,
+                schemaComposer,
+                hasNonGeneratedProperties,
+                hasNonNullNonGeneratedProperties,
+            });
+
+            if (connectOrCreate) {
+                updateFields.connectOrCreate = connectOrCreate;
+            }
+            if (connectOrCreate) {
+                fieldInputFields.connectOrCreate = connectOrCreate;
+            }
+        }
+
+        if (unionDeleteInput) {
+            if (!schemaComposer.has(deleteName)) {
+                schemaComposer.createInputTC({
+                    name: deleteName,
+                    fields: {
+                        where: whereName,
+                        ...(n.relationFields.length
+                            ? {
+                                  delete: `${n.name}DeleteInput`,
+                              }
+                            : {}),
+                    },
+                });
+
+                unionDeleteInput.addFields({
+                    [n.name]: deleteField,
+                });
+            }
+
+            updateFields.delete = rel.typeMeta.array ? `[${deleteName}!]` : deleteName;
+        }
+
+        if (unionDisconnectInput) {
+            if (!schemaComposer.has(disconnectName)) {
+                schemaComposer.createInputTC({
+                    name: disconnectName,
+                    fields: {
+                        where: whereName,
+                        ...(n.relationFields.length
+                            ? {
+                                  disconnect: `${n.name}DisconnectInput`,
+                              }
+                            : {}),
+                    },
+                });
+
+                unionDisconnectInput.addFields({
+                    [n.name]: disconnect,
+                });
+
+                updateFields.disconnect = rel.typeMeta.array ? `[${disconnectName}!]` : disconnectName;
+            }
+        }
+
+        if (unionUpdateInput) {
+            const updateName = `${unionPrefix}UpdateFieldInput`;
+            const update = rel.typeMeta.array ? `[${updateName}!]` : updateName;
+            if (nestedOperations.has(RelationshipNestedOperationsOption.UPDATE)) {
+                updateFields.update = connectionUpdateInputName;
+            }
+            if (!schemaComposer.has(updateName)) {
+                schemaComposer.createInputTC({
+                    name: updateName,
+                    fields: updateFields,
+                });
+
+                unionUpdateInput.addFields({
+                    [n.name]: update,
+                });
+            }
+
             schemaComposer.createInputTC({
-                name: connectWhereName,
+                name: connectionUpdateInputName,
                 fields: {
-                    node: `${n.name}Where!`,
+                    ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
+                    node: updateField,
                 },
             });
         }
 
-        const connectName = `${unionPrefix}ConnectFieldInput`;
-        const connect = rel.typeMeta.array ? `[${connectName}!]` : `${connectName}`;
-        if (!schemaComposer.has(connectName)) {
+        if (Object.keys(fieldInputFields).length) {
             schemaComposer.createInputTC({
-                name: connectName,
-                fields: {
-                    where: connectWhereName,
-                    ...(n.relationFields.length
-                        ? {
-                              connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput`,
-                          }
-                        : {}),
-                    ...(hasNonGeneratedProperties
-                        ? {
-                              edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
-                          }
-                        : {}),
-                },
-            });
-
-            unionConnectInput.addFields({
-                [n.name]: connect,
+                name: nodeFieldInputName,
+                fields: fieldInputFields,
             });
         }
-
-        const updateFields: Record<string, string> = {
-            where: whereName,
-            update: connectionUpdateInputName,
-            connect,
-            disconnect: rel.typeMeta.array ? `[${disconnectName}!]` : disconnectName,
-            create,
-            delete: rel.typeMeta.array ? `[${deleteName}!]` : deleteName,
-        };
-
-        const connectOrCreate = createConnectOrCreateField({
-            relationField: rel,
-            node: n,
-            schemaComposer,
-            hasNonGeneratedProperties,
-            hasNonNullNonGeneratedProperties,
-        });
-
-        if (connectOrCreate) {
-            updateFields.connectOrCreate = connectOrCreate;
-        }
-
-        const updateName = `${unionPrefix}UpdateFieldInput`;
-        const update = rel.typeMeta.array ? `[${updateName}!]` : updateName;
-        if (!schemaComposer.has(updateName)) {
-            schemaComposer.createInputTC({
-                name: updateName,
-                fields: updateFields,
-            });
-
-            unionUpdateInput.addFields({
-                [n.name]: update,
-            });
-        }
-
-        schemaComposer.createInputTC({
-            name: connectionUpdateInputName,
-            fields: {
-                ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
-                node: updateField,
-            },
-        });
-
-        const fieldInputFields: Record<string, string> = {
-            create,
-            connect,
-        };
-
-        if (connectOrCreate) {
-            fieldInputFields.connectOrCreate = connectOrCreate;
-        }
-
-        schemaComposer.createInputTC({
-            name: nodeFieldInputName,
-            fields: fieldInputFields,
-        });
 
         schemaComposer.createInputTC({
             name: whereName,
@@ -243,43 +334,7 @@ export function createRelationshipUnionFields({
             },
         });
 
-        if (!schemaComposer.has(deleteName)) {
-            schemaComposer.createInputTC({
-                name: deleteName,
-                fields: {
-                    where: whereName,
-                    ...(n.relationFields.length
-                        ? {
-                              delete: `${n.name}DeleteInput`,
-                          }
-                        : {}),
-                },
-            });
-
-            unionDeleteInput.addFields({
-                [n.name]: deleteField,
-            });
-        }
-
-        if (!schemaComposer.has(disconnectName)) {
-            schemaComposer.createInputTC({
-                name: disconnectName,
-                fields: {
-                    where: whereName,
-                    ...(n.relationFields.length
-                        ? {
-                              disconnect: `${n.name}DisconnectInput`,
-                          }
-                        : {}),
-                },
-            });
-
-            unionDisconnectInput.addFields({
-                [n.name]: disconnect,
-            });
-        }
-
-        if (n.uniqueFields.length) {
+        if (n.uniqueFields.length && nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE)) {
             // TODO: merge with createTopLevelConnectOrCreateInput
             const nodeConnectOrCreateInput: InputTypeComposer<any> = schemaComposer.getOrCreateITC(
                 `${sourceName}ConnectOrCreateInput`
@@ -305,29 +360,39 @@ export function createRelationshipUnionFields({
         }
     });
 
-    if (!(composeNode instanceof InterfaceTypeComposer)) {
+    if (nestedOperations.has(RelationshipNestedOperationsOption.CREATE)) {
+        const nodeRelationInput = schemaComposer.getOrCreateITC(`${sourceName}RelationInput`);
+        nodeRelationInput.addFields({
+            [rel.fieldName]: unionCreateFieldInput,
+        });
+    }
+    if (!(composeNode instanceof InterfaceTypeComposer) && unionCreateInput) {
         nodeCreateInput.addFields({
             [rel.fieldName]: unionCreateInput,
         });
     }
-
-    nodeRelationInput.addFields({
-        [rel.fieldName]: unionCreateFieldInput,
-    });
-
+    // if (unionUpdateInput) {
+    const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
     nodeUpdateInput.addFields({
         [rel.fieldName]: unionUpdateInput,
     });
-
-    nodeConnectInput.addFields({
-        [rel.fieldName]: unionConnectInput,
-    });
-
-    nodeDeleteInput.addFields({
-        [rel.fieldName]: unionDeleteInput,
-    });
-
-    nodeDisconnectInput.addFields({
-        [rel.fieldName]: unionDisconnectInput,
-    });
+    // }
+    if (unionConnectInput) {
+        const nodeConnectInput = schemaComposer.getOrCreateITC(`${sourceName}ConnectInput`);
+        nodeConnectInput.addFields({
+            [rel.fieldName]: unionConnectInput,
+        });
+    }
+    if (unionDeleteInput) {
+        const nodeDeleteInput = schemaComposer.getOrCreateITC(`${sourceName}DeleteInput`);
+        nodeDeleteInput.addFields({
+            [rel.fieldName]: unionDeleteInput,
+        });
+    }
+    if (unionDisconnectInput) {
+        const nodeDisconnectInput = schemaComposer.getOrCreateITC(`${sourceName}DisconnectInput`);
+        nodeDisconnectInput.addFields({
+            [rel.fieldName]: unionDisconnectInput,
+        });
+    }
 }

@@ -850,7 +850,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             updateMutationWithNestedCreate = `#graphql
                 mutation {
-                    ${Movie.operations.update}(update: { actors: { create: { node: { name: "someName" } } } }) {
+                    ${Movie.operations.update}(update: { actors: { ${PersonOne}: { create: { node: { name: "someName" } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -917,7 +917,7 @@ describe("@relationhip - nestedOperations", () => {
             `;
             updateMutationWithNestedDelete = `#graphql
                 mutation {
-                    ${Movie.operations.update}(update: { actors: { ${PersonOne}: { delete: { where: { node: { name: "someName" } } } } } }) {
+                    ${Movie.operations.update}(delete: { actors: { ${PersonOne}: { where: { node: { name: "someName" } } } } }) {
                         info {
                             nodesCreated
                             nodesDeleted
@@ -1031,7 +1031,7 @@ describe("@relationhip - nestedOperations", () => {
             );
             expect(updateWithNestedDeleteResult.errors).toBeDefined();
             expect((updateWithNestedDeleteResult.errors as any)[0].message).toInclude(
-                'Field "delete" is not defined by type'
+                'Unknown argument "delete" on field'
             );
             expect(deleteWithNestedDeleteResult.errors).toBeDefined();
             expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude(
@@ -1137,7 +1137,7 @@ describe("@relationhip - nestedOperations", () => {
             );
             expect(updateWithNestedDeleteResult.errors).toBeDefined();
             expect((updateWithNestedDeleteResult.errors as any)[0].message).toInclude(
-                'Field "delete" is not defined by type'
+                'Unknown argument "delete" on field'
             );
             expect(deleteWithNestedDeleteResult.errors).toBeDefined();
             expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude(
@@ -1148,6 +1148,7 @@ describe("@relationhip - nestedOperations", () => {
         test("Should only be able to perform the connectOrCreate nested op when CONNECT_OR_CREATE is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 type ${PersonOne} {
+                    id: ID! @id
                     name: String
                 }
 
@@ -1243,7 +1244,7 @@ describe("@relationhip - nestedOperations", () => {
             );
             expect(updateWithNestedDeleteResult.errors).toBeDefined();
             expect((updateWithNestedDeleteResult.errors as any)[0].message).toInclude(
-                'Field "delete" is not defined by type'
+                'Unknown argument "delete" on field'
             );
             expect(deleteWithNestedDeleteResult.errors).toBeDefined();
             expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude(
@@ -1352,7 +1353,7 @@ describe("@relationhip - nestedOperations", () => {
             );
             expect(updateWithNestedDeleteResult.errors).toBeDefined();
             expect((updateWithNestedDeleteResult.errors as any)[0].message).toInclude(
-                'Field "delete" is not defined by type'
+                'Unknown argument "delete" on field'
             );
             expect(deleteWithNestedDeleteResult.errors).toBeDefined();
             expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude(
@@ -1461,7 +1462,7 @@ describe("@relationhip - nestedOperations", () => {
             expect(updateWithNestedDisconnectResult.errors).toBeFalsy();
             expect(updateWithNestedDeleteResult.errors).toBeDefined();
             expect((updateWithNestedDeleteResult.errors as any)[0].message).toInclude(
-                'Field "delete" is not defined by type'
+                'Unknown argument "delete" on field'
             );
             expect(deleteWithNestedDeleteResult.errors).toBeDefined();
             expect((deleteWithNestedDeleteResult.errors as any)[0].message).toInclude(
