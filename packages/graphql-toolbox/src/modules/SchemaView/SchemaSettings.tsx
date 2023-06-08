@@ -59,7 +59,13 @@ export const SchemaSettings = () => {
         const [isHovering, setIsHovering] = useState<boolean>(false);
 
         return (
-            <div onMouseOver={() => setIsHovering(true)} onMouseOut={() => setIsHovering(false)}>
+            <div
+                className="pr-2"
+                onMouseOver={() => setIsHovering(true)}
+                onFocus={() => setIsHovering(true)}
+                onMouseOut={() => setIsHovering(false)}
+                onBlur={() => setIsHovering(false)}
+            >
                 <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" />
                 {isHovering ? (
                     <Tooltip
