@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 
 import { tokens } from "@neo4j-ndl/base";
-import { Banner, Button, SmartTooltip } from "@neo4j-ndl/react";
+import { Banner, Button, Tooltip } from "@neo4j-ndl/react";
 import { ExclamationTriangleIconOutline } from "@neo4j-ndl/react/icons";
 
 // @ts-ignore - PNG Import
@@ -39,7 +39,7 @@ export const Login = () => {
     const [url, setUrl] = useState<string>(searchParamUrl || DEFAULT_BOLT_URL);
     const [username, setUsername] = useState<string>(searchParamUsername || DEFAULT_USERNAME);
     const showWarningToolTip =
-        !window.location.protocol.includes("https") && !getURLProtocolFromText(url).includes("+s");
+        window.location.protocol.includes("https") && !getURLProtocolFromText(url).includes("+s");
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
@@ -65,14 +65,27 @@ export const Login = () => {
     );
 
     const WarningToolTip = ({ text }: { text: React.ReactNode }): JSX.Element => {
-        const tooltipRef = useRef<SVGSVGElement | null>(null);
+        const [isHovering, setIsHovering] = useState<boolean>(false);
+
         return (
-            <>
-                <ExclamationTriangleIconOutline className="n-text-warning-50" ref={tooltipRef} />
-                <SmartTooltip allowedPlacements={["right"]} style={{ width: "20rem" }} ref={tooltipRef}>
-                    {text}
-                </SmartTooltip>
-            </>
+            <div
+                className="pr-2"
+                onMouseOver={() => setIsHovering(true)}
+                onFocus={() => setIsHovering(true)}
+                onMouseOut={() => setIsHovering(false)}
+                onBlur={() => setIsHovering(false)}
+            >
+                <ExclamationTriangleIconOutline className="n-text-warning-50 h-7 w-7" />
+                {isHovering ? (
+                    <Tooltip
+                        arrowPosition="left"
+                        className="absolute mt-[-5.2rem] ml-[2.2rem] z-20"
+                        style={{ width: "20rem" }}
+                    >
+                        {text}
+                    </Tooltip>
+                ) : null}
+            </div>
         );
     };
 
@@ -108,7 +121,7 @@ export const Login = () => {
                         disabled={loading}
                     />
                     {showWarningToolTip ? (
-                        <div className="absolute h-7 w-7 ml-[-28.5rem] mt-[2.5rem]">
+                        <div className="absolute ml-[-28rem] mt-[2.5rem]">
                             <WarningToolTip
                                 text={
                                     <span>
