@@ -1,0 +1,229 @@
+[[schema-configuration-top-level-configuration]]
+= Top-level Operations Configuration
+
+A GraphQL Object type, representing a Neo4j Node, produces multiple operation fields in the `Query`, `Mutation`, and `Subscription` type.
+Let's consider the following type definitions:
+
+[source, graphql, indent=0]
+----
+type Movie { 
+    title: String 
+    length: Int
+}
+----
+
+From this type definitions, the library generates the following operation fields:
+
+**Query**:
+
+    * `movies`
+    * `moviesAggregate`
+    * `moviesConnection`
+
+**Mutation**:
+
+    * `createMovies`
+    * `deleteMovies`
+    * `updateMovies`
+
+**Subscription**:
+
+    * `movieCreated`
+    * `movieUpdated`
+    * `movieDeleted`
+.
+
+This section explains how to reduce the operation fields produced using the directives `@query`, `@mutation`, `@subscription`.
+
+== `@query`
+
+This directive instructs the library to limit the operations available in the Query type.
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+directive @query(read: Boolean! = true, aggregate: Boolean! = false) on OBJECT | SCHEMA
+----
+
+=== Usage
+
+==== Disable movies and moviesConnection operations
+
+[source, graphql, indent=0]
+----
+type Movie @query(read: false, aggregate: true) { 
+    title: String 
+    length: Int
+}
+----
+
+==== Disable moviesAggregate operations
+
+[source, graphql, indent=0]
+----
+type Movie @query(read: true, aggregate: false)  { 
+    title: String 
+    length: Int
+}
+----
+
+== `@mutation`
+
+This directive instructs the library to limit the operations available in the Mutation type.
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+enum MutationFields {
+    CREATE
+    UPDATE
+    DELETE
+}
+
+directive @mutation(operations: [MutationFields!]! = [CREATE, UPDATE, DELETE]) on OBJECT | SCHEMA
+----
+
+=== Usage
+
+==== Disable create, delete, update operations for Movie
+
+[source, graphql, indent=0]
+----
+type Movie @mutation(operations: []) { 
+    title: String 
+    length: Int
+}
+----
+
+==== Enable only create operations for Movie
+
+[source, graphql, indent=0]
+----
+type Movie @mutation(operations: [CREATE]) { 
+    title: String 
+    length: Int
+}
+----
+
+== `@subscription`
+
+This directive instructs the library to limit the operations available in the Subscription type.
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+enum SubscriptionFields {
+    CREATE
+    UPDATE
+    DELETE
+    CREATE_RELATIONSHIP
+    DELETE_RELATIONSHIP
+}
+
+directive @subscription(operations: [SubscriptionFields!]! = [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]) on OBJECT | SCHEMA
+----
+
+=== Usage
+
+==== Disable subscriptions for Movie
+
+[source, graphql, indent=0]
+----
+type Movie @subscription(operations: [])  { 
+    title: String 
+    length: Int
+}
+----
+
+==== Enable only movieCreated subscription for Movie
+
+[source, graphql, indent=0]
+----
+type Movie @subscription(operations: [CREATE]) { 
+    title: String 
+    length: Int
+}
+----
+
+== `@exclude`
+
+NOTE: label:deprecated[] **@exclude** directive is deprecated. Please use the **@query**, **@mutation**, and **@subscription** directives.
+
+This directive skips the generation of queries and/or subscriptions and/or particular/all mutations for the specified type.
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+enum ExcludeOperation {
+    CREATE
+    READ
+    UPDATE
+    DELETE
+    SUBSCRIBE
+}
+
+"""Instructs @neo4j/graphql to exclude the specified operations from query, mutation and subscription generation. If used without an argument, no queries, mutations or subscriptions will be generated for this type."""
+directive @exclude(
+    operations: [ExcludeOperation!]! = [CREATE, READ, UPDATE, DELETE, SUBSCRIBE]
+) on OBJECT
+----
+
+=== Usage
+
+==== Disable Query field generation
+
+[source, graphql, indent=0]
+----
+type User @exclude(operations: [READ]) {
+    name: String
+}
+----
+
+==== Disable single Mutation field generation
+
+[source, graphql, indent=0]
+----
+type User @exclude(operations: [CREATE]) {
+    name: String
+}
+----
+
+==== Disable multiple Mutation field generation
+
+[source, graphql, indent=0]
+----
+type User @exclude(operations: [CREATE, DELETE]) {
+    name: String
+}
+----
+
+==== Disable Subscription field generation
+
+[source, graphql, indent=0]
+----
+type User @exclude(operations: [SUBSCRIBE]) {
+    name: String
+}
+----
+
+==== Disable all Query, Mutation and Subscription field generation
+
+The following two type definitions are equivalent in the fact that no queries, mutations or subscriptions will be generated for either of them:
+
+[source, graphql, indent=0]
+----
+type User @exclude {
+    name: String
+}
+----
+
+[source, graphql, indent=0]
+----
+type User @exclude(operations: [CREATE, READ, UPDATE, DELETE, SUBSCRIBE]) {
+    name: String
+}
+----
