@@ -6,7 +6,7 @@
 
 /* Login window */
 
-.login-window {
+.login-window-bg {
     background-image: url('./assets/graphic-bottom-left.svg'), url('./assets/graphic-top-right.svg');
     background-position: left bottom, right top;
     background-size: 120px 200px;

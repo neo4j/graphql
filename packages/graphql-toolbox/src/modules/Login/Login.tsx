@@ -19,7 +19,8 @@
 
 import { useCallback, useContext, useRef, useState } from "react";
 
-import { Button, SmartTooltip } from "@neo4j-ndl/react";
+import { tokens } from "@neo4j-ndl/base";
+import { Banner, Button, SmartTooltip } from "@neo4j-ndl/react";
 import { ExclamationTriangleIconOutline } from "@neo4j-ndl/react/icons";
 
 // @ts-ignore - PNG Import
@@ -77,13 +78,24 @@ export const Login = () => {
 
     return (
         <div data-test-login-form className="grid place-items-center h-screen bg-white">
-            <div className="w-[600px] h-[740px] login-window flex flex-col align-center justify-center shadow-2xl rounded-3xl py-8 px-16">
-                <div className="mb-6 text-center">
-                    <img src={neo4jIcon} alt="Neo4j Logo" className="mb-3 mx-auto" />
-                    <h2 className="mt-1 text-3xl">Neo4j GraphQL Toolbox</h2>
-                </div>
+            <div className="w-[600px] min-h-[740px] login-window-bg flex flex-col justify-start shadow-2xl rounded-3xl py-8 px-16">
+                <img src={neo4jIcon} alt="Neo4j Logo" className="mx-auto mt-4" />
+
+                <h2 className="h2 text-3xl text-center mt-20 mb-8">Neo4j GraphQL Toolbox</h2>
+
+                {error && (
+                    <Banner
+                        className="mb-8"
+                        title="Neo4j Error"
+                        description={error}
+                        icon
+                        type="danger"
+                        closeable={false}
+                    />
+                )}
+
                 {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-                <form onSubmit={onSubmit} className="flex flex-col items-center gap-4">
+                <form onSubmit={onSubmit} className="flex flex-col items-center gap-4 mt-auto mb-24">
                     <FormInput
                         testtag="data-test-login-url"
                         label="Connection URL"
@@ -120,12 +132,14 @@ export const Login = () => {
                         autoComplete="current-password"
                     />
 
-                    <div className="flex items-center">
+                    <div className="flex items-center mt-8">
                         <Button
                             data-test-login-button
                             className="w-60"
+                            style={{ backgroundColor: tokens.colors.primary[50] }}
                             fill="filled"
                             type="submit"
+                            size="large"
                             loading={loading}
                             disabled={loading}
                             // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -139,7 +153,7 @@ export const Login = () => {
                                 <WarningToolTip
                                     text={
                                         <span>
-                                            With the current Connection URI value the Neo4j driver will be configured to
+                                            With the current Connection URL value the Neo4j driver will be configured to
                                             use insecure WebSocket on a HTTPS web page. WebSockets might not work in a
                                             mixed content environment. Please consider accessing the Neo4j database
                                             using either the bolt+s or neo4j+s protocol. More information:{" "}
@@ -157,10 +171,6 @@ export const Login = () => {
                             </div>
                         ) : null}
                     </div>
-
-                    {error && (
-                        <p className="mt-4 inline-block align-baseline font-bold text-sm text-red-500">{error}</p>
-                    )}
                 </form>
             </div>
         </div>
