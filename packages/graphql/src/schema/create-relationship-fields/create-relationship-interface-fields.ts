@@ -57,7 +57,10 @@ export function createRelationshipInterfaceFields({
     if (nestedOperations.has(RelationshipNestedOperationsOption.DISCONNECT)) {
         nodeDisconnectInput = schemaComposer.getOrCreateITC(`${sourceName}DisconnectInput`);
     }
-    const nodeRelationInput = schemaComposer.getOrCreateITC(`${sourceName}RelationInput`);
+    let nodeRelationInput: InputTypeComposer<any> | undefined;
+    if (nestedOperations.has(RelationshipNestedOperationsOption.CREATE)) {
+        nodeRelationInput = schemaComposer.getOrCreateITC(`${sourceName}RelationInput`);
+    }
 
     const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
     const upperFieldName = upperFirst(rel.fieldName);
@@ -246,7 +249,9 @@ export function createRelationshipInterfaceFields({
         });
     }
 
-    nodeRelationInput.addFields({
-        [rel.fieldName]: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
-    });
+    if (nodeRelationInput) {
+        nodeRelationInput.addFields({
+            [rel.fieldName]: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
+        });
+    }
 }

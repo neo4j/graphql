@@ -8535,10 +8535,6 @@ describe("Relationship nested operations", () => {
                   node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
-                input MovieActorsCreateFieldInput {
-                  node: PersonCreateInput!
-                }
-
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
@@ -8565,10 +8561,6 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
-                }
-
-                input MovieRelationInput {
-                  actors: [MovieActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -8629,7 +8621,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(create: MovieRelationInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -8644,11 +8636,6 @@ describe("Relationship nested operations", () => {
 
                 interface Person {
                   name: String
-                }
-
-                input PersonCreateInput {
-                  PersonOne: PersonOneCreateInput
-                  PersonTwo: PersonTwoCreateInput
                 }
 
                 input PersonImplementationsWhere {
@@ -9378,10 +9365,6 @@ describe("Relationship nested operations", () => {
                   node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
-                input MovieActorsCreateFieldInput {
-                  node: PersonCreateInput!
-                }
-
                 input MovieActorsFieldInput {
                   connect: [MovieActorsConnectFieldInput!]
                 }
@@ -9422,10 +9405,6 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
-                }
-
-                input MovieRelationInput {
-                  actors: [MovieActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -9487,7 +9466,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(connect: MovieConnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -9506,11 +9485,6 @@ describe("Relationship nested operations", () => {
 
                 input PersonConnectWhere {
                   node: PersonWhere!
-                }
-
-                input PersonCreateInput {
-                  PersonOne: PersonOneCreateInput
-                  PersonTwo: PersonTwoCreateInput
                 }
 
                 input PersonImplementationsWhere {
@@ -9811,10 +9785,6 @@ describe("Relationship nested operations", () => {
                   node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
-                input MovieActorsCreateFieldInput {
-                  node: PersonCreateInput!
-                }
-
                 type MovieActorsRelationship {
                   cursor: String!
                   node: Person!
@@ -9850,10 +9820,6 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
-                }
-
-                input MovieRelationInput {
-                  actors: [MovieActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -9915,7 +9881,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(create: MovieRelationInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -9930,11 +9896,6 @@ describe("Relationship nested operations", () => {
 
                 interface Person {
                   name: String
-                }
-
-                input PersonCreateInput {
-                  PersonOne: PersonOneCreateInput
-                  PersonTwo: PersonTwoCreateInput
                 }
 
                 input PersonImplementationsUpdateInput {
@@ -10245,10 +10206,6 @@ describe("Relationship nested operations", () => {
                   node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
-                input MovieActorsCreateFieldInput {
-                  node: PersonCreateInput!
-                }
-
                 input MovieActorsDeleteFieldInput {
                   where: MovieActorsConnectionWhere
                 }
@@ -10288,10 +10245,6 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
-                }
-
-                input MovieRelationInput {
-                  actors: [MovieActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -10353,7 +10306,7 @@ describe("Relationship nested operations", () => {
                   deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
                   deletePersonOnes(where: PersonOneWhere): DeleteInfo!
                   deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(create: MovieRelationInput, delete: MovieDeleteInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updateMovies(delete: MovieDeleteInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
                   updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
                   updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
                 }
@@ -10368,11 +10321,6 @@ describe("Relationship nested operations", () => {
 
                 interface Person {
                   name: String
-                }
-
-                input PersonCreateInput {
-                  PersonOne: PersonOneCreateInput
-                  PersonTwo: PersonTwoCreateInput
                 }
 
                 input PersonImplementationsWhere {
