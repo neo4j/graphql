@@ -26,6 +26,7 @@ import Cypher from "@neo4j/cypher-builder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
+import { compileCypher } from "../utils/compile-cypher";
 
 export function translateTopLevelCypher({
     context,
@@ -127,7 +128,7 @@ export function translateTopLevelCypher({
                         new Cypher.RawCypher((env) => {
                             return innerNodePartialProjection
                                 .concat(`| this { __resolveType: "${node.name}", `)
-                                .concat(str.getCypher(env).replace("{", ""))
+                                .concat(compileCypher(str, env).replace("{", ""))
                                 .concat("]");
                         })
                     );
@@ -136,7 +137,7 @@ export function translateTopLevelCypher({
         });
 
         projectionStr = new Cypher.RawCypher(
-            (env) => `${headStrs.map((headStr) => headStr.getCypher(env)).join(" + ")}`
+            (env) => `${headStrs.map((headStr) => compileCypher(headStr, env)).join(" + ")}`
         );
     }
 
@@ -196,10 +197,10 @@ export function translateTopLevelCypher({
                 Cypher.not(Cypher.and(...projectionAuthStrs)),
                 AUTH_FORBIDDEN_ERROR
             );
-            cypherStrs.push(`WHERE ${validatePred.getCypher(env)}`);
+            cypherStrs.push(`WHERE ${compileCypher(validatePred, env)}`);
         }
 
-        const subqueriesStr = projectionSubquery ? `\n${projectionSubquery.getCypher(env)}` : "";
+        const subqueriesStr = projectionSubquery ? `\n${compileCypher(projectionSubquery, env)}` : "";
         if (subqueriesStr) cypherStrs.push(subqueriesStr);
 
         if (field.isScalar || field.isEnum) {
