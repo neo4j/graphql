@@ -122,14 +122,15 @@ function createRelationshipFields({
         }
         // Don't generate an empty input type
         let nodeFieldUpdateInput: InputTypeComposer<any> | undefined;
+        // If the only nestedOperation is connectOrCreate, it won't be generated if there are no unique fields on the related type
+        const onlyConnectOrCreateAndNoUniqueFields =
+            nestedOperations.size === 1 &&
+            nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
+            !node.uniqueFields.length;
+
         if (
             nestedOperations.size !== 0 &&
-            // If the only nestedOp is connectOrCreate, it won't be generated if there are no unique fields on the related type
-            !(
-                nestedOperations.size === 1 &&
-                nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
-                !node.uniqueFields.length
-            )
+            !(onlyConnectOrCreateAndNoUniqueFields)
         ) {
             const nodeFieldUpdateInputName = `${rel.connectionPrefix}${upperFieldName}UpdateFieldInput`;
             nodeFieldUpdateInput = schemaComposer.getOrCreateITC(nodeFieldUpdateInputName);
