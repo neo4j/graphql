@@ -38,6 +38,7 @@ export const Login = () => {
     const { url: searchParamUrl, username: searchParamUsername } = getConnectUrlSearchParamValue() || {};
     const [url, setUrl] = useState<string>(searchParamUrl || DEFAULT_BOLT_URL);
     const [username, setUsername] = useState<string>(searchParamUsername || DEFAULT_USERNAME);
+    const [password, setPassword] = useState<string>("");
     const showWarningToolTip =
         window.location.protocol.includes("https") && !getURLProtocolFromText(url).includes("+s");
 
@@ -47,9 +48,6 @@ export const Login = () => {
             setLoading(true);
 
             try {
-                const data = new FormData(event.currentTarget);
-                const password = data.get("password") as string;
-
                 await auth.login({
                     username,
                     password,
@@ -61,7 +59,7 @@ export const Login = () => {
                 setLoading(false);
             }
         },
-        [url, username]
+        [url, username, password]
     );
 
     const WarningToolTip = ({ text }: { text: React.ReactNode }): JSX.Element => {
@@ -107,8 +105,11 @@ export const Login = () => {
                     />
                 )}
 
-                {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-                <form onSubmit={onSubmit} className="flex flex-col items-center gap-4 mt-auto mb-24">
+                <form
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                    onSubmit={onSubmit}
+                    className="flex flex-col items-center gap-4 mt-auto mb-24"
+                >
                     <FormInput
                         testtag="data-test-login-url"
                         label="Connection URL"
@@ -161,6 +162,8 @@ export const Login = () => {
                         label="Password"
                         name="password"
                         placeholder="password"
+                        value={password}
+                        onChange={(event) => setPassword(event.currentTarget.value)}
                         required={true}
                         type="password"
                         disabled={loading}
@@ -175,7 +178,7 @@ export const Login = () => {
                         type="submit"
                         size="large"
                         loading={loading}
-                        disabled={loading}
+                        disabled={loading || !url || !username || !password}
                         // eslint-disable-next-line @typescript-eslint/no-empty-function
                         onClick={() => {}} // INFO: To prevent warning in browser console
                     >
