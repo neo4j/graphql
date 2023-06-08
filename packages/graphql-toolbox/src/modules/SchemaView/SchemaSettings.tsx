@@ -70,7 +70,7 @@ export const SchemaSettings = () => {
                 {isHovering ? (
                     <Tooltip
                         arrowPosition="left"
-                        className="absolute py-2 mt-[-2.1rem] ml-[1.7rem] z-20"
+                        className="absolute mt-[-1.6rem] ml-[1.75rem] z-20"
                         style={{ width: `${width || 200}px` }}
                     >
                         {text}
