@@ -11,6 +11,14 @@
     padding-top: 0.2rem;
 }
 
+.mb-01 {
+    margin-bottom: 0.1rem;
+}
+
+.pos-absolute {
+    position: absolute !important;
+}
+
 /* ----------------------*/
 
 /* Global settings for all CodeMirror editors */
