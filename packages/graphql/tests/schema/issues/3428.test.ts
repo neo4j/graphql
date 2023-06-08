@@ -160,10 +160,6 @@ describe("Relationship nested operations", () => {
               node: Person!
             }
 
-            input MovieActorsUpdateFieldInput {
-              where: MovieActorsConnectionWhere
-            }
-
             type MovieAggregateSelection {
               count: Int!
               id: IDAggregateSelectionNullable!
@@ -205,7 +201,6 @@ describe("Relationship nested operations", () => {
             }
 
             input MovieUpdateInput {
-              actors: [MovieActorsUpdateFieldInput!]
               id: ID
             }
 
