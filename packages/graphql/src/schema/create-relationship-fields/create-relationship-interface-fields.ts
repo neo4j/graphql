@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, upperFirst } from "graphql-compose";
 import type { Node } from "../../classes";
 import type { RelationField } from "../../types";
@@ -42,45 +42,11 @@ export function createRelationshipInterfaceFields({
     hasNonGeneratedProperties: boolean;
     anyNonNullRelProperties: boolean;
 }) {
+    const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
+    const upperFieldName = upperFirst(rel.fieldName);
     const nestedOperations = new Set(rel.nestedOperations);
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
     const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
-    let nodeConnectInput: InputTypeComposer<any> | undefined;
-    if (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT)) {
-        nodeConnectInput = schemaComposer.getOrCreateITC(`${sourceName}ConnectInput`);
-    }
-    let nodeDeleteInput: InputTypeComposer<any> | undefined;
-    if (nestedOperations.has(RelationshipNestedOperationsOption.DELETE)) {
-        nodeDeleteInput = schemaComposer.getOrCreateITC(`${sourceName}DeleteInput`);
-    }
-    let nodeDisconnectInput: InputTypeComposer<any> | undefined;
-    if (nestedOperations.has(RelationshipNestedOperationsOption.DISCONNECT)) {
-        nodeDisconnectInput = schemaComposer.getOrCreateITC(`${sourceName}DisconnectInput`);
-    }
-    let nodeRelationInput: InputTypeComposer<any> | undefined;
-    if (nestedOperations.has(RelationshipNestedOperationsOption.CREATE)) {
-        nodeRelationInput = schemaComposer.getOrCreateITC(`${sourceName}RelationInput`);
-    }
-
-    const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
-    const upperFieldName = upperFirst(rel.fieldName);
-
-    if (!rel.writeonly) {
-        const baseNodeFieldArgs = {
-            options: `${rel.typeMeta.name}Options`,
-            where: `${rel.typeMeta.name}Where`,
-        };
-        const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
-
-        composeNode.addFields({
-            [rel.fieldName]: {
-                type: rel.typeMeta.pretty,
-                args: nodeFieldArgs,
-                description: rel.description,
-                directives: graphqlDirectivesToCompose(rel.otherDirectives),
-            },
-        });
-    }
 
     const connectWhere = schemaComposer.getOrCreateITC(`${rel.typeMeta.name}ConnectWhere`, (tc) => {
         tc.addFields({
@@ -146,43 +112,74 @@ export function createRelationshipInterfaceFields({
         nestedOperations.size !== 0 &&
         !(nestedOperations.size === 1 && nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE))
     ) {
-        const updateFieldInput = schemaComposer.getOrCreateITC(
-            `${sourceName}${upperFieldName}UpdateFieldInput`,
-            (tc) => {
-                if (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT)) {
-                    tc.addFields({
-                        connect: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
-                    });
-                }
-                if (nestedOperations.has(RelationshipNestedOperationsOption.CREATE)) {
-                    tc.addFields({
-                        create: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
-                    });
-                }
-                if (nestedOperations.has(RelationshipNestedOperationsOption.DELETE)) {
-                    tc.addFields({
-                        delete: rel.typeMeta.array ? deleteFieldInput.NonNull.List : deleteFieldInput,
-                    });
-                }
-                if (nestedOperations.has(RelationshipNestedOperationsOption.DISCONNECT)) {
-                    tc.addFields({
-                        disconnect: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
-                    });
-                }
-                if (nestedOperations.has(RelationshipNestedOperationsOption.UPDATE)) {
-                    tc.addFields({
-                        update: updateConnectionFieldInput,
-                    });
-                }
-                tc.addFields({
-                    where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere`,
-                });
-            }
-        );
+        const updateFieldInput = schemaComposer.getOrCreateITC(`${sourceName}${upperFieldName}UpdateFieldInput`);
+
+        if (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT)) {
+            const nodeConnectInput = schemaComposer.getOrCreateITC(`${sourceName}ConnectInput`);
+            nodeConnectInput.addFields({
+                [rel.fieldName]: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
+            });
+            updateFieldInput.addFields({
+                connect: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
+            });
+        }
+        if (nestedOperations.has(RelationshipNestedOperationsOption.DELETE)) {
+            const nodeDeleteInput = schemaComposer.getOrCreateITC(`${sourceName}DeleteInput`);
+            nodeDeleteInput.addFields({
+                [rel.fieldName]: rel.typeMeta.array ? deleteFieldInput.NonNull.List : deleteFieldInput,
+            });
+            updateFieldInput.addFields({
+                delete: rel.typeMeta.array ? deleteFieldInput.NonNull.List : deleteFieldInput,
+            });
+        }
+        if (nestedOperations.has(RelationshipNestedOperationsOption.DISCONNECT)) {
+            const nodeDisconnectInput = schemaComposer.getOrCreateITC(`${sourceName}DisconnectInput`);
+            nodeDisconnectInput.addFields({
+                [rel.fieldName]: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
+            });
+            updateFieldInput.addFields({
+                disconnect: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
+            });
+        }
+        if (nestedOperations.has(RelationshipNestedOperationsOption.CREATE)) {
+            const nodeRelationInput = schemaComposer.getOrCreateITC(`${sourceName}RelationInput`);
+            nodeRelationInput.addFields({
+                [rel.fieldName]: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
+            });
+            updateFieldInput.addFields({
+                create: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
+            });
+        }
+        if (nestedOperations.has(RelationshipNestedOperationsOption.UPDATE)) {
+            updateFieldInput.addFields({
+                update: updateConnectionFieldInput,
+            });
+        }
+
+        updateFieldInput.addFields({
+            where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere`,
+        });
 
         // TODO: Settable onUpdate here?
         nodeUpdateInput.addFields({
             [rel.fieldName]: rel.typeMeta.array ? updateFieldInput.NonNull.List : updateFieldInput,
+        });
+    }
+
+    if (!rel.writeonly) {
+        const baseNodeFieldArgs = {
+            options: `${rel.typeMeta.name}Options`,
+            where: `${rel.typeMeta.name}Where`,
+        };
+        const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
+
+        composeNode.addFields({
+            [rel.fieldName]: {
+                type: rel.typeMeta.pretty,
+                args: nodeFieldArgs,
+                description: rel.description,
+                directives: graphqlDirectivesToCompose(rel.otherDirectives),
+            },
         });
     }
 
@@ -229,29 +226,5 @@ export function createRelationshipInterfaceFields({
                 [rel.fieldName]: nodeFieldInput,
             });
         }
-    }
-
-    if (nodeConnectInput) {
-        nodeConnectInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
-        });
-    }
-
-    if (nodeDeleteInput) {
-        nodeDeleteInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? deleteFieldInput.NonNull.List : deleteFieldInput,
-        });
-    }
-
-    if (nodeDisconnectInput) {
-        nodeDisconnectInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
-        });
-    }
-
-    if (nodeRelationInput) {
-        nodeRelationInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
-        });
     }
 }
