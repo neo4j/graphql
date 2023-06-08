@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { useRef } from "react";
+import { useState } from "react";
 
-import { Checkbox, Radio, SmartTooltip } from "@neo4j-ndl/react";
+import { Checkbox, Radio, Tooltip } from "@neo4j-ndl/react";
 import { QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
 import type React from "react";
 
@@ -56,14 +56,27 @@ export const SchemaSettings = () => {
     };
 
     const InfoToolTip = ({ text, width }: { text: React.ReactNode; width: number }): JSX.Element => {
-        const tooltipRef = useRef<SVGSVGElement | null>(null);
+        const [isHovering, setIsHovering] = useState<boolean>(false);
+
         return (
-            <>
-                <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" ref={tooltipRef} />
-                <SmartTooltip allowedPlacements={["right"]} style={{ width: `${width || 200}px` }} ref={tooltipRef}>
-                    {text}
-                </SmartTooltip>
-            </>
+            <div
+                className="pr-2"
+                onMouseOver={() => setIsHovering(true)}
+                onFocus={() => setIsHovering(true)}
+                onMouseOut={() => setIsHovering(false)}
+                onBlur={() => setIsHovering(false)}
+            >
+                <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" />
+                {isHovering ? (
+                    <Tooltip
+                        arrowPosition="left"
+                        className="absolute mt-[-1.6rem] ml-[1.75rem] z-20"
+                        style={{ width: `${width || 200}px` }}
+                    >
+                        {text}
+                    </Tooltip>
+                ) : null}
+            </div>
         );
     };
 
@@ -107,7 +120,7 @@ export const SchemaSettings = () => {
                 <InfoToolTip
                     text={
                         <span>
-                            Also enable &quot;verbose&quot; logging in browser. Instructions:{" "}
+                            Also enable &quot;verbose&quot; logging in web browser. Instructions:{" "}
                             <a
                                 className="underline"
                                 href="https://github.com/debug-js/debug#browser-support"
@@ -118,7 +131,7 @@ export const SchemaSettings = () => {
                             </a>
                         </span>
                     }
-                    width={370}
+                    width={390}
                 />
             </div>
             <div className="mt-3 flex flex-col">
