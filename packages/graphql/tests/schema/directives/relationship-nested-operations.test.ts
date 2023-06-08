@@ -11802,1116 +11802,1024 @@ describe("Relationship nested operations", () => {
             `);
         });
 
-        // test("Two relationships with nested operations specified on one", async () => {
-        //     const typeDefs = gql`
-        //         interface Person {
-        //             name: String
-        //         }
-
-        //         type PersonOne implements Person {
-        //             name: String
-        //             someExtraProp: [Int!]!
-        //         }
-
-        //         type PersonTwo implements Person {
-        //             name: String
-        //         }
-
-        //         type Movie {
-        //             id: ID
-        //             actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
-        //             producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
-        //         }
-        //     `;
-        //     const neoSchema = new Neo4jGraphQL({ typeDefs });
-        //     const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-        //     expect(printedSchema).toMatchInlineSnapshot(`
-        //         "schema {
-        //           query: Query
-        //           mutation: Mutation
-        //         }
-
-        //         type CreateInfo {
-        //           bookmark: String
-        //           nodesCreated: Int!
-        //           relationshipsCreated: Int!
-        //         }
-
-        //         type CreateMoviesMutationResponse {
-        //           info: CreateInfo!
-        //           movies: [Movie!]!
-        //         }
-
-        //         type CreatePersonOnesMutationResponse {
-        //           info: CreateInfo!
-        //           personOnes: [PersonOne!]!
-        //         }
-
-        //         type CreatePersonTwosMutationResponse {
-        //           info: CreateInfo!
-        //           personTwos: [PersonTwo!]!
-        //         }
-
-        //         type DeleteInfo {
-        //           bookmark: String
-        //           nodesDeleted: Int!
-        //           relationshipsDeleted: Int!
-        //         }
-
-        //         type IDAggregateSelectionNullable {
-        //           longest: ID
-        //           shortest: ID
-        //         }
-
-        //         type Movie {
-        //           actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
-        //           actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
-        //           id: ID
-        //           producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
-        //           producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
-        //         }
-
-        //         input MovieActorsConnectFieldInput {
-        //           where: PersonConnectWhere
-        //         }
-
-        //         type MovieActorsConnection {
-        //           edges: [MovieActorsRelationship!]!
-        //           pageInfo: PageInfo!
-        //           totalCount: Int!
-        //         }
-
-        //         input MovieActorsConnectionSort {
-        //           node: PersonSort
-        //         }
-
-        //         input MovieActorsConnectionWhere {
-        //           AND: [MovieActorsConnectionWhere!]
-        //           NOT: MovieActorsConnectionWhere
-        //           OR: [MovieActorsConnectionWhere!]
-        //           node: PersonWhere
-        //           node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //         }
-
-        //         input MovieActorsCreateFieldInput {
-        //           node: PersonCreateInput!
-        //         }
-
-        //         input MovieActorsDeleteFieldInput {
-        //           where: MovieActorsConnectionWhere
-        //         }
-
-        //         input MovieActorsDisconnectFieldInput {
-        //           where: MovieActorsConnectionWhere
-        //         }
-
-        //         input MovieActorsFieldInput {
-        //           connect: [MovieActorsConnectFieldInput!]
-        //           create: [MovieActorsCreateFieldInput!]
-        //         }
-
-        //         type MovieActorsRelationship {
-        //           cursor: String!
-        //           node: Person!
-        //         }
-
-        //         input MovieActorsUpdateConnectionInput {
-        //           node: PersonUpdateInput
-        //         }
-
-        //         input MovieActorsUpdateFieldInput {
-        //           connect: [MovieActorsConnectFieldInput!]
-        //           create: [MovieActorsCreateFieldInput!]
-        //           delete: [MovieActorsDeleteFieldInput!]
-        //           disconnect: [MovieActorsDisconnectFieldInput!]
-        //           update: MovieActorsUpdateConnectionInput
-        //           where: MovieActorsConnectionWhere
-        //         }
-
-        //         type MovieAggregateSelection {
-        //           count: Int!
-        //           id: IDAggregateSelectionNullable!
-        //         }
-
-        //         input MovieConnectInput {
-        //           actors: [MovieActorsConnectFieldInput!]
-        //           producers: [MovieProducersConnectFieldInput!]
-        //         }
-
-        //         input MovieCreateInput {
-        //           actors: MovieActorsFieldInput
-        //           id: ID
-        //           producers: MovieProducersFieldInput
-        //         }
-
-        //         input MovieDeleteInput {
-        //           actors: [MovieActorsDeleteFieldInput!]
-        //           producers: [MovieProducersDeleteFieldInput!]
-        //         }
-
-        //         input MovieDisconnectInput {
-        //           actors: [MovieActorsDisconnectFieldInput!]
-        //           producers: [MovieProducersDisconnectFieldInput!]
-        //         }
-
-        //         type MovieEdge {
-        //           cursor: String!
-        //           node: Movie!
-        //         }
-
-        //         input MovieOptions {
-        //           limit: Int
-        //           offset: Int
-        //           \\"\\"\\"
-        //           Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-        //           \\"\\"\\"
-        //           sort: [MovieSort!]
-        //         }
-
-        //         input MovieProducersConnectFieldInput {
-        //           where: PersonConnectWhere
-        //         }
-
-        //         type MovieProducersConnection {
-        //           edges: [MovieProducersRelationship!]!
-        //           pageInfo: PageInfo!
-        //           totalCount: Int!
-        //         }
-
-        //         input MovieProducersConnectionSort {
-        //           node: PersonSort
-        //         }
-
-        //         input MovieProducersConnectionWhere {
-        //           AND: [MovieProducersConnectionWhere!]
-        //           NOT: MovieProducersConnectionWhere
-        //           OR: [MovieProducersConnectionWhere!]
-        //           node: PersonWhere
-        //           node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //         }
-
-        //         input MovieProducersCreateFieldInput {
-        //           node: PersonCreateInput!
-        //         }
-
-        //         input MovieProducersDeleteFieldInput {
-        //           where: MovieProducersConnectionWhere
-        //         }
-
-        //         input MovieProducersDisconnectFieldInput {
-        //           where: MovieProducersConnectionWhere
-        //         }
-
-        //         input MovieProducersFieldInput {
-        //           connect: [MovieProducersConnectFieldInput!]
-        //           create: [MovieProducersCreateFieldInput!]
-        //         }
-
-        //         type MovieProducersRelationship {
-        //           cursor: String!
-        //           node: Person!
-        //         }
-
-        //         input MovieProducersUpdateConnectionInput {
-        //           node: PersonUpdateInput
-        //         }
-
-        //         input MovieProducersUpdateFieldInput {
-        //           connect: [MovieProducersConnectFieldInput!]
-        //           create: [MovieProducersCreateFieldInput!]
-        //           delete: [MovieProducersDeleteFieldInput!]
-        //           disconnect: [MovieProducersDisconnectFieldInput!]
-        //           update: MovieProducersUpdateConnectionInput
-        //           where: MovieProducersConnectionWhere
-        //         }
-
-        //         input MovieRelationInput {
-        //           actors: [MovieActorsCreateFieldInput!]
-        //           producers: [MovieProducersCreateFieldInput!]
-        //         }
-
-        //         \\"\\"\\"
-        //         Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-        //         \\"\\"\\"
-        //         input MovieSort {
-        //           id: SortDirection
-        //         }
-
-        //         input MovieUpdateInput {
-        //           actors: [MovieActorsUpdateFieldInput!]
-        //           id: ID
-        //           producers: [MovieProducersUpdateFieldInput!]
-        //         }
-
-        //         input MovieWhere {
-        //           AND: [MovieWhere!]
-        //           NOT: MovieWhere
-        //           OR: [MovieWhere!]
-        //           actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
-        //           \\"\\"\\"
-        //           Return Movies where all of the related MovieActorsConnections match this filter
-        //           \\"\\"\\"
-        //           actorsConnection_ALL: MovieActorsConnectionWhere
-        //           \\"\\"\\"
-        //           Return Movies where none of the related MovieActorsConnections match this filter
-        //           \\"\\"\\"
-        //           actorsConnection_NONE: MovieActorsConnectionWhere
-        //           actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
-        //           \\"\\"\\"
-        //           Return Movies where one of the related MovieActorsConnections match this filter
-        //           \\"\\"\\"
-        //           actorsConnection_SINGLE: MovieActorsConnectionWhere
-        //           \\"\\"\\"
-        //           Return Movies where some of the related MovieActorsConnections match this filter
-        //           \\"\\"\\"
-        //           actorsConnection_SOME: MovieActorsConnectionWhere
-        //           id: ID
-        //           id_CONTAINS: ID
-        //           id_ENDS_WITH: ID
-        //           id_IN: [ID]
-        //           id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           id_STARTS_WITH: ID
-        //           producersConnection: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_SOME\` instead.\\")
-        //           \\"\\"\\"
-        //           Return Movies where all of the related MovieProducersConnections match this filter
-        //           \\"\\"\\"
-        //           producersConnection_ALL: MovieProducersConnectionWhere
-        //           \\"\\"\\"
-        //           Return Movies where none of the related MovieProducersConnections match this filter
-        //           \\"\\"\\"
-        //           producersConnection_NONE: MovieProducersConnectionWhere
-        //           producersConnection_NOT: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_NONE\` instead.\\")
-        //           \\"\\"\\"
-        //           Return Movies where one of the related MovieProducersConnections match this filter
-        //           \\"\\"\\"
-        //           producersConnection_SINGLE: MovieProducersConnectionWhere
-        //           \\"\\"\\"
-        //           Return Movies where some of the related MovieProducersConnections match this filter
-        //           \\"\\"\\"
-        //           producersConnection_SOME: MovieProducersConnectionWhere
-        //         }
-
-        //         type MoviesConnection {
-        //           edges: [MovieEdge!]!
-        //           pageInfo: PageInfo!
-        //           totalCount: Int!
-        //         }
-
-        //         type Mutation {
-        //           createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-        //           createPersonOnes(input: [PersonOneCreateInput!]!): CreatePersonOnesMutationResponse!
-        //           createPersonTwos(input: [PersonTwoCreateInput!]!): CreatePersonTwosMutationResponse!
-        //           deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-        //           deletePersonOnes(where: PersonOneWhere): DeleteInfo!
-        //           deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-        //           updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-        //           updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
-        //           updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
-        //         }
-
-        //         \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-        //         type PageInfo {
-        //           endCursor: String
-        //           hasNextPage: Boolean!
-        //           hasPreviousPage: Boolean!
-        //           startCursor: String
-        //         }
-
-        //         interface Person {
-        //           name: String
-        //         }
-
-        //         input PersonConnectWhere {
-        //           node: PersonWhere!
-        //         }
-
-        //         input PersonCreateInput {
-        //           PersonOne: PersonOneCreateInput
-        //           PersonTwo: PersonTwoCreateInput
-        //         }
-
-        //         input PersonImplementationsUpdateInput {
-        //           PersonOne: PersonOneUpdateInput
-        //           PersonTwo: PersonTwoUpdateInput
-        //         }
-
-        //         input PersonImplementationsWhere {
-        //           PersonOne: PersonOneWhere
-        //           PersonTwo: PersonTwoWhere
-        //         }
-
-        //         type PersonOne implements Person {
-        //           name: String
-        //           someExtraProp: [Int!]!
-        //         }
-
-        //         type PersonOneAggregateSelection {
-        //           count: Int!
-        //           name: StringAggregateSelectionNullable!
-        //         }
-
-        //         input PersonOneCreateInput {
-        //           name: String
-        //           someExtraProp: [Int!]!
-        //         }
-
-        //         type PersonOneEdge {
-        //           cursor: String!
-        //           node: PersonOne!
-        //         }
-
-        //         input PersonOneOptions {
-        //           limit: Int
-        //           offset: Int
-        //           \\"\\"\\"
-        //           Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-        //           \\"\\"\\"
-        //           sort: [PersonOneSort!]
-        //         }
-
-        //         \\"\\"\\"
-        //         Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
-        //         \\"\\"\\"
-        //         input PersonOneSort {
-        //           name: SortDirection
-        //         }
-
-        //         input PersonOneUpdateInput {
-        //           name: String
-        //           someExtraProp: [Int!]
-        //           someExtraProp_POP: Int
-        //           someExtraProp_PUSH: [Int!]
-        //         }
-
-        //         input PersonOneWhere {
-        //           AND: [PersonOneWhere!]
-        //           NOT: PersonOneWhere
-        //           OR: [PersonOneWhere!]
-        //           name: String
-        //           name_CONTAINS: String
-        //           name_ENDS_WITH: String
-        //           name_IN: [String]
-        //           name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_STARTS_WITH: String
-        //           someExtraProp: [Int!]
-        //           someExtraProp_INCLUDES: Int
-        //           someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //         }
-
-        //         type PersonOnesConnection {
-        //           edges: [PersonOneEdge!]!
-        //           pageInfo: PageInfo!
-        //           totalCount: Int!
-        //         }
-
-        //         input PersonOptions {
-        //           limit: Int
-        //           offset: Int
-        //           \\"\\"\\"
-        //           Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-        //           \\"\\"\\"
-        //           sort: [PersonSort]
-        //         }
-
-        //         \\"\\"\\"
-        //         Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
-        //         \\"\\"\\"
-        //         input PersonSort {
-        //           name: SortDirection
-        //         }
-
-        //         type PersonTwo implements Person {
-        //           name: String
-        //         }
-
-        //         type PersonTwoAggregateSelection {
-        //           count: Int!
-        //           name: StringAggregateSelectionNullable!
-        //         }
-
-        //         input PersonTwoCreateInput {
-        //           name: String
-        //         }
-
-        //         type PersonTwoEdge {
-        //           cursor: String!
-        //           node: PersonTwo!
-        //         }
-
-        //         input PersonTwoOptions {
-        //           limit: Int
-        //           offset: Int
-        //           \\"\\"\\"
-        //           Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-        //           \\"\\"\\"
-        //           sort: [PersonTwoSort!]
-        //         }
-
-        //         \\"\\"\\"
-        //         Fields to sort PersonTwos by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonTwoSort object.
-        //         \\"\\"\\"
-        //         input PersonTwoSort {
-        //           name: SortDirection
-        //         }
-
-        //         input PersonTwoUpdateInput {
-        //           name: String
-        //         }
-
-        //         input PersonTwoWhere {
-        //           AND: [PersonTwoWhere!]
-        //           NOT: PersonTwoWhere
-        //           OR: [PersonTwoWhere!]
-        //           name: String
-        //           name_CONTAINS: String
-        //           name_ENDS_WITH: String
-        //           name_IN: [String]
-        //           name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_STARTS_WITH: String
-        //         }
-
-        //         type PersonTwosConnection {
-        //           edges: [PersonTwoEdge!]!
-        //           pageInfo: PageInfo!
-        //           totalCount: Int!
-        //         }
-
-        //         input PersonUpdateInput {
-        //           _on: PersonImplementationsUpdateInput
-        //           name: String
-        //         }
-
-        //         input PersonWhere {
-        //           _on: PersonImplementationsWhere
-        //           name: String
-        //           name_CONTAINS: String
-        //           name_ENDS_WITH: String
-        //           name_IN: [String]
-        //           name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_STARTS_WITH: String
-        //         }
-
-        //         type Query {
-        //           movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-        //           moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-        //           moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-        //           personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
-        //           personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-        //           personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-        //           personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
-        //           personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-        //           personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
-        //         }
-
-        //         enum SortDirection {
-        //           \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-        //           ASC
-        //           \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-        //           DESC
-        //         }
-
-        //         type StringAggregateSelectionNullable {
-        //           longest: String
-        //           shortest: String
-        //         }
-
-        //         type UpdateInfo {
-        //           bookmark: String
-        //           nodesCreated: Int!
-        //           nodesDeleted: Int!
-        //           relationshipsCreated: Int!
-        //           relationshipsDeleted: Int!
-        //         }
-
-        //         type UpdateMoviesMutationResponse {
-        //           info: UpdateInfo!
-        //           movies: [Movie!]!
-        //         }
-
-        //         type UpdatePersonOnesMutationResponse {
-        //           info: UpdateInfo!
-        //           personOnes: [PersonOne!]!
-        //         }
-
-        //         type UpdatePersonTwosMutationResponse {
-        //           info: UpdateInfo!
-        //           personTwos: [PersonTwo!]!
-        //         }"
-        //     `);
-        // });
-
-        // test("Two relationships with nested operations specified on both", async () => {
-        //     const typeDefs = gql`
-        //         interface Person {
-        //             name: String
-        //         }
-
-        //         type PersonOne implements Person {
-        //             name: String
-        //             someExtraProp: [Int!]!
-        //         }
-
-        //         type PersonTwo implements Person {
-        //             name: String
-        //         }
-
-        //         type Movie {
-        //             id: ID
-        //             actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
-        //             producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
-        //         }
-        //     `;
-        //     const neoSchema = new Neo4jGraphQL({ typeDefs });
-        //     const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-        //     expect(printedSchema).toMatchInlineSnapshot(`
-        //         "schema {
-        //           query: Query
-        //           mutation: Mutation
-        //         }
-
-        //         type CreateInfo {
-        //           bookmark: String
-        //           nodesCreated: Int!
-        //           relationshipsCreated: Int!
-        //         }
-
-        //         type CreateMoviesMutationResponse {
-        //           info: CreateInfo!
-        //           movies: [Movie!]!
-        //         }
-
-        //         type CreatePersonOnesMutationResponse {
-        //           info: CreateInfo!
-        //           personOnes: [PersonOne!]!
-        //         }
-
-        //         type CreatePersonTwosMutationResponse {
-        //           info: CreateInfo!
-        //           personTwos: [PersonTwo!]!
-        //         }
-
-        //         type DeleteInfo {
-        //           bookmark: String
-        //           nodesDeleted: Int!
-        //           relationshipsDeleted: Int!
-        //         }
-
-        //         type IDAggregateSelectionNullable {
-        //           longest: ID
-        //           shortest: ID
-        //         }
-
-        //         type Movie {
-        //           actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
-        //           actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
-        //           id: ID
-        //           producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
-        //           producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
-        //         }
-
-        //         input MovieActorsConnectFieldInput {
-        //           where: PersonConnectWhere
-        //         }
-
-        //         type MovieActorsConnection {
-        //           edges: [MovieActorsRelationship!]!
-        //           pageInfo: PageInfo!
-        //           totalCount: Int!
-        //         }
-
-        //         input MovieActorsConnectionSort {
-        //           node: PersonSort
-        //         }
-
-        //         input MovieActorsConnectionWhere {
-        //           AND: [MovieActorsConnectionWhere!]
-        //           NOT: MovieActorsConnectionWhere
-        //           OR: [MovieActorsConnectionWhere!]
-        //           node: PersonWhere
-        //           node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //         }
-
-        //         input MovieActorsCreateFieldInput {
-        //           node: PersonCreateInput!
-        //         }
-
-        //         input MovieActorsDeleteFieldInput {
-        //           where: MovieActorsConnectionWhere
-        //         }
-
-        //         input MovieActorsDisconnectFieldInput {
-        //           where: MovieActorsConnectionWhere
-        //         }
-
-        //         input MovieActorsFieldInput {
-        //           connect: [MovieActorsConnectFieldInput!]
-        //           create: [MovieActorsCreateFieldInput!]
-        //         }
-
-        //         type MovieActorsRelationship {
-        //           cursor: String!
-        //           node: Person!
-        //         }
-
-        //         input MovieActorsUpdateConnectionInput {
-        //           node: PersonUpdateInput
-        //         }
-
-        //         input MovieActorsUpdateFieldInput {
-        //           connect: [MovieActorsConnectFieldInput!]
-        //           create: [MovieActorsCreateFieldInput!]
-        //           delete: [MovieActorsDeleteFieldInput!]
-        //           disconnect: [MovieActorsDisconnectFieldInput!]
-        //           update: MovieActorsUpdateConnectionInput
-        //           where: MovieActorsConnectionWhere
-        //         }
-
-        //         type MovieAggregateSelection {
-        //           count: Int!
-        //           id: IDAggregateSelectionNullable!
-        //         }
-
-        //         input MovieConnectInput {
-        //           actors: [MovieActorsConnectFieldInput!]
-        //           producers: [MovieProducersConnectFieldInput!]
-        //         }
-
-        //         input MovieCreateInput {
-        //           actors: MovieActorsFieldInput
-        //           id: ID
-        //           producers: MovieProducersFieldInput
-        //         }
-
-        //         input MovieDeleteInput {
-        //           actors: [MovieActorsDeleteFieldInput!]
-        //           producers: [MovieProducersDeleteFieldInput!]
-        //         }
-
-        //         input MovieDisconnectInput {
-        //           actors: [MovieActorsDisconnectFieldInput!]
-        //           producers: [MovieProducersDisconnectFieldInput!]
-        //         }
-
-        //         type MovieEdge {
-        //           cursor: String!
-        //           node: Movie!
-        //         }
-
-        //         input MovieOptions {
-        //           limit: Int
-        //           offset: Int
-        //           \\"\\"\\"
-        //           Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-        //           \\"\\"\\"
-        //           sort: [MovieSort!]
-        //         }
-
-        //         input MovieProducersConnectFieldInput {
-        //           where: PersonConnectWhere
-        //         }
-
-        //         type MovieProducersConnection {
-        //           edges: [MovieProducersRelationship!]!
-        //           pageInfo: PageInfo!
-        //           totalCount: Int!
-        //         }
-
-        //         input MovieProducersConnectionSort {
-        //           node: PersonSort
-        //         }
-
-        //         input MovieProducersConnectionWhere {
-        //           AND: [MovieProducersConnectionWhere!]
-        //           NOT: MovieProducersConnectionWhere
-        //           OR: [MovieProducersConnectionWhere!]
-        //           node: PersonWhere
-        //           node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //         }
-
-        //         input MovieProducersCreateFieldInput {
-        //           node: PersonCreateInput!
-        //         }
-
-        //         input MovieProducersDeleteFieldInput {
-        //           where: MovieProducersConnectionWhere
-        //         }
-
-        //         input MovieProducersDisconnectFieldInput {
-        //           where: MovieProducersConnectionWhere
-        //         }
-
-        //         input MovieProducersFieldInput {
-        //           connect: [MovieProducersConnectFieldInput!]
-        //           create: [MovieProducersCreateFieldInput!]
-        //         }
-
-        //         type MovieProducersRelationship {
-        //           cursor: String!
-        //           node: Person!
-        //         }
-
-        //         input MovieProducersUpdateConnectionInput {
-        //           node: PersonUpdateInput
-        //         }
-
-        //         input MovieProducersUpdateFieldInput {
-        //           connect: [MovieProducersConnectFieldInput!]
-        //           create: [MovieProducersCreateFieldInput!]
-        //           delete: [MovieProducersDeleteFieldInput!]
-        //           disconnect: [MovieProducersDisconnectFieldInput!]
-        //           update: MovieProducersUpdateConnectionInput
-        //           where: MovieProducersConnectionWhere
-        //         }
-
-        //         input MovieRelationInput {
-        //           actors: [MovieActorsCreateFieldInput!]
-        //           producers: [MovieProducersCreateFieldInput!]
-        //         }
-
-        //         \\"\\"\\"
-        //         Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-        //         \\"\\"\\"
-        //         input MovieSort {
-        //           id: SortDirection
-        //         }
-
-        //         input MovieUpdateInput {
-        //           actors: [MovieActorsUpdateFieldInput!]
-        //           id: ID
-        //           producers: [MovieProducersUpdateFieldInput!]
-        //         }
-
-        //         input MovieWhere {
-        //           AND: [MovieWhere!]
-        //           NOT: MovieWhere
-        //           OR: [MovieWhere!]
-        //           actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
-        //           \\"\\"\\"
-        //           Return Movies where all of the related MovieActorsConnections match this filter
-        //           \\"\\"\\"
-        //           actorsConnection_ALL: MovieActorsConnectionWhere
-        //           \\"\\"\\"
-        //           Return Movies where none of the related MovieActorsConnections match this filter
-        //           \\"\\"\\"
-        //           actorsConnection_NONE: MovieActorsConnectionWhere
-        //           actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
-        //           \\"\\"\\"
-        //           Return Movies where one of the related MovieActorsConnections match this filter
-        //           \\"\\"\\"
-        //           actorsConnection_SINGLE: MovieActorsConnectionWhere
-        //           \\"\\"\\"
-        //           Return Movies where some of the related MovieActorsConnections match this filter
-        //           \\"\\"\\"
-        //           actorsConnection_SOME: MovieActorsConnectionWhere
-        //           id: ID
-        //           id_CONTAINS: ID
-        //           id_ENDS_WITH: ID
-        //           id_IN: [ID]
-        //           id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           id_STARTS_WITH: ID
-        //           producersConnection: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_SOME\` instead.\\")
-        //           \\"\\"\\"
-        //           Return Movies where all of the related MovieProducersConnections match this filter
-        //           \\"\\"\\"
-        //           producersConnection_ALL: MovieProducersConnectionWhere
-        //           \\"\\"\\"
-        //           Return Movies where none of the related MovieProducersConnections match this filter
-        //           \\"\\"\\"
-        //           producersConnection_NONE: MovieProducersConnectionWhere
-        //           producersConnection_NOT: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_NONE\` instead.\\")
-        //           \\"\\"\\"
-        //           Return Movies where one of the related MovieProducersConnections match this filter
-        //           \\"\\"\\"
-        //           producersConnection_SINGLE: MovieProducersConnectionWhere
-        //           \\"\\"\\"
-        //           Return Movies where some of the related MovieProducersConnections match this filter
-        //           \\"\\"\\"
-        //           producersConnection_SOME: MovieProducersConnectionWhere
-        //         }
-
-        //         type MoviesConnection {
-        //           edges: [MovieEdge!]!
-        //           pageInfo: PageInfo!
-        //           totalCount: Int!
-        //         }
-
-        //         type Mutation {
-        //           createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-        //           createPersonOnes(input: [PersonOneCreateInput!]!): CreatePersonOnesMutationResponse!
-        //           createPersonTwos(input: [PersonTwoCreateInput!]!): CreatePersonTwosMutationResponse!
-        //           deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-        //           deletePersonOnes(where: PersonOneWhere): DeleteInfo!
-        //           deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-        //           updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-        //           updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
-        //           updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
-        //         }
-
-        //         \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-        //         type PageInfo {
-        //           endCursor: String
-        //           hasNextPage: Boolean!
-        //           hasPreviousPage: Boolean!
-        //           startCursor: String
-        //         }
-
-        //         interface Person {
-        //           name: String
-        //         }
-
-        //         input PersonConnectWhere {
-        //           node: PersonWhere!
-        //         }
-
-        //         input PersonCreateInput {
-        //           PersonOne: PersonOneCreateInput
-        //           PersonTwo: PersonTwoCreateInput
-        //         }
-
-        //         input PersonImplementationsUpdateInput {
-        //           PersonOne: PersonOneUpdateInput
-        //           PersonTwo: PersonTwoUpdateInput
-        //         }
-
-        //         input PersonImplementationsWhere {
-        //           PersonOne: PersonOneWhere
-        //           PersonTwo: PersonTwoWhere
-        //         }
-
-        //         type PersonOne implements Person {
-        //           name: String
-        //           someExtraProp: [Int!]!
-        //         }
-
-        //         type PersonOneAggregateSelection {
-        //           count: Int!
-        //           name: StringAggregateSelectionNullable!
-        //         }
-
-        //         input PersonOneCreateInput {
-        //           name: String
-        //           someExtraProp: [Int!]!
-        //         }
-
-        //         type PersonOneEdge {
-        //           cursor: String!
-        //           node: PersonOne!
-        //         }
-
-        //         input PersonOneOptions {
-        //           limit: Int
-        //           offset: Int
-        //           \\"\\"\\"
-        //           Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-        //           \\"\\"\\"
-        //           sort: [PersonOneSort!]
-        //         }
-
-        //         \\"\\"\\"
-        //         Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
-        //         \\"\\"\\"
-        //         input PersonOneSort {
-        //           name: SortDirection
-        //         }
-
-        //         input PersonOneUpdateInput {
-        //           name: String
-        //           someExtraProp: [Int!]
-        //           someExtraProp_POP: Int
-        //           someExtraProp_PUSH: [Int!]
-        //         }
-
-        //         input PersonOneWhere {
-        //           AND: [PersonOneWhere!]
-        //           NOT: PersonOneWhere
-        //           OR: [PersonOneWhere!]
-        //           name: String
-        //           name_CONTAINS: String
-        //           name_ENDS_WITH: String
-        //           name_IN: [String]
-        //           name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_STARTS_WITH: String
-        //           someExtraProp: [Int!]
-        //           someExtraProp_INCLUDES: Int
-        //           someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //         }
-
-        //         type PersonOnesConnection {
-        //           edges: [PersonOneEdge!]!
-        //           pageInfo: PageInfo!
-        //           totalCount: Int!
-        //         }
-
-        //         input PersonOptions {
-        //           limit: Int
-        //           offset: Int
-        //           \\"\\"\\"
-        //           Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-        //           \\"\\"\\"
-        //           sort: [PersonSort]
-        //         }
-
-        //         \\"\\"\\"
-        //         Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
-        //         \\"\\"\\"
-        //         input PersonSort {
-        //           name: SortDirection
-        //         }
-
-        //         type PersonTwo implements Person {
-        //           name: String
-        //         }
-
-        //         type PersonTwoAggregateSelection {
-        //           count: Int!
-        //           name: StringAggregateSelectionNullable!
-        //         }
-
-        //         input PersonTwoCreateInput {
-        //           name: String
-        //         }
-
-        //         type PersonTwoEdge {
-        //           cursor: String!
-        //           node: PersonTwo!
-        //         }
-
-        //         input PersonTwoOptions {
-        //           limit: Int
-        //           offset: Int
-        //           \\"\\"\\"
-        //           Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-        //           \\"\\"\\"
-        //           sort: [PersonTwoSort!]
-        //         }
-
-        //         \\"\\"\\"
-        //         Fields to sort PersonTwos by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonTwoSort object.
-        //         \\"\\"\\"
-        //         input PersonTwoSort {
-        //           name: SortDirection
-        //         }
-
-        //         input PersonTwoUpdateInput {
-        //           name: String
-        //         }
-
-        //         input PersonTwoWhere {
-        //           AND: [PersonTwoWhere!]
-        //           NOT: PersonTwoWhere
-        //           OR: [PersonTwoWhere!]
-        //           name: String
-        //           name_CONTAINS: String
-        //           name_ENDS_WITH: String
-        //           name_IN: [String]
-        //           name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_STARTS_WITH: String
-        //         }
-
-        //         type PersonTwosConnection {
-        //           edges: [PersonTwoEdge!]!
-        //           pageInfo: PageInfo!
-        //           totalCount: Int!
-        //         }
-
-        //         input PersonUpdateInput {
-        //           _on: PersonImplementationsUpdateInput
-        //           name: String
-        //         }
-
-        //         input PersonWhere {
-        //           _on: PersonImplementationsWhere
-        //           name: String
-        //           name_CONTAINS: String
-        //           name_ENDS_WITH: String
-        //           name_IN: [String]
-        //           name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-        //           name_STARTS_WITH: String
-        //         }
-
-        //         type Query {
-        //           movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-        //           moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-        //           moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-        //           personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
-        //           personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
-        //           personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
-        //           personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
-        //           personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
-        //           personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
-        //         }
-
-        //         enum SortDirection {
-        //           \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-        //           ASC
-        //           \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-        //           DESC
-        //         }
-
-        //         type StringAggregateSelectionNullable {
-        //           longest: String
-        //           shortest: String
-        //         }
-
-        //         type UpdateInfo {
-        //           bookmark: String
-        //           nodesCreated: Int!
-        //           nodesDeleted: Int!
-        //           relationshipsCreated: Int!
-        //           relationshipsDeleted: Int!
-        //         }
-
-        //         type UpdateMoviesMutationResponse {
-        //           info: UpdateInfo!
-        //           movies: [Movie!]!
-        //         }
-
-        //         type UpdatePersonOnesMutationResponse {
-        //           info: UpdateInfo!
-        //           personOnes: [PersonOne!]!
-        //         }
-
-        //         type UpdatePersonTwosMutationResponse {
-        //           info: UpdateInfo!
-        //           personTwos: [PersonTwo!]!
-        //         }"
-        //     `);
-        // });
+        test("Two relationships with nested operations specified on one", async () => {
+            const typeDefs = gql`
+                interface Person {
+                    name: String
+                }
+
+                type PersonOne implements Person {
+                    name: String
+                    someExtraProp: [Int!]!
+                }
+
+                type PersonTwo implements Person {
+                    name: String
+                }
+
+                type Movie {
+                    id: ID
+                    actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
+                    producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
+                }
+            `;
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+            expect(printedSchema).toMatchInlineSnapshot(`
+                "schema {
+                  query: Query
+                  mutation: Mutation
+                }
+
+                type CreateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  relationshipsCreated: Int!
+                }
+
+                type CreateMoviesMutationResponse {
+                  info: CreateInfo!
+                  movies: [Movie!]!
+                }
+
+                type CreatePersonOnesMutationResponse {
+                  info: CreateInfo!
+                  personOnes: [PersonOne!]!
+                }
+
+                type CreatePersonTwosMutationResponse {
+                  info: CreateInfo!
+                  personTwos: [PersonTwo!]!
+                }
+
+                type DeleteInfo {
+                  bookmark: String
+                  nodesDeleted: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type IDAggregateSelectionNullable {
+                  longest: ID
+                  shortest: ID
+                }
+
+                type Movie {
+                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  id: ID
+                  producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
+                }
+
+                input MovieActorsConnectFieldInput {
+                  where: PersonConnectWhere
+                }
+
+                type MovieActorsConnection {
+                  edges: [MovieActorsRelationship!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                input MovieActorsConnectionSort {
+                  node: PersonSort
+                }
+
+                input MovieActorsConnectionWhere {
+                  AND: [MovieActorsConnectionWhere!]
+                  NOT: MovieActorsConnectionWhere
+                  OR: [MovieActorsConnectionWhere!]
+                  node: PersonWhere
+                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                }
+
+                input MovieActorsCreateFieldInput {
+                  node: PersonCreateInput!
+                }
+
+                input MovieActorsDeleteFieldInput {
+                  where: MovieActorsConnectionWhere
+                }
+
+                input MovieActorsDisconnectFieldInput {
+                  where: MovieActorsConnectionWhere
+                }
+
+                input MovieActorsFieldInput {
+                  connect: [MovieActorsConnectFieldInput!]
+                  create: [MovieActorsCreateFieldInput!]
+                }
+
+                type MovieActorsRelationship {
+                  cursor: String!
+                  node: Person!
+                }
+
+                input MovieActorsUpdateConnectionInput {
+                  node: PersonUpdateInput
+                }
+
+                input MovieActorsUpdateFieldInput {
+                  connect: [MovieActorsConnectFieldInput!]
+                  create: [MovieActorsCreateFieldInput!]
+                  delete: [MovieActorsDeleteFieldInput!]
+                  disconnect: [MovieActorsDisconnectFieldInput!]
+                  update: MovieActorsUpdateConnectionInput
+                  where: MovieActorsConnectionWhere
+                }
+
+                type MovieAggregateSelection {
+                  count: Int!
+                  id: IDAggregateSelectionNullable!
+                }
+
+                input MovieConnectInput {
+                  actors: [MovieActorsConnectFieldInput!]
+                }
+
+                input MovieCreateInput {
+                  actors: MovieActorsFieldInput
+                  id: ID
+                }
+
+                input MovieDeleteInput {
+                  actors: [MovieActorsDeleteFieldInput!]
+                }
+
+                input MovieDisconnectInput {
+                  actors: [MovieActorsDisconnectFieldInput!]
+                  producers: [MovieProducersDisconnectFieldInput!]
+                }
+
+                type MovieEdge {
+                  cursor: String!
+                  node: Movie!
+                }
+
+                input MovieOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [MovieSort!]
+                }
+
+                type MovieProducersConnection {
+                  edges: [MovieProducersRelationship!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                input MovieProducersConnectionSort {
+                  node: PersonSort
+                }
+
+                input MovieProducersConnectionWhere {
+                  AND: [MovieProducersConnectionWhere!]
+                  NOT: MovieProducersConnectionWhere
+                  OR: [MovieProducersConnectionWhere!]
+                  node: PersonWhere
+                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                }
+
+                input MovieProducersDisconnectFieldInput {
+                  where: MovieProducersConnectionWhere
+                }
+
+                type MovieProducersRelationship {
+                  cursor: String!
+                  node: Person!
+                }
+
+                input MovieProducersUpdateFieldInput {
+                  disconnect: [MovieProducersDisconnectFieldInput!]
+                  where: MovieProducersConnectionWhere
+                }
+
+                input MovieRelationInput {
+                  actors: [MovieActorsCreateFieldInput!]
+                }
+
+                \\"\\"\\"
+                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+                \\"\\"\\"
+                input MovieSort {
+                  id: SortDirection
+                }
+
+                input MovieUpdateInput {
+                  actors: [MovieActorsUpdateFieldInput!]
+                  id: ID
+                  producers: [MovieProducersUpdateFieldInput!]
+                }
+
+                input MovieWhere {
+                  AND: [MovieWhere!]
+                  NOT: MovieWhere
+                  OR: [MovieWhere!]
+                  actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  id: ID
+                  id_CONTAINS: ID
+                  id_ENDS_WITH: ID
+                  id_IN: [ID]
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_STARTS_WITH: ID
+                  producersConnection: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_SOME\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  producersConnection_ALL: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  producersConnection_NONE: MovieProducersConnectionWhere
+                  producersConnection_NOT: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_NONE\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  producersConnection_SINGLE: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  producersConnection_SOME: MovieProducersConnectionWhere
+                }
+
+                type MoviesConnection {
+                  edges: [MovieEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type Mutation {
+                  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+                  createPersonOnes(input: [PersonOneCreateInput!]!): CreatePersonOnesMutationResponse!
+                  createPersonTwos(input: [PersonTwoCreateInput!]!): CreatePersonTwosMutationResponse!
+                  deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+                  deletePersonOnes(where: PersonOneWhere): DeleteInfo!
+                  deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
+                  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
+                  updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
+                }
+
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
+                interface Person {
+                  name: String
+                }
+
+                input PersonConnectWhere {
+                  node: PersonWhere!
+                }
+
+                input PersonCreateInput {
+                  PersonOne: PersonOneCreateInput
+                  PersonTwo: PersonTwoCreateInput
+                }
+
+                input PersonImplementationsUpdateInput {
+                  PersonOne: PersonOneUpdateInput
+                  PersonTwo: PersonTwoUpdateInput
+                }
+
+                input PersonImplementationsWhere {
+                  PersonOne: PersonOneWhere
+                  PersonTwo: PersonTwoWhere
+                }
+
+                type PersonOne implements Person {
+                  name: String
+                  someExtraProp: [Int!]!
+                }
+
+                type PersonOneAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
+                input PersonOneCreateInput {
+                  name: String
+                  someExtraProp: [Int!]!
+                }
+
+                type PersonOneEdge {
+                  cursor: String!
+                  node: PersonOne!
+                }
+
+                input PersonOneOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [PersonOneSort!]
+                }
+
+                \\"\\"\\"
+                Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
+                \\"\\"\\"
+                input PersonOneSort {
+                  name: SortDirection
+                }
+
+                input PersonOneUpdateInput {
+                  name: String
+                  someExtraProp: [Int!]
+                  someExtraProp_POP: Int
+                  someExtraProp_PUSH: [Int!]
+                }
+
+                input PersonOneWhere {
+                  AND: [PersonOneWhere!]
+                  NOT: PersonOneWhere
+                  OR: [PersonOneWhere!]
+                  name: String
+                  name_CONTAINS: String
+                  name_ENDS_WITH: String
+                  name_IN: [String]
+                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_STARTS_WITH: String
+                  someExtraProp: [Int!]
+                  someExtraProp_INCLUDES: Int
+                  someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                }
+
+                type PersonOnesConnection {
+                  edges: [PersonOneEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                input PersonOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [PersonSort]
+                }
+
+                \\"\\"\\"
+                Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
+                \\"\\"\\"
+                input PersonSort {
+                  name: SortDirection
+                }
+
+                type PersonTwo implements Person {
+                  name: String
+                }
+
+                type PersonTwoAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
+                input PersonTwoCreateInput {
+                  name: String
+                }
+
+                type PersonTwoEdge {
+                  cursor: String!
+                  node: PersonTwo!
+                }
+
+                input PersonTwoOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [PersonTwoSort!]
+                }
+
+                \\"\\"\\"
+                Fields to sort PersonTwos by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonTwoSort object.
+                \\"\\"\\"
+                input PersonTwoSort {
+                  name: SortDirection
+                }
+
+                input PersonTwoUpdateInput {
+                  name: String
+                }
+
+                input PersonTwoWhere {
+                  AND: [PersonTwoWhere!]
+                  NOT: PersonTwoWhere
+                  OR: [PersonTwoWhere!]
+                  name: String
+                  name_CONTAINS: String
+                  name_ENDS_WITH: String
+                  name_IN: [String]
+                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_STARTS_WITH: String
+                }
+
+                type PersonTwosConnection {
+                  edges: [PersonTwoEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                input PersonUpdateInput {
+                  _on: PersonImplementationsUpdateInput
+                  name: String
+                }
+
+                input PersonWhere {
+                  _on: PersonImplementationsWhere
+                  name: String
+                  name_CONTAINS: String
+                  name_ENDS_WITH: String
+                  name_IN: [String]
+                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_STARTS_WITH: String
+                }
+
+                type Query {
+                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                }
+
+                enum SortDirection {
+                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+                  ASC
+                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+                  DESC
+                }
+
+                type StringAggregateSelectionNullable {
+                  longest: String
+                  shortest: String
+                }
+
+                type UpdateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  nodesDeleted: Int!
+                  relationshipsCreated: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type UpdateMoviesMutationResponse {
+                  info: UpdateInfo!
+                  movies: [Movie!]!
+                }
+
+                type UpdatePersonOnesMutationResponse {
+                  info: UpdateInfo!
+                  personOnes: [PersonOne!]!
+                }
+
+                type UpdatePersonTwosMutationResponse {
+                  info: UpdateInfo!
+                  personTwos: [PersonTwo!]!
+                }"
+            `);
+        });
+
+        test("Two relationships with nested operations specified on both", async () => {
+            const typeDefs = gql`
+                interface Person {
+                    name: String
+                }
+
+                type PersonOne implements Person {
+                    name: String
+                    someExtraProp: [Int!]!
+                }
+
+                type PersonTwo implements Person {
+                    name: String
+                }
+
+                type Movie {
+                    id: ID
+                    actors: [Person!]!
+                        @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE, DELETE])
+                    producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
+                }
+            `;
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+            expect(printedSchema).toMatchInlineSnapshot(`
+                "schema {
+                  query: Query
+                  mutation: Mutation
+                }
+
+                type CreateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  relationshipsCreated: Int!
+                }
+
+                type CreateMoviesMutationResponse {
+                  info: CreateInfo!
+                  movies: [Movie!]!
+                }
+
+                type CreatePersonOnesMutationResponse {
+                  info: CreateInfo!
+                  personOnes: [PersonOne!]!
+                }
+
+                type CreatePersonTwosMutationResponse {
+                  info: CreateInfo!
+                  personTwos: [PersonTwo!]!
+                }
+
+                type DeleteInfo {
+                  bookmark: String
+                  nodesDeleted: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type IDAggregateSelectionNullable {
+                  longest: ID
+                  shortest: ID
+                }
+
+                type Movie {
+                  actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  id: ID
+                  producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
+                }
+
+                type MovieActorsConnection {
+                  edges: [MovieActorsRelationship!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                input MovieActorsConnectionSort {
+                  node: PersonSort
+                }
+
+                input MovieActorsConnectionWhere {
+                  AND: [MovieActorsConnectionWhere!]
+                  NOT: MovieActorsConnectionWhere
+                  OR: [MovieActorsConnectionWhere!]
+                  node: PersonWhere
+                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                }
+
+                input MovieActorsCreateFieldInput {
+                  node: PersonCreateInput!
+                }
+
+                input MovieActorsDeleteFieldInput {
+                  where: MovieActorsConnectionWhere
+                }
+
+                input MovieActorsFieldInput {
+                  create: [MovieActorsCreateFieldInput!]
+                }
+
+                type MovieActorsRelationship {
+                  cursor: String!
+                  node: Person!
+                }
+
+                input MovieActorsUpdateFieldInput {
+                  create: [MovieActorsCreateFieldInput!]
+                  delete: [MovieActorsDeleteFieldInput!]
+                  where: MovieActorsConnectionWhere
+                }
+
+                type MovieAggregateSelection {
+                  count: Int!
+                  id: IDAggregateSelectionNullable!
+                }
+
+                input MovieCreateInput {
+                  actors: MovieActorsFieldInput
+                  id: ID
+                }
+
+                input MovieDeleteInput {
+                  actors: [MovieActorsDeleteFieldInput!]
+                }
+
+                input MovieDisconnectInput {
+                  producers: [MovieProducersDisconnectFieldInput!]
+                }
+
+                type MovieEdge {
+                  cursor: String!
+                  node: Movie!
+                }
+
+                input MovieOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [MovieSort!]
+                }
+
+                type MovieProducersConnection {
+                  edges: [MovieProducersRelationship!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                input MovieProducersConnectionSort {
+                  node: PersonSort
+                }
+
+                input MovieProducersConnectionWhere {
+                  AND: [MovieProducersConnectionWhere!]
+                  NOT: MovieProducersConnectionWhere
+                  OR: [MovieProducersConnectionWhere!]
+                  node: PersonWhere
+                  node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                }
+
+                input MovieProducersDisconnectFieldInput {
+                  where: MovieProducersConnectionWhere
+                }
+
+                type MovieProducersRelationship {
+                  cursor: String!
+                  node: Person!
+                }
+
+                input MovieProducersUpdateFieldInput {
+                  disconnect: [MovieProducersDisconnectFieldInput!]
+                  where: MovieProducersConnectionWhere
+                }
+
+                input MovieRelationInput {
+                  actors: [MovieActorsCreateFieldInput!]
+                }
+
+                \\"\\"\\"
+                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+                \\"\\"\\"
+                input MovieSort {
+                  id: SortDirection
+                }
+
+                input MovieUpdateInput {
+                  actors: [MovieActorsUpdateFieldInput!]
+                  id: ID
+                  producers: [MovieProducersUpdateFieldInput!]
+                }
+
+                input MovieWhere {
+                  AND: [MovieWhere!]
+                  NOT: MovieWhere
+                  OR: [MovieWhere!]
+                  actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  id: ID
+                  id_CONTAINS: ID
+                  id_ENDS_WITH: ID
+                  id_IN: [ID]
+                  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  id_STARTS_WITH: ID
+                  producersConnection: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_SOME\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  producersConnection_ALL: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  producersConnection_NONE: MovieProducersConnectionWhere
+                  producersConnection_NOT: MovieProducersConnectionWhere @deprecated(reason: \\"Use \`producersConnection_NONE\` instead.\\")
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  producersConnection_SINGLE: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  producersConnection_SOME: MovieProducersConnectionWhere
+                }
+
+                type MoviesConnection {
+                  edges: [MovieEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                type Mutation {
+                  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+                  createPersonOnes(input: [PersonOneCreateInput!]!): CreatePersonOnesMutationResponse!
+                  createPersonTwos(input: [PersonTwoCreateInput!]!): CreatePersonTwosMutationResponse!
+                  deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+                  deletePersonOnes(where: PersonOneWhere): DeleteInfo!
+                  deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
+                  updateMovies(create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+                  updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
+                  updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
+                }
+
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
+                interface Person {
+                  name: String
+                }
+
+                input PersonCreateInput {
+                  PersonOne: PersonOneCreateInput
+                  PersonTwo: PersonTwoCreateInput
+                }
+
+                input PersonImplementationsWhere {
+                  PersonOne: PersonOneWhere
+                  PersonTwo: PersonTwoWhere
+                }
+
+                type PersonOne implements Person {
+                  name: String
+                  someExtraProp: [Int!]!
+                }
+
+                type PersonOneAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
+                input PersonOneCreateInput {
+                  name: String
+                  someExtraProp: [Int!]!
+                }
+
+                type PersonOneEdge {
+                  cursor: String!
+                  node: PersonOne!
+                }
+
+                input PersonOneOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [PersonOneSort!]
+                }
+
+                \\"\\"\\"
+                Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
+                \\"\\"\\"
+                input PersonOneSort {
+                  name: SortDirection
+                }
+
+                input PersonOneUpdateInput {
+                  name: String
+                  someExtraProp: [Int!]
+                  someExtraProp_POP: Int
+                  someExtraProp_PUSH: [Int!]
+                }
+
+                input PersonOneWhere {
+                  AND: [PersonOneWhere!]
+                  NOT: PersonOneWhere
+                  OR: [PersonOneWhere!]
+                  name: String
+                  name_CONTAINS: String
+                  name_ENDS_WITH: String
+                  name_IN: [String]
+                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_STARTS_WITH: String
+                  someExtraProp: [Int!]
+                  someExtraProp_INCLUDES: Int
+                  someExtraProp_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  someExtraProp_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                }
+
+                type PersonOnesConnection {
+                  edges: [PersonOneEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                input PersonOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [PersonSort]
+                }
+
+                \\"\\"\\"
+                Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
+                \\"\\"\\"
+                input PersonSort {
+                  name: SortDirection
+                }
+
+                type PersonTwo implements Person {
+                  name: String
+                }
+
+                type PersonTwoAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
+                input PersonTwoCreateInput {
+                  name: String
+                }
+
+                type PersonTwoEdge {
+                  cursor: String!
+                  node: PersonTwo!
+                }
+
+                input PersonTwoOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [PersonTwoSort!]
+                }
+
+                \\"\\"\\"
+                Fields to sort PersonTwos by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonTwoSort object.
+                \\"\\"\\"
+                input PersonTwoSort {
+                  name: SortDirection
+                }
+
+                input PersonTwoUpdateInput {
+                  name: String
+                }
+
+                input PersonTwoWhere {
+                  AND: [PersonTwoWhere!]
+                  NOT: PersonTwoWhere
+                  OR: [PersonTwoWhere!]
+                  name: String
+                  name_CONTAINS: String
+                  name_ENDS_WITH: String
+                  name_IN: [String]
+                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_STARTS_WITH: String
+                }
+
+                type PersonTwosConnection {
+                  edges: [PersonTwoEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
+                input PersonWhere {
+                  _on: PersonImplementationsWhere
+                  name: String
+                  name_CONTAINS: String
+                  name_ENDS_WITH: String
+                  name_IN: [String]
+                  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+                  name_STARTS_WITH: String
+                }
+
+                type Query {
+                  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
+                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
+                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
+                  personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
+                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
+                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
+                }
+
+                enum SortDirection {
+                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+                  ASC
+                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+                  DESC
+                }
+
+                type StringAggregateSelectionNullable {
+                  longest: String
+                  shortest: String
+                }
+
+                type UpdateInfo {
+                  bookmark: String
+                  nodesCreated: Int!
+                  nodesDeleted: Int!
+                  relationshipsCreated: Int!
+                  relationshipsDeleted: Int!
+                }
+
+                type UpdateMoviesMutationResponse {
+                  info: UpdateInfo!
+                  movies: [Movie!]!
+                }
+
+                type UpdatePersonOnesMutationResponse {
+                  info: UpdateInfo!
+                  personOnes: [PersonOne!]!
+                }
+
+                type UpdatePersonTwosMutationResponse {
+                  info: UpdateInfo!
+                  personTwos: [PersonTwo!]!
+                }"
+            `);
+        });
     });
 });
