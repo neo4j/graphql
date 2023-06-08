@@ -1,5 +1,14 @@
 # @neo4j/graphql-toolbox
 
+## 1.5.6
+
+### Patch Changes
+
+-   [#3390](https://github.com/neo4j/graphql/pull/3390) [`ac54d6e3c`](https://github.com/neo4j/graphql/commit/ac54d6e3c522fac6198001bd9f8615f31fc73991) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox - refactor the query editor grid to use "useDragResize" from "@graphiql/react"
+
+-   Updated dependencies [[`449d66fbd`](https://github.com/neo4j/graphql/commit/449d66fbddb061c40bfd3df10c8c12bf037960d7)]:
+    -   @neo4j/graphql@3.20.1
+
 ## 1.5.5
 
 ### Patch Changes

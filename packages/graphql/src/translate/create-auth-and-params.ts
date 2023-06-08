@@ -23,6 +23,7 @@ import type { BaseField, Context } from "../types";
 import type { AuthOperations } from "../types/deprecated/auth/auth-operations";
 import type { Rule } from "./deprecated/auth/types";
 import { createAuthPredicates } from "./create-auth-predicates";
+import { compileCypher } from "../utils/compile-cypher";
 
 type AuthAndParams = {
     cypher: string;
@@ -66,7 +67,7 @@ export function createAuthAndParams({
     }
 
     const authPredicateExpr = new Cypher.RawCypher((env: Cypher.Environment) => {
-        return authPredicate.getCypher(env);
+        return compileCypher(authPredicate, env);
     });
 
     const chainStr = generateUniqueChainStr([where?.varName, allow?.varName, bind?.varName]);

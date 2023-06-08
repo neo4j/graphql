@@ -22,6 +22,7 @@ import createProjectionAndParams from "./create-projection-and-params";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import Cypher from "@neo4j/cypher-builder";
+import { compileCypher } from "../utils/compile-cypher";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -65,6 +66,14 @@ describe("createProjectionAndParams", () => {
                             update: { type: "String", pretty: "String" },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                 },
@@ -84,10 +93,10 @@ describe("createProjectionAndParams", () => {
             cypherFieldAliasMap: {},
         });
         new Cypher.RawCypher((env) => {
-            expect(result.projection.getCypher(env)).toBe(`{ .title }`);
+            expect(compileCypher(result.projection, env)).toBe(`{ .title }`);
             return "";
         }).build();
-       
+
         expect(result.params).toMatchObject({});
     });
     test("should return the correct projection when querying for a global with id in the selection set", () => {
@@ -127,6 +136,14 @@ describe("createProjectionAndParams", () => {
                             update: { type: "String", pretty: "String" },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                     isGlobalIdField: true,
@@ -149,7 +166,7 @@ describe("createProjectionAndParams", () => {
             cypherFieldAliasMap: {},
         });
         new Cypher.RawCypher((env) => {
-            expect(result.projection.getCypher(env)).toBe(`{ .title }`);
+            expect(compileCypher(result.projection, env)).toBe(`{ .title }`);
             return "";
         }).build();
     });

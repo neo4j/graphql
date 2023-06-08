@@ -64,7 +64,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
-                RETURN any(var2 IN collect(this1.someDuration) WHERE datetime() + var2 = datetime() + $param0) AS var3
+                RETURN any(var2 IN collect(this1.someDuration) WHERE (datetime() + var2) = (datetime() + $param0)) AS var3
             }
             WITH *
             WHERE var3 = true
@@ -108,7 +108,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
-                RETURN any(var2 IN collect(this1._someDurationAlias) WHERE datetime() + var2 = datetime() + $param0) AS var3
+                RETURN any(var2 IN collect(this1._someDurationAlias) WHERE (datetime() + var2) = (datetime() + $param0)) AS var3
             }
             WITH *
             WHERE var3 = true
@@ -152,7 +152,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
-                RETURN any(var2 IN collect(this1.someDuration) WHERE datetime() + var2 > datetime() + $param0) AS var3
+                RETURN any(var2 IN collect(this1.someDuration) WHERE (datetime() + var2) > (datetime() + $param0)) AS var3
             }
             WITH *
             WHERE var3 = true
@@ -196,7 +196,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
-                RETURN any(var2 IN collect(this1.someDuration) WHERE datetime() + var2 >= datetime() + $param0) AS var3
+                RETURN any(var2 IN collect(this1.someDuration) WHERE (datetime() + var2) >= (datetime() + $param0)) AS var3
             }
             WITH *
             WHERE var3 = true
@@ -240,7 +240,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
-                RETURN any(var2 IN collect(this1.someDuration) WHERE datetime() + var2 < datetime() + $param0) AS var3
+                RETURN any(var2 IN collect(this1.someDuration) WHERE (datetime() + var2) < (datetime() + $param0)) AS var3
             }
             WITH *
             WHERE var3 = true
@@ -284,7 +284,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
-                RETURN any(var2 IN collect(this1.someDuration) WHERE datetime() + var2 <= datetime() + $param0) AS var3
+                RETURN any(var2 IN collect(this1.someDuration) WHERE (datetime() + var2) <= (datetime() + $param0)) AS var3
             }
             WITH *
             WHERE var3 = true

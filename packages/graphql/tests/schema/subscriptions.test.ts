@@ -429,6 +429,9 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipCreatedSubscriptionWhere {
+              AND: [MovieRelationshipCreatedSubscriptionWhere!]
+              NOT: MovieRelationshipCreatedSubscriptionWhere
+              OR: [MovieRelationshipCreatedSubscriptionWhere!]
               createdRelationship: MovieRelationshipsSubscriptionWhere
               movie: MovieSubscriptionWhere
             }
@@ -442,6 +445,9 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipDeletedSubscriptionWhere {
+              AND: [MovieRelationshipDeletedSubscriptionWhere!]
+              NOT: MovieRelationshipDeletedSubscriptionWhere
+              OR: [MovieRelationshipDeletedSubscriptionWhere!]
               deletedRelationship: MovieRelationshipsSubscriptionWhere
               movie: MovieSubscriptionWhere
             }
@@ -901,6 +907,9 @@ describe("Subscriptions", () => {
             }
 
             input ActorRelationshipCreatedSubscriptionWhere {
+              AND: [ActorRelationshipCreatedSubscriptionWhere!]
+              NOT: ActorRelationshipCreatedSubscriptionWhere
+              OR: [ActorRelationshipCreatedSubscriptionWhere!]
               createdRelationship: ActorRelationshipsSubscriptionWhere
             }
 
@@ -911,6 +920,9 @@ describe("Subscriptions", () => {
             }
 
             input ActorRelationshipDeletedSubscriptionWhere {
+              AND: [ActorRelationshipDeletedSubscriptionWhere!]
+              NOT: ActorRelationshipDeletedSubscriptionWhere
+              OR: [ActorRelationshipDeletedSubscriptionWhere!]
               deletedRelationship: ActorRelationshipsSubscriptionWhere
             }
 
@@ -1178,6 +1190,9 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipCreatedSubscriptionWhere {
+              AND: [MovieRelationshipCreatedSubscriptionWhere!]
+              NOT: MovieRelationshipCreatedSubscriptionWhere
+              OR: [MovieRelationshipCreatedSubscriptionWhere!]
               movie: MovieSubscriptionWhere
             }
 
@@ -1189,6 +1204,9 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipDeletedSubscriptionWhere {
+              AND: [MovieRelationshipDeletedSubscriptionWhere!]
+              NOT: MovieRelationshipDeletedSubscriptionWhere
+              OR: [MovieRelationshipDeletedSubscriptionWhere!]
               movie: MovieSubscriptionWhere
             }
 
@@ -1710,6 +1728,9 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipCreatedSubscriptionWhere {
+              AND: [MovieRelationshipCreatedSubscriptionWhere!]
+              NOT: MovieRelationshipCreatedSubscriptionWhere
+              OR: [MovieRelationshipCreatedSubscriptionWhere!]
               movie: MovieSubscriptionWhere
             }
 
@@ -1721,6 +1742,9 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipDeletedSubscriptionWhere {
+              AND: [MovieRelationshipDeletedSubscriptionWhere!]
+              NOT: MovieRelationshipDeletedSubscriptionWhere
+              OR: [MovieRelationshipDeletedSubscriptionWhere!]
               movie: MovieSubscriptionWhere
             }
 
@@ -2090,6 +2114,9 @@ describe("Subscriptions", () => {
             }
 
             input PersonRelationshipCreatedSubscriptionWhere {
+              AND: [PersonRelationshipCreatedSubscriptionWhere!]
+              NOT: PersonRelationshipCreatedSubscriptionWhere
+              OR: [PersonRelationshipCreatedSubscriptionWhere!]
               createdRelationship: PersonRelationshipsSubscriptionWhere
             }
 
@@ -2100,6 +2127,9 @@ describe("Subscriptions", () => {
             }
 
             input PersonRelationshipDeletedSubscriptionWhere {
+              AND: [PersonRelationshipDeletedSubscriptionWhere!]
+              NOT: PersonRelationshipDeletedSubscriptionWhere
+              OR: [PersonRelationshipDeletedSubscriptionWhere!]
               deletedRelationship: PersonRelationshipsSubscriptionWhere
             }
 
@@ -2392,6 +2422,9 @@ describe("Subscriptions", () => {
             }
 
             input StarRelationshipCreatedSubscriptionWhere {
+              AND: [StarRelationshipCreatedSubscriptionWhere!]
+              NOT: StarRelationshipCreatedSubscriptionWhere
+              OR: [StarRelationshipCreatedSubscriptionWhere!]
               createdRelationship: StarRelationshipsSubscriptionWhere
             }
 
@@ -2402,6 +2435,9 @@ describe("Subscriptions", () => {
             }
 
             input StarRelationshipDeletedSubscriptionWhere {
+              AND: [StarRelationshipDeletedSubscriptionWhere!]
+              NOT: StarRelationshipDeletedSubscriptionWhere
+              OR: [StarRelationshipDeletedSubscriptionWhere!]
               deletedRelationship: StarRelationshipsSubscriptionWhere
             }
 
@@ -2800,6 +2836,9 @@ describe("Subscriptions", () => {
             }
 
             input ActorRelationshipCreatedSubscriptionWhere {
+              AND: [ActorRelationshipCreatedSubscriptionWhere!]
+              NOT: ActorRelationshipCreatedSubscriptionWhere
+              OR: [ActorRelationshipCreatedSubscriptionWhere!]
               createdRelationship: ActorRelationshipsSubscriptionWhere
             }
 
@@ -2810,6 +2849,9 @@ describe("Subscriptions", () => {
             }
 
             input ActorRelationshipDeletedSubscriptionWhere {
+              AND: [ActorRelationshipDeletedSubscriptionWhere!]
+              NOT: ActorRelationshipDeletedSubscriptionWhere
+              OR: [ActorRelationshipDeletedSubscriptionWhere!]
               deletedRelationship: ActorRelationshipsSubscriptionWhere
             }
 
@@ -3144,6 +3186,9 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipCreatedSubscriptionWhere {
+              AND: [MovieRelationshipCreatedSubscriptionWhere!]
+              NOT: MovieRelationshipCreatedSubscriptionWhere
+              OR: [MovieRelationshipCreatedSubscriptionWhere!]
               createdRelationship: MovieRelationshipsSubscriptionWhere
               movie: MovieSubscriptionWhere
             }
@@ -3157,6 +3202,9 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipDeletedSubscriptionWhere {
+              AND: [MovieRelationshipDeletedSubscriptionWhere!]
+              NOT: MovieRelationshipDeletedSubscriptionWhere
+              OR: [MovieRelationshipDeletedSubscriptionWhere!]
               deletedRelationship: MovieRelationshipsSubscriptionWhere
               movie: MovieSubscriptionWhere
             }
@@ -4132,6 +4180,9 @@ describe("Subscriptions", () => {
             }
 
             input AgreementRelationshipCreatedSubscriptionWhere {
+              AND: [AgreementRelationshipCreatedSubscriptionWhere!]
+              NOT: AgreementRelationshipCreatedSubscriptionWhere
+              OR: [AgreementRelationshipCreatedSubscriptionWhere!]
               agreement: AgreementSubscriptionWhere
             }
 
@@ -4143,6 +4194,9 @@ describe("Subscriptions", () => {
             }
 
             input AgreementRelationshipDeletedSubscriptionWhere {
+              AND: [AgreementRelationshipDeletedSubscriptionWhere!]
+              NOT: AgreementRelationshipDeletedSubscriptionWhere
+              OR: [AgreementRelationshipDeletedSubscriptionWhere!]
               agreement: AgreementSubscriptionWhere
             }
 
@@ -4730,6 +4784,9 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipCreatedSubscriptionWhere {
+              AND: [MovieRelationshipCreatedSubscriptionWhere!]
+              NOT: MovieRelationshipCreatedSubscriptionWhere
+              OR: [MovieRelationshipCreatedSubscriptionWhere!]
               movie: MovieSubscriptionWhere
             }
 
@@ -4741,6 +4798,9 @@ describe("Subscriptions", () => {
             }
 
             input MovieRelationshipDeletedSubscriptionWhere {
+              AND: [MovieRelationshipDeletedSubscriptionWhere!]
+              NOT: MovieRelationshipDeletedSubscriptionWhere
+              OR: [MovieRelationshipDeletedSubscriptionWhere!]
               movie: MovieSubscriptionWhere
             }
 
@@ -5110,6 +5170,9 @@ describe("Subscriptions", () => {
             }
 
             input PersonRelationshipCreatedSubscriptionWhere {
+              AND: [PersonRelationshipCreatedSubscriptionWhere!]
+              NOT: PersonRelationshipCreatedSubscriptionWhere
+              OR: [PersonRelationshipCreatedSubscriptionWhere!]
               createdRelationship: PersonRelationshipsSubscriptionWhere
             }
 
@@ -5120,6 +5183,9 @@ describe("Subscriptions", () => {
             }
 
             input PersonRelationshipDeletedSubscriptionWhere {
+              AND: [PersonRelationshipDeletedSubscriptionWhere!]
+              NOT: PersonRelationshipDeletedSubscriptionWhere
+              OR: [PersonRelationshipDeletedSubscriptionWhere!]
               deletedRelationship: PersonRelationshipsSubscriptionWhere
             }
 
@@ -5956,6 +6022,9 @@ describe("Subscriptions", () => {
             }
 
             input PersonRelationshipCreatedSubscriptionWhere {
+              AND: [PersonRelationshipCreatedSubscriptionWhere!]
+              NOT: PersonRelationshipCreatedSubscriptionWhere
+              OR: [PersonRelationshipCreatedSubscriptionWhere!]
               createdRelationship: PersonRelationshipsSubscriptionWhere
             }
 
@@ -5968,6 +6037,9 @@ describe("Subscriptions", () => {
             }
 
             input PersonRelationshipDeletedSubscriptionWhere {
+              AND: [PersonRelationshipDeletedSubscriptionWhere!]
+              NOT: PersonRelationshipDeletedSubscriptionWhere
+              OR: [PersonRelationshipDeletedSubscriptionWhere!]
               deletedRelationship: PersonRelationshipsSubscriptionWhere
             }
 
@@ -6306,6 +6378,9 @@ describe("Subscriptions", () => {
             }
 
             input SeriesRelationshipCreatedSubscriptionWhere {
+              AND: [SeriesRelationshipCreatedSubscriptionWhere!]
+              NOT: SeriesRelationshipCreatedSubscriptionWhere
+              OR: [SeriesRelationshipCreatedSubscriptionWhere!]
               series: SeriesSubscriptionWhere
             }
 
@@ -6318,6 +6393,9 @@ describe("Subscriptions", () => {
             }
 
             input SeriesRelationshipDeletedSubscriptionWhere {
+              AND: [SeriesRelationshipDeletedSubscriptionWhere!]
+              NOT: SeriesRelationshipDeletedSubscriptionWhere
+              OR: [SeriesRelationshipDeletedSubscriptionWhere!]
               series: SeriesSubscriptionWhere
             }
 

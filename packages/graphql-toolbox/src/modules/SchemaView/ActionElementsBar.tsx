@@ -42,12 +42,7 @@ export const ActionElementsBar = ({ hasSchema, loading, onSubmit }: Props) => {
                     isEditorDisabled={!hasSchema}
                 />
                 {!hasSchema ? (
-                    <SmartTooltip
-                        allowedPlacements={["right"]}
-                        style={{ width: "14rem" }}
-                        ref={tooltipRef}
-                        rev={undefined}
-                    >
+                    <SmartTooltip allowedPlacements={["right"]} style={{ width: "14rem" }} ref={tooltipRef}>
                         {"Build the schema to use the editor"}
                     </SmartTooltip>
                 ) : null}

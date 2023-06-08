@@ -24,9 +24,9 @@ import type Node from "../../../classes/Node";
 import type { NodeSubscriptionsEvent, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
 import { SubscriptionAuth } from "./subscription-auth";
-import type { SubscriptionContext } from "./types";
+import type { SubscriptionEventType, SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
-import { subscriptionWhere } from "./where";
+import { subscriptionWhere } from "./where/where";
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) {
@@ -46,7 +46,7 @@ export function generateSubscribeMethod({
     relationshipFields,
 }: {
     node: Node;
-    type: "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
+    type: SubscriptionEventType;
     nodes?: Node[];
     relationshipFields?: Map<string, ObjectFields>;
 }) {
@@ -83,14 +83,16 @@ export function generateSubscribeMethod({
                 if (!isOfRelevantType) {
                     return false;
                 }
-                const relationFieldName = node.relationFields.find(
-                    (r) => r.typeUnescaped === relationEventPayload.relationshipName
-                )?.fieldName;
 
-                return (
+                const relationFieldName = node.relationFields.find((r) => {
+                    return r.typeUnescaped === relationEventPayload.relationshipName;
+                })?.fieldName;
+
+                const result =
                     !!relationFieldName &&
-                    subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields })
-                );
+                    subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields });
+
+                return result;
             });
         }
 

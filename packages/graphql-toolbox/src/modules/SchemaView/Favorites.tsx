@@ -45,7 +45,7 @@ export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
 
     const EmptyState = (): JSX.Element => {
         return (
-            <div className="h-favorite flex flex-col items-center justify-center leading-6 n-text-neutral-60">
+            <div className="flex flex-col items-center justify-center leading-6 n-text-neutral-60">
                 <p>No favorites to display.</p>
                 <p className="flex">
                     Click{" "}
@@ -63,10 +63,10 @@ export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
     };
 
     return (
-        <div className="flex flex-col w-full p-6">
+        <div className="flex flex-col w-full px-6 pt-6">
             <span className="h5">Favorites</span>
             {favorites?.length ? (
-                <ul className="pt-3 h-favorite overflow-y-scroll">
+                <ul className="py-4 h-favorite overflow-y-auto">
                     {favorites.map((favorite, idx) => {
                         const isAlternateBackground = idx % 2 === 1;
                         return (
@@ -95,7 +95,9 @@ export const Favorites = ({ favorites, onSelectFavorite }: FavoritesProps) => {
                     })}
                 </ul>
             ) : (
-                <EmptyState />
+                <div className="flex items-center justify-center pt-40">
+                    <EmptyState />
+                </div>
             )}
         </div>
     );

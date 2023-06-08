@@ -208,7 +208,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     <ActionElementsBar hasSchema={hasSchema} loading={loading} onSubmit={onSubmit} />
                 </div>
                 <div className="flex">
-                    <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100">
+                    <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100 overflow-y-auto">
                         <div className="w-full">
                             <SchemaSettings />
                             <hr />
@@ -228,11 +228,19 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                             />
                             {!appSettings.hideProductUsageMessage ? (
                                 <Banner
-                                    className="absolute bottom-7 ml-4 w-[57rem] z-40"
+                                    className="absolute bottom-7 ml-4 w-[44rem] z-40"
                                     closeable
                                     name="ProductUsageMessage"
                                     title={<strong>Product analytics</strong>}
-                                    description="To help make the Neo4j GraphQL Toolbox better we collect data on product usage. Review your settings at any time."
+                                    description={
+                                        <>
+                                            <p>
+                                                To help make the Neo4j GraphQL Toolbox better we collect data on product
+                                                usage.
+                                            </p>
+                                            <p>Review your settings at any time.</p>
+                                        </>
+                                    }
                                     onClose={() => appSettings.setHideProductUsageMessage(true)}
                                 />
                             ) : null}

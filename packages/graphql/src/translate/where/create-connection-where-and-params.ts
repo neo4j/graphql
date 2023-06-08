@@ -21,6 +21,7 @@ import type { Node, Relationship } from "../../classes";
 import type { ConnectionWhereArg, Context } from "../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionWherePropertyOperation } from "./property-operations/create-connection-operation";
+import { compileCypher } from "../../utils/compile-cypher";
 
 export default function createConnectionWhereAndParams({
     whereInput,
@@ -53,9 +54,9 @@ export default function createConnectionWhereAndParams({
 
     let subquery = "";
     const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
-        const cypher = andOp?.getCypher(env) || "";
+        const cypher = (andOp as any)?.getCypher(env) || "";
         if (preComputedSubqueries) {
-            subquery = preComputedSubqueries.getCypher(env);
+            subquery = compileCypher(preComputedSubqueries, env);
         }
         return [cypher, {}];
     });

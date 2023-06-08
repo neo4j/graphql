@@ -110,6 +110,16 @@ export interface Callback {
     callbackName: string;
 }
 
+export type SelectableOptions = {
+    onRead: boolean;
+    onAggregate: boolean;
+};
+
+export type SettableOptions = {
+    onCreate: boolean;
+    onUpdate: boolean;
+};
+
 /**
  * Representation a ObjectTypeDefinitionNode field.
  */
@@ -126,6 +136,8 @@ export interface BaseField {
     dbPropertyName?: string;
     dbPropertyNameUnescaped?: string;
     unique?: Unique;
+    selectableOptions: SelectableOptions;
+    settableOptions: SettableOptions;
 }
 
 /**
@@ -142,6 +154,7 @@ export interface RelationField extends BaseField {
     interface?: InterfaceField;
     queryDirection: RelationshipQueryDirectionOption;
     nestedOperations: RelationshipNestedOperationsOption[];
+    aggregate: boolean;
 }
 
 export interface ConnectionField extends BaseField {

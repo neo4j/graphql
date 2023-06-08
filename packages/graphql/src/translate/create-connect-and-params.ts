@@ -271,6 +271,7 @@ function createConnectAndParams({
                 relationField.direction === "IN"
                     ? [relatedNode.name, parentNode.name]
                     : [parentNode.name, relatedNode.name];
+
             const eventWithMetaStr = createConnectionEventMetaObject({
                 event: "create_relationship",
                 relVariable: relationshipName,
