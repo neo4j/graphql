@@ -24,6 +24,7 @@ import type { SDLValidationContext } from "graphql/validation/ValidationContext"
 import { Subgraph } from "../../classes/Subgraph";
 import makeAugmentedSchema from "../make-augmented-schema";
 import { validateUserDefinition } from "./schema-validation";
+import { getError, NoErrorThrownError } from "../../../tests/utils/get-error";
 
 describe("schema validation", () => {
     describe("JWT", () => {
@@ -89,9 +90,14 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Field \\"thisClaimDoesNotExist\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`User\`."`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Invalid argument: filter, error: Field "thisClaimDoesNotExist" is not defined by type.'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where", "jwtPayload"]);
             });
 
             test("should not return errors when jwtPayload field is standard", () => {
@@ -131,9 +137,14 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Field \\"myClaim\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`User\`."`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Invalid argument: filter, error: Field "myClaim" is not defined by type.'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where", "node"]);
             });
         });
 
@@ -244,9 +255,21 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Int cannot represent non-integer value: \\"\\""`
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: Int cannot represent non-integer value."
                 );
+                expect(error).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testInt",
+                ]);
             });
 
             test("should return error when types do not match: Int compared with List[Int] on OBJECT", () => {
@@ -266,9 +289,21 @@ describe("schema validation", () => {
                 const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Int cannot represent non-integer value: []"`
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: Int cannot represent non-integer value."
                 );
+                expect(error).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testInts",
+                ]);
             });
 
             test("should return error when types do not match: Int compared with String on OBJECT", () => {
@@ -288,9 +323,21 @@ describe("schema validation", () => {
                 const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Int cannot represent non-integer value: \\"\\""`
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: Int cannot represent non-integer value."
                 );
+                expect(error).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testInt",
+                ]);
             });
 
             test("should return error when types do not match: Int compared with String on FIELD", () => {
@@ -311,9 +358,22 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Int cannot represent non-integer value: \\"\\""`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: Int cannot represent non-integer value."
                 );
+                expect(error).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testInt",
+                ]);
             });
 
             test("should return error when types do not match: String compared with Int on FIELD", () => {
@@ -334,9 +394,22 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: String cannot represent a non string value: 0"`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: String cannot represent a non string value."
                 );
+                expect(error).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testStr",
+                ]);
             });
 
             test("should return error when types do not match: String compared with Int on FIELD with claim", () => {
@@ -357,9 +430,22 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: String cannot represent a non string value: 0"`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: String cannot represent a non string value."
                 );
+                expect(error).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testStr",
+                ]);
             });
 
             test("should return error when types do not match: String compared with Boolean on FIELD", () => {
@@ -380,9 +466,22 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: String cannot represent a non string value: false"`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: String cannot represent a non string value."
                 );
+                expect(error).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testStr",
+                ]);
             });
 
             test("should return error when types do not match: Boolean compared with String on OBJECT", () => {
@@ -402,9 +501,22 @@ describe("schema validation", () => {
                 const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Boolean cannot represent a non boolean value: \\"\\""`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: Boolean cannot represent a non boolean value."
                 );
+                expect(error).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testBool",
+                ]);
             });
 
             test("should return error when types do not match: Boolean compared with Int on OBJECT", () => {
@@ -424,9 +536,22 @@ describe("schema validation", () => {
                 const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Boolean cannot represent a non boolean value: 0"`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: Boolean cannot represent a non boolean value."
                 );
+                expect(error).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testBool",
+                ]);
             });
         });
     });
@@ -487,9 +612,34 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization", "wrongFilter"]);
+            });
+
+            test("should validate operations value", () => {
+                const userDocument = gql`
+                    type User @authorization(filter: [{ operations: [NEVER], where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Invalid argument: filter, error: Value "NEVER" does not exist in enum.'
+                );
+                expect(error).toHaveProperty("path", ["User", "@authorization", "filter", 0, "operations", 0]);
             });
 
             test("validation should works when used with other directives", () => {
@@ -520,9 +670,14 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization", "wrongFilter"]);
             });
         });
 
@@ -552,9 +707,34 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization", "wrongFilter"]);
+            });
+
+            test("should validate when value", () => {
+                const userDocument = gql`
+                    type User @authorization(validate: [{ when: [NEVER], where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Invalid argument: validate, error: Value "NEVER" does not exist in enum. Did you mean the enum value "AFTER"?'
+                );
+                expect(error).toHaveProperty("path", ["User", "@authorization", "validate", 0, "when", 0]);
             });
 
             test("validation should works when used with other directives", () => {
@@ -596,9 +776,14 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization", "wrongFilter"]);
             });
         });
 
@@ -621,9 +806,11 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrow(
-                    'Directive "@authorization" may not be used on INTERFACE. Location: type `Member`.'
-                );
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty("message", 'Directive "@authorization" may not be used on INTERFACE.');
+                expect(error).toHaveProperty("path", ["Member", "@authorization"]);
             });
         });
 
@@ -658,9 +845,14 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@authorization\\" can only be used once at this location. Location: type \`User\`."`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'The directive "@authorization" can only be used once at this location.'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization"]);
             });
 
             test("should returns errors when used correctly in both a type field and an extension for the same field", () => {
@@ -681,9 +873,14 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@authorization\\" can only be used once at this location. Location: type \`User\`."`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'The directive "@authorization" can only be used once at this location.'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization"]);
             });
 
             test("should not returns errors when used correctly in both type and an extension field", () => {
@@ -773,9 +970,14 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@authorization\\" can only be used once at this location. Location: type \`User\`."`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'The directive "@authorization" can only be used once at this location.'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization"]);
             });
 
             test("should validate directive argument name", () => {
@@ -789,9 +991,14 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization", "wrongFilter"]);
             });
 
             test("validation should works when used with other directives", () => {
@@ -824,9 +1031,13 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization", "wrongFilter"]);
             });
         });
 
@@ -850,9 +1061,11 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrow(
-                    'Directive "@authorization" may not be used on INTERFACE. Location: type `Member`.'
-                );
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty("message", 'Directive "@authorization" may not be used on INTERFACE.');
+                expect(error).toHaveProperty("path", ["Member", "@authorization"]);
             });
         });
 
@@ -917,9 +1130,13 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`Post\`."`
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
+                expect(error).toHaveProperty("path", ["Post", "@authorization", "wrongFilter"]);
             });
         });
 
@@ -1034,9 +1251,13 @@ describe("schema validation", () => {
                         additionalTypes: types,
                     });
 
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization", "wrongFilter"]);
             });
 
             test("validation should works when used with other directives", () => {
@@ -1098,9 +1319,14 @@ describe("schema validation", () => {
                         additionalDirectives: directives,
                         additionalTypes: types,
                     });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@authorization\\". Did you mean \\"filter\\"? Location: type \`User\`."`
+
+                const error = getError(executeValidate);
+                expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                expect(error).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
+                expect(error).toHaveProperty("path", ["User", "@authorization", "wrongFilter"]);
             });
         });
     });
@@ -1126,7 +1352,7 @@ describe("schema validation", () => {
                 });
             expect(executeValidate).not.toThrow();
         });
-
+        // FIXME
         test("should returns errors when is not correctly used", () => {
             const userDocument = gql`
                 type User {
@@ -1145,10 +1371,9 @@ describe("schema validation", () => {
                     additionalTypes: [],
                     rules: [noKeanuFields],
                 });
-            // It returns two time the error as in the ValidationSchema keanu appears two times.
+            // 2 errors but returned one by one
             expect(executeValidate).toThrowErrorMatchingInlineSnapshot(`
-                "Field cannot named keanu
-                Field cannot named keanu"
+                "Field cannot named keanu"
             `);
         });
     });
@@ -1260,11 +1485,16 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`User\`."`
+                    const error = getError(executeValidate);
+                    expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(error).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "seemsNotAWhereToMe" is not defined by type.'
                     );
+                    expect(error).toHaveProperty("path", ["User", "@authorization", "filter", 0]);
                 });
 
+                // TODO
                 test("should returns errors when an @authorization filter has a wrong where definition", () => {
                     const userDocument = gql`
                         type User @authorization(filter: [{ where: { notANode: { id: "$jwt.sub" } } }]) {
@@ -1281,9 +1511,13 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type in argument filter. Did you mean \\"node\\"? Location: Directive \\"@authorization\\" on type \`User\`."`
+                    const error = getError(executeValidate);
+                    expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(error).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "notANode" is not defined by type. Did you mean "node"?'
                     );
+                    expect(error).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where"]);
                 });
 
                 test("should returns errors when an @authorization filter has a wrong where predicate", () => {
@@ -1302,9 +1536,13 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`User\`."`
+                    const error = getError(executeValidate);
+                    expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(error).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "notAValidID" is not defined by type.'
                     );
+                    expect(error).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where", "node"]);
                 });
 
                 test("should returns errors when an @authorization filter has an incorrect where predicate over a 1 to 1 relationship", () => {
@@ -1328,9 +1566,21 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"content\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`Post\`."`
+                    const error = getError(executeValidate);
+                    expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(error).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "content" is not defined by type.'
                     );
+                    expect(error).toHaveProperty("path", [
+                        "Post",
+                        "@authorization",
+                        "filter",
+                        0,
+                        "where",
+                        "node",
+                        "author",
+                    ]);
                 });
 
                 test("should returns errors when an @authorization filter has an incorrect where predicate over a 1 to N relationship", () => {
@@ -1357,9 +1607,13 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`Post\`."`
+                    const error = getError(executeValidate);
+                    expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(error).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "author_NOT_A_QUANTIFIER" is not defined by type.'
                     );
+                    expect(error).toHaveProperty("path", ["Post", "@authorization", "filter", 0, "where", "node"]);
                 });
             });
         });
@@ -1474,9 +1728,13 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`User\`."`
+                    const error = getError(executeValidate);
+                    expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(error).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "seemsNotAWhereToMe" is not defined by type.'
                     );
+                    expect(error).toHaveProperty("path", ["User", "@authorization", "filter", 0]);
                 });
 
                 test("should returns errors when an @authorization filter has a wrong where definition", () => {
@@ -1495,9 +1753,13 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type in argument filter. Did you mean \\"node\\"? Location: Directive \\"@authorization\\" on type \`User\`."`
+                    const error = getError(executeValidate);
+                    expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(error).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "notANode" is not defined by type. Did you mean "node"?'
                     );
+                    expect(error).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where"]);
                 });
 
                 test("should returns errors when an @authorization filter has a wrong where predicate", () => {
@@ -1516,9 +1778,13 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`User\`."`
+                    const error = getError(executeValidate);
+                    expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(error).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "notAValidID" is not defined by type.'
                     );
+                    expect(error).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where", "node"]);
                 });
 
                 test("should returns errors when an @authorization filter has an incorrect where predicate over a 1 to 1 relationship", () => {
@@ -1544,9 +1810,21 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"content\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`Post\`."`
+                    const error = getError(executeValidate);
+                    expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(error).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "content" is not defined by type.'
                     );
+                    expect(error).toHaveProperty("path", [
+                        "Post",
+                        "@authorization",
+                        "filter",
+                        0,
+                        "where",
+                        "node",
+                        "author",
+                    ]);
                 });
 
                 test("should returns errors when an @authorization filter has an incorrect where predicate over a 1 to N relationship", () => {
@@ -1574,9 +1852,14 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type in argument filter. Location: Directive \\"@authorization\\" on type \`Post\`."`
+
+                    const error = getError(executeValidate);
+                    expect(error).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(error).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "author_NOT_A_QUANTIFIER" is not defined by type.'
                     );
+                    expect(error).toHaveProperty("path", ["Post", "@authorization", "filter", 0, "where", "node"]);
                 });
             });
         });

@@ -48,12 +48,29 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                 if (!argumentDefinition) {
                     return;
                 }
-                const { isValid, errorMsg } = assertArgumentType(argument, argumentDefinition);
+                const { isValid, errorMsg, errorPath, errorVal } = assertArgumentType(argument, argumentDefinition);
+                // const argSource = schema.getType(argumentDefinition.name)?.toString();
+                // console.log("argSource", argSource);
+                // const ti = new TypeInfo(schema, argumentDefinition.type);
+                // const inputType = ti.getInputType()?.["ofType"];
+                // const oti = new TypeInfo(schema, inputType._fields[errorPath[1] as string].type);
+                // const oType = oti.getInputType();
+                // console.log("ti", inputType, oType);
+                // if (argSource) {
+                //     const src = new Source(argSource);
+                //     const lex = new Lexer(src);
+                //     console.log("val", lex.token.value);
+                // }
+
+                // const argExt = argumentDefinition.extensions;
+
                 if (!isValid) {
                     context.reportError(
                         new GraphQLError(`Invalid argument: ${argument.name.value}, error: ${errorMsg}`, {
                             nodes: [argument, directiveNode],
                             extensions: { exception: { code: AUTHORIZATION_ERROR_CODE } },
+                            path: errorPath,
+                            positions: [],
                         })
                     );
                 }
@@ -69,6 +86,8 @@ function findArgumentDefinitionNodeByName(args: readonly GraphQLArgument[], name
 type AssertionResponse = {
     isValid: boolean;
     errorMsg?: string;
+    errorPath: ReadonlyArray<string | number>;
+    errorVal: unknown;
 };
 
 function assertArgumentType(argumentNode: ArgumentNode, inputValueDefinition: GraphQLArgument): AssertionResponse {
@@ -76,14 +95,17 @@ function assertArgumentType(argumentNode: ArgumentNode, inputValueDefinition: Gr
     const argValue = valueFromASTUntyped(argumentNode.value);
 
     let isValid = true;
-    let errorMsg;
+    let errorMsg, errorPath, errorVal;
 
     const onError = (_path: ReadonlyArray<string | number>, _invalidValue: unknown, error: Error) => {
         isValid = false;
         errorMsg = error.message;
+        errorPath = _path;
+        errorVal = _invalidValue;
+        console.log("on err", _path, _invalidValue);
     };
 
     coerceInputValue(argValue, argType, onError);
 
-    return { isValid, errorMsg };
+    return { isValid, errorMsg, errorPath, errorVal };
 }

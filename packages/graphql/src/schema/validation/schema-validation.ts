@@ -96,6 +96,7 @@ export function validateUserDefinition({
 
     const errors = validateSDL(validationDocument, rules, schemaToExtend);
     if (errors.length) {
-        throw new Error(errors.join("\n"));
+        // throw new Error(errors.join("\n"));
+        throw errors[0];
     }
 }

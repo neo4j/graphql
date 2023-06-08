@@ -242,6 +242,7 @@ class Neo4jGraphQL {
                 jwtPayload: jwtPayload?.type,
             });
         } catch (error) {
+            // TODO: include path here
             if (error instanceof Error) {
                 const validationErrors = error.message.split("\n\n");
                 return { isValid: false, validationErrors };
