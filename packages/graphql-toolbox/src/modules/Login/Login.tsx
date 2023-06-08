@@ -39,7 +39,7 @@ export const Login = () => {
     const [url, setUrl] = useState<string>(searchParamUrl || DEFAULT_BOLT_URL);
     const [username, setUsername] = useState<string>(searchParamUsername || DEFAULT_USERNAME);
     const showWarningToolTip =
-        window.location.protocol.includes("https") && !getURLProtocolFromText(url).includes("+s");
+        !window.location.protocol.includes("https") && !getURLProtocolFromText(url).includes("+s");
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
@@ -69,7 +69,7 @@ export const Login = () => {
         return (
             <>
                 <ExclamationTriangleIconOutline className="n-text-warning-50" ref={tooltipRef} />
-                <SmartTooltip allowedPlacements={["right"]} style={{ width: "20rem" }}>
+                <SmartTooltip allowedPlacements={["right"]} style={{ width: "20rem" }} ref={tooltipRef}>
                     {text}
                 </SmartTooltip>
             </>
@@ -78,10 +78,10 @@ export const Login = () => {
 
     return (
         <div data-test-login-form className="grid place-items-center h-screen bg-white">
-            <div className="w-[600px] min-h-[740px] login-window-bg flex flex-col justify-start shadow-2xl rounded-3xl py-8 px-16">
+            <div className="w-[600px] min-h-[740px] login-window-bg flex flex-col justify-start shadow-2xl rounded-3xl py-8 px-24">
                 <img src={neo4jIcon} alt="Neo4j Logo" className="mx-auto mt-4" />
 
-                <h2 className="h2 text-3xl text-center mt-20 mb-8">Neo4j GraphQL Toolbox</h2>
+                <h2 className="h2 text-3xl text-center mt-16 mb-8">Neo4j GraphQL Toolbox</h2>
 
                 {error && (
                     <Banner
@@ -107,6 +107,28 @@ export const Login = () => {
                         type="text"
                         disabled={loading}
                     />
+                    {showWarningToolTip ? (
+                        <div className="absolute h-7 w-7 ml-[-28.5rem] mt-[2.5rem]">
+                            <WarningToolTip
+                                text={
+                                    <span>
+                                        With the current Connection URL value the Neo4j driver will be configured to use
+                                        insecure WebSocket on a HTTPS web page. WebSockets might not work in a mixed
+                                        content environment. Please consider accessing the Neo4j database using either
+                                        the bolt+s or neo4j+s protocol. More information:{" "}
+                                        <a
+                                            className="underline"
+                                            href="https://neo4j.com/developer/javascript/#driver-configuration"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            here
+                                        </a>
+                                    </span>
+                                }
+                            />
+                        </div>
+                    ) : null}
 
                     <FormInput
                         testtag="data-test-login-username"
@@ -132,45 +154,20 @@ export const Login = () => {
                         autoComplete="current-password"
                     />
 
-                    <div className="flex items-center mt-8">
-                        <Button
-                            data-test-login-button
-                            className="w-60"
-                            style={{ backgroundColor: tokens.colors.primary[50] }}
-                            fill="filled"
-                            type="submit"
-                            size="large"
-                            loading={loading}
-                            disabled={loading}
-                            // eslint-disable-next-line @typescript-eslint/no-empty-function
-                            onClick={() => {}} // INFO: To prevent warning in browser console
-                        >
-                            Connect
-                        </Button>
-
-                        {showWarningToolTip ? (
-                            <div className="ml-3 h-7 w-7">
-                                <WarningToolTip
-                                    text={
-                                        <span>
-                                            With the current Connection URL value the Neo4j driver will be configured to
-                                            use insecure WebSocket on a HTTPS web page. WebSockets might not work in a
-                                            mixed content environment. Please consider accessing the Neo4j database
-                                            using either the bolt+s or neo4j+s protocol. More information:{" "}
-                                            <a
-                                                className="underline"
-                                                href="https://neo4j.com/developer/javascript/#driver-configuration"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                            >
-                                                here
-                                            </a>
-                                        </span>
-                                    }
-                                />
-                            </div>
-                        ) : null}
-                    </div>
+                    <Button
+                        data-test-login-button
+                        className="w-60 mt-8"
+                        style={{ backgroundColor: tokens.colors.primary[50] }}
+                        fill="filled"
+                        type="submit"
+                        size="large"
+                        loading={loading}
+                        disabled={loading}
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onClick={() => {}} // INFO: To prevent warning in browser console
+                    >
+                        Connect
+                    </Button>
                 </form>
             </div>
         </div>
