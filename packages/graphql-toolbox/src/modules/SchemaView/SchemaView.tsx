@@ -21,8 +21,7 @@ import { useCallback, useContext, useRef, useState } from "react";
 
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
-import { Banner, Button } from "@neo4j-ndl/react";
-import { PlayIconOutline } from "@neo4j-ndl/react/icons";
+import { Banner } from "@neo4j-ndl/react";
 import type { EditorFromTextArea } from "codemirror";
 import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
@@ -203,20 +202,10 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
             ) : null}
             <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
                 <div className="flex">
-                    <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100 overflow-y-auto">
+                    <div className="h-content-container flex justify-start w-96 bg-white border-t border-gray-100 overflow-y-auto">
                         <div className="w-full">
                             <SchemaSettings />
                             <hr />
-                            <Button
-                                fill="filled"
-                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                onClick={onSubmit}
-                                disabled={loading}
-                                style={{ backgroundColor: "blue" }}
-                            >
-                                <PlayIconOutline className="h-5 w-5 pr-1" />
-                                Build schema
-                            </Button>
                             <Favorites favorites={favorites} onSelectFavorite={setTypeDefsFromFavorite} />
                         </div>
                     </div>
@@ -230,6 +219,8 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                                 formatTheCode={formatTheCode}
                                 introspect={onClickIntrospect}
                                 saveAsFavorite={saveAsFavorite}
+                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                onSubmit={onSubmit}
                             />
                             {!appSettings.hideProductUsageMessage ? (
                                 <Banner

@@ -40,6 +40,7 @@ export interface Props {
     formatTheCode: () => void;
     introspect: () => Promise<void>;
     saveAsFavorite: () => void;
+    onSubmit: () => void;
 }
 
 export const SchemaEditor = ({
@@ -49,6 +50,7 @@ export const SchemaEditor = ({
     formatTheCode,
     introspect,
     saveAsFavorite,
+    onSubmit,
 }: Props) => {
     const theme = useContext(ThemeContext);
     const appsettings = useContext(AppSettingsContext);
@@ -167,6 +169,16 @@ export const SchemaEditor = ({
                 name="type-definitions"
                 buttons={
                     <>
+                        <Button
+                            data-test-schema-editor-build-button
+                            style={{ backgroundColor: "yellow" }}
+                            fill="filled"
+                            onClick={onSubmit}
+                            disabled={loading}
+                        >
+                            Build schema
+                        </Button>
+
                         <Button
                             data-test-schema-editor-introspect-button
                             ref={introspectionTooltipRef}
