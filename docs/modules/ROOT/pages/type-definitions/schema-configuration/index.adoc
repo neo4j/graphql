@@ -1,8 +1,7 @@
 [[type-definitions-schema-configuration]]
 = Schema Configuration
 
-Neo4j GraphQL Library supports several functionalities like CRUD operations, aggregation, filtering, and many others.
-
+Neo4j GraphQL Library supports several functionalities such as CRUD operations, aggregation, filtering, and others.
 To make them work, a large amount of GraphQL types are generated.
 
 For instance, starting from the type definitions:
@@ -14,7 +13,6 @@ type Movie {
     length: Int
 } 
 ----
-
 
 In some cases, it may be advisable to reduce the scope of the API produced. Whatever the reason is to reduce the size of the schema, improve the performance, or limit access to unwanted operations, this section provides all the information needed to configure the API produced.
 
