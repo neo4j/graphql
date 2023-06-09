@@ -128,10 +128,7 @@ function createRelationshipFields({
             nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
             !node.uniqueFields.length;
 
-        if (
-            nestedOperations.size !== 0 &&
-            !(onlyConnectOrCreateAndNoUniqueFields)
-        ) {
+        if (nestedOperations.size !== 0 && !onlyConnectOrCreateAndNoUniqueFields) {
             const nodeFieldUpdateInputName = `${rel.connectionPrefix}${upperFieldName}UpdateFieldInput`;
             nodeFieldUpdateInput = schemaComposer.getOrCreateITC(nodeFieldUpdateInputName);
             // Add where fields
