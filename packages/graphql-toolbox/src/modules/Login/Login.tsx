@@ -179,8 +179,6 @@ export const Login = () => {
                         size="large"
                         loading={loading}
                         disabled={loading || !url || !username || !password}
-                        // eslint-disable-next-line @typescript-eslint/no-empty-function
-                        onClick={() => {}} // INFO: To prevent warning in browser console
                     >
                         Connect
                     </Button>
