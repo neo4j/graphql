@@ -79,7 +79,7 @@ Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogener
 
 This directive instruct the library to limit the operations available in the Mutation type.
 
-Reference: xref::type-definitions/schema-configuration/top-level-configuration.adoc#_mutation[`@mutation`]
+Reference: xref::type-definitions/schema-configuration/type-configuration.adoc#_mutation[`@mutation`]
 
 == `@node`
 
@@ -119,7 +119,7 @@ Reference: xref::ogm/private.adoc[`@private` Directive]
 
 This directive instruct the library to limit the operations available in the Query type.
 
-Reference: xref::type-definitions/schema-configuration/top-level-configuration.adoc#_query[`@query`]
+Reference: xref::type-definitions/schema-configuration/type-configuration.adoc#_query[`@query`]
 
 == `@queryOptions`
 
@@ -169,7 +169,7 @@ Reference: xref::type-definitions/schema-configuration/field-configuration.adoc#
 
 This directive instruct the library to limit the operations available in the Subscription type.
 
-Reference: xref::type-definitions/schema-configuration/top-level-configuration.adoc#_subscription[`@subscription`]
+Reference: xref::type-definitions/schema-configuration/type-configuration.adoc#_subscription[`@subscription`]
 
 == `@timestamp`
 

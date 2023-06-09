@@ -2,7 +2,7 @@
 = Global Configuration
 
 There are cases when what is wanted is to disable a type of operation for the whole type definitions and not on type by type basis.
-For instance, let's say that we want to avoid all the top level aggregation operations to be generated. To avoid useless repetition, Neo4j GraphQL Library allows to use schema extension with `@query`, `@mutation`, `@subscription`, as follows:
+For instance, let's say that we want to avoid all the top-level aggregation operations to be generated. To avoid useless repetition, Neo4j GraphQL Library allows using schema extension with `@query`, `@mutation`, and `@subscription` as follows:
 
 [source, graphql, indent=0]
 ----
