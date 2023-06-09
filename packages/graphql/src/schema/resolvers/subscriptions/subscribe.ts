@@ -28,6 +28,7 @@ import type { SubscriptionEventType, SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where/where";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
+import { filterByValues } from "./where/filters/filter-by-values";
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) {
@@ -58,7 +59,13 @@ export function generateSubscribeMethod({
             const hasAuthentication = concreteEntity.annotations.authentication;
             if (hasAuthentication && hasAuthentication.operations.includes("SUBSCRIBE")) {
                 if (!context.jwt) {
-                    throw new Error("Error, request not authenticated");
+                    throw new Error("Error, request not authorized");
+                }
+                if (hasAuthentication.jwtPayload) {
+                    const result = filterByValues(hasAuthentication.jwtPayload, context.jwt);
+                    if (!result) {
+                        throw new Error("Error, request not authorized");
+                    }
                 }
             }
         }
@@ -76,7 +83,6 @@ export function generateSubscribeMethod({
         }
 
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
-
         if (["create", "update", "delete"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 return (

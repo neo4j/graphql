@@ -34,6 +34,7 @@ import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 interface Res {
     creates: string[];
@@ -74,12 +75,18 @@ function createCreateAndParams({
             }`
         );
     }
+    checkAuthentication({ context, node, targetOperations: ["CREATE"] });
+
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
         const dbFieldName = mapToDbProperty(node, key);
+
+        if (primitiveField) {
+            checkAuthentication({ context, node, targetOperations: ["CREATE"], field: primitiveField.fieldName });
+        }
 
         if (relationField) {
             const refNodes: Node[] = [];

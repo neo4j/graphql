@@ -36,6 +36,7 @@ import { collectUnionSubqueriesResults } from "./projection/subquery/collect-uni
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
+import { checkAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
 
 interface Res {
@@ -86,8 +87,13 @@ export default function createProjectionAndParams({
     resolveType?: boolean;
     cypherFieldAliasMap: CypherFieldReferenceMap;
 }): ProjectionResult {
+    checkAuthentication({ context, node, targetOperations: ["READ"] });
+
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
+
+        // if not aggregation/ connection
+        checkAuthentication({ context, node, targetOperations: ["READ"], field: field.name });
 
         const whereInput = field.args.where as GraphQLWhereArg;
         const optionsInput = (field.args.options || {}) as GraphQLOptionsArg;
