@@ -22,6 +22,7 @@ import { useCallback, useContext, useRef, useState } from "react";
 import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, Switch } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
+import classNames from "classnames";
 import type { EditorFromTextArea } from "codemirror";
 import GraphiQLExplorer from "graphiql-explorer";
 import type { GraphQLSchema } from "graphql";
@@ -32,6 +33,7 @@ import { Extension } from "../../components/Filename";
 import { EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
 import { Screen } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
+import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
@@ -49,6 +51,7 @@ export interface Props {
 export const Editor = ({ schema }: Props) => {
     const store = useStore();
     const settings = useContext(SettingsContext);
+    const theme = useContext(ThemeContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [showDocs, setShowDocs] = useState<boolean>(false);
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
@@ -174,7 +177,12 @@ export const Editor = ({ schema }: Props) => {
                                             <>
                                                 <Button
                                                     aria-label="Prettify code"
-                                                    className="mr-2"
+                                                    className={classNames(
+                                                        "mr-2",
+                                                        theme.theme === Theme.LIGHT
+                                                            ? "ndl-theme-light"
+                                                            : "ndl-theme-dark"
+                                                    )}
                                                     color="neutral"
                                                     fill="outlined"
                                                     size="small"
@@ -186,7 +194,12 @@ export const Editor = ({ schema }: Props) => {
                                                 <IconButton
                                                     data-test-editor-query-button
                                                     aria-label="Execute query"
-                                                    style={{ height: "1.8rem" }}
+                                                    style={{ height: "1.7rem" }}
+                                                    className={classNames(
+                                                        theme.theme === Theme.LIGHT
+                                                            ? "ndl-theme-light"
+                                                            : "ndl-theme-dark"
+                                                    )}
                                                     color="primary"
                                                     clean
                                                     // eslint-disable-next-line @typescript-eslint/no-misused-promises

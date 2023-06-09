@@ -22,6 +22,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
 import { StarIconOutline } from "@neo4j-ndl/react/icons";
+import classNames from "classnames";
 import type { EditorFromTextArea } from "codemirror";
 
 import { Extension, FileName } from "../../components/Filename";
@@ -170,8 +171,9 @@ export const SchemaEditor = ({
                 rightButtons={
                     <Button
                         data-test-schema-editor-build-button
-                        style={{ backgroundColor: tokens.colors.primary[50] }}
                         aria-label="Build schema"
+                        style={{ backgroundColor: tokens.colors.primary[50] }}
+                        className={classNames(theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark")}
                         color="primary"
                         fill="filled"
                         size="small"
@@ -187,7 +189,10 @@ export const SchemaEditor = ({
                             data-test-schema-editor-introspect-button
                             ref={introspectionTooltipRef}
                             aria-label="Generate type definitions"
-                            className="mr-2"
+                            className={classNames(
+                                "mr-2",
+                                theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
+                            )}
                             color="primary"
                             fill="outlined"
                             size="small"
@@ -209,7 +214,10 @@ export const SchemaEditor = ({
                         <Button
                             data-test-schema-editor-prettify-button
                             aria-label="Prettify code"
-                            className="mr-2"
+                            className={classNames(
+                                "mr-2",
+                                theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
+                            )}
                             color="neutral"
                             fill="outlined"
                             size="small"
@@ -223,7 +231,8 @@ export const SchemaEditor = ({
                             data-test-schema-editor-favourite-button
                             ref={favoritesTooltipRef}
                             aria-label="Save as favorite"
-                            style={{ height: "1.8rem" }}
+                            style={{ height: "1.7rem" }}
+                            className={classNames(theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark")}
                             size="small"
                             color="neutral"
                             onClick={saveAsFavorite}
