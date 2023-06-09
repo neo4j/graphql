@@ -431,7 +431,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
                             actors: {
                                 ${PersonOne}: {
                                     connectOrCreate: {
-                                        where: { node: { id: "1" } }
+                                        where: { node: { name: "someName" } }
                                         onCreate: { node: { name: "someName" } }
                                     }
                                 }
@@ -473,7 +473,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
                             actors: {
                                 ${PersonOne}: {
                                     connectOrCreate: {
-                                        where: { node: { id: "1" } }
+                                        where: { node: { name: "someName" } }
                                         onCreate: { node: { name: "someName" } }
                                     }
                                 }
@@ -533,7 +533,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
         test("Should not error and should only be able to perform the disconnect nested op when only the DISCONNECT nestedOperation is specified on rel to a type with a unique field", async () => {
             const typeDefs = `#graphql
                 type ${PersonOne} {
-                    name: String
+                    name: String @unique
                 }
 
                 type ${PersonTwo} {
@@ -642,7 +642,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
         test("Should only be able to perform the disconnect and connectOrCreate nested ops when DISCONNECT and CONNECT_OR_CREATE are the only nestedOperations specified", async () => {
             const typeDefs = `#graphql
                 type ${PersonOne} {
-                    name: String
+                    name: String @unique
                 }
 
                 type ${PersonTwo} {
