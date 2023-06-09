@@ -18,9 +18,9 @@
  */
 
 import type * as neo4j from "neo4j-driver";
-import type { LoginPayload, Neo4jDatabase } from "../types";
 import { CONNECT_URL_PARAM_NAME, DATABASE_PARAM_NAME, DEFAULT_DATABASE_NAME } from "../constants";
 import { useStore } from "../store";
+import type { LoginPayload, Neo4jDatabase, Neo4jDatabaseInfo } from "../types";
 
 const isMultiDbUnsupportedError = (e: Error) => {
     if (
@@ -90,16 +90,38 @@ export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[
                     (rec.name || "").toLowerCase() !== "system"
             ) as Neo4jDatabase[];
 
-        await session.close();
         return cleanedDatabases;
     } catch (error) {
-        await session.close();
         if (error instanceof Error && !isMultiDbUnsupportedError(error)) {
             // Only log error if it's not a multi-db unsupported error.
-
             console.error("Error while fetching databases information, e: ", error);
         }
         return undefined;
+    } finally {
+        await session.close();
+    }
+};
+
+export const getDatabaseInformation = async (driver: neo4j.Driver): Promise<Neo4jDatabaseInfo | undefined> => {
+    const session = driver.session();
+
+    try {
+        const result = await session.run(
+            "CALL dbms.components() YIELD versions, edition UNWIND versions AS version RETURN version, edition"
+        );
+        if (!result || !result.records) return undefined;
+
+        const databaseInfo: Neo4jDatabaseInfo[] = result.records.map((rec) => rec.toObject()) as Neo4jDatabaseInfo[];
+        if (!databaseInfo.length) return undefined;
+        return databaseInfo[0];
+    } catch (error) {
+        if (error instanceof Error && !isMultiDbUnsupportedError(error)) {
+            // Only log error if it's not a multi-db unsupported error.
+            console.error("Error while fetching database information, e: ", error);
+        }
+        return undefined;
+    } finally {
+        await session.close();
     }
 };
 
@@ -112,13 +134,12 @@ export const checkDatabaseHasData = async (driver: neo4j.Driver, selectedDatabas
 
         const resultLength = result.records.map((rec) => rec.toObject()).length;
 
-        await session.close();
         return resultLength > 0;
     } catch (error) {
-        await session.close();
-
         console.error("Error while checking if database contains data, e: ", error);
         return false;
+    } finally {
+        await session.close();
     }
 };
 

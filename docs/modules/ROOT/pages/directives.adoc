@@ -61,7 +61,7 @@ Reference: xref::type-definitions/default-values.adoc#type-definitions-default-v
 
 The `@exclude` directive is used on object types to instruct them to be skipped during Query, Mutation and Subscription generation.
 
-Reference: xref::type-definitions/schema-configuration.adoc#type-definitions-schema-configuration-exclude[`@exclude`]
+Reference: xref::type-definitions/schema-configuration/index.adoc#_exclude[`@exclude`]
 
 == `@fulltext`
 
@@ -74,6 +74,12 @@ Reference: xref::type-definitions/indexes-and-constraints.adoc#type-definitions-
 The `@id` directive marks a field as the unique ID for an object type, and allows for autogeneration of IDs.
 
 Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-id[`@id`]
+
+== `@mutation`
+
+This directive instruct the library to limit the operations available in the Mutation type.
+
+Reference: xref::type-definitions/schema-configuration/type-configuration.adoc#_mutation[`@mutation`]
 
 == `@node`
 
@@ -109,6 +115,12 @@ The `@private` directive protects fields which should only be available through 
 
 Reference: xref::ogm/private.adoc[`@private` Directive]
 
+== `@query`
+
+This directive instruct the library to limit the operations available in the Query type.
+
+Reference: xref::type-definitions/schema-configuration/type-configuration.adoc#_query[`@query`]
+
 == `@queryOptions`
 
 The `@queryOptions` is to be used on nodes, where applied will inject values into a query such as the `limit`.
@@ -117,9 +129,11 @@ Reference: xref::type-definitions/default-values.adoc#type-definitions-default-v
 
 == `@readonly`
 
+NOTE: **@readonly** directive is deprecated. Please use the xref::type-definitions/schema-configuration/field-configuration.adoc#_settable[`@settable`] directive.
+
 The `@readonly` directive marks fields as read-only.
 
-Reference: xref::type-definitions/schema-configuration.adoc#type-definitions-schema-configuration-readonly[`@readonly`]
+Reference: xref::type-definitions/schema-configuration/field-configuration.adoc#_readonly[`@readonly`]
 
 == `@relationship`
 
@@ -139,6 +153,24 @@ Can only be used on interfaces, as per its definition:
 directive @relationshipProperties on INTERFACE
 ----
 
+== `@selectable`
+
+The `@selectable` directive controls if the field will be available on queries and aggregations. 
+
+Reference: xref::type-definitions/schema-configuration/field-configuration.adoc#_selectable[`@selectable`]
+
+== `@settable`
+
+The `@settable` directive controls if the input field will be available on creation and update mutations. 
+
+Reference: xref::type-definitions/schema-configuration/field-configuration.adoc#_settable[`@settable`]
+
+== `@subscription`
+
+This directive instruct the library to limit the operations available in the Subscription type.
+
+Reference: xref::type-definitions/schema-configuration/type-configuration.adoc#_subscription[`@subscription`]
+
 == `@timestamp`
 
 The `@timestamp` directive flags fields to be used to store timestamps on create/update events.
@@ -153,18 +185,8 @@ Reference: xref::type-definitions/indexes-and-constraints.adoc#type-definitions-
 
 == `@writeonly`
 
+NOTE: **@writeonly** directive is deprecated. Please use the xref::type-definitions/schema-configuration/field-configuration.adoc#_selectable[`@selectable`] directive.
+
 The `@writeonly` directive marks fields as write-only.
 
-Reference: xref::type-definitions/schema-configuration.adoc#type-definitions-schema-configuration-writeonly[`@writeonly`]
-
-== `@selectable`
-
-The `@selectable` directive controls if the field will be available on queries and aggregations. 
-
-Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-selectable[`@selectable`]
-
-== `@settable`
-
-The `@settable` directive controls if the input field will be available on creation and update mutations. 
-
-Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-settable[`@settable`]
+Reference: xref::type-definitions/schema-configuration/field-configuration.adoc#_writeonly[`@writeonly`]

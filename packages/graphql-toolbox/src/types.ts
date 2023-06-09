@@ -29,6 +29,14 @@ export interface Favorite {
     typeDefs: string;
 }
 
+export interface EditorTab {
+    title: string;
+    query: string;
+    variables: string;
+    response: string;
+    headers: Record<string, string>[];
+}
+
 export interface Neo4jDatabase {
     access: string;
     address: string;
@@ -40,6 +48,11 @@ export interface Neo4jDatabase {
     name: string;
     requestedStatus: string;
     role: string;
+}
+
+export interface Neo4jDatabaseInfo {
+    version: string;
+    edition: string;
 }
 
 export enum ConstraintState {

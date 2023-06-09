@@ -1,0 +1,50 @@
+[[schema-configuration-global-configuration]]
+= Global Configuration
+
+There are cases when what is wanted is to disable a type of operation for the whole type definitions and not on type by type basis.
+For instance, let's say that we want to avoid all the top-level aggregation operations to be generated. To avoid useless repetition, Neo4j GraphQL Library allows using schema extension with `@query`, `@mutation`, and `@subscription` as follows:
+
+[source, graphql, indent=0]
+----
+type Movie { 
+    title: String 
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN) 
+} 
+
+type Actor { 
+    name: String 
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT) 
+}
+extend schema @query(read: true, aggregate: false)
+----
+
+**Query**:
+
+    * `movies`
+    * [.line-through]#`moviesAggregate`#
+    * `moviesConnection`
+    * `actors`
+    * [.line-through]#`actorsAggregate`#
+    * `actorsConnection`
+
+
+**Invalid schema usage**
+
+The same schema configuration directive cannot be applied only to both Schema and Object.
+
+For instance, the following type definitions:
+[source, graphql, indent=0]
+----
+type Movie { 
+    title: String 
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN) 
+} 
+
+type Actor @query(read: false, aggregate: true) { 
+    name: String 
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT) 
+}
+extend schema @query(read: true, aggregate: false)
+----
+
+Will raise the error: `"@query directive already defined at the schema location"`.
