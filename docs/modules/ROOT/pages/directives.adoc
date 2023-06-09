@@ -139,7 +139,7 @@ Reference: xref::type-definitions/schema-configuration/field-configuration.adoc#
 
 The `@relationship` directive is used to configure relationships between object types.
 
-Reference: xref::type-definitions/relationships.adoc[Relationships]
+Reference: xref::type-definitions/relationships.adoc[Relationships], xref::type-definitions/schema-configuration/field-configuration.adoc#_relationship[`@relationship`]
 
 == `@relationshipProperties`
 
