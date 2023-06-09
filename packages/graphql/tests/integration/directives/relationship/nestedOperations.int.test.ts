@@ -61,7 +61,7 @@ describe("@relationhip - nestedOperations", () => {
         let updateMutationWithNestedDelete: string;
         let deleteMutationWithNestedDelete: string;
 
-        beforeEach(async () => {
+        beforeEach(() => {
             createMutationWithNestedCreate = `#graphql
                 mutation {
                     ${Movie.operations.create}(input: { id: "1", actors: { create: { node: { name: "someName" } } } }) {
@@ -805,7 +805,7 @@ describe("@relationhip - nestedOperations", () => {
         let updateMutationWithNestedDelete: string;
         let deleteMutationWithNestedDelete: string;
 
-        beforeEach(async () => {
+        beforeEach(() => {
             PersonOne = new UniqueType("PersonOne");
             PersonTwo = new UniqueType("PersonTwo");
 
@@ -1591,7 +1591,7 @@ describe("@relationhip - nestedOperations", () => {
         let updateMutationWithNestedDelete: string;
         let deleteMutationWithNestedDelete: string;
 
-        beforeEach(async () => {
+        beforeEach(() => {
             PersonOne = new UniqueType("PersonOne");
             PersonTwo = new UniqueType("PersonTwo");
 
