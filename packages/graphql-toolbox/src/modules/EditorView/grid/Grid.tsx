@@ -35,6 +35,8 @@ interface Props {
 export const Grid = ({ queryEditor, resultView, parameterEditor }: Props) => {
     const editorResize = useDragResize({
         direction: "horizontal",
+        sizeThresholdFirst: 270,
+        sizeThresholdSecond: 100,
         storageKey: "editorFlex",
         defaultSizeRelation: 1,
     });

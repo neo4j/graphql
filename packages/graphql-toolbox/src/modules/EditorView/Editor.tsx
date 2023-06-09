@@ -186,6 +186,7 @@ export const Editor = ({ schema }: Props) => {
                                                 <IconButton
                                                     data-test-editor-query-button
                                                     aria-label="Execute query"
+                                                    style={{ height: "1.8rem" }}
                                                     color="primary"
                                                     clean
                                                     // eslint-disable-next-line @typescript-eslint/no-misused-promises

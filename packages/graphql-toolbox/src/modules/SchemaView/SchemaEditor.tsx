@@ -170,8 +170,11 @@ export const SchemaEditor = ({
                 rightButtons={
                     <Button
                         data-test-schema-editor-build-button
-                        style={{ backgroundColor: "yellow" }}
+                        style={{ backgroundColor: tokens.colors.primary[50] }}
+                        aria-label="Build schema"
+                        color="primary"
                         fill="filled"
+                        size="small"
                         onClick={onSubmit}
                         disabled={loading}
                     >
@@ -220,6 +223,7 @@ export const SchemaEditor = ({
                             data-test-schema-editor-favourite-button
                             ref={favoritesTooltipRef}
                             aria-label="Save as favorite"
+                            style={{ height: "1.8rem" }}
                             size="small"
                             color="neutral"
                             onClick={saveAsFavorite}
@@ -231,7 +235,11 @@ export const SchemaEditor = ({
                                 }}
                             />
                         </IconButton>
-                        <SmartTooltip allowedPlacements={["left"]} style={{ width: "8rem" }} ref={favoritesTooltipRef}>
+                        <SmartTooltip
+                            allowedPlacements={["bottom"]}
+                            style={{ width: "8rem" }}
+                            ref={favoritesTooltipRef}
+                        >
                             {"Save as Favorite"}
                         </SmartTooltip>
                     </>

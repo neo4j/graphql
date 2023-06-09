@@ -72,20 +72,20 @@ export const FileName = ({ extension, name, rightButtons, leftButtons, borderRad
     return (
         <div
             className={classNames(
-                "w-full flex justify-between items-center h-12 m-0 pt-3 pb-3 pl-4",
+                "w-full flex justify-between items-center h-12 m-0 py-3 px-4",
                 theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark",
                 borderRadiusTop && "rounded-t-xl"
             )}
         >
             {leftButtons ? (
-                <div className="flex items-center mr-4">{leftButtons}</div>
+                <div className="flex items-center">{leftButtons}</div>
             ) : (
                 <div className={classNames("text-sm", theme.theme === Theme.LIGHT ? "text-black" : "text-white")}>
                     <Icon extension={extension}></Icon> <span className="pl-1">{name}</span>
                     <Ending extension={extension}></Ending>
                 </div>
             )}
-            {rightButtons ? <div className="flex items-center mr-4">{rightButtons}</div> : null}
+            {rightButtons ? <div className="flex items-center">{rightButtons}</div> : null}
         </div>
     );
 };
