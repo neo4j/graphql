@@ -119,15 +119,17 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                     f.directives?.some((x) => ["authentication", "authorization"].includes(x.name.value)) &&
                     !features?.authorization
                 ) {
-                    throw new Error(
-                        "features.authorization must be configured in order to use @authentication and/or @authorization"
+                    console.warn(
+                        "@authentication and/or @authorization detected - please ensure that you either specify authorization settings in features.authorization, or pass a decoded JWT into context.jwt on each request"
                     );
                 }
 
                 return {
                     ...f,
                     arguments: filterInputTypes(f.arguments),
-                    directives: f.directives?.filter((x) => !["auth", "authorization"].includes(x.name.value)),
+                    directives: f.directives?.filter(
+                        (x) => !["auth", "authentication", "authorization"].includes(x.name.value)
+                    ),
                 };
             });
     };
@@ -162,8 +164,8 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                     def.directives?.some((x) => ["authentication", "authorization"].includes(x.name.value)) &&
                     !features?.authorization
                 ) {
-                    throw new Error(
-                        "features.authorization must be configured in order to use @authentication and/or @authorization"
+                    console.warn(
+                        "@authentication and/or @authorization detected - please ensure that you either specify authorization settings in features.authorization, or pass a decoded JWT into context.jwt on each request"
                     );
                 }
 
@@ -171,7 +173,9 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                     ...res,
                     {
                         ...def,
-                        directives: def.directives?.filter((x) => !["auth", "authorization"].includes(x.name.value)),
+                        directives: def.directives?.filter(
+                            (x) => !["auth", "authentication", "authorization"].includes(x.name.value)
+                        ),
                         fields,
                     },
                 ];
