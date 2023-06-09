@@ -30,7 +30,7 @@ describe("Cypher Auth Where with Roles", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
@@ -52,8 +52,8 @@ describe("Cypher Auth Where with Roles", () => {
             extend type User
                 @authorization(
                     validate: [
-                        { where: { node: { id: "$jwt.sub" }, jwtPayload: { roles_INCLUDES: "user" } } }
-                        { where: { jwtPayload: { roles_INCLUDES: "admin" } } }
+                        { where: { node: { id: "$jwt.sub" }, jwt: { roles_INCLUDES: "user" } } }
+                        { where: { jwt: { roles_INCLUDES: "admin" } } }
                     ]
                 )
 
@@ -69,8 +69,8 @@ describe("Cypher Auth Where with Roles", () => {
             extend type Post
                 @authorization(
                     validate: [
-                        { where: { node: { creator: { id: "$jwt.sub" } }, jwtPayload: { roles_INCLUDES: "user" } } }
-                        { where: { jwtPayload: { roles_INCLUDES: "admin" } } }
+                        { where: { node: { creator: { id: "$jwt.sub" } }, jwt: { roles_INCLUDES: "user" } } }
+                        { where: { jwt: { roles_INCLUDES: "admin" } } }
                     ]
                 )
         `;

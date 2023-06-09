@@ -30,14 +30,14 @@ describe("Cypher Auth Roles", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
             type History {
                 url: String
                     @authorization(
-                        validate: [{ operations: [READ], where: { jwtPayload: { roles_INCLUDES: "super-admin" } } }]
+                        validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "super-admin" } } }]
                     )
             }
 
@@ -61,14 +61,14 @@ describe("Cypher Auth Roles", () => {
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
-            extend type User @authorization(validate: [{ where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
+            extend type User @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
 
             extend type Post
                 @authorization(
                     validate: [
                         {
                             operations: [CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, DELETE]
-                            where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
+                            where: { jwt: { roles_INCLUDES: "super-admin" } }
                         }
                     ]
                 )
@@ -77,10 +77,7 @@ describe("Cypher Auth Roles", () => {
                 password: String
                     @authorization(
                         validate: [
-                            {
-                                operations: [READ, CREATE, UPDATE]
-                                where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
-                            }
+                            { operations: [READ, CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "super-admin" } } }
                         ]
                     )
             }
@@ -89,7 +86,7 @@ describe("Cypher Auth Roles", () => {
                 history: [History]
                     @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
                     @authorization(
-                        validate: [{ operations: [READ], where: { jwtPayload: { roles_INCLUDES: "super-admin" } } }]
+                        validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "super-admin" } } }]
                     )
             }
         `;

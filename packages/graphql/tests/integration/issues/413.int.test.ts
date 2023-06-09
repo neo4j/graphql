@@ -43,7 +43,7 @@ describe("413", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = gql`
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 tenant_id: String!
             }
 

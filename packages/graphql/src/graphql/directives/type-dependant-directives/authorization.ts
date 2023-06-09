@@ -69,7 +69,7 @@ const AUTHORIZATION_FILTER_OPERATION = new GraphQLEnumType({
 function createAuthorizationWhere(
     typeDefinitionName: string,
     schema: GraphQLSchema,
-    jwtPayloadWhere: GraphQLInputObjectType
+    jwtWhere: GraphQLInputObjectType
 ): GraphQLInputObjectType {
     /**
      * Both inputWhere and JWTPayloadWhere can be undefined,
@@ -97,8 +97,8 @@ function createAuthorizationWhere(
                           },
                       }
                     : {}),
-                jwtPayload: {
-                    type: jwtPayloadWhere,
+                jwt: {
+                    type: jwtWhere,
                 },
             };
         },
@@ -203,9 +203,9 @@ export function createAuthorizationDefinitions(
     typeDefinitionName: string,
     schema: GraphQLSchema
 ): (TypeDefinitionNode | DirectiveDefinitionNode)[] {
-    const jwtPayloadWhere = new GraphQLInputObjectType({ name: "JWTPayloadWhere", fields: {} });
+    const jwtWhere = new GraphQLInputObjectType({ name: "JWTPayloadWhere", fields: {} });
 
-    const authorizationWhere = createAuthorizationWhere(typeDefinitionName, schema, jwtPayloadWhere);
+    const authorizationWhere = createAuthorizationWhere(typeDefinitionName, schema, jwtWhere);
     const authorizationFilterRule = createAuthorizationFilterRule(typeDefinitionName, authorizationWhere);
     const authorizationValidateRule = createAuthorizationValidateRule(typeDefinitionName, authorizationWhere);
 

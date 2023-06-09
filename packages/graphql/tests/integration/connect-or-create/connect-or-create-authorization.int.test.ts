@@ -46,7 +46,7 @@ describe("connectOrCreate", () => {
             driver = await neo4j.getDriver();
 
             typeDefs = gql`
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
             
@@ -55,7 +55,7 @@ describe("connectOrCreate", () => {
                 genres: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
     
-            type ${typeGenre.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP, CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
+            type ${typeGenre.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP, CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 name: String @unique
             }
             `;
@@ -192,16 +192,16 @@ describe("connectOrCreate", () => {
             driver = await neo4j.getDriver();
 
             typeDefs = gql`
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
             
-            type ${typeMovie.name} @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
+            type ${typeMovie.name} @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 title: String
                 genres: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
     
-            type ${typeGenre.name} @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
+            type ${typeGenre.name} @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 name: String @unique
             }
             `;

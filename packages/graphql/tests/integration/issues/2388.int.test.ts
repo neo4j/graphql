@@ -47,14 +47,14 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
         session = await neo4j.getSession();
 
         const typeDefs = `
-        type JWTPayload @jwtPayload {
+        type JWTPayload @jwt {
             roles: [String!]!
         }
 
         type ${PartAddress}
             @authorization(validate: [
-                { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwtPayload: { roles_INCLUDES: "upstream" } } }
-                { operations: [READ], where: { jwtPayload: { roles_INCLUDES: "downstream" } } }
+                { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwt: { roles_INCLUDES: "upstream" } } }
+                { operations: [READ], where: { jwt: { roles_INCLUDES: "downstream" } } }
             ])
         {
             id: ID! @id
@@ -62,8 +62,8 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
 
         type ${PartUsage}
             @authorization(validate: [
-                { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwtPayload: { roles_INCLUDES: "upstream" } } }
-                { operations: [READ], where: { jwtPayload: { roles_INCLUDES: "downstream" } } }
+                { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwt: { roles_INCLUDES: "upstream" } } }
+                { operations: [READ], where: { jwt: { roles_INCLUDES: "downstream" } } }
             ])
         {
             partAddress: ${PartAddress}
@@ -72,8 +72,8 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
 
         type ${Part}
             @authorization(validate: [
-                { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwtPayload: { roles_INCLUDES: "upstream" } } }
-                { operations: [READ], where: { jwtPayload: { roles_INCLUDES: "downstream" } } }
+                { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwt: { roles_INCLUDES: "upstream" } } }
+                { operations: [READ], where: { jwt: { roles_INCLUDES: "downstream" } } }
             ])
         {
             partUsages: [${PartUsage}!]!

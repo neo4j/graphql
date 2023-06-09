@@ -120,7 +120,7 @@ describe("auth/jwks-endpoint", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]! @jwtClaim(path: "https://myAuthTest\\\\.auth0\\\\.com/jwt/claims.my-auth-roles")
             }
 
@@ -128,7 +128,7 @@ describe("auth/jwks-endpoint", () => {
                 id: ID
             }
 
-            extend type User @authorization(validate: [{ operations: [READ], where: { jwtPayload: { roles_INCLUDES: "standard-user" } } }])
+            extend type User @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "standard-user" } } }])
         `;
 
         const userId = generate({
@@ -190,14 +190,14 @@ describe("auth/jwks-endpoint", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]! @jwtClaim(path: "https://myAuthTest\\\\.auth0\\\\.com/jwt/claims.my-auth-roles")
             }
 
             type User {
                 id: ID
             }
-            extend type User @authorization(validate: [{ operations: [READ], where: { jwtPayload: { roles_INCLUDES: "editor" } } }])
+            extend type User @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "editor" } } }])
         `;
 
         const userId = generate({

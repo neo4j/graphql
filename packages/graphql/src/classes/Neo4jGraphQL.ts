@@ -101,7 +101,7 @@ class Neo4jGraphQL {
     private _relationships?: Relationship[];
     private plugins?: Neo4jGraphQLPlugins;
 
-    private jwtPayloadFieldsMap?: Map<string, string>;
+    private jwtFieldsMap?: Map<string, string>;
 
     private schemaModel?: Neo4jGraphQLSchemaModel;
 
@@ -226,7 +226,7 @@ class Neo4jGraphQL {
             validateDocument({ document: initialDocument, features: this.features });
 
             const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
-            const { jwtPayload } = typesExcludedFromGeneration;
+            const { jwt } = typesExcludedFromGeneration;
 
             const { typeDefs } = makeAugmentedSchema(document, {
                 features: this.features,
@@ -239,7 +239,7 @@ class Neo4jGraphQL {
             validateUserDefinition({
                 userDocument: document,
                 augmentedDocument: typeDefs,
-                jwtPayload: jwtPayload?.type,
+                jwt: jwt?.type,
             });
         } catch (error) {
             if (error instanceof Error) {
@@ -309,7 +309,7 @@ class Neo4jGraphQL {
             schemaModel: this.schemaModel,
             plugins: this.plugins,
             authorizationSettings: this.features?.authorization,
-            jwtPayloadFieldsMap: this.jwtPayloadFieldsMap,
+            jwtFieldsMap: this.jwtFieldsMap,
         };
 
         const resolversComposition = {
@@ -336,7 +336,7 @@ class Neo4jGraphQL {
             schemaModel: this.schemaModel,
             plugins: this.plugins,
             authorizationSettings: this.features?.authorization,
-            jwtPayloadFieldsMap: this.jwtPayloadFieldsMap,
+            jwtFieldsMap: this.jwtFieldsMap,
         };
 
         const resolversComposition = {
@@ -359,9 +359,9 @@ class Neo4jGraphQL {
             }
 
             const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
-            const { jwtPayload } = typesExcludedFromGeneration;
-            if (jwtPayload) {
-                this.jwtPayloadFieldsMap = jwtPayload.jwtPayloadFieldsMap;
+            const { jwt } = typesExcludedFromGeneration;
+            if (jwt) {
+                this.jwtFieldsMap = jwt.jwtFieldsMap;
             }
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
@@ -377,7 +377,7 @@ class Neo4jGraphQL {
                 validateUserDefinition({
                     userDocument: document,
                     augmentedDocument: typeDefs,
-                    jwtPayload: jwtPayload?.type,
+                    jwt: jwt?.type,
                 });
             }
 
@@ -421,9 +421,9 @@ class Neo4jGraphQL {
         }
 
         const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
-        const { jwtPayload } = typesExcludedFromGeneration;
-        if (jwtPayload) {
-            this.jwtPayloadFieldsMap = jwtPayload.jwtPayloadFieldsMap;
+        const { jwt } = typesExcludedFromGeneration;
+        if (jwt) {
+            this.jwtFieldsMap = jwt.jwtFieldsMap;
         }
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
@@ -442,7 +442,7 @@ class Neo4jGraphQL {
                 augmentedDocument: typeDefs,
                 additionalDirectives: directives,
                 additionalTypes: types,
-                jwtPayload: jwtPayload?.type,
+                jwt: jwt?.type,
             });
         }
 

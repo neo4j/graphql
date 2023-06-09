@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
         const typeDefs = gql`
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
 
             type ApplicationVariant implements BusinessObject
-                @authorization(validate: [{ when: [BEFORE], where: { jwtPayload: { roles_INCLUDES: "ALL" } } }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 markets: [Market!]! @relationship(type: "HAS_MARKETS", direction: OUT)
                 id: ID! @id(autogenerate: false)
@@ -57,20 +57,20 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
 
             type NameDetails
-                @authorization(validate: [{ when: [BEFORE], where: { jwtPayload: { roles_INCLUDES: "ALL" } } }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, READ, UPDATE, DELETE]) {
                 fullName: String!
             }
 
             type Market implements BusinessObject
-                @authorization(validate: [{ when: [BEFORE], where: { jwtPayload: { roles_INCLUDES: "ALL" } } }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 id: ID! @id(autogenerate: false)
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", direction: OUT)
             }
 
             type BaseObject
-                @authorization(validate: [{ when: [BEFORE], where: { jwtPayload: { roles_INCLUDES: "ALL" } } }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 id: ID! @id
             }

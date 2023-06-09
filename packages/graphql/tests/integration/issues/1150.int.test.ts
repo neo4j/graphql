@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         driver = await neo4j.getDriver();
 
         const typeDefs = gql`
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             }
 
             extend type Battery
-                @authorization(validate: [{ when: [BEFORE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "admin" } } }])
 
             type CombustionEngine {
                 id: ID! @id(autogenerate: false)
