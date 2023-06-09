@@ -37,7 +37,7 @@ export type AuthorizationWhere = {
     AND?: AuthorizationWhere[];
     OR?: AuthorizationWhere[];
     NOT?: AuthorizationWhere;
-    jwtPayload?: GraphQLWhereArg;
+    jwt?: GraphQLWhereArg;
     node?: GraphQLWhereArg;
 };
 

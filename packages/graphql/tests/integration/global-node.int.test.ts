@@ -564,7 +564,7 @@ describe("Global node resolution", () => {
         const session = await neo4j.getSession();
         const typeDefs = `
 
-        type JWTPayload @jwtPayload {
+        type JWTPayload @jwt {
           roles: [String!]!
         }
 
@@ -573,7 +573,7 @@ describe("Global node resolution", () => {
           name: String!
         }
 
-        extend type ${typeUser.name} @authorization(validate: [{ when: [BEFORE], where: { OR: [{ jwtPayload: { roles_INCLUDES: "admin" } }, { node: { dbId: "$jwt.sub" } }] } }])
+        extend type ${typeUser.name} @authorization(validate: [{ when: [BEFORE], where: { OR: [{ jwt: { roles_INCLUDES: "admin" } }, { node: { dbId: "$jwt.sub" } }] } }])
     `;
 
         const query = `

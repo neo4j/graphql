@@ -21,6 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { getOrCreateCypherVariable } from "../../utils/get-or-create-cypher-variable";
 import type { PointField } from "../../../types";
+import { compileCypher } from "../../../utils/compile-cypher";
 
 export default function createPointElement({
     resolveTree,
@@ -34,7 +35,7 @@ export default function createPointElement({
     const expression = createPointExpression({ resolveTree, field, variable });
 
     const cypherClause = new Cypher.RawCypher((env) => {
-        return expression.getCypher(env);
+        return compileCypher(expression, env);
     });
     const { cypher } = cypherClause.build("p_");
     return new Cypher.RawCypher(`${resolveTree.alias}: (${cypher})`);

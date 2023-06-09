@@ -50,13 +50,7 @@ function makeReplacementFieldNode(fieldType: TypeNode) {
     return astFromValueUntyped(replacementValue);
 }
 
-export function makeReplaceWildcardVisitor({
-    jwtPayload,
-    schema,
-}: {
-    jwtPayload?: ObjectTypeDefinitionNode;
-    schema: GraphQLSchema;
-}) {
+export function makeReplaceWildcardVisitor({ jwt, schema }: { jwt?: ObjectTypeDefinitionNode; schema: GraphQLSchema }) {
     return function ReplaceWildcardValue(): ASTVisitor {
         return {
             ObjectField: {
@@ -70,7 +64,7 @@ export function makeReplaceWildcardVisitor({
                     }
                     const jwtFieldName = fieldValue.substring(5);
                     const jwtField =
-                        jwtPayload?.fields?.find((f) => f.name.value === jwtFieldName) ||
+                        jwt?.fields?.find((f) => f.name.value === jwtFieldName) ||
                         getStandardJwtDefinition(schema)?.fields?.find((f) => f.name.value === jwtFieldName);
                     if (jwtField) {
                         const fieldWithReplacedValue = makeReplacementFieldNode(jwtField.type) || node.value;

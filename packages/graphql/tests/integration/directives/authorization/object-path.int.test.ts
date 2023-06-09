@@ -50,7 +50,7 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 nestedSub: String! @jwtClaim(path: "nested.object.path.sub")
             }
 
@@ -179,7 +179,7 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]! @jwtClaim(path: "https://github\\\\.com/claims.https://github\\\\.com/claims/roles")
             }
 
@@ -187,7 +187,7 @@ describe("auth/object-path", () => {
                 id: ID
             }
 
-            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }])
         `;
 
         const userId = generate({
@@ -239,7 +239,7 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]! 
             }
 
@@ -247,7 +247,7 @@ describe("auth/object-path", () => {
                 id: ID
             }
 
-            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }])
         `;
 
         const userId = generate({

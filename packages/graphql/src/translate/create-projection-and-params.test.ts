@@ -24,6 +24,7 @@ import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import Cypher from "@neo4j/cypher-builder";
 import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
+import { compileCypher } from "../utils/compile-cypher";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -99,7 +100,7 @@ describe("createProjectionAndParams", () => {
             cypherFieldAliasMap: {},
         });
         new Cypher.RawCypher((env) => {
-            expect(result.projection.getCypher(env)).toBe(`{ .title }`);
+            expect(compileCypher(result.projection, env)).toBe(`{ .title }`);
             return "";
         }).build();
 
@@ -177,7 +178,7 @@ describe("createProjectionAndParams", () => {
             cypherFieldAliasMap: {},
         });
         new Cypher.RawCypher((env) => {
-            expect(result.projection.getCypher(env)).toBe(`{ .title }`);
+            expect(compileCypher(result.projection, env)).toBe(`{ .title }`);
             return "";
         }).build();
     });

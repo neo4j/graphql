@@ -45,7 +45,7 @@ describe("@alias directive", () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
         const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
@@ -63,7 +63,7 @@ describe("@alias directive", () => {
 
             type ${AliasDirectiveTestMovie} {
                 title: String! @alias(property: "dbTitle")
-                titleAuth: String @alias(property: "dbTitle") @authorization(validate: [{ where: { jwtPayload: { roles_INCLUDES: "reader" } } }])
+                titleAuth: String @alias(property: "dbTitle") @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "reader" } } }])
                 year: Int
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }

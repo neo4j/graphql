@@ -77,7 +77,7 @@ function getNodes(
                     "query",
                     "mutation",
                     "subscription",
-                    "jwtPayload",
+                    "jwt",
                 ].includes(x.name.value)
         );
         const propagatedDirectives = (definition.directives || []).filter((x) =>

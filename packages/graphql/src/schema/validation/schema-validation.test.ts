@@ -30,93 +30,90 @@ describe("schema validation", () => {
         describe("JWT Payload", () => {
             test("should not returns errors when is correctly used", () => {
                 const jwtType = `
-                    type MyJWT  @jwtPayload {
+                    type MyJWT  @jwt {
                         myClaim: String
                     }
                 `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User @authorization(filter: [{ where: { jwtPayload: { myClaim: "something" } } }]) {
+                    type User @authorization(filter: [{ where: { jwt: { myClaim: "something" } } }]) {
                         id: ID!
                         name: String!
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
             test("should not returns errors when is correctly used together with node", () => {
                 const jwtType = `
-                    type MyJWT  @jwtPayload {
+                    type MyJWT  @jwt {
                         myClaim: String
                     }
                 `;
                 const userDocument = gql`
                     ${jwtType}
                     type User
-                        @authorization(
-                            filter: [{ where: { jwtPayload: { myClaim: "something" }, node: { name: "John" } } }]
-                        ) {
+                        @authorization(filter: [{ where: { jwt: { myClaim: "something" }, node: { name: "John" } } }]) {
                         id: ID!
                         name: String!
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
-            test("should return errors when jwtPayload field is not found", () => {
+            test("should return errors when jwt field is not found", () => {
                 const jwtType = `
-                    type MyJWT  @jwtPayload {
+                    type MyJWT  @jwt {
                         myClaim: String
                     }
                 `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User
-                        @authorization(filter: [{ where: { jwtPayload: { thisClaimDoesNotExist: "something" } } }]) {
+                    type User @authorization(filter: [{ where: { jwt: { thisClaimDoesNotExist: "something" } } }]) {
                         id: ID!
                         name: String!
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                     `"Invalid argument: filter, error: Field \\"thisClaimDoesNotExist\\" is not defined by type \\"JWTPayloadWhere\\"."`
                 );
             });
 
-            test("should not return errors when jwtPayload field is standard", () => {
+            test("should not return errors when jwt field is standard", () => {
                 const jwtType = `
-                    type MyJWT  @jwtPayload {
+                    type MyJWT  @jwt {
                         myClaim: String
                     }
                 `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User @authorization(filter: [{ where: { jwtPayload: { iss: "something" } } }]) {
+                    type User @authorization(filter: [{ where: { jwt: { iss: "something" } } }]) {
                         id: ID!
                         name: String!
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
-            test("should return errors when jwtPayload field is inside node filter", () => {
+            test("should return errors when jwt field is inside node filter", () => {
                 const jwtType = `
-                    type MyJWT  @jwtPayload {
+                    type MyJWT  @jwt {
                         myClaim: String
                     }
                 `;
@@ -127,10 +124,10 @@ describe("schema validation", () => {
                         name: String!
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                     `"Invalid argument: filter, error: Field \\"myClaim\\" is not defined by type \\"UserWhere\\"."`
                 );
@@ -139,29 +136,29 @@ describe("schema validation", () => {
 
         test("should not returns errors when is correctly used with claims path", () => {
             const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     myClaim: String 
                     groups: [String!]! @jwtClaim(path: "applications[0].groups")
                 }
             `;
             const userDocument = gql`
                 ${jwtType}
-                type User @authorization(filter: [{ where: { jwtPayload: { groups_INCLUDES: "something" } } }]) {
+                type User @authorization(filter: [{ where: { jwt: { groups_INCLUDES: "something" } } }]) {
                     id: ID!
                     name: String!
                 }
             `;
-            const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+            const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
 
             const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+            const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
             expect(executeValidate).not.toThrow();
         });
 
         describe("JWT wildcard", () => {
             test("should not returns errors when is correctly used: Int on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwtPayload {
+                    type JWTPayload @jwt {
                         intClaim: Int
                     }
                 `;
@@ -173,9 +170,9 @@ describe("schema validation", () => {
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -195,7 +192,7 @@ describe("schema validation", () => {
 
             test("should not returns errors when is correctly used: List[Int] on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwtPayload {
+                    type JWTPayload @jwt {
                         intClaim: [Int]
                     }
                 `;
@@ -207,15 +204,15 @@ describe("schema validation", () => {
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
             test("should not returns errors when is correctly used: Boolean on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwtPayload {
+                    type JWTPayload @jwt {
                         boolClaim: Boolean
                     }
                 `;
@@ -227,9 +224,9 @@ describe("schema validation", () => {
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -251,7 +248,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: Int compared with List[Int] on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwtPayload {
+                    type JWTPayload @jwt {
                         intClaim: [Int]
                     }
                 `;
@@ -263,9 +260,9 @@ describe("schema validation", () => {
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                     `"Invalid argument: filter, error: Int cannot represent non-integer value: []"`
                 );
@@ -273,7 +270,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: Int compared with String on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwtPayload {
+                    type JWTPayload @jwt {
                         stringClaim: String
                     }
                 `;
@@ -285,9 +282,9 @@ describe("schema validation", () => {
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                     `"Invalid argument: filter, error: Int cannot represent non-integer value: \\"\\""`
                 );
@@ -295,7 +292,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: Int compared with String on FIELD", () => {
                 const jwtType = `
-                    type JWTPayload @jwtPayload {
+                    type JWTPayload @jwt {
                         sub: String
                     }
                 `;
@@ -307,10 +304,10 @@ describe("schema validation", () => {
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                     `"Invalid argument: filter, error: Int cannot represent non-integer value: \\"\\""`
                 );
@@ -318,7 +315,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: String compared with Int on FIELD", () => {
                 const jwtType = `
-                    type JWTPayload @jwtPayload {
+                    type JWTPayload @jwt {
                         intClaim: Int
                     }
                 `;
@@ -330,10 +327,10 @@ describe("schema validation", () => {
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                     `"Invalid argument: filter, error: String cannot represent a non string value: 0"`
                 );
@@ -341,7 +338,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: String compared with Int on FIELD with claim", () => {
                 const jwtType = `
-                    type JWTPayload @jwtPayload {
+                    type JWTPayload @jwt {
                         intClaim: Int @jwtClaim(path: "this.is.a.path")
                     }
                 `;
@@ -353,10 +350,10 @@ describe("schema validation", () => {
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                     `"Invalid argument: filter, error: String cannot represent a non string value: 0"`
                 );
@@ -364,7 +361,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: String compared with Boolean on FIELD", () => {
                 const jwtType = `
-                    type JWTPayload @jwtPayload {
+                    type JWTPayload @jwt {
                         boolClaim: Boolean
                     }
                 `;
@@ -376,10 +373,10 @@ describe("schema validation", () => {
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                     `"Invalid argument: filter, error: String cannot represent a non string value: false"`
                 );
@@ -387,7 +384,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: Boolean compared with String on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwtPayload {
+                    type JWTPayload @jwt {
                         stringClaim: String
                     }
                 `;
@@ -399,9 +396,9 @@ describe("schema validation", () => {
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                     `"Invalid argument: filter, error: Boolean cannot represent a non boolean value: \\"\\""`
                 );
@@ -409,7 +406,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: Boolean compared with Int on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwtPayload {
+                    type JWTPayload @jwt {
                         intClaim: Int
                     }
                 `;
@@ -421,9 +418,9 @@ describe("schema validation", () => {
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
                     `"Invalid argument: filter, error: Boolean cannot represent a non boolean value: 0"`
                 );

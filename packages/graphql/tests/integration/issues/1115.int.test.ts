@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
         driver = await neo4j.getDriver();
 
         const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
@@ -54,8 +54,8 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
             extend type ${childType}
                 @authorization(
                     validate: [
-                        { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwtPayload: { roles_INCLUDES: "upstream" } } }
-                        { operations: [READ], where: { jwtPayload: { roles_INCLUDES: "downstream" } } }
+                        { operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { jwt: { roles_INCLUDES: "upstream" } } }
+                        { operations: [READ], where: { jwt: { roles_INCLUDES: "downstream" } } }
                     ]
                 )
         `;
