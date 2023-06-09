@@ -34,7 +34,8 @@ export enum Extension {
 interface Props {
     name: string;
     extension: Extension;
-    buttons?: any;
+    rightButtons?: React.ReactNode;
+    leftButtons?: React.ReactNode;
     borderRadiusTop?: boolean;
 }
 
@@ -65,7 +66,7 @@ const Ending = (props: { extension: Extension }) => {
     return <span>{content}</span>;
 };
 
-export const FileName = ({ extension, name, buttons, borderRadiusTop = true }: Props) => {
+export const FileName = ({ extension, name, rightButtons, leftButtons, borderRadiusTop = true }: Props) => {
     const theme = useContext(ThemeContext);
 
     return (
@@ -76,11 +77,15 @@ export const FileName = ({ extension, name, buttons, borderRadiusTop = true }: P
                 borderRadiusTop && "rounded-t-xl"
             )}
         >
-            <div className={`${theme.theme === Theme.LIGHT ? "text-black" : "text-white"} text-sm`}>
-                <Icon extension={extension}></Icon> <span className="pl-1">{name}</span>
-                <Ending extension={extension}></Ending>
-            </div>
-            {buttons ? <div className="flex items-center mr-4">{buttons}</div> : null}
+            {leftButtons ? (
+                <div className="flex items-center mr-4">{leftButtons}</div>
+            ) : (
+                <div className={classNames("text-sm", theme.theme === Theme.LIGHT ? "text-black" : "text-white")}>
+                    <Icon extension={extension}></Icon> <span className="pl-1">{name}</span>
+                    <Ending extension={extension}></Ending>
+                </div>
+            )}
+            {rightButtons ? <div className="flex items-center mr-4">{rightButtons}</div> : null}
         </div>
     );
 };

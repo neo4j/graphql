@@ -167,18 +167,19 @@ export const SchemaEditor = ({
             <FileName
                 extension={Extension.GRAPHQL}
                 name="type-definitions"
-                buttons={
+                rightButtons={
+                    <Button
+                        data-test-schema-editor-build-button
+                        style={{ backgroundColor: "yellow" }}
+                        fill="filled"
+                        onClick={onSubmit}
+                        disabled={loading}
+                    >
+                        Build schema
+                    </Button>
+                }
+                leftButtons={
                     <>
-                        <Button
-                            data-test-schema-editor-build-button
-                            style={{ backgroundColor: "yellow" }}
-                            fill="filled"
-                            onClick={onSubmit}
-                            disabled={loading}
-                        >
-                            Build schema
-                        </Button>
-
                         <Button
                             data-test-schema-editor-introspect-button
                             ref={introspectionTooltipRef}
