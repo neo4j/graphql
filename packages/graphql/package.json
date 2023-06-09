@@ -63,7 +63,7 @@
         "@types/randomstring": "1.1.8",
         "@types/semver": "7.5.0",
         "@types/supertest": "2.0.12",
-        "@types/ws": "8.5.4",
+        "@types/ws": "8.5.5",
         "dedent": "0.7.0",
         "graphql-middleware": "6.1.34",
         "graphql-tag": "2.12.6",
