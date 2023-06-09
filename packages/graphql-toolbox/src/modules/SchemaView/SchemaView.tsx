@@ -21,7 +21,8 @@ import { useCallback, useContext, useRef, useState } from "react";
 
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
-import { Banner } from "@neo4j-ndl/react";
+import { Banner, Button } from "@neo4j-ndl/react";
+import { PlayIconOutline } from "@neo4j-ndl/react/icons";
 import type { EditorFromTextArea } from "codemirror";
 import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
@@ -38,7 +39,6 @@ import { ConstraintState } from "../../types";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
-import { ActionElementsBar } from "./ActionElementsBar";
 import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
 import { SchemaEditor } from "./SchemaEditor";
@@ -46,11 +46,10 @@ import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { SchemaSettings } from "./SchemaSettings";
 
 export interface Props {
-    hasSchema: boolean;
-    onChange: (schema: GraphQLSchema) => void;
+    onSchemaChange: (schema: GraphQLSchema) => void;
 }
 
-export const SchemaView = ({ hasSchema, onChange }: Props) => {
+export const SchemaView = ({ onSchemaChange }: Props) => {
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const appSettings = useContext(AppSettingsContext);
@@ -130,7 +129,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 const analyticsResults = rudimentaryTypeDefinitionsAnalytics(typeDefs);
                 tracking.trackBuildSchema({ screen: "type definitions", ...analyticsResults });
 
-                onChange(schema);
+                onSchemaChange(schema);
             } catch (error) {
                 setError(error as GraphQLError);
             } finally {
@@ -203,15 +202,21 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 />
             ) : null}
             <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
-                <div className="h-12 w-full bg-white">
-                    {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-                    <ActionElementsBar hasSchema={hasSchema} loading={loading} onSubmit={onSubmit} />
-                </div>
                 <div className="flex">
                     <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100 overflow-y-auto">
                         <div className="w-full">
                             <SchemaSettings />
                             <hr />
+                            <Button
+                                fill="filled"
+                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                onClick={onSubmit}
+                                disabled={loading}
+                                style={{ backgroundColor: "blue" }}
+                            >
+                                <PlayIconOutline className="h-5 w-5 pr-1" />
+                                Build schema
+                            </Button>
                             <Favorites favorites={favorites} onSelectFavorite={setTypeDefsFromFavorite} />
                         </div>
                     </div>

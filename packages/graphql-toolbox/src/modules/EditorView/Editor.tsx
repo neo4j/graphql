@@ -29,7 +29,6 @@ import { graphql } from "graphql";
 
 import { tracking } from "../../analytics/tracking";
 import { Extension } from "../../components/Filename";
-import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 import { EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
 import { Screen } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
@@ -103,16 +102,6 @@ export const Editor = ({ schema }: Props) => {
     return (
         <div className="w-full h-full flex">
             <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
-                <div className="h-12 w-full bg-white flex items-center px-6">
-                    <div className="justify-start">
-                        <ViewSelectorComponent
-                            key="editor-view-selector"
-                            elementKey="editor-view-selector"
-                            isEditorDisabled={!schema}
-                        />
-                    </div>
-                </div>
-
                 <div className="w-full h-full flex">
                     <div className="h-full w-96 bg-white border-t border-gray-100">
                         <div className="h-content-docs-container p-6">

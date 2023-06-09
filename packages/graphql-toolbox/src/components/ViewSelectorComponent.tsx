@@ -17,37 +17,40 @@
  * limitations under the License.
  */
 
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 
-import { Tab, Tabs } from "@neo4j-ndl/react";
+import { SmartTooltip, Tab, Tabs } from "@neo4j-ndl/react";
 
 import { Screen, ScreenContext } from "../contexts/screen";
 
 interface Props {
-    isEditorDisabled?: boolean;
-    elementKey: string;
-    onClickEditorButton?: () => void;
+    hasSchema: boolean;
 }
 
-export const ViewSelectorComponent = ({ isEditorDisabled = true, elementKey, onClickEditorButton }: Props) => {
+export const ViewSelectorComponent = ({ hasSchema }: Props) => {
     const screen = useContext(ScreenContext);
+    const tooltipRef = useRef<HTMLDivElement | null>(null);
 
     const handleOnScreenChange = (selectedScreen: string) => {
-        if (selectedScreen === Screen.EDITOR.toString()) {
-            onClickEditorButton && onClickEditorButton();
-        }
         const next = selectedScreen === Screen.TYPEDEFS.toString() ? Screen.TYPEDEFS : Screen.EDITOR;
         screen.setScreen(next);
     };
 
     return (
-        <Tabs fill="underline" onChange={handleOnScreenChange} value={screen.view.toString()}>
-            <Tab data-test-view-selector-type-defs tabId={Screen.TYPEDEFS.toString()}>
-                Type definitions
-            </Tab>
-            <Tab data-test-view-selector-editor tabId={Screen.EDITOR.toString()} disabled={isEditorDisabled}>
-                Query editor
-            </Tab>
-        </Tabs>
+        <>
+            <Tabs fill="underline" onChange={handleOnScreenChange} value={screen.view.toString()} ref={tooltipRef}>
+                <Tab data-test-view-selector-type-defs tabId={Screen.TYPEDEFS.toString()}>
+                    Type definitions
+                </Tab>
+                <Tab data-test-view-selector-editor tabId={Screen.EDITOR.toString()} disabled={!hasSchema}>
+                    Query editor
+                </Tab>
+            </Tabs>
+            {!hasSchema ? (
+                <SmartTooltip allowedPlacements={["right"]} style={{ width: "17rem" }} ref={tooltipRef}>
+                    {"Build the schema to use the query editor"}
+                </SmartTooltip>
+            ) : null}
+        </>
     );
 };

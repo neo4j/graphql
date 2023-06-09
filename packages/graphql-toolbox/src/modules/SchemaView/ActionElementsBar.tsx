@@ -23,8 +23,6 @@ import { tokens } from "@neo4j-ndl/base";
 import { Button, SmartTooltip } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
 
-import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
-
 interface Props {
     hasSchema: boolean;
     loading: boolean;
@@ -36,11 +34,11 @@ export const ActionElementsBar = ({ hasSchema, loading, onSubmit }: Props) => {
     return (
         <div className="flex items-center h-12 w-full px-6">
             <div className="justify-start" ref={tooltipRef}>
-                <ViewSelectorComponent
+                {/* <ViewSelectorComponent
                     key="schema-editor-view-selector"
                     elementKey="schema-editor-view-selector"
                     isEditorDisabled={!hasSchema}
-                />
+                /> */}
                 {!hasSchema ? (
                     <SmartTooltip allowedPlacements={["right"]} style={{ width: "14rem" }} ref={tooltipRef}>
                         {"Build the schema to use the editor"}
