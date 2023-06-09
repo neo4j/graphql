@@ -108,7 +108,7 @@ export const Editor = ({ schema }: Props) => {
                         <ViewSelectorComponent
                             key="editor-view-selector"
                             elementKey="editor-view-selector"
-                            isEditorDisabled={!!schema || loading}
+                            isEditorDisabled={!schema}
                         />
                     </div>
                 </div>

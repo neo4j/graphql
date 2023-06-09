@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import { Fragment, useContext } from "react";
+import { useContext } from "react";
 
-import { tokens } from "@neo4j-ndl/base";
-import { ViewSelector, ViewSelectorItem } from "@neo4j-ndl/react";
+import { Tab, Tabs } from "@neo4j-ndl/react";
 
 import { Screen, ScreenContext } from "../contexts/screen";
 
@@ -42,27 +41,13 @@ export const ViewSelectorComponent = ({ isEditorDisabled = true, elementKey, onC
     };
 
     return (
-        <ViewSelector
-            key={`${elementKey}-selector-main`}
-            style={{
-                backgroundColor: tokens.colors.neutral[10],
-            }}
-            onChange={handleOnScreenChange}
-            selected={screen.view.toString()}
-            size="small"
-        >
-            <Fragment key={`${elementKey}-screen-fragment`}>
-                <ViewSelectorItem data-test-view-selector-type-defs value={Screen.TYPEDEFS.toString()}>
-                    Type definitions
-                </ViewSelectorItem>
-                <ViewSelectorItem
-                    data-test-view-selector-editor
-                    value={Screen.EDITOR.toString()}
-                    disabled={isEditorDisabled}
-                >
-                    Query editor
-                </ViewSelectorItem>
-            </Fragment>
-        </ViewSelector>
+        <Tabs fill="underline" onChange={handleOnScreenChange} value={screen.view.toString()}>
+            <Tab data-test-view-selector-type-defs tabId={Screen.TYPEDEFS.toString()}>
+                Type definitions
+            </Tab>
+            <Tab data-test-view-selector-editor tabId={Screen.EDITOR.toString()} disabled={isEditorDisabled}>
+                Query editor
+            </Tab>
+        </Tabs>
     );
 };
