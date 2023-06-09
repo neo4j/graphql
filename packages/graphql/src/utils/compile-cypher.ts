@@ -17,26 +17,19 @@
  * limitations under the License.
  */
 
-import { TextInput } from "@neo4j-ndl/react";
+import type Cypher from "@neo4j/cypher-builder";
 
-export interface Props {
-    name: string;
-    label: string;
-    type: string;
-    testtag: string;
-    value?: string;
-    placeholder?: string;
-    defaultValue?: string;
-    autoComplete?: string;
-    required: boolean;
-    disabled?: boolean;
-    onChange?: (event: React.FormEvent<HTMLInputElement>) => void;
+/** Compiles the cypher of an element, if the resulting cypher is not empty adds a prefix */
+export function compileCypherIfExists(
+    element: Cypher.Expr | Cypher.Clause | undefined,
+    env: Cypher.Environment
+): string {
+    if (!element) return "";
+    return compileCypher(element, env);
 }
 
-export const FormInput = (props: Props) => {
-    const options = {};
-    if (props.testtag) {
-        options[props.testtag] = true;
-    }
-    return <TextInput className="w-full" size="large" aria-label={props.name} fluid {...props} {...options} />;
-};
+/** Compiles the cypher of an element, if the resulting cypher is not empty adds a prefix */
+export function compileCypher(element: Cypher.Expr | Cypher.Clause, env: Cypher.Environment): string {
+    if (!element) throw new Error("Cypher element is not defined");
+    return (element as any).getCypher(env);
+}

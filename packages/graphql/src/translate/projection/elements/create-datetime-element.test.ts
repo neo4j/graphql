@@ -21,6 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { TemporalField } from "../../../types";
 import { createDatetimeElement } from "./create-datetime-element";
+import { compileCypher } from "../../../utils/compile-cypher";
 
 describe("createDatetimeElement", () => {
     test("returns projection element for single datetime value", () => {
@@ -44,7 +45,7 @@ describe("createDatetimeElement", () => {
             variable: new Cypher.NamedVariable("this"),
         });
         new Cypher.RawCypher((env) => {
-            expect(element.getCypher(env)).toBe(
+            expect(compileCypher(element, env)).toBe(
                 'datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time")'
             );
             return "";
@@ -73,7 +74,7 @@ describe("createDatetimeElement", () => {
             variable: new Cypher.NamedVariable("this"),
         });
         new Cypher.RawCypher((env) => {
-            expect(element.getCypher(env)).toBe(
+            expect(compileCypher(element, env)).toBe(
                 'datetimes: [ dt in this.datetimes | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]'
             );
             return "";

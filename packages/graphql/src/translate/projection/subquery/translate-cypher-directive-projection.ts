@@ -25,6 +25,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ProjectionMeta } from "../../create-projection-and-params";
 import createProjectionAndParams from "../../create-projection-and-params";
 import { CompositeEntity } from "../../../schema-model/entity/CompositeEntity";
+import { compileCypher } from "../../../utils/compile-cypher";
 
 interface Res {
     projection: Cypher.Expr[];
@@ -83,7 +84,7 @@ export function translateCypherDirectiveProjection({
         });
 
         projectionExpr = new Cypher.RawCypher((env) => {
-            return `${resultVariable.getCypher(env)} ${str.getCypher(env)}`;
+            return `${compileCypher(resultVariable, env)} ${compileCypher(str, env)}`;
         });
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
@@ -132,7 +133,7 @@ export function translateCypherDirectiveProjection({
                         subqueries.push(withAndSubqueries);
                     }
                     const projection = new Cypher.RawCypher(
-                        (env) => `{ __resolveType: "${refNode.name}", ${str.getCypher(env).replace("{", "")}`
+                        (env) => `{ __resolveType: "${refNode.name}", ${compileCypher(str, env).replace("{", "")}`
                     );
                     unionProjections.push({
                         projection,
@@ -155,7 +156,11 @@ export function translateCypherDirectiveProjection({
         for (const { projection, predicate } of unionProjections) {
             projectionExpr
                 .when(predicate)
-                .then(new Cypher.RawCypher((env) => `${resultVariable.getCypher(env)} ${projection.getCypher(env)}`));
+                .then(
+                    new Cypher.RawCypher(
+                        (env) => `${compileCypher(resultVariable, env)} ${compileCypher(projection, env)}`
+                    )
+                );
         }
     }
 
@@ -212,7 +217,9 @@ export function translateCypherDirectiveProjection({
         res.subqueries.push(callSt);
     }
     const aliasVar = new Cypher.NamedVariable(alias);
-    res.projection.push(new Cypher.RawCypher((env) => `${aliasVar.getCypher(env)}: ${resultVariable.getCypher(env)}`));
+    res.projection.push(
+        new Cypher.RawCypher((env) => `${compileCypher(aliasVar, env)}: ${compileCypher(resultVariable, env)}`)
+    );
     return res;
 }
 
@@ -228,7 +235,7 @@ function createCypherDirectiveApocProcedure({
     context: Context;
     nodeRef: Cypher.Node;
     extraArgs: Record<string, any>;
-}): Cypher.apoc.RunFirstColumn {
+}): Cypher.Function {
     const rawApocParams = Object.entries(extraArgs);
 
     const apocParams: Record<string, Cypher.Param> = rawApocParams.reduce((acc, [key, value]) => {
@@ -242,12 +249,10 @@ function createCypherDirectiveApocProcedure({
         ...(context.auth && { auth: new Cypher.NamedParam("auth") }),
         ...(Boolean(context.cypherParams) && { cypherParams: new Cypher.NamedParam("cypherParams") }),
     });
-    const apocClause = new Cypher.apoc.RunFirstColumn(
-        cypherField.statement,
-        apocParamsMap,
-        Boolean(expectMultipleValues)
-    );
-    return apocClause;
+    if (expectMultipleValues) {
+        return Cypher.apoc.cypher.runFirstColumnMany(cypherField.statement, apocParamsMap);
+    }
+    return Cypher.apoc.cypher.runFirstColumnSingle(cypherField.statement, apocParamsMap);
 }
 
 function createCypherDirectiveSubquery({

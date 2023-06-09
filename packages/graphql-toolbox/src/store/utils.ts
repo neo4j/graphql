@@ -17,16 +17,10 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
-
-/** Compiles the cypher of an element, if the resulting cypher is not empty adds a prefix */
-export function compileCypherIfExists(
-    element: any,
-    env: Cypher.Environment,
-    { prefix = "", suffix = "" }: { prefix?: string; suffix?: string } = {}
-): string {
-    if (!element) return "";
-    const cypher = element.getCypher(env);
-    if (!cypher) return "";
-    return `${prefix}${cypher}${suffix}`;
-}
+export const getQueryOrMutationName = (query: string): string => {
+    if (!query) return "Unnamed";
+    const myRegexp = new RegExp("(query|mutation) (.*?|$)[ {(]", "g");
+    const matches = myRegexp.exec(query);
+    if (!matches || matches?.length < 3) return "Unnamed";
+    return matches[2].trim() || "Unnamed";
+};

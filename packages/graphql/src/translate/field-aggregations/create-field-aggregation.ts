@@ -209,7 +209,7 @@ function getAggregationSubquery({
     fieldRef: Cypher.Variable;
     type: AggregationType | undefined;
     targetAlias: Cypher.Node | Cypher.Relationship;
-}): Cypher.RawCypher {
+}): Cypher.Clause {
     switch (type) {
         case AggregationType.String:
         case AggregationType.Id:

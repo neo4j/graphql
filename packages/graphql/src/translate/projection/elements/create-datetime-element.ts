@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { TemporalField } from "../../../types";
+import { compileCypher } from "../../../utils/compile-cypher";
 
 /** Deprecated in favor of createDatetimeExpression */
 export function createDatetimeElement({
@@ -36,9 +37,11 @@ export function createDatetimeElement({
     const dbFieldName = field.dbPropertyName || resolveTree.name;
     return new Cypher.RawCypher((env) =>
         field.typeMeta.array
-            ? `${resolveTree.alias}: [ dt in ${variable.getCypher(env)}.${dbFieldName} | ${wrapApocConvertDate("dt")} ]`
+            ? `${resolveTree.alias}: [ dt in ${compileCypher(variable, env)}.${dbFieldName} | ${wrapApocConvertDate(
+                  "dt"
+              )} ]`
             : `${resolveTree.alias}: ${wrapApocConvertDate(
-                  valueOverride || `${variable.getCypher(env)}.${dbFieldName}`
+                  valueOverride || `${compileCypher(variable, env)}.${dbFieldName}`
               )}`
     );
 }

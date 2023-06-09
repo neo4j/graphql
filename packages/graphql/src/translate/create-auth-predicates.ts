@@ -25,6 +25,7 @@ import type { AuthRule } from "../types/deprecated/auth/auth-rule";
 import type { BaseAuthRule } from "../types/deprecated/auth/base-auth-rule";
 import { createSubPredicate } from "./deprecated/auth/create-sub-predicate";
 import type { Rule } from "./deprecated/auth/types";
+import { compileCypher } from "../utils/compile-cypher";
 
 export function createAuthPredicates({
     entity,
@@ -77,7 +78,7 @@ export function createAuthPredicates({
     if (!orPredicates) return undefined;
 
     const authPredicate = new Cypher.RawCypher((env: Cypher.Environment) => {
-        return orPredicates.getCypher(env);
+        return compileCypher(orPredicates, env);
     });
     return authPredicate;
 }
