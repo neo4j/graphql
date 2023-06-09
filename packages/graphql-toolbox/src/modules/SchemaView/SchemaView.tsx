@@ -62,6 +62,8 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const favorites = useStore((store) => store.favorites);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
+    // TODO: have a hook/event when auth.selectedDatabaseName changes. On that event, clear the codemirror content
+
     const formatTheCode = (): void => {
         if (!refForEditorMirror.current) return;
         formatCode(refForEditorMirror.current, ParserOptions.GRAPH_QL);
