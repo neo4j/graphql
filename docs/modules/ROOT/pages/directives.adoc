@@ -77,7 +77,7 @@ Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogener
 
 == `@mutation`
 
-This directive instruct the library to limit the operations available in the Mutation type.
+This directive is used to limit the availability of Mutation operations in the library.
 
 Reference: xref::type-definitions/schema-configuration/type-configuration.adoc#_mutation[`@mutation`]
 
@@ -117,7 +117,7 @@ Reference: xref::ogm/private.adoc[`@private` Directive]
 
 == `@query`
 
-This directive instruct the library to limit the operations available in the Query type.
+This directive is used to limit the availability of query operations in the library.
 
 Reference: xref::type-definitions/schema-configuration/type-configuration.adoc#_query[`@query`]
 
@@ -127,9 +127,9 @@ The `@queryOptions` is to be used on nodes, where applied will inject values int
 
 Reference: xref::type-definitions/default-values.adoc#type-definitions-default-values-queryoptions[`@queryOptions`]
 
-== `@readonly`
+== `@readonly` label:deprecated[]
 
-NOTE: **@readonly** directive is deprecated. Please use the xref::type-definitions/schema-configuration/field-configuration.adoc#_settable[`@settable`] directive.
+This directive is deprecated. See the xref::type-definitions/schema-configuration/field-configuration.adoc#_settable[`@settable`] directive.
 
 The `@readonly` directive marks fields as read-only.
 
@@ -155,19 +155,19 @@ directive @relationshipProperties on INTERFACE
 
 == `@selectable`
 
-The `@selectable` directive controls if the field will be available on queries and aggregations. 
+The `@selectable` directive sets the availability of fields on queries and aggregations. 
 
 Reference: xref::type-definitions/schema-configuration/field-configuration.adoc#_selectable[`@selectable`]
 
 == `@settable`
 
-The `@settable` directive controls if the input field will be available on creation and update mutations. 
+The `@settable` directive sets the availability of the input field on creation and update mutations. 
 
 Reference: xref::type-definitions/schema-configuration/field-configuration.adoc#_settable[`@settable`]
 
 == `@subscription`
 
-This directive instruct the library to limit the operations available in the Subscription type.
+This directive is used to limit Subscription operations in the library.
 
 Reference: xref::type-definitions/schema-configuration/type-configuration.adoc#_subscription[`@subscription`]
 
