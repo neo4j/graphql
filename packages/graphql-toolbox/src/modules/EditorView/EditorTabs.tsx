@@ -44,7 +44,7 @@ export const EditorTabs = () => {
             {useStore.getState().tabs.length ? (
                 <div
                     className={classNames(
-                        "w-full overflow-auto whitespace-nowrap rounded-t-xl border-b pt-2",
+                        "w-full overflow-auto whitespace-nowrap rounded-t-xl border-b pt-2 z-0",
                         theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"
                     )}
                 >

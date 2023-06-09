@@ -52,8 +52,8 @@ export const ViewSelector = ({ hasSchema }: Props) => {
                 </Tab>
             </Tabs>
             {!hasSchema ? (
-                <SmartTooltip allowedPlacements={["right"]} style={{ width: "17rem" }} ref={tooltipRef}>
-                    {"Build the schema to use the query editor"}
+                <SmartTooltip allowedPlacements={["right"]} style={{ width: "16rem" }} ref={tooltipRef}>
+                    {"Build the schema to use the Query editor"}
                 </SmartTooltip>
             ) : null}
         </>
