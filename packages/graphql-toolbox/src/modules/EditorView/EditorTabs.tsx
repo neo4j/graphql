@@ -42,18 +42,16 @@ export const EditorTabs = () => {
     return (
         <>
             {useStore.getState().tabs.length ? (
-                <div
-                    className={classNames(
-                        "w-full overflow-auto whitespace-nowrap rounded-t-xl border-b pt-2 z-0",
-                        theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"
-                    )}
-                >
+                <>
                     <Tabs
                         size="small"
                         fill="underline"
                         value={useStore.getState().activeTabIndex.toString()}
                         onChange={handleTabsChange}
-                        className="px-1 mb-[0.1rem]"
+                        className={classNames(
+                            "w-full h-12 pt-2 px-1 mb-[0.1rem] overflow-x-auto whitespace-nowrap rounded-t-xl border-b z-0",
+                            theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"
+                        )}
                     >
                         {useStore.getState().tabs.map((tab, idx) => {
                             return (
@@ -93,7 +91,7 @@ export const EditorTabs = () => {
                             />
                         </Tab>
                     </Tabs>
-                </div>
+                </>
             ) : null}
         </>
     );
