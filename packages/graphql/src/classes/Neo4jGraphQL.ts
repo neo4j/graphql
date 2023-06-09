@@ -308,6 +308,7 @@ class Neo4jGraphQL {
     }
 
     private composeSchema(schema: GraphQLSchema): GraphQLSchema {
+        // TODO: Keeping this in our back pocket - if we want to add native support for middleware to the library
         // if (this.middlewares) {
         //     schema = applyMiddleware(schema, ...this.middlewares);
         // }
@@ -337,6 +338,10 @@ class Neo4jGraphQL {
             const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
             const { jwtPayload } = typesExcludedFromGeneration;
 
+            if (!this.schemaModel) {
+                this.schemaModel = generateModel(document);
+            }
+
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 enableRegex: this.config?.enableRegex,
@@ -353,10 +358,6 @@ class Neo4jGraphQL {
             this._nodes = nodes;
             this._relationships = relationships;
 
-            if (!this.schemaModel) {
-                this.schemaModel = generateModel(document);
-            }
-
             const schema = makeExecutableSchema({
                 ...this.schemaDefinition,
                 typeDefs,
@@ -368,6 +369,7 @@ class Neo4jGraphQL {
     }
 
     private async generateSubgraphSchema(): Promise<GraphQLSchema> {
+        // Import only when needed to avoid issues if GraphQL 15 being used
         const { Subgraph } = await import("./Subgraph");
 
         const initialDocument = this.getDocument(this.schemaDefinition.typeDefs);
@@ -383,6 +385,10 @@ class Neo4jGraphQL {
 
         const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
         const { jwtPayload } = typesExcludedFromGeneration;
+
+        if (!this.schemaModel) {
+            this.schemaModel = generateModel(document);
+        }
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
@@ -406,10 +412,6 @@ class Neo4jGraphQL {
 
         this._nodes = nodes;
         this._relationships = relationships;
-
-        if (!this.schemaModel) {
-            this.schemaModel = generateModel(document);
-        }
 
         // TODO: Move into makeAugmentedSchema, add resolvers alongside other resolvers
         const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, this.schemaModel);
