@@ -38,11 +38,16 @@ export const ViewSelectorComponent = ({ hasSchema }: Props) => {
 
     return (
         <>
-            <Tabs fill="underline" onChange={handleOnScreenChange} value={screen.view.toString()} ref={tooltipRef}>
+            <Tabs fill="underline" onChange={handleOnScreenChange} value={screen.view.toString()}>
                 <Tab data-test-view-selector-type-defs tabId={Screen.TYPEDEFS.toString()}>
                     Type definitions
                 </Tab>
-                <Tab data-test-view-selector-editor tabId={Screen.EDITOR.toString()} disabled={!hasSchema}>
+                <Tab
+                    data-test-view-selector-editor
+                    tabId={Screen.EDITOR.toString()}
+                    disabled={!hasSchema}
+                    ref={tooltipRef}
+                >
                     Query editor
                 </Tab>
             </Tabs>
