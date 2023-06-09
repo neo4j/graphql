@@ -2,21 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* util classes */
-.whitespace-break-spaces {
-    white-space: break-spaces;
-}
+/* ----------------------*/
 
-.pt-02 {
-    padding-top: 0.2rem;
-}
+/* Login window */
 
-.mb-01 {
-    margin-bottom: 0.1rem;
-}
-
-.pos-absolute {
-    position: absolute !important;
+.login-window-bg {
+    background-image: url('./assets/graphic-bottom-left.svg'), url('./assets/graphic-top-right.svg');
+    background-position: left bottom, right top;
+    background-size: 120px 200px;
+    background-repeat: no-repeat, no-repeat;
 }
 
 /* ----------------------*/
@@ -189,6 +183,17 @@ li.CodeMirror-hint-active {
     .canny-indication-wrapper {
         padding-bottom: 0.25rem;
     }
+}
+
+/* ----------------------*/
+
+/* util classes */
+.whitespace-break-spaces {
+    white-space: break-spaces;
+}
+
+.pos-absolute {
+    position: absolute !important;
 }
 
 /* ----------------------*/
