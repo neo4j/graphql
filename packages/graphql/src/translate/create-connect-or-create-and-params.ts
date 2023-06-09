@@ -32,6 +32,7 @@ import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import { createAuthorizationAfterPredicate } from "./authorization/create-authorization-after-predicate";
+import { compileCypher } from "../utils/compile-cypher";
 
 type CreateOrConnectInput = {
     where?: {
@@ -307,9 +308,9 @@ function mergeStatement({
         withClause = new Cypher.RawCypher((env: Cypher.Environment) => {
             const eventWithMetaStr = createConnectionEventMeta({
                 event: "create_relationship",
-                relVariable: relationship.getCypher(env),
-                fromVariable: fromNode.getCypher(env),
-                toVariable: toNode.getCypher(env),
+                relVariable: compileCypher(relationship, env),
+                fromVariable: compileCypher(fromNode, env),
+                toVariable: compileCypher(toNode, env),
                 typename: relationField.type,
                 fromTypename,
                 toTypename,

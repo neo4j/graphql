@@ -37,6 +37,7 @@ import { createAuthPredicates } from "../../create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { createAuthorizationAfterPredicate } from "../../authorization/create-authorization-after-predicate";
+import { compileCypher } from "../../../utils/compile-cypher";
 
 type UnwindCreateScopeDefinition = {
     unwindVar: Cypher.Variable;
@@ -353,9 +354,14 @@ export class UnwindCreateVisitor implements Visitor {
                 if (fieldsPredicates.length) {
                     const predicate = Cypher.not(Cypher.and(...fieldsPredicates));
 
-                    const fieldsAuth = Cypher.concat(
-                        new Cypher.With("*").where(Cypher.apoc.util.validatePredicate(predicate, AUTH_FORBIDDEN_ERROR))
-                    ).getCypher(env);
+                    const fieldsAuth = compileCypher(
+                        Cypher.concat(
+                            new Cypher.With("*").where(
+                                Cypher.apoc.util.validatePredicate(predicate, AUTH_FORBIDDEN_ERROR)
+                            )
+                        ),
+                        env
+                    );
 
                     const fieldsPredicateParams = fieldsPredicates.reduce((prev, next) => {
                         return {

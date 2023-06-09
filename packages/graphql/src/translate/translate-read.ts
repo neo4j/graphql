@@ -28,6 +28,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { Measurement, addMeasurementField } from "../utils/add-measurement-field";
+import { compileCypher } from "../utils/compile-cypher";
 
 export function translateRead(
     {
@@ -139,7 +140,7 @@ export function translateRead(
     }
 
     const projectionExpression = new Cypher.RawCypher((env) => {
-        return [`${varName} ${projection.projection.getCypher(env)}`, projection.params];
+        return [`${varName} ${compileCypher(projection.projection, env)}`, projection.params];
     });
 
     let returnClause = new Cypher.Return([projectionExpression, varName]);

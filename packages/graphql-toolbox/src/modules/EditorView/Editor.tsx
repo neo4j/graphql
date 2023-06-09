@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
 
 import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, Switch } from "@neo4j-ndl/react";
@@ -26,47 +26,34 @@ import type { EditorFromTextArea } from "codemirror";
 import GraphiQLExplorer from "graphiql-explorer";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import debounce from "lodash.debounce";
 
 import { tracking } from "../../analytics/tracking";
 import { Extension } from "../../components/Filename";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
-import { DEFAULT_QUERY, EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
+import { EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
 import { Screen } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
 import { useStore } from "../../store";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
+import { EditorTabs } from "./EditorTabs";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import { Grid } from "./grid/Grid";
 import { JSONEditor } from "./JSONEditor";
 import { calculateQueryComplexity, formatCode, ParserOptions, safeParse } from "./utils";
-
-const DEBOUNCE_TIMEOUT = 500;
 
 export interface Props {
     schema?: GraphQLSchema;
 }
 
 export const Editor = ({ schema }: Props) => {
+    const store = useStore();
     const settings = useContext(SettingsContext);
-    const [initialLoad, setInitialLoad] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [query, setQuery] = useState<string>("");
-    const [variableValues, setVariableValues] = useState<string>("");
-    const [initVariableValues, setInitVariableValues] = useState<string>("");
-    const [output, setOutput] = useState<string>("");
     const [showDocs, setShowDocs] = useState<boolean>(false);
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
-
-    const debouncedSave = useCallback(
-        debounce((nextState) => {
-            useStore.setState(nextState);
-        }, DEBOUNCE_TIMEOUT),
-        []
-    );
 
     const formatTheCode = (): void => {
         if (!refForQueryEditorMirror.current) return;
@@ -88,9 +75,9 @@ export const Editor = ({ schema }: Props) => {
             try {
                 const response = await graphql({
                     schema: schema,
-                    source: override || query || "",
+                    source: override || useStore.getState().getActiveTab().query || "",
                     contextValue: {},
-                    variableValues: safeParse(variableValues, {}),
+                    variableValues: safeParse(useStore.getState().getActiveTab().variables, {}),
                 });
 
                 result = JSON.stringify(response);
@@ -98,25 +85,20 @@ export const Editor = ({ schema }: Props) => {
                 result = JSON.stringify({ errors: [error] });
             }
 
-            const complexity = calculateQueryComplexity(schema, override || query || "", variableValues);
+            const complexity = calculateQueryComplexity(
+                schema,
+                override || useStore.getState().getActiveTab().query || "",
+                useStore.getState().getActiveTab().variables
+            );
             tracking.trackExecuteQuery({ screen: "query editor", queryComplexity: complexity });
 
             setTimeout(() => {
-                setOutput(result);
+                store.updateResponse(result, useStore.getState().activeTabIndex);
                 setLoading(false);
             }, 500);
         },
-        [query, setOutput, setLoading, variableValues]
+        [setLoading]
     );
-
-    useEffect(() => {
-        const initQuery = useStore.getState().lastQuery || DEFAULT_QUERY;
-        const initParams = useStore.getState().lastParams || "";
-        setInitialLoad(true);
-        setQuery(initQuery);
-        setVariableValues(initParams);
-        setInitVariableValues(initParams);
-    }, []);
 
     return (
         <div className="w-full h-full flex">
@@ -134,7 +116,7 @@ export const Editor = ({ schema }: Props) => {
                 <div className="w-full h-full flex">
                     <div className="h-full w-96 bg-white border-t border-gray-100">
                         <div className="h-content-docs-container p-6">
-                            {schema && initialLoad ? (
+                            {schema ? (
                                 <>
                                     <div className="flex justify-end">
                                         <Switch
@@ -142,15 +124,14 @@ export const Editor = ({ schema }: Props) => {
                                             label="Docs"
                                             checked={showDocs}
                                             onChange={handleShowDocs}
-                                            content={undefined}
-                                            rel={undefined}
-                                            rev={undefined}
                                         />
                                     </div>
                                     <GraphiQLExplorer
                                         schema={schema}
-                                        query={query}
-                                        onEdit={setQuery}
+                                        query={useStore.getState().getActiveTab().query}
+                                        onEdit={(query: string) => {
+                                            store.updateQuery(query, useStore.getState().activeTabIndex);
+                                        }}
                                         onRunOperation={onSubmit}
                                         explorerIsOpen={true}
                                         styles={{
@@ -186,20 +167,20 @@ export const Editor = ({ schema }: Props) => {
                         </div>
                     ) : null}
 
-                    <div className="w-content-container h-content-container-extended flex justify-start p-4">
+                    <div className="w-content-container h-content-container-extended flex flex-col justify-start p-4">
+                        <EditorTabs />
                         <Grid
                             queryEditor={
                                 schema ? (
                                     <GraphQLQueryEditor
                                         schema={schema}
-                                        query={query}
                                         loading={loading}
                                         mirrorRef={refForQueryEditorMirror}
-                                        onChangeQuery={(query) => {
-                                            setQuery(query);
-                                            debouncedSave({ lastQuery: query });
-                                        }}
                                         executeQuery={onSubmit}
+                                        query={useStore.getState().getActiveTab().query}
+                                        onChangeQuery={(query) => {
+                                            store.updateQuery(query, useStore.getState().activeTabIndex);
+                                        }}
                                         buttons={
                                             <>
                                                 <Button
@@ -240,10 +221,9 @@ export const Editor = ({ schema }: Props) => {
                                     loading={loading}
                                     fileExtension={Extension.JSON}
                                     readonly={false}
-                                    initialValue={initVariableValues}
+                                    initialValue={useStore.getState().getActiveTab().variables}
                                     onChange={(params) => {
-                                        setVariableValues(params);
-                                        debouncedSave({ lastParams: params });
+                                        store.updateVariables(params, useStore.getState().activeTabIndex);
                                     }}
                                 />
                             }
@@ -254,8 +234,8 @@ export const Editor = ({ schema }: Props) => {
                                     loading={loading}
                                     fileExtension={Extension.JSON}
                                     readonly={true}
-                                    json={output}
-                                    onChange={setOutput}
+                                    borderRadiusTop={false}
+                                    json={useStore.getState().getActiveTab().response}
                                 />
                             }
                         />
