@@ -27,6 +27,7 @@ import { createEventMeta } from "./subscriptions/create-event-meta";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { Measurement, addMeasurementField } from "../utils/add-measurement-field";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 export function translateDelete({ context, node }: { context: Context; node: Node }): Cypher.CypherResult {
     const p1 = performance.now();
@@ -86,6 +87,8 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
                 : {}),
             ...deleteAndParams[1],
         };
+    } else {
+        checkAuthentication({ context, node, targetOperations: ["DELETE"] });
     }
 
     if (context.subscriptionsEnabled && !deleteInput) {

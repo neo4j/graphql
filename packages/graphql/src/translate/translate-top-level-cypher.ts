@@ -28,6 +28,7 @@ import createAuthParam from "./create-auth-param";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
 import { Neo4jGraphQLError } from "../classes";
 import { filterByValues } from "./authorization/utils/filter-by-values";
+import { applyAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
 
 export function translateTopLevelCypher({
@@ -54,8 +55,8 @@ export function translateTopLevelCypher({
         throw new Error(`Failed to find field ${field.fieldName} on operation ${type}.`);
     }
     const annotation = operationField.annotations.authentication;
-    if (annotation && !context.authorization.isAuthenticated) {
-        throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+    if (annotation) {
+        applyAuthentication({ context, annotation });
     }
     const authorizationAnnotation = operationField.annotations.authorization;
     if (authorizationAnnotation) {

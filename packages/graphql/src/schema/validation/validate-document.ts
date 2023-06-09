@@ -127,7 +127,9 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                 return {
                     ...f,
                     arguments: filterInputTypes(f.arguments),
-                    directives: f.directives?.filter((x) => !["auth", "authorization"].includes(x.name.value)),
+                    directives: f.directives?.filter(
+                        (x) => !["auth", "authorization", "authentication"].includes(x.name.value)
+                    ),
                 };
             });
     };
@@ -171,7 +173,9 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                     ...res,
                     {
                         ...def,
-                        directives: def.directives?.filter((x) => !["auth", "authorization"].includes(x.name.value)),
+                        directives: def.directives?.filter(
+                            (x) => !["auth", "authorization", "authentication"].includes(x.name.value)
+                        ),
                         fields,
                     },
                 ];

@@ -45,4 +45,3 @@ export { queryDirective } from "./query";
 export { subscriptionDirective } from "./subscription";
 export { jwt } from "./jwt-payload";
 export { jwtClaim } from "./jwt-claim";
-export { authentication } from "./authentication";

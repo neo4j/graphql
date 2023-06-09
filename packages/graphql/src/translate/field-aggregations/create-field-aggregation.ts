@@ -30,6 +30,7 @@ import { upperFirst } from "../../utils/upper-first";
 import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../where/create-where-predicate";
+import { checkAuthentication } from "../authorization/check-authentication";
 
 type AggregationFields = {
     count?: ResolveTree;
@@ -61,6 +62,8 @@ export function createFieldAggregation({
     const referenceRelation = getReferenceRelation(context, connectionField);
 
     if (!referenceNode || !referenceRelation) return undefined;
+
+    checkAuthentication({ context, node: referenceNode, targetOperations: ["READ"] });
 
     const sourceRef = nodeVar;
     const targetRef = new Cypher.Node({ labels: referenceNode.getLabels(context) });
