@@ -53,7 +53,7 @@ export const EditorTabs = () => {
                         fill="underline"
                         value={useStore.getState().activeTabIndex.toString()}
                         onChange={handleTabsChange}
-                        className="mb-01"
+                        className="mb-[0.1rem]"
                     >
                         {useStore.getState().tabs.map((tab, idx) => {
                             return (
