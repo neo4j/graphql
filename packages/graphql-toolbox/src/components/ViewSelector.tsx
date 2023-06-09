@@ -27,7 +27,7 @@ interface Props {
     hasSchema: boolean;
 }
 
-export const ViewSelectorComponent = ({ hasSchema }: Props) => {
+export const ViewSelector = ({ hasSchema }: Props) => {
     const screen = useContext(ScreenContext);
     const tooltipRef = useRef<HTMLDivElement | null>(null);
 

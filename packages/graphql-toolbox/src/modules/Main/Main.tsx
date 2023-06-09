@@ -25,7 +25,7 @@ import type { GraphQLSchema } from "graphql";
 import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
 import { tracking } from "../../analytics/tracking";
 import { CannySDK } from "../../common/canny";
-import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
+import { ViewSelector } from "../../components/ViewSelector";
 import { AuthContext } from "../../contexts/auth";
 import { Screen, ScreenContext } from "../../contexts/screen";
 import { Editor } from "../EditorView/Editor";
@@ -102,7 +102,7 @@ export const Main = () => {
                 <StorageContextProvider>
                     <Banner />
                     <TopBar />
-                    <ViewSelectorComponent hasSchema={!!schema} />
+                    <ViewSelector hasSchema={!!schema} />
                     <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
                         {screen.view === Screen.TYPEDEFS ? (
                             <SchemaView
