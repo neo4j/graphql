@@ -160,7 +160,6 @@ export function createRelationshipInterfaceFields({
             where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere`,
         });
 
-        // TODO: Settable onUpdate here?
         nodeUpdateInput.addFields({
             [rel.fieldName]: rel.typeMeta.array ? updateFieldInput.NonNull.List : updateFieldInput,
         });
@@ -183,7 +182,6 @@ export function createRelationshipInterfaceFields({
         });
     }
 
-    // TODO: settable onCreate here?
     if (
         nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
         nestedOperations.has(RelationshipNestedOperationsOption.CREATE)
