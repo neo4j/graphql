@@ -407,7 +407,11 @@ export function createRelationshipUnionFields({
             [rel.fieldName]: unionCreateInput,
         });
     }
-    if (nestedOperations.size !== 0 && !onlyConnectOrCreateAndNoUniqueFieldsInAllRefTypes) {
+    if (
+        rel.settableOptions.onUpdate &&
+        nestedOperations.size !== 0 &&
+        !onlyConnectOrCreateAndNoUniqueFieldsInAllRefTypes
+    ) {
         const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
         nodeUpdateInput.addFields({
             [rel.fieldName]: unionUpdateInput,

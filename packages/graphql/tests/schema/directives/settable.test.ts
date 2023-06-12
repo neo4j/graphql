@@ -3326,19 +3326,6 @@ describe("@settable", () => {
                   create: [ActorActedInMovieCreateFieldInput!]
                 }
 
-                input ActorActedInMovieUpdateConnectionInput {
-                  node: MovieUpdateInput
-                }
-
-                input ActorActedInMovieUpdateFieldInput {
-                  connect: [ActorActedInMovieConnectFieldInput!]
-                  create: [ActorActedInMovieCreateFieldInput!]
-                  delete: [ActorActedInMovieDeleteFieldInput!]
-                  disconnect: [ActorActedInMovieDisconnectFieldInput!]
-                  update: ActorActedInMovieUpdateConnectionInput
-                  where: ActorActedInMovieConnectionWhere
-                }
-
                 type ActorActedInRelationship {
                   cursor: String!
                   node: Production!
@@ -3371,24 +3358,6 @@ describe("@settable", () => {
                 input ActorActedInSeriesFieldInput {
                   connect: [ActorActedInSeriesConnectFieldInput!]
                   create: [ActorActedInSeriesCreateFieldInput!]
-                }
-
-                input ActorActedInSeriesUpdateConnectionInput {
-                  node: SeriesUpdateInput
-                }
-
-                input ActorActedInSeriesUpdateFieldInput {
-                  connect: [ActorActedInSeriesConnectFieldInput!]
-                  create: [ActorActedInSeriesCreateFieldInput!]
-                  delete: [ActorActedInSeriesDeleteFieldInput!]
-                  disconnect: [ActorActedInSeriesDisconnectFieldInput!]
-                  update: ActorActedInSeriesUpdateConnectionInput
-                  where: ActorActedInSeriesConnectionWhere
-                }
-
-                input ActorActedInUpdateInput {
-                  Movie: [ActorActedInMovieUpdateFieldInput!]
-                  Series: [ActorActedInSeriesUpdateFieldInput!]
                 }
 
                 type ActorAggregateSelection {
@@ -3439,7 +3408,6 @@ describe("@settable", () => {
                 }
 
                 input ActorUpdateInput {
-                  actedIn: ActorActedInUpdateInput
                   name: String
                 }
 
