@@ -36,7 +36,6 @@ import { createRelationshipUnionFields } from "./create-relationship-union-field
 import { createTopLevelConnectOrCreateInput } from "./create-top-level-connect-or-create-input";
 import { overwrite } from "./fields/overwrite";
 import { inspectObjectFields } from "./inspect-object-fields";
-import { UnionTypeDefinitionNode } from "graphql";
 
 interface CreateRelationshipFieldsArgs {
     relationshipFields: RelationField[];
