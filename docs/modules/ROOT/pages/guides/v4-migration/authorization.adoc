@@ -157,7 +157,9 @@ The difference here being that for example, given the following query:
 
 === `roles`
 
-NOTE: For these examples, the following type is required in the type definitions:
+[NOTE] 
+====
+For these examples, the following type is required in the type definitions:
 
 [source, graphql, indent=0]
 ----
@@ -165,6 +167,7 @@ type JWT @jwt {
     roles: [String!]!
 }
 ----
+====
 
 Given the following type definition, which required a user to have the "admin" role to perform any operation on the type `User`:
 
