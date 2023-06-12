@@ -156,6 +156,8 @@ type Movie @subscription(operations: [CREATE]) {
 
 == `@exclude` label:deprecated[]
 
+This directive skips the generation of queries and/or subscriptions and/or particular/all mutations for the specified type.
+
 [NOTE]
 ====
 This directive is deprecated.
