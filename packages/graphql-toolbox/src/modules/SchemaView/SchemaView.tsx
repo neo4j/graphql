@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
@@ -35,6 +35,7 @@ import { SettingsContext } from "../../contexts/settings";
 import { useStore } from "../../store";
 import type { Favorite } from "../../types";
 import { ConstraintState } from "../../types";
+import { usePrevious } from "../../utils/utils";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
@@ -60,9 +61,17 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const [isIntrospecting, setIsIntrospecting] = useState<boolean>(false);
     const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
     const favorites = useStore((store) => store.favorites);
+    const prevSelectedDBName = usePrevious(auth.selectedDatabaseName);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
-    // TODO: have a hook/event when auth.selectedDatabaseName changes. On that event, clear the codemirror content
+    useEffect(() => {
+        if (!prevSelectedDBName) return;
+        if (prevSelectedDBName !== auth.selectedDatabaseName) {
+            if (!refForEditorMirror?.current) return;
+            // the selected database has changed, clear the codemirror content.
+            refForEditorMirror.current.setValue("");
+        }
+    }, [auth.selectedDatabaseName]);
 
     const formatTheCode = (): void => {
         if (!refForEditorMirror.current) return;

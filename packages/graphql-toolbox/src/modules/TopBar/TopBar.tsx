@@ -89,7 +89,7 @@ export const TopBar = () => {
 
         auth.setSelectedDatabaseName(nextSelectedDatabaseName);
         tracking.trackChangeDatabase({ screen: "type definitions" });
-        
+
         setNextSelectedDatabaseName(undefined);
     };
 
@@ -149,10 +149,10 @@ export const TopBar = () => {
                     onNextSelectedDatabaseName={setNextSelectedDatabaseName}
                 />
                 <SwitchDatabasePrompt
-                selectedDatabaseName={nextSelectedDatabaseName}
-                onClose={() => setNextSelectedDatabaseName(undefined)}
-                onSwitchDatabase={handleSetSelectedDatabaseName}
-            />
+                    selectedDatabaseName={nextSelectedDatabaseName}
+                    onClose={() => setNextSelectedDatabaseName(undefined)}
+                    onSwitchDatabase={handleSetSelectedDatabaseName}
+                />
             </div>
             <div className="flex-1 flex justify-end">
                 <div className="flex items-center text-sm">

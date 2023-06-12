@@ -41,6 +41,7 @@ import "codemirror/lib/codemirror.css";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/theme/dracula.css";
 import "codemirror/theme/neo.css";
+import { useEffect, useRef } from "react";
 
 // @ts-ignore - Needed for the tests
 document.CodeMirror = CodeMirror;
@@ -55,3 +56,11 @@ export const getURLProtocolFromText = (text: string | null | undefined): string 
         return "";
     }
 };
+
+export function usePrevious(value) {
+    const ref = useRef();
+    useEffect(() => {
+        ref.current = value;
+    });
+    return ref.current;
+}

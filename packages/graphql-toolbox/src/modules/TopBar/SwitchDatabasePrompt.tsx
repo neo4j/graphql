@@ -26,19 +26,21 @@ interface Props {
 }
 
 export const SwitchDatabasePrompt = ({ selectedDatabaseName, onClose, onSwitchDatabase }: Props) => {
-     return (
-        <Dialog id="switch-database-prompt" data-test-switch-database-prompt type="warning" open={!!selectedDatabaseName} onClose={() => onClose()}>
+    return (
+        <Dialog
+            id="switch-database-prompt"
+            data-test-switch-database-prompt
+            type="warning"
+            open={!!selectedDatabaseName}
+            onClose={() => onClose()}
+        >
             <Dialog.Header>
                 <span className="h4">Switch selected database</span>
             </Dialog.Header>
             <Dialog.Description>
-                <p>
-                    If you switch the database, the content in the editor will be overwritten.
-                </p>
+                <p>If you switch the database, the content in the editor will be overwritten.</p>
                 <br />
-                <p>
-                    To save the current editor content, cancel this prompt and save the editor content as a favorite.
-                </p>
+                <p>To save the current editor content, cancel this prompt and save the editor content as a favorite.</p>
             </Dialog.Description>
             <Dialog.Actions className="flex w-full">
                 <Button
@@ -61,5 +63,5 @@ export const SwitchDatabasePrompt = ({ selectedDatabaseName, onClose, onSwitchDa
                 </Button>
             </Dialog.Actions>
         </Dialog>
-     )
-}
+    );
+};
