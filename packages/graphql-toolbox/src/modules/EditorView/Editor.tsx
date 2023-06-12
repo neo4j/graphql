@@ -17,16 +17,33 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
+import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
+import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
+import { bracketMatching, foldGutter, foldKeymap, indentOnInput } from "@codemirror/language";
+import { lintKeymap } from "@codemirror/lint";
+import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
+import { Annotation, EditorState, Prec, StateEffect } from "@codemirror/state";
+import type { ViewUpdate } from "@codemirror/view";
+import {
+    drawSelection,
+    dropCursor,
+    highlightActiveLine,
+    highlightSpecialChars,
+    keymap,
+    lineNumbers,
+} from "@codemirror/view";
 import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, Switch } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
 import classNames from "classnames";
-import type { EditorFromTextArea } from "codemirror";
+import { graphql as graphqlExtension } from "cm6-graphql";
+import { EditorView } from "codemirror";
 import GraphiQLExplorer from "graphiql-explorer";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
+import { dracula, tomorrow } from "thememirror";
 
 import { tracking } from "../../analytics/tracking";
 import { Extension } from "../../components/Filename";
@@ -44,22 +61,136 @@ import { Grid } from "./grid/Grid";
 import { JSONEditor } from "./JSONEditor";
 import { calculateQueryComplexity, formatCode, ParserOptions, safeParse } from "./utils";
 
+const External = Annotation.define<boolean>();
+
 export interface Props {
     schema?: GraphQLSchema;
 }
 
 export const Editor = ({ schema }: Props) => {
+    const theme = useContext(ThemeContext);
     const store = useStore();
     const settings = useContext(SettingsContext);
-    const theme = useContext(ThemeContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [showDocs, setShowDocs] = useState<boolean>(false);
-    const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
+    const elementRef = useRef<HTMLDivElement | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
+    const [editorView, setEditorView] = useState<EditorView | null>(null);
+    const [value, setValue] = useState<string>();
+
+    // Taken from https://github.com/uiwjs/react-codemirror/blob/master/core/src/useCodeMirror.ts
+    const updateListener = EditorView.updateListener.of((vu: ViewUpdate) => {
+        if (
+            vu.docChanged &&
+            // Fix echoing of the remote changes:
+            // If transaction is market as remote we don't have to call `onChange` handler again
+            !vu.transactions.some((tr) => tr.annotation(External))
+        ) {
+            const doc = vu.state.doc;
+            const value = doc.toString();
+            store.updateQuery(value, useStore.getState().activeTabIndex);
+        }
+    });
+
+    const extensions = [
+        lineNumbers(),
+        highlightSpecialChars(),
+        highlightActiveLine(),
+        bracketMatching(),
+        closeBrackets(),
+        history(),
+        dropCursor(),
+        drawSelection(),
+        indentOnInput(),
+        autocompletion({ defaultKeymap: true, maxRenderedOptions: 5 }),
+        highlightSelectionMatches(),
+        EditorView.lineWrapping,
+        keymap.of([
+            indentWithTab,
+            ...closeBracketsKeymap,
+            ...defaultKeymap,
+            ...searchKeymap,
+            ...historyKeymap,
+            ...foldKeymap,
+            ...completionKeymap,
+            ...lintKeymap,
+        ]),
+        Prec.highest(
+            keymap.of([
+                {
+                    key: "Mod-Enter",
+                    run: (view) => {
+                        onSubmit(view.state.doc.toString()).catch(() => null);
+                        return true;
+                    },
+                },
+                {
+                    key: "Shift-Mod-L",
+                    run: (view) => {
+                        formatCode(view, ParserOptions.GRAPH_QL);
+                        return true;
+                    },
+                },
+            ])
+        ),
+        foldGutter({
+            closedText: "▶",
+            openText: "▼",
+        }),
+        graphqlExtension(schema),
+        theme.theme === Theme.LIGHT ? tomorrow : dracula,
+        updateListener,
+    ];
+
+    useEffect(() => {
+        if (elementRef.current === null) {
+            return;
+        }
+
+        const state = EditorState.create({
+            doc: "",
+            extensions,
+        });
+
+        const view = new EditorView({
+            state,
+            parent: elementRef.current,
+        });
+
+        setEditorView(view);
+
+        return () => {
+            view.destroy();
+            setEditorView(null);
+        };
+    }, [elementRef.current]);
+
+    useEffect(() => {
+        if (editorView) {
+            editorView.dispatch({ effects: StateEffect.reconfigure.of(extensions) });
+        }
+    }, [theme.theme, extensions]);
+
+    useEffect(() => {
+        if (value === undefined) {
+            return;
+        }
+        const currentValue = editorView ? editorView.state.doc.toString() : "";
+        if (editorView && value !== currentValue) {
+            editorView.dispatch({
+                changes: { from: 0, to: currentValue.length, insert: value || "" },
+                annotations: [External.of(true)],
+            });
+        }
+    }, [value, editorView]);
+
+    useEffect(() => {
+        setValue(useStore.getState().getActiveTab().query);
+    }, [useStore.getState().getActiveTab().query]);
 
     const formatTheCode = (): void => {
-        if (!refForQueryEditorMirror.current) return;
-        formatCode(refForQueryEditorMirror.current, ParserOptions.GRAPH_QL);
+        if (!editorView) return;
+        formatCode(editorView, ParserOptions.GRAPH_QL);
     };
 
     const handleShowDocs = () => {
@@ -165,14 +296,13 @@ export const Editor = ({ schema }: Props) => {
                             queryEditor={
                                 schema ? (
                                     <GraphQLQueryEditor
-                                        schema={schema}
                                         loading={loading}
-                                        mirrorRef={refForQueryEditorMirror}
-                                        executeQuery={onSubmit}
-                                        query={useStore.getState().getActiveTab().query}
-                                        onChangeQuery={(query) => {
-                                            store.updateQuery(query, useStore.getState().activeTabIndex);
-                                        }}
+                                        elementRef={elementRef}
+                                        // onChangeQuery={(query) => {
+                                        //     setQuery(query);
+                                        //     debouncedSave({ lastQuery: query });
+                                        // }}
+                                        // executeQuery={onSubmit}
                                         buttons={
                                             <>
                                                 <Button

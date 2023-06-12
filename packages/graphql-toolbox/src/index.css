@@ -16,7 +16,7 @@
 /* ----------------------*/
 
 /* Global settings for all CodeMirror editors */
-.CodeMirror {
+.cm-editor {
     height: 100%;
     position: inherit;
     font-size: 1rem;
@@ -58,8 +58,16 @@ li.CodeMirror-hint-active {
     opacity: 0.85;
 }
 
-/* ----------------------*/
+#SCHEMA_EDITOR_INPUT {
+    height: 89vh;
+}
+#EDITOR_QUERY_INPUT,
+#EDITOR_PARAMS_INPUT,
+#EDITOR_RESPONSE_OUTPUT {
+    height: calc(100% - 3rem);
+}
 
+/* ----------------------*/
 
 /* Documentation and Query explorer classes */
 .doc-explorer-embedded {
@@ -81,7 +89,6 @@ li.CodeMirror-hint-active {
 }
 
 /* ----------------------*/
-
 
 /* All GraphiQL v2 components */
 .graphiql-container {
@@ -141,7 +148,7 @@ li.CodeMirror-hint-active {
     padding: 3px;
 }
 
-.docExplorerWrap .graphiql-explorer-actions>span {
+.docExplorerWrap .graphiql-explorer-actions > span {
     display: none !important;
 }
 
@@ -163,7 +170,6 @@ li.CodeMirror-hint-active {
 }
 
 /* ----------------------*/
-
 
 /* Canny */
 .Canny_BadgeContainer {

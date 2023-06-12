@@ -17,15 +17,27 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
-import type { EditorFromTextArea } from "codemirror";
+import { closeBrackets } from "@codemirror/autocomplete";
+import { indentWithTab } from "@codemirror/commands";
+import { javascript } from "@codemirror/lang-javascript";
+import { bracketMatching, foldGutter, indentOnInput } from "@codemirror/language";
+import { StateEffect } from "@codemirror/state";
+import {
+    drawSelection,
+    dropCursor,
+    EditorView,
+    highlightActiveLine,
+    highlightSpecialChars,
+    keymap,
+    lineNumbers,
+} from "@codemirror/view";
+import { dracula, tomorrow } from "thememirror";
 
 import type { Extension } from "../../components/Filename";
 import { FileName } from "../../components/Filename";
-import { THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
 import { Theme, ThemeContext } from "../../contexts/theme";
-import { CodeMirror } from "../../utils/utils";
 import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 
 export interface Props {
@@ -42,66 +54,76 @@ export interface Props {
 
 export const JSONEditor = (props: Props) => {
     const theme = useContext(ThemeContext);
-    const ref = useRef<HTMLTextAreaElement | null>(null);
-    const mirror = useRef<CodeMirror.Editor | null>(null);
+    const elementRef = useRef<HTMLDivElement | null>(null);
+    const [editorView, setEditorView] = useState<EditorView | null>(null);
+
+    const extensions = [
+        lineNumbers(),
+        highlightSpecialChars(),
+        highlightActiveLine(),
+        bracketMatching(),
+        closeBrackets(),
+        drawSelection(),
+        indentOnInput(),
+        dropCursor(),
+        foldGutter({
+            closedText: "▶",
+            openText: "▼",
+        }),
+        javascript(),
+        EditorView.lineWrapping,
+        keymap.of([indentWithTab]),
+        theme.theme === Theme.LIGHT ? tomorrow : dracula,
+    ];
 
     useEffect(() => {
-        if (!ref.current) {
+        if (elementRef.current === null) {
             return;
         }
 
-        mirror.current = CodeMirror.fromTextArea(ref.current, {
-            mode: { name: "javascript", json: true },
-            theme: theme.theme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
-            readOnly: props.readonly,
-            lineNumbers: true,
-            lineWrapping: true,
-            tabSize: 2,
-            keyMap: "sublime",
-            autoCloseBrackets: true,
-            matchBrackets: true,
-            showCursorWhenSelecting: true,
-            foldGutter: {
-                // @ts-ignore - Not sure about this one
-                minFoldSize: 4,
-            },
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+        const view = new EditorView({
+            doc: props.json,
+            extensions: [],
+            parent: elementRef.current,
         });
 
-        if (!props.readonly) {
-            mirror.current.on("change", (e) => {
-                if (props.onChange) {
-                    props.onChange(e.getValue());
-                }
-            });
-        }
+        setEditorView(view);
 
-        document[props.id] = mirror.current;
-    }, []);
+        return () => {
+            view.destroy();
+            setEditorView(null);
+        };
+    }, [elementRef.current]);
 
     useEffect(() => {
-        if (mirror.current && props.json) {
-            mirror.current.setValue(props.json);
-            formatCode(mirror.current as EditorFromTextArea, ParserOptions.JSON);
+        if (editorView) {
+            editorView.dispatch({ effects: StateEffect.reconfigure.of(extensions) });
+        }
+    }, [theme.theme, extensions]);
+
+    useEffect(() => {
+        if (editorView && props.json) {
+            const selection = editorView.state.selection;
+            editorView.dispatch({
+                changes: { from: 0, to: editorView.state.doc.length, insert: props.json },
+                selection,
+            });
+            formatCode(editorView, ParserOptions.JSON);
         }
     }, [props.json]);
 
     useEffect(() => {
-        if (mirror.current && props.initialValue) {
-            const cursor = mirror.current.getCursor();
-            mirror.current.setValue(props.initialValue);
-            if (cursor) mirror.current.setCursor(cursor);
-        }
+        if (!editorView) return;
+        const selection = editorView.state.selection;
+        editorView.dispatch({
+            changes: { from: 0, to: editorView.state.doc.length, insert: props.initialValue },
+            selection,
+        });
     }, [props.initialValue]);
 
     useEffect(() => {
-        handleEditorDisableState(mirror.current as EditorFromTextArea, props.loading);
+        handleEditorDisableState(elementRef.current, props.loading);
     }, [props.loading]);
-
-    useEffect(() => {
-        const t = theme.theme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
-        mirror.current?.setOption("theme", t);
-    }, [theme.theme]);
 
     return (
         <div style={{ width: "100%", height: "100%" }}>
@@ -110,7 +132,7 @@ export const JSONEditor = (props: Props) => {
                 name={props.fileName}
                 borderRadiusTop={props.borderRadiusTop}
             ></FileName>
-            <textarea id={props.id} ref={ref} />
+            <div id={props.id} className={theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"} ref={elementRef} />
         </div>
     );
 };

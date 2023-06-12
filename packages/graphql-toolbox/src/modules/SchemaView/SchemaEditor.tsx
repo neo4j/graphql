@@ -17,27 +17,22 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 
 import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
 import { StarIconOutline } from "@neo4j-ndl/react/icons";
 import classNames from "classnames";
-import type { EditorFromTextArea } from "codemirror";
 
 import { Extension, FileName } from "../../components/Filename";
-import { DEFAULT_TYPE_DEFS, SCHEMA_EDITOR_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
-import { AppSettingsContext } from "../../contexts/appsettings";
+import { SCHEMA_EDITOR_INPUT } from "../../constants";
 import { Theme, ThemeContext } from "../../contexts/theme";
-import { useStore } from "../../store";
-import { CodeMirror } from "../../utils/utils";
-import { formatCode, handleEditorDisableState, ParserOptions } from "../EditorView/utils";
-import { getSchemaForLintAndAutocompletion } from "./utils";
+import { handleEditorDisableState } from "../EditorView/utils";
 
 export interface Props {
     loading: boolean;
     isIntrospecting: boolean;
-    mirrorRef: React.MutableRefObject<EditorFromTextArea | null>;
+    elementRef: React.MutableRefObject<HTMLDivElement | null>;
     formatTheCode: () => void;
     introspect: () => Promise<void>;
     saveAsFavorite: () => void;
@@ -47,121 +42,19 @@ export interface Props {
 export const SchemaEditor = ({
     loading,
     isIntrospecting,
-    mirrorRef,
+    elementRef,
     formatTheCode,
     introspect,
     saveAsFavorite,
     onSubmit,
 }: Props) => {
     const theme = useContext(ThemeContext);
-    const appsettings = useContext(AppSettingsContext);
-    const ref = useRef<HTMLTextAreaElement | null>(null);
     const favoritesTooltipRef = useRef<HTMLButtonElement | null>(null);
     const introspectionTooltipRef = useRef<HTMLButtonElement | null>(null);
-    const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
 
     useEffect(() => {
-        if (ref.current === null) {
-            return;
-        }
-
-        const schemaForLintAndAutocompletion = getSchemaForLintAndAutocompletion();
-
-        const element = ref.current;
-
-        const showHint = () => {
-            mirror.showHint({
-                completeSingle: true,
-                container: element.parentElement,
-            });
-        };
-
-        const mirror = CodeMirror.fromTextArea(ref.current, {
-            lineNumbers: true,
-            tabSize: 2,
-            mode: "graphql",
-            theme: theme.theme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
-            keyMap: "sublime",
-            autoCloseBrackets: true,
-            matchBrackets: true,
-            showCursorWhenSelecting: true,
-            lineWrapping: true,
-            foldGutter: {
-                // @ts-ignore - Added By GraphQL Plugin
-                minFoldSize: 4,
-            },
-            lint: {
-                // @ts-ignore - Mismatch of types, can be ignored
-                schema: schemaForLintAndAutocompletion,
-                validationRules: [],
-            },
-            hintOptions: {
-                schema: schemaForLintAndAutocompletion,
-                closeOnUnfocus: true,
-                completeSingle: false,
-                container: element.parentElement,
-            },
-            info: {
-                schema: schemaForLintAndAutocompletion,
-            },
-            jump: {
-                schema: schemaForLintAndAutocompletion,
-            },
-            gutters: [
-                "CodeMirror-linenumbers",
-                "CodeMirror-foldgutter",
-                appsettings.showLintMarkers ? "CodeMirror-lint-markers" : "",
-            ],
-            extraKeys: {
-                "Cmd-Space": showHint,
-                "Ctrl-Space": showHint,
-                "Alt-Space": showHint,
-                "Shift-Space": showHint,
-                "Shift-Alt-Space": showHint,
-                "Ctrl-L": () => {
-                    if (!mirror) return;
-                    formatCode(mirror, ParserOptions.GRAPH_QL);
-                },
-            },
-        });
-        setMirror(mirror);
-        mirrorRef.current = mirror;
-
-        const storedTypeDefs = useStore.getState().typeDefinitions || DEFAULT_TYPE_DEFS;
-        if (storedTypeDefs && ref.current) {
-            mirror?.setValue(storedTypeDefs);
-            ref.current.value = storedTypeDefs;
-        }
-
-        mirror.on("change", (e) => {
-            if (ref.current) {
-                ref.current.value = e.getValue();
-            }
-        });
-    }, [ref]);
-
-    useEffect(() => {
-        handleEditorDisableState(mirror, loading);
+        handleEditorDisableState(elementRef.current, loading);
     }, [loading]);
-
-    useEffect(() => {
-        // @ts-ignore - Find a better solution
-        document[SCHEMA_EDITOR_INPUT] = mirror;
-    }, [mirror]);
-
-    useEffect(() => {
-        const t = theme.theme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
-        mirror?.setOption("theme", t);
-    }, [theme.theme]);
-
-    useEffect(() => {
-        const nextGutters = [
-            "CodeMirror-linenumbers",
-            "CodeMirror-foldgutter",
-            appsettings.showLintMarkers ? "CodeMirror-lint-markers" : "",
-        ];
-        mirror?.setOption("gutters", nextGutters);
-    }, [appsettings.showLintMarkers]);
 
     return (
         <div className="rounded-b-xl" style={{ width: "100%", height: "100%" }}>
@@ -254,7 +147,11 @@ export const SchemaEditor = ({
                     </>
                 }
             ></FileName>
-            <textarea id={SCHEMA_EDITOR_INPUT} ref={ref} style={{ width: "100%", height: "100%" }} />
+            <div
+                id={SCHEMA_EDITOR_INPUT}
+                className={theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"}
+                ref={elementRef}
+            ></div>
         </div>
     );
 };

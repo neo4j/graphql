@@ -17,21 +17,38 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
+import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
+import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
+import { bracketMatching, foldGutter, foldKeymap, indentOnInput } from "@codemirror/language";
+import { lintKeymap } from "@codemirror/lint";
+import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
+import { EditorState, StateEffect } from "@codemirror/state";
+import {
+    drawSelection,
+    dropCursor,
+    EditorView,
+    highlightActiveLine,
+    highlightSpecialChars,
+    keymap,
+    lineNumbers,
+} from "@codemirror/view";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { Banner } from "@neo4j-ndl/react";
-import type { EditorFromTextArea } from "codemirror";
+import { graphql, updateSchema } from "cm6-graphql";
 import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
+import { dracula, tomorrow } from "thememirror";
 
 import { rudimentaryTypeDefinitionsAnalytics } from "../../analytics/analytics";
 import { tracking } from "../../analytics/tracking";
-import { DEFAULT_DATABASE_NAME } from "../../constants";
+import { DEFAULT_DATABASE_NAME, DEFAULT_TYPE_DEFS } from "../../constants";
 import { AppSettingsContext } from "../../contexts/appsettings";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
+import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 import type { Favorite } from "../../types";
 import { ConstraintState } from "../../types";
@@ -43,12 +60,14 @@ import { IntrospectionPrompt } from "./IntrospectionPrompt";
 import { SchemaEditor } from "./SchemaEditor";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { SchemaSettings } from "./SchemaSettings";
+import { getSchemaForLintAndAutocompletion } from "./utils";
 
 export interface Props {
     onSchemaChange: (schema: GraphQLSchema) => void;
 }
 
 export const SchemaView = ({ onSchemaChange }: Props) => {
+    const theme = useContext(ThemeContext);
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const appSettings = useContext(AppSettingsContext);
@@ -56,17 +75,79 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
     const [showIntrospectionModal, setShowIntrospectionModal] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
     const [isIntrospecting, setIsIntrospecting] = useState<boolean>(false);
-    const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
+    const elementRef = useRef<HTMLDivElement | null>(null);
     const favorites = useStore((store) => store.favorites);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
+    const [editorView, setEditorView] = useState<EditorView | null>(null);
+    const storedTypeDefs = useStore.getState().typeDefinitions || DEFAULT_TYPE_DEFS;
+
+    const extensions = [
+        lineNumbers(),
+        highlightSpecialChars(),
+        highlightActiveLine(),
+        bracketMatching(),
+        closeBrackets(),
+        history(),
+        dropCursor(),
+        drawSelection(),
+        indentOnInput(),
+        autocompletion({ defaultKeymap: true, maxRenderedOptions: 5 }),
+        highlightSelectionMatches(),
+        EditorView.lineWrapping,
+        keymap.of([
+            indentWithTab,
+            ...closeBracketsKeymap,
+            ...defaultKeymap,
+            ...searchKeymap,
+            ...historyKeymap,
+            ...foldKeymap,
+            ...completionKeymap,
+            ...lintKeymap,
+        ]),
+        foldGutter({
+            closedText: "▶",
+            openText: "▼",
+        }),
+        graphql(getSchemaForLintAndAutocompletion()),
+        theme.theme === Theme.LIGHT ? tomorrow : dracula,
+    ];
+
+    useEffect(() => {
+        if (elementRef.current === null) {
+            return;
+        }
+
+        const state = EditorState.create({
+            doc: storedTypeDefs,
+            extensions,
+        });
+
+        const view = new EditorView({
+            state,
+            parent: elementRef.current,
+        });
+
+        setEditorView(view);
+
+        return () => {
+            view.destroy();
+            setEditorView(null);
+        };
+    }, [elementRef.current]);
+
+    useEffect(() => {
+        if (editorView) {
+            editorView.dispatch({ effects: StateEffect.reconfigure.of(extensions) });
+        }
+    }, [theme.theme, extensions]);
 
     const formatTheCode = (): void => {
-        if (!refForEditorMirror.current) return;
-        formatCode(refForEditorMirror.current, ParserOptions.GRAPH_QL);
+        if (!editorView) return;
+        formatCode(editorView, ParserOptions.GRAPH_QL);
     };
 
     const saveAsFavorite = (): void => {
-        const value = refForEditorMirror.current?.getValue();
+        const value = editorView?.state.doc.toString();
         if (!value) return;
         const newFavorites: Favorite[] = [
             ...(favorites || []),
@@ -77,8 +158,10 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
     };
 
     const setTypeDefsFromFavorite = (typeDefs: string) => {
-        if (!typeDefs || !refForEditorMirror) return;
-        refForEditorMirror.current?.setValue(typeDefs);
+        if (!editorView) return;
+        editorView.dispatch({
+            changes: { from: 0, to: editorView.state.doc.length, insert: typeDefs },
+        });
     };
 
     const buildSchema = useCallback(
@@ -117,6 +200,10 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
 
                 const schema = await neoSchema.getSchema();
 
+                if (editorView) {
+                    updateSchema(editorView, schema);
+                }
+
                 if (useStore.getState().constraint === ConstraintState.check.toString()) {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: false } });
                 }
@@ -141,6 +228,8 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
     const introspect = useCallback(
         async ({ screen }: { screen: "query editor" | "type definitions" | "initial modal" }) => {
             try {
+                if (!editorView) return;
+
                 setLoading(true);
                 setIsIntrospecting(true);
 
@@ -151,8 +240,9 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                     }) as neo4j.Session;
 
                 const typeDefs = await toGraphQLTypeDefs(sessionFactory);
-
-                refForEditorMirror.current?.setValue(typeDefs);
+                editorView.dispatch({
+                    changes: { from: 0, to: editorView.state.doc.length, insert: typeDefs },
+                });
 
                 tracking.trackDatabaseIntrospection({ screen, status: "success" });
             } catch (error) {
@@ -164,18 +254,20 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                 setIsIntrospecting(false);
             }
         },
-        [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]
+        [buildSchema, editorView, auth.selectedDatabaseName]
     );
 
-    const onSubmit = useCallback(async () => {
-        const value = refForEditorMirror.current?.getValue();
+    const onSubmit = () => {
+        if (!editorView) return;
+        const value = editorView?.state.doc.toString();
         if (value) {
-            await buildSchema(value);
+            buildSchema(value).catch(() => null);
         }
-    }, [buildSchema]);
+    };
 
     const onClickIntrospect = async () => {
         await introspect({ screen: "type definitions" });
+        formatTheCode();
     };
 
     return (
@@ -195,8 +287,8 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                     onIntrospect={() => {
                         setShowIntrospectionModal(false);
                         auth.setShowIntrospectionPrompt(false);
-                        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                        introspect({ screen: "initial modal" });
+
+                        introspect({ screen: "initial modal" }).catch(() => null);
                     }}
                 />
             ) : null}
@@ -213,13 +305,12 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                         <div className="flex flex-col w-full h-full">
                             <SchemaErrorDisplay error={error} />
                             <SchemaEditor
-                                mirrorRef={refForEditorMirror}
+                                elementRef={elementRef}
                                 loading={loading}
                                 isIntrospecting={isIntrospecting}
                                 formatTheCode={formatTheCode}
                                 introspect={onClickIntrospect}
                                 saveAsFavorite={saveAsFavorite}
-                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                 onSubmit={onSubmit}
                             />
                             {!appSettings.hideProductUsageMessage ? (
