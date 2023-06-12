@@ -1,8 +1,9 @@
 [[schema-configuration-global-configuration]]
 = Global Configuration
 
-Through the schema configuration, it is possible to disable a type of operation for the whole type definitions and not on type by type basis.
-For instance, if you want to avoid all the top-level aggregation operations to be generated and avoid redundancy, Neo4j GraphQL Library allows using schema extensions with `@query`, `@mutation`, and `@subscription`:
+Through the schema configuration, it is possible to globally disable specific types of operation.
+To set up operations individually, refer to xref:/schema-configuration/type-configuration.adoc[Type Configuration].
+For instance, if you want to disable all top-level aggregation operations at once, Neo4j GraphQL Library offers this option through schema extensions with `@query`, `@mutation`, and `@subscription`:
 
 [source, graphql, indent=0]
 ----
