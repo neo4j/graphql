@@ -971,6 +971,7 @@ function makeAugmentedSchema(
     };
 
     unionTypes.forEach((union) => {
+        // It is possible to make union types "writeonly". In this case adding a resolver for them breaks schema generation.
         const unionTypeInSchema = parsedDoc.definitions.find((def) => {
             if (def.kind === Kind.UNION_TYPE_DEFINITION && def.name.value === union.name.value) return true;
             return false;
