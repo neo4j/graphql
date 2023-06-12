@@ -3148,7 +3148,7 @@ describe("@selectable", () => {
 
                 type Actor @query(aggregate: true) {
                     name: String!
-                    actedIn: [Movie!]!
+                    actedIn: [Production!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
                         @selectable(onRead: true, onAggregate: false)
                 }
