@@ -17,14 +17,7 @@
  * limitations under the License.
  */
 
-import {
-    DirectiveLocation,
-    GraphQLBoolean,
-    GraphQLDirective,
-    GraphQLList,
-    GraphQLNonNull,
-    GraphQLString,
-} from "graphql";
+import { DirectiveLocation, GraphQLBoolean, GraphQLDirective, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
 import { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../../constants";
 import { RelationshipDirectionEnum } from "./arguments/enums/RelationshipDirection";
 import { RelationshipNestedOperationsEnum } from "./arguments/enums/RelationshipNestedOperations";
