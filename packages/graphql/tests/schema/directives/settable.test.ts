@@ -5264,11 +5264,6 @@ describe("@settable", () => {
                   where: ActorActedInConnectionWhere
                 }
 
-                input ActorActedInFieldInput {
-                  connect: [ActorActedInConnectFieldInput!]
-                  create: [ActorActedInCreateFieldInput!]
-                }
-
                 type ActorActedInRelationship {
                   cursor: String!
                   node: Production!
@@ -5297,7 +5292,6 @@ describe("@settable", () => {
                 }
 
                 input ActorCreateInput {
-                  actedIn: ActorActedInFieldInput
                   name: String!
                 }
 
