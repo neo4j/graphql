@@ -172,14 +172,16 @@ export function createRelationshipInterfaceFields({
         };
         const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
 
-        composeNode.addFields({
-            [rel.fieldName]: {
-                type: rel.typeMeta.pretty,
-                args: nodeFieldArgs,
-                description: rel.description,
-                directives: graphqlDirectivesToCompose(rel.otherDirectives),
-            },
-        });
+        if (rel.selectableOptions.onRead) {
+            composeNode.addFields({
+                [rel.fieldName]: {
+                    type: rel.typeMeta.pretty,
+                    args: nodeFieldArgs,
+                    description: rel.description,
+                    directives: graphqlDirectivesToCompose(rel.otherDirectives),
+                },
+            });
+        }
     }
 
     if (

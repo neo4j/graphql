@@ -1153,7 +1153,7 @@ describe("@selectable", () => {
                 }"
             `);
         });
-        test("Disable aggregation on relationship field", async () => {
+        test("Disable aggregation on relationship field (no-op as controlled by @relationship(aggregate: false))", async () => {
             const typeDefs = gql`
                 type Movie @query(aggregate: true) {
                     title: String!
@@ -1164,7 +1164,7 @@ describe("@selectable", () => {
                     name: String!
                     actedIn: [Movie!]!
                         @relationship(type: "ACTED_IN", direction: OUT)
-                        @selectable(onRead: true, onAggregate: false)
+                        @selectable(onRead: true, onAggregate: true)
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -2125,7 +2125,7 @@ describe("@selectable", () => {
                 }"
             `);
         });
-        test("Disable aggregation on relationship field", async () => {
+        test("Disable aggregation on relationship field (no-op as controlled by @relationship(aggregate: false))", async () => {
             const typeDefs = gql`
                 type Movie @query(aggregate: true) {
                     title: String!
@@ -2688,7 +2688,6 @@ describe("@selectable", () => {
                 }
 
                 type Actor {
-                  actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
                   name: String!
                 }
 
@@ -2972,23 +2971,6 @@ describe("@selectable", () => {
                   Series: SeriesWhere
                 }
 
-                input ProductionOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [ProductionSort]
-                }
-
-                \\"\\"\\"
-                Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
-                \\"\\"\\"
-                input ProductionSort {
-                  description: SortDirection
-                  title: SortDirection
-                }
-
                 input ProductionUpdateInput {
                   _on: ProductionImplementationsUpdateInput
                   description: String
@@ -3147,7 +3129,7 @@ describe("@selectable", () => {
                 }"
             `);
         });
-        test("Disable aggregation on relationship field", async () => {
+        test("Disable aggregation on relationship field (no-op as controlled by @relationship(aggregate: false))", async () => {
             const typeDefs = gql`
                 interface Production {
                     title: String!
