@@ -37,7 +37,7 @@ describe("Subscription authentication roles", () => {
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
     const typeDefs = `
-    type JWTPayload @jwtPayload {
+    type JWTPayload @jwt {
         roles: [String!]!
     }
     

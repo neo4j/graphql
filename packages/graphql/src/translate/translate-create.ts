@@ -29,7 +29,6 @@ import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { addMeasurementField, Measurement } from "../utils/add-measurement-field";
-import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import { compileCypher, compileCypherIfExists } from "../utils/compile-cypher";
 
 type ProjectionAndParamsResult = {
