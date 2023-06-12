@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
@@ -48,7 +48,6 @@ import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 export interface Props {
     loading: boolean;
     buttons: any;
-    elementRef: React.MutableRefObject<HTMLDivElement | null>;
     editorView: EditorView | null;
     setEditorView: React.Dispatch<React.SetStateAction<EditorView | null>>;
     onSubmit: (override?: string) => Promise<void>;
@@ -57,17 +56,10 @@ export interface Props {
 
 const External = Annotation.define<boolean>();
 
-export const GraphQLQueryEditor = ({
-    elementRef,
-    loading,
-    buttons,
-    editorView,
-    setEditorView,
-    onSubmit,
-    schema,
-}: Props) => {
+export const GraphQLQueryEditor = ({ loading, buttons, editorView, setEditorView, onSubmit, schema }: Props) => {
     const theme = useContext(ThemeContext);
     const store = useStore();
+    const elementRef = useRef<HTMLDivElement | null>(null);
     const [value, setValue] = useState<string>();
 
     // Taken from https://github.com/uiwjs/react-codemirror/blob/master/core/src/useCodeMirror.ts

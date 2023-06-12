@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 
 import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, Switch } from "@neo4j-ndl/react";
@@ -54,7 +54,6 @@ export const Editor = ({ schema }: Props) => {
     const settings = useContext(SettingsContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [showDocs, setShowDocs] = useState<boolean>(false);
-    const elementRef = useRef<HTMLDivElement | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
     const [editorView, setEditorView] = useState<EditorView | null>(null);
 
@@ -167,7 +166,6 @@ export const Editor = ({ schema }: Props) => {
                                 schema ? (
                                     <GraphQLQueryEditor
                                         loading={loading}
-                                        elementRef={elementRef}
                                         editorView={editorView}
                                         setEditorView={setEditorView}
                                         onSubmit={onSubmit}
