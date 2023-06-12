@@ -33,7 +33,6 @@ import { DEFAULT_DATABASE_NAME } from "../../constants";
 import { AppSettingsContext } from "../../contexts/appsettings";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
-import { ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 import type { Favorite } from "../../types";
 import { ConstraintState } from "../../types";
@@ -51,7 +50,6 @@ export interface Props {
 }
 
 export const SchemaView = ({ onSchemaChange }: Props) => {
-    const theme = useContext(ThemeContext);
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const appSettings = useContext(AppSettingsContext);
