@@ -43,6 +43,16 @@ export class TopBar extends Screen {
         await this.page.click(`[data-test-topbar-database="${name}"]`);
     }
 
+    public async confirmDatabaseSelection() {
+        await this.page.waitForSelector(`[data-test-switch-database-prompt-switch-db]`);
+        await this.page.click(`[data-test-switch-database-prompt-switch-db]`);
+    }
+
+    public async cancelDatabaseSelection() {
+        await this.page.waitForSelector(`[data-test-switch-database-prompt-cancel]`);
+        await this.page.click(`[data-test-switch-database-prompt-cancel]`);
+    }
+
     public async clickDisconnect() {
         await this.page.waitForSelector(`[data-test-topbar-disconnect]`);
         await this.page.click(`[data-test-topbar-disconnect]`);

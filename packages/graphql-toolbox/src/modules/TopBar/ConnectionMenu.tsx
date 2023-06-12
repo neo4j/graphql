@@ -45,7 +45,6 @@ export const ConnectionMenu = ({
     const auth = useContext(AuthContext);
     const screen = useContext(ScreenContext);
 
-
     useEffect(() => {
         function handleClickOutsideComponent(event) {
             if (
