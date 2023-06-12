@@ -3760,6 +3760,10 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
+                type JWTPayload @jwt {
+                    roles: [String!]!
+                }
+
                 type ${User} {
                     id: ID
                     name: String
@@ -4080,6 +4084,10 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "READ" });
 
             const typeDefs = `
+                type JWTPayload @jwt {
+                    name: String!
+                }
+
                 type ${Product} @authentication(operations: [READ], jwtPayload: {name_STARTS_WITH: "John"})  {
                     id: ID
                     name: String
@@ -4126,6 +4134,10 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "READ" });
 
             const typeDefs = `
+                type JWTPayload @jwt {
+                    name: String!
+                }
+
                 type ${Product} @authentication(operations: [READ], jwtPayload: {name_STARTS_WITH: "Doe"})  {
                     id: ID
                     name: String

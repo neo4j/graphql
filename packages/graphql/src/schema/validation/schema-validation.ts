@@ -67,7 +67,7 @@ function makeValidationDocument(
     enrichers.push(authorizationDefinitionsEnricher(enricherContext)); // Add Authorization directive definitions, for instance UserAuthorization
     enrichers.push(authorizationDirectiveEnricher(enricherContext)); // Apply the previously generated directive definitions to the authorized types
     enrichers.push(authenticationDirectiveEnricher(enricherContext)); // Apply the previously generated directive definitions to the authenticated types
-    const additionalDefinitions = getAdditionalDefinitions(jwtPayload);
+    const additionalDefinitions = getAdditionalDefinitions(jwt);
     return enrichDocument(enrichers, additionalDefinitions, augmentedDocument);
 }
 

@@ -87,7 +87,7 @@ describe("schema validation", () => {
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -96,14 +96,7 @@ describe("schema validation", () => {
                     "message",
                     'Invalid argument: filter, error: Field "thisClaimDoesNotExist" is not defined by type.'
                 );
-                expect(errors[0]).toHaveProperty("path", [
-                    "User",
-                    "@authorization",
-                    "filter",
-                    0,
-                    "where",
-                    "jwtPayload",
-                ]);
+                expect(errors[0]).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where", "jwt"]);
             });
 
             test("should not return errors when jwt field is standard", () => {
@@ -142,7 +135,7 @@ describe("schema validation", () => {
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -179,7 +172,7 @@ describe("schema validation", () => {
         describe("JWT wildcard", () => {
             test("should not returns errors when is correctly used: Int on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         intClaim: Int
                     }
                 `;
@@ -213,7 +206,7 @@ describe("schema validation", () => {
 
             test("should not returns errors when is correctly used: List[Int] on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         intClaim: [Int]
                     }
                 `;
@@ -233,7 +226,7 @@ describe("schema validation", () => {
 
             test("should not returns errors when is correctly used: Boolean on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         boolClaim: Boolean
                     }
                 `;
@@ -282,7 +275,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: Int compared with List[Int] on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         intClaim: [Int]
                     }
                 `;
@@ -296,7 +289,7 @@ describe("schema validation", () => {
 
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -317,7 +310,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: Int compared with String on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         stringClaim: String
                     }
                 `;
@@ -331,7 +324,7 @@ describe("schema validation", () => {
 
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -352,7 +345,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: Int compared with String on FIELD", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         sub: String
                     }
                 `;
@@ -367,7 +360,7 @@ describe("schema validation", () => {
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -390,7 +383,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: String compared with Int on FIELD", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         intClaim: Int
                     }
                 `;
@@ -405,7 +398,7 @@ describe("schema validation", () => {
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -428,7 +421,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: String compared with Int on FIELD with claim", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         intClaim: Int @jwtClaim(path: "this.is.a.path")
                     }
                 `;
@@ -443,7 +436,7 @@ describe("schema validation", () => {
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -466,7 +459,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: String compared with Boolean on FIELD", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         boolClaim: Boolean
                     }
                 `;
@@ -481,7 +474,7 @@ describe("schema validation", () => {
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -504,7 +497,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: Boolean compared with String on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         stringClaim: String
                     }
                 `;
@@ -518,7 +511,7 @@ describe("schema validation", () => {
 
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -540,7 +533,7 @@ describe("schema validation", () => {
 
             test("should return error when types do not match: Boolean compared with Int on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         intClaim: Int
                     }
                 `;
@@ -554,7 +547,7 @@ describe("schema validation", () => {
 
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1371,44 +1364,44 @@ describe("schema validation", () => {
 
             test("should not returns errors when is correctly used, with arguments", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String! @deprecated(reason: "name is deprecated")
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
             test("should not returns errors when used correctly in several place", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
 
-                    type Post @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type Post @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1452,29 +1445,27 @@ describe("schema validation", () => {
 
             test("validation should works when used with other directives", () => {
                 const jwtType = `
-                    type MyJWT  @jwtPayload {
+                    type MyJWT  @jwt {
                         sub: String
                     }
                 `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User
-                        @plural(value: "Users")
-                        @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @plural(value: "Users") @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
             test("should validate directive argument name, when used with other directives", () => {
                 const jwtType = `
-                    type MyJWT  @jwtPayload {
+                    type MyJWT  @jwt {
                         sub: String
                     }
                 `;
@@ -1485,9 +1476,9 @@ describe("schema validation", () => {
                         name: String!
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1606,7 +1597,7 @@ describe("schema validation", () => {
         describe("on INTERFACE", () => {
             test("should error", () => {
                 const jwtType = `
-                    type MyJWT  @jwtPayload {
+                    type MyJWT  @jwt {
                         myClaim: String
                     }
                 `;
@@ -1617,7 +1608,7 @@ describe("schema validation", () => {
                         name: String!
                     }
 
-                    interface Member @authentication(operations: [CREATE], jwtPayload: { myClaim: "test" }) {
+                    interface Member @authentication(operations: [CREATE], jwt: { myClaim: "test" }) {
                         id: ID!
                     }
 
@@ -1626,10 +1617,10 @@ describe("schema validation", () => {
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1644,7 +1635,7 @@ describe("schema validation", () => {
         describe("on OBJECT_EXTENSION", () => {
             test("should not returns errors when is correctly used", () => {
                 const jwtType = `
-                    type MyJWT  @jwtPayload {
+                    type MyJWT  @jwt {
                         sub: String
                     }
                 `;
@@ -1655,25 +1646,25 @@ describe("schema validation", () => {
                         id: ID!
                         name: String!
                     }
-                    extend type User @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                    extend type User @authentication(operations: [CREATE], jwt: { sub: "test" })
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
             test("should returns errors when used correctly in both type and extension", () => {
                 const jwtType = `
-                    type MyJWT  @jwtPayload {
+                    type MyJWT  @jwt {
                         sub: String
                     }
                 `;
 
                 const userDocument = gql`
                     ${jwtType}
-                    type User @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
@@ -1682,13 +1673,13 @@ describe("schema validation", () => {
                         id: ID!
                         name: String!
                     }
-                    extend type User @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                    extend type User @authentication(operations: [CREATE], jwt: { sub: "test" })
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1701,7 +1692,7 @@ describe("schema validation", () => {
 
             test("should returns errors when used correctly in both a type field and an extension for the same field", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
@@ -1709,7 +1700,7 @@ describe("schema validation", () => {
                     ${jwtType}
                     type User {
                         id: ID!
-                        name: String! @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                        name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
                     }
 
                     type Post {
@@ -1717,13 +1708,13 @@ describe("schema validation", () => {
                         name: String!
                     }
                     extend type User {
-                        name: String! @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                        name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1736,13 +1727,13 @@ describe("schema validation", () => {
 
             test("should not returns errors when used correctly in both type and an extension field", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
@@ -1752,25 +1743,25 @@ describe("schema validation", () => {
                         name: String!
                     }
                     extend type User {
-                        name: String! @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                        name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
             test("should not returns errors when used correctly in multiple extension fields", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
@@ -1780,26 +1771,26 @@ describe("schema validation", () => {
                         name: String!
                     }
                     extend type User {
-                        id: ID! @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
-                        name: String! @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                        id: ID! @authentication(operations: [CREATE], jwt: { sub: "test" })
+                        name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
             test("should not returns errors when used correctly in different type and field across several extensions", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
@@ -1810,17 +1801,17 @@ describe("schema validation", () => {
                     }
 
                     extend type User {
-                        name: String! @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                        name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
                     }
 
                     extend type User {
-                        id: String! @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                        id: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1872,7 +1863,7 @@ describe("schema validation", () => {
 
             test("validation should works when used with other directives", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
@@ -1882,14 +1873,12 @@ describe("schema validation", () => {
                         id: ID!
                         name: String!
                     }
-                    extend type User
-                        @plural(value: "Users")
-                        @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                    extend type User @plural(value: "Users") @authentication(operations: [CREATE], jwt: { sub: "test" })
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1917,7 +1906,7 @@ describe("schema validation", () => {
         describe("on INTERFACE_EXTENSION", () => {
             test("should error", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
@@ -1931,16 +1920,16 @@ describe("schema validation", () => {
                     interface Member {
                         id: ID!
                     }
-                    extend interface Member @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                    extend interface Member @authentication(operations: [CREATE], jwt: { sub: "test" })
 
                     type Post {
                         author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
                     }
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1955,23 +1944,23 @@ describe("schema validation", () => {
         describe("mixed usage", () => {
             test("should not returns errors when used correctly in several place", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
 
-                    type Post @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type Post @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
-                        name: String! @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                        name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
                         author: User!
                             @relationship(type: "HAS_AUTHOR", direction: IN)
-                            @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                            @authentication(operations: [CREATE], jwt: { sub: "test" })
                     }
 
                     type Document implements File {
@@ -1983,33 +1972,33 @@ describe("schema validation", () => {
                         name: String
                     }
 
-                    extend type Document @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                    extend type Document @authentication(operations: [CREATE], jwt: { sub: "test" })
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
             });
             test("should returns errors when incorrectly used in several place", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
 
-                    type Post @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type Post @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
-                        name: String! @authentication(ops: [CREATE], jwtPayload: { sub: "test" })
+                        name: String! @authentication(ops: [CREATE], jwt: { sub: "test" })
                         author: User!
                             @relationship(type: "HAS_AUTHOR", direction: IN)
-                            @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                            @authentication(operations: [CREATE], jwt: { sub: "test" })
                     }
 
                     type Document implements File {
@@ -2021,12 +2010,12 @@ describe("schema validation", () => {
                         name: String
                     }
 
-                    extend type Document @authentication(operations: [CREATE], jwtPayload: { sub: "test" })
+                    extend type Document @authentication(operations: [CREATE], jwt: { sub: "test" })
                 `;
 
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwtPayload });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -2037,7 +2026,7 @@ describe("schema validation", () => {
         describe("with federated schema", () => {
             test("should not returns errors when is correctly used", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
@@ -2045,7 +2034,7 @@ describe("schema validation", () => {
                     ${jwtType}
                     extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
 
-                    type User @shareable @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @shareable @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
@@ -2055,7 +2044,7 @@ describe("schema validation", () => {
                         author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const subgraph = new Subgraph(userDocument);
                 const { directives, types } = subgraph.getValidationDefinitions();
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -2066,14 +2055,14 @@ describe("schema validation", () => {
                         augmentedDocument,
                         additionalDirectives: directives,
                         additionalTypes: types,
-                        jwtPayload,
+                        jwt,
                     });
                 expect(executeValidate).not.toThrow();
             });
 
             test("should not returns errors when is correctly used, with specifiedDirective", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
@@ -2081,7 +2070,7 @@ describe("schema validation", () => {
                     ${jwtType}
                     extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
 
-                    type User @shareable @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @shareable @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String! @deprecated(reason: "name is deprecated")
                     }
@@ -2091,7 +2080,7 @@ describe("schema validation", () => {
                         author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const subgraph = new Subgraph(userDocument);
                 const { directives, types } = subgraph.getValidationDefinitions();
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -2102,14 +2091,14 @@ describe("schema validation", () => {
                         augmentedDocument,
                         additionalDirectives: directives,
                         additionalTypes: types,
-                        jwtPayload,
+                        jwt,
                     });
                 expect(executeValidate).not.toThrow();
             });
 
             test("should not returns errors when used correctly in several place", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
@@ -2117,17 +2106,17 @@ describe("schema validation", () => {
                     ${jwtType}
                     extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
 
-                    type User @shareable @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @shareable @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
 
-                    type Post @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                    type Post @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         content: String!
                         author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const subgraph = new Subgraph(userDocument);
                 const { directives, types } = subgraph.getValidationDefinitions();
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -2138,7 +2127,7 @@ describe("schema validation", () => {
                         augmentedDocument,
                         additionalDirectives: directives,
                         additionalTypes: types,
-                        jwtPayload,
+                        jwt,
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -2180,7 +2169,7 @@ describe("schema validation", () => {
 
             test("validation should works when used with other directives", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
@@ -2191,7 +2180,7 @@ describe("schema validation", () => {
                     type User
                         @plural(value: "Users")
                         @shareable
-                        @authentication(operations: [CREATE], jwtPayload: { sub: "test" }) {
+                        @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
@@ -2201,7 +2190,7 @@ describe("schema validation", () => {
                         author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const subgraph = new Subgraph(userDocument);
                 const { directives, types } = subgraph.getValidationDefinitions();
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -2212,14 +2201,14 @@ describe("schema validation", () => {
                         augmentedDocument,
                         additionalDirectives: directives,
                         additionalTypes: types,
-                        jwtPayload,
+                        jwt,
                     });
                 expect(executeValidate).not.toThrow();
             });
 
             test("should validate directive argument name, when used with other directives", () => {
                 const jwtType = `
-                type MyJWT  @jwtPayload {
+                type MyJWT  @jwt {
                     sub: String
                 }
             `;
@@ -2227,10 +2216,7 @@ describe("schema validation", () => {
                     extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
 
                     ${jwtType}
-                    type User
-                        @plural(value: "Users")
-                        @shareable
-                        @authentication(ops: [CREATE], jwtPayload: { sub: "test" }) {
+                    type User @plural(value: "Users") @shareable @authentication(ops: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
@@ -2240,7 +2226,7 @@ describe("schema validation", () => {
                         author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
                     }
                 `;
-                const jwtPayload = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const subgraph = new Subgraph(userDocument);
                 const { directives, types } = subgraph.getValidationDefinitions();
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
@@ -2251,7 +2237,7 @@ describe("schema validation", () => {
                         augmentedDocument,
                         additionalDirectives: directives,
                         additionalTypes: types,
-                        jwtPayload,
+                        jwt,
                     });
 
                 const errors = getError(executeValidate);
