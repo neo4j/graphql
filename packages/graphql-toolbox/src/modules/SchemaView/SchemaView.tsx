@@ -17,38 +17,23 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
 
-import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
-import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
-import { bracketMatching, foldGutter, foldKeymap, indentOnInput } from "@codemirror/language";
-import { lintKeymap } from "@codemirror/lint";
-import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
-import { EditorState, StateEffect } from "@codemirror/state";
-import {
-    drawSelection,
-    dropCursor,
-    EditorView,
-    highlightActiveLine,
-    highlightSpecialChars,
-    keymap,
-    lineNumbers,
-} from "@codemirror/view";
+import type { EditorView } from "@codemirror/view";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { Banner } from "@neo4j-ndl/react";
-import { graphql, updateSchema } from "cm6-graphql";
+import { updateSchema } from "cm6-graphql";
 import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
-import { dracula, tomorrow } from "thememirror";
 
 import { rudimentaryTypeDefinitionsAnalytics } from "../../analytics/analytics";
 import { tracking } from "../../analytics/tracking";
-import { DEFAULT_DATABASE_NAME, DEFAULT_TYPE_DEFS } from "../../constants";
+import { DEFAULT_DATABASE_NAME } from "../../constants";
 import { AppSettingsContext } from "../../contexts/appsettings";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
-import { Theme, ThemeContext } from "../../contexts/theme";
+import { ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 import type { Favorite } from "../../types";
 import { ConstraintState } from "../../types";
@@ -60,7 +45,6 @@ import { IntrospectionPrompt } from "./IntrospectionPrompt";
 import { SchemaEditor } from "./SchemaEditor";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { SchemaSettings } from "./SchemaSettings";
-import { getSchemaForLintAndAutocompletion } from "./utils";
 
 export interface Props {
     onSchemaChange: (schema: GraphQLSchema) => void;
@@ -79,67 +63,6 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
     const favorites = useStore((store) => store.favorites);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
     const [editorView, setEditorView] = useState<EditorView | null>(null);
-    const storedTypeDefs = useStore.getState().typeDefinitions || DEFAULT_TYPE_DEFS;
-
-    const extensions = [
-        lineNumbers(),
-        highlightSpecialChars(),
-        highlightActiveLine(),
-        bracketMatching(),
-        closeBrackets(),
-        history(),
-        dropCursor(),
-        drawSelection(),
-        indentOnInput(),
-        autocompletion({ defaultKeymap: true, maxRenderedOptions: 5 }),
-        highlightSelectionMatches(),
-        EditorView.lineWrapping,
-        keymap.of([
-            indentWithTab,
-            ...closeBracketsKeymap,
-            ...defaultKeymap,
-            ...searchKeymap,
-            ...historyKeymap,
-            ...foldKeymap,
-            ...completionKeymap,
-            ...lintKeymap,
-        ]),
-        foldGutter({
-            closedText: "▶",
-            openText: "▼",
-        }),
-        graphql(getSchemaForLintAndAutocompletion()),
-        theme.theme === Theme.LIGHT ? tomorrow : dracula,
-    ];
-
-    useEffect(() => {
-        if (elementRef.current === null) {
-            return;
-        }
-
-        const state = EditorState.create({
-            doc: storedTypeDefs,
-            extensions,
-        });
-
-        const view = new EditorView({
-            state,
-            parent: elementRef.current,
-        });
-
-        setEditorView(view);
-
-        return () => {
-            view.destroy();
-            setEditorView(null);
-        };
-    }, [elementRef.current]);
-
-    useEffect(() => {
-        if (editorView) {
-            editorView.dispatch({ effects: StateEffect.reconfigure.of(extensions) });
-        }
-    }, [theme.theme, extensions]);
 
     const formatTheCode = (): void => {
         if (!editorView) return;
@@ -312,6 +235,8 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                                 introspect={onClickIntrospect}
                                 saveAsFavorite={saveAsFavorite}
                                 onSubmit={onSubmit}
+                                setEditorView={setEditorView}
+                                editorView={editorView}
                             />
                             {!appSettings.hideProductUsageMessage ? (
                                 <Banner
