@@ -38,7 +38,6 @@ import { ConstraintState } from "../../types";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
-import { ActionElementsBar } from "./ActionElementsBar";
 import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
 import { SchemaEditor } from "./SchemaEditor";
@@ -46,11 +45,10 @@ import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { SchemaSettings } from "./SchemaSettings";
 
 export interface Props {
-    hasSchema: boolean;
-    onChange: (schema: GraphQLSchema) => void;
+    onSchemaChange: (schema: GraphQLSchema) => void;
 }
 
-export const SchemaView = ({ hasSchema, onChange }: Props) => {
+export const SchemaView = ({ onSchemaChange }: Props) => {
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const appSettings = useContext(AppSettingsContext);
@@ -130,7 +128,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 const analyticsResults = rudimentaryTypeDefinitionsAnalytics(typeDefs);
                 tracking.trackBuildSchema({ screen: "type definitions", ...analyticsResults });
 
-                onChange(schema);
+                onSchemaChange(schema);
             } catch (error) {
                 setError(error as GraphQLError);
             } finally {
@@ -203,12 +201,8 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 />
             ) : null}
             <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
-                <div className="h-12 w-full bg-white">
-                    {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-                    <ActionElementsBar hasSchema={hasSchema} loading={loading} onSubmit={onSubmit} />
-                </div>
                 <div className="flex">
-                    <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100 overflow-y-auto">
+                    <div className="h-content-container flex justify-start w-96 bg-white border-t border-gray-100 overflow-y-auto">
                         <div className="w-full">
                             <SchemaSettings />
                             <hr />
@@ -225,6 +219,8 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                                 formatTheCode={formatTheCode}
                                 introspect={onClickIntrospect}
                                 saveAsFavorite={saveAsFavorite}
+                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                onSubmit={onSubmit}
                             />
                             {!appSettings.hideProductUsageMessage ? (
                                 <Banner
