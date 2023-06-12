@@ -16,7 +16,8 @@ type Movie {
 
 In some cases, it may be advisable to reduce the scope of the API produced. Whatever the reason is to reduce the size of the schema, improve the performance, or limit access to unwanted operations, this section provides all the information needed to configure the API produced.
 
-From the type definitions above, let's say we want to prevent users from querying `movies` in the Neo4j Database. To do that, let's bring some changes to the initial type definitions:
+Consider the previously mentioned type definitions.
+If you want to prevent users from querying `movies` in the Neo4j Database, you need to make the following the changes:
 
 [source, graphql, indent=0]
 ----

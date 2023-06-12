@@ -153,6 +153,7 @@ input MovieUpdateInput {
 This means the description can be set on creation, but it will not be available on update operations.
 
 === `@settable` with Relationships
+
 This definition can be used along with relationship fields. 
 When an operation over a field is disabled this way, that relationship will not be available on top-level operations. 
 For example:
@@ -187,7 +188,8 @@ mutation {
 
 == `@relationship`
 
-There are several operations available for every relationship created using the directive `@relationship` as `create`, `connect`,  `disconnect`, `connectOrCreate`, `delete`, and `aggregate`. Not always these operations are needed, in fact, `@relationship` allows us to define which operations should be available for a relationship using the arguments `nestedOperations`, and `aggregate`.
+There are several operations available for every relationship created using the directive `@relationship` as `create`, `connect`, `disconnect`, `connectOrCreate`, `delete`, and `aggregate`. 
+However, these operations are not always needed as the `@relationship` directive allows you to define which operations should be available for a relationship by using the arguments `nestedOperations` and `aggregate`.
 
 === Definition
 
@@ -212,12 +214,15 @@ directive @relationship(
 ) on FIELD_DEFINITION
 ----
 
-NOTE: Please note that aggregate default value will be true in the 4.0.0 version of the library. See xref::guides/v4-migration/index.adoc#_relationship_changes[`@relationship changes`]
+[NOTE]
+====
+In version 4.0.0, `aggregate` is `true` as default.
+See xref::guides/v4-migration/index.adoc#_relationship_changes[`@relationship changes`] for more information.
+====
 
 === Usage
 
-
-Disable aggregation and enable only create as nested operations:
+Disable `aggregate` and enable only `create` as nested operations:
 
 [source, graphql, indent=0]
 ----
@@ -235,7 +240,7 @@ type Actor {
 
 == `@readonly` label:deprecated[]
 
-With this directive, fields will only be featured in mutations for creating in and object types for querying.
+With this directive, fields will only be featured in mutations for creating and in object types for querying.
 It is not mutable after creation.
 
 [NOTE]

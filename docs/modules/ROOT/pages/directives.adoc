@@ -183,9 +183,10 @@ The `@unique` directive indicates that there should be a uniqueness constraint i
 
 Reference: xref::type-definitions/indexes-and-constraints.adoc#type-definitions-constraints-unique[Unique node property constraints]
 
-== `@writeonly`
+== `@writeonly` label:deprecated[]
 
-NOTE: **@writeonly** directive is deprecated. Please use the xref::type-definitions/schema-configuration/field-configuration.adoc#_selectable[`@selectable`] directive.
+This directive is deprecated. 
+Use the xref::type-definitions/schema-configuration/field-configuration.adoc#_selectable[`@selectable`] directive instead.
 
 The `@writeonly` directive marks fields as write-only.
 
