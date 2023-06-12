@@ -122,6 +122,4 @@ base.test.describe("URL query parameters", () => {
         selectedDatabase = await topBarPage.getSelectedDatabase();
         expect(selectedDatabase).toEqual("neo4j");
     });
-
-    // TODO: add E2E tests
 });
