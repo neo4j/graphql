@@ -2770,11 +2770,6 @@ describe("@settable", () => {
                   Series: [ActorActedInSeriesCreateFieldInput!]
                 }
 
-                input ActorActedInCreateInput {
-                  Movie: ActorActedInMovieFieldInput
-                  Series: ActorActedInSeriesFieldInput
-                }
-
                 input ActorActedInDeleteInput {
                   Movie: [ActorActedInMovieDeleteFieldInput!]
                   Series: [ActorActedInSeriesDeleteFieldInput!]
@@ -2807,11 +2802,6 @@ describe("@settable", () => {
 
                 input ActorActedInMovieDisconnectFieldInput {
                   where: ActorActedInMovieConnectionWhere
-                }
-
-                input ActorActedInMovieFieldInput {
-                  connect: [ActorActedInMovieConnectFieldInput!]
-                  create: [ActorActedInMovieCreateFieldInput!]
                 }
 
                 input ActorActedInMovieUpdateConnectionInput {
@@ -2856,11 +2846,6 @@ describe("@settable", () => {
                   where: ActorActedInSeriesConnectionWhere
                 }
 
-                input ActorActedInSeriesFieldInput {
-                  connect: [ActorActedInSeriesConnectFieldInput!]
-                  create: [ActorActedInSeriesCreateFieldInput!]
-                }
-
                 input ActorActedInSeriesUpdateConnectionInput {
                   node: SeriesUpdateInput
                 }
@@ -2889,7 +2874,6 @@ describe("@settable", () => {
                 }
 
                 input ActorCreateInput {
-                  actedIn: ActorActedInCreateInput
                   name: String!
                 }
 

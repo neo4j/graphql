@@ -218,15 +218,12 @@ export function createRelationshipInterfaceFields({
                 });
             }
         });
-
-        if (rel.settableOptions.onCreate) {
-            // Interface CreateInput does not require relationship input fields
-            // These are specified on the concrete nodes.
-            if (!(composeNode instanceof InterfaceTypeComposer)) {
-                nodeCreateInput.addFields({
-                    [rel.fieldName]: nodeFieldInput,
-                });
-            }
+        // Interface CreateInput does not require relationship input fields
+        // These are specified on the concrete nodes.
+        if (rel.settableOptions.onCreate && !(composeNode instanceof InterfaceTypeComposer)) {
+            nodeCreateInput.addFields({
+                [rel.fieldName]: nodeFieldInput,
+            });
         }
     }
 }

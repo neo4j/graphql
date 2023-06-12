@@ -402,7 +402,7 @@ export function createRelationshipUnionFields({
             [rel.fieldName]: unionCreateFieldInput,
         });
     }
-    if (!(composeNode instanceof InterfaceTypeComposer) && unionCreateInput) {
+    if (rel.settableOptions.onCreate && !(composeNode instanceof InterfaceTypeComposer) && unionCreateInput) {
         nodeCreateInput.addFields({
             [rel.fieldName]: unionCreateInput,
         });
