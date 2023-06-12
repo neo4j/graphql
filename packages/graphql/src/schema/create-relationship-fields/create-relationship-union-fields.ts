@@ -150,6 +150,7 @@ export function createRelationshipUnionFields({
             nestedOperations.has(RelationshipNestedOperationsOption.CREATE) ||
             connectAndCreateAndUniqueFields
         ) {
+            // Created as {} because the connect/create fields are added later
             fieldInputFields = {};
         }
 
