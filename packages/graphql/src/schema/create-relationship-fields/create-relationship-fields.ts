@@ -43,7 +43,6 @@ interface CreateRelationshipFieldsArgs {
     schemaComposer: SchemaComposer;
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
     sourceName: string;
-    unionTypes: UnionTypeDefinitionNode[];
     nodes: Node[];
     relationshipPropertyFields: Map<string, ObjectFields>;
     subgraph?: Subgraph;
@@ -56,7 +55,6 @@ function createRelationshipFields({
     composeNode,
     sourceName,
     nodes,
-    unionTypes,
     relationshipPropertyFields,
     subgraph,
 }: CreateRelationshipFieldsArgs): void {
@@ -91,7 +89,6 @@ function createRelationshipFields({
                 composeNode,
                 sourceName,
                 schemaComposer,
-                unionTypes,
                 hasNonGeneratedProperties,
                 hasNonNullNonGeneratedProperties,
             });

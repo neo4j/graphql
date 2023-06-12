@@ -34,7 +34,6 @@ export function createRelationshipUnionFields({
     composeNode,
     sourceName,
     schemaComposer,
-    unionTypes,
     hasNonGeneratedProperties,
     hasNonNullNonGeneratedProperties,
 }: {
@@ -43,7 +42,6 @@ export function createRelationshipUnionFields({
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
     sourceName: string;
     schemaComposer: SchemaComposer;
-    unionTypes: UnionTypeDefinitionNode[];
     hasNonGeneratedProperties: boolean;
     hasNonNullNonGeneratedProperties: boolean;
 }) {
@@ -63,12 +61,6 @@ export function createRelationshipUnionFields({
         const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
 
         if (rel.selectableOptions.onRead) {
-            schemaComposer.addTypeDefs(
-                print(unionTypes.find((n) => n.name.value === rel.typeMeta.name) as UnionTypeDefinitionNode)
-            );
-            schemaComposer.addTypeDefs(
-                print(unionTypes.find((n) => n.name.value === rel.typeMeta.name) as UnionTypeDefinitionNode)
-            );
             composeNode.addFields({
                 [rel.fieldName]: {
                     type: rel.typeMeta.pretty,
