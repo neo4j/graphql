@@ -161,7 +161,7 @@ Reference: xref::type-definitions/schema-configuration/field-configuration.adoc#
 
 == `@settable`
 
-The `@settable` directive sets the availability of the input field on creation and update mutations. 
+The `@settable` directive sets the availability of fields on the create and update inputs. 
 
 Reference: xref::type-definitions/schema-configuration/field-configuration.adoc#_settable[`@settable`]
 

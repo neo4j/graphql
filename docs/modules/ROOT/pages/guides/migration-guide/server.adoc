@@ -80,7 +80,7 @@ type NameOfTypeToExclude @exclude {
   name: String
 }
 ----
-See more information regarding the above used xref::type-definitions/schema-configuration/index.adoc#type-definitions-schema-configuration-exclude[`@exclude`] directive.
+See more information about the xref::type-definitions/schema-configuration/index.adoc#type-definitions-schema-configuration-exclude[`@exclude`] directive.
 
 
 == Database Configuration

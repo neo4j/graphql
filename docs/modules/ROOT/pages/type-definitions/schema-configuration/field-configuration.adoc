@@ -65,7 +65,7 @@ This directive sets the availability of fields on queries and aggregations.
 It has two arguments:
 
 * **onRead**: If disabled, this field will not be available on queries and subscriptions.
-* **onAggregation**: If disabled, aggregations will not be available for this field.
+* **onAggregate**: If disabled, aggregations will not be available for this field.
 
 === Definition
 
@@ -154,8 +154,8 @@ This means the description can be set on creation, but it will not be available 
 
 === `@settable` with Relationships
 
-This definition can be used along with relationship fields. 
-When an operation over a field is disabled this way, that relationship will not be available on top-level operations. 
+This directive can be used along with relationship fields. 
+When an operation on a field is disabled this way, that relationship will not be available on top-level operations. 
 For example:
 
 [source, graphql, indent=0]
@@ -188,8 +188,11 @@ mutation {
 
 == `@relationship`
 
-There are several operations available for every relationship created using the directive `@relationship` as `create`, `connect`, `disconnect`, `connectOrCreate`, `delete`, and `aggregate`. 
-However, these operations are not always needed as the `@relationship` directive allows you to define which operations should be available for a relationship by using the arguments `nestedOperations` and `aggregate`.
+There are several nested operations available for every field created using the `@relationship` directive. These are `create`, `connect`, `disconnect`, `connectOrCreate`, `delete`. 
+
+However, these operations are not always needed as the `@relationship` directive allows you to define which operations should be available for a relationship by using the argument `nestedOperations`.
+
+Additionally, the `@relationship` directive causes fields to be added for nested aggregations. These can be disabled using the `aggregate` argument.
 
 === Definition
 
