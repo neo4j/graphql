@@ -67,7 +67,7 @@ export const GraphQLQueryEditor = ({ loading, buttons, editorView, setEditorView
         if (
             vu.docChanged &&
             // Fix echoing of the remote changes:
-            // If transaction is market as remote we don't have to call `onChange` handler again
+            // If transaction is marked as remote we don't have to call `onChange` handler again
             !vu.transactions.some((tr) => tr.annotation(External))
         ) {
             const doc = vu.state.doc;
