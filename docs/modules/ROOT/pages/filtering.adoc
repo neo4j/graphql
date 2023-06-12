@@ -132,6 +132,7 @@ Previously to enable to this filter the config option `enableRegex` was used, it
 
 > The nature of RegEx matching means that on an unprotected API, this could potentially be used to execute a ReDoS attack (https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) against the backing Neo4j database.
 
+[[array-operators]]
 === Array comparison
 
 The following two comparison operators are available on non-array fields, and accept an array argument:
