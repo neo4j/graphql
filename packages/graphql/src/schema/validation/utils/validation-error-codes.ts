@@ -16,22 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export class NoErrorThrownError extends Error {}
-export const getError = <TError extends Error>(call: () => unknown): TError => {
-    try {
-        call();
-        throw new NoErrorThrownError();
-    } catch (error: unknown) {
-        return error as TError;
-    }
-};
-
-export const getErrorAsync = async <TError>(call: () => unknown): Promise<TError> => {
-    try {
-        await call();
-        throw new NoErrorThrownError();
-    } catch (error: unknown) {
-        return error as Promise<TError>;
-    }
+export const VALIDATION_ERROR_CODES = {
+    AUTHORIZATION: "@neo4j/graphql:AUTHORIZATION_VALIDATION",
+    AUTHENTICATION: "@neo4j/graphql:AUTHENTICATION_VALIDATION",
 };
