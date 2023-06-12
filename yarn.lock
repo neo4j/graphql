@@ -1821,7 +1821,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-javascript@npm:^6.1.8":
+"@codemirror/lang-javascript@npm:6.1.8":
   version: 6.1.8
   resolution: "@codemirror/lang-javascript@npm:6.1.8"
   dependencies:
@@ -3418,7 +3418,7 @@ __metadata:
   dependencies:
     "@codemirror/autocomplete": 6.7.1
     "@codemirror/commands": 6.2.4
-    "@codemirror/lang-javascript": ^6.1.8
+    "@codemirror/lang-javascript": 6.1.8
     "@codemirror/language": 6.7.0
     "@graphiql/react": 0.17.6
     "@neo4j-ndl/base": 1.5.1
@@ -3436,7 +3436,7 @@ __metadata:
     autoprefixer: 10.4.14
     classnames: 2.3.2
     cm6-graphql: 0.0.8
-    codemirror: ^6.0.1
+    codemirror: 6.0.1
     compression-webpack-plugin: 10.0.0
     copy-webpack-plugin: 11.0.0
     cross-env: 7.0.3
@@ -8619,14 +8619,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror@npm:^5.65.3":
-  version: 5.65.12
-  resolution: "codemirror@npm:5.65.12"
-  checksum: 6fca4434ef781b0c393c0c24766c53a9a21e7bc5b48b22414032aa458574be5e6ec5d4d95e8d179769937c6c39a54564af8aebbf7f9dc289165bbcd0ae765be7
-  languageName: node
-  linkType: hard
-
-"codemirror@npm:^6.0.1":
+"codemirror@npm:6.0.1":
   version: 6.0.1
   resolution: "codemirror@npm:6.0.1"
   dependencies:
@@ -8638,6 +8631,13 @@ __metadata:
     "@codemirror/state": ^6.0.0
     "@codemirror/view": ^6.0.0
   checksum: 1a78f7077ac5801bdbff162aa0c61bf2b974603c7e9a477198c3ce50c789af674a061d7c293c58b73807eda345c2b5228c38ad2aabb9319d552d5486f785cbef
+  languageName: node
+  linkType: hard
+
+"codemirror@npm:^5.65.3":
+  version: 5.65.12
+  resolution: "codemirror@npm:5.65.12"
+  checksum: 6fca4434ef781b0c393c0c24766c53a9a21e7bc5b48b22414032aa458574be5e6ec5d4d95e8d179769937c6c39a54564af8aebbf7f9dc289165bbcd0ae765be7
   languageName: node
   linkType: hard
 
