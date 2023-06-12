@@ -23,7 +23,8 @@ import { closeBrackets } from "@codemirror/autocomplete";
 import { indentWithTab } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
 import { bracketMatching, foldGutter, indentOnInput } from "@codemirror/language";
-import { StateEffect } from "@codemirror/state";
+import { Annotation, StateEffect } from "@codemirror/state";
+import type { ViewUpdate } from "@codemirror/view";
 import {
     drawSelection,
     dropCursor,
@@ -37,7 +38,9 @@ import { dracula, tomorrow } from "thememirror";
 
 import type { Extension } from "../../components/Filename";
 import { FileName } from "../../components/Filename";
+import { EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
 import { Theme, ThemeContext } from "../../contexts/theme";
+import { useStore } from "../../store";
 import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 
 export interface Props {
@@ -52,10 +55,31 @@ export interface Props {
     onChange?: (json: string) => void;
 }
 
+const External = Annotation.define<boolean>();
+
 export const JSONEditor = (props: Props) => {
     const theme = useContext(ThemeContext);
+    const store = useStore();
     const elementRef = useRef<HTMLDivElement | null>(null);
     const [editorView, setEditorView] = useState<EditorView | null>(null);
+
+    // Taken from https://github.com/uiwjs/react-codemirror/blob/master/core/src/useCodeMirror.ts
+    const updateListener = EditorView.updateListener.of((vu: ViewUpdate) => {
+        if (
+            vu.docChanged &&
+            // Fix echoing of the remote changes:
+            // If transaction is marked as remote we don't have to call `onChange` handler again
+            !vu.transactions.some((tr) => tr.annotation(External))
+        ) {
+            const doc = vu.state.doc;
+            const value = doc.toString();
+            if (props.id === EDITOR_PARAMS_INPUT) {
+                store.updateVariables(value, useStore.getState().activeTabIndex);
+            } else if (props.id === EDITOR_RESPONSE_OUTPUT) {
+                store.updateResponse(value, useStore.getState().activeTabIndex);
+            }
+        }
+    });
 
     const extensions = [
         lineNumbers(),
@@ -74,6 +98,7 @@ export const JSONEditor = (props: Props) => {
         EditorView.lineWrapping,
         keymap.of([indentWithTab]),
         theme.theme === Theme.LIGHT ? tomorrow : dracula,
+        updateListener,
     ];
 
     useEffect(() => {
