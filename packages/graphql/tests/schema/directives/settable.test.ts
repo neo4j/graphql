@@ -5761,19 +5761,6 @@ describe("@settable", () => {
                   node: Production!
                 }
 
-                input ActorActedInUpdateConnectionInput {
-                  node: ProductionUpdateInput
-                }
-
-                input ActorActedInUpdateFieldInput {
-                  connect: [ActorActedInConnectFieldInput!]
-                  create: [ActorActedInCreateFieldInput!]
-                  delete: [ActorActedInDeleteFieldInput!]
-                  disconnect: [ActorActedInDisconnectFieldInput!]
-                  update: ActorActedInUpdateConnectionInput
-                  where: ActorActedInConnectionWhere
-                }
-
                 type ActorAggregateSelection {
                   count: Int!
                   name: StringAggregateSelectionNonNullable!
@@ -5822,7 +5809,6 @@ describe("@settable", () => {
                 }
 
                 input ActorUpdateInput {
-                  actedIn: [ActorActedInUpdateFieldInput!]
                   name: String
                 }
 
@@ -6002,11 +5988,6 @@ describe("@settable", () => {
                   Series: SeriesCreateInput
                 }
 
-                input ProductionImplementationsUpdateInput {
-                  Movie: MovieUpdateInput
-                  Series: SeriesUpdateInput
-                }
-
                 input ProductionImplementationsWhere {
                   Movie: MovieWhere
                   Series: SeriesWhere
@@ -6027,12 +6008,6 @@ describe("@settable", () => {
                 input ProductionSort {
                   description: SortDirection
                   title: SortDirection
-                }
-
-                input ProductionUpdateInput {
-                  _on: ProductionImplementationsUpdateInput
-                  description: String
-                  title: String
                 }
 
                 input ProductionWhere {

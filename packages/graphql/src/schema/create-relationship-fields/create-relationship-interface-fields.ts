@@ -160,9 +160,11 @@ export function createRelationshipInterfaceFields({
             where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere`,
         });
 
-        nodeUpdateInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? updateFieldInput.NonNull.List : updateFieldInput,
-        });
+        if (rel.settableOptions.onUpdate) {
+            nodeUpdateInput.addFields({
+                [rel.fieldName]: rel.typeMeta.array ? updateFieldInput.NonNull.List : updateFieldInput,
+            });
+        }
     }
 
     if (!rel.writeonly) {
