@@ -29,6 +29,7 @@ import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
 import { Neo4jGraphQLError } from "../classes";
 import { filterByValues } from "./authorization/utils/filter-by-values";
 import { applyAuthentication } from "./authorization/check-authentication";
+import { compileCypher } from "../utils/compile-cypher";
 
 export function translateTopLevelCypher({
     context,
@@ -60,7 +61,7 @@ export function translateTopLevelCypher({
     const authorizationAnnotation = operationField.annotations.authorization;
     if (authorizationAnnotation) {
         const authorizationResults = authorizationAnnotation.validate?.map((rule) =>
-            filterByValues(rule.where, { jwtPayload: context.authorization.jwt })
+            filterByValues(rule.where, { jwt: context.authorization.jwt })
         );
         if (authorizationResults?.every((result) => result === false)) {
             throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
@@ -170,7 +171,7 @@ export function translateTopLevelCypher({
                         new Cypher.RawCypher((env) => {
                             return innerNodePartialProjection
                                 .concat(`| this { __resolveType: "${node.name}", `)
-                                .concat(str.getCypher(env).replace("{", ""))
+                                .concat(compileCypher(str, env).replace("{", ""))
                                 .concat("]");
                         })
                     );
@@ -179,7 +180,7 @@ export function translateTopLevelCypher({
         });
 
         projectionStr = new Cypher.RawCypher(
-            (env) => `${headStrs.map((headStr) => headStr.getCypher(env)).join(" + ")}`
+            (env) => `${headStrs.map((headStr) => compileCypher(headStr, env)).join(" + ")}`
         );
     }
 
@@ -253,10 +254,10 @@ export function translateTopLevelCypher({
         }
 
         if (authPredicates.length) {
-            cypherStrs.push(`WHERE ${Cypher.and(...authPredicates).getCypher(env)}`);
+            cypherStrs.push(`WHERE ${compileCypher(Cypher.and(...authPredicates), env)}`);
         }
 
-        const subqueriesStr = projectionSubquery ? `\n${projectionSubquery.getCypher(env)}` : "";
+        const subqueriesStr = projectionSubquery ? `\n${compileCypher(projectionSubquery, env)}` : "";
         if (subqueriesStr) cypherStrs.push(subqueriesStr);
 
         if (field.isScalar || field.isEnum) {

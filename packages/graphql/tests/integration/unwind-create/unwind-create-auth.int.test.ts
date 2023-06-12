@@ -239,7 +239,7 @@ describe("unwind-create field-level auth rules", () => {
             const User = new UniqueType("User");
 
             const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
@@ -248,7 +248,7 @@ describe("unwind-create field-level auth rules", () => {
                 name: String
             }
             extend type ${User} {
-                id: ID @authorization(validate: [{ operations: [CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
+                id: ID @authorization(validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }])
             }
             `;
 
@@ -301,7 +301,7 @@ describe("unwind-create field-level auth rules", () => {
             const User = new UniqueType("User");
 
             const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
@@ -310,7 +310,7 @@ describe("unwind-create field-level auth rules", () => {
                 name: String
             }
             extend type ${User} {
-                id: ID @authorization(validate: [{ operations: [CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
+                id: ID @authorization(validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }])
             }
             `;
 

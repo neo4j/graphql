@@ -1564,12 +1564,12 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @authorization(validate: [{ where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
+                @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                     name: String!
                     born: Int!
                     actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -1649,12 +1649,12 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @authorization(validate: [{ where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
+                @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                     name: String!
                     born: Int!
                     actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -1851,12 +1851,12 @@ describe("@fulltext directive", () => {
             }
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type ${personType.name} @fulltext(indexes: [{ indexName: "${personType.name}Index", fields: ["name"] }])
-                @authorization(validate: [{ operations: [READ], where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
+                @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                     name: String!
                     born: Int!
                     actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)

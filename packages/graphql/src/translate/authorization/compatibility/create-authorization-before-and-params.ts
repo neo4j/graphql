@@ -22,6 +22,7 @@ import type { Context, Node } from "../../../types";
 import type { AuthorizationOperation } from "../../../types/authorization";
 import { createAuthorizationBeforePredicate } from "../create-authorization-before-predicate";
 import type { NodeMap } from "../types/node-map";
+import { compileCypher } from "../../../utils/compile-cypher";
 
 export type AuthorizationBeforeAndParams = {
     cypher: string;
@@ -68,7 +69,7 @@ export function createAuthorizationBeforeAndParams({
 
         if (predicate) {
             const predicateCypher = new Cypher.RawCypher((env) => {
-                return predicate.getCypher(env);
+                return compileCypher(predicate, env);
             });
             const { cypher, params } = predicateCypher.build("authorization_");
             result.cypher = cypher;

@@ -74,14 +74,14 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type ${typeProduct} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [READ],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }]) {
                     id: ID
                     name: String
@@ -124,7 +124,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -133,7 +133,7 @@ describe("auth/roles", () => {
                     password: String @authorization(validate: [{
                         when: [BEFORE],
                         operations: [READ],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
                 }
             `;
@@ -174,7 +174,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -182,7 +182,7 @@ describe("auth/roles", () => {
                     url: String @authorization(validate: [{
                         when: [BEFORE],
                         operations: [READ],
-                        where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
+                        where: { jwt: { roles_INCLUDES: "super-admin" } }
                     }])
                 }
                 type ${typeUser} {
@@ -195,7 +195,7 @@ describe("auth/roles", () => {
                     @authorization(validate: [{
                         when: [BEFORE],
                         operations: [READ, CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, DELETE],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
 
                 extend type ${typeUser} {
@@ -204,7 +204,7 @@ describe("auth/roles", () => {
                         @authorization(validate: [{
                             when: [BEFORE],
                             operations: [READ],
-                            where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
+                            where: { jwt: { roles_INCLUDES: "super-admin" } }
                         }])
                 }
             `;
@@ -265,14 +265,14 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type NotANode @authorization(validate: [{
                     when: [BEFORE],
                     operations: [READ],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }]) {
                     name: String
                 }
@@ -316,14 +316,14 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type ${typeUser} @authorization(validate: [{
                     when: [AFTER],
                     operations: [CREATE],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }]) {
                     id: ID
                     name: String
@@ -368,7 +368,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -377,7 +377,7 @@ describe("auth/roles", () => {
                     password: String @authorization(validate: [{
                         when: [AFTER],
                         operations: [CREATE],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
                 }
             `;
@@ -420,7 +420,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -429,7 +429,7 @@ describe("auth/roles", () => {
                     password: String @authorization(validate: [{
                         when: [AFTER],
                         operations: [CREATE],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
                 }
             `;
@@ -474,14 +474,14 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type ${typeUser} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [UPDATE],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }]) {
                     id: ID
                     name: String
@@ -526,7 +526,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -535,7 +535,7 @@ describe("auth/roles", () => {
                     password: String @authorization(validate: [{
                         when: [BEFORE],
                         operations: [UPDATE],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
                 }
             `;
@@ -580,7 +580,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -600,13 +600,13 @@ describe("auth/roles", () => {
                     @authorization(validate: [{
                         when: [BEFORE],
                         operations: [CREATE_RELATIONSHIP],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
 
                 extend type ${typePost} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [CREATE_RELATIONSHIP],
-                    where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
+                    where: { jwt: { roles_INCLUDES: "super-admin" } }
                 }])
             `;
 
@@ -661,7 +661,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -688,7 +688,7 @@ describe("auth/roles", () => {
                 @authorization(validate: [{
                     when: [BEFORE],
                     operations: [CREATE_RELATIONSHIP],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }])
             `;
 
@@ -760,7 +760,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -780,13 +780,13 @@ describe("auth/roles", () => {
                     @authorization(validate: [{
                         when: [BEFORE],
                         operations: [DELETE_RELATIONSHIP],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
 
                 extend type ${typePost} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [DELETE_RELATIONSHIP],
-                    where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
+                    where: { jwt: { roles_INCLUDES: "super-admin" } }
                 }])
             `;
 
@@ -841,7 +841,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -868,7 +868,7 @@ describe("auth/roles", () => {
                     @authorization(validate: [{
                         when: [BEFORE],
                         operations: [DELETE_RELATIONSHIP],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
             `;
 
@@ -939,14 +939,14 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type ${typeUser} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [DELETE],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }]) {
                     id: ID
                     name: String
@@ -989,7 +989,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1002,7 +1002,7 @@ describe("auth/roles", () => {
                 type ${typePost} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [DELETE],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }]) {
                     id: ID
                     name: String
@@ -1059,7 +1059,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1071,7 +1071,7 @@ describe("auth/roles", () => {
                 type Query {
                     ${typeUser.plural}: [${typeUser}] @cypher(statement: "MATCH (u:${typeUser}) RETURN u AS u", columnName: "u") @authorization(validate: [{
                         when: [BEFORE],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
                 }
             `;
@@ -1112,7 +1112,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1124,7 +1124,7 @@ describe("auth/roles", () => {
                 type Mutation {
                     ${typeUser.operations.create}: ${typeUser} @cypher(statement: "CREATE (u:${typeUser}) RETURN u AS u", columnName: "u") @authorization(validate: [{
                         when: [BEFORE],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
                 }
             `;
@@ -1165,7 +1165,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1179,7 +1179,7 @@ describe("auth/roles", () => {
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${typeHistory}) RETURN h AS h", columnName: "h")
                         @authorization(validate: [{
                             when: [BEFORE],
-                            where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                            where: { jwt: { roles_INCLUDES: "admin" } }
                         }])
                 }
             `;
@@ -1226,7 +1226,7 @@ describe("auth/roles", () => {
             const type = new UniqueType("User");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     id: String!
                     roles: [String!]!
                 }
@@ -1241,10 +1241,10 @@ describe("auth/roles", () => {
                     @authorization(
                         filter: [
                             {
-                                where: { node: { id: "$jwt.id" }, jwtPayload: { roles_INCLUDES: "user" } }
+                                where: { node: { id: "$jwt.id" }, jwt: { roles_INCLUDES: "user" } }
                             }, 
                             {
-                                where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                                where: { jwt: { roles_INCLUDES: "admin" } }
                             }
                         ]
                     )
@@ -1323,7 +1323,7 @@ describe("auth/roles", () => {
             const type = new UniqueType("User");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]! @jwtClaim(path: "https://auth0\\\\.mysite\\\\.com/claims.https://auth0\\\\.mysite\\\\.com/claims/roles")
                 }
 
@@ -1338,7 +1338,7 @@ describe("auth/roles", () => {
                         validate: [
                             {
                                 when: [BEFORE],
-                                where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                                where: { jwt: { roles_INCLUDES: "admin" } }
                             }
                         ]
                     )

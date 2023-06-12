@@ -46,7 +46,7 @@ describe("AuthorizationAnnotation", () => {
                 operations: AuthorizationFilterOperationRule,
                 requireAuthentication: true,
                 where: {
-                    jwtPayload: undefined,
+                    jwt: undefined,
                     node: filterRule.where.node,
                 },
             },
@@ -58,7 +58,7 @@ describe("AuthorizationAnnotation", () => {
                 when: ["BEFORE", "AFTER"],
                 requireAuthentication: true,
                 where: {
-                    jwtPayload: undefined,
+                    jwt: undefined,
                     node: validateRule.where.node,
                 },
             },
@@ -81,7 +81,7 @@ describe("AuthorizationFilterRule", () => {
         ]);
         expect(authFilterRule.requireAuthentication).toBeTrue();
         expect(authFilterRule.where).toEqual({
-            jwtPayload: undefined,
+            jwt: undefined,
             node: rule.where.node,
         });
     });
@@ -104,7 +104,7 @@ describe("AuthorizationValidateRule", () => {
         ]);
         expect(authValidateRule.requireAuthentication).toBeTrue();
         expect(authValidateRule.where).toEqual({
-            jwtPayload: undefined,
+            jwt: undefined,
             node: rule.where.node,
         });
         expect(authValidateRule.when).toEqual(["BEFORE"]);

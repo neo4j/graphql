@@ -25,7 +25,6 @@ import { createAuthorizationFilterPredicate } from "./rules/create-authorization
 import { createAuthorizationValidatePredicate } from "./rules/create-authorization-validate-predicate";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { NodeMap } from "./types/node-map";
-import { createNodeAuthenticationPredicate } from "./create-authentication-predicate";
 
 function createNodePredicate({
     context,
@@ -48,13 +47,6 @@ function createNodePredicate({
 
     const concreteEntity = concreteEntities[0] as ConcreteEntity;
 
-    const authenticationPredicate = createNodeAuthenticationPredicate({
-        entity: concreteEntity,
-        context,
-        operations,
-        fieldName,
-    });
-
     const { predicate: authorizationPredicate, preComputedSubqueries } = createNodeAuthorizationPredicate({
         entity: concreteEntity,
         node,
@@ -65,7 +57,6 @@ function createNodePredicate({
     });
 
     return {
-        // predicate: Cypher.and(authenticationPredicate, authorizationPredicate),
         predicate: authorizationPredicate,
         preComputedSubqueries,
     };

@@ -84,7 +84,7 @@ export function createAuthorizationWherePredicate({
             return;
         }
 
-        if (key === "jwtPayload") {
+        if (key === "jwt") {
             const predicate = createJwtPayloadWherePredicate({ where: value, context });
 
             if (predicate) {
@@ -108,7 +108,7 @@ export function createAuthorizationWherePredicate({
     //     targetElement: target,
     // });
 
-    // const jwtPayloadPredicate = createJwtPayloadWherePredicate({ where: where.jwtPayload });
+    // const jwtPredicate = createJwtPayloadWherePredicate({ where: where.jwt });
 
     // let preComputedWhereFieldsResult = "";
 

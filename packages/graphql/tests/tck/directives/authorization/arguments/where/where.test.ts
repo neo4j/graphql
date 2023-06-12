@@ -30,7 +30,7 @@ describe("Cypher Auth Where", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 

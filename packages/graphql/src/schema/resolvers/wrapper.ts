@@ -134,15 +134,13 @@ export const wrapResolver =
                         isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
                     };
                 }
-            } else {
-                // TODO: remove this else after migrating to new authorization constructor
-                if (context.plugins.auth) {
-                    // Here we will try to compute the generic Secret or the generic jwksEndpoint
-                    const contextRequest = context.req || context.request;
-                    context.plugins.auth.tryToResolveKeys(
-                        context instanceof IncomingMessage ? context : contextRequest
-                    );
-                }
+            }
+
+            // TODO: remove this else after migrating to new authorization constructor
+            if (context.plugins.auth) {
+                // Here we will try to compute the generic Secret or the generic jwksEndpoint
+                const contextRequest = context.req || context.request;
+                context.plugins.auth.tryToResolveKeys(context instanceof IncomingMessage ? context : contextRequest);
                 let token: string | undefined = undefined;
                 const bearer = getToken(req);
                 if (bearer) {

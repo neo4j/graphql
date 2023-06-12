@@ -57,10 +57,7 @@ export function generateSubscribeMethod({
         if (entities.length) {
             const concreteEntity = entities[0] as ConcreteEntity;
             const hasAuthentication = concreteEntity.annotations.authentication;
-            if (
-                hasAuthentication &&
-                (hasAuthentication.operations.includes("SUBSCRIBE") || hasAuthentication.jwtPayload)
-            ) {
+            if (hasAuthentication && hasAuthentication.operations.includes("SUBSCRIBE")) {
                 if (!context.jwt) {
                     throw new Error("Error, request not authorized");
                 }

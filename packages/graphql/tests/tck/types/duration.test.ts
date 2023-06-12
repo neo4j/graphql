@@ -94,7 +94,7 @@ describe("Cypher Duration", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE datetime() + this.duration >= datetime() + $param0
+            WHERE (datetime() + this.duration) >= (datetime() + $param0)
             RETURN this { .duration } AS this"
         `);
 

@@ -402,7 +402,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             const movieType = new UniqueType("Movie");
             const genreType = new UniqueType("Genre");
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
                 
@@ -411,7 +411,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                 }
         
-                type ${genreType.name} @authorization(validate: [{ operations: ${operations}, where: { jwtPayload: { roles_INCLUDES: "${requiredRole}" } } }]) {
+                type ${genreType.name} @authorization(validate: [{ operations: ${operations}, where: { jwt: { roles_INCLUDES: "${requiredRole}" } } }]) {
                     name: String @unique
                 }
             `;

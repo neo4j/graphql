@@ -155,7 +155,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "READ" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
                 type ${Product} @authentication(operations: [READ], jwtPayload: { roles_INCLUDES: "admin" }) {
@@ -203,7 +203,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "READ" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
                 type ${Product} @authentication(operations: [READ], jwtPayload: { roles_INCLUDES: "admin" }) {
@@ -346,7 +346,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -445,7 +445,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "READ" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
                 type ${User} @authentication(operations: [CREATE], jwtPayload: { roles_INCLUDES: "admin" }) {
@@ -547,7 +547,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
                 
@@ -603,7 +603,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
                 
@@ -701,7 +701,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -786,7 +786,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
             
@@ -830,7 +830,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
             
@@ -933,7 +933,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -989,7 +989,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1097,7 +1097,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1196,7 +1196,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
                 type ${User}  @authentication(operations: [UPDATE],  jwtPayload: { roles_INCLUDES: "admin" })  {
@@ -1293,7 +1293,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
         
@@ -1392,7 +1392,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
                 type ${User} {
@@ -1518,7 +1518,7 @@ describe("auth/is-authenticated", () => {
             const Post = new UniqueType("Post");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1595,7 +1595,7 @@ describe("auth/is-authenticated", () => {
             const Post = new UniqueType("Post");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1816,7 +1816,7 @@ describe("auth/is-authenticated", () => {
             const Post = new UniqueType("Post");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1893,7 +1893,7 @@ describe("auth/is-authenticated", () => {
             const Post = new UniqueType("Post");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -2042,7 +2042,7 @@ describe("auth/is-authenticated", () => {
             const Post = new UniqueType("Post");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -2119,7 +2119,7 @@ describe("auth/is-authenticated", () => {
             const Post = new UniqueType("Post");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -2340,7 +2340,7 @@ describe("auth/is-authenticated", () => {
             const Post = new UniqueType("Post");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -2417,7 +2417,7 @@ describe("auth/is-authenticated", () => {
             const Post = new UniqueType("Post");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -2566,7 +2566,7 @@ describe("auth/is-authenticated", () => {
             const Post = new UniqueType("Post");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -2643,7 +2643,7 @@ describe("auth/is-authenticated", () => {
             const Post = new UniqueType("Post");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -2864,7 +2864,7 @@ describe("auth/is-authenticated", () => {
             const Post = new UniqueType("Post");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -2942,7 +2942,7 @@ describe("auth/is-authenticated", () => {
             const Post = new UniqueType("Post");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -3062,7 +3062,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -3221,7 +3221,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -3270,7 +3270,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -3452,7 +3452,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -3555,7 +3555,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -3657,7 +3657,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -3864,7 +3864,7 @@ describe("auth/is-authenticated", () => {
             const History = new UniqueType("History");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -3977,7 +3977,7 @@ describe("auth/is-authenticated", () => {
             const History = new UniqueType("History");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -4040,7 +4040,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 {
@@ -4079,7 +4086,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 {
@@ -4108,7 +4122,7 @@ describe("auth/is-authenticated", () => {
             }
         });
 
-        test("should throw if decoded JWT passed in context does not matche claim", async () => {
+        test("should throw if decoded JWT passed in context does not matches claim", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "READ" });
 
             const typeDefs = `
@@ -4118,7 +4132,14 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
 
             const query = `
                 {

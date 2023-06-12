@@ -160,6 +160,7 @@ export interface RelationField extends BaseField {
     interface?: InterfaceField;
     queryDirection: RelationshipQueryDirectionOption;
     nestedOperations: RelationshipNestedOperationsOption[];
+    aggregate: boolean;
 }
 
 export interface ConnectionField extends BaseField {

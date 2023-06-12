@@ -81,7 +81,7 @@ describe("ConcreteEntity generation", () => {
                     operations: AuthorizationFilterOperationRule,
                     requireAuthentication: true,
                     where: {
-                        jwtPayload: undefined,
+                        jwt: undefined,
                         node: { id: { equals: "$jwt.sub" } },
                     },
                 },
@@ -102,7 +102,7 @@ describe("ConcreteEntity generation", () => {
                         when: ["BEFORE"],
                         requireAuthentication: true,
                         where: {
-                            jwtPayload: undefined,
+                            jwt: undefined,
                             node: { id: { equals: "$jwt.sub" } },
                         },
                     },
@@ -111,7 +111,7 @@ describe("ConcreteEntity generation", () => {
                         when: ["AFTER"],
                         requireAuthentication: true,
                         where: {
-                            jwtPayload: undefined,
+                            jwt: undefined,
                             node: { id: { equals: "$jwt.sub" } },
                         },
                     },
