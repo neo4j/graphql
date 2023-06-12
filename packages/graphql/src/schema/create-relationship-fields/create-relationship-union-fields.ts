@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Kind, UnionTypeDefinitionNode, print } from "graphql";
 import type { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, upperFirst } from "graphql-compose";
 import type { Node } from "../../classes";
@@ -33,6 +34,7 @@ export function createRelationshipUnionFields({
     composeNode,
     sourceName,
     schemaComposer,
+    unionTypes,
     hasNonGeneratedProperties,
     hasNonNullNonGeneratedProperties,
 }: {
@@ -41,6 +43,7 @@ export function createRelationshipUnionFields({
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
     sourceName: string;
     schemaComposer: SchemaComposer;
+    unionTypes: UnionTypeDefinitionNode[];
     hasNonGeneratedProperties: boolean;
     hasNonNullNonGeneratedProperties: boolean;
 }) {
@@ -59,14 +62,22 @@ export function createRelationshipUnionFields({
         };
         const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
 
-        composeNode.addFields({
-            [rel.fieldName]: {
-                type: rel.typeMeta.pretty,
-                args: nodeFieldArgs,
-                description: rel.description,
-                directives: graphqlDirectivesToCompose(rel.otherDirectives),
-            },
-        });
+        if (rel.selectableOptions.onRead) {
+            schemaComposer.addTypeDefs(
+                print(unionTypes.find((n) => n.name.value === rel.typeMeta.name) as UnionTypeDefinitionNode)
+            );
+            schemaComposer.addTypeDefs(
+                print(unionTypes.find((n) => n.name.value === rel.typeMeta.name) as UnionTypeDefinitionNode)
+            );
+            composeNode.addFields({
+                [rel.fieldName]: {
+                    type: rel.typeMeta.pretty,
+                    args: nodeFieldArgs,
+                    description: rel.description,
+                    directives: graphqlDirectivesToCompose(rel.otherDirectives),
+                },
+            });
+        }
     }
 
     const upperFieldName = upperFirst(rel.fieldName);

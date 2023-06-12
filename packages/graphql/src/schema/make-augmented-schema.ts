@@ -162,7 +162,7 @@ function makeAugmentedSchema(
         ...enumTypes,
         ...scalarTypes,
         ...inputObjectTypes,
-        ...unionTypes,
+        // ...unionTypes,
         ...directives,
         ...[customResolvers.customQuery, customResolvers.customMutation, customResolvers.customSubscription],
     ].filter(Boolean) as DefinitionNode[];
@@ -436,6 +436,7 @@ function makeAugmentedSchema(
             composeNode: composeInterface,
             sourceName: interfaceRelationship.name.value,
             nodes,
+            unionTypes,
             relationshipPropertyFields: relationshipFields,
             subgraph,
         });
@@ -745,6 +746,7 @@ function makeAugmentedSchema(
             composeNode,
             sourceName: node.name,
             nodes,
+            unionTypes,
             relationshipPropertyFields: relationshipFields,
             subgraph,
         });
@@ -971,7 +973,7 @@ function makeAugmentedSchema(
     };
 
     unionTypes.forEach((union) => {
-        if (!generatedResolvers[union.name.value]) {
+        if (!generatedResolvers[union.name.value] && composer.isUnionType(union.name.value)) {
             generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });

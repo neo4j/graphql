@@ -36,12 +36,14 @@ import { createRelationshipUnionFields } from "./create-relationship-union-field
 import { createTopLevelConnectOrCreateInput } from "./create-top-level-connect-or-create-input";
 import { overwrite } from "./fields/overwrite";
 import { inspectObjectFields } from "./inspect-object-fields";
+import { UnionTypeDefinitionNode } from "graphql";
 
 interface CreateRelationshipFieldsArgs {
     relationshipFields: RelationField[];
     schemaComposer: SchemaComposer;
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
     sourceName: string;
+    unionTypes: UnionTypeDefinitionNode[];
     nodes: Node[];
     relationshipPropertyFields: Map<string, ObjectFields>;
     subgraph?: Subgraph;
@@ -54,6 +56,7 @@ function createRelationshipFields({
     composeNode,
     sourceName,
     nodes,
+    unionTypes,
     relationshipPropertyFields,
     subgraph,
 }: CreateRelationshipFieldsArgs): void {
@@ -88,6 +91,7 @@ function createRelationshipFields({
                 composeNode,
                 sourceName,
                 schemaComposer,
+                unionTypes,
                 hasNonGeneratedProperties,
                 hasNonNullNonGeneratedProperties,
             });
