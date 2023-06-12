@@ -44,7 +44,7 @@
     "dependencies": {
         "@codemirror/autocomplete": "6.7.1",
         "@codemirror/commands": "6.2.4",
-        "@codemirror/lang-javascript": "^6.1.8",
+        "@codemirror/lang-javascript": "6.1.8",
         "@codemirror/language": "6.7.0",
         "@graphiql/react": "0.17.6",
         "@neo4j-ndl/base": "1.5.1",
@@ -53,7 +53,7 @@
         "@neo4j/introspector": "1.0.3",
         "classnames": "2.3.2",
         "cm6-graphql": "0.0.8",
-        "codemirror": "^6.0.1",
+        "codemirror": "6.0.1",
         "dotenv-webpack": "8.0.1",
         "graphiql-explorer": "0.9.0",
         "graphql": "16.6.0",
