@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Kind, UnionTypeDefinitionNode, print } from "graphql";
 import type { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, upperFirst } from "graphql-compose";
 import type { Node } from "../../classes";
