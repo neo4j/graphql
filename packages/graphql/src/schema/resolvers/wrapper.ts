@@ -54,7 +54,9 @@ let neo4jDatabaseInfo: Neo4jDatabaseInfo;
 
 export const wrapResolver =
     ({ driver, config, nodes, relationships, schemaModel, plugins, dbInfo, authorization }: WrapResolverArguments) =>
+    // TODO: strongly type this, so that context argument accepts "full" context
     (next) =>
+    // TODO: type this as Neo4jGraphQLContext
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const p1 = performance.now();
         const { driverConfig } = config;
