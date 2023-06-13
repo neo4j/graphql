@@ -20,10 +20,7 @@
 import { useCallback, useContext, useState } from "react";
 
 import { tokens } from "@neo4j-ndl/base";
-import { Button, IconButton, Switch } from "@neo4j-ndl/react";
-import { PlayIconOutline } from "@neo4j-ndl/react/icons";
-import classNames from "classnames";
-import type { EditorView as CodeMirrorEditorView } from "codemirror";
+import { Switch } from "@neo4j-ndl/react";
 import GraphiQLExplorer from "graphiql-explorer";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
@@ -33,7 +30,6 @@ import { Extension } from "../../components/Filename";
 import { EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
 import { Screen } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
-import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
@@ -42,7 +38,7 @@ import { EditorTabs } from "./EditorTabs";
 import { Grid } from "./grid/Grid";
 import { QueryEditor } from "./QueryEditor";
 import { ResponseEditor } from "./ResponseEditor";
-import { calculateQueryComplexity, formatCode, ParserOptions, safeParse } from "./utils";
+import { calculateQueryComplexity, safeParse } from "./utils";
 import { VariablesEditor } from "./VariablesEditor";
 
 export interface Props {
@@ -50,18 +46,11 @@ export interface Props {
 }
 
 export const EditorView = ({ schema }: Props) => {
-    const theme = useContext(ThemeContext);
     const store = useStore();
     const settings = useContext(SettingsContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [showDocs, setShowDocs] = useState<boolean>(false);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
-    const [editorView, setEditorView] = useState<CodeMirrorEditorView | null>(null);
-
-    const formatTheCode = (): void => {
-        if (!editorView) return;
-        formatCode(editorView, ParserOptions.GRAPH_QL);
-    };
 
     const handleShowDocs = () => {
         setShowDocs(!showDocs);
@@ -164,56 +153,7 @@ export const EditorView = ({ schema }: Props) => {
                         <EditorTabs />
                         <Grid
                             queryEditor={
-                                schema ? (
-                                    <QueryEditor
-                                        loading={loading}
-                                        editorView={editorView}
-                                        setEditorView={setEditorView}
-                                        onSubmit={onSubmit}
-                                        schema={schema}
-                                        buttons={
-                                            <>
-                                                <Button
-                                                    aria-label="Prettify code"
-                                                    className={classNames(
-                                                        "mr-2",
-                                                        theme.theme === Theme.LIGHT
-                                                            ? "ndl-theme-light"
-                                                            : "ndl-theme-dark"
-                                                    )}
-                                                    color="neutral"
-                                                    fill="outlined"
-                                                    size="small"
-                                                    onClick={formatTheCode}
-                                                    disabled={loading}
-                                                >
-                                                    Prettify
-                                                </Button>
-                                                <IconButton
-                                                    data-test-editor-query-button
-                                                    aria-label="Execute query"
-                                                    style={{ height: "1.7rem" }}
-                                                    className={classNames(
-                                                        theme.theme === Theme.LIGHT
-                                                            ? "ndl-theme-light"
-                                                            : "ndl-theme-dark"
-                                                    )}
-                                                    color="primary"
-                                                    clean
-                                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                                    onClick={() => onSubmit()}
-                                                    disabled={!schema || loading}
-                                                >
-                                                    <PlayIconOutline
-                                                        style={{
-                                                            color: tokens.colors.primary[50],
-                                                        }}
-                                                    />
-                                                </IconButton>
-                                            </>
-                                        }
-                                    />
-                                ) : null
+                                schema ? <QueryEditor loading={loading} onSubmit={onSubmit} schema={schema} /> : null
                             }
                             parameterEditor={
                                 <VariablesEditor

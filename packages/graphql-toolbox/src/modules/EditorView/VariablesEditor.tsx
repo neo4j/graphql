@@ -23,7 +23,7 @@ import { closeBrackets } from "@codemirror/autocomplete";
 import { indentWithTab } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
 import { bracketMatching, foldGutter, indentOnInput } from "@codemirror/language";
-import { Annotation, StateEffect } from "@codemirror/state";
+import { Annotation, Prec, StateEffect } from "@codemirror/state";
 import type { ViewUpdate } from "@codemirror/view";
 import {
     drawSelection,
@@ -34,13 +34,15 @@ import {
     keymap,
     lineNumbers,
 } from "@codemirror/view";
+import { Button } from "@neo4j-ndl/react";
+import classNames from "classnames";
 import { dracula, tomorrow } from "thememirror";
 
 import type { Extension } from "../../components/Filename";
 import { FileName } from "../../components/Filename";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
-import { handleEditorDisableState } from "./utils";
+import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 
 export interface Props {
     id: string;
@@ -58,6 +60,11 @@ export const VariablesEditor = ({ id, loading, fileExtension, fileName, borderRa
     const elementRef = useRef<HTMLDivElement | null>(null);
     const [editorView, setEditorView] = useState<EditorView | null>(null);
     const [value, setValue] = useState<string>();
+
+    const formatTheCode = (): void => {
+        if (!editorView) return;
+        formatCode(editorView, ParserOptions.JSON);
+    };
 
     // Taken from https://github.com/uiwjs/react-codemirror/blob/master/core/src/useCodeMirror.ts
     const updateListener = EditorView.updateListener.of((vu: ViewUpdate) => {
@@ -89,6 +96,18 @@ export const VariablesEditor = ({ id, loading, fileExtension, fileName, borderRa
         javascript(),
         EditorView.lineWrapping,
         keymap.of([indentWithTab]),
+        Prec.highest(
+            keymap.of([
+                {
+                    key: "Mod-m",
+                    run: () => {
+                        formatTheCode();
+                        return true;
+                    },
+                    preventDefault: true,
+                },
+            ])
+        ),
         theme.theme === Theme.LIGHT ? tomorrow : dracula,
         updateListener,
     ];
@@ -141,7 +160,27 @@ export const VariablesEditor = ({ id, loading, fileExtension, fileName, borderRa
 
     return (
         <div style={{ width: "100%", height: "100%" }}>
-            <FileName extension={fileExtension} name={fileName} borderRadiusTop={borderRadiusTop}></FileName>
+            <FileName
+                extension={fileExtension}
+                name={fileName}
+                borderRadiusTop={borderRadiusTop}
+                rightButtons={
+                    <Button
+                        aria-label="Prettify code"
+                        className={classNames(
+                            "mr-2",
+                            theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
+                        )}
+                        color="neutral"
+                        fill="outlined"
+                        size="small"
+                        onClick={formatTheCode}
+                        disabled={loading}
+                    >
+                        Prettify
+                    </Button>
+                }
+            />
             <div id={id} className={theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"} ref={elementRef} />
         </div>
     );

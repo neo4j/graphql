@@ -103,7 +103,7 @@ export const ResponseEditor = ({ id, loading, fileExtension, fileName, value, bo
             const selection = editorView.state.selection;
             editorView.dispatch({
                 changes: { from: 0, to: editorView.state.doc.length, insert: value },
-                selection: value.length > selection.mainIndex ? undefined : selection,
+                selection: selection.main.to > value.length ? undefined : selection,
             });
             formatCode(editorView, ParserOptions.JSON);
         }

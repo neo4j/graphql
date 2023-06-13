@@ -24,7 +24,7 @@ import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirro
 import { bracketMatching, foldGutter, foldKeymap, indentOnInput } from "@codemirror/language";
 import { lintKeymap } from "@codemirror/lint";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
-import { EditorState, StateEffect } from "@codemirror/state";
+import { EditorState, Prec, StateEffect } from "@codemirror/state";
 import {
     drawSelection,
     dropCursor,
@@ -99,6 +99,18 @@ export const SchemaEditor = ({
             ...completionKeymap,
             ...lintKeymap,
         ]),
+        Prec.highest(
+            keymap.of([
+                {
+                    key: "Mod-m",
+                    run: () => {
+                        formatTheCode();
+                        return true;
+                    },
+                    preventDefault: true,
+                },
+            ])
+        ),
         foldGutter({
             closedText: "▶",
             openText: "▼",

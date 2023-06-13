@@ -53,11 +53,16 @@ export const formatCode = (editorView: EditorView, parserOption: ParserOptions):
             break;
     }
 
-    const formatted = prettier.format(value, options);
-    editorView.dispatch({
-        changes: { from: 0, to: editorView.state.doc.length, insert: formatted },
-        selection: formatted.length > selection.mainIndex ? undefined : selection,
-    });
+    try {
+        const formatted = prettier.format(value, options);
+
+        editorView.dispatch({
+            changes: { from: 0, to: editorView.state.doc.length, insert: formatted },
+            selection: selection.main.to > formatted.length ? undefined : selection,
+        });
+    } catch (e: unknown) {
+        return;
+    }
 };
 
 export const handleEditorDisableState = (editorViewRef: HTMLDivElement | null, loading: boolean): void => {
