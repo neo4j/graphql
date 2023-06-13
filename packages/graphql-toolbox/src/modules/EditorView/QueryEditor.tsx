@@ -37,6 +37,7 @@ import {
 import { graphql as graphqlExtension } from "cm6-graphql";
 import { EditorView } from "codemirror";
 import type { GraphQLSchema } from "graphql";
+import type { ReactElement } from "react";
 import { dracula, tomorrow } from "thememirror";
 
 import { Extension, FileName } from "../../components/Filename";
@@ -47,7 +48,7 @@ import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 
 export interface Props {
     loading: boolean;
-    buttons: any;
+    buttons: ReactElement;
     editorView: EditorView | null;
     setEditorView: React.Dispatch<React.SetStateAction<EditorView | null>>;
     onSubmit: (override?: string) => Promise<void>;
