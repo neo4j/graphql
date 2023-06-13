@@ -28,7 +28,6 @@ import {
     drawSelection,
     dropCursor,
     EditorView,
-    highlightActiveLine,
     highlightSpecialChars,
     keymap,
     lineNumbers,
@@ -38,7 +37,7 @@ import { dracula, tomorrow } from "thememirror";
 import type { Extension } from "../../components/Filename";
 import { FileName } from "../../components/Filename";
 import { Theme, ThemeContext } from "../../contexts/theme";
-import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
+import { formatCode, handleEditorDisableState,ParserOptions } from "./utils";
 
 export interface Props {
     id: string;
@@ -57,7 +56,6 @@ export const ResponseEditor = ({ id, loading, fileExtension, fileName, value, bo
     const extensions = [
         lineNumbers(),
         highlightSpecialChars(),
-        highlightActiveLine(),
         bracketMatching(),
         closeBrackets(),
         drawSelection(),

@@ -29,7 +29,6 @@ import {
     drawSelection,
     dropCursor,
     EditorView,
-    highlightActiveLine,
     highlightSpecialChars,
     keymap,
     lineNumbers,
@@ -42,7 +41,7 @@ import type { Extension } from "../../components/Filename";
 import { FileName } from "../../components/Filename";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
-import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
+import { formatCode, handleEditorDisableState,ParserOptions } from "./utils";
 
 export interface Props {
     id: string;
@@ -83,7 +82,6 @@ export const VariablesEditor = ({ id, loading, fileExtension, fileName, borderRa
     const extensions = [
         lineNumbers(),
         highlightSpecialChars(),
-        highlightActiveLine(),
         bracketMatching(),
         closeBrackets(),
         drawSelection(),

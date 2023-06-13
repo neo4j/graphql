@@ -29,7 +29,6 @@ import type { ViewUpdate } from "@codemirror/view";
 import {
     drawSelection,
     dropCursor,
-    highlightActiveLine,
     highlightSpecialChars,
     keymap,
     lineNumbers,
@@ -48,7 +47,7 @@ import { Extension, FileName } from "../../components/Filename";
 import { EDITOR_QUERY_INPUT } from "../../constants";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
-import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
+import { formatCode, handleEditorDisableState,ParserOptions } from "./utils";
 
 export interface Props {
     loading: boolean;
@@ -87,7 +86,6 @@ export const QueryEditor = ({ loading, onSubmit, schema }: Props) => {
     const extensions = [
         lineNumbers(),
         highlightSpecialChars(),
-        highlightActiveLine(),
         bracketMatching(),
         closeBrackets(),
         history(),

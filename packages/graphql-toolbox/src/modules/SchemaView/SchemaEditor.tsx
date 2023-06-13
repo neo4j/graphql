@@ -29,7 +29,6 @@ import {
     drawSelection,
     dropCursor,
     EditorView,
-    highlightActiveLine,
     highlightSpecialChars,
     keymap,
     lineNumbers,
@@ -79,7 +78,6 @@ export const SchemaEditor = ({
     const extensions = [
         lineNumbers(),
         highlightSpecialChars(),
-        highlightActiveLine(),
         bracketMatching(),
         closeBrackets(),
         history(),
