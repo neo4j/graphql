@@ -23,7 +23,7 @@ import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, Switch } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
 import classNames from "classnames";
-import type { EditorView } from "codemirror";
+import type { EditorView as CodeMirrorEditorView } from "codemirror";
 import GraphiQLExplorer from "graphiql-explorer";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
@@ -49,14 +49,14 @@ export interface Props {
     schema?: GraphQLSchema;
 }
 
-export const Editor = ({ schema }: Props) => {
+export const EditorView = ({ schema }: Props) => {
     const theme = useContext(ThemeContext);
     const store = useStore();
     const settings = useContext(SettingsContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [showDocs, setShowDocs] = useState<boolean>(false);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
-    const [editorView, setEditorView] = useState<EditorView | null>(null);
+    const [editorView, setEditorView] = useState<CodeMirrorEditorView | null>(null);
 
     const formatTheCode = (): void => {
         if (!editorView) return;

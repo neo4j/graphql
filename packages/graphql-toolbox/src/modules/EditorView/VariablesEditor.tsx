@@ -123,7 +123,8 @@ export const VariablesEditor = ({ id, loading, fileExtension, fileName, value, b
         const selection = editorView.state.selection;
         editorView.dispatch({
             changes: { from: 0, to: editorView.state.doc.length, insert: value },
-            selection: value.length > selection.mainIndex ? undefined : selection,
+            // selection: value.length > selection.mainIndex ? undefined : selection,
+            selection,
         });
     }, [value]);
 
