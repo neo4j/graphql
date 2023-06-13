@@ -39,10 +39,11 @@ import { AppSettings } from "../AppSettings/AppSettings";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { EditorTabs } from "./EditorTabs";
-import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import { Grid } from "./grid/Grid";
-import { JSONEditor } from "./JSONEditor";
+import { QueryEditor } from "./QueryEditor";
+import { ResponseEditor } from "./ResponseEditor";
 import { calculateQueryComplexity, formatCode, ParserOptions, safeParse } from "./utils";
+import { VariablesEditor } from "./VariablesEditor";
 
 export interface Props {
     schema?: GraphQLSchema;
@@ -164,7 +165,7 @@ export const Editor = ({ schema }: Props) => {
                         <Grid
                             queryEditor={
                                 schema ? (
-                                    <GraphQLQueryEditor
+                                    <QueryEditor
                                         loading={loading}
                                         editorView={editorView}
                                         setEditorView={setEditorView}
@@ -215,27 +216,22 @@ export const Editor = ({ schema }: Props) => {
                                 ) : null
                             }
                             parameterEditor={
-                                <JSONEditor
+                                <VariablesEditor
                                     id={EDITOR_PARAMS_INPUT}
                                     fileName="params"
-                                    loading={loading}
                                     fileExtension={Extension.JSON}
-                                    readonly={false}
-                                    initialValue={useStore.getState().getActiveTab().variables}
-                                    onChange={(params) => {
-                                        store.updateVariables(params, useStore.getState().activeTabIndex);
-                                    }}
+                                    loading={loading}
+                                    value={useStore.getState().getActiveTab().variables}
                                 />
                             }
                             resultView={
-                                <JSONEditor
+                                <ResponseEditor
                                     id={EDITOR_RESPONSE_OUTPUT}
                                     fileName="response"
-                                    loading={loading}
                                     fileExtension={Extension.JSON}
-                                    readonly={true}
+                                    loading={loading}
                                     borderRadiusTop={false}
-                                    json={useStore.getState().getActiveTab().response}
+                                    value={useStore.getState().getActiveTab().response}
                                 />
                             }
                         />

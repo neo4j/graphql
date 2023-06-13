@@ -56,7 +56,7 @@ export interface Props {
 
 const External = Annotation.define<boolean>();
 
-export const GraphQLQueryEditor = ({ loading, buttons, editorView, setEditorView, onSubmit, schema }: Props) => {
+export const QueryEditor = ({ loading, buttons, editorView, setEditorView, onSubmit, schema }: Props) => {
     const theme = useContext(ThemeContext);
     const store = useStore();
     const elementRef = useRef<HTMLDivElement | null>(null);

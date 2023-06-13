@@ -38,26 +38,22 @@ import { dracula, tomorrow } from "thememirror";
 
 import type { Extension } from "../../components/Filename";
 import { FileName } from "../../components/Filename";
-import { EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
-import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
+import { handleEditorDisableState } from "./utils";
 
 export interface Props {
     id: string;
-    json?: string;
     loading: boolean;
-    readonly?: boolean;
     fileName: string;
-    initialValue?: string;
+    value: string;
     fileExtension: Extension;
     borderRadiusTop?: boolean;
-    onChange?: (json: string) => void;
 }
 
 const External = Annotation.define<boolean>();
 
-export const JSONEditor = (props: Props) => {
+export const VariablesEditor = ({ id, loading, fileExtension, fileName, value, borderRadiusTop }: Props) => {
     const theme = useContext(ThemeContext);
     const store = useStore();
     const elementRef = useRef<HTMLDivElement | null>(null);
@@ -73,11 +69,7 @@ export const JSONEditor = (props: Props) => {
         ) {
             const doc = vu.state.doc;
             const value = doc.toString();
-            if (props.id === EDITOR_PARAMS_INPUT) {
-                store.updateVariables(value, useStore.getState().activeTabIndex);
-            } else if (props.id === EDITOR_RESPONSE_OUTPUT) {
-                store.updateResponse(value, useStore.getState().activeTabIndex);
-            }
+            store.updateVariables(value, useStore.getState().activeTabIndex);
         }
     });
 
@@ -107,7 +99,7 @@ export const JSONEditor = (props: Props) => {
         }
 
         const view = new EditorView({
-            doc: props.json,
+            doc: value,
             extensions: [],
             parent: elementRef.current,
         });
@@ -127,37 +119,22 @@ export const JSONEditor = (props: Props) => {
     }, [theme.theme, extensions]);
 
     useEffect(() => {
-        if (editorView && props.json) {
-            const selection = editorView.state.selection;
-            editorView.dispatch({
-                changes: { from: 0, to: editorView.state.doc.length, insert: props.json },
-                selection,
-            });
-            formatCode(editorView, ParserOptions.JSON);
-        }
-    }, [props.json]);
-
-    useEffect(() => {
         if (!editorView) return;
         const selection = editorView.state.selection;
         editorView.dispatch({
-            changes: { from: 0, to: editorView.state.doc.length, insert: props.initialValue },
-            selection,
+            changes: { from: 0, to: editorView.state.doc.length, insert: value },
+            selection: value.length > selection.mainIndex ? undefined : selection,
         });
-    }, [props.initialValue]);
+    }, [value]);
 
     useEffect(() => {
-        handleEditorDisableState(elementRef.current, props.loading);
-    }, [props.loading]);
+        handleEditorDisableState(elementRef.current, loading);
+    }, [loading]);
 
     return (
         <div style={{ width: "100%", height: "100%" }}>
-            <FileName
-                extension={props.fileExtension}
-                name={props.fileName}
-                borderRadiusTop={props.borderRadiusTop}
-            ></FileName>
-            <div id={props.id} className={theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"} ref={elementRef} />
+            <FileName extension={fileExtension} name={fileName} borderRadiusTop={borderRadiusTop}></FileName>
+            <div id={id} className={theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"} ref={elementRef} />
         </div>
     );
 };
