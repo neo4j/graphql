@@ -64,6 +64,7 @@ Here the type definitions are never persisted to disk.
 
 [source, javascript, indent=0]
 ----
+import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
