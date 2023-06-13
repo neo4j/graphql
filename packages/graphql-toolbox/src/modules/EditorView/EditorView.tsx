@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 
 import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, Switch } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
 import classNames from "classnames";
-import type { EditorFromTextArea } from "codemirror";
+import type { EditorView as CodeMirrorEditorView } from "codemirror";
 import GraphiQLExplorer from "graphiql-explorer";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
@@ -39,27 +39,28 @@ import { AppSettings } from "../AppSettings/AppSettings";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { EditorTabs } from "./EditorTabs";
-import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import { Grid } from "./grid/Grid";
-import { JSONEditor } from "./JSONEditor";
+import { QueryEditor } from "./QueryEditor";
+import { ResponseEditor } from "./ResponseEditor";
 import { calculateQueryComplexity, formatCode, ParserOptions, safeParse } from "./utils";
+import { VariablesEditor } from "./VariablesEditor";
 
 export interface Props {
     schema?: GraphQLSchema;
 }
 
-export const Editor = ({ schema }: Props) => {
+export const EditorView = ({ schema }: Props) => {
+    const theme = useContext(ThemeContext);
     const store = useStore();
     const settings = useContext(SettingsContext);
-    const theme = useContext(ThemeContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [showDocs, setShowDocs] = useState<boolean>(false);
-    const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
+    const [editorView, setEditorView] = useState<CodeMirrorEditorView | null>(null);
 
     const formatTheCode = (): void => {
-        if (!refForQueryEditorMirror.current) return;
-        formatCode(refForQueryEditorMirror.current, ParserOptions.GRAPH_QL);
+        if (!editorView) return;
+        formatCode(editorView, ParserOptions.GRAPH_QL);
     };
 
     const handleShowDocs = () => {
@@ -164,15 +165,12 @@ export const Editor = ({ schema }: Props) => {
                         <Grid
                             queryEditor={
                                 schema ? (
-                                    <GraphQLQueryEditor
-                                        schema={schema}
+                                    <QueryEditor
                                         loading={loading}
-                                        mirrorRef={refForQueryEditorMirror}
-                                        executeQuery={onSubmit}
-                                        query={useStore.getState().getActiveTab().query}
-                                        onChangeQuery={(query) => {
-                                            store.updateQuery(query, useStore.getState().activeTabIndex);
-                                        }}
+                                        editorView={editorView}
+                                        setEditorView={setEditorView}
+                                        onSubmit={onSubmit}
+                                        schema={schema}
                                         buttons={
                                             <>
                                                 <Button
@@ -218,27 +216,21 @@ export const Editor = ({ schema }: Props) => {
                                 ) : null
                             }
                             parameterEditor={
-                                <JSONEditor
+                                <VariablesEditor
                                     id={EDITOR_PARAMS_INPUT}
                                     fileName="params"
-                                    loading={loading}
                                     fileExtension={Extension.JSON}
-                                    readonly={false}
-                                    initialValue={useStore.getState().getActiveTab().variables}
-                                    onChange={(params) => {
-                                        store.updateVariables(params, useStore.getState().activeTabIndex);
-                                    }}
+                                    loading={loading}
                                 />
                             }
                             resultView={
-                                <JSONEditor
+                                <ResponseEditor
                                     id={EDITOR_RESPONSE_OUTPUT}
                                     fileName="response"
-                                    loading={loading}
                                     fileExtension={Extension.JSON}
-                                    readonly={true}
+                                    loading={loading}
                                     borderRadiusTop={false}
-                                    json={useStore.getState().getActiveTab().response}
+                                    value={useStore.getState().getActiveTab().response}
                                 />
                             }
                         />

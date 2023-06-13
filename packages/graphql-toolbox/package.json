@@ -42,14 +42,18 @@
     },
     "author": "Neo4j",
     "dependencies": {
+        "@codemirror/autocomplete": "6.7.1",
+        "@codemirror/commands": "6.2.4",
+        "@codemirror/lang-javascript": "6.1.8",
+        "@codemirror/language": "6.7.0",
         "@graphiql/react": "0.17.6",
         "@neo4j-ndl/base": "1.5.1",
         "@neo4j-ndl/react": "1.5.1",
         "@neo4j/graphql": "3.20.1",
         "@neo4j/introspector": "1.0.3",
         "classnames": "2.3.2",
-        "codemirror": "5.65.13",
-        "codemirror-graphql": "2.0.8",
+        "cm6-graphql": "0.0.8",
+        "codemirror": "6.0.1",
         "dotenv-webpack": "8.0.1",
         "graphiql-explorer": "0.9.0",
         "graphql": "16.6.0",
@@ -60,6 +64,7 @@
         "process": "0.11.10",
         "react": "18.2.0",
         "react-dom": "18.2.0",
+        "thememirror": "2.0.1",
         "zustand": "4.3.8"
     },
     "devDependencies": {
