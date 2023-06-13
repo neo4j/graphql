@@ -22,7 +22,7 @@ import { useContext, useEffect, useRef } from "react";
 import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
 import { bracketMatching, foldGutter, foldKeymap, indentOnInput } from "@codemirror/language";
-import { lintKeymap } from "@codemirror/lint";
+import { lintGutter, lintKeymap } from "@codemirror/lint";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { EditorState, Prec, StateEffect } from "@codemirror/state";
 import {
@@ -42,6 +42,7 @@ import { dracula, tomorrow } from "thememirror";
 
 import { Extension, FileName } from "../../components/Filename";
 import { DEFAULT_TYPE_DEFS, SCHEMA_EDITOR_INPUT } from "../../constants";
+import { AppSettingsContext } from "../../contexts/appsettings";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 import { handleEditorDisableState } from "../EditorView/utils";
@@ -71,6 +72,7 @@ export const SchemaEditor = ({
     editorView,
 }: Props) => {
     const theme = useContext(ThemeContext);
+    const appSettings = useContext(AppSettingsContext);
     const favoritesTooltipRef = useRef<HTMLButtonElement | null>(null);
     const introspectionTooltipRef = useRef<HTMLButtonElement | null>(null);
     const storedTypeDefs = useStore.getState().typeDefinitions || DEFAULT_TYPE_DEFS;
@@ -115,6 +117,7 @@ export const SchemaEditor = ({
         }),
         graphql(getSchemaForLintAndAutocompletion()),
         theme.theme === Theme.LIGHT ? tomorrow : dracula,
+        appSettings.showLintMarkers ? lintGutter() : [],
     ];
 
     useEffect(() => {
@@ -144,7 +147,7 @@ export const SchemaEditor = ({
         if (editorView) {
             editorView.dispatch({ effects: StateEffect.reconfigure.of(extensions) });
         }
-    }, [theme.theme, extensions]);
+    }, [theme.theme, appSettings.showLintMarkers, extensions]);
 
     useEffect(() => {
         handleEditorDisableState(elementRef.current, loading);

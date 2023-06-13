@@ -22,7 +22,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
 import { bracketMatching, foldGutter, foldKeymap, indentOnInput } from "@codemirror/language";
-import { lintKeymap } from "@codemirror/lint";
+import { lintGutter, lintKeymap } from "@codemirror/lint";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { Annotation, EditorState, Prec, StateEffect } from "@codemirror/state";
 import type { ViewUpdate } from "@codemirror/view";
@@ -45,6 +45,7 @@ import { dracula, tomorrow } from "thememirror";
 
 import { Extension, FileName } from "../../components/Filename";
 import { EDITOR_QUERY_INPUT } from "../../constants";
+import { AppSettingsContext } from "../../contexts/appsettings";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 import { formatCode, handleEditorDisableState,ParserOptions } from "./utils";
@@ -58,8 +59,9 @@ export interface Props {
 const External = Annotation.define<boolean>();
 
 export const QueryEditor = ({ loading, onSubmit, schema }: Props) => {
-    const theme = useContext(ThemeContext);
     const store = useStore();
+    const theme = useContext(ThemeContext);
+    const appSettings = useContext(AppSettingsContext);
     const elementRef = useRef<HTMLDivElement | null>(null);
     const [value, setValue] = useState<string>();
     const [editorView, setEditorView] = useState<CodeMirrorEditorView | null>(null);
@@ -130,6 +132,7 @@ export const QueryEditor = ({ loading, onSubmit, schema }: Props) => {
         }),
         graphqlExtension(schema),
         theme.theme === Theme.LIGHT ? tomorrow : dracula,
+        appSettings.showLintMarkers ? lintGutter() : [],
         updateListener,
     ];
 
@@ -160,7 +163,7 @@ export const QueryEditor = ({ loading, onSubmit, schema }: Props) => {
         if (editorView) {
             editorView.dispatch({ effects: StateEffect.reconfigure.of(extensions) });
         }
-    }, [theme.theme, extensions]);
+    }, [theme.theme, appSettings.showLintMarkers, extensions]);
 
     useEffect(() => {
         if (value === undefined) {
