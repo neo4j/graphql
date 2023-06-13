@@ -192,6 +192,7 @@ type Actor {
 This means that the `actedIn` field is queryable from the homonymous generated field `actedIn` and the field `actedInConnection`, to avoid that, it's required to use the directive `@selectable`. 
 
 For instance:
+
 [source, graphql, indent=0]
 ----
 type Movie {
@@ -205,7 +206,6 @@ type Actor {
         @relationship(type: "ACTED_IN", direction: OUT)
         @selectable(onRead: false, onAggregate: false)
 }
-[source, graphql, indent=0]
 ----
 
 It will generate the type type `Actor`:
