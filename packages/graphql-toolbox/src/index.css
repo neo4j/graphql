@@ -62,15 +62,6 @@ li.CodeMirror-hint-active {
     opacity: 0.85;
 }
 
-#SCHEMA_EDITOR_INPUT {
-    height: 83vh;
-}
-#EDITOR_QUERY_INPUT,
-#EDITOR_PARAMS_INPUT,
-#EDITOR_RESPONSE_OUTPUT {
-    height: calc(100% - 3rem);
-}
-
 /* ----------------------*/
 
 /* Documentation and Query explorer classes */

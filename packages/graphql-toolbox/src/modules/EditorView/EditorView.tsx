@@ -50,6 +50,7 @@ export const EditorView = ({ schema }: Props) => {
     const settings = useContext(SettingsContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [showDocs, setShowDocs] = useState<boolean>(false);
+
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const handleShowDocs = () => {
@@ -155,7 +156,7 @@ export const EditorView = ({ schema }: Props) => {
                             queryEditor={
                                 schema ? <QueryEditor loading={loading} onSubmit={onSubmit} schema={schema} /> : null
                             }
-                            parameterEditor={
+                            variablesEditor={
                                 <VariablesEditor
                                     id={EDITOR_PARAMS_INPUT}
                                     fileName="params"
