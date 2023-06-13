@@ -82,6 +82,7 @@ export const ResponseEditor = ({ id, loading, fileExtension, fileName, value, bo
             extensions: [],
             parent: elementRef.current,
         });
+        formatCode(view, ParserOptions.JSON);
 
         setEditorView(view);
 
