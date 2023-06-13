@@ -221,7 +221,6 @@ export const EditorView = ({ schema }: Props) => {
                                     fileName="params"
                                     fileExtension={Extension.JSON}
                                     loading={loading}
-                                    value={useStore.getState().getActiveTab().variables}
                                 />
                             }
                             resultView={

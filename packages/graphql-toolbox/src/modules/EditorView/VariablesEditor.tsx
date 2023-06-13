@@ -46,18 +46,18 @@ export interface Props {
     id: string;
     loading: boolean;
     fileName: string;
-    value: string;
     fileExtension: Extension;
     borderRadiusTop?: boolean;
 }
 
 const External = Annotation.define<boolean>();
 
-export const VariablesEditor = ({ id, loading, fileExtension, fileName, value, borderRadiusTop }: Props) => {
+export const VariablesEditor = ({ id, loading, fileExtension, fileName, borderRadiusTop }: Props) => {
     const theme = useContext(ThemeContext);
     const store = useStore();
     const elementRef = useRef<HTMLDivElement | null>(null);
     const [editorView, setEditorView] = useState<EditorView | null>(null);
+    const [value, setValue] = useState<string>();
 
     // Taken from https://github.com/uiwjs/react-codemirror/blob/master/core/src/useCodeMirror.ts
     const updateListener = EditorView.updateListener.of((vu: ViewUpdate) => {
@@ -119,13 +119,21 @@ export const VariablesEditor = ({ id, loading, fileExtension, fileName, value, b
     }, [theme.theme, extensions]);
 
     useEffect(() => {
-        if (!editorView) return;
-        const selection = editorView.state.selection;
-        editorView.dispatch({
-            changes: { from: 0, to: editorView.state.doc.length, insert: value },
-            selection: value.length > selection.mainIndex ? undefined : selection,
-        });
-    }, [value]);
+        if (value === undefined) {
+            return;
+        }
+        const currentValue = editorView ? editorView.state.doc.toString() : "";
+        if (editorView && value !== currentValue) {
+            editorView.dispatch({
+                changes: { from: 0, to: currentValue.length, insert: value || "" },
+                annotations: [External.of(true)],
+            });
+        }
+    }, [value, editorView]);
+
+    useEffect(() => {
+        setValue(useStore.getState().getActiveTab().variables);
+    }, [useStore.getState().getActiveTab().variables]);
 
     useEffect(() => {
         handleEditorDisableState(elementRef.current, loading);
