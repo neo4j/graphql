@@ -110,11 +110,12 @@ export const QueryEditor = ({ loading, buttons, editorView, setEditorView, onSub
                     },
                 },
                 {
-                    key: "Shift-Mod-L",
+                    key: "Mod-m",
                     run: (view) => {
                         formatCode(view, ParserOptions.GRAPH_QL);
                         return true;
                     },
+                    preventDefault: true,
                 },
             ])
         ),
