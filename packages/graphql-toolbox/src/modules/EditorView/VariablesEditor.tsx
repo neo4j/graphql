@@ -63,7 +63,7 @@ export const VariablesEditor = ({ id, loading, fileExtension, fileName, borderRa
 
     const formatTheCode = (): void => {
         if (!editorView) return;
-        formatCode(editorView, ParserOptions.GRAPH_QL);
+        formatCode(editorView, ParserOptions.JSON);
     };
 
     // Taken from https://github.com/uiwjs/react-codemirror/blob/master/core/src/useCodeMirror.ts
