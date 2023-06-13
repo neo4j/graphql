@@ -67,6 +67,7 @@ export const ResponseEditor = ({ id, loading, fileExtension, fileName, value, bo
         }),
         javascript(),
         EditorView.lineWrapping,
+        EditorView.editable.of(false), // make the editor read-only
         keymap.of([indentWithTab]),
         theme.theme === Theme.LIGHT ? tomorrow : dracula,
     ];
