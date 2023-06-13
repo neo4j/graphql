@@ -50,7 +50,6 @@ export const EditorView = ({ schema }: Props) => {
     const settings = useContext(SettingsContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [showDocs, setShowDocs] = useState<boolean>(false);
-
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const handleShowDocs = () => {

@@ -229,11 +229,11 @@ export const QueryEditor = ({ loading, onSubmit, schema }: Props) => {
             />
             <div
                 id={EDITOR_QUERY_INPUT}
+                ref={elementRef}
                 className={classNames(
                     "w-full h-[calc(100%-3rem)] absolute",
                     theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"
                 )}
-                ref={elementRef}
             />
         </div>
     );
