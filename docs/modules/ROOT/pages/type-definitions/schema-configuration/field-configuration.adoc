@@ -254,7 +254,6 @@ type Actor {
     name: String!
     actedIn: [Movie!]!
         @relationship(type: "ACTED_IN", direction: OUT)
-        @settable(onCreate: false, onUpdate: true)
 }
 ----
 
@@ -295,18 +294,21 @@ type Actor {
 }
 ----
 
-In this case, this query is invalid, as the field `actedIn` is not available for `createActors`:
+The following input fields will be generated:
 
 [source, graphql, indent=0]
 ----
-mutation {
-  createActors(input: { actedIn: { create: { node: { title: "ABC" } } } }) {
-    actors {
-      name
-    }
-  }
+input ActorCreateInput {
+  name: String!
+}
+
+input ActorUpdateInput {
+  name: String
+  actedIn: [ActorActedInUpdateFieldInput!]
 }
 ----
+
+This means the `actedIn` can be updated on an update, but it will not be available on create operations.
 
 == `@readonly` label:deprecated[]
 
