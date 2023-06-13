@@ -34,8 +34,8 @@ const schemaScreenCmds: RowEntryType[] = [
     },
     {
         label: "Format/Prettify code",
-        winCmd: "Ctrl+l",
-        macCmd: "Ctrl+l",
+        winCmd: "Ctrl+m",
+        macCmd: "Cmd+m",
     },
 ];
 
@@ -57,8 +57,8 @@ const editorScreenCmds: RowEntryType[] = [
     },
     {
         label: "Format/Prettify code",
-        winCmd: "Ctrl+l",
-        macCmd: "Ctrl+l",
+        winCmd: "Ctrl+m",
+        macCmd: "Cmd+m",
     },
 ];
 
