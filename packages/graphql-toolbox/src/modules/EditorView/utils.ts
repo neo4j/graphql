@@ -54,9 +54,10 @@ export const formatCode = (editorView: EditorView, parserOption: ParserOptions):
     }
 
     const formatted = prettier.format(value, options);
+
     editorView.dispatch({
         changes: { from: 0, to: editorView.state.doc.length, insert: formatted },
-        selection: formatted.length > selection.mainIndex ? undefined : selection,
+        selection: selection.main.to > formatted.length ? undefined : selection,
     });
 };
 
