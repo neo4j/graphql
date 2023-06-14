@@ -98,7 +98,21 @@ See xref::guides/v4-migration/index.adoc#_relationship_changes[`@relationship ch
 
 === Usage
 
-Disable `aggregate` and enable only `create` as nested operations:
+==== Configure aggregation
+
+From the previous type definitions, the type `Actor` produced is:
+
+[source, graphql, indent=0]
+----
+type Actor {
+  name: String!
+  actedIn(where: MovieWhere, options: MovieOptions, directed: Boolean = true): [Movie!]!
+  actedInAggregate(where: MovieWhere, directed: Boolean = true): ActorMovieActedInAggregationSelection
+  actedInConnection(where: ActorActedInConnectionWhere, first: Int, after: String, directed: Boolean = true, sort: [ActorActedInConnectionSort!]): ActorActedInConnection!
+}
+----
+
+As it's visible, the relationship field `actedIn` produces the operation field `actedInAggregate` which allows aggregations on that relationship. It's possible to configure this behavior by passing the argument aggregate on the `@relationship` directive:
 
 [source, graphql, indent=0]
 ----
@@ -110,7 +124,19 @@ type Movie {
 type Actor {
     name: String!
     age: Int
-    actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, nestedOperations: [CREATE], aggregate: false)
+    actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, aggregate: false)
+}
+----
+
+In this case, as we passed the argument `aggregate` as false, the type `Actor` produced is:
+
+[source, graphql, indent=0]
+----
+type Actor {
+  name: String!
+  age: Int
+  actedIn(where: MovieWhere, options: MovieOptions, directed: Boolean = true): [Movie!]!
+  actedInConnection(where: ActorActedInConnectionWhere, first: Int, after: String, directed: Boolean = true, sort: [ActorActedInConnectionSort!]): ActorActedInConnection!
 }
 ----
 
