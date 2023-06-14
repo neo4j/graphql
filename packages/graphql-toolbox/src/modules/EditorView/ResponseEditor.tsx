@@ -24,21 +24,14 @@ import { indentWithTab } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
 import { bracketMatching, foldGutter, indentOnInput } from "@codemirror/language";
 import { StateEffect } from "@codemirror/state";
-import {
-    drawSelection,
-    dropCursor,
-    EditorView,
-    highlightSpecialChars,
-    keymap,
-    lineNumbers,
-} from "@codemirror/view";
+import { EditorView, drawSelection, dropCursor, highlightSpecialChars, keymap, lineNumbers } from "@codemirror/view";
 import classNames from "classnames";
 import { dracula, tomorrow } from "thememirror";
 
 import type { Extension } from "../../components/Filename";
 import { FileName } from "../../components/Filename";
 import { Theme, ThemeContext } from "../../contexts/theme";
-import { formatCode, handleEditorDisableState,ParserOptions } from "./utils";
+import { ParserOptions, formatCode, handleEditorDisableState } from "./utils";
 
 export interface Props {
     id: string;

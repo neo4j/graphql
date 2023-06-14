@@ -26,13 +26,7 @@ import { lintGutter, lintKeymap } from "@codemirror/lint";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { Annotation, EditorState, Prec, StateEffect } from "@codemirror/state";
 import type { ViewUpdate } from "@codemirror/view";
-import {
-    drawSelection,
-    dropCursor,
-    highlightSpecialChars,
-    keymap,
-    lineNumbers,
-} from "@codemirror/view";
+import { drawSelection, dropCursor, highlightSpecialChars, keymap, lineNumbers } from "@codemirror/view";
 import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton } from "@neo4j-ndl/react";
 import { PlayIconOutline } from "@neo4j-ndl/react/icons";
@@ -48,7 +42,7 @@ import { EDITOR_QUERY_INPUT } from "../../constants";
 import { AppSettingsContext } from "../../contexts/appsettings";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
-import { formatCode, handleEditorDisableState,ParserOptions } from "./utils";
+import { ParserOptions, formatCode, handleEditorDisableState } from "./utils";
 
 export interface Props {
     loading: boolean;
