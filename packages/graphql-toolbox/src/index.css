@@ -33,6 +33,10 @@
     border-bottom-left-radius: 0.75rem;
 }
 
+.cm-editor .cm-gutter {
+    width: inherit;
+}
+
 /* Remove when using CodeMirror v6*/
 .grid-class .CodeMirror {
     height: calc(100% - 3rem);
