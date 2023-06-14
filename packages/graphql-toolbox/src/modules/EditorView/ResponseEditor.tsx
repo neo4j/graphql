@@ -24,15 +24,8 @@ import { indentWithTab } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
 import { bracketMatching, foldGutter, indentOnInput } from "@codemirror/language";
 import { StateEffect } from "@codemirror/state";
-import {
-    drawSelection,
-    dropCursor,
-    EditorView,
-    highlightActiveLine,
-    highlightSpecialChars,
-    keymap,
-    lineNumbers,
-} from "@codemirror/view";
+import { drawSelection, dropCursor, EditorView, highlightSpecialChars, keymap, lineNumbers } from "@codemirror/view";
+import classNames from "classnames";
 import { dracula, tomorrow } from "thememirror";
 
 import type { Extension } from "../../components/Filename";
@@ -57,7 +50,6 @@ export const ResponseEditor = ({ id, loading, fileExtension, fileName, value, bo
     const extensions = [
         lineNumbers(),
         highlightSpecialChars(),
-        highlightActiveLine(),
         bracketMatching(),
         closeBrackets(),
         drawSelection(),
@@ -69,6 +61,7 @@ export const ResponseEditor = ({ id, loading, fileExtension, fileName, value, bo
         }),
         javascript(),
         EditorView.lineWrapping,
+        EditorView.editable.of(false), // make the editor read-only
         keymap.of([indentWithTab]),
         theme.theme === Theme.LIGHT ? tomorrow : dracula,
     ];
@@ -83,6 +76,7 @@ export const ResponseEditor = ({ id, loading, fileExtension, fileName, value, bo
             extensions: [],
             parent: elementRef.current,
         });
+        formatCode(view, ParserOptions.JSON);
 
         setEditorView(view);
 
@@ -114,9 +108,16 @@ export const ResponseEditor = ({ id, loading, fileExtension, fileName, value, bo
     }, [loading]);
 
     return (
-        <div style={{ width: "100%", height: "100%" }}>
+        <div className="w-full h-full relative">
             <FileName extension={fileExtension} name={fileName} borderRadiusTop={borderRadiusTop}></FileName>
-            <div id={id} className={theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"} ref={elementRef} />
+            <div
+                id={id}
+                ref={elementRef}
+                className={classNames(
+                    "w-full h-[calc(100%-3rem)] absolute",
+                    theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"
+                )}
+            />
         </div>
     );
 };

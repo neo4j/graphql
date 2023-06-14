@@ -155,7 +155,7 @@ export const EditorView = ({ schema }: Props) => {
                             queryEditor={
                                 schema ? <QueryEditor loading={loading} onSubmit={onSubmit} schema={schema} /> : null
                             }
-                            parameterEditor={
+                            variablesEditor={
                                 <VariablesEditor
                                     id={EDITOR_PARAMS_INPUT}
                                     fileName="params"
