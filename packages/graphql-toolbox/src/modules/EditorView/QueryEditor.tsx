@@ -42,7 +42,7 @@ import { EDITOR_QUERY_INPUT } from "../../constants";
 import { AppSettingsContext } from "../../contexts/appsettings";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
-import { ParserOptions, formatCode, handleEditorDisableState } from "./utils";
+import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 
 export interface Props {
     loading: boolean;
