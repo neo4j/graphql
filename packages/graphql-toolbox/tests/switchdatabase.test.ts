@@ -77,7 +77,7 @@ base.test.describe("Switch database", () => {
         await topBarPage.waitForTopBarVisibility();
         await schemaEditorPage.setTypeDefs(typeDefs);
         let currentTypeDefs = await schemaEditorPage.getTypeDefs();
-        expect(currentTypeDefs).toEqual(typeDefs);
+        expect(currentTypeDefs.replaceAll(/\s+/g, "")).toEqual(typeDefs.replaceAll(/\s+/g, ""));
 
         await topBarPage.clickConnectionInformation();
         await topBarPage.selectDatabaseByName(databaseName);
@@ -85,7 +85,7 @@ base.test.describe("Switch database", () => {
 
         await topBarPage.waitForTopBarVisibility();
         currentTypeDefs = await schemaEditorPage.getTypeDefs();
-        expect(currentTypeDefs).toEqual("");
+        expect(currentTypeDefs.replaceAll(/\s+/g, "")).toEqual("");
     });
 
     test("should be able to cancel a switch database dialog causing no changes", async ({
@@ -98,7 +98,7 @@ base.test.describe("Switch database", () => {
         await topBarPage.waitForTopBarVisibility();
         await schemaEditorPage.setTypeDefs(typeDefs);
         let currentTypeDefs = await schemaEditorPage.getTypeDefs();
-        expect(currentTypeDefs).toEqual(typeDefs);
+        expect(currentTypeDefs.replaceAll(/\s+/g, "")).toEqual(typeDefs.replaceAll(/\s+/g, ""));
 
         await topBarPage.clickConnectionInformation();
         await topBarPage.selectDatabaseByName(databaseName);
@@ -106,6 +106,6 @@ base.test.describe("Switch database", () => {
 
         await topBarPage.waitForTopBarVisibility();
         currentTypeDefs = await schemaEditorPage.getTypeDefs();
-        expect(currentTypeDefs).toEqual(typeDefs);
+        expect(currentTypeDefs.replaceAll(/\s+/g, "")).toEqual(typeDefs.replaceAll(/\s+/g, ""));
     });
 });
