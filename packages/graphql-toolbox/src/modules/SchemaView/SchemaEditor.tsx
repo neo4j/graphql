@@ -153,7 +153,7 @@ export const SchemaEditor = ({
     }, [loading]);
 
     return (
-        <div className="rounded-b-xl" style={{ width: "100%", height: "100%" }}>
+        <div className="w-full h-full relative rounded-b-xl">
             <FileName
                 extension={Extension.GRAPHQL}
                 name="type-definitions"
@@ -245,8 +245,8 @@ export const SchemaEditor = ({
             ></FileName>
             <div
                 id={SCHEMA_EDITOR_INPUT}
-                className={theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"}
                 ref={elementRef}
+                className={classNames("w-full h-full absolute", theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark")}
             ></div>
         </div>
     );

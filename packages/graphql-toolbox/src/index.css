@@ -22,12 +22,15 @@
     font-size: 1rem;
     font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
         Courier New;
-    border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
+    border-bottom-left-radius: 0.75rem;
 }
 
 .cm-editor.cm-focused {
     outline: none;
+}
+.cm-editor .cm-scroller {
+    border-bottom-left-radius: 0.75rem;
 }
 
 /* Remove when using CodeMirror v6*/
@@ -60,15 +63,6 @@ li.CodeMirror-hint-active {
 .code-mirror-disabled-state {
     pointer-events: none;
     opacity: 0.85;
-}
-
-#SCHEMA_EDITOR_INPUT {
-    height: 89vh;
-}
-#EDITOR_QUERY_INPUT,
-#EDITOR_PARAMS_INPUT,
-#EDITOR_RESPONSE_OUTPUT {
-    height: calc(100% - 3rem);
 }
 
 /* ----------------------*/

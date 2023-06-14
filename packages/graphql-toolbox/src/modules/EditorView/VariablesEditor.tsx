@@ -159,7 +159,7 @@ export const VariablesEditor = ({ id, loading, fileExtension, fileName, borderRa
     }, [loading]);
 
     return (
-        <div style={{ width: "100%", height: "100%" }}>
+        <div className="w-full h-full relative">
             <FileName
                 extension={fileExtension}
                 name={fileName}
@@ -181,7 +181,14 @@ export const VariablesEditor = ({ id, loading, fileExtension, fileName, borderRa
                     </Button>
                 }
             />
-            <div id={id} className={theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"} ref={elementRef} />
+            <div
+                id={id}
+                ref={elementRef}
+                className={classNames(
+                    "w-full h-[calc(100%-3rem)] absolute",
+                    theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"
+                )}
+            />
         </div>
     );
 };

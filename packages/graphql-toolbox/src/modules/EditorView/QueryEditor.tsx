@@ -186,7 +186,7 @@ export const QueryEditor = ({ loading, onSubmit, schema }: Props) => {
     }, [loading]);
 
     return (
-        <div className="rounded-b-xl" style={{ width: "100%", height: "100%" }}>
+        <div className="w-full h-full relative rounded-b-xl">
             <FileName
                 name={"query"}
                 extension={Extension.GRAPHQL}
@@ -229,8 +229,11 @@ export const QueryEditor = ({ loading, onSubmit, schema }: Props) => {
             />
             <div
                 id={EDITOR_QUERY_INPUT}
-                className={theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"}
                 ref={elementRef}
+                className={classNames(
+                    "w-full h-[calc(100%-3rem)] absolute",
+                    theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark"
+                )}
             />
         </div>
     );

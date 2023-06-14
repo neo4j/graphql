@@ -29,10 +29,10 @@ import "./grid.css";
 interface Props {
     queryEditor: React.ReactNode | null;
     resultView: React.ReactNode;
-    parameterEditor: React.ReactNode;
+    variablesEditor: React.ReactNode;
 }
 
-export const Grid = ({ queryEditor, resultView, parameterEditor }: Props) => {
+export const Grid = ({ queryEditor, resultView, variablesEditor }: Props) => {
     const editorResize = useDragResize({
         direction: "horizontal",
         sizeThresholdFirst: 270,
@@ -60,7 +60,7 @@ export const Grid = ({ queryEditor, resultView, parameterEditor }: Props) => {
                             <div className="vertical-drag-bar" style={{ backgroundImage: `url(${unionHorizontal})` }} />
                         </div>
                         <div ref={editorToolsResize.secondRef}>
-                            <div className="w-full h-full">{parameterEditor}</div>
+                            <div className="w-full h-full">{variablesEditor}</div>
                         </div>
                     </div>
                 </div>
