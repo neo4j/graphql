@@ -1,5 +1,30 @@
 # @neo4j/graphql-toolbox
 
+## 1.6.0
+
+### Minor Changes
+
+-   [#3468](https://github.com/neo4j/graphql/pull/3468) [`0ad9cba5b`](https://github.com/neo4j/graphql/commit/0ad9cba5b9b26cdd28ccc1923a4901f0abfc3dab) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Uprade Codemirror to version 6
+
+### Patch Changes
+
+-   [#3410](https://github.com/neo4j/graphql/pull/3410) [`f2375d4e2`](https://github.com/neo4j/graphql/commit/f2375d4e2437c80cc3b7f0dd2fe547357e5e3134) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox - replace custom-implemented components with NDL components
+
+-   [#3480](https://github.com/neo4j/graphql/pull/3480) [`545b30481`](https://github.com/neo4j/graphql/commit/545b30481a33808af51ff30bef13946efddebc83) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: Toolbox - editor height and scroll
+
+-   [#3464](https://github.com/neo4j/graphql/pull/3464) [`4014842d5`](https://github.com/neo4j/graphql/commit/4014842d555b690b0e870f7a4e9b4cb62989729f) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox - replace view switcher with tabs
+
+-   [#3447](https://github.com/neo4j/graphql/pull/3447) [`9146b1a6b`](https://github.com/neo4j/graphql/commit/9146b1a6b491108b739e2f45ca952c2dca68dce5) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox - tooltip with clickable link gets a larger area
+
+-   [#3412](https://github.com/neo4j/graphql/pull/3412) [`a33b368c4`](https://github.com/neo4j/graphql/commit/a33b368c457c070cee305965fdf4347cf4f2e700) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox - top bar updates: Connection Menu, updated styles, Connection information
+
+-   [#3407](https://github.com/neo4j/graphql/pull/3407) [`e2455956a`](https://github.com/neo4j/graphql/commit/e2455956a9d455fa4e262e2760183e3b9796ab2f) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox - introduce query editor tabs
+
+-   [#3462](https://github.com/neo4j/graphql/pull/3462) [`ffabf14f4`](https://github.com/neo4j/graphql/commit/ffabf14f40cb2b8668bd73503ac754a58155d575) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: Toolbox - login window styling and layout
+
+-   Updated dependencies [[`baa787745`](https://github.com/neo4j/graphql/commit/baa787745f5fef2af6b29ba3b4722a51f94b1961), [`8c99be2fe`](https://github.com/neo4j/graphql/commit/8c99be2fe3ef5a831c8f043403dedf980cf84f86), [`b891355e5`](https://github.com/neo4j/graphql/commit/b891355e58de1c56df68ce528a0a814d5202cab3), [`0f32311ea`](https://github.com/neo4j/graphql/commit/0f32311ea685c996f35a62410a21ef1d9f495b46), [`5616aa662`](https://github.com/neo4j/graphql/commit/5616aa662256e416b8401c8e50be79db194dfb28), [`f19a57ca2`](https://github.com/neo4j/graphql/commit/f19a57ca236cb608c8138237751c4432ede6233f), [`1d5506525`](https://github.com/neo4j/graphql/commit/1d550652512331f3fc69bf3b5307fbcb3fd79aab), [`0a444662b`](https://github.com/neo4j/graphql/commit/0a444662b2ac986971076505fbb6c17aec4ea539), [`8c99be2fe`](https://github.com/neo4j/graphql/commit/8c99be2fe3ef5a831c8f043403dedf980cf84f86), [`cc7c8e6a9`](https://github.com/neo4j/graphql/commit/cc7c8e6a9ba5b880c971efbfcd36485c92948a6b), [`f4d691566`](https://github.com/neo4j/graphql/commit/f4d6915661ef5f18e0d5fa3bd1b96d3564d94ee8)]:
+    -   @neo4j/graphql@3.21.0
+
 ## 1.5.6
 
 ### Patch Changes
