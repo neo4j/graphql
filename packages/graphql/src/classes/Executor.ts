@@ -38,7 +38,6 @@ import type { AuthContext } from "../types/deprecated/auth/auth-context";
 import createAuthParam from "../translate/create-auth-param";
 import type { GraphQLResolveInfo } from "graphql";
 import { print } from "graphql";
-import { wrapInTimeMeasurement } from "../utils/wrap-in-time-measurement";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -91,9 +90,6 @@ export type ExecutorConstructorParam = {
 
 export type ExecutorResult = {
     result: QueryResult;
-    measurements?: {
-        time: number;
-    };
 };
 
 export class Executor {
@@ -106,16 +102,8 @@ export class Executor {
 
     private database: string | undefined;
     private bookmarks: string | string[] | undefined;
-    private returnMeasurements: boolean;
 
-    constructor({
-        executionContext,
-        auth,
-        queryOptions,
-        database,
-        bookmarks,
-        measureTime = false,
-    }: ExecutorConstructorParam) {
+    constructor({ executionContext, auth, queryOptions, database, bookmarks }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
         this.queryOptions = queryOptions;
@@ -126,7 +114,6 @@ export class Executor {
         }
         this.database = database;
         this.bookmarks = bookmarks;
-        this.returnMeasurements = measureTime;
     }
 
     public async execute(
@@ -263,19 +250,8 @@ export class Executor {
             `About to execute Cypher:\nCypher:\n${queryToRun}\nParams:\n${JSON.stringify(parametersToRun, null, 2)}`
         );
 
-        const { result, time } = await wrapInTimeMeasurement(() => {
-            return transaction.run(queryToRun, parametersToRun);
-        });
+        const result = await transaction.run(queryToRun, parametersToRun);
 
-        const measurements = this.returnMeasurements
-            ? {
-                  time,
-              }
-            : undefined;
-
-        return {
-            result,
-            measurements,
-        };
+        return { result };
     }
 }
