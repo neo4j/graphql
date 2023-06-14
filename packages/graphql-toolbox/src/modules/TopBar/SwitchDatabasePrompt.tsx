@@ -34,9 +34,7 @@ export const SwitchDatabasePrompt = ({ selectedDatabaseName, onClose, onSwitchDa
             open={!!selectedDatabaseName}
             onClose={() => onClose()}
         >
-            <Dialog.Header>
-                <span className="h4">Switch current database</span>
-            </Dialog.Header>
+            <Dialog.Header className="h4">Switch current database</Dialog.Header>
             <Dialog.Description>
                 <p>If you switch the database, the content in the editor will be overwritten.</p>
                 <br />
