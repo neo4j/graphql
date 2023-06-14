@@ -27,7 +27,6 @@ import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
-import { Measurement, addMeasurementField } from "../utils/add-measurement-field";
 import { compileCypher } from "../utils/compile-cypher";
 
 export function translateRead(
@@ -42,7 +41,6 @@ export function translateRead(
     },
     varName = "this"
 ): Cypher.CypherResult {
-    const p1 = performance.now();
     const { resolveTree } = context;
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
 
@@ -223,7 +221,5 @@ export function translateRead(
     );
     const result = readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
 
-    const p2 = performance.now();
-    addMeasurementField(context, Measurement.translationTime, p2 - p1);
     return result;
 }
