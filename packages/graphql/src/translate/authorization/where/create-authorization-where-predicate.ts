@@ -100,28 +100,6 @@ export function createAuthorizationWherePredicate({
         predicate: Cypher.and(...predicates),
         preComputedSubqueries: subqueries,
     };
-
-    // const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicate({
-    //     element: node,
-    //     context,
-    //     whereInput: entity.annotations.authorization!,
-    //     targetElement: target,
-    // });
-
-    // const jwtPredicate = createJwtPayloadWherePredicate({ where: where.jwt });
-
-    // let preComputedWhereFieldsResult = "";
-
-    // const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
-    //     preComputedWhereFieldsResult = preComputedSubqueries?.getCypher(env) || "";
-    //     const cypher = wherePredicate?.getCypher(env) || "";
-    //     return [cypher, {}];
-    // });
-
-    // const result = whereCypher.build(`${chainStr || ""}${varName}_`);
-    // const whereStr = `${!recursing ? "WHERE " : ""}`;
-
-    // return [`${whereStr}${result.cypher}`, preComputedWhereFieldsResult, result.params];
 }
 
 function createNestedPredicate({
