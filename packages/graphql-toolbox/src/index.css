@@ -2,34 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
-/* util classes */
-.whitespace-break-spaces {
-    white-space: break-spaces;
-}
+/* ----------------------*/
 
-.pt-02 {
-    padding-top: 0.2rem;
-}
+/* Login window */
 
-.mb-01 {
-    margin-bottom: 0.1rem;
-}
-
-.pos-absolute {
-    position: absolute !important;
+.login-window-bg {
+    background-image: url('./assets/graphic-bottom-left.svg'), url('./assets/graphic-top-right.svg');
+    background-position: left bottom, right top;
+    background-size: 120px 200px;
+    background-repeat: no-repeat, no-repeat;
 }
 
 /* ----------------------*/
 
 /* Global settings for all CodeMirror editors */
-.CodeMirror {
+.cm-editor {
     height: 100%;
     position: inherit;
     font-size: 1rem;
     font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
         Courier New;
-    border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
+    border-bottom-left-radius: 0.75rem;
+}
+
+.cm-editor.cm-focused {
+    outline: none;
+}
+.cm-editor .cm-scroller {
+    border-bottom-left-radius: 0.75rem;
+}
+
+.cm-editor .cm-gutter {
+    width: inherit;
 }
 
 /* Remove when using CodeMirror v6*/
@@ -66,7 +71,6 @@ li.CodeMirror-hint-active {
 
 /* ----------------------*/
 
-
 /* Documentation and Query explorer classes */
 .doc-explorer-embedded {
     height: 100%;
@@ -87,7 +91,6 @@ li.CodeMirror-hint-active {
 }
 
 /* ----------------------*/
-
 
 /* All GraphiQL v2 components */
 .graphiql-container {
@@ -147,7 +150,7 @@ li.CodeMirror-hint-active {
     padding: 3px;
 }
 
-.docExplorerWrap .graphiql-explorer-actions>span {
+.docExplorerWrap .graphiql-explorer-actions > span {
     display: none !important;
 }
 
@@ -170,7 +173,6 @@ li.CodeMirror-hint-active {
 
 /* ----------------------*/
 
-
 /* Canny */
 .Canny_BadgeContainer {
     pointer-events: none;
@@ -189,6 +191,17 @@ li.CodeMirror-hint-active {
     .canny-indication-wrapper {
         padding-bottom: 0.25rem;
     }
+}
+
+/* ----------------------*/
+
+/* util classes */
+.whitespace-break-spaces {
+    white-space: break-spaces;
+}
+
+.pos-absolute {
+    position: absolute !important;
 }
 
 /* ----------------------*/

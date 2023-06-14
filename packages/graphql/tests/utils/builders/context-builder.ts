@@ -47,7 +47,6 @@ export class ContextBuilder extends Builder<Context, Context> {
             neo4jDatabaseInfo: {} as Neo4jDatabaseInfo,
             info: {} as GraphQLResolveInfo,
             features: {},
-            addMeasurementsToExtension: false,
             ...newOptions,
         });
     }

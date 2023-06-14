@@ -40,61 +40,53 @@ export const EditorTabs = () => {
     };
 
     return (
-        <>
-            {useStore.getState().tabs.length ? (
-                <div
-                    className={classNames(
-                        "w-full overflow-auto whitespace-nowrap rounded-t-xl border-b pt-2",
-                        theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"
-                    )}
-                >
-                    <Tabs
-                        size="small"
-                        fill="underline"
-                        value={useStore.getState().activeTabIndex.toString()}
-                        onChange={handleTabsChange}
-                        className="mb-01"
+        <Tabs
+            size="small"
+            fill="underline"
+            value={useStore.getState().activeTabIndex.toString()}
+            onChange={handleTabsChange}
+            className={classNames(
+                "w-full h-12 pt-2 px-1 mb-[0.1rem] overflow-x-auto whitespace-nowrap rounded-t-xl border-b z-0",
+                theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"
+            )}
+        >
+            {useStore.getState().tabs?.map((tab, idx) => {
+                return (
+                    <Tab
+                        data-test-query-editor-tab={tab.title}
+                        key={idx.toString()}
+                        tabId={idx.toString()}
+                        className={`${theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"}`}
                     >
-                        {useStore.getState().tabs.map((tab, idx) => {
-                            return (
-                                <Tab
-                                    data-test-query-editor-tab={tab.title}
-                                    key={idx.toString()}
-                                    tabId={idx.toString()}
-                                    className={`${theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"}`}
-                                >
-                                    <div className="flex justify-center items-center">
-                                        <span style={{ maxWidth: "7rem" }}>{tab.title}</span>
-                                        <XMarkIconOutline
-                                            data-test-close-icon-query-editor-tab
-                                            className={classNames(
-                                                "h-5 w-5 ml-2",
-                                                theme.theme === Theme.LIGHT ? "hover:bg-gray-100" : "hover:bg-gray-500"
-                                            )}
-                                            aria-label="Close Icon"
-                                            onClick={(event) => {
-                                                event.stopPropagation();
-                                                closeTab(idx);
-                                            }}
-                                        />
-                                    </div>
-                                </Tab>
-                            );
-                        })}
-                        <Tab key={"new"} tabId={"new"} className="pos-absolute pl-0">
-                            <PlusIconOutline
-                                data-test-new-query-editor-tab
+                        <div className="flex justify-center items-center">
+                            <span style={{ maxWidth: "7rem" }}>{tab.title}</span>
+                            <XMarkIconOutline
+                                data-test-close-icon-query-editor-tab
                                 className={classNames(
-                                    "h-5 w-5",
-                                    theme.theme === Theme.LIGHT ? "hover:bg-gray-100" : "text-white hover:bg-gray-500"
+                                    "h-5 w-5 ml-2",
+                                    theme.theme === Theme.LIGHT ? "hover:bg-gray-100" : "hover:bg-gray-500"
                                 )}
-                                aria-label="Add tab Icon"
-                                onClick={() => store.addTab()}
+                                aria-label="Close Icon"
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    closeTab(idx);
+                                }}
                             />
-                        </Tab>
-                    </Tabs>
-                </div>
-            ) : null}
-        </>
+                        </div>
+                    </Tab>
+                );
+            })}
+            <Tab key={"new"} tabId={"new"} className="pos-absolute pl-0">
+                <PlusIconOutline
+                    data-test-new-query-editor-tab
+                    className={classNames(
+                        "h-5 w-5",
+                        theme.theme === Theme.LIGHT ? "hover:bg-gray-100" : "text-white hover:bg-gray-500"
+                    )}
+                    aria-label="Add tab Icon"
+                    onClick={() => store.addTab()}
+                />
+            </Tab>
+        </Tabs>
     );
 };

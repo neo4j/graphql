@@ -62,8 +62,6 @@ export interface Neo4jGraphQLConfig {
     enableDebug?: boolean;
     startupValidation?: StartupValidationConfig;
     queryOptions?: CypherQueryOptions;
-    /** Attach metrics to context extension field */
-    addMeasurementsToExtension?: boolean;
 }
 
 export type ValidationConfig = {
@@ -278,10 +276,7 @@ class Neo4jGraphQL {
         return getNeo4jDatabaseInfo(new Executor(executorConstructorParam));
     }
 
-    private wrapResolvers(
-        resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>,
-        schemaModel: Neo4jGraphQLSchemaModel
-    ) {
+    private wrapResolvers(resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>) {
         if (!this.schemaModel) {
             throw new Error("Schema Model is not defined");
         }
@@ -296,7 +291,7 @@ class Neo4jGraphQL {
             config,
             nodes: this.nodes,
             relationships: this.relationships,
-            schemaModel: schemaModel,
+            schemaModel: this.schemaModel,
             plugins: this.plugins,
             features: this.features,
         };
@@ -312,27 +307,22 @@ class Neo4jGraphQL {
         return composeResolvers(mergedResolvers, resolversComposition);
     }
 
-    private wrapFederationResolvers(
-        resolvers: NonNullable<IExecutableSchemaDefinition["resolvers"]>,
-        schemaModel: Neo4jGraphQLSchemaModel
-    ) {
-        const wrapResolverArgs: WrapResolverArguments = {
-            driver: this.driver,
-            config: this.config,
-            nodes: this.nodes,
-            relationships: this.relationships,
-            schemaModel: schemaModel,
-            plugins: this.plugins,
-            features: this.features,
-        };
+    private composeSchema(schema: GraphQLSchema): GraphQLSchema {
+        // TODO: Keeping this in our back pocket - if we want to add native support for middleware to the library
+        // if (this.middlewares) {
+        //     schema = applyMiddleware(schema, ...this.middlewares);
+        // }
 
-        const resolversComposition = {
-            "Query.{_entities, _service}": [wrapResolver(wrapResolverArgs)],
-        };
+        // Get resolvers from schema - this will include generated _entities and _service for Federation
+        const resolvers = getResolversFromSchema(schema);
 
-        // Merge generated and custom resolvers
-        const mergedResolvers = mergeResolvers([...asArray(resolvers)]);
-        return composeResolvers(mergedResolvers, resolversComposition);
+        // Wrap the resolvers using resolvers composition
+        const wrappedResolvers = this.wrapResolvers(resolvers);
+
+        // Add the wrapped resolvers back to the schema, context will now be populated
+        addResolversToSchema({ schema, resolvers: wrappedResolvers, updateResolversInPlace: true });
+
+        return this.addDefaultFieldResolvers(schema);
     }
 
     private parseNeo4jFeatures(features: Neo4jFeaturesSettings | undefined): ContextFeatures {
@@ -371,6 +361,10 @@ class Neo4jGraphQL {
             const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
             const { jwtPayload } = typesExcludedFromGeneration;
 
+            if (!this.schemaModel) {
+                this.schemaModel = generateModel(document);
+            }
+
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
                 validateResolvers: validationConfig.validateResolvers,
@@ -385,21 +379,17 @@ class Neo4jGraphQL {
             this._nodes = nodes;
             this._relationships = relationships;
 
-            const schemaModel = this.generateSchemaModel(document);
-
-            // Wrap the generated and custom resolvers, which adds a context including the schema to every request
-            const wrappedResolvers = this.wrapResolvers(resolvers, schemaModel);
-
             const schema = makeExecutableSchema({
                 typeDefs,
-                resolvers: wrappedResolvers,
+                resolvers,
             });
 
-            resolve(this.addDefaultFieldResolvers(schema));
+            resolve(this.composeSchema(schema));
         });
     }
 
     private async generateSubgraphSchema(): Promise<GraphQLSchema> {
+        // Import only when needed to avoid issues if GraphQL 15 being used
         const { Subgraph } = await import("./Subgraph");
 
         const initialDocument = this.getDocument(this.typeDefs);
@@ -420,6 +410,10 @@ class Neo4jGraphQL {
 
         const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
         const { jwtPayload } = typesExcludedFromGeneration;
+
+        if (!this.schemaModel) {
+            this.schemaModel = generateModel(document);
+        }
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
@@ -444,32 +438,15 @@ class Neo4jGraphQL {
         this._nodes = nodes;
         this._relationships = relationships;
 
-        if (!this.schemaModel) {
-            this.schemaModel = generateModel(document);
-        }
-
         // TODO: Move into makeAugmentedSchema, add resolvers alongside other resolvers
         const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, this.schemaModel);
 
-        const schemaModel = this.generateSchemaModel(document);
-
-        const wrappedResolvers = this.wrapResolvers([resolvers, referenceResolvers], schemaModel);
-
         const schema = subgraph.buildSchema({
             typeDefs,
-            resolvers: wrappedResolvers as Record<string, any>,
+            resolvers: mergeResolvers([resolvers, referenceResolvers]),
         });
 
-        // Get resolvers from subgraph schema - this will include generated _entities and _service
-        const subgraphResolvers = getResolversFromSchema(schema);
-
-        // Wrap the _entities and _service Query resolvers
-        const wrappedSubgraphResolvers = this.wrapFederationResolvers(subgraphResolvers, schemaModel);
-
-        // Add the wrapped resolvers back to the schema, context will now be populated
-        addResolversToSchema({ schema, resolvers: wrappedSubgraphResolvers, updateResolversInPlace: true });
-
-        return this.addDefaultFieldResolvers(schema);
+        return this.composeSchema(schema);
     }
 
     private parseStartupValidationConfig(): ValidationConfig {
