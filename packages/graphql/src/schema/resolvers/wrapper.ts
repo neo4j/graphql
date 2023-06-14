@@ -66,7 +66,9 @@ export const wrapResolver =
         dbInfo,
         authorizationSettings,
     }: WrapResolverArguments) =>
+    // TODO: strongly type this, so that context argument accepts "full" context
     (next) =>
+    // TODO: type this as Neo4jGraphQLContext
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const { driverConfig } = config;
 
