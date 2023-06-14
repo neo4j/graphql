@@ -58,18 +58,20 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
     const [showIntrospectionModal, setShowIntrospectionModal] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
     const [isIntrospecting, setIsIntrospecting] = useState<boolean>(false);
+    const [editorView, setEditorView] = useState<EditorView | null>(null);
     const elementRef = useRef<HTMLDivElement | null>(null);
     const favorites = useStore((store) => store.favorites);
     const prevSelectedDBName = usePrevious(auth.selectedDatabaseName);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
-    const [editorView, setEditorView] = useState<EditorView | null>(null);
 
     useEffect(() => {
         if (!prevSelectedDBName) return;
         if (prevSelectedDBName !== auth.selectedDatabaseName) {
-            if (!refForEditorMirror?.current) return;
+            if (!editorView) return;
             // the selected database has changed, clear the codemirror content.
-            refForEditorMirror.current.setValue("");
+            editorView.dispatch({
+                changes: { from: 0, to: editorView.state.doc.length, insert: "" },
+            });
         }
     }, [auth.selectedDatabaseName]);
 
