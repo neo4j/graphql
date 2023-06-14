@@ -1,7 +1,7 @@
 {
     "name": "@neo4j/graphql-toolbox",
     "private": true,
-    "version": "1.5.6",
+    "version": "1.6.0",
     "description": "Developer UI For Neo4j GraphQL",
     "exports": "./dist/main.js",
     "main": "./dist/main.js",
@@ -49,7 +49,7 @@
         "@graphiql/react": "0.17.6",
         "@neo4j-ndl/base": "1.5.3",
         "@neo4j-ndl/react": "1.5.5",
-        "@neo4j/graphql": "3.20.1",
+        "@neo4j/graphql": "3.21.0",
         "@neo4j/introspector": "1.0.3",
         "classnames": "2.3.2",
         "cm6-graphql": "0.0.8",
