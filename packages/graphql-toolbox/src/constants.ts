@@ -32,7 +32,7 @@ export const DEFAULT_TYPE_DEFS = `# Write your own type definition in the editor
 
 # Example type definition:
 type Movie {
-    title: String!
+  title: String!
 }
 `;
 
