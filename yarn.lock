@@ -3304,7 +3304,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.5.3, @neo4j-ndl/base@npm:^1.5.3":
+"@neo4j-ndl/base@npm:1.5.4":
+  version: 1.5.4
+  resolution: "@neo4j-ndl/base@npm:1.5.4"
+  checksum: a0b1402556f18201d2d12ba7d4f62f7dcacae5b0310354e198b8547bff52cf637ac934ee3a1169319264ec2d096a7faa4d423e5537d1f18cd996a98457b6bfc5
+  languageName: node
+  linkType: hard
+
+"@neo4j-ndl/base@npm:^1.5.3":
   version: 1.5.3
   resolution: "@neo4j-ndl/base@npm:1.5.3"
   checksum: f120910dfb1d028ca9a6deebbdef42de736fa300ce2f0f0443a2af5b858e6397a05715edb60225b8d1e350ed1ccee29aa2448558f51b1403fc2192de3c76b178
@@ -3430,7 +3437,7 @@ __metadata:
     "@codemirror/lang-javascript": 6.1.8
     "@codemirror/language": 6.7.0
     "@graphiql/react": 0.17.6
-    "@neo4j-ndl/base": 1.5.3
+    "@neo4j-ndl/base": 1.5.4
     "@neo4j-ndl/react": 1.5.5
     "@neo4j/graphql": 3.20.1
     "@neo4j/introspector": 1.0.3
