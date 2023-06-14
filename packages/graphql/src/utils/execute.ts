@@ -21,7 +21,6 @@ import type { SessionMode, QueryResult } from "neo4j-driver";
 import Debug from "debug";
 import { DEBUG_EXECUTE } from "../constants";
 import type { Context } from "../types";
-import { Measurement, addMeasurementField } from "./add-measurement-field";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -43,7 +42,7 @@ async function execute({
     defaultAccessMode: SessionMode;
     context: Context;
 }): Promise<ExecuteResult> {
-    const { result, measurements } = await context.executor.execute(cypher, params, defaultAccessMode, context.info);
+    const { result } = await context.executor.execute(cypher, params, defaultAccessMode, context.info);
 
     if (!result) {
         throw new Error("Unable to execute query against Neo4j database");
@@ -52,10 +51,6 @@ async function execute({
     const records = result.records.map((r) => r.toObject());
 
     debug(`Execute successful, received ${records.length} records`);
-
-    if (measurements) {
-        addMeasurementField(context, Measurement.databaseQueryTime, measurements.time);
-    }
 
     return {
         bookmark: context.executor.lastBookmark,
