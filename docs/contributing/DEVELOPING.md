@@ -63,6 +63,21 @@ for working in this repository, and we additionally recommend the following exte
 The Jest extension should automatically detect the tests for this repository and
 watch them in the Status Bar.
 
+## Using local Cypher-Builder
+
+In the Cypher Builder folder run:
+
+-   `yarn link`
+-   `yarn build`
+
+In the root of the package run:
+
+-   `yarn link -p [path-to-local-cypher-builder]
+
+To unlink, in the graphql project:
+
+-   `yarn unlink @neo4j/cypher-builder`
+
 ## Testing
 
 ### Testing locally
