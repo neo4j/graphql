@@ -52,4 +52,6 @@ export {
     SubscriptionsEvent,
 } from "./types";
 
+export { Neo4jGraphQLContext } from "./types/neo4j-graphql-context";
+
 export const objects = { Point, CartesianPoint };
