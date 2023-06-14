@@ -157,7 +157,7 @@ li.CodeMirror-hint-active {
     padding: 3px;
 }
 
-.docExplorerWrap .graphiql-explorer-actions>span {
+.docExplorerWrap .graphiql-explorer-actions > span {
     display: none !important;
 }
 
