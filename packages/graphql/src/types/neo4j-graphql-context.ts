@@ -20,10 +20,32 @@
 import type { Driver, Session, Transaction } from "neo4j-driver";
 import type { CypherQueryOptions, DriverConfig } from ".";
 import type { JwtPayload } from "./deprecated/auth/jwt-payload";
+import type { Neo4jDatabaseInfo } from "../classes";
 
 export interface Neo4jGraphQLContext {
+    /**
+     * @deprecated Use the {@link executionContext} property instead.
+     */
+    driver?: Driver;
+    /**
+     * If using a driver, configures the database and bookmarks to be used when acquiring a session.
+     */
     driverConfig?: DriverConfig;
+    /**
+     * The Neo4j driver, session or transaction which will be used to execute the translated query.
+     */
     executionContext?: Driver | Session | Transaction;
+    /**
+     * A decoded JWT payload which can be provided for use in authentication and authorization.
+     */
     jwt?: JwtPayload;
+    /**
+     * @deprecated This property will be removed in 4.0.0.
+     */
+    neo4jDatabaseInfo?: Neo4jDatabaseInfo;
+    /**
+     * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options}
+     * when executing the translated query.
+     */
     queryOptions?: CypherQueryOptions;
 }
