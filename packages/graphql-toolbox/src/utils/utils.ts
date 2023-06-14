@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { useEffect, useRef } from "react";
+
 export const getURLProtocolFromText = (text: string | null | undefined): string => {
     if (!text) return "";
     try {
@@ -25,3 +27,11 @@ export const getURLProtocolFromText = (text: string | null | undefined): string 
         return "";
     }
 };
+
+export function usePrevious(value) {
+    const ref = useRef();
+    useEffect(() => {
+        ref.current = value;
+    });
+    return ref.current;
+}

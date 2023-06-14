@@ -21,14 +21,13 @@ import * as base from "@playwright/test";
 import * as dotenv from "dotenv";
 import * as neo4j from "neo4j-driver";
 import { generate } from "randomstring";
-import { Login } from "./pages/Login";
 import { afterAll, beforeAll, expect, test } from "./utils/pagemodel";
 
 dotenv.config();
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
-base.test.describe("URL query parameters", () => {
+base.test.describe("Switch database", () => {
     const randomString = generate({
         charset: "alphabetic",
         length: 8,
@@ -37,6 +36,12 @@ base.test.describe("URL query parameters", () => {
     const databaseName = `graphqltoolboxe2etestdb${randomString}`;
 
     let driver: neo4j.Driver;
+
+    const typeDefs = `
+        type Movie {
+            id: ID!
+        }
+    `;
 
     beforeAll(async () => {
         driver = neo4j.driver(NEO_URL, neo4j.auth.basic(NEO_USER, NEO_PASSWORD));
@@ -62,64 +67,45 @@ base.test.describe("URL query parameters", () => {
         }
     });
 
-    test("should pre-fill connection URI and username input fields with values from url query parameter", async ({
-        page,
-    }) => {
-        await page.goto("/?connectURL=bolt%2Bs://testuser@abcd22.databases.neo4j.io");
-        const login = new Login(page);
-
-        const username = await login.getUsername();
-        const connectURI = await login.getURL();
-
-        expect(username).toEqual("testuser");
-        expect(connectURI).toEqual("bolt+s://abcd22.databases.neo4j.io");
-    });
-
-    test("should pre-fill connection URI input field with values from url query parameter, no username provided in query parameter", async ({
-        page,
-    }) => {
-        await page.goto("/?connectURL=bolt%2Bs://abcd22.databases.neo4j.io");
-        const login = new Login(page);
-
-        const username = await login.getUsername();
-        const connectURI = await login.getURL();
-
-        expect(username).toEqual("neo4j");
-        expect(connectURI).toEqual("bolt+s://abcd22.databases.neo4j.io");
-    });
-
-    test("should select the database from provided url query parameter", async ({ page, topBarPage }) => {
-        await page.goto(`/?db=${databaseName}`);
-
-        const login = new Login(page);
-        await login.login();
-
-        await topBarPage.waitForTopBarVisibility();
-
-        const selectedDatabase = await topBarPage.getSelectedDatabase();
-
-        expect(selectedDatabase).toEqual(databaseName);
-    });
-
-    test("should be able to select default database when a database was provided in url query parameter", async ({
-        page,
+    test("should be able to switch a database and get a cleared schema view editor thereafter", async ({
+        loginPage,
+        schemaEditorPage,
         topBarPage,
     }) => {
-        await page.goto(`/?db=${databaseName}`);
-
-        const login = new Login(page);
-        await login.login();
+        await loginPage.loginDismissIntrospection();
 
         await topBarPage.waitForTopBarVisibility();
-
-        let selectedDatabase = await topBarPage.getSelectedDatabase();
-        expect(selectedDatabase).toEqual(databaseName);
+        await schemaEditorPage.setTypeDefs(typeDefs);
+        let currentTypeDefs = await schemaEditorPage.getTypeDefs();
+        expect(currentTypeDefs.replaceAll(/\s+/g, "")).toEqual(typeDefs.replaceAll(/\s+/g, ""));
 
         await topBarPage.clickConnectionInformation();
-        await topBarPage.selectDatabaseByName("neo4j");
+        await topBarPage.selectDatabaseByName(databaseName);
         await topBarPage.confirmDatabaseSelection();
 
-        selectedDatabase = await topBarPage.getSelectedDatabase();
-        expect(selectedDatabase).toEqual("neo4j");
+        await topBarPage.waitForTopBarVisibility();
+        currentTypeDefs = await schemaEditorPage.getTypeDefs();
+        expect(currentTypeDefs.replaceAll(/\s+/g, "")).toEqual("");
+    });
+
+    test("should be able to cancel a switch database dialog causing no changes", async ({
+        loginPage,
+        schemaEditorPage,
+        topBarPage,
+    }) => {
+        await loginPage.loginDismissIntrospection();
+
+        await topBarPage.waitForTopBarVisibility();
+        await schemaEditorPage.setTypeDefs(typeDefs);
+        let currentTypeDefs = await schemaEditorPage.getTypeDefs();
+        expect(currentTypeDefs.replaceAll(/\s+/g, "")).toEqual(typeDefs.replaceAll(/\s+/g, ""));
+
+        await topBarPage.clickConnectionInformation();
+        await topBarPage.selectDatabaseByName(databaseName);
+        await topBarPage.cancelDatabaseSelection();
+
+        await topBarPage.waitForTopBarVisibility();
+        currentTypeDefs = await schemaEditorPage.getTypeDefs();
+        expect(currentTypeDefs.replaceAll(/\s+/g, "")).toEqual(typeDefs.replaceAll(/\s+/g, ""));
     });
 });
