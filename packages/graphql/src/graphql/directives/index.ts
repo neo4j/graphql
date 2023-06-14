@@ -23,6 +23,8 @@ export { coalesceDirective } from "./coalesce";
 export { computedDirective } from "./computed";
 export { customResolverDirective } from "./customResolver";
 export { cypherDirective } from "./cypher";
+export { selectableDirective } from "./selectable";
+export { settableDirective } from "./settable";
 export { defaultDirective } from "./default";
 export { excludeDirective } from "./exclude";
 export { fulltextDirective } from "./fulltext";
@@ -38,8 +40,8 @@ export { relationshipDirective } from "./relationship";
 export { timestampDirective } from "./timestamp";
 export { uniqueDirective } from "./unique";
 export { writeonlyDirective } from "./writeonly";
-export { mutationDirective } from "./mutation"
-export { queryDirective } from "./query"
-export { subscriptionDirective } from "./subscription"
+export { mutationDirective } from "./mutation";
+export { queryDirective } from "./query";
+export { subscriptionDirective } from "./subscription";
 export { jwtPayload } from "./jwt-payload";
 export { jwtClaim } from "./jwt-claim";

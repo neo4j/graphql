@@ -5,7 +5,6 @@ module.exports = {
     projects: [
         "<rootDir>/packages/graphql/jest.config.js",
         "<rootDir>/packages/introspector/jest.config.js",
-        "<rootDir>/packages/cypher-builder/jest.config.js",
         "<rootDir>/packages/ogm/jest.config.js",
         // INFO: do not run the GraphQL Toolbox e2e tests from root (utilises a different test runner)
         "<rootDir>/packages/plugins/*/jest.config.js",

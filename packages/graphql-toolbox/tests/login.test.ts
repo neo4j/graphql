@@ -19,19 +19,29 @@
 
 import * as base from "@playwright/test";
 import * as dotenv from "dotenv";
-import { test } from "./utils/pagemodel";
+import { expect, test } from "./utils/pagemodel";
 
 dotenv.config();
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
 base.test.describe("login", () => {
-    test("should log in", async ({ loginPage }) => {
+    test("should be able to connect to database", async ({ loginPage }) => {
         await loginPage.setUsername(NEO_USER);
         await loginPage.setPassword(NEO_PASSWORD);
         await loginPage.setURL(NEO_URL);
         await loginPage.submit();
         await loginPage.dismissIntrospectionPrompt();
         await loginPage.awaitSuccess();
+    });
+
+    test("should be able to disconnect from a database", async ({ loginPage, topBarPage }) => {
+        await loginPage.loginDismissIntrospection();
+
+        await topBarPage.clickConnectionInformation();
+        await topBarPage.clickDisconnect();
+
+        const isVisible = await loginPage.getIsLoginWindowVisible();
+        expect(isVisible).toBeTruthy();
     });
 });

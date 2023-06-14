@@ -660,6 +660,9 @@ function makeAugmentedSchema(
                     if (field.typeMeta.array) {
                         return res;
                     }
+                    if (!field.selectableOptions.onAggregate) {
+                        return res;
+                    }
                     const objectTypeComposer = aggregationTypesMapper.getAggregationType({
                         fieldName: field.typeMeta.name,
                         nullable: !field.typeMeta.required,
@@ -968,7 +971,12 @@ function makeAugmentedSchema(
     };
 
     unionTypes.forEach((union) => {
-        if (!generatedResolvers[union.name.value]) {
+        // It is possible to make union types "writeonly". In this case adding a resolver for them breaks schema generation.
+        const unionTypeInSchema = parsedDoc.definitions.find((def) => {
+            if (def.kind === Kind.UNION_TYPE_DEFINITION && def.name.value === union.name.value) return true;
+            return false;
+        });
+        if (!generatedResolvers[union.name.value] && unionTypeInSchema) {
             generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });

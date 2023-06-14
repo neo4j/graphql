@@ -55,7 +55,6 @@ export interface Context {
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
-    addMeasurementsToExtension: boolean;
     executionContext: Driver | Session | Transaction;
     executor: Executor;
     extensions?: Record<string, any>;
@@ -109,6 +108,16 @@ export interface Callback {
     callbackName: string;
 }
 
+export type SelectableOptions = {
+    onRead: boolean;
+    onAggregate: boolean;
+};
+
+export type SettableOptions = {
+    onCreate: boolean;
+    onUpdate: boolean;
+};
+
 /**
  * Representation a ObjectTypeDefinitionNode field.
  */
@@ -124,6 +133,8 @@ export interface BaseField {
     writeonly?: boolean;
     dbPropertyName?: string;
     unique?: Unique;
+    selectableOptions: SelectableOptions;
+    settableOptions: SettableOptions;
 }
 
 /**
@@ -139,6 +150,7 @@ export interface RelationField extends BaseField {
     interface?: InterfaceField;
     queryDirection: RelationshipQueryDirectionOption;
     nestedOperations: RelationshipNestedOperationsOption[];
+    aggregate: boolean;
 }
 
 export interface ConnectionField extends BaseField {
