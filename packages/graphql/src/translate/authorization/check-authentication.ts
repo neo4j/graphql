@@ -23,7 +23,10 @@ import type { Context } from "../../types";
 import { AUTHORIZATION_UNAUTHENTICATED } from "../../constants";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import { filterByValues } from "../../schema/resolvers/subscriptions/where/filters/filter-by-values";
-import type { AuthenticationAnnotation } from "../../schema-model/annotation/AuthenticationAnnotation";
+import type {
+    AuthenticationAnnotation,
+    AuthenticationOperation,
+} from "../../schema-model/annotation/AuthenticationAnnotation";
 import type { Annotation } from "../../schema-model/annotation/Annotation";
 
 export function checkAuthentication({
@@ -34,7 +37,7 @@ export function checkAuthentication({
 }: {
     context: Context;
     node: Node;
-    targetOperations: string[]; // one of these have to be present in the authentication.operations options
+    targetOperations: AuthenticationOperation[]; // one of these have to be present in the authentication.operations options
     field?: string;
 }) {
     const concreteEntities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
@@ -54,7 +57,7 @@ export function checkAuthentication({
 
     if (annotation) {
         const requiresAuthentication = targetOperations.some(
-            (targetOperation) => annotation && annotation.operations.some((operation) => operation === targetOperation)
+            (targetOperation) => annotation && annotation.operations.has(targetOperation)
         );
         if (requiresAuthentication) {
             applyAuthentication({ context, annotation });
