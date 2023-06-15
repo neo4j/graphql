@@ -81,13 +81,9 @@ function createNodeAuthorizationPredicate({
     fieldName?: string;
     conditionForEvaluation?: Cypher.Predicate;
 }): PredicateReturn | undefined {
-    let annotation: AuthorizationAnnotation | undefined;
-
-    if (fieldName) {
-        annotation = entity.attributes.get(fieldName)?.annotations.authorization;
-    } else {
-        annotation = entity.annotations.authorization;
-    }
+    const annotation: AuthorizationAnnotation | undefined = fieldName
+        ? entity.attributes.get(fieldName)?.annotations.authorization
+        : entity.annotations.authorization;
 
     if (!annotation) {
         return;
