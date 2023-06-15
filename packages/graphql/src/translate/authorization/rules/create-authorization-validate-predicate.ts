@@ -81,12 +81,9 @@ export function createAuthorizationValidatePredicate({
 
     if (predicates.length) {
         const wherePredicate = Cypher.or(...predicates);
-        let innerPredicate: Cypher.Predicate;
-        if (conditionForEvaluation) {
-            innerPredicate = Cypher.and(conditionForEvaluation, Cypher.not(wherePredicate));
-        } else {
-            innerPredicate = Cypher.not(wherePredicate);
-        }
+        const innerPredicate: Cypher.Predicate = conditionForEvaluation
+            ? Cypher.and(conditionForEvaluation, Cypher.not(wherePredicate))
+            : Cypher.not(wherePredicate);
         const validatePredicate = Cypher.apoc.util.validatePredicate(innerPredicate, AUTH_FORBIDDEN_ERROR);
 
         return {
