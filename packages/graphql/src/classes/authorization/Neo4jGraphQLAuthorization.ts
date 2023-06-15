@@ -70,7 +70,11 @@ export class Neo4jGraphQLAuthorization {
         }
     }
 
-    public async decodeBearerTokenWithVerify(bearerToken: string): Promise<JWTPayload | undefined> {
+    public async decodeBearerTokenWithVerify(bearerToken: string | undefined): Promise<JWTPayload | undefined> {
+        if (!bearerToken) {
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+        }
+
         const token = parseBearerToken(bearerToken);
         if (!token) {
             throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
