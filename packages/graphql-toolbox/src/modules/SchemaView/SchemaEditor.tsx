@@ -25,14 +25,7 @@ import { bracketMatching, foldGutter, foldKeymap, indentOnInput } from "@codemir
 import { lintGutter, lintKeymap } from "@codemirror/lint";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { EditorState, Prec, StateEffect } from "@codemirror/state";
-import {
-    drawSelection,
-    dropCursor,
-    EditorView,
-    highlightSpecialChars,
-    keymap,
-    lineNumbers,
-} from "@codemirror/view";
+import { EditorView, drawSelection, dropCursor, highlightSpecialChars, keymap, lineNumbers } from "@codemirror/view";
 import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
 import { StarIconOutline } from "@neo4j-ndl/react/icons";

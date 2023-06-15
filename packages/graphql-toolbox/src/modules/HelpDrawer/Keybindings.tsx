@@ -37,21 +37,6 @@ interface Props {
 
 const schemaScreenCmds: RowEntryType[] = [
     {
-        label: "Show autocomplete hints",
-        winCmd: "Ctrl+Space",
-        macCmd: "Option+Space",
-    },
-    {
-        label: "",
-        winCmd: "Alt+Space",
-        macCmd: "Shift+Space",
-    },
-    {
-        label: "",
-        winCmd: "Shift+Alt+Space",
-        macCmd: "-",
-    },
-    {
         label: "Format/Prettify code",
         winCmd: "Ctrl+m",
         macCmd: "Cmd+m",
@@ -59,16 +44,6 @@ const schemaScreenCmds: RowEntryType[] = [
 ];
 
 const editorScreenCmds: RowEntryType[] = [
-    {
-        label: "Show\n autocomplete\n hints",
-        winCmd: "Ctrl+Space",
-        macCmd: "Option+Space",
-    },
-    {
-        label: "",
-        winCmd: "Alt+Space",
-        macCmd: "Shift+Space",
-    },
     {
         label: "Execute current query",
         winCmd: "Ctrl+Enter",
