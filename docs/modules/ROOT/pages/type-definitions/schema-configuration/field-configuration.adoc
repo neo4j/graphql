@@ -140,6 +140,64 @@ type Actor {
 }
 ----
 
+=== Configure nested operations
+
+A large part of the schema produced by the library is needed to support nested operations. These are enabled by the directive `@relationship` as described in xref:type-definitions/relationships.adoc#_inserting_data[@relationship Inserting Data].
+
+The nested operations available are:
+
+[source, graphql, indent=0]
+----
+enum NestedOperations {
+    CREATE
+    UPDATE
+    DELETE
+    CONNECT
+    DISCONNECT
+    CONNECT_OR_CREATE
+}
+----
+
+By default, the `@relationship` enables all of them when defined. To enable only some of them, you have to pass the argument `nestedOperations` specifying the operations required.
+
+**Disable nested create**
+
+To disable the nested `CREATE` operation, change the initial type definitions to:
+
+[source, graphql, indent=0]
+----
+type Movie {
+    title: String!
+    description: String
+}
+
+type Actor {
+    name: String!
+    age: Int
+    actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, nestedOperations: [UPDATE, DELETE, CONNECT, DISCONNECT, CONNECT_OR_CREATE])
+}
+----
+
+As the `CREATE` operation is not present in the `nestedOperations` argument array, it will be no longer possible to create movies starting from the `Actor` type.
+
+**Disable all nested operations**
+
+If instead, no nested operations are required, it's possible to disable all the nested operations by passing an empty array, as:
+
+[source, graphql, indent=0]
+----
+type Movie {
+    title: String!
+    description: String
+}
+
+type Actor {
+    name: String!
+    age: Int
+    actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, nestedOperations: [])
+}
+----
+
 == `@selectable`
 
 This directive sets the availability of fields on queries and aggregations. 
