@@ -48,12 +48,9 @@ export function checkAuthentication({
 
     const entity = concreteEntities[0] as ConcreteEntity;
 
-    let annotation: AuthenticationAnnotation | undefined = undefined;
-    if (field) {
-        annotation = entity.findAttribute(field)?.annotations.authentication;
-    } else {
-        annotation = entity.annotations.authentication;
-    }
+    const annotation: AuthenticationAnnotation | undefined = field
+        ? entity.findAttribute(field)?.annotations.authentication
+        : entity.annotations.authentication;
 
     if (annotation) {
         const requiresAuthentication = targetOperations.some(
