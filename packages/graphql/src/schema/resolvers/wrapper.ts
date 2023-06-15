@@ -29,13 +29,13 @@ import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { AUTH_FORBIDDEN_ERROR, DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import type { Context, Neo4jAuthorizationSettings, Neo4jGraphQLPlugins, RequestLike } from "../../types";
+import type { Context, Neo4jGraphQLPlugins } from "../../types";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { IncomingMessage } from "http";
 import Cypher from "@neo4j/cypher-builder";
-import { Neo4jGraphQLAuthorization } from "../../classes/authorization/Neo4jGraphQLAuthorization";
+import type { Neo4jGraphQLAuthorization } from "../../classes/authorization/Neo4jGraphQLAuthorization";
 import { getToken, parseBearerToken } from "../../classes/authorization/parse-request-token";
 
 const debug = Debug(DEBUG_GRAPHQL);
@@ -49,7 +49,7 @@ export type WrapResolverArguments = {
     schemaModel: Neo4jGraphQLSchemaModel;
     plugins?: Neo4jGraphQLPlugins;
     dbInfo?: Neo4jDatabaseInfo;
-    authorizationSettings?: Neo4jAuthorizationSettings;
+    authorization?: Neo4jGraphQLAuthorization;
 };
 
 let neo4jDatabaseInfo: Neo4jDatabaseInfo;
@@ -64,7 +64,7 @@ export const wrapResolver =
         schemaModel,
         plugins,
         dbInfo,
-        authorizationSettings,
+        authorization,
     }: WrapResolverArguments) =>
     // TODO: strongly type this, so that context argument accepts "full" context
     (next) =>
@@ -108,10 +108,9 @@ export const wrapResolver =
         context.callbacks = config.callbacks;
 
         if (!context.jwt) {
-            const req: RequestLike = context instanceof IncomingMessage ? context : context.req || context.request;
-            if (authorizationSettings) {
+            const req = context.req || context.request;
+            if (authorization) {
                 try {
-                    const authorization = new Neo4jGraphQLAuthorization(authorizationSettings);
                     const jwt = await authorization.decode(req);
                     const isAuthenticated = true;
 
@@ -123,7 +122,7 @@ export const wrapResolver =
                         claims: jwtPayloadFieldsMap,
                     };
                 } catch (e) {
-                    if (authorizationSettings.globalAuthentication) {
+                    if (authorization.globalAuthentication) {
                         throw e;
                     }
                     const isAuthenticated = false;
@@ -218,17 +217,17 @@ export const wrapSubscription =
         if (context?.jwt) {
             subscriptionContext.jwt = context.jwt;
         } else if (!context?.jwt) {
-            if (resolverArgs.authorizationSettings) {
-                if (!contextParams.authorization && resolverArgs.authorizationSettings.globalAuthentication) {
+            if (resolverArgs.authorization) {
+                if (!contextParams.authorization && resolverArgs.authorization.globalAuthentication) {
                     throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
                 } else {
                     // TODO: verification was not part of this?!
                     try {
-                        const authorization = new Neo4jGraphQLAuthorization(resolverArgs.authorizationSettings);
+                        const authorization = resolverArgs.authorization;
                         const jwt = await authorization.decodeBearerTokenWithVerify(contextParams.authorization);
                         subscriptionContext.jwt = jwt;
                     } catch (e) {
-                        if (resolverArgs.authorizationSettings.globalAuthentication) {
+                        if (resolverArgs.authorization.globalAuthentication) {
                             throw e;
                         }
                         subscriptionContext.jwt = undefined;
