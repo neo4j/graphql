@@ -42,10 +42,10 @@
     },
     "author": "Neo4j",
     "dependencies": {
-        "@codemirror/autocomplete": "6.7.1",
+        "@codemirror/autocomplete": "6.8.0",
         "@codemirror/commands": "6.2.4",
-        "@codemirror/lang-javascript": "6.1.8",
-        "@codemirror/language": "6.7.0",
+        "@codemirror/lang-javascript": "6.1.9",
+        "@codemirror/language": "6.8.0",
         "@graphiql/react": "0.17.6",
         "@neo4j-ndl/base": "1.5.4",
         "@neo4j-ndl/react": "1.5.5",
