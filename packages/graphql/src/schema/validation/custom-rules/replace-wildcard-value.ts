@@ -51,7 +51,7 @@ function makeReplacementFieldNode(fieldType: TypeNode) {
 }
 
 export function makeReplaceWildcardVisitor({ jwt, schema }: { jwt?: ObjectTypeDefinitionNode; schema: GraphQLSchema }) {
-    return function ReplaceWildcardValue(): ASTVisitor {
+    return function replaceWildcardValue(): ASTVisitor {
         return {
             ObjectField: {
                 leave(node) {

@@ -92,8 +92,8 @@ export function validateUserDefinition({
         types: [...additionalTypes],
     });
 
-    const ReplaceWildcardValue = makeReplaceWildcardVisitor({ jwt, schema: schemaToExtend });
-    validationDocument = visit(validationDocument, ReplaceWildcardValue());
+    const replaceWildcardValue = makeReplaceWildcardVisitor({ jwt, schema: schemaToExtend });
+    validationDocument = visit(validationDocument, replaceWildcardValue());
 
     const errors = validateSDL(validationDocument, rules, schemaToExtend);
     if (errors.length) {
