@@ -18,8 +18,8 @@
  */
 
 import type { Driver, Session, Transaction } from "neo4j-driver";
+import type { JWTPayload } from "jose";
 import type { CypherQueryOptions, DriverConfig } from ".";
-import type { JwtPayload } from "./deprecated/auth/jwt-payload";
 import type { Neo4jDatabaseInfo } from "../classes";
 
 export interface Neo4jGraphQLContext {
@@ -38,7 +38,7 @@ export interface Neo4jGraphQLContext {
     /**
      * A decoded JWT payload which can be provided for use in authentication and authorization.
      */
-    jwt?: JwtPayload;
+    jwt?: JWTPayload;
     /**
      * @deprecated This property will be removed in 4.0.0.
      */
