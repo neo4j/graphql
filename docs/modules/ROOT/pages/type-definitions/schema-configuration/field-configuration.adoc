@@ -87,13 +87,13 @@ directive @relationship(
     direction: RelationshipDirection!
     properties: String
     nestedOperations: [NestedOperations!]! = [CREATE, UPDATE, DELETE, CONNECT, DISCONNECT, CONNECT_OR_CREATE]
-    aggregate: Boolean! = false
+    aggregate: Boolean! = true
 ) on FIELD_DEFINITION
 ----
 
 [NOTE]
 ====
-In version 4.0.0, `aggregate` is `true` as default.
+In version 4.0.0, `aggregate` is `false` as default.
 See xref::guides/v4-migration/index.adoc#_relationship_changes[`@relationship changes`] for more information.
 ====
 
