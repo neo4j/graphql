@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 import type { EditorView } from "@codemirror/view";
 import { Neo4jGraphQL } from "@neo4j/graphql";
@@ -36,6 +36,7 @@ import { SettingsContext } from "../../contexts/settings";
 import { useStore } from "../../store";
 import type { Favorite } from "../../types";
 import { ConstraintState } from "../../types";
+import { usePrevious } from "../../utils/utils";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
@@ -57,10 +58,22 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
     const [showIntrospectionModal, setShowIntrospectionModal] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
     const [isIntrospecting, setIsIntrospecting] = useState<boolean>(false);
+    const [editorView, setEditorView] = useState<EditorView | null>(null);
     const elementRef = useRef<HTMLDivElement | null>(null);
     const favorites = useStore((store) => store.favorites);
+    const prevSelectedDBName = usePrevious(auth.selectedDatabaseName);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
-    const [editorView, setEditorView] = useState<EditorView | null>(null);
+
+    useEffect(() => {
+        if (!prevSelectedDBName) return;
+        if (prevSelectedDBName !== auth.selectedDatabaseName) {
+            if (!editorView) return;
+            // the selected database has changed, clear the codemirror content.
+            editorView.dispatch({
+                changes: { from: 0, to: editorView.state.doc.length, insert: "" },
+            });
+        }
+    }, [auth.selectedDatabaseName]);
 
     const formatTheCode = (): void => {
         if (!editorView) return;

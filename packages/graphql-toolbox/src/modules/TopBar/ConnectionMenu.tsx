@@ -22,7 +22,6 @@ import { useContext, useEffect } from "react";
 import { Menu, MenuItem, MenuItems } from "@neo4j-ndl/react";
 import { CheckIconOutline } from "@neo4j-ndl/react/icons";
 
-import { tracking } from "../../analytics/tracking";
 import { AuthContext } from "../../contexts/auth";
 import { Screen, ScreenContext } from "../../contexts/screen";
 
@@ -31,6 +30,7 @@ interface Props {
     dbmsUrlWithUsername: string;
     openConnectionMenu: boolean;
     setOpenConnectionMenu: (v: boolean) => void;
+    onNextSelectedDatabaseName: (databaseName: string) => void;
 }
 
 const CONNECTION_MENU_ID = "connection-menu";
@@ -40,6 +40,7 @@ export const ConnectionMenu = ({
     dbmsUrlWithUsername,
     openConnectionMenu,
     setOpenConnectionMenu,
+    onNextSelectedDatabaseName,
 }: Props) => {
     const auth = useContext(AuthContext);
     const screen = useContext(ScreenContext);
@@ -59,11 +60,6 @@ export const ConnectionMenu = ({
             document.removeEventListener("mousedown", handleClickOutsideComponent);
         };
     }, [menuButtonRef]);
-
-    const handleSetSelectedDatabaseName = (databaseName: string) => {
-        auth.setSelectedDatabaseName(databaseName);
-        tracking.trackChangeDatabase({ screen: "type definitions" });
-    };
 
     return (
         <Menu
@@ -85,7 +81,7 @@ export const ConnectionMenu = ({
                                     title={db.name.length > 50 ? `${db.name.substring(0, 48)}...` : db.name}
                                     disabled={screen.view !== Screen.TYPEDEFS}
                                     icon={db.name === auth.selectedDatabaseName ? <CheckIconOutline /> : <span />}
-                                    onClick={() => handleSetSelectedDatabaseName(db.name)}
+                                    onClick={() => onNextSelectedDatabaseName(db.name)}
                                 />
                             );
                         })}

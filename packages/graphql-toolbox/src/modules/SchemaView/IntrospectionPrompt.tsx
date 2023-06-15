@@ -30,9 +30,7 @@ interface Props {
 export const IntrospectionPrompt = ({ open, onClose, onDisconnect, onIntrospect }: Props) => {
     return (
         <Dialog id="introspection-prompt" data-test-introspect-prompt open={open} onClose={() => onClose()}>
-            <Dialog.Header>
-                <span className="h4">Generate type definitions</span>
-            </Dialog.Header>
+            <Dialog.Header className="h4">Generate type definitions</Dialog.Header>
             <Dialog.Description>
                 Your current connection already has data. Would you like to introspect this database to generate type
                 definitions automatically?
