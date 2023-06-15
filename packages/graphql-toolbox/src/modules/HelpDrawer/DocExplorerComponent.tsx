@@ -19,9 +19,9 @@
 
 import { DocExplorer, ExplorerContextProvider, SchemaContextProvider } from "@graphiql/react";
 import { createGraphiQLFetcher } from "@graphiql/toolkit";
+import classNames from "classnames";
 import type { GraphQLSchema } from "graphql";
 
-import classNames from "classnames";
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
 
