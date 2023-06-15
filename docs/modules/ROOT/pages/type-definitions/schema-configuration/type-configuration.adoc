@@ -43,7 +43,7 @@ This directive is used to limit the availability of query operations in the libr
 
 [source, graphql, indent=0]
 ----
-directive @query(read: Boolean! = true, aggregate: Boolean! = true) on OBJECT | SCHEMA
+directive @query(read: Boolean! = true, aggregate: Boolean! = false) on OBJECT | SCHEMA
 ----
 
 [NOTE]
