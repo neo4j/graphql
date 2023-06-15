@@ -40,7 +40,7 @@ import { usePrevious } from "../../utils/utils";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
-import { Favorites } from "./Favorites";
+import { Favorites } from "./Favorites/Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
 import { SchemaEditor } from "./SchemaEditor";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
@@ -232,7 +232,7 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                         <div className="w-full">
                             <SchemaSettings />
                             <hr />
-                            <Favorites favorites={favorites} onSelectFavorite={setTypeDefsFromFavorite} />
+                            <Favorites onSelectFavorite={setTypeDefsFromFavorite} />
                         </div>
                     </div>
                     <div className="flex-1 flex justify-start w-full p-4" style={{ height: "calc(100% - 3rem)" }}>
