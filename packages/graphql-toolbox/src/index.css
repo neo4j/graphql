@@ -119,6 +119,10 @@ li.CodeMirror-hint-active {
     --alpha-background-light: 0.1;
 }
 
+.graphiql-doc-explorer-error {
+    display: none;
+}
+
 /* ----------------------*/
 
 /* Query Explorer (OneGraph) */
