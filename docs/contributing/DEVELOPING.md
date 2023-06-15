@@ -63,6 +63,23 @@ for working in this repository, and we additionally recommend the following exte
 The Jest extension should automatically detect the tests for this repository and
 watch them in the Status Bar.
 
+## Using local Cypher-Builder
+
+In some cases, it may be worth testing `@neo4j/graphql` with a local version of `@neo4j/cypher-builder`, to do this, you'll need a version of the Cypher Builder repository cloned locally.
+
+In the Cypher Builder folder run:
+
+-   `yarn link`
+-   `yarn build` - This step needs to be done each time a change is done in the Cypher Builder
+
+In the root of the `neo4j/graphql` monorepo run:
+
+-   `yarn link -p [path-to-local-cypher-builder]
+
+To unlink, in the graphql project:
+
+-   `yarn unlink @neo4j/cypher-builder`
+
 ## Testing
 
 ### Testing locally
