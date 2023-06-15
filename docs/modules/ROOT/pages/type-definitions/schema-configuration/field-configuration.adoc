@@ -63,7 +63,8 @@ type Actor {
 
 There are several nested operations available for every field created using the `@relationship` directive. These are `create`, `connect`, `disconnect`, `connectOrCreate`, `delete`. 
 
-However, these operations are not always needed, the `@relationship` directive allows you to define which operations should be available for a relationship by using the argument `nestedOperations`.
+However, these operations are not always needed. 
+The `@relationship` directive allows you to define which operations should be available for a relationship by using the argument `nestedOperations`.
 
 Additionally, the `@relationship` directive causes fields to be added for nested aggregations. These can be disabled using the `aggregate` argument.
 
