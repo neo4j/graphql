@@ -46,6 +46,7 @@ export class ContextBuilder extends Builder<Context, Context> {
                 concreteEntities: [] as ConcreteEntity[],
                 compositeEntities: [] as CompositeEntity[],
                 operations: {},
+                annotations: [],
             }),
             schema: new GraphQLSchema({}),
             subscriptionsEnabled: false,

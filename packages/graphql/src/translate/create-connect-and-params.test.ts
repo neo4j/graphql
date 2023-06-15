@@ -89,6 +89,7 @@ describe("createConnectAndParams", () => {
                 concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
                 compositeEntities: [],
                 operations: {},
+                annotations: [],
             }),
             neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4.0"),
         }).instance();

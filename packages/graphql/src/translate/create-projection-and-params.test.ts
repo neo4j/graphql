@@ -88,6 +88,7 @@ describe("createProjectionAndParams", () => {
                 concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
                 compositeEntities: [],
                 operations: {},
+                annotations: [],
             }),
             resolveTree,
         }).instance();
@@ -166,6 +167,7 @@ describe("createProjectionAndParams", () => {
                 concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
                 compositeEntities: [],
                 operations: {},
+                annotations: [],
             }),
             resolveTree,
         }).instance();
