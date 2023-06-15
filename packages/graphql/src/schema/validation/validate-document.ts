@@ -81,7 +81,9 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
         return type.name.value;
     };
 
-    const filterInputTypes = (fields: readonly InputValueDefinitionNode[] | undefined) => {
+    const filterInputTypes = (
+        fields: readonly InputValueDefinitionNode[] | undefined
+    ): InputValueDefinitionNode[] | undefined => {
         return fields?.filter((f) => {
             const type = getArgumentType(f.type);
 
@@ -102,7 +104,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
     const filterFields = (
         fields: readonly FieldDefinitionNode[] | undefined,
         features: Neo4jFeaturesSettings | undefined
-    ) => {
+    ): FieldDefinitionNode[] | undefined => {
         return fields
             ?.filter((f) => {
                 const type = getArgumentType(f.type);
