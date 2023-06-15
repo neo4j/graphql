@@ -22,12 +22,12 @@ import { Neo4jGraphQLError } from "../../classes";
 import type { Context } from "../../types";
 import { AUTHORIZATION_UNAUTHENTICATED } from "../../constants";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
-import { filterByValues } from "../../schema/resolvers/subscriptions/where/filters/filter-by-values";
 import type {
     AuthenticationAnnotation,
     AuthenticationOperation,
 } from "../../schema-model/annotation/AuthenticationAnnotation";
 import type { Annotation } from "../../schema-model/annotation/Annotation";
+import { filterByValues } from "./utils/filter-by-values";
 
 export function checkAuthentication({
     context,
