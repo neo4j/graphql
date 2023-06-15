@@ -53,10 +53,10 @@ function containsAuthorization(object: ObjectLikeDefinitionNode): boolean {
     }
 }
 
-// currentDirectiveDirective is of type ConstDirectiveNode, has to be any to support GraphQL 15
-function getAuthorizationDirective(currentDirectiveDirective: any, typeName: string) {
+// directive is of type ConstDirectiveNode, has to be any to support GraphQL 15
+function getAuthorizationDirective(directive: any, typeName: string) {
     return {
-        ...currentDirectiveDirective,
+        ...directive,
         name: {
             kind: Kind.NAME,
             value: `${typeName}Authorization`,
