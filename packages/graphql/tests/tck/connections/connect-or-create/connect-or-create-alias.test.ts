@@ -93,7 +93,7 @@ describe("Connect or create with @alias", () => {
             WITH this
             CALL {
                 WITH this
-                MERGE (this_isInPublication0_connectOrCreate0:\`Concept\`:\`Resource\` { $_uri: $this_isInPublication0_connectOrCreate_param0 })
+                MERGE (this_isInPublication0_connectOrCreate0:\`Concept\`:\`Resource\` { \`$_uri\`: $this_isInPublication0_connectOrCreate_param0 })
                 ON CREATE SET
                     this_isInPublication0_connectOrCreate0.\`$_uri\` = $this_isInPublication0_connectOrCreate_param1,
                     this_isInPublication0_connectOrCreate0.prefLabel = $this_isInPublication0_connectOrCreate_param2
@@ -102,7 +102,7 @@ describe("Connect or create with @alias", () => {
             WITH this
             CALL {
                 WITH this
-                MERGE (this_isInPublication1_connectOrCreate0:\`Concept\`:\`Resource\` { $_uri: $this_isInPublication1_connectOrCreate_param0 })
+                MERGE (this_isInPublication1_connectOrCreate0:\`Concept\`:\`Resource\` { \`$_uri\`: $this_isInPublication1_connectOrCreate_param0 })
                 ON CREATE SET
                     this_isInPublication1_connectOrCreate0.\`$_uri\` = $this_isInPublication1_connectOrCreate_param1,
                     this_isInPublication1_connectOrCreate0.prefLabel = $this_isInPublication1_connectOrCreate_param2
