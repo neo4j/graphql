@@ -65,12 +65,14 @@ watch them in the Status Bar.
 
 ## Using local Cypher-Builder
 
+In some cases, it may be worth testing `@neo4j/graphql` with a local version of `@neo4j/cypher-builder`, to do this, you'll need a version of the Cypher Builder repository cloned locally.
+
 In the Cypher Builder folder run:
 
 -   `yarn link`
--   `yarn build`
+-   `yarn build` - This step needs to be done each time a change is done in the Cypher Builder
 
-In the root of the package run:
+In the root of the `neo4j/graphql` monorepo run:
 
 -   `yarn link -p [path-to-local-cypher-builder]
 
