@@ -135,7 +135,7 @@ export const wrapResolver =
                 }
             }
 
-            // TODO: remove this else after migrating to new authorization constructor
+            // TODO: remove this if after migrating to new authorization constructor
             if (context.plugins.auth) {
                 // Here we will try to compute the generic Secret or the generic jwksEndpoint
                 const contextRequest = context.req || context.request;
