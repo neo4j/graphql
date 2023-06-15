@@ -219,10 +219,8 @@ export const wrapSubscription =
             subscriptionContext.jwt = context.jwt;
         } else if (!context?.jwt) {
             if (resolverArgs.authorizationSettings) {
-                if (!contextParams.authorization) {
-                    if (resolverArgs.authorizationSettings.globalAuthentication) {
-                        throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
-                    }
+                if (!contextParams.authorization && resolverArgs.authorizationSettings.globalAuthentication) {
+                    throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
                 } else {
                     // TODO: verification was not part of this?!
                     try {
