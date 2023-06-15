@@ -160,9 +160,11 @@ export function createRelationshipInterfaceFields({
             where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere`,
         });
 
-        nodeUpdateInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? updateFieldInput.NonNull.List : updateFieldInput,
-        });
+        if (rel.settableOptions.onUpdate) {
+            nodeUpdateInput.addFields({
+                [rel.fieldName]: rel.typeMeta.array ? updateFieldInput.NonNull.List : updateFieldInput,
+            });
+        }
     }
 
     if (!rel.writeonly) {
@@ -172,14 +174,16 @@ export function createRelationshipInterfaceFields({
         };
         const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
 
-        composeNode.addFields({
-            [rel.fieldName]: {
-                type: rel.typeMeta.pretty,
-                args: nodeFieldArgs,
-                description: rel.description,
-                directives: graphqlDirectivesToCompose(rel.otherDirectives),
-            },
-        });
+        if (rel.selectableOptions.onRead) {
+            composeNode.addFields({
+                [rel.fieldName]: {
+                    type: rel.typeMeta.pretty,
+                    args: nodeFieldArgs,
+                    description: rel.description,
+                    directives: graphqlDirectivesToCompose(rel.otherDirectives),
+                },
+            });
+        }
     }
 
     if (
@@ -216,10 +220,9 @@ export function createRelationshipInterfaceFields({
                 });
             }
         });
-
         // Interface CreateInput does not require relationship input fields
         // These are specified on the concrete nodes.
-        if (!(composeNode instanceof InterfaceTypeComposer)) {
+        if (rel.settableOptions.onCreate && !(composeNode instanceof InterfaceTypeComposer)) {
             nodeCreateInput.addFields({
                 [rel.fieldName]: nodeFieldInput,
             });

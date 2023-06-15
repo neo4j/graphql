@@ -17,31 +17,25 @@
  * limitations under the License.
  */
 
-import type { EditorFromTextArea } from "codemirror";
-import prettier from "prettier/standalone";
-import prettierBabel from "prettier/parser-babel";
-import parserGraphQL from "prettier/parser-graphql";
-import { getComplexity, simpleEstimator } from "graphql-query-complexity";
+import type { EditorView } from "@codemirror/view";
 import type { GraphQLSchema } from "graphql";
 import { parse } from "graphql";
+import { getComplexity, simpleEstimator } from "graphql-query-complexity";
+import prettierBabel from "prettier/parser-babel";
+import parserGraphQL from "prettier/parser-graphql";
+import prettier from "prettier/standalone";
 
 export enum ParserOptions {
     GRAPH_QL,
     JSON,
 }
 
-export const formatCode = (mirror: EditorFromTextArea, parserOption: ParserOptions): void => {
-    const cursor = mirror.getCursor();
-    const value = mirror.getValue();
+export const formatCode = (editorView: EditorView, parserOption: ParserOptions): void => {
+    const selection = editorView.state.selection;
+    const value = editorView.state.doc.toString();
 
     let options = {};
     switch (parserOption) {
-        case ParserOptions.GRAPH_QL:
-            options = {
-                parser: "graphql",
-                plugins: [parserGraphQL],
-            };
-            break;
         case ParserOptions.JSON:
             options = {
                 parser: "json",
@@ -50,6 +44,7 @@ export const formatCode = (mirror: EditorFromTextArea, parserOption: ParserOptio
                 printWidth: 60,
             };
             break;
+        case ParserOptions.GRAPH_QL:
         default:
             options = {
                 parser: "graphql",
@@ -58,18 +53,25 @@ export const formatCode = (mirror: EditorFromTextArea, parserOption: ParserOptio
             break;
     }
 
-    const formatted = prettier.format(value, options) as unknown as string;
-    mirror.setValue(formatted);
-    if (cursor) mirror.setCursor(cursor);
+    try {
+        const formatted = prettier.format(value, options);
+
+        editorView.dispatch({
+            changes: { from: 0, to: editorView.state.doc.length, insert: formatted },
+            selection: selection.main.to > formatted.length ? undefined : selection,
+        });
+    } catch (e: unknown) {
+        return;
+    }
 };
 
-export const handleEditorDisableState = (mirror: EditorFromTextArea | null, loading: boolean): void => {
-    const wrapperElement = mirror?.getWrapperElement();
+export const handleEditorDisableState = (editorViewRef: HTMLDivElement | null, loading: boolean): void => {
+    if (!editorViewRef) return;
 
     if (loading) {
-        wrapperElement?.classList.add("code-mirror-disabled-state");
+        editorViewRef?.classList.add("code-mirror-disabled-state");
     } else {
-        wrapperElement?.classList.remove("code-mirror-disabled-state");
+        editorViewRef?.classList.remove("code-mirror-disabled-state");
     }
 };
 
