@@ -15,7 +15,7 @@
 
 /* ----------------------*/
 
-/* Global settings for all CodeMirror (v6) editors */
+/* All CodeMirror (v6) editors */
 .cm-editor {
     height: 100%;
     position: inherit;
@@ -41,17 +41,6 @@
 .code-mirror-disabled-state {
     pointer-events: none;
     opacity: 0.85;
-}
-
-/* ----------------------*/
-
-/* Documentation and Query explorer classes */
-
-.graphiql-explorer-docs-container {
-    position: absolute;
-    left: 388px;
-    margin: 5px 0;
-    z-index: 100;
 }
 
 /* ----------------------*/
