@@ -85,9 +85,9 @@ export function getStaticAuthorizationDefinitions(
         authenticationOperation,
     ];
 
-    const JWTPayloadWere = createJWTPayloadWhere(schema, JWTPayloadDefinition);
-    const JWTPayloadWereAST = astFromInputObjectType(JWTPayloadWere, schema);
-    ASTs.push(JWTPayloadWereAST);
+    const JWTPayloadWhere = createJWTPayloadWhere(schema, JWTPayloadDefinition);
+    const JWTPayloadWhereAST = astFromInputObjectType(JWTPayloadWhere, schema);
+    ASTs.push(JWTPayloadWhereAST);
     return ASTs;
 }
 
