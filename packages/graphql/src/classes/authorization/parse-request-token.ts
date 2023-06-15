@@ -23,7 +23,7 @@ import Debug from "debug";
 
 const debug = Debug(DEBUG_AUTH);
 
-export function getToken(req: RequestLike): string | undefined {
+export function getToken(req: RequestLike | undefined): string | undefined {
     if (!req) {
         debug("Could not get .req or .request from context");
         return;
