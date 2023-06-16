@@ -56,6 +56,17 @@ export const FavoriteEntry = ({ dragHandle, onSelectFavorite, favorite, updateNa
         }
     };
 
+    const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (event) =>
+        setNameValue(event.currentTarget.value);
+
+    const handleCheckboxChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+        if (event.target.checked) {
+            useFavoritesStore.getState().addSelectedFavorite(favorite.id);
+        } else {
+            useFavoritesStore.getState().removeSelectedFavorite(favorite.id);
+        }
+    };
+
     useEffect(() => {
         if (editMode && inputRef.current) {
             inputRef.current.focus();
@@ -76,20 +87,14 @@ export const FavoriteEntry = ({ dragHandle, onSelectFavorite, favorite, updateNa
                         className="w-60"
                         value={nameValue}
                         ref={inputRef}
-                        onChange={(event) => setNameValue(event.currentTarget.value)}
+                        onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
                         size="extra-small"
                         aria-label="Input for new name for the favorite snippet"
                     />
                 ) : (
                     <Checkbox
-                        onChange={(event) => {
-                            if (event.target.checked) {
-                                useFavoritesStore.getState().addSelectedFavorite(favorite.id);
-                            } else {
-                                useFavoritesStore.getState().removeSelectedFavorite(favorite.id);
-                            }
-                        }}
+                        onChange={handleCheckboxChange}
                         checked={useFavoritesStore.getState().selectedFavorites.includes(favorite.id)}
                         className="w-full"
                         label={favorite.name}
