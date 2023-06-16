@@ -729,7 +729,6 @@ describe("schema validation", () => {
                     "message",
                     'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
-                expect(errors[0]).toHaveProperty("path", ["User", "id", "@authorization", "validate", 0, "when", 0]);
             });
 
             test("should validate when value", () => {
