@@ -81,7 +81,7 @@ export const FavoriteEntry = ({ dragHandle, onSelectFavorite, favorite, updateNa
             }
         >
             <div className="w-full flex items-center justify-start">
-                <div className="hover-show">{dragHandle}</div>
+                <div className="show-on-hover">{dragHandle}</div>
                 {editMode ? (
                     <TextInput
                         className="w-60"
@@ -107,7 +107,7 @@ export const FavoriteEntry = ({ dragHandle, onSelectFavorite, favorite, updateNa
                 clean
                 onClick={() => onSelectFavorite(favorite.typeDefs)}
                 onKeyDown={() => onSelectFavorite(favorite.typeDefs)}
-                className="hover-show"
+                className="show-on-hover"
             >
                 <PlayCircleIconOutline color={tokens.colors.primary[50]} />
             </IconButton>
@@ -115,7 +115,7 @@ export const FavoriteEntry = ({ dragHandle, onSelectFavorite, favorite, updateNa
             {editMode ? (
                 <IconButton
                     aria-label="Finish editing favorite name"
-                    className={`hover-show border-none h-5 w-5`}
+                    className={`show-on-hover border-none h-5 w-5`}
                     clean
                     onClick={() => finishEditingName()}
                 >
@@ -124,7 +124,7 @@ export const FavoriteEntry = ({ dragHandle, onSelectFavorite, favorite, updateNa
             ) : (
                 <IconButton
                     aria-label="Edit favorite name"
-                    className={`hover-show border-none h-5 w-5`}
+                    className={`show-on-hover border-none h-5 w-5`}
                     clean
                     onClick={() => setEditMode(true)}
                 >

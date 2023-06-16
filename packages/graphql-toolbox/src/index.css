@@ -47,7 +47,7 @@
 
 /* All GraphiQL v2 components */
 .graphiql-container {
-    font-family: 'Nunito Sans', sans-serif;
+    font-family: "Nunito Sans", sans-serif;
 
     /* primary-50 */
     --color-primary: 209, 100%, 42% !important;
@@ -88,7 +88,7 @@
 }
 
 .docExplorerWrap .graphiql-explorer-root {
-    font-family: 'Nunito Sans', sans-serif !important;
+    font-family: "Nunito Sans", sans-serif !important;
     font-size: 15px !important;
 }
 
@@ -166,10 +166,10 @@
 
 /* ----------------------*/
 
-.hover-show {
+.show-on-hover {
     visibility: hidden;
 }
 
-.favorite-entry:hover .hover-show {
+.favorite-entry:hover .show-on-hover {
     visibility: visible;
 }
