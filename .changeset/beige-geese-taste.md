@@ -8,6 +8,6 @@ Usage:
 
 ```graphql
 type User {
-	name: String @filterable(byValue: true, byAggregate: true)
+    name: String @filterable(byValue: true, byAggregate: true)
 }
 ```
