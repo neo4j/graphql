@@ -19,10 +19,11 @@
 
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { Neo4jGraphQL } from "../../../src";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
-import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("Subscriptions metadata on create", () => {
     let typeDefs: DocumentNode;
@@ -42,17 +43,17 @@ describe("Subscriptions metadata on create", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            extend type Actor @authorization(validate: [{ when: [AFTER], where: { node: { id: "$jwt.sub" } } }])
+            extend type Actor @auth(rules: [{ bind: { id: "$jwt.sub" } }])
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            features: {
-                authorization: { key: "secret" },
-            },
             plugins: {
                 subscriptions: plugin,
-            },
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            } as any,
         });
     });
 
@@ -67,11 +68,11 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const token = createBearerToken("secret", {
+        const req = createJwtRequest("secret", {
             sub: "super_admin",
         });
         const result = await translateQuery(neoSchema, query, {
-            token,
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -81,7 +82,7 @@ describe("Subscriptions metadata on create", () => {
             SET this0.id = $this0_id
             WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this0
             WITH this0, meta
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this0.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this0.id IS NOT NULL AND this0.id = $this0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0, meta AS this0_meta
             }
             CALL {
@@ -90,7 +91,7 @@ describe("Subscriptions metadata on create", () => {
             SET this1.id = $this1_id
             WITH meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this1
             WITH this1, meta
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this1.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this1.id IS NOT NULL AND this1.id = $this1auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this1, meta AS this1_meta
             }
             WITH this0, this1, this0_meta + this1_meta AS meta
@@ -100,12 +101,9 @@ describe("Subscriptions metadata on create", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [],
-                    \\"sub\\": \\"super_admin\\"
-                },
+                \\"this0auth_param0\\": \\"super_admin\\",
                 \\"this1_id\\": \\"2\\",
+                \\"this1auth_param0\\": \\"super_admin\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
