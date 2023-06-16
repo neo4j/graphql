@@ -40,6 +40,7 @@ import classNames from "classnames";
 import { useStore } from "../../../store";
 import { useFavoritesStore } from "../../../store/favorites";
 import type { Favorite } from "../../../types";
+import { DeleteFavoritesDialog } from "./DeleteFavoritesDialog";
 import { DragHandle } from "./DragHandle";
 import { FavoriteEntry } from "./FavoriteEntry";
 
@@ -60,6 +61,7 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
     const selectedFavorites = useFavoritesStore((store) => store.selectedFavorites);
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
     const [items, setItems] = useState<UniqueIdentifier[]>(favorites.map((favorite) => favorite.id));
+    const [showConfirm, setShowConfirm] = useState<boolean>(false);
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -227,62 +229,70 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
     };
 
     return (
-        <div className="flex flex-col w-full pl-4 pr-5 pt-6">
-            <div className="flex h-9 justify-between">
-                <span className="h5 pl-6">Favorites</span>{" "}
-                <div>
-                    <IconButton
-                        aria-label="Download selected favorites"
-                        className="border-none h-5 w-5 ml-3"
-                        clean
-                        disabled={selectedFavorites.length === 0}
-                        onClick={() => downloadSelectedFavorites()}
-                    >
-                        <ArrowDownTrayIconOutline />
-                    </IconButton>
-                    <IconButton
-                        aria-label="Delete selected favorites"
-                        className="border-none h-5 w-5 n-text-danger-30 ml-3"
-                        clean
-                        disabled={selectedFavorites.length === 0}
-                        onClick={() => deleteSelectedFavorites()}
-                    >
-                        <TrashIconOutline />
-                    </IconButton>
-                </div>
-            </div>
-            {favorites.length ? (
-                <DndContext
-                    accessibility={{
-                        announcements,
-                        screenReaderInstructions,
-                    }}
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragStart={({ active }) => {
-                        if (!active) {
-                            return;
-                        }
+        <>
+            <DeleteFavoritesDialog
+                deleteSelectedFavorites={deleteSelectedFavorites}
+                showConfirm={showConfirm}
+                setShowConfirm={setShowConfirm}
+            />
 
-                        setActiveId(active.id);
-                    }}
-                    onDragEnd={handleDragEnd}
-                    onDragCancel={() => setActiveId(null)}
-                    modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
-                >
-                    <ul className="pb-4 h-favorite">
-                        <SortableContext items={items}>
-                            {items.map((id) => (
-                                <SortableItem key={id} id={id} />
-                            ))}
-                        </SortableContext>
-                    </ul>
-                </DndContext>
-            ) : (
-                <div className="flex items-center justify-center pt-40">
-                    <EmptyState />
+            <div className="flex flex-col w-full pl-4 pr-5 pt-6">
+                <div className="flex h-9 justify-between">
+                    <span className="h5 pl-6">Favorites</span>{" "}
+                    <div>
+                        <IconButton
+                            aria-label="Download selected favorites"
+                            className="border-none h-5 w-5 ml-3"
+                            clean
+                            disabled={selectedFavorites.length === 0}
+                            onClick={() => downloadSelectedFavorites()}
+                        >
+                            <ArrowDownTrayIconOutline />
+                        </IconButton>
+                        <IconButton
+                            aria-label="Delete selected favorites"
+                            className="border-none h-5 w-5 n-text-danger-30 ml-3"
+                            clean
+                            disabled={selectedFavorites.length === 0}
+                            onClick={() => setShowConfirm(true)}
+                        >
+                            <TrashIconOutline />
+                        </IconButton>
+                    </div>
                 </div>
-            )}
-        </div>
+                {favorites.length ? (
+                    <DndContext
+                        accessibility={{
+                            announcements,
+                            screenReaderInstructions,
+                        }}
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragStart={({ active }) => {
+                            if (!active) {
+                                return;
+                            }
+
+                            setActiveId(active.id);
+                        }}
+                        onDragEnd={handleDragEnd}
+                        onDragCancel={() => setActiveId(null)}
+                        modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+                    >
+                        <ul className="pb-4 h-favorite">
+                            <SortableContext items={items}>
+                                {items.map((id) => (
+                                    <SortableItem key={id} id={id} />
+                                ))}
+                            </SortableContext>
+                        </ul>
+                    </DndContext>
+                ) : (
+                    <div className="flex items-center justify-center pt-40">
+                        <EmptyState />
+                    </div>
+                )}
+            </div>
+        </>
     );
 };
