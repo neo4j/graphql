@@ -215,7 +215,7 @@ export const wrapSubscription =
 
         if (context?.jwt) {
             subscriptionContext.jwt = context.jwt;
-        } else if (!context?.jwt) {
+        } else {
             if (resolverArgs.authorization) {
                 if (!contextParams.authorization && resolverArgs.authorization.globalAuthentication) {
                     throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
