@@ -17,11 +17,9 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
-import { createJwtRequest } from "../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams, setTestEnvVars, unsetTestEnvVars } from "./utils/tck-test-utils";
 
 describe("Cypher Advanced Filtering", () => {
@@ -61,11 +59,6 @@ describe("Cypher Advanced Filtering", () => {
                     },
                 },
             },
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
-            },
         });
         setTestEnvVars("NEO4J_GRAPHQL_ENABLE_REGEX=1");
     });
@@ -83,10 +76,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -112,10 +102,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -139,10 +126,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -166,10 +150,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -195,10 +176,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -222,10 +200,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -249,10 +224,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -276,10 +248,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -303,10 +272,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -330,10 +296,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -357,10 +320,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -387,10 +347,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -417,10 +374,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title < $param0
@@ -443,10 +397,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -473,10 +424,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -503,10 +451,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title <= $param0
@@ -529,10 +474,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -559,10 +501,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -589,10 +528,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title > $param0
@@ -615,10 +551,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -645,10 +578,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -675,10 +605,7 @@ describe("Cypher Advanced Filtering", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title >= $param0
@@ -702,10 +629,7 @@ describe("Cypher Advanced Filtering", () => {
                 }
             `;
 
-            const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
-                req,
-            });
+            const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -732,10 +656,7 @@ describe("Cypher Advanced Filtering", () => {
                 }
             `;
 
-            const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
-                req,
-            });
+            const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -767,8 +688,7 @@ describe("Cypher Advanced Filtering", () => {
             test("ALL", async () => {
                 const query = generateQuery("ALL");
 
-                const req = createJwtRequest("secret", {});
-                const result = await translateQuery(neoSchema, query, { req });
+                const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
@@ -790,8 +710,7 @@ describe("Cypher Advanced Filtering", () => {
             test("NONE", async () => {
                 const query = generateQuery("NONE");
 
-                const req = createJwtRequest("secret", {});
-                const result = await translateQuery(neoSchema, query, { req });
+                const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
@@ -810,8 +729,7 @@ describe("Cypher Advanced Filtering", () => {
             test("SINGLE", async () => {
                 const query = generateQuery("SINGLE");
 
-                const req = createJwtRequest("secret", {});
-                const result = await translateQuery(neoSchema, query, { req });
+                const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
@@ -827,8 +745,7 @@ describe("Cypher Advanced Filtering", () => {
             test("SOME", async () => {
                 const query = generateQuery("SOME");
 
-                const req = createJwtRequest("secret", {});
-                const result = await translateQuery(neoSchema, query, { req });
+                const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
@@ -857,10 +774,7 @@ describe("Cypher Advanced Filtering", () => {
                 }
             `;
 
-            const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
-                req,
-            });
+            const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -887,10 +801,7 @@ describe("Cypher Advanced Filtering", () => {
                 }
             `;
 
-            const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
-                req,
-            });
+            const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -922,8 +833,7 @@ describe("Cypher Advanced Filtering", () => {
             test("ALL", async () => {
                 const query = generateQuery("ALL");
 
-                const req = createJwtRequest("secret", {});
-                const result = await translateQuery(neoSchema, query, { req });
+                const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
@@ -945,8 +855,7 @@ describe("Cypher Advanced Filtering", () => {
             test("NONE", async () => {
                 const query = generateQuery("NONE");
 
-                const req = createJwtRequest("secret", {});
-                const result = await translateQuery(neoSchema, query, { req });
+                const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
@@ -965,8 +874,7 @@ describe("Cypher Advanced Filtering", () => {
             test("SINGLE", async () => {
                 const query = generateQuery("SINGLE");
 
-                const req = createJwtRequest("secret", {});
-                const result = await translateQuery(neoSchema, query, { req });
+                const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
@@ -982,8 +890,7 @@ describe("Cypher Advanced Filtering", () => {
             test("SOME", async () => {
                 const query = generateQuery("SOME");
 
-                const req = createJwtRequest("secret", {});
-                const result = await translateQuery(neoSchema, query, { req });
+                const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)

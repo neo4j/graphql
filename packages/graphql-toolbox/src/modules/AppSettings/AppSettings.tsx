@@ -48,7 +48,7 @@ export const AppSettings = ({ onClickClose }: Props) => {
     };
 
     return (
-        <div className="p-6 w-full">
+        <div className="w-full p-6 flex flex-col overflow-y-auto">
             <div className="pb-6 flex justify-between items-center">
                 <span className="h5">Settings</span>
                 <span
@@ -114,17 +114,19 @@ export const AppSettings = ({ onClickClose }: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="absolute bottom-2 right-28 font-bold text-xs flex flex-col">
-                <span>Made by Neo4j, Inc</span>
-                {/* explicitly hard coded values for copyright */}
-                <span data-test-copyright-information>Copyright &copy; 2002-2023</span>
-                <div className="flex">
-                    <span>App version:</span>&nbsp;
-                    <pre>{process.env.VERSION}</pre>
-                </div>
-                <div className="flex">
-                    <span>Neo4j GraphQL version:</span>&nbsp;
-                    <pre>{(process.env.NEO4J_GRAPHQL_VERSION || "").replace(/\^|~/g, "")}</pre>
+            <div className="mt-auto pt-8 font-bold text-xs flex justify-center">
+                <div className="flex flex-col">
+                    <span>Made by Neo4j, Inc</span>
+                    {/* explicitly hard coded values for copyright */}
+                    <span data-test-copyright-information>Copyright &copy; 2002-2023</span>
+                    <div className="flex">
+                        <span>App version:</span>&nbsp;
+                        <pre>{process.env.VERSION}</pre>
+                    </div>
+                    <div className="flex">
+                        <span>Neo4j GraphQL version:</span>&nbsp;
+                        <pre>{(process.env.NEO4J_GRAPHQL_VERSION || "").replace(/\^|~/g, "")}</pre>
+                    </div>
                 </div>
             </div>
         </div>
