@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
-import { createBearerToken } from "../../../utils/create-bearer-token";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("connectOrCreate", () => {
     const secret = "secret";
@@ -29,16 +30,12 @@ describe("connectOrCreate", () => {
 
     function createTypedef(operations: string): DocumentNode {
         return gql`
-        type JWT @jwt {
-            roles: [String!]!
-        }
-
         type Movie {
             title: String
             genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
         }
 
-        type Genre @authorization(validate: [{ operations: ${operations}, where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+        type Genre @auth(rules: [{ operations: ${operations}, roles: ["admin"] }]) {
             name: String @unique
         }
         `;
@@ -68,12 +65,18 @@ describe("connectOrCreate", () => {
 
         test("Create with createOrConnect and CONNECT operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
-                typeDefs: createTypedef("[CREATE_RELATIONSHIP]"),
-                features: { authorization: { key: secret } },
+                typeDefs: createTypedef("[CONNECT]"),
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {});
-            const result = await translateQuery(neoSchema, query, { token });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL {
@@ -82,14 +85,12 @@ describe("connectOrCreate", () => {
                 WITH this0
                 CALL {
                     WITH this0
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this0_genres_connectOrCreate0:\`Genre\` { name: $this0_genres_connectOrCreate_param3 })
+                    MERGE (this0_genres_connectOrCreate0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
                     ON CREATE SET
-                        this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate_param4
+                        this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate_param1
                     MERGE (this0)-[this0_genres_connectOrCreate_this0:IN_GENRE]->(this0_genres_connectOrCreate0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 RETURN this0
@@ -100,15 +101,16 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this0_title\\": \\"Cool Movie\\",
-                    \\"isAuthenticated\\": true,
-                    \\"this0_genres_connectOrCreate_param1\\": \\"admin\\",
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    },
-                    \\"this0_genres_connectOrCreate_param3\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate_param4\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate_param5\\": \\"admin\\",
-                    \\"resolvedCallbacks\\": {}
+                    \\"this0_genres_connectOrCreate_param0\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate_param1\\": \\"Horror\\",
+                    \\"resolvedCallbacks\\": {},
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
+                    }
                 }"
             `);
         });
@@ -116,11 +118,17 @@ describe("connectOrCreate", () => {
         test("Create with createOrConnect and CREATE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE]"),
-                features: { authorization: { key: secret } },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {});
-            const result = await translateQuery(neoSchema, query, { token });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL {
@@ -129,14 +137,12 @@ describe("connectOrCreate", () => {
                 WITH this0
                 CALL {
                     WITH this0
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this0_genres_connectOrCreate0:\`Genre\` { name: $this0_genres_connectOrCreate_param3 })
+                    MERGE (this0_genres_connectOrCreate0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
                     ON CREATE SET
-                        this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate_param4
+                        this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate_param1
                     MERGE (this0)-[this0_genres_connectOrCreate_this0:IN_GENRE]->(this0_genres_connectOrCreate0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 RETURN this0
@@ -147,27 +153,34 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this0_title\\": \\"Cool Movie\\",
-                    \\"isAuthenticated\\": true,
-                    \\"this0_genres_connectOrCreate_param1\\": \\"admin\\",
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    },
-                    \\"this0_genres_connectOrCreate_param3\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate_param4\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate_param5\\": \\"admin\\",
-                    \\"resolvedCallbacks\\": {}
+                    \\"this0_genres_connectOrCreate_param0\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate_param1\\": \\"Horror\\",
+                    \\"resolvedCallbacks\\": {},
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
+                    }
                 }"
             `);
         });
 
         test("Create with createOrConnect and CREATE, CONNECT operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
-                typeDefs: createTypedef("[CREATE, CREATE_RELATIONSHIP]"),
-                features: { authorization: { key: secret } },
+                typeDefs: createTypedef("[CREATE, CONNECT]"),
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {});
-            const result = await translateQuery(neoSchema, query, { token });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL {
@@ -176,14 +189,12 @@ describe("connectOrCreate", () => {
                 WITH this0
                 CALL {
                     WITH this0
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this0_genres_connectOrCreate0:\`Genre\` { name: $this0_genres_connectOrCreate_param3 })
+                    MERGE (this0_genres_connectOrCreate0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
                     ON CREATE SET
-                        this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate_param4
+                        this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate_param1
                     MERGE (this0)-[this0_genres_connectOrCreate_this0:IN_GENRE]->(this0_genres_connectOrCreate0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 RETURN this0
@@ -194,15 +205,16 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this0_title\\": \\"Cool Movie\\",
-                    \\"isAuthenticated\\": true,
-                    \\"this0_genres_connectOrCreate_param1\\": \\"admin\\",
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    },
-                    \\"this0_genres_connectOrCreate_param3\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate_param4\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate_param5\\": \\"admin\\",
-                    \\"resolvedCallbacks\\": {}
+                    \\"this0_genres_connectOrCreate_param0\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate_param1\\": \\"Horror\\",
+                    \\"resolvedCallbacks\\": {},
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
+                    }
                 }"
             `);
         });
@@ -210,11 +222,17 @@ describe("connectOrCreate", () => {
         test("Create with createOrConnect and DELETE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[DELETE]"),
-                features: { authorization: { key: secret } },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {});
-            const result = await translateQuery(neoSchema, query, { token });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL {
@@ -267,12 +285,18 @@ describe("connectOrCreate", () => {
 
         test("Update with createOrConnect and CONNECT operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
-                typeDefs: createTypedef("[CREATE_RELATIONSHIP]"),
-                features: { authorization: { key: secret } },
+                typeDefs: createTypedef("[CONNECT]"),
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {});
-            const result = await translateQuery(neoSchema, query, { token });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -280,14 +304,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_genres0_connectOrCreate0:\`Genre\` { name: $this_genres0_connectOrCreate_param3 })
+                    MERGE (this_genres0_connectOrCreate0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
                     ON CREATE SET
-                        this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate_param4
+                        this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate_param1
                     MERGE (this)-[this_genres0_connectOrCreate_this0:IN_GENRE]->(this_genres0_connectOrCreate0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -296,15 +318,16 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
-                    \\"isAuthenticated\\": true,
-                    \\"this_genres0_connectOrCreate_param1\\": \\"admin\\",
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    },
-                    \\"this_genres0_connectOrCreate_param3\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate_param4\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate_param5\\": \\"admin\\",
-                    \\"resolvedCallbacks\\": {}
+                    \\"this_genres0_connectOrCreate_param0\\": \\"Horror\\",
+                    \\"this_genres0_connectOrCreate_param1\\": \\"Horror\\",
+                    \\"resolvedCallbacks\\": {},
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
+                    }
                 }"
             `);
         });
@@ -312,11 +335,17 @@ describe("connectOrCreate", () => {
         test("Update with createOrConnect and CREATE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE]"),
-                features: { authorization: { key: secret } },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {});
-            const result = await translateQuery(neoSchema, query, { token });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -324,14 +353,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_genres0_connectOrCreate0:\`Genre\` { name: $this_genres0_connectOrCreate_param3 })
+                    MERGE (this_genres0_connectOrCreate0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
                     ON CREATE SET
-                        this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate_param4
+                        this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate_param1
                     MERGE (this)-[this_genres0_connectOrCreate_this0:IN_GENRE]->(this_genres0_connectOrCreate0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -340,27 +367,34 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
-                    \\"isAuthenticated\\": true,
-                    \\"this_genres0_connectOrCreate_param1\\": \\"admin\\",
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    },
-                    \\"this_genres0_connectOrCreate_param3\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate_param4\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate_param5\\": \\"admin\\",
-                    \\"resolvedCallbacks\\": {}
+                    \\"this_genres0_connectOrCreate_param0\\": \\"Horror\\",
+                    \\"this_genres0_connectOrCreate_param1\\": \\"Horror\\",
+                    \\"resolvedCallbacks\\": {},
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
+                    }
                 }"
             `);
         });
 
         test("Update with createOrConnect and CREATE, CONNECT operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
-                typeDefs: createTypedef("[CREATE, CREATE_RELATIONSHIP]"),
-                features: { authorization: { key: secret } },
+                typeDefs: createTypedef("[CREATE, CONNECT]"),
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {});
-            const result = await translateQuery(neoSchema, query, { token });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -368,14 +402,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_genres0_connectOrCreate0:\`Genre\` { name: $this_genres0_connectOrCreate_param3 })
+                    MERGE (this_genres0_connectOrCreate0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
                     ON CREATE SET
-                        this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate_param4
+                        this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate_param1
                     MERGE (this)-[this_genres0_connectOrCreate_this0:IN_GENRE]->(this_genres0_connectOrCreate0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -384,15 +416,16 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
-                    \\"isAuthenticated\\": true,
-                    \\"this_genres0_connectOrCreate_param1\\": \\"admin\\",
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    },
-                    \\"this_genres0_connectOrCreate_param3\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate_param4\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate_param5\\": \\"admin\\",
-                    \\"resolvedCallbacks\\": {}
+                    \\"this_genres0_connectOrCreate_param0\\": \\"Horror\\",
+                    \\"this_genres0_connectOrCreate_param1\\": \\"Horror\\",
+                    \\"resolvedCallbacks\\": {},
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
+                    }
                 }"
             `);
         });
@@ -400,11 +433,17 @@ describe("connectOrCreate", () => {
         test("Create with createOrConnect and DELETE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[DELETE]"),
-                features: { authorization: { key: secret } },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {});
-            const result = await translateQuery(neoSchema, query, { token });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -450,12 +489,18 @@ describe("connectOrCreate", () => {
 
         test("Update with createOrConnect and CONNECT operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
-                typeDefs: createTypedef("[CREATE_RELATIONSHIP]"),
-                features: { authorization: { key: secret } },
+                typeDefs: createTypedef("[CONNECT]"),
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {});
-            const result = await translateQuery(neoSchema, query, { token });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -463,14 +508,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param3 })
+                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
                     ON CREATE SET
-                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param4
+                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param1
                     MERGE (this)-[this_connectOrCreate_genres_this0:IN_GENRE]->(this_connectOrCreate_genres0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 WITH *
@@ -480,15 +523,16 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
-                    \\"isAuthenticated\\": true,
-                    \\"this_connectOrCreate_genres_param1\\": \\"admin\\",
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    },
-                    \\"this_connectOrCreate_genres_param3\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param4\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param5\\": \\"admin\\",
-                    \\"resolvedCallbacks\\": {}
+                    \\"this_connectOrCreate_genres_param0\\": \\"Horror\\",
+                    \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
+                    \\"resolvedCallbacks\\": {},
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
+                    }
                 }"
             `);
         });
@@ -496,11 +540,17 @@ describe("connectOrCreate", () => {
         test("Update with createOrConnect and CREATE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[CREATE]"),
-                features: { authorization: { key: secret } },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {});
-            const result = await translateQuery(neoSchema, query, { token });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -508,14 +558,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param3 })
+                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
                     ON CREATE SET
-                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param4
+                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param1
                     MERGE (this)-[this_connectOrCreate_genres_this0:IN_GENRE]->(this_connectOrCreate_genres0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 WITH *
@@ -525,27 +573,34 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
-                    \\"isAuthenticated\\": true,
-                    \\"this_connectOrCreate_genres_param1\\": \\"admin\\",
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    },
-                    \\"this_connectOrCreate_genres_param3\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param4\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param5\\": \\"admin\\",
-                    \\"resolvedCallbacks\\": {}
+                    \\"this_connectOrCreate_genres_param0\\": \\"Horror\\",
+                    \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
+                    \\"resolvedCallbacks\\": {},
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
+                    }
                 }"
             `);
         });
 
         test("Update with createOrConnect and CREATE, CONNECT operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
-                typeDefs: createTypedef("[CREATE, CREATE_RELATIONSHIP]"),
-                features: { authorization: { key: secret } },
+                typeDefs: createTypedef("[CREATE, CONNECT]"),
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {});
-            const result = await translateQuery(neoSchema, query, { token });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -553,14 +608,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param3 })
+                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
                     ON CREATE SET
-                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param4
+                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param1
                     MERGE (this)-[this_connectOrCreate_genres_this0:IN_GENRE]->(this_connectOrCreate_genres0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 WITH *
@@ -570,15 +623,16 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
-                    \\"isAuthenticated\\": true,
-                    \\"this_connectOrCreate_genres_param1\\": \\"admin\\",
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    },
-                    \\"this_connectOrCreate_genres_param3\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param4\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param5\\": \\"admin\\",
-                    \\"resolvedCallbacks\\": {}
+                    \\"this_connectOrCreate_genres_param0\\": \\"Horror\\",
+                    \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
+                    \\"resolvedCallbacks\\": {},
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": []
+                        }
+                    }
                 }"
             `);
         });
@@ -586,11 +640,17 @@ describe("connectOrCreate", () => {
         test("Create with createOrConnect and DELETE operation rule", async () => {
             neoSchema = new Neo4jGraphQL({
                 typeDefs: createTypedef("[DELETE]"),
-                features: { authorization: { key: secret } },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {});
-            const result = await translateQuery(neoSchema, query, { token });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -634,13 +694,19 @@ describe("connectOrCreate", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: { authorization: { key: secret } },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
             });
 
-            const token = createBearerToken("secret", {
+            const req = createJwtRequest("secret", {
                 sub: "test",
             });
-            const result = await translateQuery(neoSchema, query, { token });
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)

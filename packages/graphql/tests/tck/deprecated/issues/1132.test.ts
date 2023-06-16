@@ -17,20 +17,16 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
-import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
-import { createBearerToken } from "../../utils/create-bearer-token";
+import { Neo4jGraphQL } from "../../../../src";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1132", () => {
     test("Auth CONNECT rules checked against correct property", async () => {
         const typeDefs = gql`
-            type Source
-                @authorization(
-                    validate: [
-                        { when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }
-                    ]
-                ) {
+            type Source @auth(rules: [{ operations: [CONNECT], allow: { id: "$jwt.sub" } }]) {
                 id: ID!
                 targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
             }
@@ -42,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            features: { authorization: { key: "secret" } },
+            plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret: "secret" }) },
         });
 
         const query = gql`
@@ -55,9 +51,9 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             }
         `;
 
-        const token = createBearerToken("secret", { sub: "1" });
+        const req = createJwtRequest("secret", { sub: "1" });
         const result = await translateQuery(neoSchema, query, {
-            token,
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -66,7 +62,9 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_targets0_node:Target)
-            	WHERE this_connect_targets0_node.id = $this_connect_targets0_node_param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE this_connect_targets0_node.id = $this_connect_targets0_node_param0
+            	WITH this, this_connect_targets0_node
+            	CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	CALL {
             		WITH *
             		WITH collect(this_connect_targets0_node) as connectedNodes, collect(this) as parentNodes
@@ -89,11 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_connect_targets0_node_param0\\": \\"1\\",
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [],
-                    \\"sub\\": \\"1\\"
-                },
+                \\"thisauth_param0\\": \\"1\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -101,12 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
     test("Auth DISCONNECT rules checked against correct property", async () => {
         const typeDefs = gql`
-            type Source
-                @authorization(
-                    validate: [
-                        { before: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }
-                    ]
-                ) {
+            type Source @auth(rules: [{ operations: [DISCONNECT], allow: { id: "$jwt.sub" } }]) {
                 id: ID!
                 targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
             }
@@ -118,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            features: { authorization: { key: "secret" } },
+            plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret: "secret" }) },
         });
 
         const query = gql`
@@ -131,9 +120,9 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             }
         `;
 
-        const token = createBearerToken("secret", { sub: "1" });
+        const req = createJwtRequest("secret", { sub: "1" });
         const result = await translateQuery(neoSchema, query, {
-            token,
+            req,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
