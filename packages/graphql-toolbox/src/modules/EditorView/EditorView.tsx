@@ -140,7 +140,7 @@ export const EditorView = ({ schema }: Props) => {
                     </div>
 
                     {showDocs ? (
-                        <div className="graphiql-explorer-docs-container h-content-docs-container w-96 bg-white shadow rounded">
+                        <div className="h-content-docs-container w-96 absolute left-[388px] my-1 mx-0 z-50 bg-white shadow rounded">
                             <DocExplorerComponent
                                 schema={schema}
                                 isEmbedded={false}
