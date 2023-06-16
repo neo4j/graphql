@@ -20,7 +20,6 @@
 import { gql } from "graphql-tag";
 import { toGlobalId } from "../../src/utils/global-ids";
 import { Neo4jGraphQL } from "../../src";
-import { createJwtRequest } from "../utils/create-jwt-request";
 import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Global nodes", () => {
@@ -55,9 +54,7 @@ describe("Global nodes", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req,
             variableValues: { id: toGlobalId({ typeName: "Movie", field: "title", id: "A River Runs Through It" }) },
         });
 
@@ -96,9 +93,7 @@ describe("Global nodes", () => {
                 }
             }
         `;
-        const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req,
             variableValues: { id: toGlobalId({ typeName: "Actor", field: "dbId", id: "123455" }) },
         });
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -138,9 +133,7 @@ describe("Global nodes", () => {
                 }
             }
         `;
-        const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req,
             variableValues: {
                 where: {
                     id: toGlobalId({ typeName: "Actor", field: "dbId", id: "12345" }),
@@ -183,9 +176,7 @@ describe("Global nodes", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req,
             variableValues: {
                 where: {
                     id: toGlobalId({ typeName: "Actor", field: "dbId", id: 12345 }),
