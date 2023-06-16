@@ -195,11 +195,11 @@ export const Resources = ({ showSchemaView }: Props): JSX.Element => {
                         links={linksDocumentation}
                         screen={screen.view}
                     />
-                    <hr className="mb-6" />
+                    <hr className="border-gray-200 mb-6" />
                 </>
             ) : null}
             <ResourceLinksBlock listBlockTitle="Github" links={linksGithub} screen={screen.view} />
-            <hr className="mb-6" />
+            <hr className="border-gray-200 mb-6" />
             <ResourceLinksBlock listBlockTitle="Resources" links={linksForResources} screen={screen.view} />
         </div>
     );
