@@ -529,7 +529,7 @@ export interface Neo4jPopulatedBySettings {
     callbacks?: Neo4jGraphQLCallbacks;
 }
 export interface Neo4jAuthorizationSettings {
-    key: Key | ((req: RequestLike) => Key);
+    key: Key | ((context: Neo4jGraphQLContext) => Key);
     verify?: boolean;
     verifyOptions?: JWTVerifyOptions;
     globalAuthentication?: boolean;

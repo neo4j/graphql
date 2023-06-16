@@ -62,14 +62,14 @@ export interface Neo4jGraphQLContext {
      * HTTP request object containing authorization header for use in authentication and authorization.
      * Alias for {@link request}.
      *
-     * @deprecated Will be removed in 4.0.0 alongside `@auth` - use the {@link token} property to provide the bearer token with the new authorization features.
+     * @deprecated Will be removed in 4.0.0 alongside `@auth` - use the {@link token} property to provide the bearer token for the new authorization features.
      */
     req?: RequestLike;
     /**
      * HTTP request object containing authorization header for use in authentication and authorization.
      * Alias for {@link req}.
      *
-     * @deprecated Will be removed in 4.0.0 alongside `@auth` - use the {@link token} property to provide the bearer token with the new authorization features.
+     * @deprecated Will be removed in 4.0.0 alongside `@auth` - use the {@link token} property to provide the bearer token for the new authorization features.
      */
     request?: RequestLike;
     /**
