@@ -7,7 +7,7 @@
 /* Login window */
 
 .login-window-bg {
-    background-image: url('./assets/graphic-bottom-left.svg'), url('./assets/graphic-top-right.svg');
+    background-image: url("./assets/graphic-bottom-left.svg"), url("./assets/graphic-top-right.svg");
     background-position: left bottom, right top;
     background-size: 120px 200px;
     background-repeat: no-repeat, no-repeat;
@@ -47,7 +47,7 @@
 
 /* All GraphiQL v2 components */
 .graphiql-container {
-    font-family: 'Nunito Sans', sans-serif;
+    font-family: "Nunito Sans", sans-serif;
 
     /* primary-50 */
     --color-primary: 209, 100%, 42% !important;
@@ -88,7 +88,7 @@
 }
 
 .docExplorerWrap .graphiql-explorer-root {
-    font-family: 'Nunito Sans', sans-serif !important;
+    font-family: "Nunito Sans", sans-serif !important;
     font-size: 15px !important;
 }
 
@@ -165,3 +165,11 @@
 }
 
 /* ----------------------*/
+
+.show-on-hover {
+    visibility: hidden;
+}
+
+.favorite-entry:hover .show-on-hover {
+    visibility: visible;
+}
