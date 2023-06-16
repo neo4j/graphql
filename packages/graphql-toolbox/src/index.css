@@ -47,6 +47,8 @@
 
 /* All GraphiQL v2 components */
 .graphiql-container {
+    font-family: 'Nunito Sans', sans-serif;
+
     /* primary-50 */
     --color-primary: 209, 100%, 42% !important;
     /* primary-30 */
@@ -86,6 +88,7 @@
 }
 
 .docExplorerWrap .graphiql-explorer-root {
+    font-family: 'Nunito Sans', sans-serif !important;
     font-size: 15px !important;
 }
 
