@@ -22,9 +22,9 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("auth/allow", () => {
     let driver: Driver;
@@ -96,12 +96,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -149,12 +149,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}", password: "letmein"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -213,12 +213,12 @@ describe("auth/allow", () => {
                     CREATE (:${postType.name} {id: "${postId}"})<-[:HAS_POST]-(:${userType.name} {id: "${userId}", password: "letmein"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -281,12 +281,12 @@ describe("auth/allow", () => {
                     CREATE (:${postType.name} {id: "${postId}"})<-[:HAS_POST]-(:${userType.name} {id: "${userId}", password: "letmein"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -347,12 +347,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -416,12 +416,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -495,12 +495,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})-[:HAS_COMMENT]->(:${commentType.name} {id: "${commentId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -551,12 +551,12 @@ describe("auth/allow", () => {
                     CREATE (: ${userType.name} {id: "${userId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -607,12 +607,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -673,12 +673,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -741,12 +741,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -796,12 +796,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -869,12 +869,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -937,12 +937,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -1026,12 +1026,12 @@ describe("auth/allow", () => {
                                     (:${commentType.name} {id: "${commentId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -1095,12 +1095,12 @@ describe("auth/allow", () => {
                     CREATE (:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -1183,12 +1183,12 @@ describe("auth/allow", () => {
                     CREATE (:${postType.name} {id: "${postId}"})-[:HAS_COMMENT]->(:${commentType.name} {id: "${commentId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

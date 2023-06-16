@@ -23,7 +23,7 @@ import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1150", () => {
     const secret = "secret";
@@ -122,11 +122,11 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             }
         `;
 
-        const req = createJwtRequest(secret, { roles: "admin" });
+        const token = createBearerToken(secret, { roles: "admin" });
         const res = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(res.errors).toBeUndefined();

@@ -27,7 +27,7 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 import { runCypher } from "../../../utils/run-cypher";
 import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("auth/is-authenticated", () => {
     let driver: Driver;
@@ -97,7 +97,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -134,12 +134,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -179,12 +179,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -224,12 +224,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -275,7 +275,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -316,12 +316,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -364,12 +364,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -417,7 +417,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -458,12 +458,12 @@ describe("auth/is-authenticated", () => {
                 }
             `;
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -516,7 +516,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -564,12 +564,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -620,12 +620,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -657,12 +657,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -697,12 +697,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -743,7 +743,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -779,12 +779,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -826,12 +826,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -884,7 +884,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -932,12 +932,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -988,12 +988,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1034,12 +1034,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1082,12 +1082,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1135,7 +1135,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1177,12 +1177,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1221,12 +1221,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1269,12 +1269,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1322,7 +1322,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1364,12 +1364,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1436,12 +1436,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1510,12 +1510,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1581,12 +1581,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1661,7 +1661,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1733,7 +1733,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1802,12 +1802,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1873,12 +1873,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1945,12 +1945,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2019,12 +2019,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2090,12 +2090,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2170,7 +2170,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2242,7 +2242,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2311,12 +2311,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2382,12 +2382,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2454,12 +2454,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2528,12 +2528,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2599,12 +2599,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2679,7 +2679,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2751,7 +2751,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2820,12 +2820,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2891,12 +2891,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2935,12 +2935,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2981,12 +2981,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3032,7 +3032,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3096,7 +3096,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3137,12 +3137,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3201,12 +3201,12 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3270,7 +3270,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3313,12 +3313,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3363,12 +3363,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3418,7 +3418,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3463,12 +3463,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3509,12 +3509,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3559,12 +3559,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
+                const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3614,7 +3614,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3655,12 +3655,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3706,12 +3706,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3761,12 +3761,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["admin"] });
+                const token = createBearerToken(secret, { roles: ["admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3821,7 +3821,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3871,12 +3871,12 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
+                const token = createBearerToken(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");

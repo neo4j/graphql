@@ -17,16 +17,17 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
-import { createBearerToken } from "../../../utils/create-bearer-token";
+import Neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
+import { createJwtRequest } from "../../utils/create-jwt-request";
+import { UniqueType } from "../../utils/graphql-types";
 
-describe("cypher with columnName argument", () => {
+describe("cypher", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
@@ -78,8 +79,7 @@ describe("cypher with columnName argument", () => {
                                 statement: """
                                 MATCH (m:${Movie} {title: $title})
                                 RETURN m
-                                """,
-                                columnName: "m"
+                                """
                             )
                     }
                 `;
@@ -150,8 +150,7 @@ describe("cypher with columnName argument", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                        """,
-                        columnName: "m"
+                        """
                         )
                     }
                 `;
@@ -208,16 +207,12 @@ describe("cypher with columnName argument", () => {
                 });
 
                 const typeDefs = `
-                    type JWT @jwt {
-                        roles: [String!]!
-                    }
-
                     type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
-                    type ${Actor} @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES:"admin" } } }]) {
+                    type ${Actor} @auth(rules: [{operations: [READ], roles: ["admin"]}]) {
                         name: String!
                         movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
@@ -226,8 +221,7 @@ describe("cypher with columnName argument", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                            """,
-                            columnName: "m")
+                            """)
                     }
                 `;
 
@@ -235,7 +229,11 @@ describe("cypher with columnName argument", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    features: { authorization: { key: "secret" } },
+                    plugins: {
+                        auth: new Neo4jGraphQLAuthJWTPlugin({
+                            secret: "secret",
+                        }),
+                    },
                 });
 
                 const source = `
@@ -260,12 +258,12 @@ describe("cypher with columnName argument", () => {
                         }
                     );
 
-                    const token = createBearerToken(secret);
+                    const req = createJwtRequest(secret);
 
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -308,8 +306,7 @@ describe("cypher with columnName argument", () => {
                             MATCH (m:${Movie})
                             WHERE m.title in $titles
                             RETURN m
-                            """,
-                            columnName: "m"
+                            """
                             )
                     }
                 `;
@@ -407,8 +404,7 @@ describe("cypher with columnName argument", () => {
                                 MATCH (m:${Movie})
                                 WHERE m.title = $title
                                 RETURN m
-                                """,
-                                columnName: "m"
+                                """
                             )
                     }
                 `;
@@ -510,8 +506,7 @@ describe("cypher with columnName argument", () => {
                                 statement: """
                                 MATCH (m:${Movie} {title: $title})
                                 RETURN m
-                                """,
-                                columnName: "m"
+                                """
                             )
                     }
                 `;
@@ -582,8 +577,7 @@ describe("cypher with columnName argument", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                            """,
-                            columnName: "m")
+                            """)
                     }
                 `;
 
@@ -639,16 +633,12 @@ describe("cypher with columnName argument", () => {
                 });
 
                 const typeDefs = `
-                    type JWT @jwt {
-                        roles: [String!]!
-                    }
-
                     type ${Movie} {
                         title: String!
                         actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
-                    type ${Actor} @authorization(validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+                    type ${Actor} @auth(rules: [{operations: [READ], roles: ["admin"]}]) {
                         name: String!
                         movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
@@ -657,12 +647,11 @@ describe("cypher with columnName argument", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                            """,
-                            columnName: "m")
+                            """)
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: "secret" } } });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                 const source = `
                     mutation($title: String!, $name: String) {
@@ -720,7 +709,7 @@ describe("cypher with columnName argument", () => {
                     id: ID!
                     preposition(caseName: String${
                         withDefaultValue ? "= null" : ""
-                    }): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}') as result", columnName: "result")
+                    }): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}')")
                 }
 
                 type Query {
@@ -728,8 +717,7 @@ describe("cypher with columnName argument", () => {
                         MATCH (town:Town {id:$id})
                         OPTIONAL MATCH (town)<-[:BELONGS_TO]-(destination:Destination)
                         RETURN destination
-                    """,
-                    columnName: "destination")
+                    """)
                 }
             `;
 
@@ -870,8 +858,7 @@ describe("cypher with columnName argument", () => {
                             MATCH (this:User)-[:WROTE]->(wrote:Post)
                             RETURN wrote
                             LIMIT 5
-                            """,
-                            columnName: "wrote"
+                            """
                         )
                 }
             `;
@@ -881,7 +868,11 @@ describe("cypher with columnName argument", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    features: { authorization: { key: "secret" } },
+                    plugins: {
+                        auth: new Neo4jGraphQLAuthJWTPlugin({
+                            secret,
+                        }),
+                    },
                 });
                 schema = await neoSchema.getSchema();
 
@@ -914,11 +905,11 @@ describe("cypher with columnName argument", () => {
                         }
                 `;
 
-                const token = createBearerToken(secret);
+                const req = createJwtRequest(secret, {});
                 const gqlResult = await graphql({
                     schema,
                     source,
-                    contextValue: neo4j.getContextValues({ token }),
+                    contextValue: neo4j.getContextValues({ req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();

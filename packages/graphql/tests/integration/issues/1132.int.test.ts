@@ -25,7 +25,7 @@ import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { UniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1132", () => {
     const secret = "secret";
@@ -98,12 +98,12 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 CREATE (:${testTarget.name} { id: "${targetId}" })
             `);
 
-            const req = createJwtRequest(secret, { sub: sourceId });
+            const token = createBearerToken(secret, { sub: sourceId });
 
             const result = await graphql({
                 schema,
                 source: getQuerySource(query),
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toEqual({
@@ -169,12 +169,12 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 CREATE (:${testSource.name} { id: "${sourceId}" })-[:HAS_TARGET]->(:${testTarget.name} { id: "${targetId}" })
             `);
 
-            const req = createJwtRequest(secret, { sub });
+            const token = createBearerToken(secret, { sub });
 
             const result = await graphql({
                 schema,
                 source: getQuerySource(query),
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect((result.errors as any[])[0].message).toBe("Forbidden");
         });
@@ -228,12 +228,12 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 CREATE (:${testSource.name} { id: "${sourceId}" })-[:HAS_TARGET]->(:${testTarget.name} { id: "${targetId}" })
             `);
 
-            const req = createJwtRequest(secret, { sub: targetId });
+            const token = createBearerToken(secret, { sub: targetId });
 
             const result = await graphql({
                 schema,
                 source: getQuerySource(query),
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toEqual({

@@ -19,13 +19,12 @@
 
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src";
 import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import Neo4j from "../../neo4j";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("Subscriptions delete", () => {
     let driver: Driver;
@@ -53,7 +52,7 @@ describe("Subscriptions delete", () => {
             id: ID
         }
 
-        extend type ${typeUser.name} @auth(rules: [{ operations: [DELETE], allow: { id: "$jwt.sub" }}])
+        extend type ${typeUser.name} @authorization(validate: [{ operations: [DELETE], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
     `;
 
         const userId = generate({
@@ -72,10 +71,12 @@ describe("Subscriptions delete", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
+            features: {
+                authorization: {
+                    key: "secret",
+                },
+            },
             plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
                 subscriptions: plugin,
             },
         });
@@ -85,12 +86,12 @@ describe("Subscriptions delete", () => {
             CREATE (:${typeUser.name} {id: "${userId}"})
         `);
 
-            const req = createJwtRequest("secret", { sub: "invalid" });
+            const token = createBearerToken("secret", { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

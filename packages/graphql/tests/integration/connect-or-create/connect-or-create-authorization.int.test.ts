@@ -24,8 +24,8 @@ import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { getQuerySource } from "../../utils/get-query-source";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { UniqueType } from "../../utils/graphql-types";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("connectOrCreate", () => {
     describe("Update -> ConnectOrCreate", () => {
@@ -140,12 +140,12 @@ describe("connectOrCreate", () => {
 
         test("update with ConnectOrCreate auth", async () => {
             await session.run(`CREATE (:${typeMovie.name} { title: "Forrest Gump"})`);
-            const req = createJwtRequest(secret, { roles: ["admin"] });
+            const token = createBearerToken(secret, { roles: ["admin"] });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: getQuerySource(queryUpdate),
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
             expect(gqlResult.errors).toBeUndefined();
 
@@ -157,12 +157,12 @@ describe("connectOrCreate", () => {
         });
 
         test("create with ConnectOrCreate auth", async () => {
-            const req = createJwtRequest(secret, { roles: ["admin"] });
+            const token = createBearerToken(secret, { roles: ["admin"] });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: getQuerySource(queryCreate),
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
             expect(gqlResult.errors).toBeUndefined();
 
@@ -286,12 +286,12 @@ describe("connectOrCreate", () => {
 
         test("update with ConnectOrCreate auth", async () => {
             await session.run(`CREATE (:${typeMovie.name} { title: "Forrest Gump"})`);
-            const req = createJwtRequest(secret, { roles: ["admin"] });
+            const token = createBearerToken(secret, { roles: ["admin"] });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: getQuerySource(queryUpdate),
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
             expect(gqlResult.errors).toBeUndefined();
 
@@ -303,12 +303,12 @@ describe("connectOrCreate", () => {
         });
 
         test("create with ConnectOrCreate auth", async () => {
-            const req = createJwtRequest(secret, { roles: ["admin"] });
+            const token = createBearerToken(secret, { roles: ["admin"] });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: getQuerySource(queryCreate),
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
             expect(gqlResult.errors).toBeUndefined();
 

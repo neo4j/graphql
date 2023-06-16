@@ -28,8 +28,8 @@ import { UniqueType } from "../../../utils/graphql-types";
 import { upperFirst } from "../../../../src/utils/upper-first";
 import { delay } from "../../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { SCORE_FIELD } from "../../../../src/graphql/directives/fulltext";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
@@ -1470,13 +1470,13 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const req = createJwtRequest(secret, { name: person1.name });
+            const token = createBearerToken(secret, { name: person1.name });
 
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    req,
+                    token,
                     driver,
                     driverConfig: { database: databaseName },
                 },
@@ -1540,13 +1540,13 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const req = createJwtRequest(secret, { name: "Not a name" });
+            const token = createBearerToken(secret, { name: "Not a name" });
 
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    req,
+                    token,
                     driver,
                     driverConfig: { database: databaseName },
                 },
@@ -1610,13 +1610,13 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const req = createJwtRequest(secret, { roles: ["admin"] });
+            const token = createBearerToken(secret, { roles: ["admin"] });
 
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    req,
+                    token,
                     driver,
                     driverConfig: { database: databaseName },
                 },
@@ -1695,13 +1695,13 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const req = createJwtRequest(secret, { roles: ["not_admin"] });
+            const token = createBearerToken(secret, { roles: ["not_admin"] });
 
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    req,
+                    token,
                     driver,
                     driverConfig: { database: databaseName },
                 },
@@ -1760,13 +1760,13 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const req = createJwtRequest(secret, { name: person2.name });
+            const token = createBearerToken(secret, { name: person2.name });
 
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    req,
+                    token,
                     driver,
                     driverConfig: { database: databaseName },
                 },
@@ -1828,13 +1828,13 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const req = createJwtRequest(secret, { name: person2.name });
+            const token = createBearerToken(secret, { name: person2.name });
 
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    req,
+                    token,
                     driver,
                     driverConfig: { database: databaseName },
                 },
@@ -1897,13 +1897,13 @@ describe("@fulltext directive", () => {
                 }
             `;
 
-            const req = createJwtRequest(secret, { roles: ["not_admin"] });
+            const token = createBearerToken(secret, { roles: ["not_admin"] });
 
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    req,
+                    token,
                     driver,
                     driverConfig: { database: databaseName },
                 },
