@@ -34,4 +34,4 @@ image::toolbox-editor-view-v2.png[title="Query editor view"]
 
 Note that you can store your Type definitions as favorites and that a range of settings are available to work with.
 
-Got curious? Try it our right now under https://graphql-toolbox.neo4j.io!
+Got curious? Try it out right now under https://graphql-toolbox.neo4j.io!
