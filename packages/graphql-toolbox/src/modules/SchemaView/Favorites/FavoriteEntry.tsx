@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Checkbox, IconButton } from "@neo4j-ndl/react";
+import { Checkbox, IconButton, TextInput } from "@neo4j-ndl/react";
 import { CheckIconOutline, PencilIconOutline, PlayCircleIconOutline } from "@neo4j-ndl/react/icons";
 
 import { useFavoritesStore } from "../../../store/favorites";
@@ -45,12 +45,14 @@ export const FavoriteEntry = ({ dragHandle, onSelectFavorite, favorite, updateNa
             <div className="w-full flex items-center justify-start">
                 <div className="hover-show">{dragHandle}</div>
                 {editMode ? (
-                    <input
+                    <TextInput
                         className="w-60"
                         value={nameValue}
                         ref={inputRef}
                         onChange={(event) => setNameValue(event.currentTarget.value)}
                         onKeyDown={_handleKeyDown}
+                        size="extra-small"
+                        aria-label="Input for new name for the favorite snippet"
                     />
                 ) : (
                     <Checkbox
