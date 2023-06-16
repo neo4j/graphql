@@ -17,13 +17,20 @@
  * limitations under the License.
  */
 
-export async function wrapInTimeMeasurement<T>(cb: () => Promise<T>): Promise<{ result: T; time: number }> {
-    const t1 = performance.now();
-    const result = await cb();
-    const t2 = performance.now();
+import type { AuthenticationOperation } from "../../schema-model/annotation/AuthenticationAnnotation";
+import type { Context } from "../../types";
+import { applyAuthentication } from "./utils/apply-authentication";
 
-    return {
-        result: result,
-        time: t2 - t1,
-    };
+export function checkSchemaAuthentication({
+    context,
+    operation,
+}: {
+    context: Context;
+    operation: AuthenticationOperation;
+}): void {
+    const annotation = context.schemaModel.annotations.authentication;
+
+    if (annotation && annotation.operations.has(operation)) {
+        applyAuthentication({ context, annotation });
+    }
 }

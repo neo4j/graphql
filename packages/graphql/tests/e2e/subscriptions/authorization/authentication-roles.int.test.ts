@@ -26,7 +26,7 @@ import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
-import { createJwtHeader } from "../../../utils/create-jwt-request";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 import { UniqueType } from "../../../utils/graphql-types";
 
 describe("Subscription authentication roles", () => {
@@ -49,7 +49,7 @@ describe("Subscription authentication roles", () => {
     `;
 
     beforeAll(async () => {
-        jwtToken = createJwtHeader("secret", { roles: ["admin"] });
+        jwtToken = createBearerToken("secret", { roles: ["admin"] });
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
 
@@ -114,7 +114,7 @@ describe("Subscription authentication roles", () => {
     });
 
     test("auth with one of roles pass", async () => {
-        jwtToken = createJwtHeader("secret", { roles: ["super-admin", "admin"] });
+        jwtToken = createBearerToken("secret", { roles: ["super-admin", "admin"] });
         wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
         await wsClient.subscribe(`
             subscription {
@@ -144,7 +144,7 @@ describe("Subscription authentication roles", () => {
     });
 
     test("auth with different role fails", async () => {
-        const wrongToken = createJwtHeader("secret", { roles: ["not-admin"] });
+        const wrongToken = createBearerToken("secret", { roles: ["not-admin"] });
         wsClient = new WebSocketTestClient(server.wsPath, wrongToken);
         await wsClient.subscribe(`
             subscription {
@@ -162,7 +162,7 @@ describe("Subscription authentication roles", () => {
     });
 
     test("auth with role and wrong secret fails", async () => {
-        const wrongToken = createJwtHeader("secret2", { roles: ["admin"] });
+        const wrongToken = createBearerToken("secret2", { roles: ["admin"] });
         wsClient = new WebSocketTestClient(server.wsPath, wrongToken);
         await wsClient.subscribe(`
             subscription {

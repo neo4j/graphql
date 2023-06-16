@@ -20,7 +20,6 @@
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("#360", () => {
@@ -55,9 +54,7 @@ describe("#360", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req,
             variableValues: { rangeStart: "2021-07-18T00:00:00+0100", rangeEnd: "2021-07-18T23:59:59+0100" },
         });
 
@@ -103,9 +100,7 @@ describe("#360", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req,
             variableValues: { rangeStart: "2021-07-18T00:00:00+0100", rangeEnd: "2021-07-18T23:59:59+0100" },
         });
 

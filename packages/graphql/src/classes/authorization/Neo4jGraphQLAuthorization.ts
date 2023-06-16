@@ -18,13 +18,14 @@
  */
 
 import Debug from "debug";
-import type { Key, Neo4jAuthorizationSettings, RequestLike } from "../../types";
+import type { Key, Neo4jAuthorizationSettings } from "../../types";
 
 import { AUTHORIZATION_UNAUTHENTICATED, DEBUG_AUTH } from "../../constants";
 import { createRemoteJWKSet, decodeJwt, jwtVerify } from "jose";
 import type { JWTPayload } from "jose";
-import { getToken, parseBearerToken } from "./parse-request-token";
+import { parseBearerToken } from "./parse-request-token";
 import { Neo4jGraphQLError } from "../Error";
+import type { Neo4jGraphQLContext } from "../../types/neo4j-graphql-context";
 
 const debug = Debug(DEBUG_AUTH);
 
@@ -32,11 +33,19 @@ export class Neo4jGraphQLAuthorization {
     private authorization: Neo4jAuthorizationSettings;
 
     constructor(authorization: Neo4jAuthorizationSettings) {
+        if (authorization?.verify === false && authorization?.globalAuthentication === true) {
+            throw new Neo4jGraphQLError("`globalAuthentication` option requires the `verify` option to be enabled.");
+        }
+
         this.authorization = authorization;
     }
 
-    public async decode(req: RequestLike): Promise<JWTPayload | undefined> {
-        const bearerToken = getToken(req);
+    public get globalAuthentication(): boolean {
+        return this.authorization.globalAuthentication || false;
+    }
+
+    public async decode(context: Neo4jGraphQLContext): Promise<JWTPayload | undefined> {
+        const bearerToken = context.token;
         if (!bearerToken) {
             throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
         }
@@ -49,7 +58,7 @@ export class Neo4jGraphQLAuthorization {
                 debug("Skipping verifying JWT as verify is set to false");
                 return decodeJwt(token);
             }
-            const secret = this.resolveKey(req);
+            const secret = this.resolveKey(context);
             return await this.verify(token, secret);
         } catch (error) {
             debug("%s", error);
@@ -70,7 +79,11 @@ export class Neo4jGraphQLAuthorization {
         }
     }
 
-    public async decodeBearerTokenWithVerify(bearerToken: string): Promise<JWTPayload | undefined> {
+    public async decodeBearerTokenWithVerify(bearerToken: string | undefined): Promise<JWTPayload | undefined> {
+        if (!bearerToken) {
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+        }
+
         const token = parseBearerToken(bearerToken);
         if (!token) {
             throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
@@ -87,9 +100,9 @@ export class Neo4jGraphQLAuthorization {
         }
     }
 
-    private resolveKey(req: RequestLike): Key {
+    private resolveKey(context: Neo4jGraphQLContext): Key {
         if (typeof this.authorization.key === "function") {
-            return this.authorization.key(req);
+            return this.authorization.key(context);
         } else {
             return this.authorization.key;
         }

@@ -24,7 +24,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
 import { runCypher } from "../../utils/run-cypher";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1115", () => {
     const parentType = new UniqueType("Parent");
@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
         const session = await neo4j.getSession();
         await runCypher(session, `CREATE (:${parentType})<-[:HAS]-(:${childType} {tcId: "123"})`);
 
-        const req = createJwtRequest("secret", { roles: ["upstream"] });
+        const token = createBearerToken("secret", { roles: ["upstream"] });
         const query = `
         mutation {
           ${parentType.operations.update}(
@@ -106,7 +106,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
         const res = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(res.errors).toBeUndefined();

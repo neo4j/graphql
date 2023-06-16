@@ -70,22 +70,6 @@ export const AUTHENTICATION_OPERATION = new GraphQLEnumType({
     },
 });
 
-function createJWTPayloadWhere(
-    schema: GraphQLSchema,
-    JWTPayloadDefinition?: ObjectTypeDefinitionNode
-): GraphQLInputObjectType {
-    const inputFieldsType = getWhereFields({
-        typeName: "JWTPayload",
-        fields: getJwtFields(schema, JWTPayloadDefinition),
-    });
-    const composer = new SchemaComposer();
-    const inputTC = composer.createInputTC({
-        name: "JWTPayloadWhere",
-        fields: inputFieldsType,
-    });
-    return inputTC.getType();
-}
-
 export function getStaticAuthorizationDefinitions(
     JWTPayloadDefinition?: ObjectTypeDefinitionNode
 ): Array<InputObjectTypeDefinitionNode | EnumTypeDefinitionNode> {
@@ -101,8 +85,24 @@ export function getStaticAuthorizationDefinitions(
         authenticationOperation,
     ];
 
-    const JWTPayloadWere = createJWTPayloadWhere(schema, JWTPayloadDefinition);
-    const JWTPayloadWereAST = astFromInputObjectType(JWTPayloadWere, schema);
-    ASTs.push(JWTPayloadWereAST);
+    const JWTPayloadWhere = createJWTPayloadWhere(schema, JWTPayloadDefinition);
+    const JWTPayloadWhereAST = astFromInputObjectType(JWTPayloadWhere, schema);
+    ASTs.push(JWTPayloadWhereAST);
     return ASTs;
+}
+
+function createJWTPayloadWhere(
+    schema: GraphQLSchema,
+    JWTPayloadDefinition?: ObjectTypeDefinitionNode
+): GraphQLInputObjectType {
+    const inputFieldsType = getWhereFields({
+        typeName: "JWTPayload",
+        fields: getJwtFields(schema, JWTPayloadDefinition),
+    });
+    const composer = new SchemaComposer();
+    const inputTC = composer.createInputTC({
+        name: "JWTPayloadWhere",
+        fields: inputFieldsType,
+    });
+    return inputTC.getType();
 }

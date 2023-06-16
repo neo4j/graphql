@@ -79,6 +79,7 @@ describe("createUpdateAndParams", () => {
                 concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
                 compositeEntities: [],
                 operations: {},
+                annotations: [],
             }),
         }).instance();
 

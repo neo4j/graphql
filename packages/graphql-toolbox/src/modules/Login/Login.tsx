@@ -126,10 +126,9 @@ export const Login = () => {
                             <WarningToolTip
                                 text={
                                     <span>
-                                        With the current Connection URL value the Neo4j driver will be configured to use
-                                        insecure WebSocket on a HTTPS web page. WebSockets might not work in a mixed
-                                        content environment. Please consider accessing the Neo4j database using either
-                                        the bolt+s or neo4j+s protocol. More information:{" "}
+                                        This protocol will not establish a secure connection. Please consider accessing
+                                        the Neo4j database using either the bolt+s or neo4j+s protocol. More
+                                        information:{" "}
                                         <a
                                             className="underline"
                                             href="https://neo4j.com/developer/javascript/#driver-configuration"

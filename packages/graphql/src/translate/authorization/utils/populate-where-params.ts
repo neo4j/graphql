@@ -32,7 +32,6 @@ export function populateWhereParams({ where, context }: { where: GraphQLWhereArg
         } else if (typeof v === "object") {
             parsed[k] = populateWhereParams({ where: v, context });
         } else if (typeof v === "string") {
-            // sub
             if (v.startsWith("$jwt")) {
                 const path = v.substring(5);
 

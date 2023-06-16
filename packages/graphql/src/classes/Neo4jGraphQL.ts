@@ -54,7 +54,7 @@ import type { Driver } from "neo4j-driver";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
 import { makeDocumentToAugment } from "../schema/make-document-to-augment";
-import { Neo4jGraphQLError } from "./Error";
+import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -79,9 +79,6 @@ export interface Neo4jGraphQLConfig {
      * https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby
      */
     callbacks?: Neo4jGraphQLCallbacks;
-
-    /** Attach metrics to context extension field */
-    addMeasurementsToExtension?: boolean;
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
@@ -112,6 +109,8 @@ class Neo4jGraphQL {
 
     private dbInfo?: Neo4jDatabaseInfo;
 
+    private authorization?: Neo4jGraphQLAuthorization;
+
     constructor(input: Neo4jGraphQLConstructor) {
         const { config = {}, driver, plugins, features, ...schemaDefinition } = input;
 
@@ -123,11 +122,10 @@ class Neo4jGraphQL {
 
         this.checkEnableDebug();
 
-        if (
-            this.features?.authorization?.verify === false &&
-            this.features?.authorization?.globalAuthentication === true
-        ) {
-            throw new Neo4jGraphQLError("`globalAuthentication` option requires the `verify` option to be enabled.");
+        if (this.features?.authorization) {
+            const authorizationSettings = this.features?.authorization;
+
+            this.authorization = new Neo4jGraphQLAuthorization(authorizationSettings);
         }
     }
 
@@ -309,7 +307,7 @@ class Neo4jGraphQL {
             relationships: this.relationships,
             schemaModel: this.schemaModel,
             plugins: this.plugins,
-            authorizationSettings: this.features?.authorization,
+            authorization: this.authorization,
             jwtPayloadFieldsMap: this.jwtFieldsMap,
         };
 

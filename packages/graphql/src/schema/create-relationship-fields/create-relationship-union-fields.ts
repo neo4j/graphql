@@ -59,14 +59,16 @@ export function createRelationshipUnionFields({
         };
         const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
 
-        composeNode.addFields({
-            [rel.fieldName]: {
-                type: rel.typeMeta.pretty,
-                args: nodeFieldArgs,
-                description: rel.description,
-                directives: graphqlDirectivesToCompose(rel.otherDirectives),
-            },
-        });
+        if (rel.selectableOptions.onRead) {
+            composeNode.addFields({
+                [rel.fieldName]: {
+                    type: rel.typeMeta.pretty,
+                    args: nodeFieldArgs,
+                    description: rel.description,
+                    directives: graphqlDirectivesToCompose(rel.otherDirectives),
+                },
+            });
+        }
     }
 
     const upperFieldName = upperFirst(rel.fieldName);
@@ -391,12 +393,16 @@ export function createRelationshipUnionFields({
             [rel.fieldName]: unionCreateFieldInput,
         });
     }
-    if (!(composeNode instanceof InterfaceTypeComposer) && unionCreateInput) {
+    if (rel.settableOptions.onCreate && !(composeNode instanceof InterfaceTypeComposer) && unionCreateInput) {
         nodeCreateInput.addFields({
             [rel.fieldName]: unionCreateInput,
         });
     }
-    if (nestedOperations.size !== 0 && !onlyConnectOrCreateAndNoUniqueFieldsInAllRefTypes) {
+    if (
+        rel.settableOptions.onUpdate &&
+        nestedOperations.size !== 0 &&
+        !onlyConnectOrCreateAndNoUniqueFieldsInAllRefTypes
+    ) {
         const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
         nodeUpdateInput.addFields({
             [rel.fieldName]: unionUpdateInput,

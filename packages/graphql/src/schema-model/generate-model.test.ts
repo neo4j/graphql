@@ -26,6 +26,41 @@ import {
 } from "./annotation/AuthorizationAnnotation";
 import { generateModel } from "./generate-model";
 import type { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
+import { AuthenticationAnnotation } from "./annotation/AuthenticationAnnotation";
+
+describe("Schema model generation", () => {
+    test("parses @authentication directive with no arguments", () => {
+        const typeDefs = gql`
+            extend schema @authentication
+        `;
+
+        const document = mergeTypeDefs(typeDefs);
+        const schemaModel = generateModel(document);
+
+        expect(schemaModel.annotations.authentication).toEqual(
+            new AuthenticationAnnotation([
+                "READ",
+                "CREATE",
+                "UPDATE",
+                "DELETE",
+                "CREATE_RELATIONSHIP",
+                "DELETE_RELATIONSHIP",
+                "SUBSCRIBE",
+            ])
+        );
+    });
+
+    test("parses @authentication directive with operations", () => {
+        const typeDefs = gql`
+            extend schema @authentication(operations: [CREATE])
+        `;
+
+        const document = mergeTypeDefs(typeDefs);
+        const schemaModel = generateModel(document);
+
+        expect(schemaModel.annotations.authentication).toEqual(new AuthenticationAnnotation(["CREATE"]));
+    });
+});
 
 describe("ConcreteEntity generation", () => {
     let schemaModel: Neo4jGraphQLSchemaModel;

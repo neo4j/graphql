@@ -23,7 +23,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/2812", () => {
     let driver: Driver;
@@ -104,12 +104,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-            const req = createJwtRequest(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
+            const token = createBearerToken(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeFalsy();
         });
@@ -132,12 +132,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-            const req = createJwtRequest(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
+            const token = createBearerToken(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeFalsy();
         });
@@ -160,12 +160,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-            const req = createJwtRequest(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
+            const token = createBearerToken(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeFalsy();
         });
@@ -190,12 +190,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-            const req = createJwtRequest(secret, { roles: ["admin"], sub: "User" });
+            const token = createBearerToken(secret, { roles: ["admin"], sub: "User" });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeTruthy();
         });
@@ -218,12 +218,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-            const req = createJwtRequest(secret, { roles: ["admin"], sub: "User" });
+            const token = createBearerToken(secret, { roles: ["admin"], sub: "User" });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeTruthy();
         });
@@ -246,12 +246,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-            const req = createJwtRequest(secret, { roles: ["admin"], sub: "User" });
+            const token = createBearerToken(secret, { roles: ["admin"], sub: "User" });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeFalsy();
         });

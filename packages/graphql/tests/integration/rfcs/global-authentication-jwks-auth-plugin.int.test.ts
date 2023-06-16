@@ -112,9 +112,7 @@ describe("Global authentication - Authorization JWKS plugin", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             contextValue: neo4j.getContextValues({
-                request: {
-                    headers: { Authorization: `Bearer xxx.invalidtoken.xxxx` },
-                },
+                token: `Bearer xxx.invalidtoken.xxxx`,
             }),
         });
 
@@ -143,7 +141,7 @@ describe("Global authentication - Authorization JWKS plugin", () => {
 
         jwksMock.start();
 
-        const accessToken = jwksMock.token({
+        const token = jwksMock.token({
             iat: 1600000000,
         });
 
@@ -151,9 +149,7 @@ describe("Global authentication - Authorization JWKS plugin", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             contextValue: neo4j.getContextValues({
-                request: {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                },
+                token,
             }),
         });
 

@@ -80,13 +80,9 @@ function createNodeAuthorizationPredicate({
     const predicates: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
 
-    let annotation: AuthorizationAnnotation | undefined;
-
-    if (fieldName) {
-        annotation = entity.attributes.get(fieldName)?.annotations.authorization;
-    } else {
-        annotation = entity.annotations.authorization;
-    }
+    const annotation: AuthorizationAnnotation | undefined = fieldName
+        ? entity.attributes.get(fieldName)?.annotations.authorization
+        : entity.annotations.authorization;
 
     if (annotation) {
         const { predicate: filterPredicate, preComputedSubqueries: filterSubqueries } =

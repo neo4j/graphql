@@ -17,13 +17,10 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 
 import { tokens } from "@neo4j-ndl/base";
-import { Button, IconButton, Switch } from "@neo4j-ndl/react";
-import { PlayIconOutline } from "@neo4j-ndl/react/icons";
-import classNames from "classnames";
-import type { EditorFromTextArea } from "codemirror";
+import { Switch } from "@neo4j-ndl/react";
 import GraphiQLExplorer from "graphiql-explorer";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
@@ -33,34 +30,27 @@ import { Extension } from "../../components/Filename";
 import { EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
 import { Screen } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
-import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { EditorTabs } from "./EditorTabs";
-import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import { Grid } from "./grid/Grid";
-import { JSONEditor } from "./JSONEditor";
-import { calculateQueryComplexity, formatCode, ParserOptions, safeParse } from "./utils";
+import { QueryEditor } from "./QueryEditor";
+import { ResponseEditor } from "./ResponseEditor";
+import { calculateQueryComplexity, safeParse } from "./utils";
+import { VariablesEditor } from "./VariablesEditor";
 
 export interface Props {
     schema?: GraphQLSchema;
 }
 
-export const Editor = ({ schema }: Props) => {
+export const EditorView = ({ schema }: Props) => {
     const store = useStore();
     const settings = useContext(SettingsContext);
-    const theme = useContext(ThemeContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [showDocs, setShowDocs] = useState<boolean>(false);
-    const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
-
-    const formatTheCode = (): void => {
-        if (!refForQueryEditorMirror.current) return;
-        formatCode(refForQueryEditorMirror.current, ParserOptions.GRAPH_QL);
-    };
 
     const handleShowDocs = () => {
         setShowDocs(!showDocs);
@@ -150,7 +140,7 @@ export const Editor = ({ schema }: Props) => {
                     </div>
 
                     {showDocs ? (
-                        <div className="graphiql-explorer-docs-container h-content-docs-container w-96 bg-white shadow rounded">
+                        <div className="h-content-docs-container w-96 absolute left-[388px] my-1 mx-0 z-50 bg-white shadow rounded">
                             <DocExplorerComponent
                                 schema={schema}
                                 isEmbedded={false}
@@ -163,82 +153,24 @@ export const Editor = ({ schema }: Props) => {
                         <EditorTabs />
                         <Grid
                             queryEditor={
-                                schema ? (
-                                    <GraphQLQueryEditor
-                                        schema={schema}
-                                        loading={loading}
-                                        mirrorRef={refForQueryEditorMirror}
-                                        executeQuery={onSubmit}
-                                        query={useStore.getState().getActiveTab().query}
-                                        onChangeQuery={(query) => {
-                                            store.updateQuery(query, useStore.getState().activeTabIndex);
-                                        }}
-                                        buttons={
-                                            <>
-                                                <Button
-                                                    aria-label="Prettify code"
-                                                    className={classNames(
-                                                        "mr-2",
-                                                        theme.theme === Theme.LIGHT
-                                                            ? "ndl-theme-light"
-                                                            : "ndl-theme-dark"
-                                                    )}
-                                                    color="neutral"
-                                                    fill="outlined"
-                                                    size="small"
-                                                    onClick={formatTheCode}
-                                                    disabled={loading}
-                                                >
-                                                    Prettify
-                                                </Button>
-                                                <IconButton
-                                                    data-test-editor-query-button
-                                                    aria-label="Execute query"
-                                                    style={{ height: "1.7rem" }}
-                                                    className={classNames(
-                                                        theme.theme === Theme.LIGHT
-                                                            ? "ndl-theme-light"
-                                                            : "ndl-theme-dark"
-                                                    )}
-                                                    color="primary"
-                                                    clean
-                                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                                    onClick={() => onSubmit()}
-                                                    disabled={!schema || loading}
-                                                >
-                                                    <PlayIconOutline
-                                                        style={{
-                                                            color: tokens.colors.primary[50],
-                                                        }}
-                                                    />
-                                                </IconButton>
-                                            </>
-                                        }
-                                    />
-                                ) : null
+                                schema ? <QueryEditor loading={loading} onSubmit={onSubmit} schema={schema} /> : null
                             }
-                            parameterEditor={
-                                <JSONEditor
+                            variablesEditor={
+                                <VariablesEditor
                                     id={EDITOR_PARAMS_INPUT}
                                     fileName="params"
-                                    loading={loading}
                                     fileExtension={Extension.JSON}
-                                    readonly={false}
-                                    initialValue={useStore.getState().getActiveTab().variables}
-                                    onChange={(params) => {
-                                        store.updateVariables(params, useStore.getState().activeTabIndex);
-                                    }}
+                                    loading={loading}
                                 />
                             }
                             resultView={
-                                <JSONEditor
+                                <ResponseEditor
                                     id={EDITOR_RESPONSE_OUTPUT}
                                     fileName="response"
-                                    loading={loading}
                                     fileExtension={Extension.JSON}
-                                    readonly={true}
+                                    loading={loading}
                                     borderRadiusTop={false}
-                                    json={useStore.getState().getActiveTab().response}
+                                    value={useStore.getState().getActiveTab().response}
                                 />
                             }
                         />

@@ -17,17 +17,17 @@
  * limitations under the License.
  */
 
-import type { Context } from "../types";
+import jsonwebtoken from "jsonwebtoken";
 
-export enum Measurement {
-    translationTime = "translationTime",
-    databaseQueryTime = "databaseQueryTime",
-    wrapperTime = "wrapperTime",
-}
+export function createBearerToken(secret: string, extraData: Record<string, any> = {}): string {
+    const token = jsonwebtoken.sign(
+        {
+            roles: [],
+            ...extraData,
+        },
+        secret,
+        { noTimestamp: true }
+    );
 
-export function addMeasurementField(context: Context, name: Measurement, value: number): void {
-    if (!context.addMeasurementsToExtension) return;
-    if (!context.extensions) context.extensions = { measurements: {} };
-    if (!context.extensions.measurements) context.extensions.measurements = {};
-    context.extensions.measurements[name] = value;
+    return `Bearer ${token}`;
 }

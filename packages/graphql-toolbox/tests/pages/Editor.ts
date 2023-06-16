@@ -23,24 +23,12 @@ import { Screen } from "./Screen";
 export class Editor extends Screen {
     public async setQuery(query: string) {
         await this.page.waitForSelector("[data-test-editor-query-button]");
-        await this.page.evaluate(
-            ({ id, query }) => {
-                // @ts-ignore -Find a better solution
-                document[`${id}`].setValue(query);
-            },
-            { query, id: EDITOR_QUERY_INPUT }
-        );
+        await this.page.locator(`#${EDITOR_QUERY_INPUT} .cm-content`).fill(query);
     }
 
     public async setParams(params: string) {
         await this.page.waitForSelector("[data-test-editor-query-button]");
-        await this.page.evaluate(
-            ({ id, params }) => {
-                // @ts-ignore -Find a better solution
-                document[`${id}`].setValue(params);
-            },
-            { params, id: EDITOR_PARAMS_INPUT }
-        );
+        await this.page.locator(`#${EDITOR_PARAMS_INPUT} .cm-content`).fill(params);
     }
 
     public async submitQuery() {
@@ -49,12 +37,8 @@ export class Editor extends Screen {
     }
 
     public async getOutput(): Promise<string> {
-        const output = await this.page.evaluate((id) => {
-            // @ts-ignore -Find a better solution
-            return document[`${id}`].getValue();
-        }, EDITOR_RESPONSE_OUTPUT);
-
-        return output as unknown as string;
+        const text = (await this.page.locator(`#${EDITOR_RESPONSE_OUTPUT} .cm-content`).innerText()).valueOf();
+        return text;
     }
 
     public async showSchemaDocs() {

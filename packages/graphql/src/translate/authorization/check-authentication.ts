@@ -18,13 +18,13 @@
  */
 
 import type { Node } from "../../classes";
-import { Neo4jGraphQLError } from "../../classes";
 import type { Context } from "../../types";
-import { AUTHORIZATION_UNAUTHENTICATED } from "../../constants";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
-import { filterByValues } from "../../schema/resolvers/subscriptions/where/filters/filter-by-values";
-import type { AuthenticationAnnotation } from "../../schema-model/annotation/AuthenticationAnnotation";
-import type { Annotation } from "../../schema-model/annotation/Annotation";
+import type {
+    AuthenticationAnnotation,
+    AuthenticationOperation,
+} from "../../schema-model/annotation/AuthenticationAnnotation";
+import { applyAuthentication } from "./utils/apply-authentication";
 
 export function checkAuthentication({
     context,
@@ -34,7 +34,7 @@ export function checkAuthentication({
 }: {
     context: Context;
     node: Node;
-    targetOperations: string[]; // one of these have to be present in the authentication.operations options
+    targetOperations: AuthenticationOperation[]; // one of these have to be present in the authentication.operations options
     field?: string;
 }) {
     const concreteEntities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
@@ -45,31 +45,16 @@ export function checkAuthentication({
 
     const entity = concreteEntities[0] as ConcreteEntity;
 
-    let annotation: AuthenticationAnnotation | undefined = undefined;
-    if (field) {
-        annotation = entity.findAttribute(field)?.annotations.authentication;
-    } else {
-        annotation = entity.annotations.authentication;
-    }
+    const annotation: AuthenticationAnnotation | undefined = field
+        ? entity.findAttribute(field)?.annotations.authentication
+        : entity.annotations.authentication;
 
     if (annotation) {
         const requiresAuthentication = targetOperations.some(
-            (targetOperation) => annotation && annotation.operations.some((operation) => operation === targetOperation)
+            (targetOperation) => annotation && annotation.operations.has(targetOperation)
         );
         if (requiresAuthentication) {
             applyAuthentication({ context, annotation });
-        }
-    }
-}
-
-export function applyAuthentication({ context, annotation }: { context: Context; annotation: Annotation }) {
-    if (!context.authorization.isAuthenticated) {
-        throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
-    }
-    if ("jwtPayload" in annotation && annotation.jwtPayload) {
-        const jwt = context.authorization.jwt;
-        if (!jwt || !filterByValues(annotation.jwtPayload, jwt)) {
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
         }
     }
 }

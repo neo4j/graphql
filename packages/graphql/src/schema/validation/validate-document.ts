@@ -81,7 +81,9 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
         return type.name.value;
     };
 
-    const filterInputTypes = (fields: readonly InputValueDefinitionNode[] | undefined) => {
+    const filterInputTypes = (
+        fields: readonly InputValueDefinitionNode[] | undefined
+    ): InputValueDefinitionNode[] | undefined => {
         return fields?.filter((f) => {
             const type = getArgumentType(f.type);
 
@@ -102,10 +104,10 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
     const filterFields = (
         fields: readonly FieldDefinitionNode[] | undefined,
         features: Neo4jFeaturesSettings | undefined
-    ) => {
+    ): FieldDefinitionNode[] | undefined => {
         return fields
-            ?.filter((f) => {
-                const type = getArgumentType(f.type);
+            ?.filter((field) => {
+                const type = getArgumentType(field.type);
                 const match = /(?:Create|Update)(?<nodeName>.+)MutationResponse/gm.exec(type);
                 if (match?.groups?.nodeName) {
                     if (nodeNames.map((nodeName) => pluralize(nodeName)).includes(match.groups.nodeName)) {
@@ -114,9 +116,11 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                 }
                 return true;
             })
-            .map((f) => {
+            .map((field) => {
                 if (
-                    f.directives?.some((x) => ["authentication", "authorization"].includes(x.name.value)) &&
+                    field.directives?.some((directive) =>
+                        ["authentication", "authorization"].includes(directive.name.value)
+                    ) &&
                     !features?.authorization
                 ) {
                     console.warn(
@@ -125,10 +129,10 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                 }
 
                 return {
-                    ...f,
-                    arguments: filterInputTypes(f.arguments),
-                    directives: f.directives?.filter(
-                        (x) => !["auth", "authentication", "authorization"].includes(x.name.value)
+                    ...field,
+                    arguments: filterInputTypes(field.arguments),
+                    directives: field.directives?.filter(
+                        (directive) => !["auth", "authentication", "authorization"].includes(directive.name.value)
                     ),
                 };
             });

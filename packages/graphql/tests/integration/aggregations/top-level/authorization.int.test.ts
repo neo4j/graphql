@@ -22,8 +22,8 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { UniqueType } from "../../../utils/graphql-types";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("aggregations-top_level authorization", () => {
     let driver: Driver;
@@ -78,12 +78,12 @@ describe("aggregations-top_level authorization", () => {
                 CREATE (:${randomType.name} {id: "${userId}"})
             `);
 
-            const req = createJwtRequest(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -135,12 +135,12 @@ describe("aggregations-top_level authorization", () => {
                 CREATE (:User {id: "${userId}"})-[:POSTED]->(:Post {content: randomUUID()})
             `);
 
-            const req = createJwtRequest(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -203,12 +203,12 @@ describe("aggregations-top_level authorization", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingInt: rand()})
             `);
 
-            const req = createJwtRequest(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -265,12 +265,12 @@ describe("aggregations-top_level authorization", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", someId: "some-random-string"})
             `);
 
-            const req = createJwtRequest(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -327,12 +327,12 @@ describe("aggregations-top_level authorization", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", someString: "some-random-string"})
             `);
 
-            const req = createJwtRequest(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -389,12 +389,12 @@ describe("aggregations-top_level authorization", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingFloat: rand()})
             `);
 
-            const req = createJwtRequest(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -451,12 +451,12 @@ describe("aggregations-top_level authorization", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingBigInt: rand()})
             `);
 
-            const req = createJwtRequest(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -513,12 +513,12 @@ describe("aggregations-top_level authorization", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", createdAt: datetime()})
             `);
 
-            const req = createJwtRequest(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -575,12 +575,12 @@ describe("aggregations-top_level authorization", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", createdAt: datetime()})
             `);
 
-            const req = createJwtRequest(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

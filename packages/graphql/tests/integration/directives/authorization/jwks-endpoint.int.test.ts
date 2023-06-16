@@ -95,7 +95,7 @@ describe("auth/jwks-endpoint", () => {
                 CREATE (:User {id: "${userId}"})
             `);
 
-            const accessToken = jwksMock.token({
+            const token = jwksMock.token({
                 iat: 1600000000,
             });
 
@@ -103,9 +103,7 @@ describe("auth/jwks-endpoint", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
-                    request: {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    },
+                    token,
                 }),
             });
 
@@ -162,7 +160,7 @@ describe("auth/jwks-endpoint", () => {
                 CREATE (:User {id: "${userId}"})
             `);
 
-            const accessToken = jwksMock.token({
+            const token = jwksMock.token({
                 "https://myAuthTest.auth0.com/jwt/claims": {
                     "my-auth-roles": ["standard-user"],
                 },
@@ -173,9 +171,7 @@ describe("auth/jwks-endpoint", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
-                    request: {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    },
+                    token,
                 }),
             });
 
@@ -231,7 +227,7 @@ describe("auth/jwks-endpoint", () => {
                 CREATE (:User {id: "${userId}"})
             `);
 
-            const accessToken = jwksMock.token({
+            const token = jwksMock.token({
                 "https://myAuthTest.auth0.com/jwt/claims": {
                     "my-auth-roles": ["standard-user"],
                 },
@@ -242,9 +238,7 @@ describe("auth/jwks-endpoint", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
-                    request: {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    },
+                    token,
                 }),
             });
 
@@ -298,7 +292,7 @@ describe("auth/jwks-endpoint", () => {
                 CREATE (:User {id: "${userId}"})
             `);
 
-            const accessToken = jwksMock.token({
+            const token = jwksMock.token({
                 iat: 1600000000,
                 iss: "https://anothercompany.com",
             });
@@ -307,9 +301,7 @@ describe("auth/jwks-endpoint", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
-                    request: {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    },
+                    token,
                 }),
             });
 
@@ -363,7 +355,7 @@ describe("auth/jwks-endpoint", () => {
                 CREATE (:User {id: "${userId}"})
             `);
 
-            const accessToken = jwksMock.token({
+            const token = jwksMock.token({
                 iat: 1600000000,
                 iss: "https://company.com",
             });
@@ -372,9 +364,7 @@ describe("auth/jwks-endpoint", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
-                    request: {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    },
+                    token,
                 }),
             });
 
@@ -429,7 +419,7 @@ describe("auth/jwks-endpoint", () => {
                 CREATE (:User {id: "${userId}"})
             `);
 
-            const accessToken = jwksMock.token({
+            const token = jwksMock.token({
                 iat: 1600000000,
                 aud: "urn:anotheruser",
             });
@@ -438,9 +428,7 @@ describe("auth/jwks-endpoint", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
-                    request: {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    },
+                    token,
                 }),
             });
 
@@ -494,7 +482,7 @@ describe("auth/jwks-endpoint", () => {
                 CREATE (:User {id: "${userId}"})
             `);
 
-            const accessToken = jwksMock.token({
+            const token = jwksMock.token({
                 iat: 1600000000,
                 aud: "urn:user",
             });
@@ -503,9 +491,7 @@ describe("auth/jwks-endpoint", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
-                    request: {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    },
+                    token,
                 }),
             });
 

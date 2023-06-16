@@ -29,19 +29,11 @@ export type AuthenticationOperation =
     | "SUBSCRIBE";
 
 export class AuthenticationAnnotation {
-    private _operations: AuthenticationOperation[];
-    private _jwtPayload?: GraphQLWhereArg;
+    public readonly operations: Set<AuthenticationOperation>;
+    public readonly jwtPayload?: GraphQLWhereArg;
 
     constructor(operations: AuthenticationOperation[], jwtPayload?: GraphQLWhereArg) {
-        this._operations = operations;
-        this._jwtPayload = jwtPayload;
-    }
-
-    public get operations() {
-        return this._operations;
-    }
-
-    public get jwtPayload() {
-        return this._jwtPayload;
+        this.operations = new Set<AuthenticationOperation>(operations);
+        this.jwtPayload = jwtPayload;
     }
 }

@@ -27,7 +27,7 @@ import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
-import { createJwtHeader } from "../../../utils/create-jwt-request";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 import { cleanNodes } from "../../../utils/clean-nodes";
 
 describe("Subscription authentication", () => {
@@ -38,7 +38,7 @@ describe("Subscription authentication", () => {
     const secret = "secret";
 
     beforeAll(async () => {
-        jwtToken = createJwtHeader(secret, { roles: ["admin"] });
+        jwtToken = createBearerToken(secret, { roles: ["admin"] });
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
     });
@@ -154,7 +154,7 @@ describe("Subscription authentication", () => {
         });
 
         test("authentication fails with wrong secret", async () => {
-            const badJwtToken = createJwtHeader("wrong-secret", { roles: ["admin"] });
+            const badJwtToken = createBearerToken("wrong-secret", { roles: ["admin"] });
             wsClient = new WebSocketTestClient(server.wsPath, badJwtToken);
             await wsClient.subscribe(`
                             subscription {

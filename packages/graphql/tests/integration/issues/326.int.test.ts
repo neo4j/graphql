@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("326", () => {
     let driver: Driver;
@@ -87,13 +87,13 @@ describe("326", () => {
                 { id }
             );
 
-            const req = createJwtRequest(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -151,13 +151,13 @@ describe("326", () => {
                 { id }
             );
 
-            const req = createJwtRequest(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
