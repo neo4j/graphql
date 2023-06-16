@@ -30,10 +30,10 @@ export type AuthenticationOperation =
 
 export class AuthenticationAnnotation {
     public readonly operations: Set<AuthenticationOperation>;
-    public readonly jwtPayload?: GraphQLWhereArg;
+    public readonly jwt?: GraphQLWhereArg;
 
-    constructor(operations: AuthenticationOperation[], jwtPayload?: GraphQLWhereArg) {
+    constructor(operations: AuthenticationOperation[], jwt?: GraphQLWhereArg) {
         this.operations = new Set<AuthenticationOperation>(operations);
-        this.jwtPayload = jwtPayload;
+        this.jwt = jwt;
     }
 }
