@@ -26,8 +26,8 @@ import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { runCypher } from "../../../utils/run-cypher";
 import { UniqueType } from "../../../utils/graphql-types";
-import { createJwtHeader } from "../../../utils/create-jwt-request";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("auth/is-authenticated", () => {
     let driver: Driver;
@@ -134,10 +134,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -182,10 +179,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -230,10 +224,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -325,10 +316,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -376,10 +364,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -473,10 +458,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -582,10 +564,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -641,10 +620,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -681,10 +657,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -724,10 +697,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -809,10 +779,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -859,10 +826,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -968,10 +932,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -1027,10 +988,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -1076,10 +1034,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -1127,10 +1082,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -1225,10 +1177,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -1272,10 +1221,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -1323,10 +1269,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -1421,10 +1364,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -1496,10 +1436,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -1573,10 +1510,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -1647,10 +1581,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -1871,10 +1802,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -1945,10 +1873,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -2020,10 +1945,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -2097,10 +2019,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -2171,10 +2090,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -2395,10 +2311,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -2469,10 +2382,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -2544,10 +2454,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -2621,10 +2528,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -2695,10 +2599,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -2919,11 +2820,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -2994,10 +2891,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${Post} {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -3041,10 +2935,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -3090,10 +2981,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -3249,10 +3137,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -3316,10 +3201,7 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -3431,10 +3313,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -3484,10 +3363,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -3587,10 +3463,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -3636,10 +3509,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -3689,10 +3559,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["super-admin", "admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["super-admin", "admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -3788,10 +3655,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -3842,10 +3706,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -3900,10 +3761,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -4013,10 +3871,7 @@ describe("auth/is-authenticated", () => {
             `;
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                const jwtToken = createJwtHeader(secret, { roles: ["not-an-admin"] });
-                req.headers.authorization = jwtToken;
+                const req = createJwtRequest(secret, { roles: ["not-an-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
