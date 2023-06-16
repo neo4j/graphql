@@ -19,7 +19,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import type { Announcements, DragEndEvent, ScreenReaderInstructions, UniqueIdentifier } from "@dnd-kit/core";
+import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
 import {
     closestCenter,
     DndContext,
@@ -40,17 +40,11 @@ import classNames from "classnames";
 import { useStore } from "../../../store";
 import { useFavoritesStore } from "../../../store/favorites";
 import type { Favorite } from "../../../types";
+import { announcements } from "./announcements";
 import { DeleteFavoritesDialog } from "./DeleteFavoritesDialog";
 import { DragHandle } from "./DragHandle";
 import { FavoriteEntry } from "./FavoriteEntry";
-
-const screenReaderInstructions: ScreenReaderInstructions = {
-    draggable: `
-      To pick up a sortable item, press the space bar.
-      While sorting, use the arrow keys to move the item.
-      Press space again to drop the item in its new position, or press escape to cancel.
-    `,
-};
+import { screenReaderInstructions } from "./screenReaderInstructions";
 
 interface FavoritesProps {
     onSelectFavorite: (typeDefs: string) => void;
@@ -66,6 +60,7 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
     const [items, setItems] = useState<UniqueIdentifier[]>(favoritesToUniqueIdentifier(favorites));
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
+    const isFirstAnnouncement = useRef(true);
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -73,8 +68,6 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
         }),
         useSensor(TouchSensor)
     );
-
-    const isFirstAnnouncement = useRef(true);
 
     const updateName = (newName: string, id: string): void => {
         const updatedFavorites = favorites?.map((fav) => (fav.id === id ? { ...fav, name: newName } : fav)) || null;
@@ -102,9 +95,6 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
         });
     };
 
-    const getIndex = (id: UniqueIdentifier) => items.indexOf(id);
-    const getPosition = (id: UniqueIdentifier) => getIndex(id) + 1;
-
     useEffect(() => {
         if (!activeId) {
             isFirstAnnouncement.current = true;
@@ -114,41 +104,6 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
     useEffect(() => {
         setItems(favoritesToUniqueIdentifier(favorites));
     }, [favorites]);
-
-    const announcements: Announcements = {
-        onDragStart({ active: { id } }) {
-            return `Picked up sortable item ${String(id)}. Sortable item ${id} is in position ${getPosition(id)} of ${
-                items.length
-            }`;
-        },
-        onDragOver({ active, over }) {
-            // In this specific use-case, the picked up item's `id` is always the same as the first `over` id.
-            // The first `onDragOver` event therefore doesn't need to be announced, because it is called
-            // immediately after the `onDragStart` announcement and is redundant.
-            if (isFirstAnnouncement.current === true) {
-                isFirstAnnouncement.current = false;
-                return;
-            }
-
-            if (over) {
-                return `Sortable item ${active.id} was moved into position ${getPosition(over.id)} of ${items.length}`;
-            }
-
-            return;
-        },
-        onDragEnd({ active, over }) {
-            if (over) {
-                return `Sortable item ${active.id} was dropped at position ${getPosition(over.id)} of ${items.length}`;
-            }
-
-            return;
-        },
-        onDragCancel({ active: { id } }) {
-            return `Sorting was cancelled. Sortable item ${id} was dropped and returned to position ${getPosition(
-                id
-            )} of ${items.length}.`;
-        },
-    };
 
     const EmptyState = (): JSX.Element => {
         return (
@@ -264,7 +219,7 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
                 {favorites?.length ? (
                     <DndContext
                         accessibility={{
-                            announcements,
+                            announcements: announcements({ isFirstAnnouncement, items }),
                             screenReaderInstructions,
                         }}
                         sensors={sensors}
