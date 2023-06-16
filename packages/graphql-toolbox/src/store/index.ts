@@ -32,7 +32,7 @@ export interface Store {
     enableRegex: boolean;
     constraint: string | null;
     editorTheme: string | null;
-    favorites: Favorite[] | null;
+    favorites: Favorite[];
     showLintMarkers: boolean;
     hideIntrospectionPrompt: boolean;
     enableProductUsageTracking: boolean;
@@ -61,7 +61,7 @@ const defaultValues = {
     enableRegex: false,
     constraint: ConstraintState.ignore.toString(),
     editorTheme: null,
-    favorites: null,
+    favorites: [],
     showLintMarkers: false,
     hideIntrospectionPrompt: false,
     enableProductUsageTracking: true,
