@@ -22,8 +22,8 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("auth/bind", () => {
     let driver: Driver;
@@ -98,12 +98,12 @@ describe("auth/bind", () => {
             });
 
             try {
-                const req = createJwtRequest(secret, { sub: userId });
+                const token = createBearerToken(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

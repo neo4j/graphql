@@ -18,16 +18,13 @@
  */
 
 import type { Node } from "../../classes";
-import { Neo4jGraphQLError } from "../../classes";
 import type { Context } from "../../types";
-import { AUTHORIZATION_UNAUTHENTICATED } from "../../constants";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type {
     AuthenticationAnnotation,
     AuthenticationOperation,
 } from "../../schema-model/annotation/AuthenticationAnnotation";
-import type { Annotation } from "../../schema-model/annotation/Annotation";
-import { filterByValues } from "./utils/filter-by-values";
+import { applyAuthentication } from "./utils/apply-authentication";
 
 export function checkAuthentication({
     context,
@@ -58,18 +55,6 @@ export function checkAuthentication({
         );
         if (requiresAuthentication) {
             applyAuthentication({ context, annotation });
-        }
-    }
-}
-
-export function applyAuthentication({ context, annotation }: { context: Context; annotation: Annotation }) {
-    if (!context.authorization.isAuthenticated) {
-        throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
-    }
-    if ("jwtPayload" in annotation && annotation.jwtPayload) {
-        const jwt = context.authorization.jwt;
-        if (!jwt || !filterByValues(annotation.jwtPayload, jwt)) {
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
         }
     }
 }

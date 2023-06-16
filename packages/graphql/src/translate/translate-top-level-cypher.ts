@@ -28,8 +28,8 @@ import createAuthParam from "./create-auth-param";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
 import { Neo4jGraphQLError } from "../classes";
 import { filterByValues } from "./authorization/utils/filter-by-values";
-import { applyAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
+import { applyAuthentication } from "./authorization/utils/apply-authentication";
 
 export function translateTopLevelCypher({
     context,

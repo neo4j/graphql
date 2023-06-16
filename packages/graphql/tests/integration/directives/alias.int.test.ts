@@ -23,8 +23,8 @@ import { graphql } from "graphql";
 import * as neo4jDriver from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { UniqueType } from "../../utils/graphql-types";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("@alias directive", () => {
     let driver: Driver;
@@ -125,12 +125,12 @@ describe("@alias directive", () => {
         `;
 
         // For the @auth
-        const req = createJwtRequest(secret, { roles: ["reader"] });
+        const token = createBearerToken(secret, { roles: ["reader"] });
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: usersQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -159,12 +159,12 @@ describe("@alias directive", () => {
 
         // For the @auth
         const tokenSub = dbName;
-        const req = createJwtRequest(secret, { roles: ["reader"], sub: tokenSub });
+        const token = createBearerToken(secret, { roles: ["reader"], sub: tokenSub });
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: protectedUsersQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
         });
 
         expect(gqlResult.errors).toBeFalsy();

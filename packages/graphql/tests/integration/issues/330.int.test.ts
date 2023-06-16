@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 // Reference: https://github.com/neo4j/graphql/pull/330
 // Reference: https://github.com/neo4j/graphql/pull/303#discussion_r671148932
@@ -46,7 +45,7 @@ describe("unauthenticated-requests", () => {
                 id: ID
             }
 
-            extend type User @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+            extend type User @authorization(validate: [{ when: BEFORE, where: { node: { id: "$jwt.sub" } } }])
         `;
 
         const query = `
@@ -59,19 +58,19 @@ describe("unauthenticated-requests", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: "secret",
+                },
             },
         });
 
-        const req = createJwtRequest(secret);
+        const token = createBearerToken(secret);
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -83,7 +82,7 @@ describe("unauthenticated-requests", () => {
                 id: ID
             }
 
-            extend type User @auth(rules: [{ where: { id: "$jwt.sub" } }])
+            extend type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
         `;
 
         const query = `
@@ -96,19 +95,19 @@ describe("unauthenticated-requests", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: "secret",
+                },
             },
         });
 
-        const req = createJwtRequest(secret);
+        const token = createBearerToken(secret);
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -120,7 +119,7 @@ describe("unauthenticated-requests", () => {
                 id: ID
             }
 
-            extend type User @auth(rules: [{ bind: { id: "$jwt.sub" } }])
+            extend type User @authorization(validate: [{ when: AFTER, where: { node: { id: "$jwt.sub" } } }])
         `;
 
         const query = `
@@ -135,19 +134,19 @@ describe("unauthenticated-requests", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
+            features: {
+                authorization: {
+                    key: "secret",
+                },
             },
         });
 
-        const req = createJwtRequest(secret);
+        const token = createBearerToken(secret);
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");

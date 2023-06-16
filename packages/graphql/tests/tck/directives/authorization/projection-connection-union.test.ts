@@ -20,8 +20,8 @@
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("Cypher Auth Projection On Connections On Unions", () => {
     const secret = "secret";
@@ -82,9 +82,9 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
+        const token = createBearerToken(secret, { sub: "super_admin" });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`

@@ -108,10 +108,9 @@ export const wrapResolver =
         context.callbacks = config.callbacks;
 
         if (!context.jwt) {
-            const req = context.req || context.request;
             if (authorization) {
                 try {
-                    const jwt = await authorization.decode(req);
+                    const jwt = await authorization.decode(context);
                     const isAuthenticated = true;
 
                     context.authorization = {
@@ -135,10 +134,10 @@ export const wrapResolver =
             }
 
             // TODO: remove this if after migrating to new authorization constructor
+
             if (context.plugins.auth) {
-                // Here we will try to compute the generic Secret or the generic jwksEndpoint
-                const contextRequest = context.req || context.request;
-                context.plugins.auth.tryToResolveKeys(context instanceof IncomingMessage ? context : contextRequest);
+                const req = context.req || context.request;
+                context.plugins.auth.tryToResolveKeys(context instanceof IncomingMessage ? context : req);
                 let token: string | undefined = undefined;
                 const bearer = getToken(req);
                 if (bearer) {
@@ -216,7 +215,7 @@ export const wrapSubscription =
 
         if (context?.jwt) {
             subscriptionContext.jwt = context.jwt;
-        } else if (!context?.jwt) {
+        } else {
             if (resolverArgs.authorization) {
                 if (!contextParams.authorization && resolverArgs.authorization.globalAuthentication) {
                     throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);

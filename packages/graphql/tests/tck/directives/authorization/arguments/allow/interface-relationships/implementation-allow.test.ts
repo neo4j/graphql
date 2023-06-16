@@ -20,8 +20,8 @@
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../src";
-import { createJwtRequest } from "../../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../../utils/tck-test-utils";
+import { createBearerToken } from "../../../../../../utils/create-bearer-token";
 
 describe("@auth allow on specific interface implementation", () => {
     const secret = "secret";
@@ -89,9 +89,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "id-01", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -148,9 +148,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "id-01", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -218,9 +218,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -324,9 +324,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -399,9 +399,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -491,9 +491,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -608,9 +608,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`

@@ -36,6 +36,7 @@ import { AuthContext } from "../../contexts/auth";
 import { ScreenContext } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
 import { ConnectionMenu } from "./ConnectionMenu";
+import { SwitchDatabasePrompt } from "./SwitchDatabasePrompt";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
@@ -43,6 +44,7 @@ export const TopBar = () => {
     const screen = useContext(ScreenContext);
     const menuButtonRef = useRef<HTMLDivElement>(null);
     const [openConnectionMenu, setOpenConnectionMenu] = useState<boolean>(false);
+    const [nextSelectedDatabaseName, setNextSelectedDatabaseName] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         if (window.Canny && window.CannyIsLoaded) {
@@ -77,6 +79,18 @@ export const TopBar = () => {
         if (!protocol || !host) return DEFAULT_BOLT_URL;
 
         return `${protocol}://${modifiedUsername}@${host}`;
+    };
+
+    const handleSetSelectedDatabaseName = () => {
+        if (!nextSelectedDatabaseName) {
+            console.log("No next selected database name found, aborting");
+            return;
+        }
+
+        auth.setSelectedDatabaseName(nextSelectedDatabaseName);
+        tracking.trackChangeDatabase({ screen: "type definitions" });
+
+        setNextSelectedDatabaseName(undefined);
     };
 
     const ConnectionTooltip = () => {
@@ -132,6 +146,12 @@ export const TopBar = () => {
                     openConnectionMenu={openConnectionMenu}
                     setOpenConnectionMenu={setOpenConnectionMenu}
                     dbmsUrlWithUsername={constructDbmsUrlWithUsername()}
+                    onNextSelectedDatabaseName={setNextSelectedDatabaseName}
+                />
+                <SwitchDatabasePrompt
+                    selectedDatabaseName={nextSelectedDatabaseName}
+                    onClose={() => setNextSelectedDatabaseName(undefined)}
+                    onSwitchDatabase={handleSetSelectedDatabaseName}
                 />
             </div>
             <div className="flex-1 flex justify-end">

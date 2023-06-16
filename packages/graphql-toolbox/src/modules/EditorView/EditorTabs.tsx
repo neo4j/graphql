@@ -46,7 +46,7 @@ export const EditorTabs = () => {
             value={useStore.getState().activeTabIndex.toString()}
             onChange={handleTabsChange}
             className={classNames(
-                "w-full h-12 pt-2 px-1 mb-[0.1rem] overflow-x-auto whitespace-nowrap rounded-t-xl border-b z-0",
+                "w-full h-12 pt-2 px-1 mb-[0.1rem] overflow-x-auto whitespace-nowrap rounded-t-xl border-b-0 z-0",
                 theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"
             )}
         >
@@ -60,18 +60,20 @@ export const EditorTabs = () => {
                     >
                         <div className="flex justify-center items-center">
                             <span style={{ maxWidth: "7rem" }}>{tab.title}</span>
-                            <XMarkIconOutline
-                                data-test-close-icon-query-editor-tab
-                                className={classNames(
-                                    "h-5 w-5 ml-2",
-                                    theme.theme === Theme.LIGHT ? "hover:bg-gray-100" : "hover:bg-gray-500"
-                                )}
-                                aria-label="Close Icon"
-                                onClick={(event) => {
-                                    event.stopPropagation();
-                                    closeTab(idx);
-                                }}
-                            />
+                            {useStore.getState().tabs.length > 1 && (
+                                <XMarkIconOutline
+                                    data-test-close-icon-query-editor-tab
+                                    className={classNames(
+                                        "h-5 w-5 ml-2",
+                                        theme.theme === Theme.LIGHT ? "hover:bg-gray-100" : "hover:bg-gray-500"
+                                    )}
+                                    aria-label="Close Icon"
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        closeTab(idx);
+                                    }}
+                                />
+                            )}
                         </div>
                     </Tab>
                 );

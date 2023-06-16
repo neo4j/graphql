@@ -23,7 +23,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/2388", () => {
     let driver: Driver;
@@ -118,14 +118,14 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
           }
         `;
 
-        const req = createJwtRequest(secret, { roles: ["upstream", "downstream"] });
+        const token = createBearerToken(secret, { roles: ["upstream", "downstream"] });
 
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
             contextValue: {
                 ...neo4j.getContextValues(),
-                ...{ req },
+                ...{ token },
             },
         });
         expect(result.errors).toBeFalsy();
