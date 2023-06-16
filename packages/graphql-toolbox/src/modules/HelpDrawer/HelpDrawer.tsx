@@ -53,7 +53,7 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
     };
 
     return (
-        <div className="p-6 w-full" data-test-help-drawer>
+        <div className="w-full p-6 flex flex-col overflow-y-auto" data-test-help-drawer>
             {!showSubComponent ? (
                 <div className="pb-6 flex justify-between items-center" data-test-help-drawer-title>
                     <span className="h5">Help &#38; learn</span>
@@ -85,7 +85,7 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                 />
             )}
             {!showSubComponent ? (
-                <div className="absolute bottom-8 right-28 n-text-primary-40 font-bold text-sm">
+                <div className="mt-auto pt-4 flex justify-center n-text-primary-40 font-bold text-sm">
                     <CannyFeedbackButton screen={screen.view} />
                 </div>
             ) : null}
