@@ -180,7 +180,6 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
             const newFavorites: Favorite[] = [];
             for (const id of newOrder) {
                 const favorite = favorites.find((fav) => fav.id === id);
-                console.log(favorite);
                 if (favorite) {
                     newFavorites.push(favorite);
                 }
