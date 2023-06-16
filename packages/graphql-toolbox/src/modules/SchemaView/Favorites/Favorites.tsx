@@ -56,11 +56,15 @@ interface FavoritesProps {
     onSelectFavorite: (typeDefs: string) => void;
 }
 
+function favoritesToUniqueIdentifier(favorites: Favorite[] | null) {
+    return favorites === null ? [] : favorites.map((favorite) => favorite.id);
+}
+
 export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
     const favorites = useStore((store) => store.favorites);
     const selectedFavorites = useFavoritesStore((store) => store.selectedFavorites);
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-    const [items, setItems] = useState<UniqueIdentifier[]>(favorites.map((favorite) => favorite.id));
+    const [items, setItems] = useState<UniqueIdentifier[]>(favoritesToUniqueIdentifier(favorites));
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -73,18 +77,18 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
     const isFirstAnnouncement = useRef(true);
 
     const updateName = (newName: string, id: string): void => {
-        const updatedFavorites = favorites.map((fav) => (fav.id === id ? { ...fav, name: newName } : fav)) || null;
+        const updatedFavorites = favorites?.map((fav) => (fav.id === id ? { ...fav, name: newName } : fav)) || null;
         useStore.setState({ favorites: updatedFavorites });
     };
 
     const deleteSelectedFavorites = (): void => {
-        const remainingFavorites = favorites.filter((fav) => !selectedFavorites.includes(fav.id)) || null;
+        const remainingFavorites = favorites?.filter((fav) => !selectedFavorites.includes(fav.id)) || null;
         useFavoritesStore.setState({ selectedFavorites: [] });
         useStore.setState({ favorites: remainingFavorites });
     };
 
     const downloadSelectedFavorites = (): void => {
-        const favoritesToDownload = favorites.filter((fav) => selectedFavorites.includes(fav.id));
+        const favoritesToDownload = favorites?.filter((fav) => selectedFavorites.includes(fav.id)) || [];
         favoritesToDownload.forEach((favorite) => {
             const file = new Blob([favorite.typeDefs], {
                 type: "text/plain",
@@ -108,9 +112,7 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
     }, [activeId]);
 
     useEffect(() => {
-        if (favorites.length > items.length) {
-            setItems(favorites.map((favorite) => favorite.id));
-        }
+        setItems(favoritesToUniqueIdentifier(favorites));
     }, [favorites]);
 
     const announcements: Announcements = {
@@ -179,7 +181,7 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
             const newOrder = arrayMove(items, oldIndex, newIndex);
             const newFavorites: Favorite[] = [];
             for (const id of newOrder) {
-                const favorite = favorites.find((fav) => fav.id === id);
+                const favorite = favorites?.find((fav) => fav.id === id);
                 if (favorite) {
                     newFavorites.push(favorite);
                 }
@@ -197,7 +199,7 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
             transition,
         };
 
-        const favorite = favorites.find((favorite) => favorite.id === id);
+        const favorite = favorites?.find((favorite) => favorite.id === id);
 
         if (!favorite) {
             return null;
@@ -212,7 +214,7 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
             >
                 <FavoriteEntry
                     dragHandle={
-                        favorites.length > 1 ? (
+                        favorites && favorites.length > 1 ? (
                             <DragHandle {...listeners} ref={setActivatorNodeRef} />
                         ) : (
                             <div className="w-6"></div>
@@ -259,7 +261,7 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
                         </IconButton>
                     </div>
                 </div>
-                {favorites.length ? (
+                {favorites?.length ? (
                     <DndContext
                         accessibility={{
                             announcements,

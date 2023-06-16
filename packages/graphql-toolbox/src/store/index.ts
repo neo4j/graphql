@@ -32,7 +32,7 @@ export interface Store {
     enableRegex: boolean;
     constraint: string | null;
     editorTheme: string | null;
-    favorites: Favorite[];
+    favorites: Favorite[] | null;
     showLintMarkers: boolean;
     hideIntrospectionPrompt: boolean;
     enableProductUsageTracking: boolean;
