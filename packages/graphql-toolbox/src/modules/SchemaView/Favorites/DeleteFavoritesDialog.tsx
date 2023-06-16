@@ -32,8 +32,8 @@ export const DeleteFavoritesDialog = ({
 }: DeleteFavoritesDialogProps) => {
     return (
         <Dialog open={showConfirm} id="default-menu" type="danger">
-            <Dialog.Header>Delete selected items?</Dialog.Header>
-            <Dialog.Content>Deleting saved snippets can not be undone.</Dialog.Content>
+            <Dialog.Header>Delete selected favorites?</Dialog.Header>
+            <Dialog.Content>Deleting saved favorites can not be undone.</Dialog.Content>
             <Dialog.Actions>
                 <Button color="neutral" fill="outlined" onClick={() => setShowConfirm(false)} size="large">
                     Cancel
