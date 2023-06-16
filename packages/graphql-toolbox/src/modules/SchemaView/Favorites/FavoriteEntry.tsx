@@ -49,7 +49,7 @@ export const FavoriteEntry = ({ dragHandle, onSelectFavorite, favorite, updateNa
         updateName(nameValue, favorite.id);
     };
 
-    const _handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
+    const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
         if (event.key === "Enter") {
             finishEditingName();
         }
@@ -76,7 +76,7 @@ export const FavoriteEntry = ({ dragHandle, onSelectFavorite, favorite, updateNa
                         value={nameValue}
                         ref={inputRef}
                         onChange={(event) => setNameValue(event.currentTarget.value)}
-                        onKeyDown={_handleKeyDown}
+                        onKeyDown={handleKeyDown}
                         size="extra-small"
                         aria-label="Input for new name for the favorite snippet"
                     />
