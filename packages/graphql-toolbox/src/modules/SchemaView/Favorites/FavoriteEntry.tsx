@@ -20,6 +20,13 @@ export const FavoriteEntry = ({ dragHandle, onSelectFavorite, favorite, updateNa
 
     const finishEditingName = () => {
         setEditMode(false);
+
+        // Ensure empty strings are reverted to previous name value
+        if (nameValue === "") {
+            setNameValue(favorite.name);
+            return;
+        }
+
         updateName(nameValue, favorite.id);
     };
 
