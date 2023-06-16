@@ -19,8 +19,6 @@
 
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import { IncomingMessage } from "http";
-import { Socket } from "net";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 import { UniqueType } from "../../../../utils/graphql-types";
