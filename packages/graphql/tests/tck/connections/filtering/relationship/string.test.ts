@@ -29,7 +29,6 @@ import {
 } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 

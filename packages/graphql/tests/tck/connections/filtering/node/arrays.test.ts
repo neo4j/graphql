@@ -23,7 +23,6 @@ import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 

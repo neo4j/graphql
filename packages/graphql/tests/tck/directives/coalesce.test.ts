@@ -22,8 +22,6 @@ import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams, setTestEnvVars, unsetTestEnvVars } from "../utils/tck-test-utils";
 
 describe("Cypher coalesce()", () => {
-    const secret = "secret";
-
     beforeAll(() => {
         setTestEnvVars("NEO4J_GRAPHQL_ENABLE_REGEX=1");
     });

@@ -23,8 +23,6 @@ import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-ut
 
 describe("https://github.com/neo4j/graphql/issues/1528", () => {
     test("order in connections with custom cypher", async () => {
-        const secret = "secret";
-
         const typeDefs = gql`
             type Movie {
                 title: String!
