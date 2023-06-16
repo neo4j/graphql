@@ -17,12 +17,10 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
-import { createJwtRequest } from "../utils/create-jwt-request";
 
 describe("Simple Cypher tests", () => {
     const secret = "secret";
@@ -39,11 +37,6 @@ describe("Simple Cypher tests", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
-            },
         });
     });
 
@@ -56,10 +49,7 @@ describe("Simple Cypher tests", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -84,10 +74,7 @@ describe("Simple Cypher tests", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -112,9 +99,7 @@ describe("Simple Cypher tests", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
-            req,
             variableValues: { title: "some title" },
         });
 
