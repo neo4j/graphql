@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
@@ -76,6 +76,7 @@ export const SchemaEditor = ({
     const favoritesTooltipRef = useRef<HTMLButtonElement | null>(null);
     const introspectionTooltipRef = useRef<HTMLButtonElement | null>(null);
     const storedTypeDefs = useStore.getState().typeDefinitions || DEFAULT_TYPE_DEFS;
+    const [building, setBuilding] = useState<boolean>(false);
 
     const extensions = [
         lineNumbers(),
@@ -167,8 +168,15 @@ export const SchemaEditor = ({
                         color="primary"
                         fill="filled"
                         size="small"
-                        onClick={onSubmit}
+                        onClick={() => {
+                            setBuilding(true);
+                            setTimeout(() => {
+                                onSubmit();
+                                setBuilding(false);
+                            }, 0);
+                        }}
                         disabled={loading}
+                        loading={building}
                     >
                         Build schema
                     </Button>
