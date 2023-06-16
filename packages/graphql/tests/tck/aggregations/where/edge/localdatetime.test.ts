@@ -21,7 +21,6 @@ import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
-import { createJwtRequest } from "../../../../utils/create-jwt-request";
 
 describe("Cypher Aggregations where edge with LocalDateTime", () => {
     let typeDefs: DocumentNode;
@@ -58,10 +57,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -99,10 +95,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -140,10 +133,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -181,10 +171,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -222,10 +209,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -263,10 +247,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -304,10 +285,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -345,10 +323,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -386,10 +361,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -427,10 +399,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -468,10 +437,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -509,10 +475,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -550,10 +513,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -591,10 +551,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -632,10 +589,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
@@ -673,10 +627,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
