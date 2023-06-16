@@ -231,7 +231,7 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                     <div className="h-content-container flex justify-start w-96 bg-white border-t border-gray-100 overflow-y-auto">
                         <div className="w-full">
                             <SchemaSettings />
-                            <hr />
+                            <hr className="border-gray-200" />
                             <Favorites onSelectFavorite={setTypeDefsFromFavorite} />
                         </div>
                     </div>
