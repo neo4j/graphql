@@ -3536,7 +3536,7 @@ __metadata:
     copy-webpack-plugin: 11.0.0
     cross-env: 7.0.3
     css-loader: 6.8.1
-    dotenv: 16.3.0
+    dotenv: 16.3.1
     dotenv-webpack: 8.0.1
     fork-ts-checker-webpack-plugin: 8.0.0
     graphiql-explorer: 0.9.0
@@ -11682,10 +11682,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:16.3.0":
-  version: 16.3.0
-  resolution: "dotenv@npm:16.3.0"
-  checksum: 43a90ec87868c8b962a028b69cbe86e71621c76837249a9d65fb131b03ee69817b019d34a5456174cb04095052a496b4e1b5da72e4af2393df6083513ab62d4b
+"dotenv@npm:16.3.1":
+  version: 16.3.1
+  resolution: "dotenv@npm:16.3.1"
+  checksum: 15d75e7279018f4bafd0ee9706593dd14455ddb71b3bcba9c52574460b7ccaf67d5cf8b2c08a5af1a9da6db36c956a04a1192b101ee102a3e0cf8817bbcf3dfd
   languageName: node
   linkType: hard
 
@@ -13891,7 +13891,7 @@ __metadata:
     "@neo4j-documentation/macros": ^1.0.2
     "@neo4j-documentation/remote-include": ^1.0.0
     cheerio: 1.0.0-rc.12
-    dotenv: 16.3.0
+    dotenv: 16.3.1
     express: 4.18.2
     hyperlink: 5.0.4
     neo4j-driver: 5.9.1
@@ -18495,7 +18495,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.59.11
     "@typescript-eslint/parser": 5.59.11
     concurrently: 8.2.0
-    dotenv: 16.3.0
+    dotenv: 16.3.1
     eslint: 8.43.0
     eslint-config-prettier: 8.8.0
     eslint-formatter-summary: 1.1.0
