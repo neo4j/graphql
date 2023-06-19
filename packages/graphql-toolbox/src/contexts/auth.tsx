@@ -25,7 +25,7 @@ import { VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
 import { useStore } from "../store";
 import { useSessionStore } from "../store/session";
 import type { LoginPayload, Neo4jDatabase, Neo4jDatabaseInfo } from "../types";
-import { getDBIdFromText, getURLProtocolFromText } from "../utils/utils";
+import { getAuraDBIdFromText, getURLProtocolFromText } from "../utils/utils";
 import {
     checkDatabaseHasData,
     getDatabaseInformation,
@@ -67,7 +67,7 @@ export function AuthProvider(props: any) {
         login: async (options: LoginOptions) => {
             const auth = neo4j.auth.basic(options.username, options.password);
             const protocol = getURLProtocolFromText(options.url);
-            sessionStore.setDbId(getDBIdFromText(options.url));
+            sessionStore.setAuraDbId(getAuraDBIdFromText(options.url));
             // Manually set the encryption to off if it's not specified in the Connection URI to avoid implicit encryption in https domain
             const driver = protocol.includes("+s")
                 ? neo4j.driver(options.url, auth)
@@ -109,7 +109,7 @@ export function AuthProvider(props: any) {
             store.setConnectionUsername(null);
             store.setConnectionUrl(null);
             store.setHideIntrospectionPrompt(false);
-            sessionStore.clearDbId();
+            sessionStore.clearAuraDbId();
             if (intervalId) {
                 clearInterval(intervalId);
             }

@@ -20,13 +20,13 @@
 import { create } from "zustand";
 
 export interface SessionStore {
-    dbId: string | null;
-    setDbId: (dbId: string | null) => void;
-    clearDbId: () => void;
+    auraDbId: string | null;
+    setAuraDbId: (auraDbId: string | null) => void;
+    clearAuraDbId: () => void;
 }
 
 export const useSessionStore = create<SessionStore>((set) => ({
-    dbId: null,
-    setDbId: (dbId) => set({ dbId }),
-    clearDbId: () => set({ dbId: null }),
+    auraDbId: null,
+    setAuraDbId: (auraDbId) => set({ auraDbId }),
+    clearAuraDbId: () => set({ auraDbId: null }),
 }));

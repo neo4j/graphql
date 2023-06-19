@@ -19,7 +19,7 @@
 
 import { useEffect, useRef } from "react";
 
-export const getDBIdFromText = (text: string | null | undefined): string | null => {
+export const getAuraDBIdFromText = (text: string | null | undefined): string | null => {
     if (!text) return null;
     try {
         const hostname = new URL(text)?.hostname;

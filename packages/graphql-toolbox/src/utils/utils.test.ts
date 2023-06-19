@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { getDBIdFromText } from "./utils";
+import { getAuraDBIdFromText } from "./utils";
 
-describe("getDBIdFromText", () => {
+describe("getAuraDBIdFromText", () => {
     const tests = [
         {
             input: "",
@@ -57,7 +57,7 @@ describe("getDBIdFromText", () => {
 
     tests.forEach((test) => {
         it(`input: ${test.input}, expected: ${test.expected}`, () => {
-            expect(getDBIdFromText(test.input)).toBe(test.expected);
+            expect(getAuraDBIdFromText(test.input)).toBe(test.expected);
         });
     });
 });
