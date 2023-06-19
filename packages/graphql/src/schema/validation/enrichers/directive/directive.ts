@@ -76,7 +76,7 @@ function changeDirectiveOnObject(
     object: ObjectOrInterfaceDefinitionNode,
     userDocumentObject: ObjectLikeDefinitionNode,
     directiveName: string,
-    transformFn: (currentDirectiveDirective: any, typeName: string) => any
+    transformFn: DIRECTIVE_TRANSFORM_FN
 ): ObjectOrInterfaceDefinitionNode {
     const userDirective = getDirectiveDefinition(userDocumentObject, directiveName);
     const fieldsWithNewDirective = object.fields?.map((field) =>
@@ -93,7 +93,7 @@ function changeDirectiveOnField(
     field: FieldDefinitionNode,
     userDocumentObject: ObjectLikeDefinitionNode,
     directiveName: string,
-    transformFn: (currentDirectiveDirective: any, typeName: string) => any
+    transformFn: DIRECTIVE_TRANSFORM_FN
 ): FieldDefinitionNode {
     const userField = userDocumentObject.fields?.find(
         (userDefinitionField) => field.name.value === userDefinitionField.name.value

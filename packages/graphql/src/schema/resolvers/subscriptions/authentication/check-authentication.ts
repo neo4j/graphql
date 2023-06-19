@@ -20,13 +20,10 @@
 import type { SubscriptionContext } from "../types";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { filterByValues } from "../../../../translate/authorization/utils/filter-by-values";
-import type {
-    AuthenticationAnnotation,
-    AuthenticationOperation,
-} from "../../../../schema-model/annotation/AuthenticationAnnotation";
+import type { AuthenticationOperation } from "../../../../schema-model/annotation/AuthenticationAnnotation";
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
 
-export function checkAuthenticationForOperation({
+export function checkAuthentication({
     authenticated,
     operation,
     context,
@@ -37,24 +34,14 @@ export function checkAuthenticationForOperation({
 }) {
     const annotation = authenticated.annotations.authentication;
     if (annotation && annotation.operations.has(operation)) {
-        checkSubscriptionAuthentication({ context, annotation });
-    }
-}
-
-function checkSubscriptionAuthentication({
-    context,
-    annotation,
-}: {
-    context: SubscriptionContext;
-    annotation: AuthenticationAnnotation;
-}) {
-    if (!context.jwt) {
-        throw new Error("Error, request not authorized");
-    }
-    if (annotation.jwt) {
-        const result = filterByValues(annotation.jwt, context.jwt);
-        if (!result) {
+        if (!context.jwt) {
             throw new Error("Error, request not authorized");
+        }
+        if (annotation.jwt) {
+            const result = filterByValues(annotation.jwt, context.jwt);
+            if (!result) {
+                throw new Error("Error, request not authorized");
+            }
         }
     }
 }

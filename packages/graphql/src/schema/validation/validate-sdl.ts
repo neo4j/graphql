@@ -31,20 +31,6 @@ export function validateSDL(
 ): ReadonlyArray<GraphQLError> {
     const errors: Array<GraphQLError> = [];
     const context = new SDLValidationContext(documentAST, schemaToExtend, (error) => {
-        // console.log(
-        //     "error:",
-        //     error.locations,
-        //     // error.name,
-        //     JSON.stringify(error.extensions, null, 2),
-        //     error.nodes,
-        //     // error.originalError,
-        //     error.stack,
-        //     error.path,
-        //     error.source,
-        //     error.positions,
-        //     error.message
-        // );
-
         const mappedError = mapError(error);
         errors.push(mappedError);
     });

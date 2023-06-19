@@ -17,10 +17,14 @@
  * limitations under the License.
  */
 import { Kind } from "graphql";
-import type { DefinitionNode, GraphQLSchema } from "graphql";
+import type { DefinitionNode } from "graphql";
 import type { EnricherContext } from "../../EnricherContext";
 import type { Enricher } from "../../types";
-import type { ObjectOrInterfaceDefinitionNode, ObjectOrInterfaceExtensionNode } from "./utils";
+import type {
+    CREATE_DIRECTIVE_DEFINITION_FN,
+    ObjectOrInterfaceDefinitionNode,
+    ObjectOrInterfaceExtensionNode,
+} from "./utils";
 import { containsDirective } from "./utils";
 
 function findDirectiveByTypeName(typeName: string, enricherContext: EnricherContext, directiveName: string): boolean {
@@ -43,7 +47,7 @@ function findDirectiveByTypeName(typeName: string, enricherContext: EnricherCont
 export function definitionsEnricher(
     enricherContext: EnricherContext,
     directiveName: string,
-    createDefinitionFn: (typeDefinitionName: string, schema: GraphQLSchema) => any
+    createDefinitionFn: CREATE_DIRECTIVE_DEFINITION_FN
 ): Enricher {
     return (accumulatedDefinitions: DefinitionNode[], definition: DefinitionNode) => {
         switch (definition.kind) {
