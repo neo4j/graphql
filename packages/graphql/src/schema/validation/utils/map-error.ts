@@ -72,8 +72,10 @@ function composeRegex(predicate: string, ...regexes: RegExp[]) {
     return new RegExp(regexes.map((r) => r.source).join(predicate));
 }
 
-// renames type-dependent directives generated for the validation schema to their standard equivalent
-// eg. `@UserAuthorization` -> `@authorization`
+/**
+ * Renames type-dependent directives generated for the validation schema to their standard equivalent.
+ * eg. `@UserAuthorization` -> `@authorization`
+ */
 function renameMysteryDirective(initialMessage: string): string | undefined {
     const renamedDirectiveMatch = RENAMED_DIRECTIVE_OR_TYPE.exec(initialMessage);
     if (!renamedDirectiveMatch) {
@@ -86,8 +88,10 @@ function renameMysteryDirective(initialMessage: string): string | undefined {
     return initialMessage.replace(renamedDirectiveName, `@${directiveName?.toLowerCase()}`);
 }
 
-// deletes references to types that only exist in the validation schema
-// eg. `UserAuthorizationValidationRule`
+/**
+ * Deletes references to types that only exist in the validation schema.
+ * eg. `UserAuthorizationValidationRule`
+ */
 function eraseMysteryType(initialMessage: string): string | undefined {
     const mysteryTypeRegex = composeRegex("|", RENAMED_DIRECTIVE_OR_TYPE, WHERE_TYPE);
     const mysteryTypeMatch = mysteryTypeRegex.exec(initialMessage);
@@ -103,9 +107,10 @@ function eraseMysteryType(initialMessage: string): string | undefined {
     return initialMessage.replace(mysteryType, "");
 }
 
-// deletes references to dummy values of the underlying type of the JWT claim
-// that replace the "$jwt." value in the validation schema
-// this is done to correctly assert the types, as "$jwt." will always be a string regardless of the underlying type of the JWT claim.
+/**
+ * Deletes references to dummy values of the underlying type of the JWT claim that replace the "$jwt." value in the validation schema.
+ * This is done to correctly assert the types, as "$jwt." will always be a string regardless of the underlying type of the JWT claim.
+ */
 function eraseDummyJWTValue(initialMessage: string): string | undefined {
     const isTypeErrorContainingDummyValue = JWT_PAYLOAD_DUMMY_VALUE_ERROR.exec(initialMessage);
     if (!isTypeErrorContainingDummyValue || !isTypeErrorContainingDummyValue[1]) {
