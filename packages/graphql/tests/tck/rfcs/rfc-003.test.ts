@@ -19,7 +19,6 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("tck/rfs/003", () => {
@@ -51,9 +50,7 @@ describe("tck/rfs/003", () => {
                     }
                 `;
 
-                const result = await translateQuery(neoSchema, mutation, {
-                    req: createJwtRequest("secret", {}),
-                });
+                const result = await translateQuery(neoSchema, mutation);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "UNWIND $create_param0 AS create_var0
@@ -113,9 +110,7 @@ describe("tck/rfs/003", () => {
                     }
                 `;
 
-                const result = await translateQuery(neoSchema, mutation, {
-                    req: createJwtRequest("secret", {}),
-                });
+                const result = await translateQuery(neoSchema, mutation);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "UNWIND $create_param0 AS create_var0
@@ -182,9 +177,7 @@ describe("tck/rfs/003", () => {
                         }
                     `;
 
-                    const result = await translateQuery(neoSchema, mutation, {
-                        req: createJwtRequest("secret", {}),
-                    });
+                    const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "UNWIND $create_param0 AS create_var0
@@ -276,9 +269,7 @@ describe("tck/rfs/003", () => {
                         }
                     `;
 
-                    const result = await translateQuery(neoSchema, mutation, {
-                        req: createJwtRequest("secret", {}),
-                    });
+                    const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "UNWIND $create_param0 AS create_var0
@@ -366,9 +357,7 @@ describe("tck/rfs/003", () => {
                         }
                     `;
 
-                    const result = await translateQuery(neoSchema, mutation, {
-                        req: createJwtRequest("secret", {}),
-                    });
+                    const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
@@ -420,9 +409,7 @@ describe("tck/rfs/003", () => {
                         }
                     `;
 
-                    const result = await translateQuery(neoSchema, mutation, {
-                        req: createJwtRequest("secret", {}),
-                    });
+                    const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
@@ -484,9 +471,7 @@ describe("tck/rfs/003", () => {
                             }
                         `;
 
-                        const result = await translateQuery(neoSchema, mutation, {
-                            req: createJwtRequest("secret", {}),
-                        });
+                        const result = await translateQuery(neoSchema, mutation);
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
@@ -561,9 +546,7 @@ describe("tck/rfs/003", () => {
                             }
                         `;
 
-                        const result = await translateQuery(neoSchema, mutation, {
-                            req: createJwtRequest("secret", {}),
-                        });
+                        const result = await translateQuery(neoSchema, mutation);
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
@@ -638,9 +621,7 @@ describe("tck/rfs/003", () => {
                         }
                     `;
 
-                        const result = await translateQuery(neoSchema, mutation, {
-                            req: createJwtRequest("secret", {}),
-                        });
+                        const result = await translateQuery(neoSchema, mutation);
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
@@ -726,9 +707,7 @@ describe("tck/rfs/003", () => {
                             }
                         `;
 
-                        const result = await translateQuery(neoSchema, mutation, {
-                            req: createJwtRequest("secret", {}),
-                        });
+                        const result = await translateQuery(neoSchema, mutation);
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
@@ -849,9 +828,7 @@ describe("tck/rfs/003", () => {
                             }
                         `;
 
-                        const result = await translateQuery(neoSchema, mutation, {
-                            req: createJwtRequest("secret", {}),
-                        });
+                        const result = await translateQuery(neoSchema, mutation);
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "MATCH (this:\`Movie\`)
@@ -957,9 +934,7 @@ describe("tck/rfs/003", () => {
                         }
                     `;
 
-                    const result = await translateQuery(neoSchema, mutation, {
-                        req: createJwtRequest("secret", {}),
-                    });
+                    const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "CALL {
@@ -1034,9 +1009,7 @@ describe("tck/rfs/003", () => {
                         }
                     `;
 
-                    const result = await translateQuery(neoSchema, mutation, {
-                        req: createJwtRequest("secret", {}),
-                    });
+                    const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "CALL {
@@ -1129,9 +1102,7 @@ describe("tck/rfs/003", () => {
                             }
                         `;
 
-                        const result = await translateQuery(neoSchema, mutation, {
-                            req: createJwtRequest("secret", {}),
-                        });
+                        const result = await translateQuery(neoSchema, mutation);
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                             "CALL {
@@ -1237,9 +1208,7 @@ describe("tck/rfs/003", () => {
                         }
                     `;
 
-                    const result = await translateQuery(neoSchema, mutation, {
-                        req: createJwtRequest("secret", {}),
-                    });
+                    const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
@@ -1333,9 +1302,7 @@ describe("tck/rfs/003", () => {
                         }
                     `;
 
-                    const result = await translateQuery(neoSchema, mutation, {
-                        req: createJwtRequest("secret", {}),
-                    });
+                    const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
@@ -1454,9 +1421,7 @@ describe("tck/rfs/003", () => {
                         }
                     `;
 
-                    const result = await translateQuery(neoSchema, mutation, {
-                        req: createJwtRequest("secret", {}),
-                    });
+                    const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                         "MATCH (this:\`Movie\`)
