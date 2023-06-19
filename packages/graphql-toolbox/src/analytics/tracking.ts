@@ -18,9 +18,13 @@
  */
 
 import type {
+    TrackingTBAddQueryTab,
     TrackingTBBuildSchemaClick,
     TrackingTBCannyChangelogClick,
     TrackingTBChangeDatabase,
+    TrackingTBDeleteFavorite,
+    TrackingTBDeleteQueryTab,
+    TrackingTBDownloadFavorite,
     TrackingTBEditorThemeToggle,
     TrackingTBExecuteQuery,
     TrackingTBExploreGraphQLaaSLinkClick,
@@ -35,6 +39,7 @@ import type {
 import { Screen } from "../contexts/screen";
 import { Theme } from "../contexts/theme";
 import { useStore } from "../store";
+import { useSessionStore } from "../store/session";
 
 class Tracking {
     public trackDatabaseIntrospection = (properties: TrackingTBIntrospect) => {
@@ -68,14 +73,19 @@ class Tracking {
     };
 
     public trackOpenSchemaDocs = (properties: TrackingTBSchemaDocsToggle) => {
-        const screenValue = properties.screen === Screen.EDITOR ? "query editor" : "type definitions";
         const actionValue = properties.action ? "on" : "off";
-        this.fireTrackingEvent("TB", "SCHEMA_DOCS_TOGGLE", { ...properties, screen: screenValue, action: actionValue });
+        this.fireTrackingEvent("TB", "SCHEMA_DOCS_TOGGLE", {
+            ...properties,
+            screen: this.getScreenValue(properties.screen),
+            action: actionValue,
+        });
     };
 
     public trackHelpLearnFeatureLinks = (properties: TrackingTBHelpLearnLinkClick) => {
-        const screenValue = properties.screen === Screen.EDITOR ? "query editor" : "type definitions";
-        this.fireTrackingEvent("TB", "HELP_LEARN_LINK_CLICK", { ...properties, screen: screenValue });
+        this.fireTrackingEvent("TB", "HELP_LEARN_LINK_CLICK", {
+            ...properties,
+            screen: this.getScreenValue(properties.screen),
+        });
     };
 
     public trackBuildSchema = (properties: TrackingTBBuildSchemaClick) => {
@@ -87,13 +97,49 @@ class Tracking {
     };
 
     public trackExploreGraphQLaaSLink = (properties: TrackingTBExploreGraphQLaaSLinkClick) => {
-        const screenValue = properties.screen === Screen.EDITOR ? "query editor" : "type definitions";
-        this.fireTrackingEvent("TB", "EXPLORE_GRAPHQLAAS_LINK_CLICK", { ...properties, screen: screenValue });
+        this.fireTrackingEvent("TB", "EXPLORE_GRAPHQLAAS_LINK_CLICK", {
+            ...properties,
+            screen: this.getScreenValue(properties.screen),
+        });
     };
 
     public trackCannyChangelogLink = (properties: TrackingTBCannyChangelogClick) => {
-        const screenValue = properties.screen === Screen.EDITOR ? "query editor" : "type definitions";
-        this.fireTrackingEvent("TB", "CANNY_CHANGELOG_CLICK", { ...properties, screen: screenValue });
+        this.fireTrackingEvent("TB", "CANNY_CHANGELOG_CLICK", {
+            ...properties,
+            screen: this.getScreenValue(properties.screen),
+        });
+    };
+
+    public trackAddQueryTab = (properties: TrackingTBAddQueryTab) => {
+        this.fireTrackingEvent("TB", "ADD_QUERY_TAB", {
+            ...properties,
+            screen: this.getScreenValue(properties.screen),
+        });
+    };
+
+    public trackDeleteQueryTab = (properties: TrackingTBDeleteQueryTab) => {
+        this.fireTrackingEvent("TB", "DELETE_QUERY_TAB", {
+            ...properties,
+            screen: this.getScreenValue(properties.screen),
+        });
+    };
+
+    public trackDownloadFavorites = (properties: TrackingTBDownloadFavorite) => {
+        this.fireTrackingEvent("TB", "DOWNLOAD_FAVORITE", {
+            ...properties,
+            screen: this.getScreenValue(properties.screen),
+        });
+    };
+
+    public trackDeleteFavorite = (properties: TrackingTBDeleteFavorite) => {
+        this.fireTrackingEvent("TB", "DELETE_FAVORITE", {
+            ...properties,
+            screen: this.getScreenValue(properties.screen),
+        });
+    };
+
+    private getScreenValue = (screenValue: Screen): string => {
+        return screenValue === Screen.EDITOR ? "query editor" : "type definitions";
     };
 
     private fireTrackingEvent = (eventCategory: string, eventLabel: string, eventProperties = {}) => {
@@ -102,6 +148,7 @@ class Tracking {
 
         const enrichedEventProperties = {
             ...eventProperties,
+            dbid: useSessionStore.getState().auraDbId || null,
             graphQLToolboxVersion: process.env.VERSION,
             neo4jGraphQLLibraryVersion: process.env.NEO4J_GRAPHQL_VERSION,
         };

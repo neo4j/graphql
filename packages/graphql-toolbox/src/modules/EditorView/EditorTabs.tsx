@@ -23,6 +23,8 @@ import { Tab, Tabs } from "@neo4j-ndl/react";
 import { PlusIconOutline, XMarkIconOutline } from "@neo4j-ndl/react/icons";
 import classNames from "classnames";
 
+import { tracking } from "../../analytics/tracking";
+import { Screen } from "../../contexts/screen";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 
@@ -37,6 +39,17 @@ export const EditorTabs = () => {
     const handleTabsChange = (idx: string) => {
         if (idx === "new") return;
         store.changeActiveTabIndex(Number.parseInt(idx));
+    };
+
+    const handleAddTab = () => {
+        store.addTab();
+        tracking.trackAddQueryTab({ screen: Screen.EDITOR });
+    };
+
+    const handleCloseTab = (event: React.MouseEvent<SVGSVGElement, MouseEvent>, idx: number) => {
+        event.stopPropagation();
+        closeTab(idx);
+        tracking.trackDeleteQueryTab({ screen: Screen.EDITOR });
     };
 
     return (
@@ -69,8 +82,7 @@ export const EditorTabs = () => {
                                     )}
                                     aria-label="Close Icon"
                                     onClick={(event) => {
-                                        event.stopPropagation();
-                                        closeTab(idx);
+                                        handleCloseTab(event, idx);
                                     }}
                                 />
                             )}
@@ -86,7 +98,7 @@ export const EditorTabs = () => {
                         theme.theme === Theme.LIGHT ? "hover:bg-gray-100" : "text-white hover:bg-gray-500"
                     )}
                     aria-label="Add tab Icon"
-                    onClick={() => store.addTab()}
+                    onClick={handleAddTab}
                 />
             </Tab>
         </Tabs>
