@@ -29,7 +29,7 @@ import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where/where";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { GraphQLResolveInfo } from "graphql";
-import { checkAuthenticationForOperation } from "./authentication/check-authentication";
+import { checkAuthentication } from "./authentication/check-authentication";
 import { checkAuthenticationOnSelectionSet } from "./authentication/check-authentication-selection-set";
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
@@ -64,7 +64,7 @@ export function generateSubscribeMethod({
         const entities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
         if (entities.length) {
             const concreteEntity = entities[0] as ConcreteEntity;
-            checkAuthenticationForOperation({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
+            checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
         }
 
         if (node.auth) {

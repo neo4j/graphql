@@ -25,7 +25,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { parseResolveInfo } from "graphql-parse-resolve-info";
 import type { SelectionFields } from "./selection-set-parser";
 import { parseSelectionSetForAuthenticated } from "./selection-set-parser";
-import { checkAuthenticationForOperation } from "./check-authentication";
+import { checkAuthentication } from "./check-authentication";
 
 export function checkAuthenticationOnSelectionSet(
     resolveInfo: GraphQLResolveInfo,
@@ -63,11 +63,11 @@ function checkAuthenticationOnSelection({
     entity: ConcreteEntity;
     context: SubscriptionContext;
 }) {
-    checkAuthenticationForOperation({ authenticated: entity, operation: "READ", context });
+    checkAuthentication({ authenticated: entity, operation: "READ", context });
     for (const selectedField of Object.values(fieldSelection)) {
         const field = entity.findAttribute(selectedField.name);
         if (field) {
-            checkAuthenticationForOperation({ authenticated: field, operation: "READ", context });
+            checkAuthentication({ authenticated: field, operation: "READ", context });
         }
     }
 }
