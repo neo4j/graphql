@@ -67,8 +67,6 @@ export function AuthProvider(props: any) {
         login: async (options: LoginOptions) => {
             const auth = neo4j.auth.basic(options.username, options.password);
             const protocol = getURLProtocolFromText(options.url);
-            console.log(options.url);
-            console.log(getAuraDBIdFromText(options.url));
             sessionStore.setAuraDbId(getAuraDBIdFromText(options.url));
             // Manually set the encryption to off if it's not specified in the Connection URI to avoid implicit encryption in https domain
             const driver = protocol.includes("+s")
