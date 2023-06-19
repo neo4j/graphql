@@ -65,7 +65,11 @@
 **** xref:reference/type-definitions/unions.adoc[]
 
 *** xref:reference/directives/index.adoc[]
-**** xref:reference/directives/access-control.adoc[]
+**** xref:reference/directives/schema-configuration/index.adoc[]
+***** xref:reference/directives/schema-configuration/type-configuration.adoc[]
+***** xref:reference/directives/schema-configuration/global-configuration.adoc[]
+***** xref:reference/directives/schema-configuration/field-configuration.adoc[]
+
 **** xref:reference/directives/autogeneration.adoc[]
 **** xref:reference/directives/basics.adoc[]
 **** xref:reference/directives/custom-directives.adoc[]

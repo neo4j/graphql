@@ -21,7 +21,6 @@ import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on create", () => {
@@ -93,7 +92,6 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
@@ -101,10 +99,7 @@ describe("Subscriptions metadata on create", () => {
                     subscriptions: plugin,
                 },
             }),
-            query,
-            {
-                req,
-            }
+            query
         );
         // TODO: make a test with rel type as union/ interface
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -177,7 +172,6 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
@@ -185,10 +179,7 @@ describe("Subscriptions metadata on create", () => {
                     subscriptions: plugin,
                 },
             }),
-            query,
-            {
-                req,
-            }
+            query
         );
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -278,7 +269,6 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
@@ -286,10 +276,7 @@ describe("Subscriptions metadata on create", () => {
                     subscriptions: plugin,
                 },
             }),
-            query,
-            {
-                req,
-            }
+            query
         );
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -397,7 +384,6 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
@@ -405,10 +391,7 @@ describe("Subscriptions metadata on create", () => {
                     subscriptions: plugin,
                 },
             }),
-            query,
-            {
-                req,
-            }
+            query
         );
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -541,7 +524,6 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
@@ -549,10 +531,7 @@ describe("Subscriptions metadata on create", () => {
                     subscriptions: plugin,
                 },
             }),
-            query,
-            {
-                req,
-            }
+            query
         );
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -640,10 +619,7 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
@@ -676,10 +652,7 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
@@ -723,10 +696,7 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
@@ -781,10 +751,7 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
@@ -862,10 +829,7 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
@@ -945,10 +909,7 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
@@ -1013,10 +974,7 @@ describe("Subscriptions metadata on create", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {

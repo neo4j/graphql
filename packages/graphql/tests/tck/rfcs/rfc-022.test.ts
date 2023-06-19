@@ -51,11 +51,6 @@ describe("tck/rfs/022 subquery projection", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
-                },
             });
         });
 
@@ -71,10 +66,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 }
             `;
 
-            const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
-                req,
-            });
+            const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -116,10 +108,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 }
             `;
 
-            const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
-                req,
-            });
+            const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)

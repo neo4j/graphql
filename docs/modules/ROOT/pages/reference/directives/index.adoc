@@ -39,11 +39,15 @@ The `@default` directive allows for the setting of a default value for a field o
 
 Reference: xref::reference/directives/default-values.adoc#type-definitions-default-values-default[`@default`]
 
-== `@exclude`
+== `@exclude` label:deprecated[]
+
+This directive is deprecated.
+
+Use the xref:reference/directives/schema-configuration/type-configuration.adoc#_query[`@query`], xref:reference/directives/schema-configuration/type-configuration.adoc#_mutation[`@mutation`] and the xref:reference/directives/schema-configuration/type-configuration.adoc#_subscription[`@subscription`] directives instead.
 
 The `@exclude` directive is used on object types to instruct them to be skipped during Query, Mutation and Subscription generation.
 
-Reference: xref::reference/directives/access-control.adoc#type-definitions-access-control-exclude[`@exclude`]
+Reference: xref::reference/directives/schema-configuration/type-configuration.adoc#_exclude_deprecated[`@exclude`]
 
 == `@fulltext`
 
@@ -56,6 +60,12 @@ Reference: xref::reference/type-definitions/indexes-and-constraints.adoc#type-de
 The `@id` directive marks a field as the unique ID for an object type, and allows for autogeneration of IDs.
 
 Reference: xref::reference/directives/autogeneration.adoc#type-definitions-autogeneration-id[`@id`]
+
+== `@mutation`
+
+This directive is used to limit the availability of Mutation operations in the library.
+
+Reference: xref:reference/directives/schema-configuration/type-configuration.adoc#_mutation[`@mutation`]
 
 == `@node`
 
@@ -85,23 +95,30 @@ The `@private` directive protects fields which should only be available through 
 
 Reference: xref::ogm/private.adoc[`@private` Directive]
 
+== `@query`
+
+This directive is used to limit the availability of Query operations in the library.
+
+Reference: xref:reference/directives/schema-configuration/type-configuration.adoc#_query[`@query`]
+
 == `@queryOptions`
 
 The `@queryOptions` is to be used on nodes, where applied will inject values into a query such as the `limit`.
 
 Reference: xref::reference/directives/default-values.adoc#type-definitions-default-values-queryoptions[`@queryOptions`]
 
-== `@readonly`
+== `@readonly` label:deprecated[]
 
+This directive is deprecated. See the xref:reference/directives/schema-configuration/field-configuration.adoc#_settable[`@settable`] directive.
 The `@readonly` directive marks fields as read-only.
 
-Reference: xref::reference/directives/access-control.adoc#type-definitions-access-control-readonly[`@readonly`]
+Reference: xref::reference/directives/schema-configuration/field-configuration.adoc#_readonly_deprecated[`@readonly`]
 
 == `@relationship`
 
 The `@relationship` directive is used to configure relationships between object types.
 
-Reference: xref::reference/type-definitions/relationships.adoc[Relationships]
+Reference: xref::reference/type-definitions/relationships.adoc[Relationships], xref::reference/directives/schema-configuration/field-configuration.adoc#_relationship[`@relationship`]
 
 == `@relationshipProperties`
 
@@ -115,6 +132,24 @@ Can only be used on interfaces, as per its definition:
 directive @relationshipProperties on INTERFACE
 ----
 
+== `@selectable`
+
+The `@selectable` directive sets the availability of fields on queries and aggregations. 
+
+Reference: xref:reference/directives/schema-configuration/field-configuration.adoc#_selectable[`@selectable`]
+
+== `@settable`
+
+The `@settable` directive sets the availability of fields on the create and update inputs. 
+
+Reference: xref:reference/directives/schema-configuration/field-configuration.adoc#_settable[`@settable`]
+
+== `@subscription`
+
+This directive is used to limit Subscription operations in the library.
+
+Reference: xref:reference/directives/schema-configuration/type-configuration.adoc#_subscription[`@subscription`]
+
 == `@timestamp`
 
 The `@timestamp` directive flags fields to be used to store timestamps on create/update events.
@@ -127,8 +162,11 @@ The `@unique` directive indicates that there should be a uniqueness constraint i
 
 Reference: xref::reference/type-definitions/indexes-and-constraints.adoc#type-definitions-constraints-unique[Unique node property constraints]
 
-== `@writeonly`
+== `@writeonly` label:deprecated[]
 
+This directive is deprecated. 
+
+Use the xref:reference/directives/schema-configuration/field-configuration.adoc#_selectable[`@selectable`] directive instead.
 The `@writeonly` directive marks fields as write-only.
 
-Reference: xref::reference/directives/access-control.adoc#type-definitions-access-control-writeonly[`@writeonly`]
+Reference: xref::reference/directives/schema-configuration/field-configuration.adoc#_writeonly_deprecated[`@writeonly`]

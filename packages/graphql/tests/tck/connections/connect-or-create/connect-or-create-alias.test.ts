@@ -20,7 +20,6 @@
 import type { DocumentNode } from "graphql";
 import gql from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Connect or create with @alias", () => {
@@ -81,10 +80,7 @@ describe("Connect or create with @alias", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`BibliographicReference\`:\`Resource\`)
