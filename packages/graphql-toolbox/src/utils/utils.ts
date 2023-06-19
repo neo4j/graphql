@@ -22,10 +22,8 @@ import { useEffect, useRef } from "react";
 export const getAuraDBIdFromText = (text: string | null | undefined): string | null => {
     if (!text) return null;
     try {
-        const hostname = new URL(text)?.hostname;
-        if (!hostname) return null;
-        const myRegexp = new RegExp("^(.*?|$).databases.neo4j.io", "g");
-        const matches = myRegexp.exec(hostname);
+        const myRegexp = new RegExp("://(.*?|$).databases.neo4j.io", "g");
+        const matches = myRegexp.exec(text);
         if (!matches || matches?.length < 2) return null;
         return matches[1];
     } catch (_) {

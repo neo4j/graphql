@@ -103,7 +103,7 @@ class Tracking {
 
         const enrichedEventProperties = {
             ...eventProperties,
-            dbId: useSessionStore().auraDbId || null,
+            dbid: useSessionStore.getState().auraDbId || null,
             graphQLToolboxVersion: process.env.VERSION,
             neo4jGraphQLLibraryVersion: process.env.NEO4J_GRAPHQL_VERSION,
         };
