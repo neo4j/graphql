@@ -84,7 +84,7 @@ describe("Node Directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Person\`)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id } AS this"
         `);
 
@@ -96,7 +96,8 @@ describe("Node Directive", () => {
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"id-01\\"
-                }
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });

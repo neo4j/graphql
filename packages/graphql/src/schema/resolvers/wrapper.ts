@@ -119,6 +119,7 @@ export const wrapResolver =
                         jwtParam: new Cypher.NamedParam("jwt", jwt),
                         isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
                         claims: jwtPayloadFieldsMap,
+                        jwtDefault: new Cypher.NamedParam("jwtDefault", {}),
                     };
                 } catch (e) {
                     if (authorization.globalAuthentication) {
@@ -129,6 +130,7 @@ export const wrapResolver =
                         isAuthenticated,
                         jwtParam: new Cypher.NamedParam("jwt", {}),
                         isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
+                        jwtDefault: new Cypher.NamedParam("jwtDefault", {}),
                     };
                 }
             }
@@ -154,6 +156,7 @@ export const wrapResolver =
                 jwt,
                 jwtParam: new Cypher.NamedParam("jwt", jwt),
                 isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
+                jwtDefault: new Cypher.NamedParam("jwtDefault", {}),
             };
         }
 

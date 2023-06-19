@@ -69,10 +69,10 @@ describe("Cypher Auth Projection", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -85,6 +85,7 @@ describe("Cypher Auth Projection", () => {
                     ],
                     \\"sub\\": \\"super_admin\\"
                 },
+                \\"jwtDefault\\": {},
                 \\"this_update_id\\": \\"new-id\\",
                 \\"resolvedCallbacks\\": {}
             }"
@@ -108,7 +109,7 @@ describe("Cypher Auth Projection", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param2 AS create_var1
+            "UNWIND $create_param3 AS create_var1
             CALL {
                 WITH create_var1
                 CREATE (create_this0:\`User\`)
@@ -117,7 +118,7 @@ describe("Cypher Auth Projection", () => {
                 RETURN create_this0
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this0.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this0.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(create_this0 { .id }) AS data"
         `);
 
@@ -130,7 +131,8 @@ describe("Cypher Auth Projection", () => {
                     ],
                     \\"sub\\": \\"super_admin\\"
                 },
-                \\"create_param2\\": [
+                \\"jwtDefault\\": {},
+                \\"create_param3\\": [
                     {
                         \\"id\\": \\"id-1\\"
                     },
