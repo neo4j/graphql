@@ -35,6 +35,7 @@ import type {
 import { Screen } from "../contexts/screen";
 import { Theme } from "../contexts/theme";
 import { useStore } from "../store";
+import { useSessionStore } from "../store/session";
 
 class Tracking {
     public trackDatabaseIntrospection = (properties: TrackingTBIntrospect) => {
@@ -102,6 +103,7 @@ class Tracking {
 
         const enrichedEventProperties = {
             ...eventProperties,
+            dbId: useSessionStore().dbId || null,
             graphQLToolboxVersion: process.env.VERSION,
             neo4jGraphQLLibraryVersion: process.env.NEO4J_GRAPHQL_VERSION,
         };
