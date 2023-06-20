@@ -559,7 +559,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @authorization(filter: [{ operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type User @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -626,7 +626,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @authorization(filter: [{ operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type User @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -695,7 +695,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @authorization(filter: [{ operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type User @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -766,7 +766,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @authorization(filter: [{ operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type User @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
