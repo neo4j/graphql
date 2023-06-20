@@ -112,7 +112,6 @@ export const wrapResolver =
                 try {
                     const jwt = await authorization.decode(context);
                     const isAuthenticated = true;
-
                     context.authorization = {
                         isAuthenticated,
                         jwt,
@@ -122,10 +121,6 @@ export const wrapResolver =
                         jwtDefault: new Cypher.NamedParam("jwtDefault", {}),
                     };
                 } catch (e) {
-                    const globalAuthentication = schemaModel.annotations.authentication;
-                    if (authorization.globalAuthentication || globalAuthentication) {
-                        throw e;
-                    }
                     const isAuthenticated = false;
                     context.authorization = {
                         isAuthenticated,

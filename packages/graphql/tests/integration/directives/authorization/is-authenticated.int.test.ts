@@ -233,7 +233,6 @@ describe("auth/is-authenticated", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
-                console.log(gqlResult);
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
@@ -4230,7 +4229,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     name: String
                 }
-                extend schema @authentication(operations: [CREATE])
+                extend schema @authentication(operations: [UPDATE])
             `;
 
                 neoSchema = new Neo4jGraphQL({
@@ -4255,7 +4254,7 @@ describe("auth/is-authenticated", () => {
             });
 
             test("should throw if not authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
+                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
                 const query = `
                 mutation {
@@ -4287,7 +4286,7 @@ describe("auth/is-authenticated", () => {
             });
 
             test("should not throw if authenticated type definition", async () => {
-                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
+                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
                 const query = `
                 mutation {
