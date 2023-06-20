@@ -61,13 +61,17 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                 const { isValid, errorMsg, errorPath } = assertArgumentType(argument, argumentDefinition);
                 if (!isValid) {
                     context.reportError(
-                        new GraphQLError(`Invalid argument: ${argument.name.value}, error: ${errorMsg}`, {
-                            nodes: [argument, directiveNode],
-                            extensions: {
+                        new GraphQLError(
+                            `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
+                            [argument, directiveNode],
+                            undefined,
+                            undefined,
+                            [...pathToHere, argument.name.value, ...errorPath],
+                            undefined,
+                            {
                                 exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                            },
-                            path: [...pathToHere, argument.name.value, ...errorPath],
-                        })
+                            }
+                        )
                     );
                 }
             });
