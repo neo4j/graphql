@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("tck/rfs/022 subquery projection", () => {
     let typeDefs: DocumentNode;
@@ -51,11 +50,6 @@ describe("tck/rfs/022 subquery projection", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
-                },
             });
         });
 
@@ -71,10 +65,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 }
             `;
 
-            const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
-                req,
-            });
+            const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -116,10 +107,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 }
             `;
 
-            const req = createJwtRequest("secret", {});
-            const result = await translateQuery(neoSchema, query, {
-                req,
-            });
+            const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
@@ -155,6 +143,10 @@ describe("tck/rfs/022 subquery projection", () => {
     describe("With auth", () => {
         beforeAll(() => {
             typeDefs = gql`
+                type JWT @jwt {
+                    roles: [String!]!
+                }
+
                 type Movie {
                     title: String!
                     released: Int
@@ -162,14 +154,10 @@ describe("tck/rfs/022 subquery projection", () => {
                 }
 
                 type Person
-                    @auth(
-                        rules: [
-                            {
-                                isAuthenticated: true
-                                where: { name: "The Matrix" }
-                                allow: { name: "$jwt.test" }
-                                roles: ["admin"]
-                            }
+                    @authorization(
+                        filter: [{ where: { node: { name: "The Matrix" } } }]
+                        validate: [
+                            { when: [BEFORE], where: { node: { name: "$jwt.test" }, jwt: { roles_INCLUDES: "admin" } } }
                         ]
                     ) {
                     name: String!
@@ -183,11 +171,7 @@ describe("tck/rfs/022 subquery projection", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret: "secret",
-                    }),
-                },
+                features: { authorization: { key: "secret" } },
             });
         });
 
@@ -203,11 +187,11 @@ describe("tck/rfs/022 subquery projection", () => {
                 }
             `;
 
-            const req = createJwtRequest("secret", {
+            const token = createBearerToken("secret", {
                 test: "my-test",
             });
             const result = await translateQuery(neoSchema, query, {
-                req,
+                token,
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -216,11 +200,11 @@ describe("tck/rfs/022 subquery projection", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
-                    WHERE (this1.name = $param1 AND (any(var3 IN [\\"admin\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this1.name IS NOT NULL AND this1.name = $param3)) AND apoc.util.validatePredicate(NOT ((any(var5 IN [\\"admin\\"] WHERE any(var4 IN $auth.roles WHERE var4 = var5)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this1.name IS NOT NULL AND this1.name = $param5))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    WHERE (this1.name = $param1 AND (($isAuthenticated = true AND this1.name = $param3) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (this1.name = coalesce($jwt.test, $jwtDefault) AND $param6 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])))
                     WITH this1 { .name } AS this1
-                    RETURN collect(this1) AS var6
+                    RETURN collect(this1) AS var2
                 }
-                RETURN this { .title, actors: var6 } AS this"
+                RETURN this { .title, actors: var2 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -230,16 +214,14 @@ describe("tck/rfs/022 subquery projection", () => {
                         \\"high\\": 0
                     },
                     \\"param1\\": \\"Keanu Reeves\\",
+                    \\"isAuthenticated\\": true,
                     \\"param3\\": \\"The Matrix\\",
-                    \\"param5\\": \\"my-test\\",
-                    \\"auth\\": {
-                        \\"isAuthenticated\\": true,
+                    \\"jwt\\": {
                         \\"roles\\": [],
-                        \\"jwt\\": {
-                            \\"roles\\": [],
-                            \\"test\\": \\"my-test\\"
-                        }
-                    }
+                        \\"test\\": \\"my-test\\"
+                    },
+                    \\"jwtDefault\\": {},
+                    \\"param6\\": \\"admin\\"
                 }"
             `);
         });

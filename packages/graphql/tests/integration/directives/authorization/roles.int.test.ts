@@ -22,10 +22,10 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { UniqueType } from "../../../utils/graphql-types";
 import { runCypher } from "../../../utils/run-cypher";
 import { cleanNodes } from "../../../utils/clean-nodes";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("auth/roles", () => {
     let driver: Driver;
@@ -74,14 +74,14 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type ${typeProduct} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [READ],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }]) {
                     id: ID
                     name: String
@@ -106,12 +106,12 @@ describe("auth/roles", () => {
             });
 
             try {
-                const req = createJwtRequest(secret);
+                const token = createBearerToken(secret);
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -124,7 +124,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -133,7 +133,7 @@ describe("auth/roles", () => {
                     password: String @authorization(validate: [{
                         when: [BEFORE],
                         operations: [READ],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
                 }
             `;
@@ -156,12 +156,12 @@ describe("auth/roles", () => {
             });
 
             try {
-                const req = createJwtRequest(secret);
+                const token = createBearerToken(secret);
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -174,7 +174,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -182,7 +182,7 @@ describe("auth/roles", () => {
                     url: String @authorization(validate: [{
                         when: [BEFORE],
                         operations: [READ],
-                        where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
+                        where: { jwt: { roles_INCLUDES: "super-admin" } }
                     }])
                 }
                 type ${typeUser} {
@@ -195,7 +195,7 @@ describe("auth/roles", () => {
                     @authorization(validate: [{
                         when: [BEFORE],
                         operations: [READ, CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, DELETE],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
 
                 extend type ${typeUser} {
@@ -204,7 +204,7 @@ describe("auth/roles", () => {
                         @authorization(validate: [{
                             when: [BEFORE],
                             operations: [READ],
-                            where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
+                            where: { jwt: { roles_INCLUDES: "super-admin" } }
                         }])
                 }
             `;
@@ -234,12 +234,12 @@ describe("auth/roles", () => {
                 CREATE(h:${typeHistory} { url: 'http://some.url' })<-[:HAS_HISTORY]-(u)
             `);
 
-                const req = createJwtRequest(secret, { sub: "super_admin", roles: ["admin", "super-admin"] });
+                const token = createBearerToken(secret, { sub: "super_admin", roles: ["admin", "super-admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -265,14 +265,14 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type NotANode @authorization(validate: [{
                     when: [BEFORE],
                     operations: [READ],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }]) {
                     name: String
                 }
@@ -296,12 +296,12 @@ describe("auth/roles", () => {
             });
 
             try {
-                const req = createJwtRequest(secret);
+                const token = createBearerToken(secret);
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -316,14 +316,14 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type ${typeUser} @authorization(validate: [{
                     when: [AFTER],
                     operations: [CREATE],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }]) {
                     id: ID
                     name: String
@@ -350,12 +350,12 @@ describe("auth/roles", () => {
             });
 
             try {
-                const req = createJwtRequest(secret);
+                const token = createBearerToken(secret);
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -368,7 +368,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -377,7 +377,7 @@ describe("auth/roles", () => {
                     password: String @authorization(validate: [{
                         when: [AFTER],
                         operations: [CREATE],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
                 }
             `;
@@ -402,12 +402,12 @@ describe("auth/roles", () => {
             });
 
             try {
-                const req = createJwtRequest(secret);
+                const token = createBearerToken(secret);
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -420,7 +420,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -429,7 +429,7 @@ describe("auth/roles", () => {
                     password: String @authorization(validate: [{
                         when: [AFTER],
                         operations: [CREATE],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
                 }
             `;
@@ -454,12 +454,12 @@ describe("auth/roles", () => {
             });
 
             try {
-                const req = createJwtRequest(secret);
+                const token = createBearerToken(secret);
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -474,14 +474,14 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type ${typeUser} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [UPDATE],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }]) {
                     id: ID
                     name: String
@@ -508,12 +508,12 @@ describe("auth/roles", () => {
             });
 
             try {
-                const req = createJwtRequest(secret);
+                const token = createBearerToken(secret);
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -526,7 +526,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -535,7 +535,7 @@ describe("auth/roles", () => {
                     password: String @authorization(validate: [{
                         when: [BEFORE],
                         operations: [UPDATE],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
                 }
             `;
@@ -560,12 +560,12 @@ describe("auth/roles", () => {
             });
 
             try {
-                const req = createJwtRequest(secret);
+                const token = createBearerToken(secret);
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -580,7 +580,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -600,13 +600,13 @@ describe("auth/roles", () => {
                     @authorization(validate: [{
                         when: [BEFORE],
                         operations: [CREATE_RELATIONSHIP],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
 
                 extend type ${typePost} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [CREATE_RELATIONSHIP],
-                    where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
+                    where: { jwt: { roles_INCLUDES: "super-admin" } }
                 }])
             `;
 
@@ -643,12 +643,12 @@ describe("auth/roles", () => {
                     CREATE (:${typePost} {id: "${postId}"})
                 `);
                 // missing super-admin
-                const req = createJwtRequest(secret, { roles: ["admin"] });
+                const token = createBearerToken(secret, { roles: ["admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -661,7 +661,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -688,7 +688,7 @@ describe("auth/roles", () => {
                 @authorization(validate: [{
                     when: [BEFORE],
                     operations: [CREATE_RELATIONSHIP],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }])
             `;
 
@@ -740,12 +740,12 @@ describe("auth/roles", () => {
                     CREATE (:${typeUser} {id: "${userId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: [""] });
+                const token = createBearerToken(secret, { roles: [""] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -760,7 +760,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -780,13 +780,13 @@ describe("auth/roles", () => {
                     @authorization(validate: [{
                         when: [BEFORE],
                         operations: [DELETE_RELATIONSHIP],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
 
                 extend type ${typePost} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [DELETE_RELATIONSHIP],
-                    where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
+                    where: { jwt: { roles_INCLUDES: "super-admin" } }
                 }])
             `;
 
@@ -823,12 +823,12 @@ describe("auth/roles", () => {
                     CREATE (:${typePost} {id: "${userId}"})
                 `);
                 // missing super-admin
-                const req = createJwtRequest(secret, { roles: ["admin"] });
+                const token = createBearerToken(secret, { roles: ["admin"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -841,7 +841,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -868,7 +868,7 @@ describe("auth/roles", () => {
                     @authorization(validate: [{
                         when: [BEFORE],
                         operations: [DELETE_RELATIONSHIP],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
             `;
 
@@ -919,12 +919,12 @@ describe("auth/roles", () => {
                     CREATE (:${typeComment} {id: "${commentId}"})<-[:HAS_COMMENT]-(:${typePost} {id: "${postId}"})<-[:HAS_POST]-(:${typeUser} {id: "${userId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: [""] });
+                const token = createBearerToken(secret, { roles: [""] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -939,14 +939,14 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type ${typeUser} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [DELETE],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }]) {
                     id: ID
                     name: String
@@ -971,12 +971,12 @@ describe("auth/roles", () => {
             });
 
             try {
-                const req = createJwtRequest(secret, { roles: [] });
+                const token = createBearerToken(secret, { roles: [] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -989,7 +989,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1002,7 +1002,7 @@ describe("auth/roles", () => {
                 type ${typePost} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [DELETE],
-                    where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles_INCLUDES: "admin" } }
                 }]) {
                     id: ID
                     name: String
@@ -1038,12 +1038,12 @@ describe("auth/roles", () => {
                     CREATE (:${typeUser} {id: "${userId}"})-[:HAS_POST]->(:${typePost} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { roles: [] });
+                const token = createBearerToken(secret, { roles: [] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -1059,7 +1059,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1071,7 +1071,7 @@ describe("auth/roles", () => {
                 type Query {
                     ${typeUser.plural}: [${typeUser}] @cypher(statement: "MATCH (u:${typeUser}) RETURN u AS u", columnName: "u") @authorization(validate: [{
                         when: [BEFORE],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
                 }
             `;
@@ -1094,12 +1094,12 @@ describe("auth/roles", () => {
             });
 
             try {
-                const req = createJwtRequest(secret, { roles: [] });
+                const token = createBearerToken(secret, { roles: [] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1112,7 +1112,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1124,7 +1124,7 @@ describe("auth/roles", () => {
                 type Mutation {
                     ${typeUser.operations.create}: ${typeUser} @cypher(statement: "CREATE (u:${typeUser}) RETURN u AS u", columnName: "u") @authorization(validate: [{
                         when: [BEFORE],
-                        where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles_INCLUDES: "admin" } }
                     }])
                 }
             `;
@@ -1147,12 +1147,12 @@ describe("auth/roles", () => {
             });
 
             try {
-                const req = createJwtRequest(secret, { roles: [] });
+                const token = createBearerToken(secret, { roles: [] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1165,7 +1165,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
@@ -1179,7 +1179,7 @@ describe("auth/roles", () => {
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${typeHistory}) RETURN h AS h", columnName: "h")
                         @authorization(validate: [{
                             when: [BEFORE],
-                            where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                            where: { jwt: { roles_INCLUDES: "admin" } }
                         }])
                 }
             `;
@@ -1204,12 +1204,12 @@ describe("auth/roles", () => {
             });
 
             try {
-                const req = createJwtRequest(secret, { roles: [] });
+                const token = createBearerToken(secret, { roles: [] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -1226,7 +1226,7 @@ describe("auth/roles", () => {
             const type = new UniqueType("User");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     id: String!
                     roles: [String!]!
                 }
@@ -1241,10 +1241,10 @@ describe("auth/roles", () => {
                     @authorization(
                         filter: [
                             {
-                                where: { node: { id: "$jwt.id" }, jwtPayload: { roles_INCLUDES: "user" } }
+                                where: { node: { id: "$jwt.id" }, jwt: { roles_INCLUDES: "user" } }
                             }, 
                             {
-                                where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                                where: { jwt: { roles_INCLUDES: "admin" } }
                             }
                         ]
                     )
@@ -1283,12 +1283,12 @@ describe("auth/roles", () => {
                     CREATE (:${type.name} {id: "${userId2}", name: "User2", password: "password" })
                 `);
                 // request with role "user" - should only return details of user
-                const userReq = createJwtRequest(secret, { roles: ["user"], id: userId });
+                const userToken = createBearerToken(secret, { roles: ["user"], id: userId });
 
                 const gqlResultUser = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: userReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: userToken }),
                 });
 
                 expect(gqlResultUser.data).toEqual({
@@ -1296,12 +1296,12 @@ describe("auth/roles", () => {
                 });
 
                 // request with role "admin" - should return all users
-                const adminReq = createJwtRequest(secret, { roles: ["admin"], id: userId2 });
+                const adminToken = createBearerToken(secret, { roles: ["admin"], id: userId2 });
 
                 const gqlResultAdmin = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: adminReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: adminToken }),
                 });
 
                 expect(gqlResultAdmin.data).toEqual({
@@ -1323,7 +1323,7 @@ describe("auth/roles", () => {
             const type = new UniqueType("User");
 
             const typeDefs = `
-                type JWTPayload @jwtPayload {
+                type JWTPayload @jwt {
                     roles: [String!]! @jwtClaim(path: "https://auth0\\\\.mysite\\\\.com/claims.https://auth0\\\\.mysite\\\\.com/claims/roles")
                 }
 
@@ -1338,7 +1338,7 @@ describe("auth/roles", () => {
                         validate: [
                             {
                                 when: [BEFORE],
-                                where: { jwtPayload: { roles_INCLUDES: "admin" } }
+                                where: { jwt: { roles_INCLUDES: "admin" } }
                             }
                         ]
                     )
@@ -1372,7 +1372,7 @@ describe("auth/roles", () => {
                     CREATE (:${type.name} {id: "${userId}", name: "User1", password: "password" })
                 `);
                 // request without role "admin" - should return all users
-                const nonAdminReq = createJwtRequest(secret, {
+                const nonAdminToken = createBearerToken(secret, {
                     "https://auth0.mysite.com/claims": { "https://auth0.mysite.com/claims/roles": ["user"] },
                     id: userId,
                 });
@@ -1381,14 +1381,14 @@ describe("auth/roles", () => {
                     schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
-                        req: nonAdminReq,
+                        token: nonAdminToken,
                     }),
                 });
 
                 expect((gqlResultUser.errors as any[])[0].message).toBe("Forbidden");
 
                 // request with role "admin" - should return all users
-                const adminReq = createJwtRequest(secret, {
+                const adminToken = createBearerToken(secret, {
                     "https://auth0.mysite.com/claims": { "https://auth0.mysite.com/claims/roles": ["admin"] },
                     id: userId,
                 });
@@ -1396,7 +1396,7 @@ describe("auth/roles", () => {
                 const gqlResultAdmin = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: adminReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: adminToken }),
                 });
 
                 expect(gqlResultAdmin.data).toEqual({

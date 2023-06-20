@@ -25,6 +25,7 @@ import type { Context, PredicateReturn } from "../../../types";
 import type { AuthorizationOperation, AuthorizationValidateWhen } from "../../../types/authorization";
 import { getOrCreateCypherNode } from "../../utils/get-or-create-cypher-variable";
 import { createAuthorizationWherePredicate } from "../where/create-authorization-where-predicate";
+import { findMatchingRules } from "../utils/find-matching-rules";
 
 export function createAuthorizationValidatePredicate({
     when,
@@ -45,10 +46,8 @@ export function createAuthorizationValidatePredicate({
 }): PredicateReturn | undefined {
     const cypherNode = getOrCreateCypherNode(variable);
 
-    // TODO: double check this logic
-    const matchedRules = rules.filter(
-        (rule) => rule.when.includes(when) && rule.operations.some((operation) => operations.includes(operation))
-    );
+    const rulesMatchingOperations = findMatchingRules(rules, operations);
+    const matchedRules = rulesMatchingOperations.filter((rule) => rule.when.includes(when));
 
     const predicates: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
@@ -81,12 +80,9 @@ export function createAuthorizationValidatePredicate({
 
     if (predicates.length) {
         const wherePredicate = Cypher.or(...predicates);
-        let innerPredicate: Cypher.Predicate;
-        if (conditionForEvaluation) {
-            innerPredicate = Cypher.and(conditionForEvaluation, Cypher.not(wherePredicate));
-        } else {
-            innerPredicate = Cypher.not(wherePredicate);
-        }
+        const innerPredicate: Cypher.Predicate = conditionForEvaluation
+            ? Cypher.and(conditionForEvaluation, Cypher.not(wherePredicate))
+            : Cypher.not(wherePredicate);
         const validatePredicate = Cypher.apoc.util.validatePredicate(innerPredicate, AUTH_FORBIDDEN_ERROR);
 
         return {

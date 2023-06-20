@@ -23,8 +23,8 @@ import { graphql } from "graphql";
 import * as neo4jDriver from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { UniqueType } from "../../utils/graphql-types";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("@alias directive", () => {
     let driver: Driver;
@@ -45,7 +45,7 @@ describe("@alias directive", () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
         const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
@@ -63,7 +63,7 @@ describe("@alias directive", () => {
 
             type ${AliasDirectiveTestMovie} {
                 title: String! @alias(property: "dbTitle")
-                titleAuth: String @alias(property: "dbTitle") @authorization(validate: [{ where: { jwtPayload: { roles_INCLUDES: "reader" } } }])
+                titleAuth: String @alias(property: "dbTitle") @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "reader" } } }])
                 year: Int
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
@@ -125,12 +125,12 @@ describe("@alias directive", () => {
         `;
 
         // For the @auth
-        const req = createJwtRequest(secret, { roles: ["reader"] });
+        const token = createBearerToken(secret, { roles: ["reader"] });
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: usersQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -159,12 +159,12 @@ describe("@alias directive", () => {
 
         // For the @auth
         const tokenSub = dbName;
-        const req = createJwtRequest(secret, { roles: ["reader"], sub: tokenSub });
+        const token = createBearerToken(secret, { roles: ["reader"], sub: tokenSub });
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: protectedUsersQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
         });
 
         expect(gqlResult.errors).toBeFalsy();

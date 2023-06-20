@@ -22,8 +22,8 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { UniqueType } from "../../../utils/graphql-types";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("auth/object-path", () => {
     let driver: Driver;
@@ -50,7 +50,7 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 nestedSub: String! @jwtClaim(path: "nested.object.path.sub")
             }
 
@@ -87,7 +87,7 @@ describe("auth/object-path", () => {
                 CREATE (:${User} {id: "${userId}"})
             `);
 
-            const req = createJwtRequest(secret, {
+            const token = createBearerToken(secret, {
                 nested: {
                     object: {
                         path: {
@@ -100,7 +100,7 @@ describe("auth/object-path", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -158,12 +158,12 @@ describe("auth/object-path", () => {
                 CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:${Post} {id: "${postId}"})
             `);
 
-            const req = createJwtRequest(secret);
+            const token = createBearerToken(secret);
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req, userId }),
+                contextValue: neo4j.getContextValues({ token, userId }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -179,7 +179,7 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]! @jwtClaim(path: "https://github\\\\.com/claims.https://github\\\\.com/claims/roles")
             }
 
@@ -187,7 +187,7 @@ describe("auth/object-path", () => {
                 id: ID
             }
 
-            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }])
         `;
 
         const userId = generate({
@@ -216,14 +216,14 @@ describe("auth/object-path", () => {
                 CREATE (:${User} {id: "${userId}"})
             `);
 
-            const req = createJwtRequest(secret, {
+            const token = createBearerToken(secret, {
                 "https://github.com/claims": { "https://github.com/claims/roles": ["admin"] },
             });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -239,7 +239,7 @@ describe("auth/object-path", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]! 
             }
 
@@ -247,7 +247,7 @@ describe("auth/object-path", () => {
                 id: ID
             }
 
-            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }])
         `;
 
         const userId = generate({
@@ -280,12 +280,12 @@ describe("auth/object-path", () => {
             `);
 
             // Not a valid JWT since signature shall never match
-            const req = createJwtRequest(secret);
+            const token = createBearerToken(secret);
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
 
             // Since we don't have a valid JWKS Endpoint, we will always get an error validating our JWKS

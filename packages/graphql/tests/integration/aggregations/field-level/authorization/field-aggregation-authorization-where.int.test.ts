@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 import { UniqueType } from "../../../../utils/graphql-types";
-import { createJwtRequest } from "../../../../utils/create-jwt-request";
+import { createBearerToken } from "../../../../utils/create-bearer-token";
 
 describe(`Field Level Authorization Where Requests`, () => {
     let neoSchema: Neo4jGraphQL;
@@ -61,7 +61,7 @@ describe(`Field Level Authorization Where Requests`, () => {
                 CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", year:1985, createdAt: datetime(), testStr: "1235"})`);
 
         const extendedTypeDefs = `${typeDefs}
-        extend type ${typeActor.name} @authorization(filter: [{ where: { node: { testStr: "$jwt.sub" } } }])`;
+        extend type ${typeActor.name} @authorization(filter: [{ operations: [AGGREGATE], where: { node: { testStr: "$jwt.sub" } } }])`;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs: extendedTypeDefs,
@@ -87,11 +87,11 @@ describe(`Field Level Authorization Where Requests`, () => {
                 }
             }`;
 
-        const req = createJwtRequest(secret, { sub: "1234" });
+        const token = createBearerToken(secret, { sub: "1234" });
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
@@ -129,11 +129,11 @@ describe(`Field Level Authorization Where Requests`, () => {
                 }
             }`;
 
-        const invalidReq = createJwtRequest(secret, { sub: "2222" });
+        const invalidToken = createBearerToken(secret, { sub: "2222" });
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({

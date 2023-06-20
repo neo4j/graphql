@@ -25,7 +25,7 @@ import type { Field } from "./attribute/Field";
 
 export class Operation {
     public readonly name: string;
-    // custom cypher fields
+    // Currently only includes custom Cypher fields
     public readonly fields: Map<string, Field> = new Map();
     public readonly annotations: Partial<Annotations> = {};
 
@@ -49,6 +49,10 @@ export class Operation {
         }
     }
 
+    public findFields(name: string): Field | undefined {
+        return this.fields.get(name);
+    }
+
     private addFields(field: Field): void {
         if (this.fields.has(field.name)) {
             throw new Neo4jGraphQLSchemaValidationError(`Field ${field.name} already exists in ${this.name}`);
@@ -65,11 +69,6 @@ export class Operation {
         }
 
         // We cast to any because we aren't narrowing the Annotation type here.
-        // There's no reason to narrow either, since we care more about performance.
         this.annotations[annotationKey] = annotation as any;
-    }
-
-    public findFields(name: string): Field | undefined {
-        return this.fields.get(name);
     }
 }

@@ -51,7 +51,7 @@
         "ws": "^8.11.0"
     },
     "devDependencies": {
-        "concurrently": "8.1.0",
-        "parcel": "2.9.1"
+        "concurrently": "8.2.0",
+        "parcel": "2.9.2"
     }
 }

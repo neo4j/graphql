@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("auth/custom-resolvers", () => {
     let driver: Driver;
@@ -76,12 +76,12 @@ describe("auth/custom-resolvers", () => {
                 },
             });
 
-            const req = createJwtRequest(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -121,12 +121,12 @@ describe("auth/custom-resolvers", () => {
                 },
             });
 
-            const req = createJwtRequest(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -169,12 +169,12 @@ describe("auth/custom-resolvers", () => {
                 },
             });
 
-            const req = createJwtRequest(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();

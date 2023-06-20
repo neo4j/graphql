@@ -24,7 +24,7 @@ import type { Driver } from "neo4j-driver";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";
 import Neo4j from "../neo4j";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1760", () => {
     let schema: GraphQLSchema;
@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
         const typeDefs = gql`
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
 
             type ApplicationVariant implements BusinessObject
-                @authorization(validate: [{ when: [BEFORE], where: { jwtPayload: { roles_INCLUDES: "ALL" } } }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 markets: [Market!]! @relationship(type: "HAS_MARKETS", direction: OUT)
                 id: ID! @id(autogenerate: false)
@@ -57,20 +57,20 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
 
             type NameDetails
-                @authorization(validate: [{ when: [BEFORE], where: { jwtPayload: { roles_INCLUDES: "ALL" } } }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, READ, UPDATE, DELETE]) {
                 fullName: String!
             }
 
             type Market implements BusinessObject
-                @authorization(validate: [{ when: [BEFORE], where: { jwtPayload: { roles_INCLUDES: "ALL" } } }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 id: ID! @id(autogenerate: false)
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", direction: OUT)
             }
 
             type BaseObject
-                @authorization(validate: [{ when: [BEFORE], where: { jwtPayload: { roles_INCLUDES: "ALL" } } }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 id: ID! @id
             }
@@ -119,7 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
         `;
 
-        const req = createJwtRequest(secret, { roles: ["ALL"] });
+        const token = createBearerToken(secret, { roles: ["ALL"] });
         const result = await graphql({
             schema,
             source: getQuerySource(query),
@@ -135,7 +135,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     limit: 50,
                 },
             },
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(result.errors).toBeFalsy();

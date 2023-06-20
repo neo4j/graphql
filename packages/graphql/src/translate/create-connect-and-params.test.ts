@@ -41,6 +41,7 @@ describe("createConnectAndParams", () => {
                     type: "SIMILAR",
                     fieldName: "similarMovies",
                     queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
+                    aggregate: true,
                     inherited: false,
                     typeMeta: {
                         name: "Movie",
@@ -88,6 +89,7 @@ describe("createConnectAndParams", () => {
                 concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
                 compositeEntities: [],
                 operations: {},
+                annotations: [],
             }),
             neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4.0"),
         }).instance();

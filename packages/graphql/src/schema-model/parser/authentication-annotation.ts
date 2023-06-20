@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
+import type { GraphQLWhereArg } from "../../types";
 import type { AuthenticationOperation } from "../annotation/AuthenticationAnnotation";
 import { AuthenticationAnnotation } from "../annotation/AuthenticationAnnotation";
 
 import { parseArguments } from "./utils";
 const authenticationDefaultOperations: AuthenticationOperation[] = [
     "READ",
+    "AGGREGATE",
     "CREATE",
     "UPDATE",
     "DELETE",
@@ -33,11 +35,15 @@ const authenticationDefaultOperations: AuthenticationOperation[] = [
 export function parseAuthenticationAnnotation(directive: DirectiveNode): AuthenticationAnnotation {
     const args = parseArguments(directive) as {
         operations?: AuthenticationOperation[];
+        jwt?: GraphQLWhereArg;
     };
 
-    if (args.operations) {
-        return new AuthenticationAnnotation(args.operations);
+    const constructorArgs: [AuthenticationOperation[], GraphQLWhereArg?] = [
+        args.operations || authenticationDefaultOperations,
+    ];
+    if (args.jwt) {
+        constructorArgs.push(args.jwt);
     }
 
-    return new AuthenticationAnnotation(authenticationDefaultOperations);
+    return new AuthenticationAnnotation(...constructorArgs);
 }

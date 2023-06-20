@@ -20,8 +20,8 @@
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("Cypher Auth Projection On Connections", () => {
     const secret = "secret";
@@ -72,22 +72,22 @@ describe("Cypher Auth Projection On Connections", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
+        const token = createBearerToken("secret", { sub: "super_admin" });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:\`Post\`)
                 OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:\`User\`)
                 WITH *, count(this2) AS creatorCount
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this2.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this2.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH { node: { content: this1.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -102,7 +102,8 @@ describe("Cypher Auth Projection On Connections", () => {
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"super_admin\\"
-                }
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -130,26 +131,26 @@ describe("Cypher Auth Projection On Connections", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
+        const token = createBearerToken("secret", { sub: "super_admin" });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:\`Post\`)
                 OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:\`User\`)
                 WITH *, count(this2) AS creatorCount
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this2.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this2.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this1
                     MATCH (this1:\`Post\`)<-[this3:HAS_POST]-(this4:\`User\`)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this4.id = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this4.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH { node: { name: this4.name } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
@@ -169,7 +170,8 @@ describe("Cypher Auth Projection On Connections", () => {
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"super_admin\\"
-                }
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });

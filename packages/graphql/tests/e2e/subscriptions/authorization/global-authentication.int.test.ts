@@ -26,7 +26,7 @@ import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
-import { createJwtHeader } from "../../../utils/create-jwt-request";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 import { UniqueType } from "../../../utils/graphql-types";
 
 describe("Subscription global authentication", () => {
@@ -41,10 +41,11 @@ describe("Subscription global authentication", () => {
             title: String!
         }
         extend type ${typeMovie} @authentication
+        extend schema @authentication
     `;
 
     beforeAll(async () => {
-        jwtToken = createJwtHeader(secret, { roles: ["admin"] });
+        jwtToken = createBearerToken(secret, { roles: ["admin"] });
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
     });
@@ -68,7 +69,6 @@ describe("Subscription global authentication", () => {
                 features: {
                     authorization: {
                         key: secret,
-                        globalAuthentication: true,
                     },
                 },
                 plugins: {
@@ -145,7 +145,6 @@ describe("Subscription global authentication", () => {
                 features: {
                     authorization: {
                         key: secret,
-                        globalAuthentication: true,
                     },
                 },
                 plugins: {
@@ -222,7 +221,6 @@ describe("Subscription global authentication", () => {
                 features: {
                     authorization: {
                         key: secret,
-                        globalAuthentication: true,
                     },
                 },
                 plugins: {

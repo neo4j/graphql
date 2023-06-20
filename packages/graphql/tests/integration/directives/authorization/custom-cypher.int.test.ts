@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import Neo4j from "../../neo4j";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("should inject the auth into cypher directive", () => {
     let driver: Driver;
@@ -69,12 +69,12 @@ describe("should inject the auth into cypher directive", () => {
         `;
 
         try {
-            const req = createJwtRequest(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query as string,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -164,12 +164,12 @@ describe("should inject the auth into cypher directive", () => {
         `;
 
         try {
-            const req = createJwtRequest(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query as string,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -266,12 +266,12 @@ describe("should inject the auth into cypher directive", () => {
                 CREATE (:User {id: "${userId}"})
             `);
 
-            const req = createJwtRequest(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();

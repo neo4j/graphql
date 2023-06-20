@@ -20,8 +20,8 @@
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("Auth projections for interface relationship fields", () => {
     const secret = "secret";
@@ -83,9 +83,9 @@ describe("Auth projections for interface relationship fields", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
+        const token = createBearerToken("secret", { sub: "super_admin" });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -100,7 +100,7 @@ describe("Auth projections for interface relationship fields", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this3:ACTED_IN]->(this4:\`Series\`)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this4.episodes = coalesce($jwt.sub, \\"\\")), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this4.episodes = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this4 { __resolveType: \\"Series\\", __id: id(this), .episodes, .title } AS this4
                     RETURN this4 AS var2
                 }
@@ -116,7 +116,8 @@ describe("Auth projections for interface relationship fields", () => {
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"super_admin\\"
-                }
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });

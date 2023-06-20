@@ -19,7 +19,7 @@
 
 import type { Context, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
-import type { GraphElement } from "../../../classes";
+import type { GraphElement, Neo4jDatabaseInfo } from "../../../classes";
 import { Node } from "../../../classes";
 import type { WhereRegexGroups } from "../utils";
 import { whereRegEx } from "../utils";
@@ -164,7 +164,8 @@ export function createPropertyWhere({
         operator,
         durationField,
         pointField,
-        neo4jDatabaseInfo: context.neo4jDatabaseInfo,
+        // Casting because this is definitely assigned in the wrapper
+        neo4jDatabaseInfo: context.neo4jDatabaseInfo as Neo4jDatabaseInfo,
     });
     if (isNot) {
         return {

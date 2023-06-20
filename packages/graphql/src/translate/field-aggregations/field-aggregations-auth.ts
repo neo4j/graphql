@@ -52,7 +52,7 @@ export function createFieldAggregationAuth({
                 node,
             },
         ],
-        operations: ["READ"],
+        operations: ["AGGREGATE"],
     });
 
     if (authorizationPredicateReturn) {

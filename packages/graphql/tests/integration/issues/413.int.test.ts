@@ -23,7 +23,7 @@ import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("413", () => {
     let driver: Driver;
@@ -43,7 +43,7 @@ describe("413", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = gql`
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 tenant_id: String!
             }
 
@@ -92,14 +92,14 @@ describe("413", () => {
                 { tenantID }
             );
 
-            const req = createJwtRequest(secret, {
+            const token = createBearerToken(secret, {
                 tenant_id: tenantID,
             });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
 
             expect(result.errors).toBeFalsy();

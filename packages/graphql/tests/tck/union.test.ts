@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
-import { createJwtRequest } from "../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
+import { createBearerToken } from "../utils/create-bearer-token";
 
 describe("Cypher Union", () => {
     const secret = "secret";
@@ -33,7 +32,12 @@ describe("Cypher Union", () => {
         typeDefs = gql`
             union Search = Movie | Genre
 
-            type Genre @auth(rules: [{ operations: [READ], allow: { name: "$jwt.jwtAllowedNamesExample" } }]) {
+            type Genre
+                @authorization(
+                    validate: [
+                        { when: [BEFORE], operations: [READ], where: { node: { name: "$jwt.jwtAllowedNamesExample" } } }
+                    ]
+                ) {
                 name: String
             }
 
@@ -45,11 +49,7 @@ describe("Cypher Union", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
-            },
+            features: { authorization: { key: secret } },
         });
     });
 
@@ -69,10 +69,8 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { jwtAllowedNamesExample: "Horror" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { jwtAllowedNamesExample: "Horror" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -81,7 +79,7 @@ describe("Cypher Union", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:\`Genre\`)
-                    WHERE apoc.util.validatePredicate(NOT ((this1.name IS NOT NULL AND this1.name = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this1.name = coalesce($jwt.jwtAllowedNamesExample, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this1 { __resolveType: \\"Genre\\", __id: id(this), .name } AS this1
                     RETURN this1 AS var2
                     UNION
@@ -98,7 +96,12 @@ describe("Cypher Union", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Horror\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"jwtAllowedNamesExample\\": \\"Horror\\"
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -116,10 +119,8 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { jwtAllowedNamesExample: "Horror" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { jwtAllowedNamesExample: "Horror" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -128,7 +129,7 @@ describe("Cypher Union", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:\`Genre\`)
-                    WHERE apoc.util.validatePredicate(NOT ((this1.name IS NOT NULL AND this1.name = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this1.name = coalesce($jwt.jwtAllowedNamesExample, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this1 { __resolveType: \\"Genre\\", __id: id(this), .name } AS this1
                     RETURN this1 AS var2
                     UNION
@@ -145,7 +146,12 @@ describe("Cypher Union", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Horror\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"jwtAllowedNamesExample\\": \\"Horror\\"
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -169,10 +175,8 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { jwtAllowedNamesExample: "Horror" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { jwtAllowedNamesExample: "Horror" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -182,19 +186,19 @@ describe("Cypher Union", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:\`Genre\`)
-                    WHERE (this1.name = $param1 AND apoc.util.validatePredicate(NOT ((this1.name IS NOT NULL AND this1.name = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    WHERE (this1.name = $param1 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this1.name = coalesce($jwt.jwtAllowedNamesExample, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     WITH this1 { __resolveType: \\"Genre\\", __id: id(this), .name } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:SEARCH]->(this4:\`Movie\`)
-                    WHERE this4.title = $param3
+                    WHERE this4.title = $param5
                     WITH this4 { __resolveType: \\"Movie\\", __id: id(this), .title } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
-                SKIP $param4
-                LIMIT $param5
+                SKIP $param6
+                LIMIT $param7
                 RETURN collect(var2) AS var2
             }
             RETURN this { search: var2 } AS this"
@@ -204,13 +208,18 @@ describe("Cypher Union", () => {
             "{
                 \\"param0\\": \\"some title\\",
                 \\"param1\\": \\"Horror\\",
-                \\"param2\\": \\"Horror\\",
-                \\"param3\\": \\"The Matrix\\",
-                \\"param4\\": {
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"jwtAllowedNamesExample\\": \\"Horror\\"
+                },
+                \\"jwtDefault\\": {},
+                \\"param5\\": \\"The Matrix\\",
+                \\"param6\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 },
-                \\"param5\\": {
+                \\"param7\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
@@ -231,10 +240,8 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
@@ -269,10 +276,8 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -309,10 +314,8 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
@@ -373,10 +376,8 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -438,10 +439,8 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -507,10 +506,8 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -573,10 +570,8 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
@@ -628,10 +623,8 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", {});
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)

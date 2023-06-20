@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { compileCypher } from "../../utils/compile-cypher";
 import { wrapApocConvertDate } from "../projection/elements/create-datetime-element";
 import { stringifyObject } from "../utils/stringify-object";
 import Cypher from "@neo4j/cypher-builder";
@@ -40,17 +41,18 @@ export function stringAggregationQuery(
     fieldName: string,
     fieldRef: Cypher.Variable,
     targetAlias: Cypher.Node | Cypher.Relationship
-): Cypher.RawCypher {
+): Cypher.Clause {
     const fieldPath = targetAlias.property(fieldName);
-    return new Cypher.RawCypher((env) => {
-        const targetAliasCypher = targetAlias.getCypher(env);
-        const fieldPathCypher = fieldPath.getCypher(env);
 
-        return dedent`${matchWherePattern.getCypher(env)}
+    return new Cypher.RawCypher((env) => {
+        const targetAliasCypher = compileCypher(targetAlias, env);
+        const fieldPathCypher = compileCypher(fieldPath, env);
+
+        return dedent`${compileCypher(matchWherePattern, env)}
         WITH ${targetAliasCypher}
         ORDER BY size(${fieldPathCypher}) DESC
         WITH collect(${fieldPathCypher}) AS list
-        RETURN { longest: head(list), shortest: last(list) } AS ${fieldRef.getCypher(env)}`;
+        RETURN { longest: head(list), shortest: last(list) } AS ${compileCypher(fieldRef, env)}`;
     });
 }
 
@@ -62,10 +64,11 @@ export function numberAggregationQuery(
 ): Cypher.RawCypher {
     const fieldPath = targetAlias.property(fieldName);
     return new Cypher.RawCypher((env) => {
-        const fieldPathCypher = fieldPath.getCypher(env);
+        const fieldPathCypher = compileCypher(fieldPath, env);
 
-        return dedent`${matchWherePattern.getCypher(env)}
-        RETURN { min: min(${fieldPathCypher}), max: max(${fieldPathCypher}), average: avg(${fieldPathCypher}), sum: sum(${fieldPathCypher}) }  AS ${fieldRef.getCypher(
+        return dedent`${compileCypher(matchWherePattern, env)}
+        RETURN { min: min(${fieldPathCypher}), max: max(${fieldPathCypher}), average: avg(${fieldPathCypher}), sum: sum(${fieldPathCypher}) }  AS ${compileCypher(
+            fieldRef,
             env
         )}`;
     });
@@ -79,10 +82,10 @@ export function defaultAggregationQuery(
 ): Cypher.RawCypher {
     const fieldPath = targetAlias.property(fieldName);
     return new Cypher.RawCypher((env) => {
-        const fieldPathCypher = fieldPath.getCypher(env);
+        const fieldPathCypher = compileCypher(fieldPath, env);
 
-        return dedent`${matchWherePattern.getCypher(env)}
-        RETURN { min: min(${fieldPathCypher}), max: max(${fieldPathCypher}) } AS ${fieldRef.getCypher(env)}`;
+        return dedent`${compileCypher(matchWherePattern, env)}
+        RETURN { min: min(${fieldPathCypher}), max: max(${fieldPathCypher}) } AS ${compileCypher(fieldRef, env)}`;
     });
 }
 
@@ -94,11 +97,11 @@ export function dateTimeAggregationQuery(
 ): Cypher.RawCypher {
     const fieldPath = targetAlias.property(fieldName);
     return new Cypher.RawCypher((env) => {
-        const fieldPathCypher = fieldPath.getCypher(env);
-        return dedent`${matchWherePattern.getCypher(env)}
+        const fieldPathCypher = compileCypher(fieldPath, env);
+        return dedent`${compileCypher(matchWherePattern, env)}
         RETURN ${stringifyObject({
             min: new Cypher.RawCypher(wrapApocConvertDate(`min(${fieldPathCypher})`)),
             max: new Cypher.RawCypher(wrapApocConvertDate(`max(${fieldPathCypher})`)),
-        }).getCypher(env)} AS ${fieldRef.getCypher(env)}`;
+        }).getCypher(env)} AS ${compileCypher(fieldRef, env)}`;
     });
 }

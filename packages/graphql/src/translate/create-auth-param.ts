@@ -44,7 +44,7 @@ function createAuthParam({ context }: { context: ContextAuthParams }): AuthConte
     if (rolesPath) {
         param.roles = dotProp.get(jwt as unknown as { [key: string]: any }, rolesPath, []);
     } else if (jwt.roles) {
-        param.roles = jwt.roles;
+        param.roles = jwt.roles as string[];
     }
 
     return param;

@@ -23,7 +23,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import type { Neo4jGraphQLAuthenticationError } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("Global authentication - Authorization JWT plugin", () => {
     let driver: Driver;
@@ -36,6 +36,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
         type ${testMovie} {
             name: String
         }
+        extend schema @authentication
     `;
 
     const query = `
@@ -60,7 +61,9 @@ describe("Global authentication - Authorization JWT plugin", () => {
             driver,
             typeDefs,
             features: {
-                authorization: { key: secret, globalAuthentication: true },
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -84,16 +87,16 @@ describe("Global authentication - Authorization JWT plugin", () => {
             driver,
             typeDefs,
             features: {
-                authorization: { key: secret, globalAuthentication: true },
+                authorization: {
+                    key: secret,
+                },
             },
         });
-
-        const req = { headers: { authorization: "Bearer xxx.invalidtoken.xxx" } };
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token: "Bearer xxx.invalidtoken.xxx" }),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -110,16 +113,18 @@ describe("Global authentication - Authorization JWT plugin", () => {
             driver,
             typeDefs,
             features: {
-                authorization: { key: secret, globalAuthentication: true },
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
-        const req = createJwtRequest("wrong-secret", { sub: "test" });
+        const token = createBearerToken("wrong-secret", { sub: "test" });
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -131,14 +136,17 @@ describe("Global authentication - Authorization JWT plugin", () => {
         expect(gqlResult.data).toBeNull();
     });
 
-    test("should fail if noVerify and global authentication are both enabled", async () => {
+    test("should not throw a different error if noVerify and global authentication are both enabled", async () => {
         let initError: Error | null | unknown;
         try {
             const neoSchema = new Neo4jGraphQL({
                 driver,
                 typeDefs,
                 features: {
-                    authorization: { key: secret, verify: false, globalAuthentication: true },
+                    authorization: {
+                        key: secret,
+                        verify: false,
+                    },
                 },
             });
 
@@ -153,9 +161,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
         }
 
         expect(initError).toBeDefined();
-        expect((initError as Error)?.message).toInclude(
-            "`globalAuthentication` option requires the `verify` option to be enabled."
-        );
+        expect((initError as Error)?.message).toInclude("Unauthenticated");
     });
 
     test("should not fail if noVerify is false and global authentication is true", async () => {
@@ -165,16 +171,18 @@ describe("Global authentication - Authorization JWT plugin", () => {
                 driver,
                 typeDefs,
                 features: {
-                    authorization: { key: secret, globalAuthentication: true },
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
 
-            const req = createJwtRequest(secret, { sub: "test" });
+            const token = createBearerToken(secret, { sub: "test" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any)[testMovie.plural]).toHaveLength(0);
@@ -190,16 +198,18 @@ describe("Global authentication - Authorization JWT plugin", () => {
             driver,
             typeDefs,
             features: {
-                authorization: { key: secret, globalAuthentication: true },
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
-        const req = createJwtRequest(secret, { sub: "test" });
+        const token = createBearerToken(secret, { sub: "test" });
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeUndefined();

@@ -23,7 +23,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/2812", () => {
     let driver: Driver;
@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         Actor = new UniqueType("Actor");
 
         const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
@@ -55,11 +55,11 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 id: ID! @id
                 name: String
                 nodeCreatedBy: String
-                fieldA: String @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwtPayload: { roles_INCLUDES: "role-A" } } }])
-                fieldB: String @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwtPayload: { roles_INCLUDES: "role-B" } } }])
+                fieldA: String @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "role-A" } } }])
+                fieldB: String @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "role-B" } } }])
                 movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
-            type ${Movie} @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }]) {
+            type ${Movie} @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 id: ID
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
@@ -104,12 +104,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-            const req = createJwtRequest(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
+            const token = createBearerToken(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeFalsy();
         });
@@ -132,12 +132,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-            const req = createJwtRequest(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
+            const token = createBearerToken(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeFalsy();
         });
@@ -160,12 +160,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-            const req = createJwtRequest(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
+            const token = createBearerToken(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeFalsy();
         });
@@ -190,12 +190,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-            const req = createJwtRequest(secret, { roles: ["admin"], sub: "User" });
+            const token = createBearerToken(secret, { roles: ["admin"], sub: "User" });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeTruthy();
         });
@@ -218,12 +218,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-            const req = createJwtRequest(secret, { roles: ["admin"], sub: "User" });
+            const token = createBearerToken(secret, { roles: ["admin"], sub: "User" });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeTruthy();
         });
@@ -246,12 +246,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-            const req = createJwtRequest(secret, { roles: ["admin"], sub: "User" });
+            const token = createBearerToken(secret, { roles: ["admin"], sub: "User" });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeFalsy();
         });

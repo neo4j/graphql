@@ -36,6 +36,8 @@ import { collectUnionSubqueriesResults } from "./projection/subquery/collect-uni
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
+import { checkAuthentication } from "./authorization/check-authentication";
+import { compileCypher } from "../utils/compile-cypher";
 
 interface Res {
     projection: Cypher.Expr[];
@@ -85,8 +87,13 @@ export default function createProjectionAndParams({
     resolveType?: boolean;
     cypherFieldAliasMap: CypherFieldReferenceMap;
 }): ProjectionResult {
+    checkAuthentication({ context, node, targetOperations: ["READ"] });
+
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
+
+        // if not aggregation/ connection
+        checkAuthentication({ context, node, targetOperations: ["READ"], field: field.name });
 
         const whereInput = field.args.where as GraphQLWhereArg;
         const optionsInput = (field.args.options || {}) as GraphQLOptionsArg;
@@ -226,9 +233,12 @@ export default function createProjectionAndParams({
                         // The nested projection will be surrounded by brackets, so we want to remove
                         // any linebreaks, and then the first opening and the last closing bracket of the line,
                         // as well as any surrounding whitespace.
-                        const nestedProj = recurse.projection.getCypher(env).replaceAll(/(^\s*{\s*)|(\s*}\s*$)/g, "");
+                        const nestedProj = compileCypher(recurse.projection, env).replaceAll(
+                            /(^\s*{\s*)|(\s*}\s*$)/g,
+                            ""
+                        );
 
-                        return `{ __resolveType: "${refNode.name}", __id: id(${varName.getCypher(env)})${
+                        return `{ __resolveType: "${refNode.name}", __id: id(${compileCypher(varName, env)})${
                             nestedProj && `, ${nestedProj}`
                         } }`;
                     });
@@ -266,7 +276,9 @@ export default function createProjectionAndParams({
 
                 const unionAndSort = Cypher.concat(new Cypher.Call(unionClause), collectAndLimitStatements);
                 res.subqueries.push(new Cypher.Call(unionAndSort).innerWith(parentNode));
-                res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${subqueryReturnAlias.getCypher(env)}`));
+                res.projection.push(
+                    new Cypher.RawCypher((env) => `${alias}: ${compileCypher(subqueryReturnAlias, env)}`)
+                );
 
                 return res;
             }
@@ -305,7 +317,7 @@ export default function createProjectionAndParams({
                 authValidatePredicates: recurse.meta?.authValidatePredicates,
             });
             res.subqueries.push(new Cypher.Call(subquery).innerWith(varName));
-            res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${subqueryReturnAlias.getCypher(env)}`));
+            res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${compileCypher(subqueryReturnAlias, env)}`));
             return res;
         }
 
@@ -321,7 +333,9 @@ export default function createProjectionAndParams({
                 res.subqueries.push(aggregationFieldProjection.projectionSubqueryCypher);
             }
             res.projection.push(
-                new Cypher.RawCypher((env) => `${alias}: ${aggregationFieldProjection.projectionCypher.getCypher(env)}`)
+                new Cypher.RawCypher(
+                    (env) => `${alias}: ${compileCypher(aggregationFieldProjection.projectionCypher, env)}`
+                )
             );
             return res;
         }
@@ -340,21 +354,21 @@ export default function createProjectionAndParams({
             ).innerWith(varName);
 
             res.subqueries.push(connectionClause);
-            res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${returnVariable.getCypher(env)}`));
+            res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${compileCypher(returnVariable, env)}`));
 
             return res;
         }
 
         if (pointField) {
             const pointExpr = createPointExpression({ resolveTree: field, field: pointField, variable: varName });
-            res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${pointExpr.getCypher(env)}`));
+            res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${compileCypher(pointExpr, env)}`));
         } else if (temporalField?.typeMeta.name === "DateTime") {
             const datetimeExpr = createDatetimeExpression({
                 resolveTree: field,
                 field: temporalField,
                 variable: varName,
             });
-            res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${datetimeExpr.getCypher(env)}`));
+            res.projection.push(new Cypher.RawCypher((env) => `${field.alias}: ${compileCypher(datetimeExpr, env)}`));
         } else {
             // In the case of using the @alias directive (map a GraphQL field to a db prop)
             // the output will be RETURN varName {GraphQLfield: varName.dbAlias}
@@ -365,7 +379,7 @@ export default function createProjectionAndParams({
 
             if (alias !== field.name || dbFieldName !== field.name || literalElements) {
                 res.projection.push(
-                    new Cypher.RawCypher((env) => `${alias}: ${varName.property(dbFieldName).getCypher(env)}`)
+                    new Cypher.RawCypher((env) => `${alias}: ${compileCypher(varName.property(dbFieldName), env)}`)
                 );
             } else {
                 res.projection.push(new Cypher.RawCypher(`.${dbFieldName}`));
@@ -435,7 +449,7 @@ export default function createProjectionAndParams({
         projection: resolveType
             ? [
                   new Cypher.RawCypher(`__resolveType: "${node.name}"`),
-                  new Cypher.RawCypher((env) => `__id: id(${varName.getCypher(env)})`),
+                  new Cypher.RawCypher((env) => `__id: id(${compileCypher(varName, env)})`),
               ]
             : [],
         params: {},
@@ -448,7 +462,7 @@ export default function createProjectionAndParams({
         predicates: [],
     });
     const projectionCypher = new Cypher.RawCypher((env) => {
-        return `{ ${projection.map((proj) => proj.getCypher(env)).join(", ")} }`;
+        return `{ ${projection.map((proj) => compileCypher(proj, env)).join(", ")} }`;
     });
     return {
         params,

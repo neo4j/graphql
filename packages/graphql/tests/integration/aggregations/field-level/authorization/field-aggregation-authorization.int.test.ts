@@ -19,11 +19,10 @@
 
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import type { IncomingMessage } from "http";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 import { UniqueType } from "../../../../utils/graphql-types";
-import { createJwtRequest } from "../../../../utils/create-jwt-request";
+import { createBearerToken } from "../../../../utils/create-bearer-token";
 
 describe("Field Level Aggregations Auth", () => {
     let driver: Driver;
@@ -68,35 +67,35 @@ describe("Field Level Aggregations Auth", () => {
     });
 
     const testCases = [
-        { name: "count", query: "count" },
-        { name: "string", query: `node {name {longest, shortest}}` },
-        { name: "number", query: `node {year {max, min, average}}` },
-        { name: "default", query: `node { createdAt {max, min}}` },
+        { name: "count", selection: "count" },
+        { name: "string", selection: `node {name {longest, shortest}}` },
+        { name: "number", selection: `node {year {max, min, average}}` },
+        { name: "default", selection: `node { createdAt {max, min}}` },
     ];
 
-    testCases.forEach((testCase) => {
-        describe(`isAuthenticated auth requests ~ ${testCase.name}`, () => {
-            let req: IncomingMessage;
-            let neoSchema: Neo4jGraphQL;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    describe.each(testCases)(`isAuthenticated auth requests ~ $name`, ({ name, selection }) => {
+        let token: string;
+        let neoSchema: Neo4jGraphQL;
 
-            beforeAll(() => {
-                const extendedTypeDefs = `${typeDefs}
-                extend type ${typeMovie.name} @authentication`;
+        beforeAll(() => {
+            const extendedTypeDefs = `${typeDefs}
+                extend type ${typeMovie.name} @authentication(operations: [AGGREGATE])`;
 
-                neoSchema = new Neo4jGraphQL({
-                    typeDefs: extendedTypeDefs,
-                    features: {
-                        authorization: {
-                            key: "secret",
-                        },
+            neoSchema = new Neo4jGraphQL({
+                typeDefs: extendedTypeDefs,
+                features: {
+                    authorization: {
+                        key: "secret",
                     },
-                });
-
-                req = createJwtRequest(secret);
+                },
             });
 
-            test("accepts authenticated requests to movie -> actorAggregate", async () => {
-                const query = `query {
+            token = createBearerToken(secret);
+        });
+
+        test("accepts authenticated requests to movie -> actorAggregate", async () => {
+            const query = `query {
                 ${typeMovie.plural} {
                     ${typeActor.plural}Aggregate {
                         count
@@ -104,138 +103,138 @@ describe("Field Level Aggregations Auth", () => {
                     }
                 }`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
-                });
-                expect(gqlResult.errors).toBeUndefined();
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
+            expect(gqlResult.errors).toBeUndefined();
+        });
 
-            test("accepts authenticated requests to actor -> movieAggregate", async () => {
-                const query = `query {
+        test("accepts authenticated requests to actor -> movieAggregate", async () => {
+            const query = `query {
                 ${typeActor.plural} {
                     ${typeMovie.plural}Aggregate {
-                        ${testCase.query}
+                        ${selection}
                         }
                     }
                 }`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
-                });
-                expect(gqlResult.errors).toBeUndefined();
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
+            expect(gqlResult.errors).toBeUndefined();
+        });
 
-            test("rejects unauthenticated requests to movie -> actorAggregate", async () => {
-                const query = `query {
+        test("accepts unauthenticated requests to movie -> actorAggregate (only movie aggregations require authentication)", async () => {
+            const query = `query {
                 ${typeMovie.plural} {
                     ${typeActor.plural}Aggregate {
-                        ${testCase.query}
+                        ${selection}
                         }
                     }
                 }`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                });
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
+            expect(gqlResult.errors).toBeUndefined();
+        });
 
-            test("rejects unauthenticated requests to actor -> movieAggregate", async () => {
-                const query = `query {
+        test("rejects unauthenticated requests to actor -> movieAggregate", async () => {
+            const query = `query {
                 ${typeActor.plural} {
                     ${typeMovie.plural}Aggregate {
-                        ${testCase.query}
+                        ${selection}
                         }
                     }
                 }`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                });
-                expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
-        describe(`allow requests ~ ${testCase.name}`, () => {
-            let neoSchema: Neo4jGraphQL;
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    describe.each(testCases)(`allow requests ~ $name`, ({ name, selection }) => {
+        let neoSchema: Neo4jGraphQL;
 
-            beforeAll(() => {
-                const extendedTypeDefs = `${typeDefs}
+        beforeAll(() => {
+            const extendedTypeDefs = `${typeDefs}
                 extend type ${typeMovie.name} 
-                    @authorization(validate: [{ when: [BEFORE], where: { node: { testId: "$jwt.sub" } } }])
+                    @authorization(validate: [{ operations: [AGGREGATE], when: [BEFORE], where: { node: { testId: "$jwt.sub" } } }])
                 `;
 
-                neoSchema = new Neo4jGraphQL({
-                    typeDefs: extendedTypeDefs,
-                    features: {
-                        authorization: {
-                            key: "secret",
-                        },
+            neoSchema = new Neo4jGraphQL({
+                typeDefs: extendedTypeDefs,
+                features: {
+                    authorization: {
+                        key: "secret",
                     },
-                });
+                },
             });
+        });
 
-            test("authenticated query", async () => {
-                const query = `query {
+        test("authenticated query", async () => {
+            const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
-                            ${testCase.query}
+                            ${selection}
                             }
                         }
                     }`;
 
-                const req = createJwtRequest(secret, { sub: "1234" });
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
-                });
-                expect(gqlResult.errors).toBeUndefined();
+            const token = createBearerToken(secret, { sub: "1234" });
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
             });
+            expect(gqlResult.errors).toBeUndefined();
+        });
 
-            test("unauthenticated query", async () => {
-                const query = `query {
+        test("unauthenticated query", async () => {
+            const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
-                            ${testCase.query}
+                            ${selection}
                             }
                         }
                     }`;
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                });
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+        });
 
-            test("authenticated query with wrong credentials", async () => {
-                const query = `query {
+        test("authenticated query with wrong credentials", async () => {
+            const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
-                            ${testCase.query}
+                            ${selection}
                             }
                         }
                     }`;
-                const invalidReq = createJwtRequest(secret, { sub: "2222" });
+            const invalidToken = createBearerToken(secret, { sub: "2222" });
 
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
-                        req: invalidReq,
-                    }),
-                });
-                expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                    token: invalidToken,
+                }),
             });
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
     });
 });

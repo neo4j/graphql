@@ -27,7 +27,9 @@ import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
 import { Neo4jGraphQLError } from "../classes";
-import { filterByValues } from "../schema/resolvers/subscriptions/where/filters/filter-by-values";
+import { filterByValues } from "./authorization/utils/filter-by-values";
+import { compileCypher } from "../utils/compile-cypher";
+import { applyAuthentication } from "./authorization/utils/apply-authentication";
 
 export function translateTopLevelCypher({
     context,
@@ -53,13 +55,13 @@ export function translateTopLevelCypher({
         throw new Error(`Failed to find field ${field.fieldName} on operation ${type}.`);
     }
     const annotation = operationField.annotations.authentication;
-    if (annotation && !context.authorization.isAuthenticated) {
-        throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+    if (annotation) {
+        applyAuthentication({ context, annotation });
     }
     const authorizationAnnotation = operationField.annotations.authorization;
     if (authorizationAnnotation) {
         const authorizationResults = authorizationAnnotation.validate?.map((rule) =>
-            filterByValues({ whereInput: rule.where, receivedValues: { jwtPayload: context.authorization.jwt } })
+            filterByValues(rule.where, { jwtPayload: context.authorization.jwt })
         );
         if (authorizationResults?.every((result) => result === false)) {
             throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
@@ -169,7 +171,7 @@ export function translateTopLevelCypher({
                         new Cypher.RawCypher((env) => {
                             return innerNodePartialProjection
                                 .concat(`| this { __resolveType: "${node.name}", `)
-                                .concat(str.getCypher(env).replace("{", ""))
+                                .concat(compileCypher(str, env).replace("{", ""))
                                 .concat("]");
                         })
                     );
@@ -178,7 +180,7 @@ export function translateTopLevelCypher({
         });
 
         projectionStr = new Cypher.RawCypher(
-            (env) => `${headStrs.map((headStr) => headStr.getCypher(env)).join(" + ")}`
+            (env) => `${headStrs.map((headStr) => compileCypher(headStr, env)).join(" + ")}`
         );
     }
 
@@ -252,10 +254,10 @@ export function translateTopLevelCypher({
         }
 
         if (authPredicates.length) {
-            cypherStrs.push(`WHERE ${Cypher.and(...authPredicates).getCypher(env)}`);
+            cypherStrs.push(`WHERE ${compileCypher(Cypher.and(...authPredicates), env)}`);
         }
 
-        const subqueriesStr = projectionSubquery ? `\n${projectionSubquery.getCypher(env)}` : "";
+        const subqueriesStr = projectionSubquery ? `\n${compileCypher(projectionSubquery, env)}` : "";
         if (subqueriesStr) cypherStrs.push(subqueriesStr);
 
         if (field.isScalar || field.isEnum) {

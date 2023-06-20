@@ -25,17 +25,16 @@ import { createAuthorizationBeforePredicate } from "./authorization/create-autho
 import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import { translateTopLevelMatch } from "./translate-top-level-match";
-import { Measurement, addMeasurementField } from "../utils/add-measurement-field";
+import { compileCypher } from "../utils/compile-cypher";
 
 function translateAggregate({ node, context }: { node: Node; context: Context }): [Cypher.Clause, any] {
-    const p1 = performance.now();
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
     const cypherStrs: Cypher.Clause[] = [];
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
     const where = context.resolveTree.args.where as GraphQLWhereArg | undefined;
-    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "READ", where });
+    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "AGGREGATE", where });
     cypherStrs.push(new Cypher.RawCypher(topLevelMatch.cypher));
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
@@ -77,6 +76,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                         fieldName: authField.fieldName,
                     },
                 ],
+                // This operation needs to be READ because this will actually return values, unlike the top-level AGGREGATE
                 operations: ["READ"],
             });
             if (authorizationPredicateReturn) {
@@ -197,7 +197,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             );
             projections.set(
                 `${selection[1].alias || selection[1].name}`,
-                new Cypher.RawCypher((env) => `{ ${thisProjections.map((p) => p.getCypher(env)).join(", ")} }`)
+                new Cypher.RawCypher((env) => `{ ${thisProjections.map((p) => compileCypher(p, env)).join(", ")} }`)
             );
         }
     });
@@ -205,8 +205,6 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     const retSt = new Cypher.Return(projections);
     cypherStrs.push(retSt);
     const result: [Cypher.Clause, Record<string, any>] = [Cypher.concat(...cypherStrs), cypherParams];
-    const p2 = performance.now();
-    addMeasurementField(context, Measurement.translationTime, p2 - p1);
 
     return result;
 }

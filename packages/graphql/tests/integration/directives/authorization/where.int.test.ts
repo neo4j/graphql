@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import Neo4j from "../../neo4j";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("auth/where", () => {
     let driver: Driver;
@@ -77,12 +77,12 @@ describe("auth/where", () => {
                     CREATE (:User {id: "anotherUser"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userId });
+                const token = createBearerToken(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -148,12 +148,12 @@ describe("auth/where", () => {
                     MERGE (u)-[:HAS_POST]->(p2)
                 `);
 
-                const req = createJwtRequest(secret, { sub: userId });
+                const token = createBearerToken(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -233,12 +233,12 @@ describe("auth/where", () => {
                     MERGE (u)-[:HAS_POST]->(p2)
                 `);
 
-                const req = createJwtRequest(secret, { sub: userId });
+                const token = createBearerToken(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -316,12 +316,12 @@ describe("auth/where", () => {
                         MERGE (u)-[:HAS_CONTENT]->(p2)
                     `);
 
-                    const req = createJwtRequest(secret, { sub: userId });
+                    const token = createBearerToken(secret, { sub: userId });
 
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                     });
                     expect(gqlResult.errors).toBeUndefined();
                     const posts = (gqlResult.data as any).users[0].content as any[];
@@ -402,12 +402,12 @@ describe("auth/where", () => {
                     MERGE (u)-[:HAS_CONTENT]->(p2)
                 `);
 
-                const req = createJwtRequest(secret, { sub: userId });
+                const token = createBearerToken(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
                 expect(gqlResult.errors).toBeUndefined();
                 const posts = (gqlResult.data as any).users[0].contentConnection as {
@@ -466,12 +466,12 @@ describe("auth/where", () => {
                     CREATE (:User {id: "${userId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userId });
+                const token = createBearerToken(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -521,12 +521,12 @@ describe("auth/where", () => {
                     CREATE (:User {id: "${userId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userId });
+                const token = createBearerToken(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -559,7 +559,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @authorization(filter: [{ operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type User @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -596,12 +596,12 @@ describe("auth/where", () => {
                     CREATE (:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userId });
+                const token = createBearerToken(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -626,7 +626,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @authorization(filter: [{ operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type User @authorization(filter: [{ operations: [UPDATE, CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -663,12 +663,12 @@ describe("auth/where", () => {
                     CREATE (:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userId });
+                const token = createBearerToken(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -695,7 +695,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @authorization(filter: [{ operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type User @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -736,12 +736,12 @@ describe("auth/where", () => {
                     CREATE (u)-[:HAS_POST]->(:Post {id: "${postId2}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userId });
+                const token = createBearerToken(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -766,7 +766,7 @@ describe("auth/where", () => {
                     creator: User! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @authorization(filter: [{ operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
+                extend type User @authorization(filter: [{ operations: [UPDATE, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -807,12 +807,12 @@ describe("auth/where", () => {
                     CREATE(u)-[:HAS_POST]->(:Post {id: "${postId2}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userId });
+                const token = createBearerToken(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();

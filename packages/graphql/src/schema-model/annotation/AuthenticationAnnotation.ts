@@ -17,8 +17,11 @@
  * limitations under the License.
  */
 
+import type { GraphQLWhereArg } from "../../types";
+
 export type AuthenticationOperation =
     | "READ"
+    | "AGGREGATE"
     | "CREATE"
     | "UPDATE"
     | "DELETE"
@@ -27,13 +30,11 @@ export type AuthenticationOperation =
     | "SUBSCRIBE";
 
 export class AuthenticationAnnotation {
-    private _operations: AuthenticationOperation[];
+    public readonly operations: Set<AuthenticationOperation>;
+    public readonly jwt?: GraphQLWhereArg;
 
-    constructor(operations: AuthenticationOperation[]) {
-        this._operations = operations;
-    }
-
-    public get operations() {
-        return this._operations;
+    constructor(operations: AuthenticationOperation[], jwt?: GraphQLWhereArg) {
+        this.operations = new Set<AuthenticationOperation>(operations);
+        this.jwt = jwt;
     }
 }

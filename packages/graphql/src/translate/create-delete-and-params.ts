@@ -28,6 +28,7 @@ import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 interface Res {
     strs: string[];
@@ -55,7 +56,11 @@ function createDeleteAndParams({
     parameterPrefix: string;
     recursing?: boolean;
 }): [string, any] {
+    checkAuthentication({ context, node, targetOperations: ["DELETE"] });
+
     function reducer(res: Res, [key, value]: [string, any]) {
+        checkAuthentication({ context, node, targetOperations: ["DELETE"], field: key });
+
         const relationField = node.relationFields.find((x) => key === x.fieldName);
 
         if (relationField) {
@@ -81,6 +86,8 @@ function createDeleteAndParams({
             const outStr = relationField.direction === "OUT" ? "->" : "-";
 
             refNodes.forEach((refNode) => {
+                checkAuthentication({ context, node: refNode, targetOperations: ["DELETE"] });
+
                 const v = relationField.union ? value[refNode.name] : value;
                 const deletes = relationField.typeMeta.array ? v : [v];
                 deletes.forEach((d, index) => {

@@ -21,7 +21,7 @@ import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
-import { createJwtRequest } from "../../../../../utils/create-jwt-request";
+import { createBearerToken } from "../../../../../utils/create-bearer-token";
 
 describe("Cypher Auth Roles", () => {
     const secret = "secret";
@@ -30,14 +30,14 @@ describe("Cypher Auth Roles", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
             type History {
                 url: String
                     @authorization(
-                        validate: [{ operations: [READ], where: { jwtPayload: { roles_INCLUDES: "super-admin" } } }]
+                        validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "super-admin" } } }]
                     )
             }
 
@@ -61,14 +61,14 @@ describe("Cypher Auth Roles", () => {
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
-            extend type User @authorization(validate: [{ where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
+            extend type User @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
 
             extend type Post
                 @authorization(
                     validate: [
                         {
                             operations: [CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, DELETE]
-                            where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
+                            where: { jwt: { roles_INCLUDES: "super-admin" } }
                         }
                     ]
                 )
@@ -77,10 +77,7 @@ describe("Cypher Auth Roles", () => {
                 password: String
                     @authorization(
                         validate: [
-                            {
-                                operations: [READ, CREATE, UPDATE]
-                                where: { jwtPayload: { roles_INCLUDES: "super-admin" } }
-                            }
+                            { operations: [READ, CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "super-admin" } } }
                         ]
                     )
             }
@@ -89,7 +86,7 @@ describe("Cypher Auth Roles", () => {
                 history: [History]
                     @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
                     @authorization(
-                        validate: [{ operations: [READ], where: { jwtPayload: { roles_INCLUDES: "super-admin" } } }]
+                        validate: [{ operations: [READ], where: { jwt: { roles_INCLUDES: "super-admin" } } }]
                     )
             }
         `;
@@ -110,9 +107,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -147,9 +144,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -187,9 +184,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -236,9 +233,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -286,9 +283,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -341,9 +338,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -385,9 +382,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -431,9 +428,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -498,9 +495,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -580,9 +577,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -650,9 +647,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -745,9 +742,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -780,9 +777,9 @@ describe("Cypher Auth Roles", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`

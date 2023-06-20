@@ -18,14 +18,14 @@
  */
 
 import type { Context, GraphQLWhereArg } from "../types";
-import type { AuthOperations } from "../types/deprecated/auth/auth-operations";
 import type { Node } from "../classes";
 import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
-import { authOperationsToAuthorizationOperations } from "./authorization/utils/auth-operations-to-authorization-operations";
+import type { AuthorizationOperation } from "../types/authorization";
+import { authorizationOperationToAuthOperation } from "../types/deprecated/auth/auth-operations";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -37,7 +37,7 @@ export function translateTopLevelMatch({
     matchNode: Cypher.Node;
     context: Context;
     node: Node;
-    operation: AuthOperations;
+    operation: AuthorizationOperation;
     where: GraphQLWhereArg | undefined;
 }): Cypher.CypherResult {
     const { matchClause, preComputedWhereFieldSubqueries, whereClause } = createMatchClause({
@@ -67,7 +67,7 @@ export function createMatchClause({
     matchNode: Cypher.Node;
     context: Context;
     node: Node;
-    operation: AuthOperations;
+    operation: AuthorizationOperation;
     where: GraphQLWhereArg | undefined;
 }): CreateMatchClauseReturn {
     const { resolveTree } = context;
@@ -102,7 +102,7 @@ export function createMatchClause({
                 node,
             },
         ],
-        operations: authOperationsToAuthorizationOperations(operation),
+        operations: [operation],
     });
 
     if (authorizationPredicateReturn?.predicate) {
@@ -155,7 +155,7 @@ export function createMatchClause({
     } else {
         // TODO: Authorization - delete for 4.0.0
         const { cypher: authCypher, params: authParams } = createAuthAndParams({
-            operations: operation,
+            operations: authorizationOperationToAuthOperation(operation),
             entity: node,
             context,
             where: { varName: matchNode, node },

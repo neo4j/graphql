@@ -20,8 +20,8 @@
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../src";
-import { createJwtRequest } from "../../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../../utils/tck-test-utils";
+import { createBearerToken } from "../../../../../../utils/create-bearer-token";
 
 describe("@auth allow on specific interface implementation", () => {
     const secret = "secret";
@@ -89,9 +89,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "id-01", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -109,7 +109,7 @@ describe("@auth allow on specific interface implementation", () => {
                     OPTIONAL MATCH (this4)<-[:HAS_CONTENT]-(this5:\`User\`)
                     WITH *, count(this5) AS creatorCount
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this5.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this5.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this4 { __resolveType: \\"Post\\", __id: id(this), .id, .content } AS this4
                     RETURN this4 AS var2
                 }
@@ -127,7 +127,8 @@ describe("@auth allow on specific interface implementation", () => {
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"id-01\\"
-                }
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -148,9 +149,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "id-01", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -170,11 +171,11 @@ describe("@auth allow on specific interface implementation", () => {
                     OPTIONAL MATCH (this4)<-[:HAS_CONTENT]-(this5:\`User\`)
                     WITH *, count(this5) AS creatorCount
                     WITH *
-                    WHERE (this4.id = $param2 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this5.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    WHERE (this4.id = $param2 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this5.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     CALL {
                         WITH this4
                         MATCH (this4)-[this6:HAS_COMMENT]->(this7:\`Comment\`)
-                        WHERE this7.id = $param5
+                        WHERE this7.id = $param6
                         WITH this7 { .content } AS this7
                         RETURN collect(this7) AS var8
                     }
@@ -199,7 +200,8 @@ describe("@auth allow on specific interface implementation", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
-                \\"param5\\": \\"1\\"
+                \\"jwtDefault\\": {},
+                \\"param6\\": \\"1\\"
             }"
         `);
     });
@@ -218,9 +220,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -261,7 +263,7 @@ describe("@auth allow on specific interface implementation", () => {
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
             	OPTIONAL MATCH (this_content0)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
             	WITH *, count(authorization_this0) AS creatorCount
-            	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	SET this_content0.id = $this_update_content0_id
             	WITH this, this_content0
             	CALL {
@@ -289,7 +291,7 @@ describe("@auth allow on specific interface implementation", () => {
                     OPTIONAL MATCH (update_this4)<-[:HAS_CONTENT]-(update_this5:\`User\`)
                     WITH *, count(update_this5) AS creatorCount
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND update_this5.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND update_this5.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH update_this4 { __resolveType: \\"Post\\", __id: id(this), .id } AS update_this4
                     RETURN update_this4 AS update_var2
                 }
@@ -308,6 +310,7 @@ describe("@auth allow on specific interface implementation", () => {
                     ],
                     \\"sub\\": \\"user-id\\"
                 },
+                \\"jwtDefault\\": {},
                 \\"param0\\": \\"user-id\\",
                 \\"this_update_content0_id\\": \\"new-id\\",
                 \\"resolvedCallbacks\\": {}
@@ -324,9 +327,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -346,7 +349,7 @@ describe("@auth allow on specific interface implementation", () => {
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
             OPTIONAL MATCH (this_content_Post0)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
             WITH *, count(authorization_this0) AS creatorCount
-            WHERE this_content_Post0.id = $this_deleteUsers_args_delete_content0_where_this_content_Post0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE this_content_Post0.id = $this_deleteUsers_args_delete_content0_where_this_content_Post0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
             CALL {
             	WITH this_content_Post0_to_delete
@@ -383,7 +386,8 @@ describe("@auth allow on specific interface implementation", () => {
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"user-id\\"
-                }
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -399,9 +403,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -426,7 +430,7 @@ describe("@auth allow on specific interface implementation", () => {
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
             WITH *, count(authorization_this0) AS creatorCount
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
@@ -452,6 +456,7 @@ describe("@auth allow on specific interface implementation", () => {
                     ],
                     \\"sub\\": \\"user-id\\"
                 },
+                \\"jwtDefault\\": {},
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -491,9 +496,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -518,7 +523,7 @@ describe("@auth allow on specific interface implementation", () => {
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
             WITH *, count(authorization_this0) AS creatorCount
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
@@ -531,7 +536,7 @@ describe("@auth allow on specific interface implementation", () => {
             OPTIONAL MATCH (this_disconnect_content0)-[this_disconnect_content0_comments0_rel:HAS_COMMENT]->(this_disconnect_content0_comments0:Comment)
             OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
             WITH *, count(authorization_this0) AS creatorCount
-            WHERE this_disconnect_content0_comments0.id = $updateUsers_args_disconnect_content0_disconnect__on_Post0_comments0_where_Comment_this_disconnect_content0_comments0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE this_disconnect_content0_comments0.id = $updateUsers_args_disconnect_content0_disconnect__on_Post0_comments0_where_Comment_this_disconnect_content0_comments0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             	WITH this_disconnect_content0_comments0, this_disconnect_content0_comments0_rel, this_disconnect_content0
             	WITH collect(this_disconnect_content0_comments0) as this_disconnect_content0_comments0, this_disconnect_content0_comments0_rel, this_disconnect_content0
@@ -559,6 +564,7 @@ describe("@auth allow on specific interface implementation", () => {
                     ],
                     \\"sub\\": \\"user-id\\"
                 },
+                \\"jwtDefault\\": {},
                 \\"updateUsers_args_disconnect_content0_disconnect__on_Post0_comments0_where_Comment_this_disconnect_content0_comments0param0\\": \\"comment-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
@@ -608,9 +614,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "user-id", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "user-id", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -641,7 +647,7 @@ describe("@auth allow on specific interface implementation", () => {
             	OPTIONAL MATCH (this_connect_content1_node:Post)
             OPTIONAL MATCH (this_connect_content1_node)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
             WITH *, count(authorization_this0) AS creatorCount
-            	WHERE this_connect_content1_node.id = $this_connect_content1_node_param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, \\"\\"))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE this_connect_content1_node.id = $this_connect_content1_node_param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	CALL {
             		WITH *
             		WITH collect(this_connect_content1_node) as connectedNodes, collect(this) as parentNodes
@@ -673,6 +679,7 @@ describe("@auth allow on specific interface implementation", () => {
                     ],
                     \\"sub\\": \\"user-id\\"
                 },
+                \\"jwtDefault\\": {},
                 \\"resolvedCallbacks\\": {}
             }"
         `);

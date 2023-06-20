@@ -20,8 +20,8 @@
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
-import { createJwtRequest } from "../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
+import { createBearerToken } from "../../../../../utils/create-bearer-token";
 
 describe("Cypher Auth isAuthenticated", () => {
     const secret = "secret";
@@ -77,23 +77,17 @@ describe("Cypher Auth isAuthenticated", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
-            WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
             RETURN this { .id, .name } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"isAuthenticated\\": true
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("Read Node & Field", async () => {
@@ -107,25 +101,17 @@ describe("Cypher Auth isAuthenticated", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
-            WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
-            WITH *
-            WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
             RETURN this { .id, .name, .password } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"isAuthenticated\\": true
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("Read Node & Cypher Field", async () => {
@@ -139,17 +125,13 @@ describe("Cypher Auth isAuthenticated", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
-            WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
-            WITH *
-            WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h\\", { this: this, auth: $auth }) AS this0
@@ -160,7 +142,6 @@ describe("Cypher Auth isAuthenticated", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"isAuthenticated\\": true,
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
                     \\"roles\\": []
@@ -180,9 +161,9 @@ describe("Cypher Auth isAuthenticated", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -192,8 +173,6 @@ describe("Cypher Auth isAuthenticated", () => {
                 CREATE (create_this1:\`User\`)
                 SET
                     create_this1.id = create_var0.id
-                WITH *
-                WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -206,7 +185,6 @@ describe("Cypher Auth isAuthenticated", () => {
                         \\"id\\": \\"1\\"
                     }
                 ],
-                \\"isAuthenticated\\": true,
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -223,9 +201,9 @@ describe("Cypher Auth isAuthenticated", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -236,10 +214,6 @@ describe("Cypher Auth isAuthenticated", () => {
                 SET
                     create_this1.id = create_var0.id,
                     create_this1.password = create_var0.password
-                WITH *
-                WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
-                WITH *
-                WHERE apoc.util.validatePredicate((create_var0.password IS NOT NULL AND $isAuthenticated = false), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -253,7 +227,6 @@ describe("Cypher Auth isAuthenticated", () => {
                         \\"password\\": \\"super-password\\"
                     }
                 ],
-                \\"isAuthenticated\\": true,
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -270,15 +243,14 @@ describe("Cypher Auth isAuthenticated", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))
+            WHERE this.id = $param0
             SET this.id = $this_update_id
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -286,7 +258,6 @@ describe("Cypher Auth isAuthenticated", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"isAuthenticated\\": true,
                 \\"this_update_id\\": \\"id-1\\",
                 \\"resolvedCallbacks\\": {}
             }"
@@ -304,17 +275,14 @@ describe("Cypher Auth isAuthenticated", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))
-            WITH this
-            WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
+            WHERE this.id = $param0
             SET this.password = $this_update_password
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -322,7 +290,6 @@ describe("Cypher Auth isAuthenticated", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"isAuthenticated\\": true,
                 \\"this_update_password\\": \\"password\\",
                 \\"resolvedCallbacks\\": {}
             }"
@@ -340,20 +307,17 @@ describe("Cypher Auth isAuthenticated", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
-            WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
-            	WHERE (apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))
             	CALL {
             		WITH *
             		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
@@ -375,7 +339,6 @@ describe("Cypher Auth isAuthenticated", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"isAuthenticated\\": true,
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -392,20 +355,17 @@ describe("Cypher Auth isAuthenticated", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
-            WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
-            WHERE (apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))
             CALL {
             	WITH this_disconnect_posts0, this_disconnect_posts0_rel, this
             	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
@@ -421,7 +381,6 @@ describe("Cypher Auth isAuthenticated", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"isAuthenticated\\": true,
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -445,23 +404,17 @@ describe("Cypher Auth isAuthenticated", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
-            WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
             DETACH DELETE this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"isAuthenticated\\": true
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("Nested Delete", async () => {
@@ -473,18 +426,15 @@ describe("Cypher Auth isAuthenticated", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "super_admin", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH *
-            WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-            WHERE apoc.util.validatePredicate($isAuthenticated = false, \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
             WITH this, collect(DISTINCT this_posts0) AS this_posts0_to_delete
             CALL {
             	WITH this_posts0_to_delete
@@ -495,10 +445,6 @@ describe("Cypher Auth isAuthenticated", () => {
             DETACH DELETE this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"isAuthenticated\\": true
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

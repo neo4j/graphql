@@ -32,6 +32,8 @@ import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import { createAuthorizationAfterPredicate } from "./authorization/create-authorization-after-predicate";
+import { checkAuthentication } from "./authorization/check-authentication";
+import { compileCypher } from "../utils/compile-cypher";
 
 type CreateOrConnectInput = {
     where?: {
@@ -77,6 +79,10 @@ export function createConnectOrCreateAndParams({
             );
         }
     });
+
+    // todo: add create
+    checkAuthentication({ context, node, targetOperations: ["CREATE", "CREATE_RELATIONSHIP"] });
+    checkAuthentication({ context, node: refNode, targetOperations: ["CREATE", "CREATE_RELATIONSHIP"] });
 
     const withVarsVariables = withVars.map((name) => new Cypher.NamedVariable(name));
 
@@ -307,9 +313,9 @@ function mergeStatement({
         withClause = new Cypher.RawCypher((env: Cypher.Environment) => {
             const eventWithMetaStr = createConnectionEventMeta({
                 event: "create_relationship",
-                relVariable: relationship.getCypher(env),
-                fromVariable: fromNode.getCypher(env),
-                toVariable: toNode.getCypher(env),
+                relVariable: compileCypher(relationship, env),
+                fromVariable: compileCypher(fromNode, env),
+                toVariable: compileCypher(toNode, env),
                 typename: relationField.type,
                 fromTypename,
                 toTypename,
@@ -355,8 +361,6 @@ function createAuthorizationBeforeConnectOrCreate({
     context,
     sourceNode,
     sourceName,
-    targetNode,
-    targetName,
 }: {
     context: Context;
     sourceNode: Node;
@@ -378,31 +382,8 @@ function createAuthorizationBeforeConnectOrCreate({
         operations: ["CREATE_RELATIONSHIP"],
     });
 
-    const targetAuthorizationBefore = createAuthorizationBeforePredicate({
-        context,
-        nodes: [
-            {
-                node: targetNode,
-                variable: new Cypher.NamedNode(targetName),
-            },
-        ],
-        operations: ["CREATE_RELATIONSHIP", "CREATE"],
-    });
-
     if (sourceAuthorizationBefore) {
         const { predicate, preComputedSubqueries } = sourceAuthorizationBefore;
-
-        if (predicate) {
-            predicates.push(predicate);
-        }
-
-        if (preComputedSubqueries) {
-            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
-        }
-    }
-
-    if (targetAuthorizationBefore) {
-        const { predicate, preComputedSubqueries } = targetAuthorizationBefore;
 
         if (predicate) {
             predicates.push(predicate);

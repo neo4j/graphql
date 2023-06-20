@@ -31,6 +31,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 interface Res {
     connects: string[];
@@ -66,11 +67,15 @@ function createConnectAndParams({
     includeRelationshipValidation?: boolean;
     isFirstLevel?: boolean;
 }): [string, any] {
+    checkAuthentication({ context, node: parentNode, targetOperations: ["CREATE_RELATIONSHIP"] });
+
     function createSubqueryContents(
         relatedNode: Node,
         connect: any,
         index: number
     ): { subquery: string; params: Record<string, any> } {
+        checkAuthentication({ context, node: relatedNode, targetOperations: ["CREATE_RELATIONSHIP"] });
+
         let params = {};
         const baseName = `${varName}${index}`;
         const nodeName = `${baseName}_node`;

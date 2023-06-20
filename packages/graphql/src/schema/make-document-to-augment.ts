@@ -24,9 +24,15 @@ import getFieldTypeMeta from "./get-field-type-meta";
 type DocumentToAugment = {
     document: DocumentNode;
     typesExcludedFromGeneration: {
-        jwtPayload?: { type: ObjectTypeDefinitionNode; jwtPayloadFieldsMap: Map<string, string> };
+        jwt?: { type: ObjectTypeDefinitionNode; jwtFieldsMap: Map<string, string> };
     };
 };
+
+type ParsedJwtPayload = {
+    type: ObjectTypeDefinitionNode;
+    jwtFieldsMap: Map<string, string>;
+};
+
 export function makeDocumentToAugment(document: DocumentNode): DocumentToAugment {
     const jwtTypeDefinitions: ObjectTypeDefinitionNode[] = [];
     const definitions: DefinitionNode[] = [];
@@ -34,7 +40,7 @@ export function makeDocumentToAugment(document: DocumentNode): DocumentToAugment
     for (const definition of document.definitions) {
         if (
             definition.kind === Kind.OBJECT_TYPE_DEFINITION &&
-            (definition.directives || []).some((x) => x.name.value === "jwtPayload")
+            (definition.directives || []).some((x) => x.name.value === "jwt")
         ) {
             jwtTypeDefinitions.push(definition);
         } else {
@@ -42,50 +48,45 @@ export function makeDocumentToAugment(document: DocumentNode): DocumentToAugment
         }
     }
 
-    const jwtPayload = parseJwtPayload(jwtTypeDefinitions);
+    const jwt = parseJwtPayload(jwtTypeDefinitions);
 
     return {
         document: {
             ...document,
             definitions,
         },
-        typesExcludedFromGeneration: jwtPayload ? { jwtPayload } : {},
+        typesExcludedFromGeneration: jwt ? { jwt } : {},
     };
 }
 
-function parseJwtPayload(jwtPayloadAnnotatedTypes: ObjectTypeDefinitionNode[]):
-    | {
-          type: ObjectTypeDefinitionNode;
-          jwtPayloadFieldsMap: Map<string, string>;
-      }
-    | undefined {
-    const jwtPayloadFieldsMap = new Map<string, string>();
-    if (jwtPayloadAnnotatedTypes.length > 1) {
-        throw new Error(`@jwtPayload directive can only be used once in the Type Definitions.`);
+function parseJwtPayload(jwtAnnotatedTypes: ObjectTypeDefinitionNode[]): ParsedJwtPayload | undefined {
+    const jwtFieldsMap = new Map<string, string>();
+    if (jwtAnnotatedTypes.length > 1) {
+        throw new Error(`@jwt directive can only be used once in the Type Definitions.`);
     }
-    const jwtPayload = jwtPayloadAnnotatedTypes[0];
-    if (!jwtPayload) {
+    const jwt = jwtAnnotatedTypes[0];
+    if (!jwt) {
         return undefined;
     }
-    if ((jwtPayload?.directives || []).length > 1) {
-        throw new Error(`@jwtPayload directive cannot be combined with other directives.`);
+    if ((jwt?.directives || []).length > 1) {
+        throw new Error(`@jwt directive cannot be combined with other directives.`);
     }
-    jwtPayload?.fields?.forEach((f) => {
+    jwt?.fields?.forEach((f) => {
         const typeMeta = getFieldTypeMeta(f.type);
         if (!["String", "ID", "Int", "Float", "Boolean"].includes(typeMeta.name)) {
-            throw new Error("fields of a @jwtPayload type can only be Scalars or Lists of Scalars.");
+            throw new Error("fields of a @jwt type can only be Scalars or Lists of Scalars.");
         }
         const fieldName = f.name.value;
         const jwtClaimDirective = f.directives?.find((x) => x.name.value === "jwtClaim");
         if (!jwtClaimDirective) {
-            jwtPayloadFieldsMap.set(fieldName, fieldName);
+            jwtFieldsMap.set(fieldName, fieldName);
         } else {
             const claimPathArgument = jwtClaimDirective.arguments?.find((a) => a.name.value === "path")?.value;
             if (!claimPathArgument || claimPathArgument.kind !== Kind.STRING) {
                 throw new Error(`@jwtClaim path argument required and must be a String.`);
             }
-            jwtPayloadFieldsMap.set(fieldName, claimPathArgument.value);
+            jwtFieldsMap.set(fieldName, claimPathArgument.value);
         }
     });
-    return { type: jwtPayload, jwtPayloadFieldsMap };
+    return { type: jwt, jwtFieldsMap };
 }

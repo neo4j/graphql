@@ -37,6 +37,8 @@ import { createAuthPredicates } from "../../create-auth-predicates";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { createAuthorizationAfterPredicate } from "../../authorization/create-authorization-after-predicate";
+import { checkAuthentication } from "../../authorization/check-authentication";
+import { compileCypher } from "../../../utils/compile-cypher";
 
 type UnwindCreateScopeDefinition = {
     unwindVar: Cypher.Variable;
@@ -109,6 +111,7 @@ export class UnwindCreateVisitor implements Visitor {
             return cypher.join("\n");
         });
 
+        checkAuthentication({ context: this.context, node: create.node, targetOperations: ["CREATE"] });
         const authNodeClause = this.getAuthNodeClause(create.node, this.context, currentNode);
 
         let authorizationFieldsClause: Cypher.CompositeClause | Cypher.With | undefined;
@@ -230,6 +233,7 @@ export class UnwindCreateVisitor implements Visitor {
             return cypher.join("\n");
         });
 
+        checkAuthentication({ context: this.context, node: nestedCreate.node, targetOperations: ["CREATE"] });
         const authNodeClause = this.getAuthNodeClause(nestedCreate.node, this.context, currentNode);
 
         let authorizationFieldsClause: Cypher.CompositeClause | Cypher.With | undefined;
@@ -284,7 +288,6 @@ export class UnwindCreateVisitor implements Visitor {
                 },
             ],
             operations: ["CREATE"],
-            includeAuthenticationPredicate: true,
         });
 
         if (authorizationPredicateReturn) {
@@ -353,9 +356,14 @@ export class UnwindCreateVisitor implements Visitor {
                 if (fieldsPredicates.length) {
                     const predicate = Cypher.not(Cypher.and(...fieldsPredicates));
 
-                    const fieldsAuth = Cypher.concat(
-                        new Cypher.With("*").where(Cypher.apoc.util.validatePredicate(predicate, AUTH_FORBIDDEN_ERROR))
-                    ).getCypher(env);
+                    const fieldsAuth = compileCypher(
+                        Cypher.concat(
+                            new Cypher.With("*").where(
+                                Cypher.apoc.util.validatePredicate(predicate, AUTH_FORBIDDEN_ERROR)
+                            )
+                        ),
+                        env
+                    );
 
                     const fieldsPredicateParams = fieldsPredicates.reduce((prev, next) => {
                         return {
@@ -388,6 +396,12 @@ export class UnwindCreateVisitor implements Visitor {
             .filter((n) => n);
 
         for (const field of usedAuthFields) {
+            checkAuthentication({
+                context: this.context,
+                node: astNode.node,
+                targetOperations: ["CREATE"],
+                field: field.fieldName,
+            });
             const authorizationPredicateReturn = createAuthorizationAfterPredicate({
                 context: this.context,
                 nodes: [
@@ -399,7 +413,6 @@ export class UnwindCreateVisitor implements Visitor {
                 ],
                 operations: ["CREATE"],
                 conditionForEvaluation: Cypher.isNotNull(unwindVar.property(field.fieldName)),
-                includeAuthenticationPredicate: true,
             });
             if (authorizationPredicateReturn) {
                 const { predicate, preComputedSubqueries } = authorizationPredicateReturn;

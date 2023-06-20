@@ -17,14 +17,12 @@
  * limitations under the License.
  */
 
-import jsonwebtoken from "jsonwebtoken";
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import { IncomingMessage } from "http";
-import { Socket } from "net";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 import { UniqueType } from "../../../../utils/graphql-types";
+import { createBearerToken } from "../../../../utils/create-bearer-token";
 
 describe(`Field Level Authorization Where Requests`, () => {
     let neoSchema: Neo4jGraphQL;
@@ -64,7 +62,7 @@ describe(`Field Level Authorization Where Requests`, () => {
                 CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", year:1985, createdAt: datetime(), testStr: "1235"})`);
 
         const extendedTypeDefs = `${typeDefs}
-        extend type ${typeActor.name} @authorization(filter: [{ where: { node: { testStr: "$jwt.sub" } } }])`;
+        extend type ${typeActor.name} @authorization(filter: [{ operations: [AGGREGATE], where: { node: { testStr: "$jwt.sub" } } }])`;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs: extendedTypeDefs,
@@ -75,13 +73,10 @@ describe(`Field Level Authorization Where Requests`, () => {
             },
         });
 
-        token = jsonwebtoken.sign(
-            {
-                roles: [],
-                sub: "1234",
-            },
-            secret
-        );
+        token = createBearerToken(secret, {
+            roles: [],
+            sub: "1234",
+        });
     });
 
     afterAll(async () => {
@@ -107,14 +102,10 @@ describe(`Field Level Authorization Where Requests`, () => {
                 }
             }`;
 
-        const socket = new Socket({ readable: true });
-        const req = new IncomingMessage(socket);
-        req.headers.authorization = `Bearer ${token}`;
-
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({

@@ -23,7 +23,7 @@ import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 /*
  * Auth rules are already tested in the auth tests,
@@ -87,13 +87,13 @@ describe("unwind-create field-level auth rules", () => {
             `;
 
             try {
-                const req = createJwtRequest("secret", { sub: id });
+                const token = createBearerToken("secret", { sub: id });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
                     variableValues: { id, id2 },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -145,13 +145,13 @@ describe("unwind-create field-level auth rules", () => {
             `;
 
             try {
-                const req = createJwtRequest("secret", { sub: id });
+                const token = createBearerToken("secret", { sub: id });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
                     variableValues: { id, name },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -217,13 +217,13 @@ describe("unwind-create field-level auth rules", () => {
             `;
 
             try {
-                const req = createJwtRequest("secret", { sub: id });
+                const token = createBearerToken("secret", { sub: id });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
                     variableValues: { id, name },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -239,7 +239,7 @@ describe("unwind-create field-level auth rules", () => {
             const User = new UniqueType("User");
 
             const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
@@ -248,7 +248,7 @@ describe("unwind-create field-level auth rules", () => {
                 name: String
             }
             extend type ${User} {
-                id: ID @authorization(validate: [{ operations: [CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
+                id: ID @authorization(validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }])
             }
             `;
 
@@ -280,13 +280,13 @@ describe("unwind-create field-level auth rules", () => {
             `;
 
             try {
-                const req = createJwtRequest("secret", { roles: ["user"] });
+                const token = createBearerToken("secret", { roles: ["user"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
                     variableValues: { id, id2 },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -301,7 +301,7 @@ describe("unwind-create field-level auth rules", () => {
             const User = new UniqueType("User");
 
             const typeDefs = `
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
@@ -310,7 +310,7 @@ describe("unwind-create field-level auth rules", () => {
                 name: String
             }
             extend type ${User} {
-                id: ID @authorization(validate: [{ operations: [CREATE], where: { jwtPayload: { roles_INCLUDES: "admin" } } }])
+                id: ID @authorization(validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }])
             }
             `;
 
@@ -338,13 +338,13 @@ describe("unwind-create field-level auth rules", () => {
             `;
 
             try {
-                const req = createJwtRequest("secret", { roles: ["invalid-role"] });
+                const token = createBearerToken("secret", { roles: ["invalid-role"] });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
                     variableValues: { name },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();

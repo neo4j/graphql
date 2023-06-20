@@ -21,10 +21,17 @@ import type { GraphQLWhereArg } from "../../types";
 
 export const AuthorizationAnnotationArguments = ["filter", "validate"] as const;
 
-export type AuthorizationFilterOperation = "READ" | "UPDATE" | "DELETE" | "CREATE_RELATIONSHIP" | "DELETE_RELATIONSHIP";
+export type AuthorizationFilterOperation =
+    | "READ"
+    | "AGGREGATE"
+    | "UPDATE"
+    | "DELETE"
+    | "CREATE_RELATIONSHIP"
+    | "DELETE_RELATIONSHIP";
 
 export type AuthorizationValidateOperation =
     | "READ"
+    | "AGGREGATE"
     | "CREATE"
     | "UPDATE"
     | "DELETE"
@@ -37,12 +44,13 @@ export type AuthorizationWhere = {
     AND?: AuthorizationWhere[];
     OR?: AuthorizationWhere[];
     NOT?: AuthorizationWhere;
-    jwtPayload?: GraphQLWhereArg;
+    jwt?: GraphQLWhereArg;
     node?: GraphQLWhereArg;
 };
 
 export const AuthorizationFilterOperationRule: ReadonlyArray<AuthorizationFilterOperation> = [
     "READ",
+    "AGGREGATE",
     "UPDATE",
     "DELETE",
     "CREATE_RELATIONSHIP",
@@ -51,6 +59,7 @@ export const AuthorizationFilterOperationRule: ReadonlyArray<AuthorizationFilter
 
 export const AuthorizationValidateOperationRule: ReadonlyArray<AuthorizationValidateOperation> = [
     "READ",
+    "AGGREGATE",
     "CREATE",
     "UPDATE",
     "DELETE",

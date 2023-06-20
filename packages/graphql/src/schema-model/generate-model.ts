@@ -22,6 +22,7 @@ import type {
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
+    SchemaExtensionNode,
 } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import type { DefinitionNodes } from "../schema/get-definition-nodes";
@@ -79,11 +80,26 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
             concreteEntitiesMap
         );
     });
+
+    const schemaDirectives = definitionNodes.schemaExtensions.reduce(
+        (directives: DirectiveNode[], schemaExtension: SchemaExtensionNode) => {
+            if (schemaExtension.directives) {
+                directives.push(...schemaExtension.directives);
+            }
+            return directives;
+        },
+        []
+    );
+
+    const annotations = createSchemaModelAnnotations(schemaDirectives);
+
     const schema = new Neo4jGraphQLSchemaModel({
         compositeEntities: [...unionEntities, ...interfaceEntities],
         concreteEntities,
         operations,
+        annotations,
     });
+
     definitionNodes.objectTypes.map((def) => hydrateRelationships(def, schema, definitionNodes));
     return schema;
 }
@@ -326,6 +342,23 @@ function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotati
     );
 
     return entityAnnotations.concat(annotations);
+}
+
+function createSchemaModelAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
+    const schemaModelAnnotations: Annotation[] = [];
+
+    const annotations: Annotation[] = filterTruthy(
+        directives.map((directive) => {
+            switch (directive.name.value) {
+                case "authentication":
+                    return parseAuthenticationAnnotation(directive);
+                default:
+                    return undefined;
+            }
+        })
+    );
+
+    return schemaModelAnnotations.concat(annotations);
 }
 
 function generateOperation(definition: ObjectTypeDefinitionNode): Operation {
