@@ -28,6 +28,7 @@ import { runCypher } from "../../../utils/run-cypher";
 import { UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { cleanNodes } from "../../../utils/clean-nodes";
 
 describe("auth/is-authenticated", () => {
     let driver: Driver;
@@ -4034,6 +4035,834 @@ describe("auth/is-authenticated", () => {
             } finally {
                 await session.close();
             }
+        });
+    });
+
+    describe("schema", () => {
+        describe("read", () => {
+            let neoSchema: Neo4jGraphQL;
+
+            beforeEach(() => {
+                const typeDefs = `
+                type ${Product} {
+                    id: ID
+                    name: String
+                }
+                extend schema @authentication(operations: [READ])
+            `;
+
+                neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    driver,
+                    config: {
+                        driverConfig: {
+                            database: neo4j.getIntegrationDatabaseName(),
+                        },
+                    },
+                    features: {
+                        authorization: {
+                            key: secret,
+                        },
+                    },
+                });
+            });
+
+            afterEach(async () => {
+                const session = driver.session();
+                await cleanNodes(session, [Product]);
+            });
+
+            test("should throw if not authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
+
+                const query = `
+                    {
+                        ${Product.plural} {
+                            id
+                        }
+                    }
+                `;
+
+                const token = "not valid token";
+
+                try {
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should not throw if authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
+
+                const query = `
+                    {
+                        ${Product.plural} {
+                            id
+                        }
+                    }
+                `;
+
+                try {
+                    const token = createBearerToken(secret);
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+                } finally {
+                    await session.close();
+                }
+            });
+        });
+        describe("create", () => {
+            let neoSchema: Neo4jGraphQL;
+
+            beforeEach(() => {
+                const typeDefs = `
+                type ${User} {
+                    id: ID
+                    name: String
+                }
+                extend schema @authentication(operations: [CREATE])
+            `;
+
+                neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    driver,
+                    config: {
+                        driverConfig: {
+                            database: neo4j.getIntegrationDatabaseName(),
+                        },
+                    },
+                    features: {
+                        authorization: {
+                            key: secret,
+                        },
+                    },
+                });
+            });
+
+            afterEach(async () => {
+                const session = driver.session();
+                await cleanNodes(session, [User]);
+            });
+
+            test("should throw if not authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
+
+                const query = `
+                mutation {
+                    ${User.operations.create}(input: [{ id: "1" }]) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+                const token = "not valid token";
+
+                try {
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should not throw if authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
+
+                const query = `
+                mutation {
+                    ${User.operations.create}(input: [{ id: "1" }]) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+                try {
+                    const token = createBearerToken(secret);
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+                } finally {
+                    await session.close();
+                }
+            });
+        });
+        describe("update", () => {
+            let neoSchema: Neo4jGraphQL;
+
+            beforeEach(() => {
+                const typeDefs = `
+                type ${User} {
+                    id: ID
+                    name: String
+                }
+                extend schema @authentication(operations: [CREATE])
+            `;
+
+                neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    driver,
+                    config: {
+                        driverConfig: {
+                            database: neo4j.getIntegrationDatabaseName(),
+                        },
+                    },
+                    features: {
+                        authorization: {
+                            key: secret,
+                        },
+                    },
+                });
+            });
+
+            afterEach(async () => {
+                const session = driver.session();
+                await cleanNodes(session, [User]);
+            });
+
+            test("should throw if not authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
+
+                const query = `
+                mutation {
+                    ${User.operations.update}(update: { id: "1" }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+                const token = "not valid token";
+
+                try {
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should not throw if authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
+
+                const query = `
+                mutation {
+                    ${User.operations.update}(update: { id: "1" }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+                try {
+                    const token = createBearerToken(secret);
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+                } finally {
+                    await session.close();
+                }
+            });
+        });
+        describe("connect", () => {
+            let neoSchema: Neo4jGraphQL;
+            let Post: UniqueType;
+
+            beforeEach(() => {
+                Post = new UniqueType("Post");
+
+                const typeDefs = `
+                type ${Post} {
+                    id: String
+                    content: String
+                }
+
+                type ${User} {
+                    id: ID
+                    name: String
+                    password: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+                extend schema @authentication(operations: [CREATE_RELATIONSHIP])
+            `;
+
+                neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    driver,
+                    features: {
+                        authorization: {
+                            key: secret,
+                        },
+                    },
+                });
+            });
+
+            afterEach(async () => {
+                const session = driver.session();
+                await cleanNodes(session, [User, Post]);
+            });
+
+            test("should throw if not authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+                const userId = generate({
+                    charset: "alphabetic",
+                });
+
+                const postId = generate({
+                    charset: "alphabetic",
+                });
+
+                const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, connect: { posts: { where: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+                const token = "not valid token";
+
+                try {
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should not throw if authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+                const userId = generate({
+                    charset: "alphabetic",
+                });
+
+                const postId = generate({
+                    charset: "alphabetic",
+                });
+
+                const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, connect: { posts: { where: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+                try {
+                    const token = createBearerToken(secret);
+
+                    await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+                } finally {
+                    await session.close();
+                }
+            });
+        });
+        describe("connectOrCreate", () => {
+            let neoSchema: Neo4jGraphQL;
+            let Post: UniqueType;
+
+            beforeEach(() => {
+                Post = new UniqueType("Post");
+
+                const typeDefs = `
+                type ${Post} {
+                    id: String @unique
+                    content: String
+                }
+
+                type ${User} {
+                    id: ID
+                    name: String
+                    password: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+                extend schema @authentication(operations: [CREATE_RELATIONSHIP])
+            `;
+
+                neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    driver,
+                    features: {
+                        authorization: {
+                            key: secret,
+                        },
+                    },
+                });
+            });
+
+            afterEach(async () => {
+                const session = driver.session();
+                await cleanNodes(session, [User, Post]);
+            });
+
+            test("should throw if not authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+                const userId = generate({
+                    charset: "alphabetic",
+                });
+
+                const postId = generate({
+                    charset: "alphabetic",
+                });
+
+                const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, connectOrCreate: { posts: { where: { node: { id: "${postId}" } }, onCreate: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+                const token = "not valid token";
+
+                try {
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should not throw if authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+                const userId = generate({
+                    charset: "alphabetic",
+                });
+
+                const postId = generate({
+                    charset: "alphabetic",
+                });
+
+                const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, connectOrCreate: { posts: { where: { node: { id: "${postId}" } }, onCreate: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+                try {
+                    const token = createBearerToken(secret);
+
+                    await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+                } finally {
+                    await session.close();
+                }
+            });
+        });
+        describe("disconnect", () => {
+            let neoSchema: Neo4jGraphQL;
+            let Post: UniqueType;
+
+            beforeEach(() => {
+                Post = new UniqueType("Post");
+
+                const typeDefs = `
+                type ${Post} {
+                    id: String
+                    content: String
+                }
+
+                type ${User} {
+                    id: ID
+                    name: String
+                    password: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+                extend schema @authentication(operations: [DELETE_RELATIONSHIP])
+            `;
+
+                neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    driver,
+                    features: {
+                        authorization: {
+                            key: secret,
+                        },
+                    },
+                });
+            });
+
+            afterEach(async () => {
+                const session = driver.session();
+                await cleanNodes(session, [User, Post]);
+            });
+
+            test("should throw if not authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+                const userId = generate({
+                    charset: "alphabetic",
+                });
+
+                const postId = generate({
+                    charset: "alphabetic",
+                });
+
+                const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, disconnect: { posts: { where: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+                const token = "not valid token";
+
+                try {
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should not throw if authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+                const userId = generate({
+                    charset: "alphabetic",
+                });
+
+                const postId = generate({
+                    charset: "alphabetic",
+                });
+
+                const query = `
+                mutation {
+                    ${User.operations.update}(where: { id: "${userId}" }, disconnect: { posts: { where: { node: { id: "${postId}" } } } }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+                try {
+                    const token = createBearerToken(secret);
+
+                    await session.run(`
+                    CREATE (:${User} {id: "${userId}"})
+                    CREATE (:${Post} {id: "${postId}"})
+                `);
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+                } finally {
+                    await session.close();
+                }
+            });
+        });
+        describe("delete", () => {
+            let neoSchema: Neo4jGraphQL;
+
+            beforeEach(() => {
+                const typeDefs = `
+                type ${User} {
+                    id: ID
+                    name: String
+                }
+                extend schema @authentication(operations: [DELETE])
+            `;
+
+                neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    driver,
+                    config: {
+                        driverConfig: {
+                            database: neo4j.getIntegrationDatabaseName(),
+                        },
+                    },
+                    features: {
+                        authorization: {
+                            key: secret,
+                        },
+                    },
+                });
+            });
+
+            afterEach(async () => {
+                const session = driver.session();
+                await cleanNodes(session, [User]);
+            });
+
+            test("should throw if not authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
+
+                const query = `
+                mutation {
+                    ${User.operations.delete} {
+                        nodesDeleted
+                    }
+                }
+            `;
+
+                const token = "not valid token";
+
+                try {
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should not throw if authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
+
+                const query = `
+                mutation {
+                    ${User.operations.delete} {
+                        nodesDeleted
+                    }
+                }
+            `;
+
+                try {
+                    const token = createBearerToken(secret);
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+                } finally {
+                    await session.close();
+                }
+            });
+        });
+        describe("custom-resolvers", () => {
+            let neoSchema: Neo4jGraphQL;
+
+            beforeEach(() => {
+                const typeDefs = `
+                type ${User} {
+                    id: ID
+                    name: String
+                }
+                type Query {
+                    allUsers: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u")
+                }
+                extend schema @authentication
+            `;
+
+                neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    driver,
+                    config: {
+                        driverConfig: {
+                            database: neo4j.getIntegrationDatabaseName(),
+                        },
+                    },
+                    features: {
+                        authorization: {
+                            key: secret,
+                        },
+                    },
+                });
+            });
+
+            afterEach(async () => {
+                const session = driver.session();
+                await cleanNodes(session, [User]);
+            });
+
+            test("should throw if not authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
+
+                const query = `
+                query {
+                    allUsers {
+                        id
+                    }
+                }
+            `;
+
+                const token = "not valid token";
+
+                try {
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should not throw if authenticated type definition", async () => {
+                const session = await neo4j.getSession({ defaultAccessMode: "READ" });
+
+                const query = `
+                query {
+                    allUsers {
+                        id
+                    }
+                }
+            `;
+
+                try {
+                    const token = createBearerToken(secret);
+
+                    const gqlResult = await graphql({
+                        schema: await neoSchema.getSchema(),
+                        source: query,
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    });
+
+                    expect(gqlResult.errors).toBeUndefined();
+                } finally {
+                    await session.close();
+                }
+            });
         });
     });
 });

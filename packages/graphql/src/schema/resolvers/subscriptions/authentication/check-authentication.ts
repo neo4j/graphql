@@ -51,8 +51,8 @@ function applyAuthentication(annotation: AuthenticationAnnotation, context: Subs
     if (!context.jwt) {
         throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
     }
-    if (annotation.jwtPayload) {
-        const result = filterByValues(annotation.jwtPayload, context.jwt);
+    if (annotation.jwt) {
+        const result = filterByValues(annotation.jwt, context.jwt);
         if (!result) {
             throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
         }
