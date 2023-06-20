@@ -18,7 +18,7 @@
  */
 
 import { gql } from "graphql-tag";
-import type { ASTNode, ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
+import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import { parse, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { Subgraph } from "../../classes/Subgraph";

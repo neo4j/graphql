@@ -23,7 +23,6 @@ import type {
     GraphQLArgument,
     ArgumentNode,
     ASTNode,
-    DocumentNode,
     ObjectTypeDefinitionNode,
     FieldDefinitionNode,
 } from "graphql";

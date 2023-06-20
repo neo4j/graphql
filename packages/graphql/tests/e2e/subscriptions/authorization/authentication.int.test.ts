@@ -2756,7 +2756,7 @@ describe("Subscription authentication", () => {
                 expect(wsClient.errors).toEqual([]);
             });
             test("unauthenticated subscription sends events if authenticated field is not selected- update", async () => {
-                const r = await supertest(server.path)
+                await supertest(server.path)
                     .post("")
                     .send({
                         query: `

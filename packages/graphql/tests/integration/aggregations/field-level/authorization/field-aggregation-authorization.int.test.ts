@@ -73,6 +73,7 @@ describe("Field Level Aggregations Auth", () => {
         { name: "default", selection: `node { createdAt {max, min}}` },
     ];
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     describe.each(testCases)(`isAuthenticated auth requests ~ $name`, ({ name, selection }) => {
         let token: string;
         let neoSchema: Neo4jGraphQL;
@@ -161,6 +162,7 @@ describe("Field Level Aggregations Auth", () => {
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
     });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     describe.each(testCases)(`allow requests ~ $name`, ({ name, selection }) => {
         let neoSchema: Neo4jGraphQL;
 
