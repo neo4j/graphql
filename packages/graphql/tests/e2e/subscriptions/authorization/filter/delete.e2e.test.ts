@@ -43,7 +43,7 @@ describe("Subscriptions authorization with delete events", () => {
         User = new UniqueType("User");
 
         const typeDefs = `#graphql
-            type JWTPayload @jwtPayload {
+            type JWTPayload @jwt {
                 roles: [String!]!
             }
 
