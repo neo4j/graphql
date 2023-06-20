@@ -25,6 +25,7 @@ import type { Context, PredicateReturn } from "../../../types";
 import type { AuthorizationOperation, AuthorizationValidateWhen } from "../../../types/authorization";
 import { getOrCreateCypherNode } from "../../utils/get-or-create-cypher-variable";
 import { createAuthorizationWherePredicate } from "../where/create-authorization-where-predicate";
+import { findMatchingRules } from "../utils/find-matching-rules";
 
 export function createAuthorizationValidatePredicate({
     when,
@@ -45,10 +46,8 @@ export function createAuthorizationValidatePredicate({
 }): PredicateReturn | undefined {
     const cypherNode = getOrCreateCypherNode(variable);
 
-    // TODO: double check this logic
-    const matchedRules = rules.filter(
-        (rule) => rule.when.includes(when) && rule.operations.some((operation) => operations.includes(operation))
-    );
+    const rulesMatchingOperations = findMatchingRules(rules, operations);
+    const matchedRules = rulesMatchingOperations.filter((rule) => rule.when.includes(when));
 
     const predicates: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
