@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 import type { EditorView } from "@codemirror/view";
 import { Neo4jGraphQL } from "@neo4j/graphql";
@@ -36,10 +36,11 @@ import { SettingsContext } from "../../contexts/settings";
 import { useStore } from "../../store";
 import type { Favorite } from "../../types";
 import { ConstraintState } from "../../types";
+import { usePrevious } from "../../utils/utils";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
-import { Favorites } from "./Favorites";
+import { Favorites } from "./Favorites/Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
 import { SchemaEditor } from "./SchemaEditor";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
@@ -57,10 +58,22 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
     const [showIntrospectionModal, setShowIntrospectionModal] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
     const [isIntrospecting, setIsIntrospecting] = useState<boolean>(false);
+    const [editorView, setEditorView] = useState<EditorView | null>(null);
     const elementRef = useRef<HTMLDivElement | null>(null);
     const favorites = useStore((store) => store.favorites);
+    const prevSelectedDBName = usePrevious(auth.selectedDatabaseName);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
-    const [editorView, setEditorView] = useState<EditorView | null>(null);
+
+    useEffect(() => {
+        if (!prevSelectedDBName) return;
+        if (prevSelectedDBName !== auth.selectedDatabaseName) {
+            if (!editorView) return;
+            // the selected database has changed, clear the codemirror content.
+            editorView.dispatch({
+                changes: { from: 0, to: editorView.state.doc.length, insert: "" },
+            });
+        }
+    }, [auth.selectedDatabaseName]);
 
     const formatTheCode = (): void => {
         if (!editorView) return;
@@ -218,8 +231,8 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                     <div className="h-content-container flex justify-start w-96 bg-white border-t border-gray-100 overflow-y-auto">
                         <div className="w-full">
                             <SchemaSettings />
-                            <hr />
-                            <Favorites favorites={favorites} onSelectFavorite={setTypeDefsFromFavorite} />
+                            <hr className="border-gray-200" />
+                            <Favorites onSelectFavorite={setTypeDefsFromFavorite} />
                         </div>
                     </div>
                     <div className="flex-1 flex justify-start w-full p-4" style={{ height: "calc(100% - 3rem)" }}>
@@ -238,7 +251,7 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                             />
                             {!appSettings.hideProductUsageMessage ? (
                                 <Banner
-                                    className="absolute bottom-7 ml-4 w-[44rem] z-40"
+                                    className="absolute bottom-7 ml-4 w-[44rem] z-[60]"
                                     closeable
                                     name="ProductUsageMessage"
                                     title={<strong>Product analytics</strong>}

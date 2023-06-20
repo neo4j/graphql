@@ -25,7 +25,7 @@ Access the Neo4j GraphQL Toolbox here: https://graphql-toolbox.neo4j.io/
 ## Usage
 
 1. Connect to the database with your credentials
-2. Define (or Introspect) the Type definitions
+2. Define (or introspect) the type definitions
 3. Build Neo4j GraphQL schema
 4. Experiment, query and play
 

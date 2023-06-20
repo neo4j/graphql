@@ -117,6 +117,7 @@ base.test.describe("URL query parameters", () => {
 
         await topBarPage.clickConnectionInformation();
         await topBarPage.selectDatabaseByName("neo4j");
+        await topBarPage.confirmDatabaseSelection();
 
         selectedDatabase = await topBarPage.getSelectedDatabase();
         expect(selectedDatabase).toEqual("neo4j");

@@ -61,7 +61,7 @@ const defaultValues = {
     enableRegex: false,
     constraint: ConstraintState.ignore.toString(),
     editorTheme: null,
-    favorites: null,
+    favorites: [],
     showLintMarkers: false,
     hideIntrospectionPrompt: false,
     enableProductUsageTracking: true,

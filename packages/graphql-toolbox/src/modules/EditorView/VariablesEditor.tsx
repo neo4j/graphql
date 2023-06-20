@@ -25,15 +25,7 @@ import { javascript } from "@codemirror/lang-javascript";
 import { bracketMatching, foldGutter, indentOnInput } from "@codemirror/language";
 import { Annotation, Prec, StateEffect } from "@codemirror/state";
 import type { ViewUpdate } from "@codemirror/view";
-import {
-    drawSelection,
-    dropCursor,
-    EditorView,
-    highlightActiveLine,
-    highlightSpecialChars,
-    keymap,
-    lineNumbers,
-} from "@codemirror/view";
+import { drawSelection, dropCursor, EditorView, highlightSpecialChars, keymap, lineNumbers } from "@codemirror/view";
 import { Button } from "@neo4j-ndl/react";
 import classNames from "classnames";
 import { dracula, tomorrow } from "thememirror";
@@ -83,7 +75,6 @@ export const VariablesEditor = ({ id, loading, fileExtension, fileName, borderRa
     const extensions = [
         lineNumbers(),
         highlightSpecialChars(),
-        highlightActiveLine(),
         bracketMatching(),
         closeBrackets(),
         drawSelection(),
