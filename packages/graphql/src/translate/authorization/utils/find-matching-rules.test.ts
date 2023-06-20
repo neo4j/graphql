@@ -27,7 +27,7 @@ describe("findMatchingRules", () => {
     test("should not match non intersecting operations", () => {
         const rule = new AuthorizationFilterRule({ operations: ["READ"], requireAuthentication: true, where: {} });
 
-        expect(findMatchingRules([rule], ["AGGREGATE"])).toHaveLength(0);
+        expect(findMatchingRules([rule], ["UPDATE"])).toHaveLength(0);
     });
 
     test("should match identical operations", () => {
