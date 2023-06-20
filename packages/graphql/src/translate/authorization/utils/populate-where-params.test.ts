@@ -39,7 +39,12 @@ describe("populateWhereParams", () => {
 
         jwtParam = new Cypher.Param(jwt);
         context = new ContextBuilder({
-            authorization: { jwtParam, isAuthenticated: true, isAuthenticatedParam: new Cypher.Param(true) },
+            authorization: {
+                jwtParam,
+                isAuthenticated: true,
+                isAuthenticatedParam: new Cypher.Param(true),
+                jwtDefault: new Cypher.Param({}),
+            },
         }).instance();
     });
 
