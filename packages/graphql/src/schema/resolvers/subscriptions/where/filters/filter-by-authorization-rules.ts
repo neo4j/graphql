@@ -23,7 +23,7 @@ import type { RecordType, RelationshipType, SubscriptionContext } from "../../ty
 import { filterByProperties } from "./filter-by-properties";
 import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
 import { filterRelationshipKey } from "../utils/filter-relationship-key";
-import { filterByValues } from "./filter-by-values";
+import { filterByValues } from "../../../../../translate/authorization/utils/filter-by-values";
 import type { SubscriptionsAuthorizationWhere } from "../../../../../schema-model/annotation/SubscriptionsAuthorizationAnnotation";
 
 function isRelationshipSubscriptionsEvent(event: SubscriptionsEvent): event is RelationshipSubscriptionsEvent {
@@ -137,107 +137,11 @@ export function filterByAuthorizationRules({
         }
 
         if (wherePropertyKey === "jwtPayload") {
-            return filterByValues({
-                whereInput: wherePropertyValue,
-                receivedValues: context.jwt as Record<string, any>,
-            });
+            return filterByValues(wherePropertyValue, context.jwt as Record<string, any>);
         }
 
         return true;
     });
 
     return multipleConditionsAggregationMap.AND(results);
-
-    // for (const [wherePropertyKey, wherePropertyValue] of Object.entries(where)) {
-    //     if (Object.keys(multipleConditionsAggregationMap).includes(wherePropertyKey)) {
-    //         const comparisonResultsAggregationFn = multipleConditionsAggregationMap[wherePropertyKey];
-    //         let comparisonResults;
-    //         if (wherePropertyKey === "NOT") {
-    //             comparisonResults = filterByAuthorizationRules({
-    //                 node,
-    //                 where: wherePropertyValue as Record<string, RecordType>,
-    //                 event,
-    //                 nodes,
-    //                 relationshipFields,
-    //                 context,
-    //             });
-    //         } else {
-    //             comparisonResults = (wherePropertyValue as Array<Record<string, RecordType>>).map((whereCl) => {
-    //                 return filterByAuthorizationRules({
-    //                     node,
-    //                     where: whereCl,
-    //                     event,
-    //                     nodes,
-    //                     relationshipFields,
-    //                     context,
-    //                 });
-    //             });
-    //         }
-
-    //         if (!comparisonResultsAggregationFn(comparisonResults)) {
-    //             return false;
-    //         }
-    //     }
-
-    //     if (wherePropertyKey === "node") {
-    //         switch (event.event) {
-    //             case "create":
-    //                 return filterByProperties({
-    //                     node,
-    //                     whereProperties: wherePropertyValue,
-    //                     receivedProperties: event.properties.new,
-    //                 });
-    //             case "update":
-    //             case "delete":
-    //                 return filterByProperties({
-    //                     node,
-    //                     whereProperties: wherePropertyValue,
-    //                     receivedProperties: event.properties.old,
-    //                 });
-    //             case "create_relationship":
-    //             case "delete_relationship":
-    //                 const receivedEventRelationshipType = event.relationshipName;
-    //                 const relationships = node.relationFields.filter((f) => f.type === receivedEventRelationshipType);
-    //                 if (!relationships.length) {
-    //                     return false;
-    //                 }
-    //                 const receivedEventRelationship = relationships[0] as RelationField; // ONE relationship only possible
-    //                 const key = receivedEventRelationship.direction === "IN" ? "to" : "from";
-    //                 return filterByProperties({
-    //                     node,
-    //                     whereProperties: wherePropertyValue,
-    //                     receivedProperties: receivedEventProperties[key],
-    //                 });
-    //         }
-    //     }
-
-    //     if (wherePropertyKey === "relationship") {
-    //         if (!nodes || !relationshipFields || !isRelationshipSubscriptionsEvent(event)) {
-    //             return false;
-    //         }
-
-    //         const receivedEventRelationshipType = event.relationshipName;
-    //         const relationships = node.relationFields.filter((f) => f.type === receivedEventRelationshipType);
-    //         if (!relationships.length) {
-    //             return false;
-    //         }
-    //         const receivedEventRelationship = relationships[0] as RelationField; // ONE relationship only possible
-
-    //         return filterRelationshipKey({
-    //             receivedEventRelationship,
-    //             where: wherePropertyValue,
-    //             relationshipFields,
-    //             receivedEvent: event,
-    //             nodes,
-    //         });
-    //     }
-
-    //     if (wherePropertyKey === "jwtPayload") {
-    //         return filterByValues({
-    //             whereInput: wherePropertyValue,
-    //             receivedValues: context.jwt as Record<string, any>,
-    //         });
-    //     }
-    // }
-    // return true;
 }
