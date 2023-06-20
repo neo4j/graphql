@@ -629,7 +629,7 @@ describe("connectOrCreate", () => {
                     name: String @unique
                 }
 
-                extend type Genre @auth(rules: [{ operations: [CREATE], allow: { name: "$jwt.sub" } }])
+                extend type Genre @authorization(validate: [{ when: [BEFORE], operations: [CREATE], where: { node: { name: "$jwt.sub" } } }])
             `;
 
             neoSchema = new Neo4jGraphQL({
@@ -648,12 +648,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
-                    ON CREATE SET
-                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param1
-                    MERGE (this)-[this_connectOrCreate_genres_this0:IN_GENRE]->(this_connectOrCreate_genres0)
                     WITH *
-                    CALL apoc.util.validate(NOT ((this_connectOrCreate_genres0.name IS NOT NULL AND this_connectOrCreate_genres0.name = $this_connectOrCreate_genres0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this_connectOrCreate_genres0.name = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param3 })
+                    ON CREATE SET
+                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param4
+                    MERGE (this)-[this_connectOrCreate_genres_this0:IN_GENRE]->(this_connectOrCreate_genres0)
                     RETURN COUNT(*) AS _
                 }
                 WITH *
@@ -663,9 +663,14 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
-                    \\"this_connectOrCreate_genres_param0\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres0auth_param0\\": \\"test\\",
+                    \\"isAuthenticated\\": true,
+                    \\"jwt\\": {
+                        \\"roles\\": [],
+                        \\"sub\\": \\"test\\"
+                    },
+                    \\"jwtDefault\\": {},
+                    \\"this_connectOrCreate_genres_param3\\": \\"Horror\\",
+                    \\"this_connectOrCreate_genres_param4\\": \\"Horror\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);

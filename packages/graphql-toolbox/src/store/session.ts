@@ -17,23 +17,16 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg } from "../../types";
+import { create } from "zustand";
 
-export type AuthenticationOperation =
-    | "READ"
-    | "CREATE"
-    | "UPDATE"
-    | "DELETE"
-    | "CREATE_RELATIONSHIP"
-    | "DELETE_RELATIONSHIP"
-    | "SUBSCRIBE";
-
-export class AuthenticationAnnotation {
-    public readonly operations: Set<AuthenticationOperation>;
-    public readonly jwt?: GraphQLWhereArg;
-
-    constructor(operations: AuthenticationOperation[], jwt?: GraphQLWhereArg) {
-        this.operations = new Set<AuthenticationOperation>(operations);
-        this.jwt = jwt;
-    }
+export interface SessionStore {
+    auraDbId: string | null;
+    setAuraDbId: (auraDbId: string | null) => void;
+    clearAuraDbId: () => void;
 }
+
+export const useSessionStore = create<SessionStore>((set) => ({
+    auraDbId: null,
+    setAuraDbId: (auraDbId) => set({ auraDbId }),
+    clearAuraDbId: () => set({ auraDbId: null }),
+}));

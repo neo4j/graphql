@@ -17,23 +17,14 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg } from "../../types";
+import type { EnricherContext } from "../EnricherContext";
+import type { Enricher } from "../types";
+import { directiveEnricher } from "./directive/directive";
 
-export type AuthenticationOperation =
-    | "READ"
-    | "CREATE"
-    | "UPDATE"
-    | "DELETE"
-    | "CREATE_RELATIONSHIP"
-    | "DELETE_RELATIONSHIP"
-    | "SUBSCRIBE";
-
-export class AuthenticationAnnotation {
-    public readonly operations: Set<AuthenticationOperation>;
-    public readonly jwt?: GraphQLWhereArg;
-
-    constructor(operations: AuthenticationOperation[], jwt?: GraphQLWhereArg) {
-        this.operations = new Set<AuthenticationOperation>(operations);
-        this.jwt = jwt;
-    }
+export function authenticationDirectiveEnricher(enricherContext: EnricherContext): Enricher {
+    return directiveEnricher(
+        enricherContext,
+        "authentication",
+        (currentDirectiveDirective) => currentDirectiveDirective
+    );
 }

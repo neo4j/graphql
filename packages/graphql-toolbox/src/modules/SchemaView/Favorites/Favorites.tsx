@@ -37,6 +37,8 @@ import { IconButton } from "@neo4j-ndl/react";
 import { ArrowDownTrayIconOutline, StarIconOutline, TrashIconOutline } from "@neo4j-ndl/react/icons";
 import classNames from "classnames";
 
+import { tracking } from "../../../analytics/tracking";
+import { Screen } from "../../../contexts/screen";
 import { useStore } from "../../../store";
 import { useFavoritesStore } from "../../../store/favorites";
 import type { Favorite } from "../../../types";
@@ -76,6 +78,7 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
 
     const deleteSelectedFavorites = (): void => {
         const remainingFavorites = favorites?.filter((fav) => !selectedFavorites.includes(fav.id)) || null;
+        tracking.trackDeleteFavorite({ screen: Screen.TYPEDEFS, numberOfDeleted: selectedFavorites.length });
         useFavoritesStore.setState({ selectedFavorites: [] });
         useStore.setState({ favorites: remainingFavorites });
     };
@@ -93,6 +96,7 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
             downloadLink.click();
             downloadLink.remove();
         });
+        tracking.trackDownloadFavorites({ screen: Screen.TYPEDEFS, numberOfFiles: favoritesToDownload.length });
     };
 
     useEffect(() => {

@@ -20,12 +20,12 @@
 import type { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, upperFirst } from "graphql-compose";
 import type { Node } from "../../classes";
+import { RelationshipNestedOperationsOption } from "../../constants";
 import type { RelationField } from "../../types";
 import { DEPRECATE_NOT } from "../constants";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { createConnectOrCreateField } from "./create-connect-or-create-field";
-import { RelationshipNestedOperationsOption } from "../../constants";
 
 export function createRelationshipUnionFields({
     nodes,
@@ -81,7 +81,6 @@ export function createRelationshipUnionFields({
               fields: {},
           })
         : undefined;
-
     const unionDeleteInput = nestedOperations.has(RelationshipNestedOperationsOption.DELETE)
         ? schemaComposer.createInputTC({
               name: `${typePrefix}DeleteInput`,
@@ -95,9 +94,11 @@ export function createRelationshipUnionFields({
           })
         : undefined;
     let unionCreateInput: InputTypeComposer<any> | undefined;
+
     const connectOrCreateAndUniqueFieldsInRefTypes =
         nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
         refNodes.find((n) => n.uniqueFields.length);
+
     if (
         nestedOperations.has(RelationshipNestedOperationsOption.CREATE) ||
         nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
@@ -108,6 +109,7 @@ export function createRelationshipUnionFields({
             fields: {},
         });
     }
+
     const unionUpdateInput = schemaComposer.createInputTC({
         name: `${typePrefix}UpdateInput`,
         fields: {},
@@ -158,16 +160,14 @@ export function createRelationshipUnionFields({
 
         const createName = `${sourceName}${upperFirst(rel.fieldName)}${n.name}CreateFieldInput`;
         if (!schemaComposer.has(createName)) {
-            schemaComposer.createInputTC({
-                name: createName,
-                fields: {
-                    node: `${n.name}CreateInput!`,
-                    ...(hasNonGeneratedProperties
-                        ? {
-                              edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
-                          }
-                        : {}),
-                },
+            schemaComposer.getOrCreateITC(createName, (tc) => {
+                tc.addFields({ node: `${n.name}CreateInput!` });
+
+                if (hasNonGeneratedProperties) {
+                    tc.addFields({
+                        edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
+                    });
+                }
             });
 
             if (
@@ -209,21 +209,20 @@ export function createRelationshipUnionFields({
             const connectName = `${unionPrefix}ConnectFieldInput`;
             const connect = rel.typeMeta.array ? `[${connectName}!]` : `${connectName}`;
             if (!schemaComposer.has(connectName)) {
-                schemaComposer.createInputTC({
-                    name: connectName,
-                    fields: {
-                        where: connectWhereName,
-                        ...(n.relationFields.length
-                            ? {
-                                  connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput`,
-                              }
-                            : {}),
-                        ...(hasNonGeneratedProperties
-                            ? {
-                                  edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
-                              }
-                            : {}),
-                    },
+                schemaComposer.getOrCreateITC(connectName, (tc) => {
+                    tc.addFields({ where: connectWhereName });
+
+                    if (n.relationFields.length) {
+                        tc.addFields({
+                            connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput`,
+                        });
+                    }
+
+                    if (hasNonGeneratedProperties) {
+                        tc.addFields({
+                            edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
+                        });
+                    }
                 });
 
                 unionConnectInput.addFields({
@@ -263,16 +262,14 @@ export function createRelationshipUnionFields({
 
         if (unionDeleteInput && updateFields) {
             if (!schemaComposer.has(deleteName)) {
-                schemaComposer.createInputTC({
-                    name: deleteName,
-                    fields: {
-                        where: whereName,
-                        ...(n.relationFields.length
-                            ? {
-                                  delete: `${n.name}DeleteInput`,
-                              }
-                            : {}),
-                    },
+                schemaComposer.getOrCreateITC(deleteName, (tc) => {
+                    tc.addFields({ where: whereName });
+
+                    if (n.relationFields.length) {
+                        tc.addFields({
+                            delete: `${n.name}DeleteInput`,
+                        });
+                    }
                 });
 
                 unionDeleteInput.addFields({
@@ -285,16 +282,14 @@ export function createRelationshipUnionFields({
 
         if (unionDisconnectInput && updateFields) {
             if (!schemaComposer.has(disconnectName)) {
-                schemaComposer.createInputTC({
-                    name: disconnectName,
-                    fields: {
-                        where: whereName,
-                        ...(n.relationFields.length
-                            ? {
-                                  disconnect: `${n.name}DisconnectInput`,
-                              }
-                            : {}),
-                    },
+                schemaComposer.getOrCreateITC(disconnectName, (tc) => {
+                    tc.addFields({ where: whereName });
+
+                    if (n.relationFields.length) {
+                        tc.addFields({
+                            disconnect: `${n.name}DisconnectInput`,
+                        });
+                    }
                 });
 
                 unionDisconnectInput.addFields({
@@ -322,12 +317,14 @@ export function createRelationshipUnionFields({
                 });
             }
 
-            schemaComposer.createInputTC({
-                name: connectionUpdateInputName,
-                fields: {
-                    ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
-                    node: updateField,
-                },
+            schemaComposer.getOrCreateITC(connectionUpdateInputName, (tc) => {
+                tc.addFields({ node: updateField });
+
+                if (hasNonGeneratedProperties) {
+                    tc.addFields({
+                        edge: `${rel.properties}UpdateInput`,
+                    });
+                }
             });
         }
 
@@ -338,9 +335,8 @@ export function createRelationshipUnionFields({
             });
         }
 
-        schemaComposer.createInputTC({
-            name: whereName,
-            fields: {
+        schemaComposer.getOrCreateITC(whereName, (tc) => {
+            tc.addFields({
                 node: `${n.name}Where`,
                 node_NOT: {
                     type: `${n.name}Where`,
@@ -349,16 +345,17 @@ export function createRelationshipUnionFields({
                 AND: `[${whereName}!]`,
                 OR: `[${whereName}!]`,
                 NOT: whereName,
-                ...(rel.properties
-                    ? {
-                          edge: `${rel.properties}Where`,
-                          edge_NOT: {
-                              type: `${rel.properties}Where`,
-                              directives: [DEPRECATE_NOT],
-                          },
-                      }
-                    : {}),
-            },
+            });
+
+            if (rel.properties) {
+                tc.addFields({
+                    edge: `${rel.properties}Where`,
+                    edge_NOT: {
+                        type: `${rel.properties}Where`,
+                        directives: [DEPRECATE_NOT],
+                    },
+                });
+            }
         });
 
         if (connectAndCreateAndUniqueFields) {

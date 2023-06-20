@@ -155,7 +155,7 @@ describe("auth/is-authenticated", () => {
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${Product} @authentication(operations: [READ], jwtPayload: { roles_INCLUDES: "admin" }) {
+                type ${Product} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) {
                     id: ID
                     name: String
                 }
@@ -200,7 +200,7 @@ describe("auth/is-authenticated", () => {
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${Product} @authentication(operations: [READ], jwtPayload: { roles_INCLUDES: "admin" }) {
+                type ${Product} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) {
                     id: ID
                     name: String
                 }
@@ -232,6 +232,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
+                console.log(gqlResult);
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             } finally {
                 await session.close();
@@ -338,7 +339,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @authentication(operations: [CREATE], jwtPayload: {roles_INCLUDES: "admin"}) {
+                type ${User} @authentication(operations: [CREATE], jwt: {roles_INCLUDES: "admin"}) {
                     id: ID
                     name: String
                 }
@@ -433,7 +434,7 @@ describe("auth/is-authenticated", () => {
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${User} @authentication(operations: [CREATE], jwtPayload: { roles_INCLUDES: "admin" }) {
+                type ${User} @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) {
                     id: ID
                     name: String
                 }
@@ -539,7 +540,7 @@ describe("auth/is-authenticated", () => {
                     products: [${Product}!]! @relationship(type: "HAS_PRODUCT", direction: OUT) 
                 }
 
-                type ${Product} @authentication(operations: [CREATE], jwtPayload: { roles_INCLUDES: "admin" }) {
+                type ${Product} @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) {
                     id: ID
                 }   
             `;
@@ -592,7 +593,7 @@ describe("auth/is-authenticated", () => {
                     products: [${Product}!]! @relationship(type: "HAS_PRODUCT", direction: OUT) 
                 }
 
-                type ${Product} @authentication(operations: [CREATE], jwtPayload: { roles_INCLUDES: "admin" }) {
+                type ${Product} @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) {
                     id: ID
                 }   
             `;
@@ -680,7 +681,7 @@ describe("auth/is-authenticated", () => {
 
                 type ${User} {
                     id: ID
-                    password: String  @authentication(operations: [CREATE], jwtPayload: {roles_INCLUDES: "admin"}) 
+                    password: String  @authentication(operations: [CREATE], jwt: {roles_INCLUDES: "admin"}) 
                 }
             `;
 
@@ -762,7 +763,7 @@ describe("auth/is-authenticated", () => {
             
                 type ${User} {
                     id: ID
-                    password: String  @authentication(operations: [CREATE], jwtPayload: { roles_INCLUDES: "admin" }) 
+                    password: String  @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) 
                 }
             `;
 
@@ -803,7 +804,7 @@ describe("auth/is-authenticated", () => {
             
                 type ${User} {
                     id: ID
-                    password: String  @authentication(operations: [CREATE], jwtPayload: { roles_INCLUDES: "admin" }) 
+                    password: String  @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) 
                 }
             `;
 
@@ -908,7 +909,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type ${Product} {
-                    id: ID  @authentication(operations: [CREATE], jwtPayload: { roles_INCLUDES: "admin" }) 
+                    id: ID  @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) 
                 }   
             `;
 
@@ -961,7 +962,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type ${Product} {
-                    id: ID  @authentication(operations: [CREATE], jwtPayload: { roles_INCLUDES: "admin" }) 
+                    id: ID  @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) 
                 }   
             `;
 
@@ -1056,7 +1057,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User}  @authentication(operations: [UPDATE], jwtPayload: {roles_INCLUDES: "admin"})  {
+                type ${User}  @authentication(operations: [UPDATE], jwt: {roles_INCLUDES: "admin"})  {
                     id: ID
                     name: String
                 }
@@ -1151,7 +1152,7 @@ describe("auth/is-authenticated", () => {
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${User}  @authentication(operations: [UPDATE],  jwtPayload: { roles_INCLUDES: "admin" })  {
+                type ${User}  @authentication(operations: [UPDATE],  jwt: { roles_INCLUDES: "admin" })  {
                     id: ID
                     name: String
                 }
@@ -1245,7 +1246,7 @@ describe("auth/is-authenticated", () => {
         
                 type ${User} {
                     id: ID
-                    password: String  @authentication(operations: [UPDATE], jwtPayload: {roles_INCLUDES: "admin"}) 
+                    password: String  @authentication(operations: [UPDATE], jwt: {roles_INCLUDES: "admin"}) 
                 }
             `;
 
@@ -1340,7 +1341,7 @@ describe("auth/is-authenticated", () => {
                 }
                 type ${User} {
                     id: ID
-                    password: String  @authentication(operations: [UPDATE],  jwtPayload: { roles_INCLUDES: "admin" }) 
+                    password: String  @authentication(operations: [UPDATE],  jwt: { roles_INCLUDES: "admin" }) 
                 }
             `;
 
@@ -1472,7 +1473,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 extend type ${User}
-                    @authentication(operations: [CREATE_RELATIONSHIP], jwtPayload: {roles_INCLUDES:"admin"}) 
+                    @authentication(operations: [CREATE_RELATIONSHIP], jwt: {roles_INCLUDES:"admin"}) 
 
                 extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP]) 
             `;
@@ -1545,7 +1546,7 @@ describe("auth/is-authenticated", () => {
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP], jwtPayload: {roles_INCLUDES:"admin"}) 
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP], jwt: {roles_INCLUDES:"admin"}) 
             `;
 
             const userId = generate({
@@ -1764,7 +1765,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 extend type ${User}
-                    @authentication(operations: [CREATE_RELATIONSHIP],  jwtPayload: { roles_INCLUDES: "admin" }) 
+                    @authentication(operations: [CREATE_RELATIONSHIP],  jwt: { roles_INCLUDES: "admin" }) 
 
                 extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP]) 
             `;
@@ -1837,7 +1838,7 @@ describe("auth/is-authenticated", () => {
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP],  jwtPayload: { roles_INCLUDES: "admin" }) 
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP],  jwt: { roles_INCLUDES: "admin" }) 
             `;
 
             const userId = generate({
@@ -1981,7 +1982,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 extend type ${User}
-                    @authentication(operations: [CREATE_RELATIONSHIP], jwtPayload: {roles_INCLUDES:"admin"}) 
+                    @authentication(operations: [CREATE_RELATIONSHIP], jwt: {roles_INCLUDES:"admin"}) 
 
                 extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP]) 
             `;
@@ -2054,7 +2055,7 @@ describe("auth/is-authenticated", () => {
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP], jwtPayload: {roles_INCLUDES:"admin"}) 
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP], jwt: {roles_INCLUDES:"admin"}) 
             `;
 
             const userId = generate({
@@ -2273,7 +2274,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 extend type ${User}
-                    @authentication(operations: [CREATE_RELATIONSHIP],  jwtPayload: { roles_INCLUDES: "admin" }) 
+                    @authentication(operations: [CREATE_RELATIONSHIP],  jwt: { roles_INCLUDES: "admin" }) 
 
                 extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP]) 
             `;
@@ -2346,7 +2347,7 @@ describe("auth/is-authenticated", () => {
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP],  jwtPayload: { roles_INCLUDES: "admin" }) 
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP],  jwt: { roles_INCLUDES: "admin" }) 
             `;
 
             const userId = generate({
@@ -2490,7 +2491,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 extend type ${User}
-                    @authentication(operations: [DELETE_RELATIONSHIP], jwtPayload: {roles_INCLUDES:"admin"}) 
+                    @authentication(operations: [DELETE_RELATIONSHIP], jwt: {roles_INCLUDES:"admin"}) 
 
                 extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP]) 
             `;
@@ -2563,7 +2564,7 @@ describe("auth/is-authenticated", () => {
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP], jwtPayload: {roles_INCLUDES:"admin"}) 
+                extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP], jwt: {roles_INCLUDES:"admin"}) 
             `;
 
             const userId = generate({
@@ -2782,7 +2783,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 extend type ${User}
-                    @authentication(operations: [DELETE_RELATIONSHIP],  jwtPayload: { roles_INCLUDES: "admin" }) 
+                    @authentication(operations: [DELETE_RELATIONSHIP],  jwt: { roles_INCLUDES: "admin" }) 
 
                 extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP]) 
             `;
@@ -2855,7 +2856,7 @@ describe("auth/is-authenticated", () => {
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP],  jwtPayload: { roles_INCLUDES: "admin" }) 
+                extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP],  jwt: { roles_INCLUDES: "admin" }) 
             `;
 
             const userId = generate({
@@ -2957,7 +2958,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @authentication(operations: [DELETE], jwtPayload: {roles_INCLUDES: "admin"})  {
+                type ${User} @authentication(operations: [DELETE], jwt: {roles_INCLUDES: "admin"})  {
                     id: ID
                     name: String
                 }
@@ -3113,7 +3114,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @authentication(operations: [DELETE],  jwtPayload: { roles_INCLUDES: "admin" })  {
+                type ${User} @authentication(operations: [DELETE],  jwt: { roles_INCLUDES: "admin" })  {
                     id: ID
                     name: String
                 }
@@ -3165,7 +3166,7 @@ describe("auth/is-authenticated", () => {
                     posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type Post @authentication(operations: [DELETE],  jwtPayload: { roles_INCLUDES: "admin" }) {
+                type Post @authentication(operations: [DELETE],  jwt: { roles_INCLUDES: "admin" }) {
                     id: ID
                     name: String
                 }
@@ -3341,7 +3342,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Query {
-                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u") @authentication(jwtPayload: {roles_INCLUDES: "admin"})
+                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u") @authentication(jwt: {roles_INCLUDES: "admin"})
                 }
             `;
 
@@ -3441,7 +3442,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Query {
-                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u") @authentication(jwtPayload: {roles_INCLUDES: "admin"})
+                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u") @authentication(jwt: {roles_INCLUDES: "admin"})
                 }
             `;
 
@@ -3537,7 +3538,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Mutation {
-                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u") @authentication(jwtPayload: {roles_INCLUDES: "admin"})
+                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u") @authentication(jwt: {roles_INCLUDES: "admin"})
                 }
             `;
 
@@ -3627,13 +3628,17 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
+                type JWTPayload @jwt {
+                    roles: [String!]!
+                }
+
                 type ${User} {
                     id: ID
                     name: String
                 }
 
                 type Mutation {
-                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u") @authentication(jwtPayload: {roles_INCLUDES: "admin"})
+                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u") @authentication(jwt: {roles_INCLUDES: "admin"})
                 }
             `;
 
@@ -3737,7 +3742,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     history: [${History}]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h")
-                        @authentication(operations: [READ], jwtPayload: {roles_INCLUDES: "admin"}) 
+                        @authentication(operations: [READ], jwt: {roles_INCLUDES: "admin"}) 
                 }
             `;
 
@@ -3847,7 +3852,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     history: [${History}]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h")
-                        @authentication(operations: [READ], jwtPayload: {roles_INCLUDES: "admin"}) 
+                        @authentication(operations: [READ], jwt: {roles_INCLUDES: "admin"}) 
                 }
             `;
 
@@ -3935,7 +3940,11 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "READ" });
 
             const typeDefs = `
-                type ${Product} @authentication(operations: [READ], jwtPayload: {name_STARTS_WITH: "John"})  {
+                type JWTPayload @jwt {
+                    name: String!
+                }
+
+                type ${Product} @authentication(operations: [READ], jwt: {name_STARTS_WITH: "John"})  {
                     id: ID
                     name: String
                 }
@@ -3981,7 +3990,11 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "READ" });
 
             const typeDefs = `
-                type ${Product} @authentication(operations: [READ], jwtPayload: {name_STARTS_WITH: "Doe"})  {
+                type JWTPayload @jwt {
+                    name: String!
+                }
+
+                type ${Product} @authentication(operations: [READ], jwt: {name_STARTS_WITH: "Doe"})  {
                     id: ID
                     name: String
                 }
