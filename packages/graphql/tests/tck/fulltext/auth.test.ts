@@ -63,7 +63,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             WITH *
             WHERE (\\"Movie\\" IN labels(this) AND ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[:DIRECTED]-(this0:\`Person\`)
-                WHERE this0.id = coalesce($jwt.sub, \\"\\")
+                WHERE this0.id = coalesce($jwt.sub, $jwtDefault)
             }))
             RETURN this { .title } AS this"
         `);
@@ -75,6 +75,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 "roles": Array [],
                 "sub": "my-sub",
               },
+              "jwtDefault": Object {},
               "param0": "something AND something",
             }
         `);
@@ -120,7 +121,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             WITH *
             WHERE (\\"Movie\\" IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[:DIRECTED]-(this0:\`Person\`)
-                WHERE this0.id = coalesce($jwt.sub, \\"\\")
+                WHERE this0.id = coalesce($jwt.sub, $jwtDefault)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             RETURN this { .title } AS this"
         `);
@@ -132,6 +133,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 "roles": Array [],
                 "sub": "my-sub",
               },
+              "jwtDefault": Object {},
               "param0": "something AND something",
             }
         `);
