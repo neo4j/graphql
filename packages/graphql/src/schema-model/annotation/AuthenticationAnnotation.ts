@@ -21,6 +21,7 @@ import type { GraphQLWhereArg } from "../../types";
 
 export type AuthenticationOperation =
     | "READ"
+    | "AGGREGATE"
     | "CREATE"
     | "UPDATE"
     | "DELETE"

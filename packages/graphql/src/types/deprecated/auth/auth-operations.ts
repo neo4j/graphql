@@ -32,5 +32,7 @@ export function authorizationOperationToAuthOperation(operation: AuthorizationOp
             return "CONNECT";
         case "DELETE_RELATIONSHIP":
             return "DISCONNECT";
+        case "AGGREGATE":
+            return "READ";
     }
 }

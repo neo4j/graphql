@@ -49,7 +49,7 @@ describe("aggregations-top_level authorization", () => {
                 id: ID
             }
 
-            extend type ${randomType.name} @authorization(validate: [ { when: BEFORE, where: { node: { id: "$jwt.sub" } } }])
+            extend type ${randomType.name} @authorization(validate: [ { operations: [AGGREGATE], when: BEFORE, where: { node: { id: "$jwt.sub" } } }])
         `;
 
         const userId = generate({
@@ -106,7 +106,7 @@ describe("aggregations-top_level authorization", () => {
                 creator: User! @relationship(type: "POSTED", direction: IN)
             }
 
-            extend type Post @authorization(filter: [{ where: { node: { creator: { id: "$jwt.sub" } } } }])
+            extend type Post @authorization(filter: [{ operations: [AGGREGATE], where: { node: { creator: { id: "$jwt.sub" } } } }])
         `;
 
         const userId = generate({

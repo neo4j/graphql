@@ -74,6 +74,7 @@ describe("AuthorizationFilterRule", () => {
         const authFilterRule = new AuthorizationFilterRule(rule);
         expect(authFilterRule.operations).toEqual([
             "READ",
+            "AGGREGATE",
             "UPDATE",
             "DELETE",
             "CREATE_RELATIONSHIP",
@@ -96,6 +97,7 @@ describe("AuthorizationValidateRule", () => {
         const authValidateRule = new AuthorizationValidateRule(rule);
         expect(authValidateRule.operations).toEqual([
             "READ",
+            "AGGREGATE",
             "CREATE",
             "UPDATE",
             "DELETE",

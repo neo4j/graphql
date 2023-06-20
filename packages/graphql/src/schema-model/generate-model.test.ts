@@ -40,6 +40,7 @@ describe("Schema model generation", () => {
         expect(schemaModel.annotations.authentication).toEqual(
             new AuthenticationAnnotation([
                 "READ",
+                "AGGREGATE",
                 "CREATE",
                 "UPDATE",
                 "DELETE",

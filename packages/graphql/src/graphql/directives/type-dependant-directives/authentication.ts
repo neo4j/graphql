@@ -24,6 +24,7 @@ import { AUTHENTICATION_OPERATION } from "./static-definitions";
 
 const authenticationDefaultOperations = [
     "READ",
+    "AGGREGATE",
     "CREATE",
     "UPDATE",
     "DELETE",

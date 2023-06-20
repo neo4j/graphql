@@ -31,20 +31,36 @@ describe("Cypher Aggregations with Auth", () => {
     beforeAll(() => {
         typeDefs = gql`
             type User {
-                id: ID @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
-                name: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
-                imdbRatingInt: Int! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
+                id: ID
+                    @authorization(
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    )
+                name: String!
+                    @authorization(
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    )
+                imdbRatingInt: Int!
+                    @authorization(
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    )
                 imdbRatingFloat: Float!
-                    @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
+                    @authorization(
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    )
                 imdbRatingBigInt: BigInt!
-                    @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
-                createdAt: DateTime @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
+                    @authorization(
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    )
+                createdAt: DateTime
+                    @authorization(
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    )
             }
 
             extend type User
                 @authorization(
-                    validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
-                    filter: [{ where: { node: { id: "$jwt.sub" } } }]
+                    validate: [{ operations: [AGGREGATE], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    filter: [{ operations: [AGGREGATE], where: { node: { id: "$jwt.sub" } } }]
                 )
         `;
 

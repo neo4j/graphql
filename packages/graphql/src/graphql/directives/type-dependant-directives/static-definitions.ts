@@ -39,6 +39,7 @@ export const AUTHORIZATION_VALIDATE_OPERATION = new GraphQLEnumType({
     values: {
         CREATE: { value: "CREATE" },
         READ: { value: "READ" },
+        AGGREGATE: { value: "AGGREGATE" },
         UPDATE: { value: "UPDATE" },
         DELETE: { value: "DELETE" },
         CREATE_RELATIONSHIP: { value: "CREATE_RELATIONSHIP" },
@@ -50,6 +51,7 @@ export const AUTHORIZATION_FILTER_OPERATION = new GraphQLEnumType({
     name: "AuthorizationFilterOperation",
     values: {
         READ: { value: "READ" },
+        AGGREGATE: { value: "AGGREGATE" },
         UPDATE: { value: "UPDATE" },
         DELETE: { value: "DELETE" },
         CREATE_RELATIONSHIP: { value: "CREATE_RELATIONSHIP" },
@@ -62,6 +64,7 @@ export const AUTHENTICATION_OPERATION = new GraphQLEnumType({
     values: {
         CREATE: { value: "CREATE" },
         READ: { value: "READ" },
+        AGGREGATE: { value: "AGGREGATE" },
         UPDATE: { value: "UPDATE" },
         DELETE: { value: "DELETE" },
         CREATE_RELATIONSHIP: { value: "CREATE_RELATIONSHIP" },

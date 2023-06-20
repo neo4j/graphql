@@ -83,7 +83,14 @@ function createAuthorizationFilterRule(
             return {
                 operations: {
                     type: new GraphQLList(AUTHORIZATION_FILTER_OPERATION),
-                    defaultValue: ["READ", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"],
+                    defaultValue: [
+                        "READ",
+                        "AGGREGATE",
+                        "UPDATE",
+                        "DELETE",
+                        "CREATE_RELATIONSHIP",
+                        "DELETE_RELATIONSHIP",
+                    ],
                 },
                 requireAuthentication: {
                     type: GraphQLBoolean,
@@ -107,7 +114,15 @@ function createAuthorizationValidateRule(
             return {
                 operations: {
                     type: new GraphQLList(AUTHORIZATION_VALIDATE_OPERATION),
-                    defaultValue: ["READ", "CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"],
+                    defaultValue: [
+                        "READ",
+                        "AGGREGATE",
+                        "CREATE",
+                        "UPDATE",
+                        "DELETE",
+                        "CREATE_RELATIONSHIP",
+                        "DELETE_RELATIONSHIP",
+                    ],
                 },
                 when: {
                     type: new GraphQLList(AUTHORIZATION_VALIDATE_STAGE),

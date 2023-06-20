@@ -19,6 +19,7 @@
 
 export type AuthorizationOperation =
     | "READ"
+    | "AGGREGATE"
     | "CREATE"
     | "UPDATE"
     | "DELETE"

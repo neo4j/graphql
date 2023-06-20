@@ -24,6 +24,7 @@ import { AuthenticationAnnotation } from "../annotation/AuthenticationAnnotation
 import { parseArguments } from "./utils";
 const authenticationDefaultOperations: AuthenticationOperation[] = [
     "READ",
+    "AGGREGATE",
     "CREATE",
     "UPDATE",
     "DELETE",

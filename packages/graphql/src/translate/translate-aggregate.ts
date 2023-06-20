@@ -34,7 +34,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     const cypherStrs: Cypher.Clause[] = [];
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
     const where = context.resolveTree.args.where as GraphQLWhereArg | undefined;
-    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "READ", where });
+    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "AGGREGATE", where });
     cypherStrs.push(new Cypher.RawCypher(topLevelMatch.cypher));
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
@@ -76,6 +76,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                         fieldName: authField.fieldName,
                     },
                 ],
+                // This operation needs to be READ because this will actually return values, unlike the top-level AGGREGATE
                 operations: ["READ"],
             });
             if (authorizationPredicateReturn) {
