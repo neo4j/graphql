@@ -3386,21 +3386,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.7.0, @neo4j-ndl/base@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "@neo4j-ndl/base@npm:1.7.0"
-  checksum: 0fc2306f11aeafca543bffea74b4a014b54e41c694e1a5ccee8740f118d849c7da7feeee04400c7ac455f1561c8314b3c9016ec4150ad66dbefdf26f554f2011
+"@neo4j-ndl/base@npm:1.7.2, @neo4j-ndl/base@npm:^1.7.2":
+  version: 1.7.2
+  resolution: "@neo4j-ndl/base@npm:1.7.2"
+  checksum: 00a9214da3afc1689684461678c24ae432e1894ec352b6c57735e1aa0df9186892c5c1b87b4fe3e21cb5fe6f6562c6d64c2f4c1c78f37f5886985d37caee4ef7
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@neo4j-ndl/react@npm:1.7.0"
+"@neo4j-ndl/react@npm:1.7.2":
+  version: 1.7.2
+  resolution: "@neo4j-ndl/react@npm:1.7.2"
   dependencies:
     "@floating-ui/react": ^0.24.2
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^1.7.0
+    "@neo4j-ndl/base": ^1.7.2
     "@tanstack/react-table": ^8.5.22
     classnames: ^2.3.1
     detect-browser: ^5.3.0
@@ -3416,7 +3416,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: ">=16.8.0"
-  checksum: 75533c103a2328a4dba6a8f13c2861e244bb4c730cc668fe0bf3b3e89a453f3dc53b8e8df113a538e6bd0452de02c6b7c2b1e2d4bb51fac7acabe6e0371aabe8
+  checksum: 927f1d7c0d84169d6355a179fc9a7e4d6f8bdba1eeee5e66deb2d37d3c3c68961345037e13c9aee84e728fba8421d8bc4b737282e0f54e7dbdcaa7fed3beac01
   languageName: node
   linkType: hard
 
@@ -3516,8 +3516,8 @@ __metadata:
     "@dnd-kit/modifiers": 6.0.1
     "@dnd-kit/sortable": 7.0.2
     "@graphiql/react": 0.17.6
-    "@neo4j-ndl/base": 1.7.0
-    "@neo4j-ndl/react": 1.7.0
+    "@neo4j-ndl/base": 1.7.2
+    "@neo4j-ndl/react": 1.7.2
     "@neo4j/graphql": 3.21.0
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.35.1
