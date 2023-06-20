@@ -37,6 +37,16 @@ export function checkAuthentication({
     targetOperations: AuthenticationOperation[]; // one of these have to be present in the authentication.operations options
     field?: string;
 }) {
+    const schemaLevelAnnotation = context.schemaModel.annotations.authentication;
+    if (schemaLevelAnnotation) {
+        const requiresAuthentication = targetOperations.some(
+            (targetOperation) => schemaLevelAnnotation && schemaLevelAnnotation.operations.has(targetOperation)
+        );
+        if (requiresAuthentication) {
+            applyAuthentication({ context, annotation: schemaLevelAnnotation });
+        }
+    }
+
     const concreteEntities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
 
     if (concreteEntities.length !== 1) {

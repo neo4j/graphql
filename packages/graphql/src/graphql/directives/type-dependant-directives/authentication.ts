@@ -34,7 +34,7 @@ const authenticationDefaultOperations = [
 function createAuthentication(jwtPayloadWhere: GraphQLInputObjectType): GraphQLDirective {
     return new GraphQLDirective({
         name: "authentication",
-        locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION],
+        locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION, DirectiveLocation.SCHEMA],
         args: {
             operations: {
                 description: "operations",

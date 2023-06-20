@@ -185,6 +185,25 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                 ];
             }
 
+            if (def.kind === "SchemaExtension") {
+                if (
+                    def.directives?.some((x) => ["authentication"].includes(x.name.value)) &&
+                    !features?.authorization
+                ) {
+                    console.warn(
+                        "@authentication and/or @authorization detected - please ensure that you either specify authorization settings in features.authorization, or pass a decoded JWT into context.jwt on each request"
+                    );
+                }
+
+                return [
+                    ...res,
+                    {
+                        ...def,
+                        directives: def.directives?.filter((x) => !["authentication"].includes(x.name.value)),
+                    },
+                ];
+            }
+
             return [...res, def];
         }, []),
     };

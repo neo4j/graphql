@@ -158,7 +158,7 @@ describe("Subscription authentication roles", () => {
 
         await wsClient.waitForEvents(1);
         expect(wsClient.events).toEqual([]);
-        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
     });
 
     test("auth with role and wrong secret fails", async () => {
@@ -176,7 +176,7 @@ describe("Subscription authentication roles", () => {
 
         await wsClient.waitForEvents(1);
         expect(wsClient.events).toEqual([]);
-        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
     });
 
     async function createMovie(title: string, graphQLServer: TestGraphQLServer): Promise<Response> {

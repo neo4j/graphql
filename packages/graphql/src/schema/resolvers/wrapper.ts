@@ -121,7 +121,8 @@ export const wrapResolver =
                         claims: jwtPayloadFieldsMap,
                     };
                 } catch (e) {
-                    if (authorization.globalAuthentication) {
+                    const globalAuthentication = schemaModel.annotations.authentication;
+                    if (authorization.globalAuthentication || globalAuthentication) {
                         throw e;
                     }
                     const isAuthenticated = false;

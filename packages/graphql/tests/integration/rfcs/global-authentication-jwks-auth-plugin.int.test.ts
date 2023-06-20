@@ -37,6 +37,7 @@ describe("Global authentication - Authorization JWKS plugin", () => {
         type ${testMovie} {
             name: String
         }
+        extend schema @authentication
     `;
 
     const query = `
@@ -74,7 +75,6 @@ describe("Global authentication - Authorization JWKS plugin", () => {
                     key: {
                         url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
                     },
-                    globalAuthentication: true,
                 },
             },
         });
@@ -103,7 +103,6 @@ describe("Global authentication - Authorization JWKS plugin", () => {
                     key: {
                         url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
                     },
-                    globalAuthentication: true,
                 },
             },
         });
@@ -134,7 +133,6 @@ describe("Global authentication - Authorization JWKS plugin", () => {
                     key: {
                         url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
                     },
-                    globalAuthentication: true,
                 },
             },
         });

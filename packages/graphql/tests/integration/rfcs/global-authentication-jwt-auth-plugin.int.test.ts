@@ -36,6 +36,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
         type ${testMovie} {
             name: String
         }
+        extend schema @authentication
     `;
 
     const query = `
@@ -60,7 +61,9 @@ describe("Global authentication - Authorization JWT plugin", () => {
             driver,
             typeDefs,
             features: {
-                authorization: { key: secret, globalAuthentication: true },
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -84,7 +87,9 @@ describe("Global authentication - Authorization JWT plugin", () => {
             driver,
             typeDefs,
             features: {
-                authorization: { key: secret, globalAuthentication: true },
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -108,7 +113,9 @@ describe("Global authentication - Authorization JWT plugin", () => {
             driver,
             typeDefs,
             features: {
-                authorization: { key: secret, globalAuthentication: true },
+                authorization: {
+                    key: secret,
+                },
             },
         });
 
@@ -129,14 +136,17 @@ describe("Global authentication - Authorization JWT plugin", () => {
         expect(gqlResult.data).toBeNull();
     });
 
-    test("should fail if noVerify and global authentication are both enabled", async () => {
+    test("should not throw a different error if noVerify and global authentication are both enabled", async () => {
         let initError: Error | null | unknown;
         try {
             const neoSchema = new Neo4jGraphQL({
                 driver,
                 typeDefs,
                 features: {
-                    authorization: { key: secret, verify: false, globalAuthentication: true },
+                    authorization: {
+                        key: secret,
+                        verify: false,
+                    },
                 },
             });
 
@@ -151,9 +161,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
         }
 
         expect(initError).toBeDefined();
-        expect((initError as Error)?.message).toInclude(
-            "`globalAuthentication` option requires the `verify` option to be enabled."
-        );
+        expect((initError as Error)?.message).toInclude("Unauthenticated");
     });
 
     test("should not fail if noVerify is false and global authentication is true", async () => {
@@ -163,7 +171,9 @@ describe("Global authentication - Authorization JWT plugin", () => {
                 driver,
                 typeDefs,
                 features: {
-                    authorization: { key: secret, globalAuthentication: true },
+                    authorization: {
+                        key: secret,
+                    },
                 },
             });
 
@@ -188,7 +198,9 @@ describe("Global authentication - Authorization JWT plugin", () => {
             driver,
             typeDefs,
             features: {
-                authorization: { key: secret, globalAuthentication: true },
+                authorization: {
+                    key: secret,
+                },
             },
         });
 

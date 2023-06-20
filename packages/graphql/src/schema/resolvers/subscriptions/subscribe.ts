@@ -67,6 +67,7 @@ export function generateSubscribeMethod({
             checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
         }
 
+        // TODO 4.0.0 remove this
         if (node.auth) {
             const authRules = node.auth.getRules(["SUBSCRIBE"]);
             for (const rule of authRules) {
