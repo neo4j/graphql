@@ -33,10 +33,6 @@ export class Neo4jGraphQLAuthorization {
     private authorization: Neo4jAuthorizationSettings;
 
     constructor(authorization: Neo4jAuthorizationSettings) {
-        if (authorization?.verify === false && authorization?.globalAuthentication === true) {
-            throw new Neo4jGraphQLError("`globalAuthentication` option requires the `verify` option to be enabled.");
-        }
-
         this.authorization = authorization;
     }
 

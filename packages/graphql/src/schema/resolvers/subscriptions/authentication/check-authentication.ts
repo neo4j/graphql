@@ -20,8 +20,13 @@
 import type { SubscriptionContext } from "../types";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { filterByValues } from "../../../../translate/authorization/utils/filter-by-values";
-import type { AuthenticationOperation } from "../../../../schema-model/annotation/AuthenticationAnnotation";
+import type {
+    AuthenticationAnnotation,
+    AuthenticationOperation,
+} from "../../../../schema-model/annotation/AuthenticationAnnotation";
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
+import { Neo4jGraphQLError } from "../../../../classes";
+import { AUTHORIZATION_UNAUTHENTICATED } from "../../../../constants";
 
 export function checkAuthentication({
     authenticated,
@@ -32,16 +37,24 @@ export function checkAuthentication({
     operation: AuthenticationOperation;
     context: SubscriptionContext;
 }) {
+    const schemaLevelAnnotation = context.schemaModel.annotations.authentication;
+    if (schemaLevelAnnotation && schemaLevelAnnotation.operations.has(operation)) {
+        applyAuthentication(schemaLevelAnnotation, context);
+    }
     const annotation = authenticated.annotations.authentication;
     if (annotation && annotation.operations.has(operation)) {
-        if (!context.jwt) {
-            throw new Error("Error, request not authorized");
-        }
-        if (annotation.jwt) {
-            const result = filterByValues(annotation.jwt, context.jwt);
-            if (!result) {
-                throw new Error("Error, request not authorized");
-            }
+        applyAuthentication(annotation, context);
+    }
+}
+
+function applyAuthentication(annotation: AuthenticationAnnotation, context: SubscriptionContext) {
+    if (!context.jwt) {
+        throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+    }
+    if (annotation.jwt) {
+        const result = filterByValues(annotation.jwt, context.jwt);
+        if (!result) {
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
         }
     }
 }
