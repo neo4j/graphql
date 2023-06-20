@@ -756,10 +756,8 @@ describe("schema validation", () => {
                 const userDocument = gql`
                     type User {
                         id: ID!
-                        name: String!
-                        posts: [Post!]!
-                            @relationship(type: "HAS_POSTS", direction: IN)
-                            @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                        name: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @authentication
+                        posts: [Post!]! @relationship(type: "HAS_POSTS", direction: IN)
                     }
 
                     type Post {
@@ -778,9 +776,9 @@ describe("schema validation", () => {
                     type User {
                         id: ID!
                         name: String!
-                        posts: [Post!]!
-                            @relationship(type: "HAS_POSTS", direction: IN)
                             @authorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
+                            @authentication
+                        posts: [Post!]! @relationship(type: "HAS_POSTS", direction: IN)
                     }
 
                     type Post {
@@ -1095,9 +1093,7 @@ describe("schema validation", () => {
                     type Post @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String! @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                        author: User!
-                            @relationship(type: "HAS_AUTHOR", direction: IN)
-                            @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: IN)
                     }
 
                     type Document implements File {
@@ -1126,9 +1122,7 @@ describe("schema validation", () => {
                     type Post @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String! @authorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
-                        author: User!
-                            @relationship(type: "HAS_AUTHOR", direction: IN)
-                            @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: IN)
                     }
 
                     type Document implements File {
@@ -1546,11 +1540,9 @@ describe("schema validation", () => {
             test("validation should works when used with other directives", () => {
                 const userDocument = gql`
                     type User {
-                        id: ID!
+                        id: ID! @authentication(operations: [CREATE]) @unique
                         name: String!
-                        posts: [Post!]!
-                            @relationship(type: "HAS_POSTS", direction: IN)
-                            @authentication(operations: [CREATE])
+                        posts: [Post!]! @relationship(type: "HAS_POSTS", direction: IN)
                     }
 
                     type Post {
@@ -1569,9 +1561,9 @@ describe("schema validation", () => {
                     type User {
                         id: ID!
                         name: String!
-                        posts: [Post!]!
-                            @relationship(type: "HAS_POSTS", direction: IN)
+                            @authorization(validate: [{ where: { node: { id: "1" } } }])
                             @authentication(wrongFieldName: { sub: "test" })
+                        posts: [Post!]! @relationship(type: "HAS_POSTS", direction: IN)
                     }
 
                     type Post {
@@ -1957,9 +1949,7 @@ describe("schema validation", () => {
                     type Post @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
-                        author: User!
-                            @relationship(type: "HAS_AUTHOR", direction: IN)
-                            @authentication(operations: [CREATE], jwt: { sub: "test" })
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: IN)
                     }
 
                     type Document implements File {
@@ -1995,9 +1985,7 @@ describe("schema validation", () => {
                     type Post @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String! @authentication(ops: [CREATE], jwt: { sub: "test" })
-                        author: User!
-                            @relationship(type: "HAS_AUTHOR", direction: IN)
-                            @authentication(operations: [CREATE], jwt: { sub: "test" })
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: IN)
                     }
 
                     type Document implements File {
@@ -2286,7 +2274,7 @@ describe("schema validation", () => {
                     additionalTypes: [],
                     rules: [noKeanuFields],
                 });
-            // 2 errors but returned one by one
+
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(2);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -2590,9 +2578,8 @@ describe("schema validation", () => {
 
                         type Post {
                             content: String!
-                            author: User!
-                                @relationship(type: "HAS_AUTHOR", direction: OUT)
                                 @authorization(filter: [{ where: { node: { author: { name: "Simone" } } } }])
+                            author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
                         }
                     `;
 
@@ -2616,9 +2603,8 @@ describe("schema validation", () => {
 
                         type Post {
                             content: String!
-                            authors: [User!]!
-                                @relationship(type: "HAS_AUTHOR", direction: OUT)
                                 @authorization(filter: [{ where: { node: { authors_SOME: { name: "Simone" } } } }])
+                            authors: [User!]! @relationship(type: "HAS_AUTHOR", direction: OUT)
                         }
                     `;
 
@@ -2730,9 +2716,8 @@ describe("schema validation", () => {
 
                         type Post {
                             content: String!
-                            author: User!
-                                @relationship(type: "HAS_AUTHOR", direction: OUT)
                                 @authorization(filter: [{ where: { node: { author: { content: "Simone" } } } }])
+                            author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
                         }
                     `;
 
@@ -2753,7 +2738,7 @@ describe("schema validation", () => {
                     );
                     expect(errors[0]).toHaveProperty("path", [
                         "Post",
-                        "author",
+                        "content",
                         "@authorization",
                         "filter",
                         0,
@@ -2772,11 +2757,10 @@ describe("schema validation", () => {
 
                         type Post {
                             content: String!
-                            authors: [User!]!
-                                @relationship(type: "HAS_AUTHOR", direction: OUT)
                                 @authorization(
                                     filter: [{ where: { node: { author_NOT_A_QUANTIFIER: { name: "Simone" } } } }]
                                 )
+                            authors: [User!]! @relationship(type: "HAS_AUTHOR", direction: OUT)
                         }
                     `;
 
@@ -2798,7 +2782,7 @@ describe("schema validation", () => {
                     );
                     expect(errors[0]).toHaveProperty("path", [
                         "Post",
-                        "authors",
+                        "content",
                         "@authorization",
                         "filter",
                         0,
