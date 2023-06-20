@@ -32,13 +32,26 @@ describe("mapError", () => {
     describe("DirectiveArgumentOfCorrectType", () => {
         describe("<type> cannot represent non-<type> value", () => {
             test("Int", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Int cannot represent non-integer value: ""',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
+
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
                 expect(mappedError.message).toBe(
@@ -46,12 +59,24 @@ describe("mapError", () => {
                 );
             });
             test("Float", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     "Invalid argument: filter, error: Float cannot represent non numeric value: false",
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
@@ -60,13 +85,26 @@ describe("mapError", () => {
                 );
             });
             test("String", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     "Invalid argument: filter, error: String cannot represent non string value: 2",
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
+
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
                 expect(mappedError.message).toBe(
@@ -74,13 +112,26 @@ describe("mapError", () => {
                 );
             });
             test("Boolean", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     "Invalid argument: filter, error: Boolean cannot represent non boolean value: 1",
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
+
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
                 expect(mappedError.message).toBe(
@@ -89,13 +140,26 @@ describe("mapError", () => {
             });
         });
         test("enum value does not exist in enum", () => {
+            const errorOpts = {
+                nodes: [argumentNode, directiveNode],
+                extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                path: undefined,
+                source: undefined,
+                positions: undefined,
+                originalError: undefined,
+            };
+
+            // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
             const error = new GraphQLError(
                 'Invalid argument: filter, error: Value "CREATE" does not exist in "AuthorizationValidateOperation" enum.',
-                {
-                    nodes: [argumentNode, directiveNode],
-                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                }
+                errorOpts.nodes,
+                errorOpts.source,
+                errorOpts.positions,
+                errorOpts.path,
+                errorOpts.originalError,
+                errorOpts.extensions
             );
+
             const mappedError = mapError(error);
             expect(mappedError).toHaveProperty("message");
             expect(mappedError.message).toBe('Invalid argument: filter, error: Value "CREATE" does not exist in enum.');
@@ -103,13 +167,26 @@ describe("mapError", () => {
 
         describe("field is not defined by type", () => {
             test("JWTPayloadWhere", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Field "wrongField" is not defined by type "JWTPayloadWhere". Did you mean "node"?',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
+
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
                 expect(mappedError.message).toBe(
@@ -117,13 +194,26 @@ describe("mapError", () => {
                 );
             });
             test("UserWhere", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Field "wrongField" is not defined by type "UserWhere".',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
+
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
                 expect(mappedError.message).toBe(
@@ -131,13 +221,26 @@ describe("mapError", () => {
                 );
             });
             test("UserAuthorizationFilterRule", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Field "wrongField" is not defined by type "UserAuthorizationFilterRule".',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
+
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
                 expect(mappedError.message).toBe(
@@ -145,13 +248,26 @@ describe("mapError", () => {
                 );
             });
             test("UserAuthorizationWhere", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Field "wrongField" is not defined by type "UserAuthorizationWhere". Did you mean "node"?',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
+
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
                 expect(mappedError.message).toBe(
@@ -162,12 +278,24 @@ describe("mapError", () => {
 
         describe("field of required type was not provided", () => {
             test("JWTPayloadWhere", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Field "nested" of required type "JWTPayloadWhere" was not provided.',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
@@ -176,12 +304,24 @@ describe("mapError", () => {
                 );
             });
             test("UserWhere", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Field "nested" of required type "UserWhere" was not provided.',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
@@ -190,12 +330,24 @@ describe("mapError", () => {
                 );
             });
             test("UserAuthorizationFilterRule", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Field "nested" of required type "UserAuthorizationFilterRule" was not provided.',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
@@ -204,12 +356,24 @@ describe("mapError", () => {
                 );
             });
             test("UserAuthorizationWhere", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Field "nested" of required type "UserAuthorizationWhere" was not provided.',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
@@ -221,48 +385,96 @@ describe("mapError", () => {
 
         describe("expected type to be an object", () => {
             test("JWTPayloadWhere", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Expected type "JWTPayloadWhere" to be an object.',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
                 expect(mappedError.message).toBe("Invalid argument: filter, error: Expected type to be an object.");
             });
             test("UserWhere", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Expected type "UserWhere" to be an object.',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
                 expect(mappedError.message).toBe("Invalid argument: filter, error: Expected type to be an object.");
             });
             test("UserAuthorizationFilterRule", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Expected type "UserAuthorizationFilterRule" to be an object.',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
                 expect(mappedError.message).toBe("Invalid argument: filter, error: Expected type to be an object.");
             });
             test("UserAuthorizationWhere", () => {
+                const errorOpts = {
+                    nodes: [argumentNode, directiveNode],
+                    extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
+                    path: undefined,
+                    source: undefined,
+                    positions: undefined,
+                    originalError: undefined,
+                };
+
+                // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                 const error = new GraphQLError(
                     'Invalid argument: filter, error: Expected type "UserAuthorizationWhere" to be an object.',
-                    {
-                        nodes: [argumentNode, directiveNode],
-                        extensions: { exception: { code: VALIDATION_ERROR_CODES.AUTHORIZATION } },
-                    }
+                    errorOpts.nodes,
+                    errorOpts.source,
+                    errorOpts.positions,
+                    errorOpts.path,
+                    errorOpts.originalError,
+                    errorOpts.extensions
                 );
                 const mappedError = mapError(error);
                 expect(mappedError).toHaveProperty("message");
@@ -273,11 +485,24 @@ describe("mapError", () => {
 
     describe("KnownArgumentNamesOnDirectivesRule", () => {
         test("unknown argument on directive", () => {
+            const errorOpts = {
+                nodes: [argumentNode],
+                extensions: undefined,
+                path: undefined,
+                source: undefined,
+                positions: undefined,
+                originalError: undefined,
+            };
+
+            // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
             const error = new GraphQLError(
                 'Unknown argument "wrongFilter" on directive "@UserAuthorization". Did you mean "filter"?',
-                {
-                    nodes: [argumentNode],
-                }
+                errorOpts.nodes,
+                errorOpts.source,
+                errorOpts.positions,
+                errorOpts.path,
+                errorOpts.originalError,
+                errorOpts.extensions
             );
             const mappedError = mapError(error);
             expect(mappedError).toHaveProperty("message");
@@ -289,19 +514,48 @@ describe("mapError", () => {
 
     describe("UniqueDirectivesPerLocationRule", () => {
         test("directive may not be used on INTERFACE", () => {
-            const error = new GraphQLError('Directive "@MemberAuthorization" may not be used on INTERFACE.', {
+            const errorOpts = {
                 nodes: [argumentNode],
-            });
+                extensions: undefined,
+                path: undefined,
+                source: undefined,
+                positions: undefined,
+                originalError: undefined,
+            };
+
+            // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
+            const error = new GraphQLError(
+                'Directive "@MemberAuthorization" may not be used on INTERFACE.',
+                errorOpts.nodes,
+                errorOpts.source,
+                errorOpts.positions,
+                errorOpts.path,
+                errorOpts.originalError,
+                errorOpts.extensions
+            );
             const mappedError = mapError(error);
             expect(mappedError).toHaveProperty("message");
             expect(mappedError.message).toBe('Directive "@authorization" may not be used on INTERFACE.');
         });
         test("directive can only be used once at this location", () => {
+            const errorOpts = {
+                nodes: [argumentNode],
+                extensions: undefined,
+                path: undefined,
+                source: undefined,
+                positions: undefined,
+                originalError: undefined,
+            };
+
+            // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
             const error = new GraphQLError(
                 'The directive "@MemberAuthorization" can only be used once at this location',
-                {
-                    nodes: [argumentNode],
-                }
+                errorOpts.nodes,
+                errorOpts.source,
+                errorOpts.positions,
+                errorOpts.path,
+                errorOpts.originalError,
+                errorOpts.extensions
             );
             const mappedError = mapError(error);
             expect(mappedError).toHaveProperty("message");

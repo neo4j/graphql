@@ -41,6 +41,7 @@ describe("Subscription global authentication", () => {
             title: String!
         }
         extend type ${typeMovie} @authentication
+        extend schema @authentication
     `;
 
     beforeAll(async () => {
@@ -68,7 +69,6 @@ describe("Subscription global authentication", () => {
                 features: {
                     authorization: {
                         key: secret,
-                        globalAuthentication: true,
                     },
                 },
                 plugins: {
@@ -145,7 +145,6 @@ describe("Subscription global authentication", () => {
                 features: {
                     authorization: {
                         key: secret,
-                        globalAuthentication: true,
                     },
                 },
                 plugins: {
@@ -222,7 +221,6 @@ describe("Subscription global authentication", () => {
                 features: {
                     authorization: {
                         key: secret,
-                        globalAuthentication: true,
                     },
                 },
                 plugins: {

@@ -60,14 +60,28 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                 }
                 const { isValid, errorMsg, errorPath } = assertArgumentType(argument, argumentDefinition);
                 if (!isValid) {
+                    const errorOpts = {
+                        nodes: [argument, directiveNode],
+                        extensions: {
+                            exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
+                        },
+                        path: [...pathToHere, argument.name.value, ...errorPath],
+                        source: undefined,
+                        positions: undefined,
+                        originalError: undefined,
+                    };
+
+                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                     context.reportError(
-                        new GraphQLError(`Invalid argument: ${argument.name.value}, error: ${errorMsg}`, {
-                            nodes: [argument, directiveNode],
-                            extensions: {
-                                exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                            },
-                            path: [...pathToHere, argument.name.value, ...errorPath],
-                        })
+                        new GraphQLError(
+                            `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
+                            errorOpts.nodes,
+                            errorOpts.source,
+                            errorOpts.positions,
+                            errorOpts.path,
+                            errorOpts.originalError,
+                            errorOpts.extensions
+                        )
                     );
                 }
             });

@@ -996,7 +996,8 @@ function makeAugmentedSchema(
             loc: schemaExtension.loc,
             operationTypes: schemaExtension.operationTypes,
             directives: schemaExtension.directives?.filter(
-                (schemaDirective) => !["query", "mutation", "subscription"].includes(schemaDirective.name.value)
+                (schemaDirective) =>
+                    !["query", "mutation", "subscription", "authentication"].includes(schemaDirective.name.value)
             ),
         };
     });

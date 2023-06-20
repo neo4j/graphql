@@ -133,7 +133,7 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
         });
 
         test("unauthenticated subscription fails", async () => {
@@ -150,7 +150,7 @@ describe("Subscription authentication", () => {
 
             await wsClient.waitForEvents(1);
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
         });
 
         test("authentication fails with wrong secret", async () => {
@@ -167,7 +167,7 @@ describe("Subscription authentication", () => {
                             `);
             await wsClient.waitForEvents(1);
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
         });
     });
 
@@ -258,7 +258,7 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
         });
     });
 
@@ -356,7 +356,7 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
         });
 
         test("authenticated subscription does not send events if one rule not matched", async () => {
@@ -376,7 +376,7 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
         });
     });
 
@@ -485,7 +485,190 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
+        });
+    });
+
+    describe("auth with subscribe operations on schema", () => {
+        describe("READ rule", () => {
+            let server: TestGraphQLServer;
+            let wsClient: WebSocketTestClient;
+
+            beforeAll(async () => {
+                const typeDefs = `
+                type ${typeMovie} {
+                    title: String! 
+                    name: String 
+                }
+                extend schema @authentication(operations: [READ])
+                `;
+
+                const neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    driver,
+                    config: {
+                        driverConfig: {
+                            database: neo4j.getIntegrationDatabaseName(),
+                        },
+                    },
+                    features: {
+                        authorization: {
+                            key: secret,
+                        },
+                    },
+                    plugins: {
+                        subscriptions: new TestSubscriptionsPlugin(),
+                    },
+                });
+
+                server = new ApolloTestServer(neoSchema);
+                await server.start();
+            });
+
+            afterEach(async () => {
+                await wsClient.close();
+            });
+
+            afterAll(async () => {
+                await server.close();
+            });
+
+            test("authentication pass", async () => {
+                wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
+                await wsClient.subscribe(`
+                    subscription {
+                        ${typeMovie.operations.subscribe.created} {
+                            ${typeMovie.operations.subscribe.payload.created} {
+                                title
+                            }
+                        }
+                    }
+                    `);
+
+                const result = await createMovie("movie1", server);
+                await wsClient.waitForEvents(1);
+
+                expect(result.body.errors).toBeUndefined();
+                expect(wsClient.events).toEqual([
+                    {
+                        [typeMovie.operations.subscribe.created]: {
+                            [typeMovie.operations.subscribe.payload.created]: {
+                                title: "movie1",
+                            },
+                        },
+                    },
+                ]);
+                expect(wsClient.errors).toEqual([]);
+            });
+
+            test("unauthenticated subscription does not send events", async () => {
+                wsClient = new WebSocketTestClient(server.wsPath);
+                await wsClient.subscribe(`
+                        subscription {
+                            ${typeMovie.operations.subscribe.created} {
+                                ${typeMovie.operations.subscribe.payload.created} {
+                                    name
+                                }
+                            }
+                        }
+                        `);
+
+                const result = await createMovie("movie1", server);
+
+                expect(result.body.errors).toBeUndefined();
+                expect(wsClient.events).toEqual([]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
+            });
+        });
+        describe("SUBSCRIBE rule", () => {
+            let server: TestGraphQLServer;
+            let wsClient: WebSocketTestClient;
+
+            beforeAll(async () => {
+                const typeDefs = `
+                type ${typeMovie} {
+                    title: String!
+                }
+    
+                extend schema @authentication(operations: [SUBSCRIBE])
+                `;
+
+                const neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    driver,
+                    config: {
+                        driverConfig: {
+                            database: neo4j.getIntegrationDatabaseName(),
+                        },
+                    },
+                    features: {
+                        authorization: {
+                            key: secret,
+                        },
+                    },
+                    plugins: {
+                        subscriptions: new TestSubscriptionsPlugin(),
+                    },
+                });
+
+                server = new ApolloTestServer(neoSchema);
+                await server.start();
+            });
+
+            afterEach(async () => {
+                await wsClient.close();
+            });
+
+            afterAll(async () => {
+                await server.close();
+            });
+
+            test("authentication pass", async () => {
+                wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
+                await wsClient.subscribe(`
+                    subscription {
+                        ${typeMovie.operations.subscribe.created} {
+                            ${typeMovie.operations.subscribe.payload.created} {
+                                title
+                            }
+                        }
+                    }
+                    `);
+
+                const result = await createMovie("movie1", server);
+                await wsClient.waitForEvents(1);
+
+                expect(result.body.errors).toBeUndefined();
+                expect(wsClient.events).toEqual([
+                    {
+                        [typeMovie.operations.subscribe.created]: {
+                            [typeMovie.operations.subscribe.payload.created]: {
+                                title: "movie1",
+                            },
+                        },
+                    },
+                ]);
+                expect(wsClient.errors).toEqual([]);
+            });
+
+            test("unauthenticated subscription does not send events", async () => {
+                wsClient = new WebSocketTestClient(server.wsPath);
+                await wsClient.subscribe(`
+                        subscription {
+                            ${typeMovie.operations.subscribe.created} {
+                                ${typeMovie.operations.subscribe.payload.created} {
+                                    title
+                                }
+                            }
+                        }
+                        `);
+
+                const result = await createMovie("movie1", server);
+
+                expect(result.body.errors).toBeUndefined();
+                expect(wsClient.events).toEqual([]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
+            });
         });
     });
 
@@ -811,9 +994,7 @@ describe("Subscription authentication", () => {
                     })
                     .expect(200);
 
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
                 expect(wsClient.events).toEqual([]);
                 expect(result.body.errors).toBeUndefined();
             });
@@ -866,9 +1047,7 @@ describe("Subscription authentication", () => {
 
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
 
             test("authentication pass - update", async () => {
@@ -1123,9 +1302,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
 
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
 
             test("unauthenticated subscription does not send events if authenticated field is selected- update", async () => {
@@ -1205,9 +1382,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
 
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
 
             test("unauthenticated subscription does not send events - update", async () => {
@@ -1280,9 +1455,7 @@ describe("Subscription authentication", () => {
 
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
 
             test("authentication pass - delete", async () => {
@@ -1508,9 +1681,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toIncludeSameMembers([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
 
             test("unauthenticated subscription does not send events - delete", async () => {
@@ -1589,9 +1760,7 @@ describe("Subscription authentication", () => {
 
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
 
             test("authentication pass - create_relationship", async () => {
@@ -1743,9 +1912,7 @@ describe("Subscription authentication", () => {
                     })
                     .expect(200);
 
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
             });
@@ -1822,9 +1989,7 @@ describe("Subscription authentication", () => {
                     })
                     .expect(200);
 
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
             });
@@ -1906,9 +2071,7 @@ describe("Subscription authentication", () => {
                     })
                     .expect(200);
 
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
             });
@@ -2149,9 +2312,7 @@ describe("Subscription authentication", () => {
                     })
                     .expect(200);
 
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
             });
@@ -2233,9 +2394,7 @@ describe("Subscription authentication", () => {
                     })
                     .expect(200);
 
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
             });
@@ -2322,9 +2481,7 @@ describe("Subscription authentication", () => {
                     })
                     .expect(200);
 
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
             });
@@ -2597,9 +2754,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
             test("unauthenticated subscription does not send events - create", async () => {
                 wsClient = new WebSocketTestClient(server.wsPath);
@@ -2659,9 +2814,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
 
             test("authentication pass - update", async () => {
@@ -2926,9 +3079,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
 
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
             test("unauthenticated subscription does not send events - update", async () => {
                 await supertest(server.path)
@@ -3009,9 +3160,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
 
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
 
             test("authentication pass - delete", async () => {
@@ -3247,9 +3396,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
 
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
             test("unauthenticated subscription does not send events - delete", async () => {
                 await supertest(server.path)
@@ -3322,9 +3469,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
 
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
 
             test("authentication pass - create_relationship", async () => {
@@ -3470,9 +3615,7 @@ describe("Subscription authentication", () => {
 
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
             test("unauthenticated subscription sends events if interface field queried on unauthenticated implementing type  - create_relationship", async () => {
                 wsClient = new WebSocketTestClient(server.wsPath);
@@ -3692,9 +3835,7 @@ describe("Subscription authentication", () => {
 
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
             test("unauthenticated subscription does not send events if authenticated implemented type is selected - create_relationship", async () => {
                 wsClient = new WebSocketTestClient(server.wsPath);
@@ -3761,9 +3902,7 @@ describe("Subscription authentication", () => {
 
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
 
             test("authentication pass - delete_relationship", async () => {
@@ -3966,9 +4105,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
 
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
             test("unauthenticated subscription does not send events if authenticated field queried - delete_relationship", async () => {
                 await supertest(server.path)
@@ -4060,9 +4197,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
 
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
             test("unauthenticated subscription sends events if interface field queried on unauthenticated implementing type - delete_relationship", async () => {
                 await supertest(server.path)
@@ -4370,9 +4505,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
 
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
         });
 
@@ -4557,9 +4690,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
             test("unauthenticated subscription does not send events - create", async () => {
                 wsClient = new WebSocketTestClient(server.wsPath);
@@ -4617,9 +4748,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
 
             test("unauthenticated subscription does not send events if authenticated field queried - create_relationship", async () => {
@@ -4689,9 +4818,7 @@ describe("Subscription authentication", () => {
 
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
             test("unauthenticated subscription does not send events if authenticated implemented type is selected - create_relationship", async () => {
                 wsClient = new WebSocketTestClient(server.wsPath);
@@ -4763,9 +4890,7 @@ describe("Subscription authentication", () => {
 
                 expect(result.body.errors).toBeUndefined();
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
 
             test("unauthenticated subscription does not send events if authenticated field queried - delete_relationship", async () => {
@@ -4863,9 +4988,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
 
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
             test("unauthenticated subscription does not send events if authenticated implemented type is selected - delete_relationship", async () => {
                 await supertest(server.path)
@@ -4961,9 +5084,7 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
 
                 expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([
-                    expect.objectContaining({ message: "Error, request not authorized" }),
-                ]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
         });
     });
@@ -5209,7 +5330,7 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
         });
 
         test("authentication pass - create_relationship", async () => {
@@ -5363,7 +5484,7 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
         });
     });
 
@@ -5455,7 +5576,7 @@ describe("Subscription authentication", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
         });
     });
 

@@ -31,7 +31,25 @@ export function mapError(error: GraphQLError): GraphQLError {
     if (!replacedMessage) {
         return error;
     }
-    return new GraphQLError(replacedMessage, { nodes });
+    const errorOpts = {
+        nodes,
+        extensions: undefined,
+        path: undefined,
+        source: undefined,
+        positions: undefined,
+        originalError: undefined,
+    };
+
+    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
+    return new GraphQLError(
+        replacedMessage,
+        errorOpts.nodes,
+        errorOpts.source,
+        errorOpts.positions,
+        errorOpts.path,
+        errorOpts.originalError,
+        errorOpts.extensions
+    );
 }
 
 function isCustomRule(error: GraphQLError): boolean {
@@ -54,12 +72,48 @@ function mapCustomRuleError(error: GraphQLError): GraphQLError {
     let replacedMessage: string | undefined = undefined;
     replacedMessage = eraseDummyJWTValue(message);
     if (replacedMessage) {
-        return new GraphQLError(replacedMessage, { path });
+        const errorOpts = {
+            nodes: undefined,
+            extensions: undefined,
+            path,
+            source: undefined,
+            positions: undefined,
+            originalError: undefined,
+        };
+
+        // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
+        return new GraphQLError(
+            replacedMessage,
+            errorOpts.nodes,
+            errorOpts.source,
+            errorOpts.positions,
+            errorOpts.path,
+            errorOpts.originalError,
+            errorOpts.extensions
+        );
     }
 
     replacedMessage = eraseMysteryType(message);
     if (replacedMessage) {
-        return new GraphQLError(replacedMessage, { path });
+        const errorOpts = {
+            nodes: undefined,
+            extensions: undefined,
+            path,
+            source: undefined,
+            positions: undefined,
+            originalError: undefined,
+        };
+
+        // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
+        return new GraphQLError(
+            replacedMessage,
+            errorOpts.nodes,
+            errorOpts.source,
+            errorOpts.positions,
+            errorOpts.path,
+            errorOpts.originalError,
+            errorOpts.extensions
+        );
     }
     return error;
 }
