@@ -28,7 +28,9 @@ import type { SubscriptionEventType, SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where/where";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
-import { filterByValues } from "../../../translate/authorization/utils/filter-by-values";
+import type { GraphQLResolveInfo } from "graphql";
+import { checkAuthentication } from "./authentication/check-authentication";
+import { checkAuthenticationOnSelectionSet } from "./authentication/check-authentication-selection-set";
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) {
@@ -52,22 +54,17 @@ export function generateSubscribeMethod({
     nodes?: Node[];
     relationshipFields?: Map<string, ObjectFields>;
 }) {
-    return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
+    return (
+        _root: any,
+        args: SubscriptionArgs,
+        context: SubscriptionContext,
+        resolveInfo: GraphQLResolveInfo
+    ): AsyncIterator<[SubscriptionsEvent]> => {
+        checkAuthenticationOnSelectionSet(resolveInfo, node, type, context);
         const entities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
         if (entities.length) {
             const concreteEntity = entities[0] as ConcreteEntity;
-            const hasAuthentication = concreteEntity.annotations.authentication;
-            if (hasAuthentication && hasAuthentication.operations.has("SUBSCRIBE")) {
-                if (!context.jwt) {
-                    throw new Error("Error, request not authorized");
-                }
-                if (hasAuthentication.jwt) {
-                    const result = filterByValues(hasAuthentication.jwt, context.jwt);
-                    if (!result) {
-                        throw new Error("Error, request not authorized");
-                    }
-                }
-            }
+            checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
         }
 
         if (node.auth) {
