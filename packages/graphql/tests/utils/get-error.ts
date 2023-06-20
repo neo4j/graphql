@@ -17,23 +17,21 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg } from "../../types";
-
-export type AuthenticationOperation =
-    | "READ"
-    | "CREATE"
-    | "UPDATE"
-    | "DELETE"
-    | "CREATE_RELATIONSHIP"
-    | "DELETE_RELATIONSHIP"
-    | "SUBSCRIBE";
-
-export class AuthenticationAnnotation {
-    public readonly operations: Set<AuthenticationOperation>;
-    public readonly jwt?: GraphQLWhereArg;
-
-    constructor(operations: AuthenticationOperation[], jwt?: GraphQLWhereArg) {
-        this.operations = new Set<AuthenticationOperation>(operations);
-        this.jwt = jwt;
+export class NoErrorThrownError extends Error {}
+export const getError = <TError extends Error>(call: () => unknown): TError => {
+    try {
+        call();
+        throw new NoErrorThrownError();
+    } catch (error: unknown) {
+        return error as TError;
     }
-}
+};
+
+export const getErrorAsync = async <TError>(call: () => unknown): Promise<TError> => {
+    try {
+        await call();
+        throw new NoErrorThrownError();
+    } catch (error: unknown) {
+        return error as Promise<TError>;
+    }
+};

@@ -37,8 +37,8 @@ export function checkAuthentication({
         if (!context.jwt) {
             throw new Error("Error, request not authorized");
         }
-        if (annotation.jwtPayload) {
-            const result = filterByValues(annotation.jwtPayload, context.jwt);
+        if (annotation.jwt) {
+            const result = filterByValues(annotation.jwt, context.jwt);
             if (!result) {
                 throw new Error("Error, request not authorized");
             }

@@ -41,7 +41,7 @@ function createAuthentication(jwtPayloadWhere: GraphQLInputObjectType): GraphQLD
                 type: new GraphQLList(AUTHENTICATION_OPERATION),
                 defaultValue: authenticationDefaultOperations,
             },
-            jwtPayload: {
+            jwt: {
                 type: jwtPayloadWhere,
             },
         },

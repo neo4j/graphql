@@ -18,15 +18,17 @@
  */
 
 import { gql } from "graphql-tag";
-import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
+import type { ASTNode, ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import { parse, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { Subgraph } from "../../classes/Subgraph";
 import makeAugmentedSchema from "../make-augmented-schema";
 import { validateUserDefinition } from "./schema-validation";
+import { getError, NoErrorThrownError } from "../../../tests/utils/get-error";
 
 describe("schema validation", () => {
     describe("JWT", () => {
+        // TODO: authentication
         describe("JWT Payload", () => {
             test("should not returns errors when is correctly used", () => {
                 const jwtType = `
@@ -86,9 +88,15 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Field \\"thisClaimDoesNotExist\\" is not defined by type \\"JWTPayloadWhere\\"."`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Invalid argument: filter, error: Field "thisClaimDoesNotExist" is not defined by type.'
                 );
+                expect(errors[0]).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where", "jwt"]);
             });
 
             test("should not return errors when jwt field is standard", () => {
@@ -128,9 +136,15 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Field \\"myClaim\\" is not defined by type \\"UserWhere\\"."`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Invalid argument: filter, error: Field "myClaim" is not defined by type.'
                 );
+                expect(errors[0]).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where", "node"]);
             });
         });
 
@@ -158,7 +172,7 @@ describe("schema validation", () => {
         describe("JWT wildcard", () => {
             test("should not returns errors when is correctly used: Int on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         intClaim: Int
                     }
                 `;
@@ -192,7 +206,7 @@ describe("schema validation", () => {
 
             test("should not returns errors when is correctly used: List[Int] on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         intClaim: [Int]
                     }
                 `;
@@ -212,7 +226,7 @@ describe("schema validation", () => {
 
             test("should not returns errors when is correctly used: Boolean on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         boolClaim: Boolean
                     }
                 `;
@@ -241,14 +255,27 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Int cannot represent non-integer value: \\"\\""`
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: Int cannot represent non-integer value."
                 );
+                expect(errors[0]).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testInt",
+                ]);
             });
 
             test("should return error when types do not match: Int compared with List[Int] on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         intClaim: [Int]
                     }
                 `;
@@ -263,14 +290,27 @@ describe("schema validation", () => {
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Int cannot represent non-integer value: []"`
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: Int cannot represent non-integer value."
                 );
+                expect(errors[0]).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testInts",
+                ]);
             });
 
             test("should return error when types do not match: Int compared with String on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         stringClaim: String
                     }
                 `;
@@ -285,14 +325,27 @@ describe("schema validation", () => {
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Int cannot represent non-integer value: \\"\\""`
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: Int cannot represent non-integer value."
                 );
+                expect(errors[0]).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testInt",
+                ]);
             });
 
             test("should return error when types do not match: Int compared with String on FIELD", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         sub: String
                     }
                 `;
@@ -308,14 +361,29 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Int cannot represent non-integer value: \\"\\""`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: Int cannot represent non-integer value."
                 );
+                expect(errors[0]).toHaveProperty("path", [
+                    "User",
+                    "id",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testInt",
+                ]);
             });
 
             test("should return error when types do not match: String compared with Int on FIELD", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         intClaim: Int
                     }
                 `;
@@ -331,14 +399,29 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: String cannot represent a non string value: 0"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: String cannot represent a non string value."
                 );
+                expect(errors[0]).toHaveProperty("path", [
+                    "User",
+                    "id",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testStr",
+                ]);
             });
 
             test("should return error when types do not match: String compared with Int on FIELD with claim", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         intClaim: Int @jwtClaim(path: "this.is.a.path")
                     }
                 `;
@@ -354,14 +437,29 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: String cannot represent a non string value: 0"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: String cannot represent a non string value."
                 );
+                expect(errors[0]).toHaveProperty("path", [
+                    "User",
+                    "id",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testStr",
+                ]);
             });
 
             test("should return error when types do not match: String compared with Boolean on FIELD", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         boolClaim: Boolean
                     }
                 `;
@@ -377,14 +475,29 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: String cannot represent a non string value: false"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: String cannot represent a non string value."
                 );
+                expect(errors[0]).toHaveProperty("path", [
+                    "User",
+                    "id",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testStr",
+                ]);
             });
 
             test("should return error when types do not match: Boolean compared with String on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         stringClaim: String
                     }
                 `;
@@ -399,14 +512,28 @@ describe("schema validation", () => {
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Boolean cannot represent a non boolean value: \\"\\""`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: Boolean cannot represent a non boolean value."
                 );
+                expect(errors[0]).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testBool",
+                ]);
             });
 
             test("should return error when types do not match: Boolean compared with Int on OBJECT", () => {
                 const jwtType = `
-                    type JWTPayload @jwt {
+                    type jwt @jwt {
                         intClaim: Int
                     }
                 `;
@@ -421,9 +548,23 @@ describe("schema validation", () => {
                 const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Invalid argument: filter, error: Boolean cannot represent a non boolean value: 0"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: filter, error: Boolean cannot represent a non boolean value."
                 );
+                expect(errors[0]).toHaveProperty("path", [
+                    "User",
+                    "@authorization",
+                    "filter",
+                    0,
+                    "where",
+                    "node",
+                    "testBool",
+                ]);
             });
         });
     });
@@ -484,9 +625,35 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
+            });
+
+            test("should validate operations value", () => {
+                const userDocument = gql`
+                    type User @authorization(filter: [{ operations: [NEVER], where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Invalid argument: filter, error: Value "NEVER" does not exist in enum.'
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "@authorization", "filter", 0, "operations", 0]);
             });
 
             test("validation should works when used with other directives", () => {
@@ -517,8 +684,13 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
             });
         });
@@ -549,9 +721,35 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
+            });
+
+            test("should validate when value", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID! @authorization(validate: [{ when: [NEVER], where: { node: { id: "$jwt.sub" } } }])
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Invalid argument: validate, error: Value "NEVER" does not exist in enum. Did you mean the enum value "AFTER"?'
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "id", "@authorization", "validate", 0, "when", 0]);
             });
 
             test("validation should works when used with other directives", () => {
@@ -593,8 +791,13 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
             });
         });
@@ -618,7 +821,11 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrow('Directive "@MemberAuthorization" may not be used on INTERFACE.');
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", 'Directive "@authorization" may not be used on INTERFACE.');
             });
         });
 
@@ -653,8 +860,13 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@UserAuthorization\\" can only be used once at this location."`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'The directive "@authorization" can only be used once at this location.'
                 );
             });
 
@@ -676,8 +888,13 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@UserAuthorization\\" can only be used once at this location."`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'The directive "@authorization" can only be used once at this location.'
                 );
             });
 
@@ -768,8 +985,13 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@UserAuthorization\\" can only be used once at this location."`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'The directive "@authorization" can only be used once at this location.'
                 );
             });
 
@@ -784,8 +1006,13 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
             });
 
@@ -819,8 +1046,12 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
             });
         });
@@ -845,7 +1076,11 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrow('Directive "@MemberAuthorization" may not be used on INTERFACE.');
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", 'Directive "@authorization" may not be used on INTERFACE.');
             });
         });
 
@@ -910,8 +1145,12 @@ describe("schema validation", () => {
 
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@PostAuthorization\\". Did you mean \\"filter\\"?"`
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
             });
         });
@@ -1027,8 +1266,12 @@ describe("schema validation", () => {
                         additionalTypes: types,
                     });
 
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
             });
 
@@ -1091,9 +1334,915 @@ describe("schema validation", () => {
                         additionalDirectives: directives,
                         additionalTypes: types,
                     });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
                 );
+            });
+        });
+    });
+
+    describe("@authentication", () => {
+        describe("on OBJECT", () => {
+            test("should not returns errors when is correctly used", () => {
+                const userDocument = gql`
+                    type User @authentication {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when is correctly used, with arguments", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String! @deprecated(reason: "name is deprecated")
+                    }
+                `;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when used correctly in several place", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name", () => {
+                const userDocument = gql`
+                    type User @authentication(ops: [CREATE]) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", 'Unknown argument "ops" on directive "@authentication".');
+            });
+
+            // TODO: custom rule
+            test("should validate operations value", () => {
+                const userDocument = gql`
+                    type User @authentication(operations: [NEVER]) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Invalid argument: operations, error: Value "NEVER" does not exist in enum.'
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "@authentication", "operations", 0]);
+            });
+
+            test("validation should works when used with other directives", () => {
+                const jwtType = `
+                    type MyJWT  @jwt {
+                        sub: String
+                    }
+                `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User @plural(value: "Users") @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name, when used with other directives", () => {
+                const jwtType = `
+                    type MyJWT  @jwt {
+                        sub: String
+                    }
+                `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User @plural(value: "Users") @authentication(jwtWrongField: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "jwtWrongField" on directive "@authentication".'
+                );
+            });
+        });
+
+        describe("on FIELD", () => {
+            test("should not returns errors with a correct usage", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID! @authentication
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID! @authentication(ops: [CREATE])
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", 'Unknown argument "ops" on directive "@authentication".');
+            });
+
+            test("should validate enum field value", () => {
+                const userDocument = gql`
+                    type User @authentication(operations: [NEVER]) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Invalid argument: operations, error: Value "NEVER" does not exist in enum.'
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "@authentication", "operations", 0]);
+            });
+
+            test("validation should works when used with other directives", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String!
+                        posts: [Post!]!
+                            @relationship(type: "HAS_POSTS", direction: IN)
+                            @authentication(operations: [CREATE])
+                    }
+
+                    type Post {
+                        id: ID!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name, when used with other directives", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String!
+                        posts: [Post!]!
+                            @relationship(type: "HAS_POSTS", direction: IN)
+                            @authentication(wrongFieldName: { sub: "test" })
+                    }
+
+                    type Post {
+                        id: ID!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFieldName" on directive "@authentication".'
+                );
+            });
+        });
+
+        describe("on INTERFACE", () => {
+            test("should error", () => {
+                const jwtType = `
+                    type MyJWT  @jwt {
+                        myClaim: String
+                    }
+                `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User implements Member {
+                        id: ID!
+                        name: String!
+                    }
+
+                    interface Member @authentication(operations: [CREATE], jwt: { myClaim: "test" }) {
+                        id: ID!
+                    }
+
+                    type Post {
+                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                    }
+                `;
+
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Directive "@authentication" may not be used on INTERFACE.'
+                );
+            });
+        });
+
+        describe("on OBJECT_EXTENSION", () => {
+            test("should not returns errors when is correctly used", () => {
+                const jwtType = `
+                    type MyJWT  @jwt {
+                        sub: String
+                    }
+                `;
+
+                const userDocument = gql`
+                    ${jwtType}
+                    type User {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User @authentication(operations: [CREATE], jwt: { sub: "test" })
+                `;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should returns errors when used correctly in both type and extension", () => {
+                const jwtType = `
+                    type MyJWT  @jwt {
+                        sub: String
+                    }
+                `;
+
+                const userDocument = gql`
+                    ${jwtType}
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User @authentication(operations: [CREATE], jwt: { sub: "test" })
+                `;
+
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'The directive "@authentication" can only be used once at this location.'
+                );
+            });
+
+            test("should returns errors when used correctly in both a type field and an extension for the same field", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User {
+                        id: ID!
+                        name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
+                    }
+
+                    type Post {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User {
+                        name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
+                    }
+                `;
+
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'The directive "@authentication" can only be used once at this location.'
+                );
+            });
+
+            test("should not returns errors when used correctly in both type and an extension field", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User {
+                        name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
+                    }
+                `;
+
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when used correctly in multiple extension fields", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User {
+                        id: ID! @authentication(operations: [CREATE], jwt: { sub: "test" })
+                        name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
+                    }
+                `;
+
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when used correctly in different type and field across several extensions", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        id: ID!
+                        name: String!
+                    }
+
+                    extend type User {
+                        name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
+                    }
+
+                    extend type User {
+                        id: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
+                    }
+                `;
+
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should returns errors when used correctly in more than one extension", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: IN)
+                    }
+
+                    type Post {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User @authentication(operations: [CREATE])
+                    extend type User @authentication(operations: [CREATE])
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'The directive "@authentication" can only be used once at this location.'
+                );
+            });
+
+            test("should validate directive argument name", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User @authentication(ops: [CREATE])
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", 'Unknown argument "ops" on directive "@authentication".');
+            });
+
+            test("validation should works when used with other directives", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User @plural(value: "Users") @authentication(operations: [CREATE], jwt: { sub: "test" })
+                `;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name, when used with other directives", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User @plural(value: "Users") @authentication(wrongField: { sub: "test" })
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongField" on directive "@authentication".'
+                );
+            });
+        });
+
+        describe("on INTERFACE_EXTENSION", () => {
+            test("should error", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User implements Member {
+                        id: ID!
+                        name: String!
+                    }
+
+                    interface Member {
+                        id: ID!
+                    }
+                    extend interface Member @authentication(operations: [CREATE], jwt: { sub: "test" })
+
+                    type Post {
+                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                    }
+                `;
+
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Directive "@authentication" may not be used on INTERFACE.'
+                );
+            });
+        });
+
+        describe("mixed usage", () => {
+            test("should not returns errors when used correctly in several place", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String! @authentication(operations: [CREATE], jwt: { sub: "test" })
+                        author: User!
+                            @relationship(type: "HAS_AUTHOR", direction: IN)
+                            @authentication(operations: [CREATE], jwt: { sub: "test" })
+                    }
+
+                    type Document implements File {
+                        name: String
+                        length: Int
+                    }
+
+                    interface File {
+                        name: String
+                    }
+
+                    extend type Document @authentication(operations: [CREATE], jwt: { sub: "test" })
+                `;
+
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+                expect(executeValidate).not.toThrow();
+            });
+            test("should returns errors when incorrectly used in several place", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    type User @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String! @authentication(ops: [CREATE], jwt: { sub: "test" })
+                        author: User!
+                            @relationship(type: "HAS_AUTHOR", direction: IN)
+                            @authentication(operations: [CREATE], jwt: { sub: "test" })
+                    }
+
+                    type Document implements File {
+                        name: String
+                        length: Int
+                    }
+
+                    interface File {
+                        name: String
+                    }
+
+                    extend type Document @authentication(operations: [CREATE], jwt: { sub: "test" })
+                `;
+
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", 'Unknown argument "ops" on directive "@authentication".');
+            });
+        });
+
+        describe("with federated schema", () => {
+            test("should not returns errors when is correctly used", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
+
+                    type User @shareable @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        content: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                    }
+                `;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const subgraph = new Subgraph(userDocument);
+                const { directives, types } = subgraph.getValidationDefinitions();
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+
+                const executeValidate = () =>
+                    validateUserDefinition({
+                        userDocument,
+                        augmentedDocument,
+                        additionalDirectives: directives,
+                        additionalTypes: types,
+                        jwt,
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when is correctly used, with specifiedDirective", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
+
+                    type User @shareable @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String! @deprecated(reason: "name is deprecated")
+                    }
+
+                    type Post {
+                        content: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                    }
+                `;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const subgraph = new Subgraph(userDocument);
+                const { directives, types } = subgraph.getValidationDefinitions();
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+
+                const executeValidate = () =>
+                    validateUserDefinition({
+                        userDocument,
+                        augmentedDocument,
+                        additionalDirectives: directives,
+                        additionalTypes: types,
+                        jwt,
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when used correctly in several place", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
+
+                    type User @shareable @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        content: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                    }
+                `;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const subgraph = new Subgraph(userDocument);
+                const { directives, types } = subgraph.getValidationDefinitions();
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+
+                const executeValidate = () =>
+                    validateUserDefinition({
+                        userDocument,
+                        augmentedDocument,
+                        additionalDirectives: directives,
+                        additionalTypes: types,
+                        jwt,
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name", () => {
+                const userDocument = gql`
+                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
+
+                    type User @shareable @authentication(wrongField: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        content: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                    }
+                `;
+                const subgraph = new Subgraph(userDocument);
+                const { directives, types } = subgraph.getValidationDefinitions();
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+
+                const executeValidate = () =>
+                    validateUserDefinition({
+                        userDocument,
+                        augmentedDocument,
+                        additionalDirectives: directives,
+                        additionalTypes: types,
+                    });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongField" on directive "@authentication".'
+                );
+            });
+
+            test("validation should works when used with other directives", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    ${jwtType}
+                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
+
+                    type User
+                        @plural(value: "Users")
+                        @shareable
+                        @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        content: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                    }
+                `;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const subgraph = new Subgraph(userDocument);
+                const { directives, types } = subgraph.getValidationDefinitions();
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+
+                const executeValidate = () =>
+                    validateUserDefinition({
+                        userDocument,
+                        augmentedDocument,
+                        additionalDirectives: directives,
+                        additionalTypes: types,
+                        jwt,
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name, when used with other directives", () => {
+                const jwtType = `
+                type MyJWT  @jwt {
+                    sub: String
+                }
+            `;
+                const userDocument = gql`
+                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
+
+                    ${jwtType}
+                    type User @plural(value: "Users") @shareable @authentication(ops: [CREATE], jwt: { sub: "test" }) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        content: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                    }
+                `;
+                const jwt = parse(jwtType).definitions[0] as ObjectTypeDefinitionNode;
+                const subgraph = new Subgraph(userDocument);
+                const { directives, types } = subgraph.getValidationDefinitions();
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument);
+
+                const executeValidate = () =>
+                    validateUserDefinition({
+                        userDocument,
+                        augmentedDocument,
+                        additionalDirectives: directives,
+                        additionalTypes: types,
+                        jwt,
+                    });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", 'Unknown argument "ops" on directive "@authentication".');
             });
         });
     });
@@ -1119,7 +2268,6 @@ describe("schema validation", () => {
                 });
             expect(executeValidate).not.toThrow();
         });
-
         test("should returns errors when is not correctly used", () => {
             const userDocument = gql`
                 type User {
@@ -1138,11 +2286,13 @@ describe("schema validation", () => {
                     additionalTypes: [],
                     rules: [noKeanuFields],
                 });
-            // It returns two time the error as in the ValidationSchema keanu appears two times.
-            expect(executeValidate).toThrowErrorMatchingInlineSnapshot(`
-                "Field cannot named keanu
-                Field cannot named keanu"
-            `);
+            // 2 errors but returned one by one
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(2);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty("message", "Field cannot named keanu");
+            expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[1]).toHaveProperty("message", "Field cannot named keanu");
         });
     });
 
@@ -1253,11 +2403,17 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type \\"UserAuthorizationFilterRule\\"."`
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "seemsNotAWhereToMe" is not defined by type.'
                     );
+                    expect(errors[0]).toHaveProperty("path", ["User", "@authorization", "filter", 0]);
                 });
 
+                // TODO
                 test("should returns errors when an @authorization filter has a wrong where definition", () => {
                     const userDocument = gql`
                         type User @authorization(filter: [{ where: { notANode: { id: "$jwt.sub" } } }]) {
@@ -1274,9 +2430,14 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type \\"UserAuthorizationWhere\\". Did you mean \\"node\\"?"`
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "notANode" is not defined by type. Did you mean "node"?'
                     );
+                    expect(errors[0]).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where"]);
                 });
 
                 test("should returns errors when an @authorization filter has a wrong where predicate", () => {
@@ -1295,9 +2456,14 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type \\"UserWhere\\"."`
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "notAValidID" is not defined by type.'
                     );
+                    expect(errors[0]).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where", "node"]);
                 });
 
                 test("should returns errors when an @authorization filter has an incorrect where predicate over a 1 to 1 relationship", () => {
@@ -1321,9 +2487,22 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"content\\" is not defined by type \\"UserWhere\\"."`
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "content" is not defined by type.'
                     );
+                    expect(errors[0]).toHaveProperty("path", [
+                        "Post",
+                        "@authorization",
+                        "filter",
+                        0,
+                        "where",
+                        "node",
+                        "author",
+                    ]);
                 });
 
                 test("should returns errors when an @authorization filter has an incorrect where predicate over a 1 to N relationship", () => {
@@ -1350,9 +2529,14 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type \\"PostWhere\\"."`
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "author_NOT_A_QUANTIFIER" is not defined by type.'
                     );
+                    expect(errors[0]).toHaveProperty("path", ["Post", "@authorization", "filter", 0, "where", "node"]);
                 });
             });
         });
@@ -1467,9 +2651,14 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"seemsNotAWhereToMe\\" is not defined by type \\"UserAuthorizationFilterRule\\"."`
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "seemsNotAWhereToMe" is not defined by type.'
                     );
+                    expect(errors[0]).toHaveProperty("path", ["User", "id", "@authorization", "filter", 0]);
                 });
 
                 test("should returns errors when an @authorization filter has a wrong where definition", () => {
@@ -1488,9 +2677,14 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"notANode\\" is not defined by type \\"UserAuthorizationWhere\\". Did you mean \\"node\\"?"`
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "notANode" is not defined by type. Did you mean "node"?'
                     );
+                    expect(errors[0]).toHaveProperty("path", ["User", "id", "@authorization", "filter", 0, "where"]);
                 });
 
                 test("should returns errors when an @authorization filter has a wrong where predicate", () => {
@@ -1509,9 +2703,22 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"notAValidID\\" is not defined by type \\"UserWhere\\"."`
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "notAValidID" is not defined by type.'
                     );
+                    expect(errors[0]).toHaveProperty("path", [
+                        "User",
+                        "id",
+                        "@authorization",
+                        "filter",
+                        0,
+                        "where",
+                        "node",
+                    ]);
                 });
 
                 test("should returns errors when an @authorization filter has an incorrect where predicate over a 1 to 1 relationship", () => {
@@ -1537,9 +2744,23 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"content\\" is not defined by type \\"UserWhere\\"."`
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "content" is not defined by type.'
                     );
+                    expect(errors[0]).toHaveProperty("path", [
+                        "Post",
+                        "author",
+                        "@authorization",
+                        "filter",
+                        0,
+                        "where",
+                        "node",
+                        "author",
+                    ]);
                 });
 
                 test("should returns errors when an @authorization filter has an incorrect where predicate over a 1 to N relationship", () => {
@@ -1567,9 +2788,23 @@ describe("schema validation", () => {
                             additionalDirectives: [],
                             additionalTypes: [],
                         });
-                    expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                        `"Invalid argument: filter, error: Field \\"author_NOT_A_QUANTIFIER\\" is not defined by type \\"PostWhere\\"."`
+
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "author_NOT_A_QUANTIFIER" is not defined by type.'
                     );
+                    expect(errors[0]).toHaveProperty("path", [
+                        "Post",
+                        "authors",
+                        "@authorization",
+                        "filter",
+                        0,
+                        "where",
+                        "node",
+                    ]);
                 });
             });
         });

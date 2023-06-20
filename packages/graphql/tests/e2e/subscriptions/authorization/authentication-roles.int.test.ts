@@ -45,7 +45,7 @@ describe("Subscription authentication roles", () => {
         title: String!
     }
 
-    extend type ${typeMovie} @authentication(operations: [SUBSCRIBE], jwtPayload: { roles_INCLUDES: "admin" })
+    extend type ${typeMovie} @authentication(operations: [SUBSCRIBE], jwt: { roles_INCLUDES: "admin" })
     `;
 
     beforeAll(async () => {

@@ -34,14 +34,14 @@ const authenticationDefaultOperations: AuthenticationOperation[] = [
 export function parseAuthenticationAnnotation(directive: DirectiveNode): AuthenticationAnnotation {
     const args = parseArguments(directive) as {
         operations?: AuthenticationOperation[];
-        jwtPayload?: GraphQLWhereArg;
+        jwt?: GraphQLWhereArg;
     };
 
     const constructorArgs: [AuthenticationOperation[], GraphQLWhereArg?] = [
         args.operations || authenticationDefaultOperations,
     ];
-    if (args.jwtPayload) {
-        constructorArgs.push(args.jwtPayload);
+    if (args.jwt) {
+        constructorArgs.push(args.jwt);
     }
 
     return new AuthenticationAnnotation(...constructorArgs);
