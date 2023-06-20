@@ -403,11 +403,9 @@ describe("Batch Create, Auth", () => {
             WITH this4
             CALL {
                 WITH this4
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this4_actors_connectOrCreate0.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                MERGE (this4_actors_connectOrCreate0:\`Actor\` { id: $this4_actors_connectOrCreate_param3 })
+                MERGE (this4_actors_connectOrCreate0:\`Actor\` { id: $this4_actors_connectOrCreate_param0 })
                 ON CREATE SET
-                    this4_actors_connectOrCreate0.name = $this4_actors_connectOrCreate_param4
+                    this4_actors_connectOrCreate0.name = $this4_actors_connectOrCreate_param1
                 MERGE (this4)<-[this4_actors_connectOrCreate_this0:ACTED_IN]-(this4_actors_connectOrCreate0)
                 RETURN COUNT(*) AS _
             }
@@ -517,8 +515,8 @@ describe("Batch Create, Auth", () => {
                 \\"this3_id\\": \\"4\\",
                 \\"this3_actors_connect0_node_param0\\": \\"2\\",
                 \\"this4_id\\": \\"5\\",
-                \\"this4_actors_connectOrCreate_param3\\": \\"2\\",
-                \\"this4_actors_connectOrCreate_param4\\": \\"actor 2\\",
+                \\"this4_actors_connectOrCreate_param0\\": \\"2\\",
+                \\"this4_actors_connectOrCreate_param1\\": \\"actor 2\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

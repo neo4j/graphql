@@ -55,7 +55,7 @@ describe("connectOrCreate", () => {
                 genres: [${typeGenre.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
     
-            type ${typeGenre.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP, CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+            type ${typeGenre.name} @authorization(validate: [{ operations: [CREATE_RELATIONSHIP, CREATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
                 name: String @unique
             }
             `;

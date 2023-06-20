@@ -361,8 +361,6 @@ function createAuthorizationBeforeConnectOrCreate({
     context,
     sourceNode,
     sourceName,
-    targetNode,
-    targetName,
 }: {
     context: Context;
     sourceNode: Node;
@@ -384,31 +382,8 @@ function createAuthorizationBeforeConnectOrCreate({
         operations: ["CREATE_RELATIONSHIP"],
     });
 
-    const targetAuthorizationBefore = createAuthorizationBeforePredicate({
-        context,
-        nodes: [
-            {
-                node: targetNode,
-                variable: new Cypher.NamedNode(targetName),
-            },
-        ],
-        operations: ["CREATE_RELATIONSHIP", "CREATE"],
-    });
-
     if (sourceAuthorizationBefore) {
         const { predicate, preComputedSubqueries } = sourceAuthorizationBefore;
-
-        if (predicate) {
-            predicates.push(predicate);
-        }
-
-        if (preComputedSubqueries) {
-            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
-        }
-    }
-
-    if (targetAuthorizationBefore) {
-        const { predicate, preComputedSubqueries } = targetAuthorizationBefore;
 
         if (predicate) {
             predicates.push(predicate);

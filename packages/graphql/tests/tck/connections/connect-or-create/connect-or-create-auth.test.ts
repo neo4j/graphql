@@ -82,14 +82,12 @@ describe("connectOrCreate", () => {
                 WITH this0
                 CALL {
                     WITH this0
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this0_genres_connectOrCreate0:\`Genre\` { name: $this0_genres_connectOrCreate_param3 })
+                    MERGE (this0_genres_connectOrCreate0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
                     ON CREATE SET
-                        this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate_param4
+                        this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate_param1
                     MERGE (this0)-[this0_genres_connectOrCreate_this0:IN_GENRE]->(this0_genres_connectOrCreate0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 RETURN this0
@@ -100,14 +98,13 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this0_title\\": \\"Cool Movie\\",
+                    \\"this0_genres_connectOrCreate_param0\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate_param1\\": \\"Horror\\",
                     \\"isAuthenticated\\": true,
-                    \\"this0_genres_connectOrCreate_param1\\": \\"admin\\",
+                    \\"this0_genres_connectOrCreate_param3\\": \\"admin\\",
                     \\"jwt\\": {
                         \\"roles\\": []
                     },
-                    \\"this0_genres_connectOrCreate_param3\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate_param4\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate_param5\\": \\"admin\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);
@@ -129,14 +126,12 @@ describe("connectOrCreate", () => {
                 WITH this0
                 CALL {
                     WITH this0
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this0_genres_connectOrCreate0:\`Genre\` { name: $this0_genres_connectOrCreate_param3 })
+                    MERGE (this0_genres_connectOrCreate0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
                     ON CREATE SET
-                        this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate_param4
+                        this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate_param1
                     MERGE (this0)-[this0_genres_connectOrCreate_this0:IN_GENRE]->(this0_genres_connectOrCreate0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 RETURN this0
@@ -147,14 +142,13 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this0_title\\": \\"Cool Movie\\",
+                    \\"this0_genres_connectOrCreate_param0\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate_param1\\": \\"Horror\\",
                     \\"isAuthenticated\\": true,
-                    \\"this0_genres_connectOrCreate_param1\\": \\"admin\\",
+                    \\"this0_genres_connectOrCreate_param3\\": \\"admin\\",
                     \\"jwt\\": {
                         \\"roles\\": []
                     },
-                    \\"this0_genres_connectOrCreate_param3\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate_param4\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate_param5\\": \\"admin\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);
@@ -176,14 +170,12 @@ describe("connectOrCreate", () => {
                 WITH this0
                 CALL {
                     WITH this0
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this0_genres_connectOrCreate0:\`Genre\` { name: $this0_genres_connectOrCreate_param3 })
+                    MERGE (this0_genres_connectOrCreate0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
                     ON CREATE SET
-                        this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate_param4
+                        this0_genres_connectOrCreate0.name = $this0_genres_connectOrCreate_param1
                     MERGE (this0)-[this0_genres_connectOrCreate_this0:IN_GENRE]->(this0_genres_connectOrCreate0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this0_genres_connectOrCreate_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 RETURN this0
@@ -194,14 +186,13 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this0_title\\": \\"Cool Movie\\",
+                    \\"this0_genres_connectOrCreate_param0\\": \\"Horror\\",
+                    \\"this0_genres_connectOrCreate_param1\\": \\"Horror\\",
                     \\"isAuthenticated\\": true,
-                    \\"this0_genres_connectOrCreate_param1\\": \\"admin\\",
+                    \\"this0_genres_connectOrCreate_param3\\": \\"admin\\",
                     \\"jwt\\": {
                         \\"roles\\": []
                     },
-                    \\"this0_genres_connectOrCreate_param3\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate_param4\\": \\"Horror\\",
-                    \\"this0_genres_connectOrCreate_param5\\": \\"admin\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);
@@ -280,14 +271,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_genres0_connectOrCreate0:\`Genre\` { name: $this_genres0_connectOrCreate_param3 })
+                    MERGE (this_genres0_connectOrCreate0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
                     ON CREATE SET
-                        this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate_param4
+                        this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate_param1
                     MERGE (this)-[this_genres0_connectOrCreate_this0:IN_GENRE]->(this_genres0_connectOrCreate0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -296,14 +285,13 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
+                    \\"this_genres0_connectOrCreate_param0\\": \\"Horror\\",
+                    \\"this_genres0_connectOrCreate_param1\\": \\"Horror\\",
                     \\"isAuthenticated\\": true,
-                    \\"this_genres0_connectOrCreate_param1\\": \\"admin\\",
+                    \\"this_genres0_connectOrCreate_param3\\": \\"admin\\",
                     \\"jwt\\": {
                         \\"roles\\": []
                     },
-                    \\"this_genres0_connectOrCreate_param3\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate_param4\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate_param5\\": \\"admin\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);
@@ -324,14 +312,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_genres0_connectOrCreate0:\`Genre\` { name: $this_genres0_connectOrCreate_param3 })
+                    MERGE (this_genres0_connectOrCreate0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
                     ON CREATE SET
-                        this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate_param4
+                        this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate_param1
                     MERGE (this)-[this_genres0_connectOrCreate_this0:IN_GENRE]->(this_genres0_connectOrCreate0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -340,14 +326,13 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
+                    \\"this_genres0_connectOrCreate_param0\\": \\"Horror\\",
+                    \\"this_genres0_connectOrCreate_param1\\": \\"Horror\\",
                     \\"isAuthenticated\\": true,
-                    \\"this_genres0_connectOrCreate_param1\\": \\"admin\\",
+                    \\"this_genres0_connectOrCreate_param3\\": \\"admin\\",
                     \\"jwt\\": {
                         \\"roles\\": []
                     },
-                    \\"this_genres0_connectOrCreate_param3\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate_param4\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate_param5\\": \\"admin\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);
@@ -368,14 +353,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_genres0_connectOrCreate0:\`Genre\` { name: $this_genres0_connectOrCreate_param3 })
+                    MERGE (this_genres0_connectOrCreate0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
                     ON CREATE SET
-                        this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate_param4
+                        this_genres0_connectOrCreate0.name = $this_genres0_connectOrCreate_param1
                     MERGE (this)-[this_genres0_connectOrCreate_this0:IN_GENRE]->(this_genres0_connectOrCreate0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_genres0_connectOrCreate_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -384,14 +367,13 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
+                    \\"this_genres0_connectOrCreate_param0\\": \\"Horror\\",
+                    \\"this_genres0_connectOrCreate_param1\\": \\"Horror\\",
                     \\"isAuthenticated\\": true,
-                    \\"this_genres0_connectOrCreate_param1\\": \\"admin\\",
+                    \\"this_genres0_connectOrCreate_param3\\": \\"admin\\",
                     \\"jwt\\": {
                         \\"roles\\": []
                     },
-                    \\"this_genres0_connectOrCreate_param3\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate_param4\\": \\"Horror\\",
-                    \\"this_genres0_connectOrCreate_param5\\": \\"admin\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);
@@ -463,14 +445,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param3 })
+                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
                     ON CREATE SET
-                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param4
+                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param1
                     MERGE (this)-[this_connectOrCreate_genres_this0:IN_GENRE]->(this_connectOrCreate_genres0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 WITH *
@@ -480,14 +460,13 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
+                    \\"this_connectOrCreate_genres_param0\\": \\"Horror\\",
+                    \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
                     \\"isAuthenticated\\": true,
-                    \\"this_connectOrCreate_genres_param1\\": \\"admin\\",
+                    \\"this_connectOrCreate_genres_param3\\": \\"admin\\",
                     \\"jwt\\": {
                         \\"roles\\": []
                     },
-                    \\"this_connectOrCreate_genres_param3\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param4\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param5\\": \\"admin\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);
@@ -508,14 +487,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param3 })
+                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
                     ON CREATE SET
-                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param4
+                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param1
                     MERGE (this)-[this_connectOrCreate_genres_this0:IN_GENRE]->(this_connectOrCreate_genres0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 WITH *
@@ -525,14 +502,13 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
+                    \\"this_connectOrCreate_genres_param0\\": \\"Horror\\",
+                    \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
                     \\"isAuthenticated\\": true,
-                    \\"this_connectOrCreate_genres_param1\\": \\"admin\\",
+                    \\"this_connectOrCreate_genres_param3\\": \\"admin\\",
                     \\"jwt\\": {
                         \\"roles\\": []
                     },
-                    \\"this_connectOrCreate_genres_param3\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param4\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param5\\": \\"admin\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);
@@ -553,14 +529,12 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param3 })
+                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
                     ON CREATE SET
-                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param4
+                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param1
                     MERGE (this)-[this_connectOrCreate_genres_this0:IN_GENRE]->(this_connectOrCreate_genres0)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_genres_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN COUNT(*) AS _
                 }
                 WITH *
@@ -570,14 +544,13 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
+                    \\"this_connectOrCreate_genres_param0\\": \\"Horror\\",
+                    \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
                     \\"isAuthenticated\\": true,
-                    \\"this_connectOrCreate_genres_param1\\": \\"admin\\",
+                    \\"this_connectOrCreate_genres_param3\\": \\"admin\\",
                     \\"jwt\\": {
                         \\"roles\\": []
                     },
-                    \\"this_connectOrCreate_genres_param3\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param4\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param5\\": \\"admin\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);
@@ -648,11 +621,9 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this_connectOrCreate_genres0.name = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param3 })
+                    MERGE (this_connectOrCreate_genres0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
                     ON CREATE SET
-                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param4
+                        this_connectOrCreate_genres0.name = $this_connectOrCreate_genres_param1
                     MERGE (this)-[this_connectOrCreate_genres_this0:IN_GENRE]->(this_connectOrCreate_genres0)
                     RETURN COUNT(*) AS _
                 }
@@ -663,14 +634,8 @@ describe("connectOrCreate", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_update_title\\": \\"Cool Movie\\",
-                    \\"isAuthenticated\\": true,
-                    \\"jwt\\": {
-                        \\"roles\\": [],
-                        \\"sub\\": \\"test\\"
-                    },
-                    \\"jwtDefault\\": {},
-                    \\"this_connectOrCreate_genres_param3\\": \\"Horror\\",
-                    \\"this_connectOrCreate_genres_param4\\": \\"Horror\\",
+                    \\"this_connectOrCreate_genres_param0\\": \\"Horror\\",
+                    \\"this_connectOrCreate_genres_param1\\": \\"Horror\\",
                     \\"resolvedCallbacks\\": {}
                 }"
             `);
