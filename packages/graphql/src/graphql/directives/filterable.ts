@@ -21,7 +21,7 @@ import { DirectiveLocation, GraphQLBoolean, GraphQLDirective, GraphQLNonNull } f
 
 export const filterableDirective = new GraphQLDirective({
     name: "filterable",
-    description: "Instructs @neo4j/graphql to generate filters this field.",
+    description: "Instructs @neo4j/graphql to generate filters for this field.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
         byValue: {
