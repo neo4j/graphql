@@ -27,6 +27,12 @@ type DocumentToAugment = {
         jwt?: { type: ObjectTypeDefinitionNode; jwtFieldsMap: Map<string, string> };
     };
 };
+
+type ParsedJwtPayload = {
+    type: ObjectTypeDefinitionNode;
+    jwtFieldsMap: Map<string, string>;
+};
+
 export function makeDocumentToAugment(document: DocumentNode): DocumentToAugment {
     const jwtTypeDefinitions: ObjectTypeDefinitionNode[] = [];
     const definitions: DefinitionNode[] = [];
@@ -53,12 +59,7 @@ export function makeDocumentToAugment(document: DocumentNode): DocumentToAugment
     };
 }
 
-function parseJwtPayload(jwtAnnotatedTypes: ObjectTypeDefinitionNode[]):
-    | {
-          type: ObjectTypeDefinitionNode;
-          jwtFieldsMap: Map<string, string>;
-      }
-    | undefined {
+function parseJwtPayload(jwtAnnotatedTypes: ObjectTypeDefinitionNode[]): ParsedJwtPayload | undefined {
     const jwtFieldsMap = new Map<string, string>();
     if (jwtAnnotatedTypes.length > 1) {
         throw new Error(`@jwt directive can only be used once in the Type Definitions.`);

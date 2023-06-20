@@ -25,7 +25,7 @@ import type { Field } from "./attribute/Field";
 
 export class Operation {
     public readonly name: string;
-    // custom cypher fields
+    // Currently only includes custom Cypher fields
     public readonly fields: Map<string, Field> = new Map();
     public readonly annotations: Partial<Annotations> = {};
 
