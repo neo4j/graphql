@@ -2,7 +2,7 @@
 "@neo4j/graphql": minor
 ---
 
-Introduced schema configuration directive, `@filterable`.
+Introduced schema configuration directive: `@filterable`.
 
 Usage:
 
