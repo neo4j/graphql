@@ -196,7 +196,7 @@ export class Subgraph {
                                 const url = argument.value.value;
                                 if (url.startsWith("https://specs.apollo.dev/federation/v2")) {
                                     // Remove any other directives and operations from the extension
-                                    // We only care for the`@link` directive
+                                    // We only care for the `@link` directive
                                     const emptyExtension = {
                                         ...definition,
                                         directives: [directive],
