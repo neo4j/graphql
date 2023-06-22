@@ -44,12 +44,106 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
+            "schema @link(url: \\"https://specs.apollo.dev/link/v1.0\\") @link(url: \\"https://specs.apollo.dev/federation/v2.0\\", import: [\\"@key\\", \\"@shareable\\"]) {
               query: Query
               mutation: Mutation
             }
 
-            type CreateInfo {
+            directive @federation__extends on INTERFACE | OBJECT
+
+            directive @federation__external(reason: String) on FIELD_DEFINITION | OBJECT
+
+            directive @federation__inaccessible on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
+
+            directive @federation__override(from: String!) on FIELD_DEFINITION
+
+            directive @federation__provides(fields: federation__FieldSet!) on FIELD_DEFINITION
+
+            directive @federation__requires(fields: federation__FieldSet!) on FIELD_DEFINITION
+
+            directive @federation__tag(name: String!) repeatable on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
+
+            directive @key(fields: federation__FieldSet!, resolvable: Boolean = true) repeatable on INTERFACE | OBJECT
+
+            directive @link(as: String, for: link__Purpose, import: [link__Import], url: String) repeatable on SCHEMA
+
+            directive @shareable on FIELD_DEFINITION | OBJECT
+
+            type Actor {
+              password: String!
+              username: String!
+            }
+
+            input ActorCreateInput {
+              password: String!
+              username: String!
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
+            input ActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
+            input ActorSort {
+              password: SortDirection
+              username: SortDirection
+            }
+
+            input ActorUpdateInput {
+              password: String
+              username: String
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              password: String
+              password_CONTAINS: String
+              password_ENDS_WITH: String
+              password_IN: [String!]
+              password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_STARTS_WITH: String
+              username: String
+              username_CONTAINS: String
+              username_ENDS_WITH: String
+              username_IN: [String!]
+              username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type CreateActorsMutationResponse {
+              actors: [Actor!]!
+              info: CreateInfo!
+            }
+
+            type CreateInfo @shareable {
               bookmark: String
               nodesCreated: Int!
               relationshipsCreated: Int!
@@ -60,118 +154,18 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               movies: [Movie!]!
             }
 
-            type CreatePeopleMutationResponse {
-              info: CreateInfo!
-              people: [Person!]!
-            }
-
-            type DeleteInfo {
+            type DeleteInfo @shareable {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
             type Movie {
-              actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
-              actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
-              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
-              id: ID
-            }
-
-            input MovieActorsAggregateInput {
-              AND: [MovieActorsAggregateInput!]
-              NOT: MovieActorsAggregateInput
-              OR: [MovieActorsAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: MovieActorsNodeAggregationWhereInput
-            }
-
-            type MovieActorsConnection {
-              edges: [MovieActorsRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input MovieActorsConnectionSort {
-              node: PersonSort
-            }
-
-            input MovieActorsConnectionWhere {
-              AND: [MovieActorsConnectionWhere!]
-              NOT: MovieActorsConnectionWhere
-              OR: [MovieActorsConnectionWhere!]
-              node: PersonWhere
-              node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
-
-            input MovieActorsNodeAggregationWhereInput {
-              AND: [MovieActorsNodeAggregationWhereInput!]
-              NOT: MovieActorsNodeAggregationWhereInput
-              OR: [MovieActorsNodeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-            }
-
-            type MovieActorsRelationship {
-              cursor: String!
-              node: Person!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
+              title: String
             }
 
             input MovieCreateInput {
-              id: ID
+              title: String
             }
 
             type MovieEdge {
@@ -188,70 +182,31 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               sort: [MovieSort!]
             }
 
-            type MoviePersonActorsAggregationSelection {
-              count: Int!
-              node: MoviePersonActorsNodeAggregateSelection
-            }
-
-            type MoviePersonActorsNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
             input MovieSort {
-              id: SortDirection
+              title: SortDirection
             }
 
             input MovieUpdateInput {
-              id: ID
+              title: String
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-              actorsAggregate: MovieActorsAggregateInput
-              actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
-              \\"\\"\\"
-              Return Movies where all of the related MovieActorsConnections match this filter
-              \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
-              \\"\\"\\"
-              Return Movies where none of the related MovieActorsConnections match this filter
-              \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
-              \\"\\"\\"
-              Return Movies where one of the related MovieActorsConnections match this filter
-              \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
-              \\"\\"\\"
-              Return Movies where some of the related MovieActorsConnections match this filter
-              \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
-              \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-              actors_ALL: PersonWhere
-              \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-              actors_NONE: PersonWhere
-              actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-              actors_SINGLE: PersonWhere
-              \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-              actors_SOME: PersonWhere
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: ID
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
             }
 
             type MoviesConnection {
@@ -261,102 +216,28 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type Mutation {
+              createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
+              deleteActors(where: ActorWhere): DeleteInfo!
               deleteMovies(where: MovieWhere): DeleteInfo!
-              deletePeople(where: PersonWhere): DeleteInfo!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
+            type PageInfo @shareable {
               endCursor: String
               hasNextPage: Boolean!
               hasPreviousPage: Boolean!
               startCursor: String
             }
 
-            type PeopleConnection {
-              edges: [PersonEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Person {
-              id: ID!
-              name: String
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-            }
-
-            input PersonCreateInput {
-              name: String
-            }
-
-            type PersonEdge {
-              cursor: String!
-              node: Person!
-            }
-
-            input PersonOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [PersonSort!]
-            }
-
-            \\"\\"\\"
-            Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
-            \\"\\"\\"
-            input PersonSort {
-              id: SortDirection
-              name: SortDirection
-            }
-
-            input PersonUpdateInput {
-              name: String
-            }
-
-            input PersonWhere {
-              AND: [PersonWhere!]
-              NOT: PersonWhere
-              OR: [PersonWhere!]
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID!]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: ID
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-            }
-
             type Query {
+              _service: _Service!
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              people(options: PersonOptions, where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
             }
 
             enum SortDirection {
@@ -366,12 +247,12 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
+            type UpdateActorsMutationResponse {
+              actors: [Actor!]!
+              info: UpdateInfo!
             }
 
-            type UpdateInfo {
+            type UpdateInfo @shareable {
               bookmark: String
               nodesCreated: Int!
               nodesDeleted: Int!
@@ -384,9 +265,25 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               movies: [Movie!]!
             }
 
-            type UpdatePeopleMutationResponse {
-              info: UpdateInfo!
-              people: [Person!]!
+            scalar _Any
+
+            type _Service {
+              sdl: String
+            }
+
+            scalar federation__FieldSet
+
+            scalar link__Import
+
+            enum link__Purpose {
+              \\"\\"\\"
+              \`EXECUTION\` features provide metadata necessary for operation execution.
+              \\"\\"\\"
+              EXECUTION
+              \\"\\"\\"
+              \`SECURITY\` features provide metadata necessary to securely resolve fields.
+              \\"\\"\\"
+              SECURITY
             }"
         `);
     });
@@ -411,134 +308,102 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
+            "schema @link(url: \\"https://specs.apollo.dev/link/v1.0\\") @link(url: \\"https://specs.apollo.dev/federation/v2.0\\", import: [\\"@key\\", \\"@shareable\\"]) {
               query: Query
-              mutation: Mutation
             }
 
-            type CreateInfo {
-              bookmark: String
-              nodesCreated: Int!
-              relationshipsCreated: Int!
+            directive @federation__extends on INTERFACE | OBJECT
+
+            directive @federation__external(reason: String) on FIELD_DEFINITION | OBJECT
+
+            directive @federation__inaccessible on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
+
+            directive @federation__override(from: String!) on FIELD_DEFINITION
+
+            directive @federation__provides(fields: federation__FieldSet!) on FIELD_DEFINITION
+
+            directive @federation__requires(fields: federation__FieldSet!) on FIELD_DEFINITION
+
+            directive @federation__tag(name: String!) repeatable on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
+
+            directive @key(fields: federation__FieldSet!, resolvable: Boolean = true) repeatable on INTERFACE | OBJECT
+
+            directive @link(as: String, for: link__Purpose, import: [link__Import], url: String) repeatable on SCHEMA
+
+            directive @shareable on FIELD_DEFINITION | OBJECT
+
+            type Actor {
+              password: String!
+              username: String!
             }
 
-            type CreateMoviesMutationResponse {
-              info: CreateInfo!
-              movies: [Movie!]!
+            type ActorAggregateSelection {
+              count: Int!
+              password: StringAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
             }
 
-            type CreatePeopleMutationResponse {
-              info: CreateInfo!
-              people: [Person!]!
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
             }
 
-            type DeleteInfo {
-              bookmark: String
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
+            input ActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
+            input ActorSort {
+              password: SortDirection
+              username: SortDirection
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              password: String
+              password_CONTAINS: String
+              password_ENDS_WITH: String
+              password_IN: [String!]
+              password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_STARTS_WITH: String
+              username: String
+              username_CONTAINS: String
+              username_ENDS_WITH: String
+              username_IN: [String!]
+              username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_STARTS_WITH: String
             }
 
-            type Movie {
-              actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
-              actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
-              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
-              id: ID
-            }
-
-            input MovieActorsAggregateInput {
-              AND: [MovieActorsAggregateInput!]
-              NOT: MovieActorsAggregateInput
-              OR: [MovieActorsAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: MovieActorsNodeAggregationWhereInput
-            }
-
-            type MovieActorsConnection {
-              edges: [MovieActorsRelationship!]!
+            type ActorsConnection {
+              edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
-            input MovieActorsConnectionSort {
-              node: PersonSort
-            }
-
-            input MovieActorsConnectionWhere {
-              AND: [MovieActorsConnectionWhere!]
-              NOT: MovieActorsConnectionWhere
-              OR: [MovieActorsConnectionWhere!]
-              node: PersonWhere
-              node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
-
-            input MovieActorsNodeAggregationWhereInput {
-              AND: [MovieActorsNodeAggregationWhereInput!]
-              NOT: MovieActorsNodeAggregationWhereInput
-              OR: [MovieActorsNodeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-            }
-
-            type MovieActorsRelationship {
-              cursor: String!
-              node: Person!
+            type Movie {
+              title: String
             }
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
-            }
-
-            input MovieCreateInput {
-              id: ID
+              title: StringAggregateSelectionNullable!
             }
 
             type MovieEdge {
@@ -555,70 +420,27 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               sort: [MovieSort!]
             }
 
-            type MoviePersonActorsAggregationSelection {
-              count: Int!
-              node: MoviePersonActorsNodeAggregateSelection
-            }
-
-            type MoviePersonActorsNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
             input MovieSort {
-              id: SortDirection
-            }
-
-            input MovieUpdateInput {
-              id: ID
+              title: SortDirection
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-              actorsAggregate: MovieActorsAggregateInput
-              actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
-              \\"\\"\\"
-              Return Movies where all of the related MovieActorsConnections match this filter
-              \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
-              \\"\\"\\"
-              Return Movies where none of the related MovieActorsConnections match this filter
-              \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
-              \\"\\"\\"
-              Return Movies where one of the related MovieActorsConnections match this filter
-              \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
-              \\"\\"\\"
-              Return Movies where some of the related MovieActorsConnections match this filter
-              \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
-              \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-              actors_ALL: PersonWhere
-              \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-              actors_NONE: PersonWhere
-              actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-              actors_SINGLE: PersonWhere
-              \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-              actors_SOME: PersonWhere
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: ID
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
             }
 
             type MoviesConnection {
@@ -627,103 +449,22 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               totalCount: Int!
             }
 
-            type Mutation {
-              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
-              deletePeople(where: PersonWhere): DeleteInfo!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
-            }
-
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
+            type PageInfo @shareable {
               endCursor: String
               hasNextPage: Boolean!
               hasPreviousPage: Boolean!
               startCursor: String
             }
 
-            type PeopleConnection {
-              edges: [PersonEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Person {
-              id: ID!
-              name: String
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-            }
-
-            input PersonCreateInput {
-              name: String
-            }
-
-            type PersonEdge {
-              cursor: String!
-              node: Person!
-            }
-
-            input PersonOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [PersonSort!]
-            }
-
-            \\"\\"\\"
-            Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
-            \\"\\"\\"
-            input PersonSort {
-              id: SortDirection
-              name: SortDirection
-            }
-
-            input PersonUpdateInput {
-              name: String
-            }
-
-            input PersonWhere {
-              AND: [PersonWhere!]
-              NOT: PersonWhere
-              OR: [PersonWhere!]
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID!]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: ID
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-            }
-
             type Query {
+              _service: _Service!
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              people(options: PersonOptions, where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
             }
 
             enum SortDirection {
@@ -733,27 +474,35 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelectionNonNullable @shareable {
+              longest: String!
+              shortest: String!
+            }
+
+            type StringAggregateSelectionNullable @shareable {
               longest: String
               shortest: String
             }
 
-            type UpdateInfo {
-              bookmark: String
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
+            scalar _Any
+
+            type _Service {
+              sdl: String
             }
 
-            type UpdateMoviesMutationResponse {
-              info: UpdateInfo!
-              movies: [Movie!]!
-            }
+            scalar federation__FieldSet
 
-            type UpdatePeopleMutationResponse {
-              info: UpdateInfo!
-              people: [Person!]!
+            scalar link__Import
+
+            enum link__Purpose {
+              \\"\\"\\"
+              \`EXECUTION\` features provide metadata necessary for operation execution.
+              \\"\\"\\"
+              EXECUTION
+              \\"\\"\\"
+              \`SECURITY\` features provide metadata necessary to securely resolve fields.
+              \\"\\"\\"
+              SECURITY
             }"
         `);
     });
@@ -779,12 +528,151 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
+            "schema @link(url: \\"https://specs.apollo.dev/link/v1.0\\") @link(url: \\"https://specs.apollo.dev/federation/v2.0\\", import: [\\"@key\\", \\"@shareable\\"]) {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
-            type CreateInfo {
+            directive @federation__extends on INTERFACE | OBJECT
+
+            directive @federation__external(reason: String) on FIELD_DEFINITION | OBJECT
+
+            directive @federation__inaccessible on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
+
+            directive @federation__override(from: String!) on FIELD_DEFINITION
+
+            directive @federation__provides(fields: federation__FieldSet!) on FIELD_DEFINITION
+
+            directive @federation__requires(fields: federation__FieldSet!) on FIELD_DEFINITION
+
+            directive @federation__tag(name: String!) repeatable on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
+
+            directive @key(fields: federation__FieldSet!, resolvable: Boolean = true) repeatable on INTERFACE | OBJECT
+
+            directive @link(as: String, for: link__Purpose, import: [link__Import], url: String) repeatable on SCHEMA
+
+            directive @shareable on FIELD_DEFINITION | OBJECT
+
+            type Actor {
+              password: String!
+              username: String!
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              password: StringAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
+            }
+
+            input ActorCreateInput {
+              password: String!
+              username: String!
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
+            type ActorEventPayload {
+              password: String!
+              username: String!
+            }
+
+            input ActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
+            input ActorSort {
+              password: SortDirection
+              username: SortDirection
+            }
+
+            input ActorSubscriptionWhere {
+              AND: [ActorSubscriptionWhere!]
+              NOT: ActorSubscriptionWhere
+              OR: [ActorSubscriptionWhere!]
+              password: String
+              password_CONTAINS: String
+              password_ENDS_WITH: String
+              password_IN: [String]
+              password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_STARTS_WITH: String
+              username: String
+              username_CONTAINS: String
+              username_ENDS_WITH: String
+              username_IN: [String]
+              username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_STARTS_WITH: String
+            }
+
+            input ActorUpdateInput {
+              password: String
+              username: String
+            }
+
+            type ActorUpdatedEvent {
+              event: EventType!
+              previousState: ActorEventPayload!
+              timestamp: Float!
+              updatedActor: ActorEventPayload!
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              password: String
+              password_CONTAINS: String
+              password_ENDS_WITH: String
+              password_IN: [String!]
+              password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_STARTS_WITH: String
+              username: String
+              username_CONTAINS: String
+              username_ENDS_WITH: String
+              username_IN: [String!]
+              username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type CreateActorsMutationResponse {
+              actors: [Actor!]!
+              info: CreateInfo!
+            }
+
+            type CreateInfo @shareable {
               bookmark: String
               nodesCreated: Int!
               relationshipsCreated: Int!
@@ -795,123 +683,40 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               movies: [Movie!]!
             }
 
-            type CreatePeopleMutationResponse {
-              info: CreateInfo!
-              people: [Person!]!
-            }
-
-            type DeleteInfo {
+            type DeleteInfo @shareable {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
+            enum EventType {
+              CREATE
+              CREATE_RELATIONSHIP
+              DELETE
+              DELETE_RELATIONSHIP
+              UPDATE
             }
 
             type Movie {
-              actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
-              actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
-              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
-              id: ID
-            }
-
-            input MovieActorsAggregateInput {
-              AND: [MovieActorsAggregateInput!]
-              NOT: MovieActorsAggregateInput
-              OR: [MovieActorsAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: MovieActorsNodeAggregationWhereInput
-            }
-
-            type MovieActorsConnection {
-              edges: [MovieActorsRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input MovieActorsConnectionSort {
-              node: PersonSort
-            }
-
-            input MovieActorsConnectionWhere {
-              AND: [MovieActorsConnectionWhere!]
-              NOT: MovieActorsConnectionWhere
-              OR: [MovieActorsConnectionWhere!]
-              node: PersonWhere
-              node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
-
-            input MovieActorsNodeAggregationWhereInput {
-              AND: [MovieActorsNodeAggregationWhereInput!]
-              NOT: MovieActorsNodeAggregationWhereInput
-              OR: [MovieActorsNodeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-            }
-
-            type MovieActorsRelationship {
-              cursor: String!
-              node: Person!
+              title: String
             }
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelectionNullable!
+              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
-              id: ID
+              title: String
             }
 
             type MovieEdge {
               cursor: String!
               node: Movie!
+            }
+
+            type MovieEventPayload {
+              title: String
             }
 
             input MovieOptions {
@@ -923,70 +728,54 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               sort: [MovieSort!]
             }
 
-            type MoviePersonActorsAggregationSelection {
-              count: Int!
-              node: MoviePersonActorsNodeAggregateSelection
-            }
-
-            type MoviePersonActorsNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
             input MovieSort {
-              id: SortDirection
+              title: SortDirection
+            }
+
+            input MovieSubscriptionWhere {
+              AND: [MovieSubscriptionWhere!]
+              NOT: MovieSubscriptionWhere
+              OR: [MovieSubscriptionWhere!]
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
             }
 
             input MovieUpdateInput {
-              id: ID
+              title: String
+            }
+
+            type MovieUpdatedEvent {
+              event: EventType!
+              previousState: MovieEventPayload!
+              timestamp: Float!
+              updatedMovie: MovieEventPayload!
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-              actorsAggregate: MovieActorsAggregateInput
-              actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
-              \\"\\"\\"
-              Return Movies where all of the related MovieActorsConnections match this filter
-              \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
-              \\"\\"\\"
-              Return Movies where none of the related MovieActorsConnections match this filter
-              \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
-              \\"\\"\\"
-              Return Movies where one of the related MovieActorsConnections match this filter
-              \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
-              \\"\\"\\"
-              Return Movies where some of the related MovieActorsConnections match this filter
-              \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
-              \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-              actors_ALL: PersonWhere
-              \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-              actors_NONE: PersonWhere
-              actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
-              \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-              actors_SINGLE: PersonWhere
-              \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-              actors_SOME: PersonWhere
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: ID
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
             }
 
             type MoviesConnection {
@@ -996,102 +785,30 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type Mutation {
+              createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
+              deleteActors(where: ActorWhere): DeleteInfo!
               deleteMovies(where: MovieWhere): DeleteInfo!
-              deletePeople(where: PersonWhere): DeleteInfo!
+              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
+            type PageInfo @shareable {
               endCursor: String
               hasNextPage: Boolean!
               hasPreviousPage: Boolean!
               startCursor: String
             }
 
-            type PeopleConnection {
-              edges: [PersonEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Person {
-              id: ID!
-              name: String
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-            }
-
-            input PersonCreateInput {
-              name: String
-            }
-
-            type PersonEdge {
-              cursor: String!
-              node: Person!
-            }
-
-            input PersonOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [PersonSort!]
-            }
-
-            \\"\\"\\"
-            Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
-            \\"\\"\\"
-            input PersonSort {
-              id: SortDirection
-              name: SortDirection
-            }
-
-            input PersonUpdateInput {
-              name: String
-            }
-
-            input PersonWhere {
-              AND: [PersonWhere!]
-              NOT: PersonWhere
-              OR: [PersonWhere!]
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID!]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: ID
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-            }
-
             type Query {
+              _service: _Service!
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              people(options: PersonOptions, where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
             }
 
             enum SortDirection {
@@ -1101,12 +818,27 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
+            type StringAggregateSelectionNonNullable @shareable {
+              longest: String!
+              shortest: String!
+            }
+
+            type StringAggregateSelectionNullable @shareable {
               longest: String
               shortest: String
             }
 
-            type UpdateInfo {
+            type Subscription {
+              actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
+              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
+            }
+
+            type UpdateActorsMutationResponse {
+              actors: [Actor!]!
+              info: UpdateInfo!
+            }
+
+            type UpdateInfo @shareable {
               bookmark: String
               nodesCreated: Int!
               nodesDeleted: Int!
@@ -1119,9 +851,25 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               movies: [Movie!]!
             }
 
-            type UpdatePeopleMutationResponse {
-              info: UpdateInfo!
-              people: [Person!]!
+            scalar _Any
+
+            type _Service {
+              sdl: String
+            }
+
+            scalar federation__FieldSet
+
+            scalar link__Import
+
+            enum link__Purpose {
+              \\"\\"\\"
+              \`EXECUTION\` features provide metadata necessary for operation execution.
+              \\"\\"\\"
+              EXECUTION
+              \\"\\"\\"
+              \`SECURITY\` features provide metadata necessary to securely resolve fields.
+              \\"\\"\\"
+              SECURITY
             }"
         `);
     });
