@@ -21,7 +21,6 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 
 describe("Extending the schema in when using getSubgraphSchema", () => {
     test("Should be able to use @mutation and @key on the same type", async () => {
