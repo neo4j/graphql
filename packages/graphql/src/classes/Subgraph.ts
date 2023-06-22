@@ -199,7 +199,7 @@ export class Subgraph {
                                     // We only care for the `@link` directive
                                     const emptyExtension = {
                                         ...definition,
-                                        directives: [directive],
+                                        directives: definition.directives.filter((d) => d.name.value === "link"),
                                         operationTypes: [],
                                     };
                                     return { extension: emptyExtension, directive };
