@@ -3540,7 +3540,7 @@ __metadata:
     dotenv-webpack: 8.0.1
     fork-ts-checker-webpack-plugin: 8.0.0
     graphiql-explorer: 0.9.0
-    graphql: 16.7.0
+    graphql: 16.7.1
     graphql-query-complexity: 0.12.0
     html-inline-script-webpack-plugin: 3.2.0
     html-webpack-inline-source-plugin: 0.0.10
@@ -8278,7 +8278,7 @@ __metadata:
     "@graphql-tools/wrap": ^9.3.6
     "@neo4j/graphql": ^3.21.0
     fork-ts-checker-webpack-plugin: 8.0.0
-    graphql: 16.7.0
+    graphql: 16.7.1
     graphql-tag: ^2.12.6
     neo4j-driver: ^5.5.0
     ts-loader: 9.4.3
@@ -14004,10 +14004,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:16.7.0":
-  version: 16.7.0
-  resolution: "graphql@npm:16.7.0"
-  checksum: 46199d850ac6d972e03bc6ac402c9a86ff47e0abf99ce96ac94a97d2469d94d33217047582a3e37b8c6bd5af3d16e5842cd7eb3c663f521b5553ac752da31cdb
+"graphql@npm:16.7.1":
+  version: 16.7.1
+  resolution: "graphql@npm:16.7.1"
+  checksum: c924d8428daf0e96a5ea43e9bc3cd1b6802899907d284478ac8f705c8fd233a0a51eef915f7569fb5de8acb2e85b802ccc6c85c2b157ad805c1e9adba5a299bd
   languageName: node
   linkType: hard
 
@@ -17886,7 +17886,7 @@ __metadata:
   dependencies:
     "@apollo/server": ^4.7.0
     "@neo4j/graphql": ^3.21.0
-    graphql: 16.7.0
+    graphql: 16.7.1
     neo4j-driver: 5.9.2
   languageName: unknown
   linkType: soft
@@ -18514,7 +18514,7 @@ __metadata:
     eslint-plugin-jsx-a11y: 6.7.1
     eslint-plugin-react: 7.32.2
     eslint-plugin-simple-import-sort: 10.0.0
-    graphql: 16.7.0
+    graphql: 16.7.1
     husky: 8.0.3
     jest: 29.5.0
     lint-staged: 13.2.2
