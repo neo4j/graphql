@@ -3530,7 +3530,7 @@ __metadata:
     "@types/webpack": 5.28.1
     autoprefixer: 10.4.14
     classnames: 2.3.2
-    cm6-graphql: 0.0.8
+    cm6-graphql: 0.0.9
     codemirror: 6.0.1
     compression-webpack-plugin: 10.0.0
     copy-webpack-plugin: 11.0.0
@@ -10041,11 +10041,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cm6-graphql@npm:0.0.8":
-  version: 0.0.8
-  resolution: "cm6-graphql@npm:0.0.8"
+"cm6-graphql@npm:0.0.9":
+  version: 0.0.9
+  resolution: "cm6-graphql@npm:0.0.9"
   dependencies:
-    graphql-language-service: ^5.1.6
+    graphql-language-service: ^5.1.7
   peerDependencies:
     "@codemirror/autocomplete": ^6.0.0
     "@codemirror/language": ^6.0.0
@@ -10054,7 +10054,7 @@ __metadata:
     "@codemirror/view": ^6.1.2
     "@lezer/highlight": ^1.0.0
     graphql: ^16.5.0
-  checksum: 5640075122d1a541d40a3e7a87816f5851f5a41669e24a7e12b4cd93a391ffed491235d1b8a00003734289f9c9b81ff5f95d7774443fc99e3ebf506ee4ee0f37
+  checksum: 1f59cf24189f3990eef56915486bd65954a020a26b26bc3acf05ee8b5cb5b3ee7ef55ff003c6f83d4adab8c7869c446aa307648e566994ea254eea1e0d781d4e
   languageName: node
   linkType: hard
 
@@ -13879,6 +13879,20 @@ __metadata:
   bin:
     graphql: dist/temp-bin.js
   checksum: db9e3a2e662b53ae5762c547ba33e3eaf36d04514aca868a9238f47d7999bfc3b2fb6c05dbbdab1c45dc2f04c524e6ff88d0d59e16859c67c483194e49c01b6b
+  languageName: node
+  linkType: hard
+
+"graphql-language-service@npm:^5.1.7":
+  version: 5.1.7
+  resolution: "graphql-language-service@npm:5.1.7"
+  dependencies:
+    nullthrows: ^1.0.0
+    vscode-languageserver-types: ^3.17.1
+  peerDependencies:
+    graphql: ^15.5.0 || ^16.0.0
+  bin:
+    graphql: dist/temp-bin.js
+  checksum: eca00df3a136f687fa96c10c458817082c7ee427552969beeac0871d565e697faf93f677fdad15ee8bb3011fa5a47fe861bde71c88db9b8b4d67704928406fae
   languageName: node
   linkType: hard
 
