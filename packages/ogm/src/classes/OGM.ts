@@ -27,6 +27,7 @@ export type OGMConstructor = Neo4jGraphQLConstructor;
 
 class OGM<ModelMap = unknown> {
     public checkNeo4jCompat: () => Promise<void>;
+    public assertIndexesAndConstraints: (input?: { options?: { create?: boolean; } }) => Promise<void>;
     private models: Model[];
     private neoSchema: Neo4jGraphQL;
     private _schema?: GraphQLSchema;
@@ -47,6 +48,28 @@ class OGM<ModelMap = unknown> {
                 driver: rest.driver,
                 ...(rest.config?.driverConfig ? { driverConfig: rest.config.driverConfig } : {}),
             });
+        };
+
+        this.assertIndexesAndConstraints = async (
+            input: {
+                options?: { create?: boolean };
+            } = {}
+        ): Promise<void> => {
+            try {
+                await this.neoSchema.assertIndexesAndConstraints({
+                    ...input,
+                    driver: rest.driver,
+                    ...(rest.config?.driverConfig ? { driverConfig: rest.config.driverConfig } : {}),
+                });
+            } catch (e: unknown) {
+                if (
+                    e instanceof Error &&
+                    e.message.includes("You must await `.getSchema()` before `.assertIndexesAndConstraints()`")
+                ) {
+                    throw new Error("You must await `.init()` before `.assertIndexesAndConstraints()`");
+                }
+                throw e;
+            }
         };
     }
 
