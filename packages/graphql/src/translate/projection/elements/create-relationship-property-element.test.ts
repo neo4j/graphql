@@ -63,6 +63,10 @@ describe("createRelationshipPropertyElement", () => {
                         onCreate: true,
                         onUpdate: true,
                     },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                     description: undefined,
@@ -102,6 +106,10 @@ describe("createRelationshipPropertyElement", () => {
                         onCreate: true,
                         onUpdate: true,
                     },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                     description: undefined,
@@ -140,6 +148,10 @@ describe("createRelationshipPropertyElement", () => {
                     settableOptions: {
                         onCreate: true,
                         onUpdate: true,
+                    },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
                     },
                     otherDirectives: [],
                     arguments: [],

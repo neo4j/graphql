@@ -167,21 +167,28 @@ function createRelationshipFields({
         });
 
         const whereInput = schemaComposer.getITC(`${sourceName}Where`);
-        whereInput.addFields({
-            [rel.fieldName]: {
-                type: `${node.name}Where`,
-            },
-            [`${rel.fieldName}_NOT`]: {
-                type: `${node.name}Where`,
-            },
-            [`${rel.fieldName}Aggregate`]: {
-                type: whereAggregateInput,
-                directives: deprecatedDirectives,
-            },
-        });
+        if (rel.filterableOptions.byValue) {
+            whereInput.addFields({
+                [rel.fieldName]: {
+                    type: `${node.name}Where`,
+                },
+                [`${rel.fieldName}_NOT`]: {
+                    type: `${node.name}Where`,
+                },
+            });
+        }
 
+        if (rel.filterableOptions.byAggregate) {
+            whereInput.addFields({
+                [`${rel.fieldName}Aggregate`]: {
+                    type: whereAggregateInput,
+                    directives: deprecatedDirectives,
+                },
+            });
+        }
+    
         // n..m Relationships
-        if (rel.typeMeta.array) {
+        if (rel.typeMeta.array && rel.filterableOptions.byValue) {
             addRelationshipArrayFilters({
                 whereInput,
                 fieldName: rel.fieldName,
