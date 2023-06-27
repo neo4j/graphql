@@ -39,6 +39,7 @@ describe("createConnectAndParams", () => {
                     type: "SIMILAR",
                     fieldName: "similarMovies",
                     queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
+                    aggregate: true,
                     inherited: false,
                     typeMeta: {
                         name: "Movie",
@@ -59,6 +60,18 @@ describe("createConnectAndParams", () => {
                                 pretty: "[Movie]",
                             },
                         },
+                    },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
                     },
                     otherDirectives: [],
                     arguments: [],

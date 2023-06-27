@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveLocation, GraphQLDirective, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
+import { DirectiveLocation, GraphQLBoolean, GraphQLDirective, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
 import { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../../constants";
 import { RelationshipDirectionEnum } from "./arguments/enums/RelationshipDirection";
 import { RelationshipNestedOperationsEnum } from "./arguments/enums/RelationshipNestedOperations";
@@ -57,6 +57,11 @@ export const relationshipDirective = new GraphQLDirective({
             type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(RelationshipNestedOperationsEnum))),
             defaultValue: defaultNestedOperations,
             description: "Prevent all but these operations from being generated for this relationship",
+        },
+        aggregate: {
+            type: GraphQLBoolean,
+            defaultValue: true,
+            description: "Prevent aggregation for this relationship",
         },
     },
 });

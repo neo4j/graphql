@@ -18,17 +18,20 @@
  */
 
 import { useContext, useEffect, useState } from "react";
+
+import { EditorContextProvider, StorageContextProvider } from "@graphiql/react";
 import type { GraphQLSchema } from "graphql";
-import { EditorContextProvider } from "@graphiql/react";
-import { TopBar } from "../TopBar/TopBar";
-import { Login } from "../Login/Login";
-import { SchemaView } from "../SchemaView/SchemaView";
-import { Editor } from "../EditorView/Editor";
-import { AuthContext } from "../../contexts/auth";
-import { ScreenContext, Screen } from "../../contexts/screen";
+
 import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
 import { tracking } from "../../analytics/tracking";
 import { CannySDK } from "../../common/canny";
+import { ViewSelector } from "../../components/ViewSelector";
+import { AuthContext } from "../../contexts/auth";
+import { Screen, ScreenContext } from "../../contexts/screen";
+import { EditorView } from "../EditorView/EditorView";
+import { Login } from "../Login/Login";
+import { SchemaView } from "../SchemaView/SchemaView";
+import { TopBar } from "../TopBar/TopBar";
 
 export const Main = () => {
     const auth = useContext(AuthContext);
@@ -96,21 +99,23 @@ export const Main = () => {
     return (
         <div className="flex w-full h-full flex-col">
             <EditorContextProvider>
-                <Banner />
-                <TopBar />
-                <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
-                    {screen.view === Screen.TYPEDEFS ? (
-                        <SchemaView
-                            hasSchema={!!schema}
-                            onChange={(schema) => {
-                                setSchema(schema);
-                                screen.setScreen(Screen.EDITOR);
-                            }}
-                        />
-                    ) : (
-                        <Editor schema={schema} />
-                    )}
-                </div>
+                <StorageContextProvider>
+                    <Banner />
+                    <TopBar />
+                    <ViewSelector hasSchema={!!schema} />
+                    <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
+                        {screen.view === Screen.TYPEDEFS ? (
+                            <SchemaView
+                                onSchemaChange={(schema) => {
+                                    setSchema(schema);
+                                    screen.setScreen(Screen.EDITOR);
+                                }}
+                            />
+                        ) : (
+                            <EditorView schema={schema} />
+                        )}
+                    </div>
+                </StorageContextProvider>
             </EditorContextProvider>
         </div>
     );

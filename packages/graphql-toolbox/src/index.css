@@ -2,48 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-/* util classes */
-.whitespace-break-spaces {
-    white-space: break-spaces;
-}
+/* ----------------------*/
 
-.pt-02 {
-    padding-top: 0.2rem;
+/* Login window */
+
+.login-window-bg {
+    background-image: url("./assets/graphic-bottom-left.svg"), url("./assets/graphic-top-right.svg");
+    background-position: left bottom, right top;
+    background-size: 120px 200px;
+    background-repeat: no-repeat, no-repeat;
 }
 
 /* ----------------------*/
 
-/* Global settings for all CodeMirror editors */
-.CodeMirror {
+/* All CodeMirror v6 editors */
+.cm-editor {
     height: 100%;
     position: inherit;
     font-size: 1rem;
     font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
         Courier New;
-    border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
+    border-bottom-left-radius: 0.75rem;
 }
 
-/* Remove this when using GraphiQL v2 component(s) for editors */
-.CodeMirror-lint-mark-error {
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJDw4cOCW1/KIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==);
+.cm-editor.cm-focused {
+    outline: none;
 }
 
-.CodeMirror-hints {
-    font-size: 1rem;
-    font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
-        Courier New;
-    color: rgb(var(--colors-neutral-50));
+.cm-editor .cm-scroller {
+    border-bottom-left-radius: 0.75rem;
 }
 
-.CodeMirror-selected {
-    background: #d9d9d9 !important;
-    opacity: 0.5;
-}
-
-li.CodeMirror-hint-active {
-    background-color: rgb(var(--colors-neutral-50));
-    color: rgb(var(--colors-neutral-10));
+.cm-editor .cm-gutter {
+    width: inherit;
 }
 
 .code-mirror-disabled-state {
@@ -53,31 +45,10 @@ li.CodeMirror-hint-active {
 
 /* ----------------------*/
 
-
-/* Documentation and Query explorer classes */
-.doc-explorer-embedded {
-    height: 100%;
-    overflow-y: auto;
-}
-
-.doc-explorer-regular {
-    height: calc(100% - 3rem);
-    margin: 1rem;
-    overflow-y: auto;
-}
-
-.graphiql-explorer-docs-container {
-    position: absolute;
-    left: 388px;
-    margin: 5px 0;
-    z-index: 100;
-}
-
-/* ----------------------*/
-
-
 /* All GraphiQL v2 components */
 .graphiql-container {
+    font-family: "Nunito Sans", sans-serif;
+
     /* primary-50 */
     --color-primary: 209, 100%, 42% !important;
     /* primary-30 */
@@ -103,6 +74,10 @@ li.CodeMirror-hint-active {
     --alpha-background-light: 0.1;
 }
 
+.graphiql-doc-explorer-error {
+    display: none;
+}
+
 /* ----------------------*/
 
 /* Query Explorer (OneGraph) */
@@ -113,6 +88,7 @@ li.CodeMirror-hint-active {
 }
 
 .docExplorerWrap .graphiql-explorer-root {
+    font-family: "Nunito Sans", sans-serif !important;
     font-size: 15px !important;
 }
 
@@ -134,7 +110,7 @@ li.CodeMirror-hint-active {
     padding: 3px;
 }
 
-.docExplorerWrap .graphiql-explorer-actions>span {
+.docExplorerWrap .graphiql-explorer-actions > span {
     display: none !important;
 }
 
@@ -157,7 +133,6 @@ li.CodeMirror-hint-active {
 
 /* ----------------------*/
 
-
 /* Canny */
 .Canny_BadgeContainer {
     pointer-events: none;
@@ -179,3 +154,22 @@ li.CodeMirror-hint-active {
 }
 
 /* ----------------------*/
+
+/* util classes */
+.whitespace-break-spaces {
+    white-space: break-spaces;
+}
+
+.pos-absolute {
+    position: absolute !important;
+}
+
+/* ----------------------*/
+
+.show-on-hover {
+    visibility: hidden;
+}
+
+.favorite-entry:hover .show-on-hover {
+    visibility: visible;
+}

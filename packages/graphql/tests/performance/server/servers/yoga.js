@@ -35,9 +35,6 @@ async function main() {
     const neoSchema = new Neo4jGraphQL({
         typeDefs: getLargeSchema(1),
         driver,
-        config: {
-            addMeasurementsToExtension: true,
-        },
     });
     const schema = await neoSchema.getSchema();
 

@@ -22,6 +22,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import Relationship from "../../../classes/Relationship";
 import type { TemporalField, PointField, PrimitiveField } from "../../../types";
 import { createRelationshipPropertyElement } from "./create-relationship-property-element";
+import { compileCypher } from "../../../utils/compile-cypher";
 
 describe("createRelationshipPropertyElement", () => {
     let relationship: Relationship;
@@ -54,6 +55,18 @@ describe("createRelationshipPropertyElement", () => {
                             },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                     description: undefined,
@@ -84,6 +97,18 @@ describe("createRelationshipPropertyElement", () => {
                                 pretty: "PointInput",
                             },
                         },
+                    },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
                     },
                     otherDirectives: [],
                     arguments: [],
@@ -116,6 +141,18 @@ describe("createRelationshipPropertyElement", () => {
                             },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                     description: undefined,
@@ -136,7 +173,7 @@ describe("createRelationshipPropertyElement", () => {
 
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
         new Cypher.RawCypher((env) => {
-            expect(element.getCypher(env)).toBe("int: this.int");
+            expect(compileCypher(element, env)).toBe("int: this.int");
             return "";
         }).build();
     });
@@ -151,7 +188,7 @@ describe("createRelationshipPropertyElement", () => {
 
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
         new Cypher.RawCypher((env) => {
-            expect(element.getCypher(env)).toBe(
+            expect(compileCypher(element, env)).toBe(
                 'datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time")'
             );
             return "";
@@ -183,7 +220,7 @@ describe("createRelationshipPropertyElement", () => {
 
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
         new Cypher.RawCypher((env) => {
-            expect(element.getCypher(env)).toMatchInlineSnapshot(`
+            expect(compileCypher(element, env)).toMatchInlineSnapshot(`
             "point: (CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
                 ELSE NULL

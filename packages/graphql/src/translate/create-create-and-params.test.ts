@@ -59,6 +59,18 @@ describe("createCreateAndParams", () => {
                             },
                         },
                     },
+                    selectableOptions: {
+                        onRead: true,
+                        onAggregate: false,
+                    },
+                    settableOptions: {
+                        onCreate: true,
+                        onUpdate: true,
+                    },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                 },

@@ -17,18 +17,22 @@
  * limitations under the License.
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
 import * as neo4j from "neo4j-driver";
+
 import { VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
+import { useStore } from "../store";
+import { useSessionStore } from "../store/session";
+import type { LoginPayload, Neo4jDatabase, Neo4jDatabaseInfo } from "../types";
+import { getAuraDBIdFromText, getURLProtocolFromText } from "../utils/utils";
 import {
     checkDatabaseHasData,
+    getDatabaseInformation,
     getDatabases,
     resolveNeo4jDesktopLoginPayload,
     resolveSelectedDatabaseName,
 } from "./utils";
-import type { LoginPayload, Neo4jDatabase } from "../types";
-import { getURLProtocolFromText } from "../utils/utils";
-import { useStore } from "../store";
 
 interface LoginOptions {
     username: string;
@@ -43,6 +47,7 @@ export interface State {
     isConnected?: boolean;
     isNeo4jDesktop?: boolean;
     databases?: Neo4jDatabase[];
+    databaseInformation?: Neo4jDatabaseInfo;
     selectedDatabaseName?: string;
     showIntrospectionPrompt?: boolean;
     login: (options: LoginOptions) => Promise<void>;
@@ -56,11 +61,13 @@ export const AuthContext = React.createContext({} as State);
 export function AuthProvider(props: any) {
     let intervalId: number;
     const store = useStore();
+    const sessionStore = useSessionStore();
 
     const [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
             const auth = neo4j.auth.basic(options.username, options.password);
             const protocol = getURLProtocolFromText(options.url);
+            sessionStore.setAuraDbId(getAuraDBIdFromText(options.url));
             // Manually set the encryption to off if it's not specified in the Connection URI to avoid implicit encryption in https domain
             const driver = protocol.includes("+s")
                 ? neo4j.driver(options.url, auth)
@@ -69,6 +76,7 @@ export function AuthProvider(props: any) {
             await driver.verifyConnectivity();
 
             const databases = await getDatabases(driver);
+            const databaseInformation = await getDatabaseInformation(driver);
             const selectedDatabaseName = resolveSelectedDatabaseName(databases || []);
 
             let isShowIntrospectionPrompt = false;
@@ -93,6 +101,7 @@ export function AuthProvider(props: any) {
                 isConnected: true,
                 showIntrospectionPrompt: isShowIntrospectionPrompt,
                 databases,
+                databaseInformation,
                 selectedDatabaseName,
             }));
         },
@@ -100,6 +109,7 @@ export function AuthProvider(props: any) {
             store.setConnectionUsername(null);
             store.setConnectionUrl(null);
             store.setHideIntrospectionPrompt(false);
+            sessionStore.clearAuraDbId();
             if (intervalId) {
                 clearInterval(intervalId);
             }

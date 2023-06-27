@@ -18,9 +18,12 @@
  */
 
 import { useContext } from "react";
-import { ThemeContext, Theme } from "../contexts/theme";
+
+import classNames from "classnames";
+
 // @ts-ignore - SVG Import
 import GraphQLIcon from "../assets/graphql-icon.svg";
+import { Theme, ThemeContext } from "../contexts/theme";
 
 export enum Extension {
     JSON,
@@ -31,7 +34,9 @@ export enum Extension {
 interface Props {
     name: string;
     extension: Extension;
-    buttons?: any;
+    rightButtons?: React.ReactNode;
+    leftButtons?: React.ReactNode;
+    borderRadiusTop?: boolean;
 }
 
 const Icon = (props: { extension: Extension }) => {
@@ -61,20 +66,26 @@ const Ending = (props: { extension: Extension }) => {
     return <span>{content}</span>;
 };
 
-export const FileName = ({ extension, name, buttons }: Props) => {
+export const FileName = ({ extension, name, rightButtons, leftButtons, borderRadiusTop = true }: Props) => {
     const theme = useContext(ThemeContext);
 
     return (
         <div
-            className={`w-full h-12 m-0 pt-3 pb-3 pl-4 ${
-                theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark"
-            } rounded-tl-xl rounded-tr-xl flex justify-between items-center`}
+            className={classNames(
+                "w-full flex justify-between items-center h-12 m-0 py-3 px-4",
+                theme.theme === Theme.LIGHT ? "bg-white" : "bg-draculaDark",
+                borderRadiusTop && "rounded-t-xl"
+            )}
         >
-            <div className={`${theme.theme === Theme.LIGHT ? "text-black" : "text-white"} text-sm`}>
-                <Icon extension={extension}></Icon> <span className="pl-1">{name}</span>
-                <Ending extension={extension}></Ending>
-            </div>
-            {buttons ? <div className="flex items-center mr-4">{buttons}</div> : null}
+            {leftButtons ? (
+                <div className="flex items-center">{leftButtons}</div>
+            ) : (
+                <div className={classNames("text-sm", theme.theme === Theme.LIGHT ? "text-black" : "text-white")}>
+                    <Icon extension={extension}></Icon> <span className="pl-1">{name}</span>
+                    <Ending extension={extension}></Ending>
+                </div>
+            )}
+            {rightButtons ? <div className="flex items-center">{rightButtons}</div> : null}
         </div>
     );
 };

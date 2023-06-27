@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 
-import { Checkbox, Radio, SmartTooltip } from "@neo4j-ndl/react";
+import { useState } from "react";
+
+import { Checkbox, Radio, Tooltip } from "@neo4j-ndl/react";
 import { QuestionMarkCircleIconOutline } from "@neo4j-ndl/react/icons";
 import type React from "react";
-import { useRef } from "react";
+
 import { tracking } from "../../analytics/tracking";
 import { useStore } from "../../store";
 import { ConstraintState } from "../../types";
@@ -54,19 +56,32 @@ export const SchemaSettings = () => {
     };
 
     const InfoToolTip = ({ text, width }: { text: React.ReactNode; width: number }): JSX.Element => {
-        const tooltipRef = useRef<SVGSVGElement | null>(null);
+        const [isHovering, setIsHovering] = useState<boolean>(false);
+
         return (
-            <>
-                <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" ref={tooltipRef} />
-                <SmartTooltip allowedPlacements={["right"]} style={{ width: `${width || 200}px` }} ref={tooltipRef}>
-                    {text}
-                </SmartTooltip>
-            </>
+            <div
+                className="pr-2"
+                onMouseOver={() => setIsHovering(true)}
+                onFocus={() => setIsHovering(true)}
+                onMouseOut={() => setIsHovering(false)}
+                onBlur={() => setIsHovering(false)}
+            >
+                <QuestionMarkCircleIconOutline className="ml-1 h-4 w-4" />
+                {isHovering ? (
+                    <Tooltip
+                        arrowPosition="left"
+                        className="absolute mt-[-1.6rem] ml-[1.75rem] z-20"
+                        style={{ width: `${width || 200}px` }}
+                    >
+                        {text}
+                    </Tooltip>
+                ) : null}
+            </div>
         );
     };
 
     return (
-        <div className="p-6">
+        <div className="pl-10 pr-6 py-6">
             <span className="h5">Schema options</span>
             <div className="mb-1 mt-3 flex items-baseline">
                 <Checkbox
@@ -105,7 +120,7 @@ export const SchemaSettings = () => {
                 <InfoToolTip
                     text={
                         <span>
-                            Also enable &quot;verbose&quot; logging in browser. Instructions:{" "}
+                            Also enable &quot;verbose&quot; logging in web browser. Instructions:{" "}
                             <a
                                 className="underline"
                                 href="https://github.com/debug-js/debug#browser-support"
@@ -116,7 +131,7 @@ export const SchemaSettings = () => {
                             </a>
                         </span>
                     }
-                    width={370}
+                    width={390}
                 />
             </div>
             <div className="mt-3 flex flex-col">

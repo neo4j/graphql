@@ -28,7 +28,7 @@ import { META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
-import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
+import { compileCypher, compileCypherIfExists } from "../utils/compile-cypher";
 
 export default async function unwindCreate({
     context,
@@ -75,7 +75,7 @@ export default async function unwindCreate({
         });
         projectionSubquery = Cypher.concat(...projection.subqueries);
         projectionCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
-            return `${rootNodeVariable.getCypher(env)} ${projection.projection.getCypher(env)}`;
+            return `${compileCypher(rootNodeVariable, env)} ${compileCypher(projection.projection, env)}`;
         });
     }
 
@@ -87,10 +87,10 @@ export default async function unwindCreate({
         const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
 
         const cypher = filterTruthy([
-            unwindCreate.getCypher(env),
+            compileCypher(unwindCreate, env),
             projectionWithStr,
             projectionSubqueryStr,
-            returnStatement.getCypher(env),
+            compileCypher(returnStatement, env),
         ])
             .filter(Boolean)
             .join("\n");
@@ -119,7 +119,7 @@ function generateCreateReturnStatementCypher(
         const statements: string[] = [];
 
         if (projection) {
-            statements.push(`collect(${projection.getCypher(env)}) AS data`);
+            statements.push(`collect(${compileCypher(projection, env)}) AS data`);
         }
 
         if (subscriptionsEnabled) {
