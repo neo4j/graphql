@@ -136,7 +136,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
     await options.ogm.init();
 
     const config: Types.GenerateOptions = {
-        config: {},
+        config: { namingConvention: "keep" },
         plugins: [
             {
                 typescript: {},
