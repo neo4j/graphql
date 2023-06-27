@@ -18,6 +18,7 @@
  */
 
 import type { FieldDefinitionNode } from "graphql";
+import { Kind } from "graphql";
 import getRelationshipMeta from "./get-relationship-meta";
 
 describe("getRelationshipMeta", () => {
@@ -49,7 +50,7 @@ describe("getRelationshipMeta", () => {
         expect(result).toBeUndefined();
     });
 
-    test("should throw direction required", () => {
+    test("should throw when relationship has no arguments", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -71,10 +72,12 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        expect(() => getRelationshipMeta(field)).toThrow("@relationship direction required");
+        expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
+            `"Argument \\"type\\" of required type \\"String!\\" was not provided."`
+        );
     });
 
-    test("should throw direction not a string", () => {
+    test("should throw when direction is missing", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -85,31 +88,21 @@ describe("getRelationshipMeta", () => {
                     arguments: [
                         {
                             // @ts-ignore
-                            name: { value: "direction" },
+                            name: { value: "type" },
                             // @ts-ignore
-                            value: { kind: "NOT A STRING!" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
                         },
                     ],
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 2" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 3" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 4" },
                 },
             ],
         };
 
-        expect(() => getRelationshipMeta(field)).toThrow("@relationship direction not a enum");
+        expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
+            `"Argument \\"direction\\" of required type \\"RelationshipDirection!\\" was not provided."`
+        );
     });
 
-    test("should throw direction invalid", () => {
+    test("should throw when direction not a string", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -120,31 +113,54 @@ describe("getRelationshipMeta", () => {
                     arguments: [
                         {
                             // @ts-ignore
-                            name: { value: "direction" },
+                            name: { value: "type" },
+
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
+                        },
+                        {
                             // @ts-ignore
-                            value: { kind: "EnumValue", value: "INVALID!" },
+                            name: { value: "direction" },
+                            value: { kind: Kind.BOOLEAN, value: true },
                         },
                     ],
                 },
+            ],
+        };
+        expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
+            `"Argument \\"direction\\" has invalid value true."`
+        );
+    });
+
+    test("should throw when direction is invalid", () => {
+        const field: FieldDefinitionNode = {
+            directives: [
                 {
                     // @ts-ignore
-                    name: { value: "RANDOM 2" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 3" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 4" },
+                    name: {
+                        value: "relationship",
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "type" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "direction" },
+                            value: { kind: Kind.ENUM, value: "INVALID!" },
+                        },
+                    ],
                 },
             ],
         };
 
-        expect(() => getRelationshipMeta(field)).toThrow("@relationship direction invalid");
+        expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
+            `"Argument \\"direction\\" has invalid value INVALID!."`
+        );
     });
 
-    test("should throw type required", () => {
+    test("should throw when type is missing", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -156,30 +172,19 @@ describe("getRelationshipMeta", () => {
                         {
                             // @ts-ignore
                             name: { value: "direction" },
-                            // @ts-ignore
-                            value: { kind: "EnumValue", value: "IN" },
+                            value: { kind: Kind.ENUM, value: "IN" },
                         },
                     ],
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 2" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 3" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 4" },
                 },
             ],
         };
 
-        expect(() => getRelationshipMeta(field)).toThrow("@relationship type required");
+        expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
+            `"Argument \\"type\\" of required type \\"String!\\" was not provided."`
+        );
     });
 
-    test("should throw type not a string", () => {
+    test("should throw when type not a string", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -192,68 +197,45 @@ describe("getRelationshipMeta", () => {
                             // @ts-ignore
                             name: { value: "direction" },
                             // @ts-ignore
-                            value: { kind: "EnumValue", value: "IN" },
+                            value: { kind: Kind.ENUM, value: "IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "type" },
+                            value: { kind: Kind.FLOAT, value: "1.3" },
+                        },
+                    ],
+                },
+            ],
+        };
+
+        expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
+            `"Argument \\"type\\" has invalid value 1.3."`
+        );
+    });
+
+    test("should return the correct meta with direction and type", () => {
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "relationship",
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "direction" },
+                            // @ts-ignore
+                            value: { kind: Kind.ENUM, value: "IN" },
                         },
                         {
                             // @ts-ignore
                             name: { value: "type" },
                             // @ts-ignore
-                            value: { kind: "INVALID" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
                         },
                     ],
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 2" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 3" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 4" },
-                },
-            ],
-        };
-
-        expect(() => getRelationshipMeta(field)).toThrow("@relationship type not a string");
-    });
-
-    test("should return the correct meta", () => {
-        const field: FieldDefinitionNode = {
-            directives: [
-                {
-                    // @ts-ignore
-                    name: {
-                        value: "relationship",
-                    },
-                    arguments: [
-                        {
-                            // @ts-ignore
-                            name: { value: "direction" },
-                            // @ts-ignore
-                            value: { kind: "EnumValue", value: "IN" },
-                        },
-                        {
-                            // @ts-ignore
-                            name: { value: "type" },
-                            // @ts-ignore
-                            value: { kind: "StringValue", value: "ACTED_IN" },
-                        },
-                    ],
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 2" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 3" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 4" },
                 },
             ],
         };
@@ -263,6 +245,384 @@ describe("getRelationshipMeta", () => {
         expect(result).toMatchObject({
             type: "ACTED_IN",
             direction: "IN",
+        });
+    });
+
+    test("should throw when properties is not a string", () => {
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "relationship",
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "direction" },
+                            value: { kind: Kind.ENUM, value: "IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "type" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "properties" },
+                            value: { kind: Kind.BOOLEAN, value: true },
+                        },
+                    ],
+                },
+            ],
+        };
+
+        expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
+            `"Argument \\"properties\\" has invalid value true."`
+        );
+    });
+
+    test("should return the correct meta with direction, type and properties", () => {
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "relationship",
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "direction" },
+                            value: { kind: Kind.ENUM, value: "IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "type" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "properties" },
+                            value: { kind: Kind.STRING, value: "ActedIn" },
+                        },
+                    ],
+                },
+            ],
+        };
+
+        const result = getRelationshipMeta(field);
+
+        expect(result).toMatchObject({
+            type: "ACTED_IN",
+            direction: "IN",
+            properties: "ActedIn",
+        });
+    });
+
+    test("should throw when queryDirection is not an enum", () => {
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "relationship",
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "direction" },
+                            value: { kind: Kind.ENUM, value: "IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "type" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "queryDirection" },
+                            value: { kind: Kind.STRING, value: "IN" },
+                        },
+                    ],
+                },
+            ],
+        };
+
+        expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
+            `"Argument \\"queryDirection\\" has invalid value \\"IN\\"."`
+        );
+    });
+
+    test("should return the correct meta with direction, type and queryDirection", () => {
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "relationship",
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "direction" },
+                            value: { kind: Kind.ENUM, value: "IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "type" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "queryDirection" },
+                            value: { kind: Kind.ENUM, value: "DEFAULT_UNDIRECTED" },
+                        },
+                    ],
+                },
+            ],
+        };
+
+        const result = getRelationshipMeta(field);
+
+        expect(result).toMatchObject({
+            type: "ACTED_IN",
+            direction: "IN",
+            queryDirection: "DEFAULT_UNDIRECTED",
+        });
+    });
+
+    test("should throw when nestedOperations is not a list", () => {
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "relationship",
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "direction" },
+                            value: { kind: Kind.ENUM, value: "IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "type" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "nestedOperations" },
+                            value: { kind: Kind.STRING, value: "IN" },
+                        },
+                    ],
+                },
+            ],
+        };
+
+        expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
+            `"Argument \\"nestedOperations\\" has invalid value \\"IN\\"."`
+        );
+    });
+
+    test("should throw when nestedOperations is invalid", () => {
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "relationship",
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "direction" },
+                            value: { kind: Kind.ENUM, value: "IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "type" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "nestedOperations" },
+                            value: {
+                                kind: Kind.LIST,
+                                values: [
+                                    {
+                                        kind: Kind.STRING,
+                                        value: "FAIL",
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            ],
+        };
+
+        expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
+            `"Argument \\"nestedOperations\\" has invalid value [\\"FAIL\\"]."`
+        );
+    });
+
+    test("should throw when nestedOperations value at index position 1 is invalid", () => {
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "relationship",
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "direction" },
+                            value: { kind: Kind.ENUM, value: "IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "type" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "nestedOperations" },
+                            value: {
+                                kind: Kind.LIST,
+                                values: [
+                                    {
+                                        kind: Kind.ENUM,
+                                        value: "CONNECT",
+                                    },
+                                    {
+                                        kind: Kind.ENUM,
+                                        value: "FAIL",
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            ],
+        };
+
+        expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
+            `"Argument \\"nestedOperations\\" has invalid value [CONNECT, FAIL]."`
+        );
+    });
+
+    test("should return the correct meta with direction, type and nestedOperations", () => {
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "relationship",
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "direction" },
+                            value: { kind: Kind.ENUM, value: "IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "type" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "nestedOperations" },
+                            value: {
+                                kind: Kind.LIST,
+                                values: [
+                                    {
+                                        kind: Kind.ENUM,
+                                        value: "CONNECT",
+                                    },
+                                    {
+                                        kind: Kind.ENUM,
+                                        value: "CREATE",
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            ],
+        };
+
+        const result = getRelationshipMeta(field);
+
+        expect(result).toMatchObject({
+            type: "ACTED_IN",
+            direction: "IN",
+            nestedOperations: ["CONNECT", "CREATE"],
+        });
+    });
+
+    test("should return the correct meta for all possible arguments", () => {
+        const field: FieldDefinitionNode = {
+            directives: [
+                {
+                    // @ts-ignore
+                    name: {
+                        value: "relationship",
+                    },
+                    arguments: [
+                        {
+                            // @ts-ignore
+                            name: { value: "direction" },
+                            value: { kind: Kind.ENUM, value: "IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "type" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "properties" },
+                            value: { kind: Kind.STRING, value: "ActedIn" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "queryDirection" },
+                            value: { kind: Kind.ENUM, value: "DEFAULT_UNDIRECTED" },
+                        },
+                        {
+                            // @ts-ignore
+                            name: { value: "nestedOperations" },
+                            value: {
+                                kind: Kind.LIST,
+                                values: [
+                                    {
+                                        kind: Kind.ENUM,
+                                        value: "CONNECT",
+                                    },
+                                    {
+                                        kind: Kind.ENUM,
+                                        value: "CREATE",
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            ],
+        };
+
+        const result = getRelationshipMeta(field);
+
+        expect(result).toMatchObject({
+            type: "ACTED_IN",
+            direction: "IN",
+            properties: "ActedIn",
+            queryDirection: "DEFAULT_UNDIRECTED",
+            nestedOperations: ["CONNECT", "CREATE"],
         });
     });
 });

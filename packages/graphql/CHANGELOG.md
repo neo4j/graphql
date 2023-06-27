@@ -1,5 +1,93 @@
 # @neo4j/graphql
 
+## 3.21.0
+
+### Minor Changes
+
+-   [#3402](https://github.com/neo4j/graphql/pull/3402) [`baa787745`](https://github.com/neo4j/graphql/commit/baa787745f5fef2af6b29ba3b4722a51f94b1961) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Add top-level boolean operators for filtering on Subscriptions relationship events
+
+-   [#3482](https://github.com/neo4j/graphql/pull/3482) [`b891355e5`](https://github.com/neo4j/graphql/commit/b891355e58de1c56df68ce528a0a814d5202cab3) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Export a new type, `Neo4jGraphQLContext` which can be passed into a GraphQL server to provide strong typing when populating the context with values to influence the behaviour of the Neo4j GraphQL Library. For an example of how this might be used, see the [Apollo docs](https://www.apollographql.com/docs/apollo-server/data/context#the-context-function).
+
+-   [#3431](https://github.com/neo4j/graphql/pull/3431) [`f19a57ca2`](https://github.com/neo4j/graphql/commit/f19a57ca236cb608c8138237751c4432ede6233f) Thanks [@angrykoala](https://github.com/angrykoala)! - Add @settable directive, allowing to disable some fields from mutation operations
+
+    For example:
+
+    ```graphql
+    type Movie {
+        title: String!
+        description: String @settable(onCreate: true, onUpdate: false)
+    }
+    ```
+
+-   [#3432](https://github.com/neo4j/graphql/pull/3432) [`0a444662b`](https://github.com/neo4j/graphql/commit/0a444662b2ac986971076505fbb6c17aec4ea539) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Add `aggregate` argument to the @relationship directive, allowing to disable nested aggregation
+
+    For example:
+
+    ```graphql
+    type Actor {
+        username: String!
+        password: String!
+    }
+
+    type Movie {
+        title: String
+        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: false)
+    }
+    ```
+
+-   [#3403](https://github.com/neo4j/graphql/pull/3403) [`f4d691566`](https://github.com/neo4j/graphql/commit/f4d6915661ef5f18e0d5fa3bd1b96d3564d94ee8) Thanks [@angrykoala](https://github.com/angrykoala)! - Add @selectable directive, allowing to disable fields from query, aggregations and subscription responses
+
+    For example:
+
+    ```graphql
+    type Movie {
+        title: String!
+        description: String @selectable(onRead: true, onAggregate: false)
+    }
+    ```
+
+### Patch Changes
+
+-   [#3438](https://github.com/neo4j/graphql/pull/3438) [`8c99be2fe`](https://github.com/neo4j/graphql/commit/8c99be2fe3ef5a831c8f043403dedf980cf84f86) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #3437 which caused the `nestedOperations` argument of `@relationship` to generate empty input types if the CONNECT, CREATE or CONNECT_OR_CREATE operations were not generated
+
+-   [#3489](https://github.com/neo4j/graphql/pull/3489) [`0f32311ea`](https://github.com/neo4j/graphql/commit/0f32311ea685c996f35a62410a21ef1d9f495b46) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove internal performance measurements requiring `performance.now`
+
+-   [#3465](https://github.com/neo4j/graphql/pull/3465) [`5616aa662`](https://github.com/neo4j/graphql/commit/5616aa662256e416b8401c8e50be79db194dfb28) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #3429 and added support for unions/interfaces to the `nestedOperations` argument of `@relationship`
+
+-   [#3446](https://github.com/neo4j/graphql/pull/3446) [`1d5506525`](https://github.com/neo4j/graphql/commit/1d550652512331f3fc69bf3b5307fbcb3fd79aab) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - An empty `nestedOperations` array no longer causes `<type><rel-field>UpdateFieldInput` input types from being generated with only the `where` field
+
+-   [#3438](https://github.com/neo4j/graphql/pull/3438) [`8c99be2fe`](https://github.com/neo4j/graphql/commit/8c99be2fe3ef5a831c8f043403dedf980cf84f86) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #3413 which caused the `nestedOperations` argument of `@relationship` to control top-level operations
+
+-   [#3445](https://github.com/neo4j/graphql/pull/3445) [`cc7c8e6a9`](https://github.com/neo4j/graphql/commit/cc7c8e6a9ba5b880c971efbfcd36485c92948a6b) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #3428 which caused an error when removing the `CONNECT_OR_CREATE` `nestedOperation` if the related type has a unique field
+
+## 3.20.1
+
+### Patch Changes
+
+-   [#3396](https://github.com/neo4j/graphql/pull/3396) [`449d66fbd`](https://github.com/neo4j/graphql/commit/449d66fbddb061c40bfd3df10c8c12bf037960d7) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix sorting fields with @alias directive
+
+-   Updated dependencies [[`ddae88e48`](https://github.com/neo4j/graphql/commit/ddae88e48a2e13ea9b6f4d9b39c46c52cf35a17e), [`42d2f6938`](https://github.com/neo4j/graphql/commit/42d2f6938df2b728c5ed552200565d1f8145e8bd)]:
+    -   @neo4j/cypher-builder@0.4.3
+
+## 3.20.0
+
+### Minor Changes
+
+-   [#3357](https://github.com/neo4j/graphql/pull/3357) [`a39b22fc1`](https://github.com/neo4j/graphql/commit/a39b22fc1f8f1227cac5a7efbaab1d855062054e) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Introduced relationship directive configuration with the new nestedOperations argument. This allows users to specify which nested operations they want to be built into the schema.
+
+    Usage:
+
+    ```graphql
+    type Movie {
+        id: ID
+        actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE, UPDATE, CONNECT])
+    }
+    ```
+
+### Patch Changes
+
+-   [#3358](https://github.com/neo4j/graphql/pull/3358) [`6cce9ffe0`](https://github.com/neo4j/graphql/commit/6cce9ffe0605795be8e2e1990860d4ea0bd256ec) Thanks [@a-alle](https://github.com/a-alle)! - Fix update mutation returning info object when subscriptions enabled
+
 ## 3.19.0
 
 ### Minor Changes

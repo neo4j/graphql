@@ -29,6 +29,14 @@ export interface Favorite {
     typeDefs: string;
 }
 
+export interface EditorTab {
+    title: string;
+    query: string;
+    variables: string;
+    response: string;
+    headers: Record<string, string>[];
+}
+
 export interface Neo4jDatabase {
     access: string;
     address: string;
@@ -42,21 +50,9 @@ export interface Neo4jDatabase {
     role: string;
 }
 
-export interface GridState {
-    maxWidth: number;
-    maxHeight: number;
-    leftTop: {
-        width: number;
-        height: number;
-    };
-    leftBottom: {
-        width: number;
-        height: number;
-    };
-    right: {
-        width: number;
-        height: number;
-    };
+export interface Neo4jDatabaseInfo {
+    version: string;
+    edition: string;
 }
 
 export enum ConstraintState {

@@ -21,7 +21,6 @@ import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on update", () => {
@@ -62,10 +61,7 @@ describe("Subscriptions metadata on update", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
@@ -82,7 +78,8 @@ describe("Subscriptions metadata on update", () => {
             WITH *
             UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
             RETURN collect(DISTINCT this { .id }) AS data
-            , collect(DISTINCT m) as meta"
+            ,
+            collect(DISTINCT m) as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -111,10 +108,7 @@ describe("Subscriptions metadata on update", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
@@ -147,7 +141,8 @@ describe("Subscriptions metadata on update", () => {
             WITH *
             UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
             RETURN collect(DISTINCT this { .id }) AS data
-            , collect(DISTINCT m) as meta"
+            ,
+            collect(DISTINCT m) as meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

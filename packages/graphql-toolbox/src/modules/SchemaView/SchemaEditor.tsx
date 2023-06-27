@@ -18,158 +18,179 @@
  */
 
 import { useContext, useEffect, useRef, useState } from "react";
-import type { EditorFromTextArea } from "codemirror";
+
+import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
+import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
+import { bracketMatching, foldGutter, foldKeymap, indentOnInput } from "@codemirror/language";
+import { lintGutter, lintKeymap } from "@codemirror/lint";
+import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
+import { EditorState, Prec, StateEffect } from "@codemirror/state";
+import {
+    drawSelection,
+    dropCursor,
+    EditorView,
+    highlightSpecialChars,
+    keymap,
+    lineNumbers,
+} from "@codemirror/view";
+import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
 import { StarIconOutline } from "@neo4j-ndl/react/icons";
-import { tokens } from "@neo4j-ndl/base";
-import { CodeMirror } from "../../utils/utils";
-import { DEFAULT_TYPE_DEFS, SCHEMA_EDITOR_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
-import { formatCode, handleEditorDisableState, ParserOptions } from "../EditorView/utils";
-import { getSchemaForLintAndAutocompletion } from "./utils";
+import classNames from "classnames";
+import { graphql } from "cm6-graphql";
+import { dracula, tomorrow } from "thememirror";
+
 import { Extension, FileName } from "../../components/Filename";
-import { ThemeContext, Theme } from "../../contexts/theme";
+import { DEFAULT_TYPE_DEFS, SCHEMA_EDITOR_INPUT } from "../../constants";
 import { AppSettingsContext } from "../../contexts/appsettings";
+import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
+import { handleEditorDisableState } from "../EditorView/utils";
+import { getSchemaForLintAndAutocompletion } from "./utils";
 
 export interface Props {
     loading: boolean;
     isIntrospecting: boolean;
-    mirrorRef: React.MutableRefObject<EditorFromTextArea | null>;
+    elementRef: React.MutableRefObject<HTMLDivElement | null>;
     formatTheCode: () => void;
     introspect: () => Promise<void>;
     saveAsFavorite: () => void;
+    onSubmit: () => void;
+    setEditorView: React.Dispatch<React.SetStateAction<EditorView | null>>;
+    editorView: EditorView | null;
 }
 
 export const SchemaEditor = ({
     loading,
     isIntrospecting,
-    mirrorRef,
+    elementRef,
     formatTheCode,
     introspect,
     saveAsFavorite,
+    onSubmit,
+    setEditorView,
+    editorView,
 }: Props) => {
     const theme = useContext(ThemeContext);
-    const appsettings = useContext(AppSettingsContext);
-    const ref = useRef<HTMLTextAreaElement | null>(null);
+    const appSettings = useContext(AppSettingsContext);
     const favoritesTooltipRef = useRef<HTMLButtonElement | null>(null);
     const introspectionTooltipRef = useRef<HTMLButtonElement | null>(null);
-    const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
+    const storedTypeDefs = useStore.getState().typeDefinitions || DEFAULT_TYPE_DEFS;
+    const [building, setBuilding] = useState<boolean>(false);
+
+    const extensions = [
+        lineNumbers(),
+        highlightSpecialChars(),
+        bracketMatching(),
+        closeBrackets(),
+        history(),
+        dropCursor(),
+        drawSelection(),
+        indentOnInput(),
+        autocompletion({ defaultKeymap: true, maxRenderedOptions: 5 }),
+        highlightSelectionMatches(),
+        EditorView.lineWrapping,
+        keymap.of([
+            indentWithTab,
+            ...closeBracketsKeymap,
+            ...defaultKeymap,
+            ...searchKeymap,
+            ...historyKeymap,
+            ...foldKeymap,
+            ...completionKeymap,
+            ...lintKeymap,
+        ]),
+        Prec.highest(
+            keymap.of([
+                {
+                    key: "Mod-m",
+                    run: () => {
+                        formatTheCode();
+                        return true;
+                    },
+                    preventDefault: true,
+                },
+            ])
+        ),
+        foldGutter({
+            closedText: "▶",
+            openText: "▼",
+        }),
+        graphql(getSchemaForLintAndAutocompletion()),
+        theme.theme === Theme.LIGHT ? tomorrow : dracula,
+        appSettings.showLintMarkers ? lintGutter() : [],
+    ];
 
     useEffect(() => {
-        if (ref.current === null) {
+        if (elementRef.current === null) {
             return;
         }
 
-        const schemaForLintAndAutocompletion = getSchemaForLintAndAutocompletion();
+        const state = EditorState.create({
+            doc: storedTypeDefs,
+            extensions,
+        });
 
-        const element = ref.current;
+        const view = new EditorView({
+            state,
+            parent: elementRef.current,
+        });
 
-        const showHint = () => {
-            mirror.showHint({
-                completeSingle: true,
-                container: element.parentElement,
-            });
+        setEditorView(view);
+
+        return () => {
+            view.destroy();
+            setEditorView(null);
         };
-
-        const mirror = CodeMirror.fromTextArea(ref.current, {
-            lineNumbers: true,
-            tabSize: 2,
-            mode: "graphql",
-            theme: theme.theme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK,
-            keyMap: "sublime",
-            autoCloseBrackets: true,
-            matchBrackets: true,
-            showCursorWhenSelecting: true,
-            lineWrapping: true,
-            foldGutter: {
-                // @ts-ignore - Added By GraphQL Plugin
-                minFoldSize: 4,
-            },
-            lint: {
-                // @ts-ignore - Mismatch of types, can be ignored
-                schema: schemaForLintAndAutocompletion,
-                validationRules: [],
-            },
-            hintOptions: {
-                schema: schemaForLintAndAutocompletion,
-                closeOnUnfocus: true,
-                completeSingle: false,
-                container: element.parentElement,
-            },
-            info: {
-                schema: schemaForLintAndAutocompletion,
-            },
-            jump: {
-                schema: schemaForLintAndAutocompletion,
-            },
-            gutters: [
-                "CodeMirror-linenumbers",
-                "CodeMirror-foldgutter",
-                appsettings.showLintMarkers ? "CodeMirror-lint-markers" : "",
-            ],
-            extraKeys: {
-                "Cmd-Space": showHint,
-                "Ctrl-Space": showHint,
-                "Alt-Space": showHint,
-                "Shift-Space": showHint,
-                "Shift-Alt-Space": showHint,
-                "Ctrl-L": () => {
-                    if (!mirror) return;
-                    formatCode(mirror, ParserOptions.GRAPH_QL);
-                },
-            },
-        });
-        setMirror(mirror);
-        mirrorRef.current = mirror;
-
-        const storedTypeDefs = useStore.getState().typeDefinitions || DEFAULT_TYPE_DEFS;
-        if (storedTypeDefs && ref.current) {
-            mirror?.setValue(storedTypeDefs);
-            ref.current.value = storedTypeDefs;
-        }
-
-        mirror.on("change", (e) => {
-            if (ref.current) {
-                ref.current.value = e.getValue();
-            }
-        });
-    }, [ref]);
+    }, [elementRef.current]);
 
     useEffect(() => {
-        handleEditorDisableState(mirror, loading);
+        if (editorView) {
+            editorView.dispatch({ effects: StateEffect.reconfigure.of(extensions) });
+        }
+    }, [theme.theme, appSettings.showLintMarkers, extensions]);
+
+    useEffect(() => {
+        handleEditorDisableState(elementRef.current, loading);
     }, [loading]);
 
-    useEffect(() => {
-        // @ts-ignore - Find a better solution
-        document[SCHEMA_EDITOR_INPUT] = mirror;
-    }, [mirror]);
-
-    useEffect(() => {
-        const t = theme.theme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
-        mirror?.setOption("theme", t);
-    }, [theme.theme]);
-
-    useEffect(() => {
-        const nextGutters = [
-            "CodeMirror-linenumbers",
-            "CodeMirror-foldgutter",
-            appsettings.showLintMarkers ? "CodeMirror-lint-markers" : "",
-        ];
-        mirror?.setOption("gutters", nextGutters);
-    }, [appsettings.showLintMarkers]);
-
     return (
-        <div className="rounded-b-xl" style={{ width: "100%", height: "100%" }}>
+        <div className="w-full h-full relative rounded-b-xl">
             <FileName
                 extension={Extension.GRAPHQL}
                 name="type-definitions"
-                buttons={
+                rightButtons={
+                    <Button
+                        data-test-schema-editor-build-button
+                        aria-label="Build schema"
+                        style={{ backgroundColor: tokens.colors.primary[50] }}
+                        className={classNames(theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark")}
+                        color="primary"
+                        fill="filled"
+                        size="small"
+                        onClick={() => {
+                            setBuilding(true);
+                            setTimeout(() => {
+                                onSubmit();
+                                setBuilding(false);
+                            }, 0);
+                        }}
+                        disabled={loading}
+                        loading={building}
+                    >
+                        Build schema
+                    </Button>
+                }
+                leftButtons={
                     <>
                         <Button
                             data-test-schema-editor-introspect-button
                             ref={introspectionTooltipRef}
                             aria-label="Generate type definitions"
-                            className="mr-2"
+                            className={classNames(
+                                "mr-2",
+                                theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
+                            )}
                             color="primary"
                             fill="outlined"
                             size="small"
@@ -191,7 +212,10 @@ export const SchemaEditor = ({
                         <Button
                             data-test-schema-editor-prettify-button
                             aria-label="Prettify code"
-                            className="mr-2"
+                            className={classNames(
+                                "mr-2",
+                                theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
+                            )}
                             color="neutral"
                             fill="outlined"
                             size="small"
@@ -205,6 +229,8 @@ export const SchemaEditor = ({
                             data-test-schema-editor-favourite-button
                             ref={favoritesTooltipRef}
                             aria-label="Save as favorite"
+                            style={{ height: "1.7rem" }}
+                            className={classNames(theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark")}
                             size="small"
                             color="neutral"
                             onClick={saveAsFavorite}
@@ -216,13 +242,21 @@ export const SchemaEditor = ({
                                 }}
                             />
                         </IconButton>
-                        <SmartTooltip allowedPlacements={["left"]} style={{ width: "8rem" }} ref={favoritesTooltipRef}>
+                        <SmartTooltip
+                            allowedPlacements={["bottom"]}
+                            style={{ width: "8rem" }}
+                            ref={favoritesTooltipRef}
+                        >
                             {"Save as Favorite"}
                         </SmartTooltip>
                     </>
                 }
             ></FileName>
-            <textarea id={SCHEMA_EDITOR_INPUT} ref={ref} style={{ width: "100%", height: "100%" }} />
+            <div
+                id={SCHEMA_EDITOR_INPUT}
+                ref={elementRef}
+                className={classNames("w-full h-full absolute", theme.theme === Theme.LIGHT ? "cm-light" : "cm-dark")}
+            ></div>
         </div>
     );
 };

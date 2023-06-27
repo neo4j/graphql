@@ -18,15 +18,14 @@
  */
 
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import type { Favorite, GridState } from "../types";
+import { createJSONStorage, persist } from "zustand/middleware";
+import type { EditorTab, Favorite } from "../types";
 import { ConstraintState } from "../types";
-import { DEFAULT_TYPE_DEFS, DEFAULT_QUERY } from "./../constants";
+import { DEFAULT_QUERY, DEFAULT_TYPE_DEFS } from "./../constants";
+import { getQueryOrMutationName } from "./utils";
 
 export interface Store {
     typeDefinitions: string;
-    lastQuery: string;
-    lastParams: string;
     connectionUsername: string | null;
     connectionUrl: string | null;
     enableDebug: boolean;
@@ -38,41 +37,103 @@ export interface Store {
     hideIntrospectionPrompt: boolean;
     enableProductUsageTracking: boolean;
     hideProductUsageTrackingMessage: boolean;
-    gridState: GridState | null;
     selectedDatabaseName: string | null;
     setConnectionUsername: (connectionUsername: string | null) => void;
     setConnectionUrl: (connectionUrl: string | null) => void;
     setHideIntrospectionPrompt: (hideIntrospectionPrompt: boolean) => void;
     setSelectedDatabaseName: (selectedDatabaseName: string) => void;
+    tabs: EditorTab[];
+    activeTabIndex: number;
+    addTab: () => void;
+    closeTab: (index: number) => void;
+    getActiveTab: () => EditorTab;
+    changeActiveTabIndex: (index: number) => void;
+    updateQuery: (query: string, updatedTabIndex: number) => void;
+    updateVariables: (variables: string, updatedTabIndex: number) => void;
+    updateResponse: (response: string, updatedTabIndex: number) => void;
 }
 
 const defaultValues = {
     typeDefinitions: DEFAULT_TYPE_DEFS,
-    lastQuery: DEFAULT_QUERY,
-    lastParams: "",
     connectionUsername: null,
     connectionUrl: null,
     enableDebug: false,
     enableRegex: false,
     constraint: ConstraintState.ignore.toString(),
     editorTheme: null,
-    favorites: null,
+    favorites: [],
     showLintMarkers: false,
     hideIntrospectionPrompt: false,
     enableProductUsageTracking: true,
     hideProductUsageTrackingMessage: false,
     selectedDatabaseName: null,
-    gridState: null,
+    tabs: [
+        {
+            title: "Unnamed",
+            query: DEFAULT_QUERY,
+            variables: "",
+            response: "",
+            headers: [],
+        },
+    ],
+    activeTabIndex: 0,
 };
 
 export const useStore = create<Store>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             ...defaultValues,
             setConnectionUsername: (connectionUsername) => set({ connectionUsername }),
             setConnectionUrl: (connectionUrl) => set({ connectionUrl }),
             setHideIntrospectionPrompt: (hideIntrospectionPrompt) => set({ hideIntrospectionPrompt }),
             setSelectedDatabaseName: (selectedDatabaseName) => set({ selectedDatabaseName }),
+            addTab: () => {
+                const currentTabs = get().tabs;
+                const newTab: EditorTab = {
+                    title: "Unnamed",
+                    query: "",
+                    variables: " ", // explicitly set to non-empty
+                    response: " ", // explicitly set to non-empty
+                    headers: [],
+                };
+                set({
+                    tabs: [...currentTabs, newTab],
+                    activeTabIndex: currentTabs.length,
+                });
+            },
+            closeTab: (index) => {
+                const currentTabs = get().tabs;
+                if (currentTabs.length <= 1) {
+                    return;
+                }
+                const isClosedTabActiveTab = get().activeTabIndex === index;
+                let nextActiveTabIdx = index - 1;
+                if (index === 0) {
+                    nextActiveTabIdx = 0;
+                } else if (isClosedTabActiveTab) {
+                    nextActiveTabIdx = get().activeTabIndex - 1;
+                }
+                set({
+                    tabs: currentTabs.filter((_, idx) => idx !== index),
+                    activeTabIndex: nextActiveTabIdx,
+                });
+            },
+            getActiveTab: () => get().tabs[get().activeTabIndex],
+            changeActiveTabIndex: (index) => set({ activeTabIndex: index }),
+            updateQuery: (query: string, updatedTabIndex: number) => {
+                const title = getQueryOrMutationName(query);
+                set({
+                    tabs: [...get().tabs.map((tab, idx) => (idx === updatedTabIndex ? { ...tab, query, title } : tab))],
+                });
+            },
+            updateVariables: (variables: string, updatedTabIndex: number) =>
+                set({
+                    tabs: [...get().tabs.map((tab, idx) => (idx === updatedTabIndex ? { ...tab, variables } : tab))],
+                }),
+            updateResponse: (response: string, updatedTabIndex: number) =>
+                set({
+                    tabs: [...get().tabs.map((tab, idx) => (idx === updatedTabIndex ? { ...tab, response } : tab))],
+                }),
         }),
         {
             name: "neo4j-graphql-toolbox", // a unique name

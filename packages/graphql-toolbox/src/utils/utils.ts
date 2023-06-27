@@ -18,35 +18,14 @@
  */
 
 import { useEffect, useRef } from "react";
-import CodeMirror from "codemirror";
-import "codemirror/addon/hint/show-hint";
-import "codemirror/addon/comment/comment";
-import "codemirror/addon/edit/matchbrackets";
-import "codemirror/addon/edit/closebrackets";
-import "codemirror/addon/fold/foldgutter";
-import "codemirror/addon/fold/brace-fold";
-import "codemirror/addon/search/search";
-import "codemirror/addon/search/searchcursor";
-import "codemirror/addon/search/jump-to-line";
-import "codemirror/addon/dialog/dialog";
-import "codemirror/addon/lint/lint";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/keymap/sublime";
-import "codemirror-graphql/hint";
-import "codemirror-graphql/lint";
-import "codemirror-graphql/info";
-import "codemirror-graphql/jump";
-import "codemirror-graphql/mode";
-import "codemirror/addon/lint/lint.css";
-import "codemirror/theme/dracula.css";
-import "codemirror/theme/neo.css";
-import "codemirror/lib/codemirror.css";
-import "codemirror/addon/hint/show-hint.css";
 
-// @ts-ignore - Needed for the tests
-document.CodeMirror = CodeMirror;
-
-export { CodeMirror };
+export const getAuraDBIdFromText = (text: string | null | undefined): string | null => {
+    if (!text) return null;
+    const myRegexp = new RegExp("://(.*?|$)\\.databases\\.neo4j\\.io", "g");
+    const matches = myRegexp.exec(text);
+    if (!matches || matches?.length < 2) return null;
+    return matches[1];
+};
 
 export const getURLProtocolFromText = (text: string | null | undefined): string => {
     if (!text) return "";
@@ -57,13 +36,10 @@ export const getURLProtocolFromText = (text: string | null | undefined): string 
     }
 };
 
-export const usePrevious = (
-    value: string | number | boolean | null | undefined
-): string | number | boolean | null | undefined => {
+export function usePrevious(value) {
     const ref = useRef();
     useEffect(() => {
-        // @ts-ignore - React.MutableRefObject has no typing
         ref.current = value;
     });
     return ref.current;
-};
+}

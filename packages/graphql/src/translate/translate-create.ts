@@ -28,7 +28,7 @@ import Cypher from "@neo4j/cypher-builder";
 import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import { addMeasurementField, Measurement } from "../utils/add-measurement-field";
+import { compileCypher, compileCypherIfExists } from "../utils/compile-cypher";
 
 type ProjectionAndParamsResult = {
     projection: Cypher.Expr;
@@ -49,7 +49,6 @@ export default async function translateCreate({
     context: Context;
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
-    const p1 = performance.now();
     try {
         return await unwindCreate({ context, node });
     } catch (error) {
@@ -135,8 +134,9 @@ export default async function translateCreate({
             });
 
             const projectionExpr = new Cypher.RawCypher(
-                (env) => `${varName.getCypher(env)} ${projection.projection.getCypher(env)}`
+                (env) => `${compileCypher(varName, env)} ${compileCypher(projection.projection, env)}`
             );
+
             const projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
 
             if (projection.meta?.authValidatePredicates?.length) {
@@ -175,16 +175,16 @@ export default async function translateCreate({
     const returnStatement = generateCreateReturnStatement(projectionList, context.subscriptionsEnabled);
 
     const createQuery = new Cypher.RawCypher((env) => {
-        const projectionSubqueriesStr = parsedProjection?.projectionSubqueriesClause?.getCypher(env);
+        const projectionSubqueriesStr = compileCypherIfExists(parsedProjection?.projectionSubqueriesClause, env);
 
         const cypher = filterTruthy([
             `${createStrs.join("\n")}`,
             context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "",
             parsedProjection?.authPredicates.length
-                ? new Cypher.With("*").where(Cypher.and(...parsedProjection.authPredicates)).getCypher(env)
+                ? compileCypher(new Cypher.With("*").where(Cypher.and(...parsedProjection.authPredicates)), env)
                 : "",
             projectionSubqueriesStr ? `\n${projectionSubqueriesStr}` : "",
-            returnStatement.getCypher(env),
+            compileCypher(returnStatement, env),
         ])
             .filter(Boolean)
             .join("\n");
@@ -209,8 +209,6 @@ export default async function translateCreate({
         },
     };
 
-    const p2 = performance.now();
-    addMeasurementField(context, Measurement.translationTime, p2 - p1);
     return result;
 }
 function generateCreateReturnStatement(
@@ -220,7 +218,7 @@ function generateCreateReturnStatement(
     const statements = new Cypher.RawCypher((env) => {
         let statStr;
         if (projectionExpr) {
-            statStr = `${projectionExpr.getCypher(env)} AS data`;
+            statStr = `${compileCypher(projectionExpr, env)} AS data`;
         }
 
         if (subscriptionsEnabled) {

@@ -17,14 +17,20 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode, FieldDefinitionNode, StringValueNode } from "graphql";
-import { RelationshipQueryDirectionOption } from "../constants";
+import type { DirectiveNode, FieldDefinitionNode } from "graphql";
+import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
+import { relationshipDirective } from "../graphql/directives/relationship";
+import { getArgumentValues } from "../utils/get-argument-values";
+
+type RelationshipDirection = "IN" | "OUT";
 
 type RelationshipMeta = {
-    direction: "IN" | "OUT";
+    direction: RelationshipDirection;
     type: string;
     properties?: string;
     queryDirection: RelationshipQueryDirectionOption;
+    nestedOperations: RelationshipNestedOperationsOption[];
+    aggregate: boolean;
 };
 
 function getRelationshipMeta(
@@ -37,63 +43,11 @@ function getRelationshipMeta(
     if (!directive) {
         return undefined;
     }
-
-    const directionArg = directive.arguments?.find((x) => x.name.value === "direction");
-    if (!directionArg) {
-        throw new Error("@relationship direction required");
-    }
-    if (directionArg.value.kind !== "EnumValue") {
-        throw new Error("@relationship direction not a enum");
-    }
-    if (!["IN", "OUT"].includes(directionArg.value.value)) {
-        throw new Error("@relationship direction invalid");
-    }
-
-    const queryDirection = getQueryDirection(directive);
-
-    const typeArg = directive.arguments?.find((x) => x.name.value === "type");
-    if (!typeArg) {
-        throw new Error("@relationship type required");
-    }
-    if (typeArg.value.kind !== "StringValue") {
-        throw new Error("@relationship type not a string");
-    }
-
-    const propertiesArg = directive.arguments?.find((x) => x.name.value === "properties");
-    if (propertiesArg && propertiesArg.value.kind !== "StringValue") {
-        throw new Error("@relationship properties not a string");
-    }
-
-    const direction = directionArg.value.value as "IN" | "OUT";
-    const type = typeArg.value.value;
-    const properties = (propertiesArg?.value as StringValueNode)?.value;
-
-    return {
-        direction,
-        type,
-        properties,
-        queryDirection,
-    };
+    return getRelationshipDirectiveArguments(directive);
 }
 
-function getQueryDirection(directive: DirectiveNode): RelationshipQueryDirectionOption {
-    const queryDirectionArg = directive.arguments?.find((x) => x.name.value === "queryDirection");
-    let queryDirection = RelationshipQueryDirectionOption.DEFAULT_DIRECTED;
-
-    if (queryDirectionArg) {
-        if (queryDirectionArg.value.kind !== "EnumValue") {
-            throw new Error("@relationship queryDirection is not a enum");
-        }
-
-        const queryDirectionValue = RelationshipQueryDirectionOption[
-            queryDirectionArg.value.value
-        ] as RelationshipQueryDirectionOption;
-        if (!Object.values(RelationshipQueryDirectionOption).includes(queryDirectionValue)) {
-            throw new Error("@relationship queryDirection invalid");
-        }
-        queryDirection = queryDirectionArg.value.value as RelationshipQueryDirectionOption;
-    }
-    return queryDirection;
+function getRelationshipDirectiveArguments(directiveNode: DirectiveNode): RelationshipMeta {
+    return getArgumentValues(relationshipDirective, directiveNode) as RelationshipMeta;
 }
 
 export default getRelationshipMeta;

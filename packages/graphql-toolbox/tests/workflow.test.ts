@@ -64,8 +64,16 @@ base.test.describe("workflow", () => {
 
     let driver: neo4j.Driver;
 
-    beforeAll(() => {
+    beforeAll(async () => {
         driver = neo4j.driver(NEO_URL, neo4j.auth.basic(NEO_USER, NEO_PASSWORD));
+        const session = driver.session();
+        try {
+            await session.run(`
+                CREATE (:Movie { id: "${id}" })
+            `);
+        } finally {
+            await session.close();
+        }
     });
 
     afterAll(async () => {
@@ -79,15 +87,6 @@ base.test.describe("workflow", () => {
         await schemaEditorPage.buildSchema();
 
         await editorPage.setQuery(query);
-
-        const session = driver.session();
-        try {
-            await session.run(`
-                CREATE (:Movie { id: "${id}" })
-            `);
-        } finally {
-            await session.close();
-        }
 
         await editorPage.submitQuery();
         await page.waitForTimeout(2000);

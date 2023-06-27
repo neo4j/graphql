@@ -25,7 +25,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - uses: reviewdog/action-eslint@94d539484aab48e9b2ffff6466d8866ee4e4b217 # v1.18.2
+      - uses: reviewdog/action-eslint@e1dbcf30466d267e79331b2f5bacb269093125b5 # v1.19.1
         with:
           fail_on_error: true
           eslint_flags: "."
@@ -72,9 +72,6 @@ jobs:
 
   unit-tests:
     uses: ./.github/workflows/reusable-unit-tests.yml
-
-  cypher-builder-tests:
-    uses: ./.github/workflows/reusable-cypher-builder-tests.yml
 
   e2e-tests-plugins:
     uses: ./.github/workflows/reusable-subscriptions-plugin-amqp-e2e-test.yml
