@@ -76,6 +76,10 @@ describe("createProjectionAndParams", () => {
                         onCreate: true,
                         onUpdate: true,
                     },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                 },
@@ -151,6 +155,10 @@ describe("createProjectionAndParams", () => {
                     settableOptions: {
                         onCreate: true,
                         onUpdate: true,
+                    },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
                     },
                     otherDirectives: [],
                     arguments: [],
