@@ -42,6 +42,10 @@ export class RelationFieldBuilder extends Builder<RelationField, RelationField> 
                 onCreate: true,
                 onUpdate: true,
             },
+            filterableOptions: {
+                byValue: true,
+                byAggregate: true,
+            },
             otherDirectives: [],
             arguments: [],
             inherited: false,

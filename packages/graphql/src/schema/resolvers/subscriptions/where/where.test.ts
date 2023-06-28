@@ -73,6 +73,10 @@ describe("subscriptionWhere", () => {
                         onCreate: true,
                         onUpdate: true,
                     },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                 },
@@ -132,6 +136,10 @@ describe("subscriptionWhere", () => {
                     settableOptions: {
                         onCreate: true,
                         onUpdate: true,
+                    },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
                     },
                     otherDirectives: [],
                     arguments: [],

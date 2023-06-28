@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Directive, SchemaComposer, InputTypeComposer } from "graphql-compose";
+import type { Directive, InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import type { Subgraph } from "../../classes/Subgraph";
@@ -141,9 +141,8 @@ function createRelationshipFields({
         const edgeWhereAggregationInput =
             relFields && createAggregationInputFields(relFields, sourceName, rel, schemaComposer);
 
-        const whereAggregateInput = schemaComposer.createInputTC({
-            name: relationshipWhereTypeInputName,
-            fields: {
+        const whereAggregateInput = schemaComposer.getOrCreateITC(relationshipWhereTypeInputName, (tc) => {
+            tc.addFields({
                 count: "Int",
                 count_LT: "Int",
                 count_LTE: "Int",
@@ -152,27 +151,44 @@ function createRelationshipFields({
                 AND: `[${relationshipWhereTypeInputName}!]`,
                 OR: `[${relationshipWhereTypeInputName}!]`,
                 NOT: relationshipWhereTypeInputName,
-                ...(nodeWhereAggregationInput ? { node: nodeWhereAggregationInput } : {}),
-                ...(edgeWhereAggregationInput ? { edge: edgeWhereAggregationInput } : {}),
-            },
+            });
+
+            if (nodeWhereAggregationInput) {
+                tc.addFields({
+                    node: nodeWhereAggregationInput,
+                });
+            }
+
+            if (edgeWhereAggregationInput) {
+                tc.addFields({
+                    edge: edgeWhereAggregationInput,
+                });
+            }
         });
 
         const whereInput = schemaComposer.getITC(`${sourceName}Where`);
-        whereInput.addFields({
-            [rel.fieldName]: {
-                type: `${node.name}Where`,
-            },
-            [`${rel.fieldName}_NOT`]: {
-                type: `${node.name}Where`,
-            },
-            [`${rel.fieldName}Aggregate`]: {
-                type: whereAggregateInput,
-                directives: deprecatedDirectives,
-            },
-        });
+        if (rel.filterableOptions.byValue) {
+            whereInput.addFields({
+                [rel.fieldName]: {
+                    type: `${node.name}Where`,
+                },
+                [`${rel.fieldName}_NOT`]: {
+                    type: `${node.name}Where`,
+                },
+            });
+        }
 
+        if (rel.filterableOptions.byAggregate) {
+            whereInput.addFields({
+                [`${rel.fieldName}Aggregate`]: {
+                    type: whereAggregateInput,
+                    directives: deprecatedDirectives,
+                },
+            });
+        }
+    
         // n..m Relationships
-        if (rel.typeMeta.array) {
+        if (rel.typeMeta.array && rel.filterableOptions.byValue) {
             addRelationshipArrayFilters({
                 whereInput,
                 fieldName: rel.fieldName,
@@ -292,12 +308,12 @@ function createRelationshipFields({
             const createName = `${rel.connectionPrefix}${upperFieldName}CreateFieldInput`;
             const create = rel.typeMeta.array ? `[${createName}!]` : createName;
             schemaComposer.getOrCreateITC(createName, (tc) => {
-                tc.addFields({
-                    node: `${node.name}CreateInput!`,
-                    ...(hasNonGeneratedProperties
-                        ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
-                        : {}),
-                });
+                tc.addFields({ node: `${node.name}CreateInput!` });
+                if (hasNonGeneratedProperties) {
+                    tc.addFields({
+                        edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
+                    });
+                }
             });
 
             if (nodeFieldUpdateInput) {
@@ -330,35 +346,34 @@ function createRelationshipFields({
             const connectWhereName = `${node.name}ConnectWhere`;
 
             schemaComposer.getOrCreateITC(connectWhereName, (tc) => {
-                tc.addFields({
-                    node: `${node.name}Where!`,
-                });
+                tc.addFields({ node: `${node.name}Where!` });
             });
 
             schemaComposer.getOrCreateITC(connectName, (tc) => {
-                tc.addFields({
-                    where: connectWhereName,
-                    ...(node.relationFields.length
-                        ? { connect: rel.typeMeta.array ? `[${node.name}ConnectInput!]` : `${node.name}ConnectInput` }
-                        : {}),
-                    ...(hasNonGeneratedProperties
-                        ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
-                        : {}),
-                    overwrite,
-                });
+                tc.addFields({ where: connectWhereName });
+
+                if (node.relationFields.length) {
+                    tc.addFields({
+                        connect: rel.typeMeta.array ? `[${node.name}ConnectInput!]` : `${node.name}ConnectInput`,
+                    });
+                }
+
+                if (hasNonGeneratedProperties) {
+                    tc.addFields({
+                        edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`,
+                    });
+                }
+
+                tc.addFields({ overwrite });
                 tc.makeFieldNonNull("overwrite");
             });
 
             if (nodeFieldUpdateInput) {
-                nodeFieldUpdateInput.addFields({
-                    connect,
-                });
+                nodeFieldUpdateInput.addFields({ connect });
             }
 
             if (nodeFieldInput) {
-                nodeFieldInput.addFields({
-                    connect,
-                });
+                nodeFieldInput.addFields({ connect });
             }
 
             const nodeConnectInput = schemaComposer.getOrCreateITC(`${sourceName}ConnectInput`);
@@ -382,16 +397,15 @@ function createRelationshipFields({
             });
 
             schemaComposer.getOrCreateITC(connectionUpdateInputName, (tc) => {
-                tc.addFields({
-                    node: `${node.name}UpdateInput`,
-                    ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
-                });
+                tc.addFields({ node: `${node.name}UpdateInput` });
+
+                if (hasNonGeneratedProperties) {
+                    tc.addFields({ edge: `${rel.properties}UpdateInput` });
+                }
             });
 
             if (nestedOperations.has(RelationshipNestedOperationsOption.UPDATE)) {
-                nodeFieldUpdateInput.addFields({
-                    update: connectionUpdateInputName,
-                });
+                nodeFieldUpdateInput.addFields({ update: connectionUpdateInputName });
             }
         }
 
@@ -404,10 +418,11 @@ function createRelationshipFields({
 
             if (!schemaComposer.has(nodeFieldDeleteInputName)) {
                 schemaComposer.getOrCreateITC(nodeFieldDeleteInputName, (tc) => {
-                    tc.addFields({
-                        where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere`,
-                        ...(node.relationFields.length ? { delete: `${node.name}DeleteInput` } : {}),
-                    });
+                    tc.addFields({ where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere` });
+
+                    if (node.relationFields.length) {
+                        tc.addFields({ delete: `${node.name}DeleteInput` });
+                    }
                 });
             }
 
@@ -422,13 +437,14 @@ function createRelationshipFields({
 
         if (nestedOperations.has(RelationshipNestedOperationsOption.DISCONNECT) && nodeFieldUpdateInput) {
             const nodeFieldDisconnectInputName = `${rel.connectionPrefix}${upperFieldName}DisconnectFieldInput`;
+
             if (!schemaComposer.has(nodeFieldDisconnectInputName)) {
-                schemaComposer.createInputTC({
-                    name: nodeFieldDisconnectInputName,
-                    fields: {
-                        where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere`,
-                        ...(node.relationFields.length ? { disconnect: `${node.name}DisconnectInput` } : {}),
-                    },
+                schemaComposer.getOrCreateITC(nodeFieldDisconnectInputName, (tc) => {
+                    tc.addFields({ where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere` });
+
+                    if (node.relationFields.length) {
+                        tc.addFields({ disconnect: `${node.name}DisconnectInput` });
+                    }
                 });
             }
 

@@ -61,6 +61,7 @@ import type {
     Neo4jGraphQLCallbacks,
     SelectableOptions,
     SettableOptions,
+    FilterableOptions,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
@@ -156,6 +157,7 @@ function getObjFieldMeta({
             const jwtClaimDirective = directives.find((x) => x.name.value === "jwtClaim");
             const selectableDirective = directives.find((x) => x.name.value === "selectable");
             const settableDirective = directives.find((x) => x.name.value === "settable");
+            const filterableDirective = directives.find((x) => x.name.value === "filterable");
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
@@ -163,13 +165,18 @@ function getObjFieldMeta({
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
             const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
             const fieldObject = objects.find((x) => x.name.value === typeMeta.name);
+    
+            const selectableOptions = parseSelectableDirective(selectableDirective);
+            const settableOptions = parseSettableDirective(settableDirective);
+            const filterableOptions = parseFilterableDirective(filterableDirective);
 
             const baseField: BaseField = {
                 fieldName: field.name.value,
                 dbPropertyName: field.name.value,
                 typeMeta,
-                selectableOptions: parseSelectableDirective(selectableDirective),
-                settableOptions: parseSettableDirective(settableDirective),
+                selectableOptions,
+                settableOptions,
+                filterableOptions,
                 otherDirectives: (directives || []).filter(
                     (x) =>
                         ![
@@ -192,6 +199,7 @@ function getObjFieldMeta({
                             "jwtClaim",
                             "selectable",
                             "settable",
+                            "filterable",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -313,8 +321,9 @@ function getObjFieldMeta({
                 const connectionField: ConnectionField = {
                     fieldName: `${baseField.fieldName}Connection`,
                     relationshipTypeName,
-                    selectableOptions: parseSelectableDirective(selectableDirective),
-                    settableOptions: parseSettableDirective(settableDirective),
+                    selectableOptions,
+                    settableOptions,
+                    filterableOptions,
                     typeMeta: {
                         name: connectionTypeName,
                         required: true,
@@ -690,5 +699,19 @@ function parseSettableDirective(directive: DirectiveNode | undefined): SettableO
     return {
         onCreate: args.onCreate ?? defaultArguments.onCreate,
         onUpdate: args.onUpdate ?? defaultArguments.onUpdate,
+    };
+}
+
+function parseFilterableDirective(directive: DirectiveNode | undefined): FilterableOptions {
+    const defaultArguments = {
+        byValue: true,
+        byAggregate: directive === undefined ? true : false,
+    };
+
+    const args: Partial<FilterableOptions> = directive ? parseArguments(directive) : {};
+
+    return {
+        byValue: args.byValue ?? defaultArguments.byValue,
+        byAggregate: args.byAggregate ?? defaultArguments.byAggregate,
     };
 }

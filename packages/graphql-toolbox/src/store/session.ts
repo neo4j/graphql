@@ -17,13 +17,16 @@
  * limitations under the License.
  */
 
-export async function wrapInTimeMeasurement<T>(cb: () => Promise<T>): Promise<{ result: T; time: number }> {
-    const t1 = performance.now();
-    const result = await cb();
-    const t2 = performance.now();
+import { create } from "zustand";
 
-    return {
-        result: result,
-        time: t2 - t1,
-    };
+export interface SessionStore {
+    auraDbId: string | null;
+    setAuraDbId: (auraDbId: string | null) => void;
+    clearAuraDbId: () => void;
 }
+
+export const useSessionStore = create<SessionStore>((set) => ({
+    auraDbId: null,
+    setAuraDbId: (auraDbId) => set({ auraDbId }),
+    clearAuraDbId: () => set({ auraDbId: null }),
+}));

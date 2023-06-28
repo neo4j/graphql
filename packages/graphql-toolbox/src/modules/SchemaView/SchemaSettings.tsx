@@ -81,7 +81,7 @@ export const SchemaSettings = () => {
     };
 
     return (
-        <div className="p-6">
+        <div className="pl-10 pr-6 py-6">
             <span className="h5">Schema options</span>
             <div className="mb-1 mt-3 flex items-baseline">
                 <Checkbox
