@@ -1,0 +1,50 @@
+= Context population
+
+The request context can be populated with a number of different values to influence the behaviour of the Neo4j GraphQL Library.
+
+== `driverConfig`
+
+== `executionContext`
+
+The Neo4j driver, session or transaction which will be used to execute the translated query.
+
+== `jwt`
+
+A decoded JWT payload A decoded JWT payload which can be provided for use in authentication and authorization.
+
+Takes precedence over `token` if provided.
+
+For example:
+
+[source, json, indent=0]
+----
+{
+    sub: "1234567890",
+    name: "John Doe",
+    iat: 1516239022,
+}
+----
+
+== `neo4jDatabaseInfo`
+
+== `queryOptions`
+
+== `token`
+
+The bearer token to be decoded/verified for use in authentication and authorization.
+
+Normally found in the `Authorization` HTTP header. Can be provided with or without authentication scheme.
+
+An example with the authentication scheme:
+
+[source, plaintext, indent=0]
+----
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+----
+
+An example without the authentication scheme:
+
+[source, plaintext, indent=0]
+----
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+----

@@ -1,6 +1,9 @@
 [[subscriptions]]
 = Subscriptions
 
+WARNING: The `@auth` directive has been replaced by `@authentication` and `@authorization`. `@auth` will be removed in version 4.0.0. 
+Please see the xref::guides/v4-migration/authorization.adoc[upgrade guide] for details on how to upgrade.
+
 xref::subscriptions/index.adoc[Subscriptions] can be used along with `@auth`, however, some operations are not supported. To setup rules,
 use the `SUBSCRIBE` operation.
 

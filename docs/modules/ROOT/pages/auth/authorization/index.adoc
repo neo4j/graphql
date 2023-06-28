@@ -1,6 +1,9 @@
 [[auth-authorization]]
 = Authorization
 
+WARNING: The `@auth` directive has been replaced by `@authentication` and `@authorization`. `@auth` will be removed in version 4.0.0. 
+Please see the xref::guides/v4-migration/authorization.adoc[upgrade guide] for details on how to upgrade.
+
 You specify authorization rules inside the `@auth` directive. This section looks at each option available and explains how to use it to implement authorization.
 
 - xref::auth/authorization/allow.adoc[Allow]

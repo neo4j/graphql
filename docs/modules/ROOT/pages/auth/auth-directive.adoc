@@ -1,6 +1,9 @@
 [[auth-directive]]
 = `@auth` directive
 
+WARNING: The `@auth` directive has been replaced by `@authentication` and `@authorization`. `@auth` will be removed in version 4.0.0. 
+Please see the xref::guides/v4-migration/authorization.adoc[upgrade guide] for details on how to upgrade.
+
 The `@auth` directive definition is dynamically generated on runtime based on user type definitions.
 
 == `rules`

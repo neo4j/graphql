@@ -1,6 +1,9 @@
 [[auth-setup]]
 = Setup
 
+WARNING: The `@auth` directive has been replaced by `@authentication` and `@authorization`. `@auth` will be removed in version 4.0.0. 
+Please see the xref::guides/v4-migration/authorization.adoc[upgrade guide] for details on how to upgrade.
+
 == Configuration
 
 To get started with auth you need an instance of an auth plugin for the Neo4j GraphQL Library. For most use cases you will only need to use our provided plugins at `@neo4j/graphql-plugin-auth`. Below is a basic example using the `Neo4jGraphQLAuthJWTPlugin` class:
