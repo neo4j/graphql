@@ -23,13 +23,7 @@ import { Screen } from "./Screen";
 export class SchemaEditor extends Screen {
     public async setTypeDefs(typeDefs: string) {
         await this.page.waitForSelector("[data-test-schema-editor-build-button]");
-        await this.page.evaluate(
-            ({ id, typeDefs }) => {
-                // @ts-ignore -Find a better solution
-                document[`${id}`].setValue(typeDefs);
-            },
-            { typeDefs, id: SCHEMA_EDITOR_INPUT }
-        );
+        await this.page.locator(`#${SCHEMA_EDITOR_INPUT} .cm-content`).fill(typeDefs);
     }
 
     public async buildSchema() {
@@ -38,12 +32,8 @@ export class SchemaEditor extends Screen {
     }
 
     public async getTypeDefs(): Promise<string> {
-        const output = await this.page.$eval(`#${SCHEMA_EDITOR_INPUT}`, (el) => {
-            // @ts-ignore - Injected in html
-            return document.CodeMirror.fromTextArea(el).getValue();
-        });
-
-        return output as unknown as string;
+        const text = (await this.page.locator(`#${SCHEMA_EDITOR_INPUT} .cm-content`).innerText()).valueOf();
+        return text;
     }
 
     public async introspect() {

@@ -55,7 +55,6 @@ export interface Context {
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
-    addMeasurementsToExtension: boolean;
     executionContext: Driver | Session | Transaction;
     executor: Executor;
     extensions?: Record<string, any>;
@@ -119,6 +118,11 @@ export type SettableOptions = {
     onUpdate: boolean;
 };
 
+export type FilterableOptions = {
+    byValue: boolean;
+    byAggregate: boolean;
+};
+
 /**
  * Representation a ObjectTypeDefinitionNode field.
  */
@@ -136,6 +140,7 @@ export interface BaseField {
     unique?: Unique;
     selectableOptions: SelectableOptions;
     settableOptions: SettableOptions;
+    filterableOptions: FilterableOptions;
 }
 
 /**

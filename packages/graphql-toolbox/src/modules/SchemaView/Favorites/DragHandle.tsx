@@ -17,17 +17,24 @@
  * limitations under the License.
  */
 
-import type { Context } from "../types";
+import { forwardRef } from "react";
 
-export enum Measurement {
-    translationTime = "translationTime",
-    databaseQueryTime = "databaseQueryTime",
-    wrapperTime = "wrapperTime",
-}
+import { IconButton } from "@neo4j-ndl/react";
+import { DragIcon } from "@neo4j-ndl/react/icons";
 
-export function addMeasurementField(context: Context, name: Measurement, value: number): void {
-    if (!context.addMeasurementsToExtension) return;
-    if (!context.extensions) context.extensions = { measurements: {} };
-    if (!context.extensions.measurements) context.extensions.measurements = {};
-    context.extensions.measurements[name] = value;
-}
+export const DragHandle = forwardRef<HTMLButtonElement>(function DragHandle(props, ref) {
+    const { ...rest } = props;
+
+    return (
+        <IconButton
+            aria-label="Reorder favorite snippet"
+            ref={ref}
+            clean
+            size="extra-small"
+            style={{ cursor: "grab" }}
+            {...rest}
+        >
+            <DragIcon />
+        </IconButton>
+    );
+});

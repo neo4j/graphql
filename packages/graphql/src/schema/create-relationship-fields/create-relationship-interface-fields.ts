@@ -20,10 +20,10 @@
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceTypeComposer, upperFirst } from "graphql-compose";
 import type { Node } from "../../classes";
+import { RelationshipNestedOperationsOption } from "../../constants";
 import type { RelationField } from "../../types";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
-import { RelationshipNestedOperationsOption } from "../../constants";
 
 export function createRelationshipInterfaceFields({
     nodes,
@@ -55,35 +55,33 @@ export function createRelationshipInterfaceFields({
     });
 
     const connectFieldInput = schemaComposer.getOrCreateITC(`${sourceName}${upperFieldName}ConnectFieldInput`, (tc) => {
-        tc.addFields({
-            ...(schemaComposer.has(`${rel.typeMeta.name}ConnectInput`)
-                ? { connect: `${rel.typeMeta.name}ConnectInput` }
-                : {}),
-            ...(hasNonGeneratedProperties
-                ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
-                : {}),
-            where: connectWhere,
-        });
+        if (schemaComposer.has(`${rel.typeMeta.name}ConnectInput`)) {
+            tc.addFields({ connect: `${rel.typeMeta.name}ConnectInput` });
+        }
+
+        if (hasNonGeneratedProperties) {
+            tc.addFields({ edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` });
+        }
+
+        tc.addFields({ where: connectWhere });
     });
 
     const deleteFieldInput = schemaComposer.getOrCreateITC(`${sourceName}${upperFieldName}DeleteFieldInput`, (tc) => {
-        tc.addFields({
-            ...(schemaComposer.has(`${rel.typeMeta.name}DeleteInput`)
-                ? { delete: `${rel.typeMeta.name}DeleteInput` }
-                : {}),
-            where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere`,
-        });
+        if (schemaComposer.has(`${rel.typeMeta.name}DeleteInput`)) {
+            tc.addFields({ delete: `${rel.typeMeta.name}DeleteInput` });
+        }
+
+        tc.addFields({ where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere` });
     });
 
     const disconnectFieldInput = schemaComposer.getOrCreateITC(
         `${sourceName}${upperFieldName}DisconnectFieldInput`,
         (tc) => {
-            tc.addFields({
-                ...(schemaComposer.has(`${rel.typeMeta.name}DisconnectInput`)
-                    ? { disconnect: `${rel.typeMeta.name}DisconnectInput` }
-                    : {}),
-                where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere`,
-            });
+            if (schemaComposer.has(`${rel.typeMeta.name}DisconnectInput`)) {
+                tc.addFields({ disconnect: `${rel.typeMeta.name}DisconnectInput` });
+            }
+
+            tc.addFields({ where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere` });
         }
     );
 
@@ -101,10 +99,10 @@ export function createRelationshipInterfaceFields({
     const updateConnectionFieldInput = schemaComposer.getOrCreateITC(
         `${sourceName}${upperFieldName}UpdateConnectionInput`,
         (tc) => {
-            tc.addFields({
-                ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
-                node: `${rel.typeMeta.name}UpdateInput`,
-            });
+            if (hasNonGeneratedProperties) {
+                tc.addFields({ edge: `${rel.properties}UpdateInput` });
+            }
+            tc.addFields({ node: `${rel.typeMeta.name}UpdateInput` });
         }
     );
 
@@ -160,9 +158,11 @@ export function createRelationshipInterfaceFields({
             where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere`,
         });
 
-        nodeUpdateInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? updateFieldInput.NonNull.List : updateFieldInput,
-        });
+        if (rel.settableOptions.onUpdate) {
+            nodeUpdateInput.addFields({
+                [rel.fieldName]: rel.typeMeta.array ? updateFieldInput.NonNull.List : updateFieldInput,
+            });
+        }
     }
 
     if (!rel.writeonly) {
@@ -172,14 +172,16 @@ export function createRelationshipInterfaceFields({
         };
         const nodeFieldArgs = addDirectedArgument(baseNodeFieldArgs, rel);
 
-        composeNode.addFields({
-            [rel.fieldName]: {
-                type: rel.typeMeta.pretty,
-                args: nodeFieldArgs,
-                description: rel.description,
-                directives: graphqlDirectivesToCompose(rel.otherDirectives),
-            },
-        });
+        if (rel.selectableOptions.onRead) {
+            composeNode.addFields({
+                [rel.fieldName]: {
+                    type: rel.typeMeta.pretty,
+                    args: nodeFieldArgs,
+                    description: rel.description,
+                    directives: graphqlDirectivesToCompose(rel.otherDirectives),
+                },
+            });
+        }
     }
 
     if (
@@ -205,21 +207,18 @@ export function createRelationshipInterfaceFields({
         refNodes.forEach((n) => {
             const createName = `${sourceName}${upperFieldName}${n.name}CreateFieldInput`;
             if (!schemaComposer.has(createName)) {
-                schemaComposer.createInputTC({
-                    name: createName,
-                    fields: {
-                        node: `${n.name}CreateInput!`,
-                        ...(hasNonGeneratedProperties
-                            ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
-                            : {}),
-                    },
+                schemaComposer.getOrCreateITC(createName, (tc) => {
+                    tc.addFields({ node: `${n.name}CreateInput!` });
+
+                    if (hasNonGeneratedProperties) {
+                        tc.addFields({ edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` });
+                    }
                 });
             }
         });
-
         // Interface CreateInput does not require relationship input fields
         // These are specified on the concrete nodes.
-        if (!(composeNode instanceof InterfaceTypeComposer)) {
+        if (rel.settableOptions.onCreate && !(composeNode instanceof InterfaceTypeComposer)) {
             nodeCreateInput.addFields({
                 [rel.fieldName]: nodeFieldInput,
             });

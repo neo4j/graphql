@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
+import type { EditorView } from "@codemirror/view";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { Banner } from "@neo4j-ndl/react";
-import type { EditorFromTextArea } from "codemirror";
+import { updateSchema } from "cm6-graphql";
 import type { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
 
@@ -35,10 +36,11 @@ import { SettingsContext } from "../../contexts/settings";
 import { useStore } from "../../store";
 import type { Favorite } from "../../types";
 import { ConstraintState } from "../../types";
+import { usePrevious } from "../../utils/utils";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
-import { Favorites } from "./Favorites";
+import { Favorites } from "./Favorites/Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
 import { SchemaEditor } from "./SchemaEditor";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
@@ -56,17 +58,30 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
     const [showIntrospectionModal, setShowIntrospectionModal] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
     const [isIntrospecting, setIsIntrospecting] = useState<boolean>(false);
-    const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
+    const [editorView, setEditorView] = useState<EditorView | null>(null);
+    const elementRef = useRef<HTMLDivElement | null>(null);
     const favorites = useStore((store) => store.favorites);
+    const prevSelectedDBName = usePrevious(auth.selectedDatabaseName);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
+    useEffect(() => {
+        if (!prevSelectedDBName) return;
+        if (prevSelectedDBName !== auth.selectedDatabaseName) {
+            if (!editorView) return;
+            // the selected database has changed, clear the codemirror content.
+            editorView.dispatch({
+                changes: { from: 0, to: editorView.state.doc.length, insert: "" },
+            });
+        }
+    }, [auth.selectedDatabaseName]);
+
     const formatTheCode = (): void => {
-        if (!refForEditorMirror.current) return;
-        formatCode(refForEditorMirror.current, ParserOptions.GRAPH_QL);
+        if (!editorView) return;
+        formatCode(editorView, ParserOptions.GRAPH_QL);
     };
 
     const saveAsFavorite = (): void => {
-        const value = refForEditorMirror.current?.getValue();
+        const value = editorView?.state.doc.toString();
         if (!value) return;
         const newFavorites: Favorite[] = [
             ...(favorites || []),
@@ -77,8 +92,10 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
     };
 
     const setTypeDefsFromFavorite = (typeDefs: string) => {
-        if (!typeDefs || !refForEditorMirror) return;
-        refForEditorMirror.current?.setValue(typeDefs);
+        if (!editorView) return;
+        editorView.dispatch({
+            changes: { from: 0, to: editorView.state.doc.length, insert: typeDefs },
+        });
     };
 
     const buildSchema = useCallback(
@@ -117,6 +134,10 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
 
                 const schema = await neoSchema.getSchema();
 
+                if (editorView) {
+                    updateSchema(editorView, schema);
+                }
+
                 if (useStore.getState().constraint === ConstraintState.check.toString()) {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: false } });
                 }
@@ -141,6 +162,8 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
     const introspect = useCallback(
         async ({ screen }: { screen: "query editor" | "type definitions" | "initial modal" }) => {
             try {
+                if (!editorView) return;
+
                 setLoading(true);
                 setIsIntrospecting(true);
 
@@ -151,8 +174,9 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                     }) as neo4j.Session;
 
                 const typeDefs = await toGraphQLTypeDefs(sessionFactory);
-
-                refForEditorMirror.current?.setValue(typeDefs);
+                editorView.dispatch({
+                    changes: { from: 0, to: editorView.state.doc.length, insert: typeDefs },
+                });
 
                 tracking.trackDatabaseIntrospection({ screen, status: "success" });
             } catch (error) {
@@ -164,18 +188,20 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                 setIsIntrospecting(false);
             }
         },
-        [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]
+        [buildSchema, editorView, auth.selectedDatabaseName]
     );
 
-    const onSubmit = useCallback(async () => {
-        const value = refForEditorMirror.current?.getValue();
+    const onSubmit = () => {
+        if (!editorView) return;
+        const value = editorView?.state.doc.toString();
         if (value) {
-            await buildSchema(value);
+            buildSchema(value).catch(() => null);
         }
-    }, [buildSchema]);
+    };
 
     const onClickIntrospect = async () => {
         await introspect({ screen: "type definitions" });
+        formatTheCode();
     };
 
     return (
@@ -195,8 +221,8 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                     onIntrospect={() => {
                         setShowIntrospectionModal(false);
                         auth.setShowIntrospectionPrompt(false);
-                        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                        introspect({ screen: "initial modal" });
+
+                        introspect({ screen: "initial modal" }).catch(() => null);
                     }}
                 />
             ) : null}
@@ -205,26 +231,27 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                     <div className="h-content-container flex justify-start w-96 bg-white border-t border-gray-100 overflow-y-auto">
                         <div className="w-full">
                             <SchemaSettings />
-                            <hr />
-                            <Favorites favorites={favorites} onSelectFavorite={setTypeDefsFromFavorite} />
+                            <hr className="border-gray-200" />
+                            <Favorites onSelectFavorite={setTypeDefsFromFavorite} />
                         </div>
                     </div>
                     <div className="flex-1 flex justify-start w-full p-4" style={{ height: "calc(100% - 3rem)" }}>
                         <div className="flex flex-col w-full h-full">
                             <SchemaErrorDisplay error={error} />
                             <SchemaEditor
-                                mirrorRef={refForEditorMirror}
+                                elementRef={elementRef}
                                 loading={loading}
                                 isIntrospecting={isIntrospecting}
                                 formatTheCode={formatTheCode}
                                 introspect={onClickIntrospect}
                                 saveAsFavorite={saveAsFavorite}
-                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                 onSubmit={onSubmit}
+                                setEditorView={setEditorView}
+                                editorView={editorView}
                             />
                             {!appSettings.hideProductUsageMessage ? (
                                 <Banner
-                                    className="absolute bottom-7 ml-4 w-[44rem] z-40"
+                                    className="absolute bottom-7 ml-4 w-[44rem] z-[60]"
                                     closeable
                                     name="ProductUsageMessage"
                                     title={<strong>Product analytics</strong>}

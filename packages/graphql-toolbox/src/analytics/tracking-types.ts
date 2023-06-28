@@ -83,3 +83,21 @@ export interface TrackingTBExploreGraphQLaaSLinkClick {
 export interface TrackingTBCannyChangelogClick {
     screen: Screen;
 }
+
+export interface TrackingTBAddQueryTab {
+    screen: Screen;
+}
+
+export interface TrackingTBDeleteQueryTab {
+    screen: Screen;
+}
+
+export interface TrackingTBDownloadFavorite {
+    screen: Screen;
+    numberOfFiles: number;
+}
+
+export interface TrackingTBDeleteFavorite {
+    screen: Screen;
+    numberOfDeleted: number;
+}
