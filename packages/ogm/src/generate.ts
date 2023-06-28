@@ -26,7 +26,6 @@ import prettier from "prettier";
 import type { OGM } from "./index";
 import { getReferenceNode } from "./utils";
 import { upperFirst } from "./utils/upper-first";
-import camelcase from "camelcase";
 
 export interface IGenerateOptions {
     /**
@@ -216,7 +215,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                 public aggregate(args: {
                     where?: ${normalizedNodeName}Where;
                     ${hasFulltextArg ? `fulltext?: ${normalizedNodeName}Fulltext;` : ""}
-                    aggregate: ${normalizedNodeName}AggregateSelectionInput;
+                    aggregate: ${node.name}AggregateSelectionInput;
                     context?: any;
                     rootValue?: any;
                 }): Promise<${normalizedNodeName}AggregateSelection>

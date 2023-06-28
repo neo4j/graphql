@@ -2827,7 +2827,7 @@ describe("generate", () => {
               public aggregate(args: {
                 where?: FaqWhere;
 
-                aggregate: FaqAggregateSelectionInput;
+                aggregate: FAQAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<FaqAggregateSelection>;
@@ -2886,7 +2886,7 @@ describe("generate", () => {
               public aggregate(args: {
                 where?: FaqEntryWhere;
 
-                aggregate: FaqEntryAggregateSelectionInput;
+                aggregate: FAQEntryAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<FaqEntryAggregateSelection>;
