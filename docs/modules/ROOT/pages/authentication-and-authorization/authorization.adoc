@@ -64,14 +64,10 @@ type User @authorization(validate: [
 Authentication is implicitly required for every authorization check by default, but this can be disabled on a per-rule basis.
 This might be desired perhaps if a node has a property which flags whether the node should be public or not.
 
-For instance, 
+For instance, `Post` nodes might be private and belong to a particular `User`, or be public and readable by any user:
 
 [source, graphql, indent=0]
 ----
-type JWT @jwt {
-    roles: [String!]!
-}
-
 type User {
     id: ID!
 }
@@ -79,7 +75,6 @@ type User {
 type Post @authorization(filter: [
     { where: { node: { author: { id: "$jwt.sub" } } } }
     { requireAuthentication: false, operations: [READ], where: { node: { public: true } } }
-    { operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }
 ]) {
     title: String!
     content: String!
