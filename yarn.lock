@@ -3555,9 +3555,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.8.1":
-  version: 1.8.1
-  resolution: "@neo4j-ndl/react@npm:1.8.1"
+"@neo4j-ndl/react@npm:1.8.2":
+  version: 1.8.2
+  resolution: "@neo4j-ndl/react@npm:1.8.2"
   dependencies:
     "@floating-ui/react": ^0.24.2
     "@heroicons/react": 2.0.13
@@ -3578,7 +3578,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: ">=16.8.0"
-  checksum: 4aa89a9a34be73f7b37a241a0de6736ed1ea5ea23610ad630b15a2dfc9040ff581fe4a26988bb481f8085b6a06e72feabce3e144c072abbd4a76308ac3c450ef
+  checksum: d26f3770c238a81e4c2d2415da3ddfdda07e48d79aedb7df144d75841e3e5c6c2b192b822ffc5b8dd5823c7c92c6b52af046725c46bc4913b6d698928b13ff10
   languageName: node
   linkType: hard
 
@@ -3679,7 +3679,7 @@ __metadata:
     "@dnd-kit/sortable": 7.0.2
     "@graphiql/react": 0.18.0
     "@neo4j-ndl/base": 1.8.1
-    "@neo4j-ndl/react": 1.8.1
+    "@neo4j-ndl/react": 1.8.2
     "@neo4j/graphql": 3.21.0
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.35.1
