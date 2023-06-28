@@ -23,6 +23,21 @@ import { formatCypher, translateQuery } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("Cypher -> fulltext -> Auth", () => {
+    let verifyTCK;
+
+    beforeAll(() => {
+        if (process.env.VERIFY_TCK) {
+            verifyTCK = process.env.VERIFY_TCK;
+            delete process.env.VERIFY_TCK;
+        }
+    });
+
+    afterAll(() => {
+        if (verifyTCK) {
+            process.env.VERIFY_TCK = verifyTCK;
+        }
+    });
+
     describe("4.4", () => {
         test("simple match with auth where", async () => {
             const typeDefs = gql`
