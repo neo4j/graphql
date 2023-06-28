@@ -4,10 +4,28 @@
 
 The Neo4j GraphQL Library can accept JSON Web Tokens via two mechanisms:
 
-* Encoded JWTs in the `Authorization` header of a HTTP request.
+* Encoded JWTs in the `token` field of the request context.
 * Decoded JWTs in the `jwt` field of the request context.
 
 If using the former, the library will need to be configured with a key to decode and verify the token.
+
+The following code block demonstrates using Apollo Server, extracting the `Authorization` header from the request and putting it into the appropriate context field:
+
+[source, typescript, indent=0]
+----
+const server = new ApolloServer({
+    schema, // schema from Neo4jGraphQL.getSchema()
+});
+
+const { url } = await startStandaloneServer(server, {
+    listen: { port: 4000 },
+    context: async ({ req }) => ({
+        token: req.headers.Authorization,
+    }),
+});
+----
+
+Optionally, if a custom decoding mechanism is required, that same header can be decoded and the resulting JWT payload put into the `jwt` field of the context.
 
 === Symmetric secret
 
