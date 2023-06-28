@@ -35,6 +35,7 @@ export function createRelationshipOperation({
     operator,
     value,
     isNot,
+    useExistExpr = true,
 }: {
     relationField: RelationField;
     context: Context;
@@ -42,6 +43,7 @@ export function createRelationshipOperation({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
+    useExistExpr?: boolean;
 }): PredicateReturn {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
@@ -80,6 +82,7 @@ export function createRelationshipOperation({
         relationField,
         whereInput: value,
         whereOperator: operator as WhereOperator,
+        useExistExpr,
     });
 }
 
@@ -94,6 +97,7 @@ export function createRelationPredicate({
     whereInput,
     whereOperator,
     refEdge,
+    useExistExpr = true,
 }: {
     parentNode: Cypher.Node;
     targetNode: Cypher.Node;
@@ -105,6 +109,7 @@ export function createRelationPredicate({
     whereInput: GraphQLWhereArg;
     whereOperator: WhereOperator;
     refEdge?: Relationship;
+    useExistExpr?: boolean;
 }): PredicateReturn {
     let labelsOfNodesImplementingInterface: string[] | undefined;
     let labels = refNode.getLabels(context);
@@ -145,12 +150,14 @@ export function createRelationPredicate({
               node: refNode,
               targetNode,
               edgeRef: targetRelationship,
+              useExistExpr,
           })
         : createWherePredicate({
               whereInput,
               targetElement: targetNode,
               element: refNode,
               context,
+              useExistExpr,
           });
 
     if (orOperatorMultipleNodeLabels) {
@@ -183,6 +190,7 @@ export function createRelationPredicate({
         listPredicateStr,
         innerOperation: innerOperation.predicate,
         relationField,
+        useExistExpr,
     });
 }
 
@@ -192,18 +200,25 @@ function createSimpleRelationshipPredicate({
     childNode,
     innerOperation,
     relationField,
+    useExistExpr = true,
 }: {
     matchPattern: Cypher.Pattern;
     listPredicateStr: ListPredicate;
     childNode: Cypher.Node;
     innerOperation: Cypher.Predicate | undefined;
     relationField: RelationField;
+    useExistExpr?: boolean;
 }): PredicateReturn {
     if (!innerOperation) return { predicate: undefined };
     const matchClause = new Cypher.Match(matchPattern).where(innerOperation);
 
     switch (listPredicateStr) {
         case "all": {
+            if (!useExistExpr) {
+                const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1));
+                const sizeFunction = Cypher.size(patternComprehension.where(Cypher.not(innerOperation)));
+                return { predicate: Cypher.eq(sizeFunction, new Cypher.Literal(0)) };
+            }
             // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter exists
             const notExistsMatchClause = new Cypher.Match(matchPattern).where(Cypher.not(innerOperation));
             return {
@@ -236,13 +251,23 @@ function createSimpleRelationshipPredicate({
             };
         }
         case "not":
-        case "none":
+        case "none": {
+            if (!useExistExpr) {
+                const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1));
+                const sizeFunction = Cypher.size(patternComprehension.where(innerOperation));
+                return { predicate: Cypher.eq(sizeFunction, new Cypher.Literal(0)) };
+            }
+            const existsPredicate = new Cypher.Exists(matchClause);
+            return { predicate: Cypher.not(existsPredicate) };
+        }
         case "any":
         default: {
-            const existsPredicate = new Cypher.Exists(matchClause);
-            if (["not", "none"].includes(listPredicateStr)) {
-                return { predicate: Cypher.not(existsPredicate) };
+            if (!useExistExpr) {
+                const patternComprehension = new Cypher.PatternComprehension(matchPattern, new Cypher.Literal(1));
+                const sizeFunction = Cypher.size(patternComprehension.where(innerOperation));
+                return { predicate: Cypher.gt(sizeFunction, new Cypher.Literal(0)) };
             }
+            const existsPredicate = new Cypher.Exists(matchClause);
             return { predicate: existsPredicate };
         }
     }
