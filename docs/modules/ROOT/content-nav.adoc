@@ -51,11 +51,11 @@
 **** xref:auth/authorization/roles.adoc[]
 **** xref:auth/authorization/where.adoc[]
 ** Authentication and Authorization
-*** xref: authentication-and-authorization/configuration.adoc[]
-*** xref: authentication-and-authorization/authentication.adoc[]
-*** xref: authentication-and-authorization/authorization.adoc[]
+*** xref:authentication-and-authorization/configuration.adoc[]
+*** xref:authentication-and-authorization/authentication.adoc[]
+*** xref:authentication-and-authorization/authorization.adoc[]
 *** Reference
-**** xref: authentication-and-authorization/reference/operations.adoc[]
+**** xref:authentication-and-authorization/reference/operations.adoc[]
 *** xref:auth/subscriptions.adoc[]
 ** xref:directives.adoc[]
 ** xref:api-reference/index.adoc[]
