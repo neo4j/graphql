@@ -26,6 +26,7 @@ import prettier from "prettier";
 import type { OGM } from "./index";
 import { getReferenceNode } from "./utils";
 import { upperFirst } from "./utils/upper-first";
+import camelcase from "camelcase";
 
 export interface IGenerateOptions {
     /**
@@ -136,7 +137,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
     await options.ogm.init();
 
     const config: Types.GenerateOptions = {
-        config: { namingConvention: "keep" },
+        config: {},
         plugins: [
             {
                 typescript: {},
@@ -172,52 +173,53 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
         });
 
         const nodeHasConnectOrCreate = hasConnectOrCreate(node, options.ogm);
+        const normalizedNodeName = upperFirst(node.singular);
         const model = `
             ${Object.values(aggregationInput[1]).join("\n")}
             ${aggregationInput[0]}
 
             export declare class ${modelName} {
                 public find(args?: {
-                    where?: ${node.name}Where;
-                    ${hasFulltextArg ? `fulltext?: ${node.name}Fulltext;` : ""}
-                    options?: ${node.name}Options;
+                    where?: ${normalizedNodeName}Where;
+                    ${hasFulltextArg ? `fulltext?: ${normalizedNodeName}Fulltext;` : ""}
+                    options?: ${normalizedNodeName}Options;
                     selectionSet?: string | DocumentNode | SelectionSetNode;
                     args?: any;
                     context?: any;
                     rootValue?: any;
                 }): Promise<${node.name}[]>
                 public create(args: {
-                    input: ${node.name}CreateInput[];
+                    input: ${normalizedNodeName}CreateInput[];
                     selectionSet?: string | DocumentNode | SelectionSetNode;
                     args?: any;
                     context?: any;
                     rootValue?: any;
                 }): Promise<Create${upperFirst(node.plural)}MutationResponse>
                 public update(args: {
-                    where?: ${node.name}Where;
-                    update?: ${node.name}UpdateInput;
-                    ${node.relationFields.length ? `connect?: ${node.name}ConnectInput` : ""}
-                    ${node.relationFields.length ? `disconnect?: ${node.name}DisconnectInput` : ""}
-                    ${node.relationFields.length ? `create?: ${node.name}CreateInput` : ""}
-                    ${nodeHasConnectOrCreate ? `connectOrCreate?: ${node.name}ConnectOrCreateInput` : ""}
+                    where?: ${normalizedNodeName}Where;
+                    update?: ${normalizedNodeName}UpdateInput;
+                    ${node.relationFields.length ? `connect?: ${normalizedNodeName}ConnectInput` : ""}
+                    ${node.relationFields.length ? `disconnect?: ${normalizedNodeName}DisconnectInput` : ""}
+                    ${node.relationFields.length ? `create?: ${normalizedNodeName}CreateInput` : ""}
+                    ${nodeHasConnectOrCreate ? `connectOrCreate?: ${normalizedNodeName}ConnectOrCreateInput` : ""}
                     selectionSet?: string | DocumentNode | SelectionSetNode;
                     args?: any;
                     context?: any;
                     rootValue?: any;
                 }): Promise<Update${upperFirst(node.plural)}MutationResponse>
                 public delete(args: {
-                    where?: ${node.name}Where;
-                    ${node.relationFields.length ? `delete?: ${node.name}DeleteInput` : ""}
+                    where?: ${normalizedNodeName}Where;
+                    ${node.relationFields.length ? `delete?: ${normalizedNodeName}DeleteInput` : ""}
                     context?: any;
                     rootValue?: any;
                 }): Promise<{ nodesDeleted: number; relationshipsDeleted: number; }>
                 public aggregate(args: {
-                    where?: ${node.name}Where;
-                    ${hasFulltextArg ? `fulltext?: ${node.name}Fulltext;` : ""}
-                    aggregate: ${node.name}AggregateSelectionInput;
+                    where?: ${normalizedNodeName}Where;
+                    ${hasFulltextArg ? `fulltext?: ${normalizedNodeName}Fulltext;` : ""}
+                    aggregate: ${normalizedNodeName}AggregateSelectionInput;
                     context?: any;
                     rootValue?: any;
-                }): Promise<${node.name}AggregateSelection>
+                }): Promise<${normalizedNodeName}AggregateSelection>
             }
         `;
 

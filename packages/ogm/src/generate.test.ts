@@ -81,19 +81,19 @@ describe("generate", () => {
               usersAggregate: UserAggregateSelection;
             };
 
-            export type QueryusersArgs = {
+            export type QueryUsersArgs = {
               where?: InputMaybe<UserWhere>;
               options?: InputMaybe<UserOptions>;
             };
 
-            export type QueryusersConnectionArgs = {
+            export type QueryUsersConnectionArgs = {
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
               where?: InputMaybe<UserWhere>;
               sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
             };
 
-            export type QueryusersAggregateArgs = {
+            export type QueryUsersAggregateArgs = {
               where?: InputMaybe<UserWhere>;
             };
 
@@ -104,24 +104,24 @@ describe("generate", () => {
               updateUsers: UpdateUsersMutationResponse;
             };
 
-            export type MutationcreateUsersArgs = {
+            export type MutationCreateUsersArgs = {
               input: Array<UserCreateInput>;
             };
 
-            export type MutationdeleteUsersArgs = {
+            export type MutationDeleteUsersArgs = {
               where?: InputMaybe<UserWhere>;
             };
 
-            export type MutationupdateUsersArgs = {
+            export type MutationUpdateUsersArgs = {
               where?: InputMaybe<UserWhere>;
               update?: InputMaybe<UserUpdateInput>;
             };
 
             export enum SortDirection {
               /** Sort by field values in ascending order. */
-              ASC = \\"ASC\\",
+              Asc = \\"ASC\\",
               /** Sort by field values in descending order. */
-              DESC = \\"DESC\\",
+              Desc = \\"DESC\\",
             }
 
             export type CreateInfo = {
@@ -350,7 +350,7 @@ describe("generate", () => {
               usersAggregate: UserAggregateSelection;
             };
 
-            export type QueryusersFulltextUserNameArgs = {
+            export type QueryUsersFulltextUserNameArgs = {
               phrase: Scalars[\\"String\\"];
               where?: InputMaybe<UserFulltextWhere>;
               sort?: InputMaybe<Array<UserFulltextSort>>;
@@ -358,13 +358,13 @@ describe("generate", () => {
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
-            export type QueryusersArgs = {
+            export type QueryUsersArgs = {
               where?: InputMaybe<UserWhere>;
               options?: InputMaybe<UserOptions>;
               fulltext?: InputMaybe<UserFulltext>;
             };
 
-            export type QueryusersConnectionArgs = {
+            export type QueryUsersConnectionArgs = {
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
               where?: InputMaybe<UserWhere>;
@@ -372,7 +372,7 @@ describe("generate", () => {
               fulltext?: InputMaybe<UserFulltext>;
             };
 
-            export type QueryusersAggregateArgs = {
+            export type QueryUsersAggregateArgs = {
               where?: InputMaybe<UserWhere>;
               fulltext?: InputMaybe<UserFulltext>;
             };
@@ -384,24 +384,24 @@ describe("generate", () => {
               updateUsers: UpdateUsersMutationResponse;
             };
 
-            export type MutationcreateUsersArgs = {
+            export type MutationCreateUsersArgs = {
               input: Array<UserCreateInput>;
             };
 
-            export type MutationdeleteUsersArgs = {
+            export type MutationDeleteUsersArgs = {
               where?: InputMaybe<UserWhere>;
             };
 
-            export type MutationupdateUsersArgs = {
+            export type MutationUpdateUsersArgs = {
               where?: InputMaybe<UserWhere>;
               update?: InputMaybe<UserUpdateInput>;
             };
 
             export enum SortDirection {
               /** Sort by field values in ascending order. */
-              ASC = \\"ASC\\",
+              Asc = \\"ASC\\",
               /** Sort by field values in descending order. */
-              DESC = \\"DESC\\",
+              Desc = \\"DESC\\",
             }
 
             export type CreateInfo = {
@@ -670,19 +670,19 @@ describe("generate", () => {
               usersAggregate: UserAggregateSelection;
             };
 
-            export type QueryusersArgs = {
+            export type QueryUsersArgs = {
               where?: InputMaybe<UserWhere>;
               options?: InputMaybe<UserOptions>;
             };
 
-            export type QueryusersConnectionArgs = {
+            export type QueryUsersConnectionArgs = {
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
               where?: InputMaybe<UserWhere>;
               sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
             };
 
-            export type QueryusersAggregateArgs = {
+            export type QueryUsersAggregateArgs = {
               where?: InputMaybe<UserWhere>;
             };
 
@@ -693,24 +693,24 @@ describe("generate", () => {
               updateUsers: UpdateUsersMutationResponse;
             };
 
-            export type MutationcreateUsersArgs = {
+            export type MutationCreateUsersArgs = {
               input: Array<UserCreateInput>;
             };
 
-            export type MutationdeleteUsersArgs = {
+            export type MutationDeleteUsersArgs = {
               where?: InputMaybe<UserWhere>;
             };
 
-            export type MutationupdateUsersArgs = {
+            export type MutationUpdateUsersArgs = {
               where?: InputMaybe<UserWhere>;
               update?: InputMaybe<UserUpdateInput>;
             };
 
             export enum SortDirection {
               /** Sort by field values in ascending order. */
-              ASC = \\"ASC\\",
+              Asc = \\"ASC\\",
               /** Sort by field values in descending order. */
-              DESC = \\"DESC\\",
+              Desc = \\"DESC\\",
             }
 
             export type CreateInfo = {
@@ -946,35 +946,35 @@ describe("generate", () => {
               peopleAggregate: PersonAggregateSelection;
             };
 
-            export type QuerymoviesArgs = {
+            export type QueryMoviesArgs = {
               where?: InputMaybe<MovieWhere>;
               options?: InputMaybe<MovieOptions>;
             };
 
-            export type QuerymoviesConnectionArgs = {
+            export type QueryMoviesConnectionArgs = {
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
               where?: InputMaybe<MovieWhere>;
               sort?: InputMaybe<Array<InputMaybe<MovieSort>>>;
             };
 
-            export type QuerymoviesAggregateArgs = {
+            export type QueryMoviesAggregateArgs = {
               where?: InputMaybe<MovieWhere>;
             };
 
-            export type QuerypeopleArgs = {
+            export type QueryPeopleArgs = {
               where?: InputMaybe<PersonWhere>;
               options?: InputMaybe<PersonOptions>;
             };
 
-            export type QuerypeopleConnectionArgs = {
+            export type QueryPeopleConnectionArgs = {
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
               where?: InputMaybe<PersonWhere>;
               sort?: InputMaybe<Array<InputMaybe<PersonSort>>>;
             };
 
-            export type QuerypeopleAggregateArgs = {
+            export type QueryPeopleAggregateArgs = {
               where?: InputMaybe<PersonWhere>;
             };
 
@@ -988,16 +988,16 @@ describe("generate", () => {
               updatePeople: UpdatePeopleMutationResponse;
             };
 
-            export type MutationcreateMoviesArgs = {
+            export type MutationCreateMoviesArgs = {
               input: Array<MovieCreateInput>;
             };
 
-            export type MutationdeleteMoviesArgs = {
+            export type MutationDeleteMoviesArgs = {
               where?: InputMaybe<MovieWhere>;
               delete?: InputMaybe<MovieDeleteInput>;
             };
 
-            export type MutationupdateMoviesArgs = {
+            export type MutationUpdateMoviesArgs = {
               where?: InputMaybe<MovieWhere>;
               update?: InputMaybe<MovieUpdateInput>;
               connect?: InputMaybe<MovieConnectInput>;
@@ -1006,24 +1006,24 @@ describe("generate", () => {
               delete?: InputMaybe<MovieDeleteInput>;
             };
 
-            export type MutationcreatePeopleArgs = {
+            export type MutationCreatePeopleArgs = {
               input: Array<PersonCreateInput>;
             };
 
-            export type MutationdeletePeopleArgs = {
+            export type MutationDeletePeopleArgs = {
               where?: InputMaybe<PersonWhere>;
             };
 
-            export type MutationupdatePeopleArgs = {
+            export type MutationUpdatePeopleArgs = {
               where?: InputMaybe<PersonWhere>;
               update?: InputMaybe<PersonUpdateInput>;
             };
 
             export enum SortDirection {
               /** Sort by field values in ascending order. */
-              ASC = \\"ASC\\",
+              Asc = \\"ASC\\",
               /** Sort by field values in descending order. */
-              DESC = \\"DESC\\",
+              Desc = \\"DESC\\",
             }
 
             export type ActedIn = {
@@ -1072,18 +1072,18 @@ describe("generate", () => {
               actorsConnection: MovieActorsConnection;
             };
 
-            export type MovieactorsArgs = {
+            export type MovieActorsArgs = {
               where?: InputMaybe<PersonWhere>;
               options?: InputMaybe<PersonOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
-            export type MovieactorsAggregateArgs = {
+            export type MovieActorsAggregateArgs = {
               where?: InputMaybe<PersonWhere>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
-            export type MovieactorsConnectionArgs = {
+            export type MovieActorsConnectionArgs = {
               where?: InputMaybe<MovieActorsConnectionWhere>;
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
@@ -1719,44 +1719,44 @@ describe("generate", () => {
 
             export type Query = {
               __typename?: \\"Query\\";
-              faqs: Array<FAQ>;
+              faqs: Array<Faq>;
               faqsConnection: FaqsConnection;
-              faqsAggregate: FAQAggregateSelection;
-              faqEntries: Array<FAQEntry>;
+              faqsAggregate: FaqAggregateSelection;
+              faqEntries: Array<FaqEntry>;
               faqEntriesConnection: FaqEntriesConnection;
-              faqEntriesAggregate: FAQEntryAggregateSelection;
+              faqEntriesAggregate: FaqEntryAggregateSelection;
             };
 
-            export type QueryfaqsArgs = {
-              where?: InputMaybe<FAQWhere>;
-              options?: InputMaybe<FAQOptions>;
+            export type QueryFaqsArgs = {
+              where?: InputMaybe<FaqWhere>;
+              options?: InputMaybe<FaqOptions>;
             };
 
-            export type QueryfaqsConnectionArgs = {
+            export type QueryFaqsConnectionArgs = {
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
-              where?: InputMaybe<FAQWhere>;
-              sort?: InputMaybe<Array<InputMaybe<FAQSort>>>;
+              where?: InputMaybe<FaqWhere>;
+              sort?: InputMaybe<Array<InputMaybe<FaqSort>>>;
             };
 
-            export type QueryfaqsAggregateArgs = {
-              where?: InputMaybe<FAQWhere>;
+            export type QueryFaqsAggregateArgs = {
+              where?: InputMaybe<FaqWhere>;
             };
 
-            export type QueryfaqEntriesArgs = {
-              where?: InputMaybe<FAQEntryWhere>;
-              options?: InputMaybe<FAQEntryOptions>;
+            export type QueryFaqEntriesArgs = {
+              where?: InputMaybe<FaqEntryWhere>;
+              options?: InputMaybe<FaqEntryOptions>;
             };
 
-            export type QueryfaqEntriesConnectionArgs = {
+            export type QueryFaqEntriesConnectionArgs = {
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
-              where?: InputMaybe<FAQEntryWhere>;
-              sort?: InputMaybe<Array<InputMaybe<FAQEntrySort>>>;
+              where?: InputMaybe<FaqEntryWhere>;
+              sort?: InputMaybe<Array<InputMaybe<FaqEntrySort>>>;
             };
 
-            export type QueryfaqEntriesAggregateArgs = {
-              where?: InputMaybe<FAQEntryWhere>;
+            export type QueryFaqEntriesAggregateArgs = {
+              where?: InputMaybe<FaqEntryWhere>;
             };
 
             export type Mutation = {
@@ -1769,49 +1769,49 @@ describe("generate", () => {
               updateFaqEntries: UpdateFaqEntriesMutationResponse;
             };
 
-            export type MutationcreateFaqsArgs = {
-              input: Array<FAQCreateInput>;
+            export type MutationCreateFaqsArgs = {
+              input: Array<FaqCreateInput>;
             };
 
-            export type MutationdeleteFaqsArgs = {
-              where?: InputMaybe<FAQWhere>;
-              delete?: InputMaybe<FAQDeleteInput>;
+            export type MutationDeleteFaqsArgs = {
+              where?: InputMaybe<FaqWhere>;
+              delete?: InputMaybe<FaqDeleteInput>;
             };
 
-            export type MutationupdateFaqsArgs = {
-              where?: InputMaybe<FAQWhere>;
-              update?: InputMaybe<FAQUpdateInput>;
-              connect?: InputMaybe<FAQConnectInput>;
-              disconnect?: InputMaybe<FAQDisconnectInput>;
-              create?: InputMaybe<FAQRelationInput>;
-              delete?: InputMaybe<FAQDeleteInput>;
-              connectOrCreate?: InputMaybe<FAQConnectOrCreateInput>;
+            export type MutationUpdateFaqsArgs = {
+              where?: InputMaybe<FaqWhere>;
+              update?: InputMaybe<FaqUpdateInput>;
+              connect?: InputMaybe<FaqConnectInput>;
+              disconnect?: InputMaybe<FaqDisconnectInput>;
+              create?: InputMaybe<FaqRelationInput>;
+              delete?: InputMaybe<FaqDeleteInput>;
+              connectOrCreate?: InputMaybe<FaqConnectOrCreateInput>;
             };
 
-            export type MutationcreateFaqEntriesArgs = {
-              input: Array<FAQEntryCreateInput>;
+            export type MutationCreateFaqEntriesArgs = {
+              input: Array<FaqEntryCreateInput>;
             };
 
-            export type MutationdeleteFaqEntriesArgs = {
-              where?: InputMaybe<FAQEntryWhere>;
-              delete?: InputMaybe<FAQEntryDeleteInput>;
+            export type MutationDeleteFaqEntriesArgs = {
+              where?: InputMaybe<FaqEntryWhere>;
+              delete?: InputMaybe<FaqEntryDeleteInput>;
             };
 
-            export type MutationupdateFaqEntriesArgs = {
-              where?: InputMaybe<FAQEntryWhere>;
-              update?: InputMaybe<FAQEntryUpdateInput>;
-              connect?: InputMaybe<FAQEntryConnectInput>;
-              disconnect?: InputMaybe<FAQEntryDisconnectInput>;
-              create?: InputMaybe<FAQEntryRelationInput>;
-              delete?: InputMaybe<FAQEntryDeleteInput>;
-              connectOrCreate?: InputMaybe<FAQEntryConnectOrCreateInput>;
+            export type MutationUpdateFaqEntriesArgs = {
+              where?: InputMaybe<FaqEntryWhere>;
+              update?: InputMaybe<FaqEntryUpdateInput>;
+              connect?: InputMaybe<FaqEntryConnectInput>;
+              disconnect?: InputMaybe<FaqEntryDisconnectInput>;
+              create?: InputMaybe<FaqEntryRelationInput>;
+              delete?: InputMaybe<FaqEntryDeleteInput>;
+              connectOrCreate?: InputMaybe<FaqEntryConnectOrCreateInput>;
             };
 
             export enum SortDirection {
               /** Sort by field values in ascending order. */
-              ASC = \\"ASC\\",
+              Asc = \\"ASC\\",
               /** Sort by field values in descending order. */
-              DESC = \\"DESC\\",
+              Desc = \\"DESC\\",
             }
 
             export type FaqEntryInFaq = {
@@ -1821,13 +1821,13 @@ describe("generate", () => {
             export type CreateFaqEntriesMutationResponse = {
               __typename?: \\"CreateFaqEntriesMutationResponse\\";
               info: CreateInfo;
-              faqEntries: Array<FAQEntry>;
+              faqEntries: Array<FaqEntry>;
             };
 
             export type CreateFaqsMutationResponse = {
               __typename?: \\"CreateFaqsMutationResponse\\";
               info: CreateInfo;
-              faqs: Array<FAQ>;
+              faqs: Array<Faq>;
             };
 
             export type CreateInfo = {
@@ -1844,159 +1844,159 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
-            export type FAQ = {
+            export type Faq = {
               __typename?: \\"FAQ\\";
               id: Scalars[\\"ID\\"];
               activated: Scalars[\\"Boolean\\"];
               name: Scalars[\\"String\\"];
-              entries: Array<FAQEntry>;
-              entriesAggregate?: Maybe<FAQFAQEntryEntriesAggregationSelection>;
-              entriesConnection: FAQEntriesConnection;
+              entries: Array<FaqEntry>;
+              entriesAggregate?: Maybe<FaqfaqEntryEntriesAggregationSelection>;
+              entriesConnection: FaqEntriesConnection;
             };
 
-            export type FAQentriesArgs = {
-              where?: InputMaybe<FAQEntryWhere>;
-              options?: InputMaybe<FAQEntryOptions>;
+            export type FaqEntriesArgs = {
+              where?: InputMaybe<FaqEntryWhere>;
+              options?: InputMaybe<FaqEntryOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
-            export type FAQentriesAggregateArgs = {
-              where?: InputMaybe<FAQEntryWhere>;
+            export type FaqEntriesAggregateArgs = {
+              where?: InputMaybe<FaqEntryWhere>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
-            export type FAQentriesConnectionArgs = {
-              where?: InputMaybe<FAQEntriesConnectionWhere>;
+            export type FaqEntriesConnectionArgs = {
+              where?: InputMaybe<FaqEntriesConnectionWhere>;
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
-              sort?: InputMaybe<Array<FAQEntriesConnectionSort>>;
+              sort?: InputMaybe<Array<FaqEntriesConnectionSort>>;
             };
 
-            export type FAQAggregateSelection = {
+            export type FaqAggregateSelection = {
               __typename?: \\"FAQAggregateSelection\\";
               count: Scalars[\\"Int\\"];
-              id: IDAggregateSelectionNonNullable;
+              id: IdAggregateSelectionNonNullable;
               name: StringAggregateSelectionNonNullable;
             };
 
-            export type FAQEdge = {
+            export type FaqEdge = {
               __typename?: \\"FAQEdge\\";
               cursor: Scalars[\\"String\\"];
-              node: FAQ;
+              node: Faq;
             };
 
             export type FaqEntriesConnection = {
               __typename?: \\"FaqEntriesConnection\\";
               totalCount: Scalars[\\"Int\\"];
               pageInfo: PageInfo;
-              edges: Array<FAQEntryEdge>;
+              edges: Array<FaqEntryEdge>;
             };
 
-            export type FAQEntriesConnection = {
+            export type FaqEntriesConnection = {
               __typename?: \\"FAQEntriesConnection\\";
-              edges: Array<FAQEntriesRelationship>;
+              edges: Array<FaqEntriesRelationship>;
               totalCount: Scalars[\\"Int\\"];
               pageInfo: PageInfo;
             };
 
-            export type FAQEntriesRelationship = FaqEntryInFaq & {
+            export type FaqEntriesRelationship = FaqEntryInFaq & {
               __typename?: \\"FAQEntriesRelationship\\";
               cursor: Scalars[\\"String\\"];
-              node: FAQEntry;
+              node: FaqEntry;
               position?: Maybe<Scalars[\\"Int\\"]>;
             };
 
-            export type FAQEntry = {
+            export type FaqEntry = {
               __typename?: \\"FAQEntry\\";
               id: Scalars[\\"ID\\"];
               title: Scalars[\\"String\\"];
               body: Scalars[\\"String\\"];
-              inFAQs: Array<FAQ>;
-              inFAQsAggregate?: Maybe<FAQEntryFAQInFAQsAggregationSelection>;
-              inFAQsConnection: FAQEntryInFAQsConnection;
+              inFAQs: Array<Faq>;
+              inFAQsAggregate?: Maybe<FaqEntryFaqInFaQsAggregationSelection>;
+              inFAQsConnection: FaqEntryInFaQsConnection;
             };
 
-            export type FAQEntryinFAQsArgs = {
-              where?: InputMaybe<FAQWhere>;
-              options?: InputMaybe<FAQOptions>;
+            export type FaqEntryInFaQsArgs = {
+              where?: InputMaybe<FaqWhere>;
+              options?: InputMaybe<FaqOptions>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
-            export type FAQEntryinFAQsAggregateArgs = {
-              where?: InputMaybe<FAQWhere>;
+            export type FaqEntryInFaQsAggregateArgs = {
+              where?: InputMaybe<FaqWhere>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
-            export type FAQEntryinFAQsConnectionArgs = {
-              where?: InputMaybe<FAQEntryInFAQsConnectionWhere>;
+            export type FaqEntryInFaQsConnectionArgs = {
+              where?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
-              sort?: InputMaybe<Array<FAQEntryInFAQsConnectionSort>>;
+              sort?: InputMaybe<Array<FaqEntryInFaQsConnectionSort>>;
             };
 
-            export type FAQEntryAggregateSelection = {
+            export type FaqEntryAggregateSelection = {
               __typename?: \\"FAQEntryAggregateSelection\\";
               count: Scalars[\\"Int\\"];
-              id: IDAggregateSelectionNonNullable;
+              id: IdAggregateSelectionNonNullable;
               title: StringAggregateSelectionNonNullable;
               body: StringAggregateSelectionNonNullable;
             };
 
-            export type FAQEntryEdge = {
+            export type FaqEntryEdge = {
               __typename?: \\"FAQEntryEdge\\";
               cursor: Scalars[\\"String\\"];
-              node: FAQEntry;
+              node: FaqEntry;
             };
 
-            export type FAQEntryFAQInFAQsAggregationSelection = {
+            export type FaqEntryFaqInFaQsAggregationSelection = {
               __typename?: \\"FAQEntryFAQInFAQsAggregationSelection\\";
               count: Scalars[\\"Int\\"];
-              node?: Maybe<FAQEntryFAQInFAQsNodeAggregateSelection>;
-              edge?: Maybe<FAQEntryFAQInFAQsEdgeAggregateSelection>;
+              node?: Maybe<FaqEntryFaqInFaQsNodeAggregateSelection>;
+              edge?: Maybe<FaqEntryFaqInFaQsEdgeAggregateSelection>;
             };
 
-            export type FAQEntryFAQInFAQsEdgeAggregateSelection = {
+            export type FaqEntryFaqInFaQsEdgeAggregateSelection = {
               __typename?: \\"FAQEntryFAQInFAQsEdgeAggregateSelection\\";
               position: IntAggregateSelectionNullable;
             };
 
-            export type FAQEntryFAQInFAQsNodeAggregateSelection = {
+            export type FaqEntryFaqInFaQsNodeAggregateSelection = {
               __typename?: \\"FAQEntryFAQInFAQsNodeAggregateSelection\\";
-              id: IDAggregateSelectionNonNullable;
+              id: IdAggregateSelectionNonNullable;
               name: StringAggregateSelectionNonNullable;
             };
 
-            export type FAQEntryInFAQsConnection = {
+            export type FaqEntryInFaQsConnection = {
               __typename?: \\"FAQEntryInFAQsConnection\\";
-              edges: Array<FAQEntryInFAQsRelationship>;
+              edges: Array<FaqEntryInFaQsRelationship>;
               totalCount: Scalars[\\"Int\\"];
               pageInfo: PageInfo;
             };
 
-            export type FAQEntryInFAQsRelationship = FaqEntryInFaq & {
+            export type FaqEntryInFaQsRelationship = FaqEntryInFaq & {
               __typename?: \\"FAQEntryInFAQsRelationship\\";
               cursor: Scalars[\\"String\\"];
-              node: FAQ;
+              node: Faq;
               position?: Maybe<Scalars[\\"Int\\"]>;
             };
 
-            export type FAQFAQEntryEntriesAggregationSelection = {
+            export type FaqfaqEntryEntriesAggregationSelection = {
               __typename?: \\"FAQFAQEntryEntriesAggregationSelection\\";
               count: Scalars[\\"Int\\"];
-              node?: Maybe<FAQFAQEntryEntriesNodeAggregateSelection>;
-              edge?: Maybe<FAQFAQEntryEntriesEdgeAggregateSelection>;
+              node?: Maybe<FaqfaqEntryEntriesNodeAggregateSelection>;
+              edge?: Maybe<FaqfaqEntryEntriesEdgeAggregateSelection>;
             };
 
-            export type FAQFAQEntryEntriesEdgeAggregateSelection = {
+            export type FaqfaqEntryEntriesEdgeAggregateSelection = {
               __typename?: \\"FAQFAQEntryEntriesEdgeAggregateSelection\\";
               position: IntAggregateSelectionNullable;
             };
 
-            export type FAQFAQEntryEntriesNodeAggregateSelection = {
+            export type FaqfaqEntryEntriesNodeAggregateSelection = {
               __typename?: \\"FAQFAQEntryEntriesNodeAggregateSelection\\";
-              id: IDAggregateSelectionNonNullable;
+              id: IdAggregateSelectionNonNullable;
               title: StringAggregateSelectionNonNullable;
               body: StringAggregateSelectionNonNullable;
             };
@@ -2005,10 +2005,10 @@ describe("generate", () => {
               __typename?: \\"FaqsConnection\\";
               totalCount: Scalars[\\"Int\\"];
               pageInfo: PageInfo;
-              edges: Array<FAQEdge>;
+              edges: Array<FaqEdge>;
             };
 
-            export type IDAggregateSelectionNonNullable = {
+            export type IdAggregateSelectionNonNullable = {
               __typename?: \\"IDAggregateSelectionNonNullable\\";
               shortest: Scalars[\\"ID\\"];
               longest: Scalars[\\"ID\\"];
@@ -2040,13 +2040,13 @@ describe("generate", () => {
             export type UpdateFaqEntriesMutationResponse = {
               __typename?: \\"UpdateFaqEntriesMutationResponse\\";
               info: UpdateInfo;
-              faqEntries: Array<FAQEntry>;
+              faqEntries: Array<FaqEntry>;
             };
 
             export type UpdateFaqsMutationResponse = {
               __typename?: \\"UpdateFaqsMutationResponse\\";
               info: UpdateInfo;
-              faqs: Array<FAQ>;
+              faqs: Array<Faq>;
             };
 
             export type UpdateInfo = {
@@ -2058,103 +2058,103 @@ describe("generate", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
-            export type FAQConnectInput = {
-              entries?: InputMaybe<Array<FAQEntriesConnectFieldInput>>;
+            export type FaqConnectInput = {
+              entries?: InputMaybe<Array<FaqEntriesConnectFieldInput>>;
             };
 
-            export type FAQConnectOrCreateInput = {
-              entries?: InputMaybe<Array<FAQEntriesConnectOrCreateFieldInput>>;
+            export type FaqConnectOrCreateInput = {
+              entries?: InputMaybe<Array<FaqEntriesConnectOrCreateFieldInput>>;
             };
 
-            export type FAQConnectOrCreateWhere = {
-              node: FAQUniqueWhere;
+            export type FaqConnectOrCreateWhere = {
+              node: FaqUniqueWhere;
             };
 
-            export type FAQConnectWhere = {
-              node: FAQWhere;
+            export type FaqConnectWhere = {
+              node: FaqWhere;
             };
 
-            export type FAQCreateInput = {
+            export type FaqCreateInput = {
               activated: Scalars[\\"Boolean\\"];
               name: Scalars[\\"String\\"];
-              entries?: InputMaybe<FAQEntriesFieldInput>;
+              entries?: InputMaybe<FaqEntriesFieldInput>;
             };
 
-            export type FAQDeleteInput = {
-              entries?: InputMaybe<Array<FAQEntriesDeleteFieldInput>>;
+            export type FaqDeleteInput = {
+              entries?: InputMaybe<Array<FaqEntriesDeleteFieldInput>>;
             };
 
-            export type FAQDisconnectInput = {
-              entries?: InputMaybe<Array<FAQEntriesDisconnectFieldInput>>;
+            export type FaqDisconnectInput = {
+              entries?: InputMaybe<Array<FaqEntriesDisconnectFieldInput>>;
             };
 
-            export type FAQEntriesAggregateInput = {
+            export type FaqEntriesAggregateInput = {
               count?: InputMaybe<Scalars[\\"Int\\"]>;
               count_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               count_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
               count_GT?: InputMaybe<Scalars[\\"Int\\"]>;
               count_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              AND?: InputMaybe<Array<FAQEntriesAggregateInput>>;
-              OR?: InputMaybe<Array<FAQEntriesAggregateInput>>;
-              NOT?: InputMaybe<FAQEntriesAggregateInput>;
-              node?: InputMaybe<FAQEntriesNodeAggregationWhereInput>;
-              edge?: InputMaybe<FAQEntriesEdgeAggregationWhereInput>;
+              AND?: InputMaybe<Array<FaqEntriesAggregateInput>>;
+              OR?: InputMaybe<Array<FaqEntriesAggregateInput>>;
+              NOT?: InputMaybe<FaqEntriesAggregateInput>;
+              node?: InputMaybe<FaqEntriesNodeAggregationWhereInput>;
+              edge?: InputMaybe<FaqEntriesEdgeAggregationWhereInput>;
             };
 
-            export type FAQEntriesConnectFieldInput = {
-              where?: InputMaybe<FAQEntryConnectWhere>;
-              connect?: InputMaybe<Array<FAQEntryConnectInput>>;
+            export type FaqEntriesConnectFieldInput = {
+              where?: InputMaybe<FaqEntryConnectWhere>;
+              connect?: InputMaybe<Array<FaqEntryConnectInput>>;
               edge?: InputMaybe<FaqEntryInFaqCreateInput>;
               /** Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0. */
               overwrite?: Scalars[\\"Boolean\\"];
             };
 
-            export type FAQEntriesConnectionSort = {
+            export type FaqEntriesConnectionSort = {
               edge?: InputMaybe<FaqEntryInFaqSort>;
-              node?: InputMaybe<FAQEntrySort>;
+              node?: InputMaybe<FaqEntrySort>;
             };
 
-            export type FAQEntriesConnectionWhere = {
-              AND?: InputMaybe<Array<FAQEntriesConnectionWhere>>;
-              OR?: InputMaybe<Array<FAQEntriesConnectionWhere>>;
-              NOT?: InputMaybe<FAQEntriesConnectionWhere>;
+            export type FaqEntriesConnectionWhere = {
+              AND?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
+              OR?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
+              NOT?: InputMaybe<FaqEntriesConnectionWhere>;
               edge?: InputMaybe<FaqEntryInFaqWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               edge_NOT?: InputMaybe<FaqEntryInFaqWhere>;
-              node?: InputMaybe<FAQEntryWhere>;
+              node?: InputMaybe<FaqEntryWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              node_NOT?: InputMaybe<FAQEntryWhere>;
+              node_NOT?: InputMaybe<FaqEntryWhere>;
             };
 
-            export type FAQEntriesConnectOrCreateFieldInput = {
-              where: FAQEntryConnectOrCreateWhere;
-              onCreate: FAQEntriesConnectOrCreateFieldInputOnCreate;
+            export type FaqEntriesConnectOrCreateFieldInput = {
+              where: FaqEntryConnectOrCreateWhere;
+              onCreate: FaqEntriesConnectOrCreateFieldInputOnCreate;
             };
 
-            export type FAQEntriesConnectOrCreateFieldInputOnCreate = {
-              node: FAQEntryOnCreateInput;
+            export type FaqEntriesConnectOrCreateFieldInputOnCreate = {
+              node: FaqEntryOnCreateInput;
               edge?: InputMaybe<FaqEntryInFaqCreateInput>;
             };
 
-            export type FAQEntriesCreateFieldInput = {
-              node: FAQEntryCreateInput;
+            export type FaqEntriesCreateFieldInput = {
+              node: FaqEntryCreateInput;
               edge?: InputMaybe<FaqEntryInFaqCreateInput>;
             };
 
-            export type FAQEntriesDeleteFieldInput = {
-              where?: InputMaybe<FAQEntriesConnectionWhere>;
-              delete?: InputMaybe<FAQEntryDeleteInput>;
+            export type FaqEntriesDeleteFieldInput = {
+              where?: InputMaybe<FaqEntriesConnectionWhere>;
+              delete?: InputMaybe<FaqEntryDeleteInput>;
             };
 
-            export type FAQEntriesDisconnectFieldInput = {
-              where?: InputMaybe<FAQEntriesConnectionWhere>;
-              disconnect?: InputMaybe<FAQEntryDisconnectInput>;
+            export type FaqEntriesDisconnectFieldInput = {
+              where?: InputMaybe<FaqEntriesConnectionWhere>;
+              disconnect?: InputMaybe<FaqEntryDisconnectInput>;
             };
 
-            export type FAQEntriesEdgeAggregationWhereInput = {
-              AND?: InputMaybe<Array<FAQEntriesEdgeAggregationWhereInput>>;
-              OR?: InputMaybe<Array<FAQEntriesEdgeAggregationWhereInput>>;
-              NOT?: InputMaybe<FAQEntriesEdgeAggregationWhereInput>;
+            export type FaqEntriesEdgeAggregationWhereInput = {
+              AND?: InputMaybe<Array<FaqEntriesEdgeAggregationWhereInput>>;
+              OR?: InputMaybe<Array<FaqEntriesEdgeAggregationWhereInput>>;
+              NOT?: InputMaybe<FaqEntriesEdgeAggregationWhereInput>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               position_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
               position_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
@@ -2187,16 +2187,16 @@ describe("generate", () => {
               position_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
-            export type FAQEntriesFieldInput = {
-              connectOrCreate?: InputMaybe<Array<FAQEntriesConnectOrCreateFieldInput>>;
-              create?: InputMaybe<Array<FAQEntriesCreateFieldInput>>;
-              connect?: InputMaybe<Array<FAQEntriesConnectFieldInput>>;
+            export type FaqEntriesFieldInput = {
+              connectOrCreate?: InputMaybe<Array<FaqEntriesConnectOrCreateFieldInput>>;
+              create?: InputMaybe<Array<FaqEntriesCreateFieldInput>>;
+              connect?: InputMaybe<Array<FaqEntriesConnectFieldInput>>;
             };
 
-            export type FAQEntriesNodeAggregationWhereInput = {
-              AND?: InputMaybe<Array<FAQEntriesNodeAggregationWhereInput>>;
-              OR?: InputMaybe<Array<FAQEntriesNodeAggregationWhereInput>>;
-              NOT?: InputMaybe<FAQEntriesNodeAggregationWhereInput>;
+            export type FaqEntriesNodeAggregationWhereInput = {
+              AND?: InputMaybe<Array<FaqEntriesNodeAggregationWhereInput>>;
+              OR?: InputMaybe<Array<FaqEntriesNodeAggregationWhereInput>>;
+              NOT?: InputMaybe<FaqEntriesNodeAggregationWhereInput>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               id_EQUAL?: InputMaybe<Scalars[\\"ID\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
@@ -2311,122 +2311,122 @@ describe("generate", () => {
               body_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
-            export type FAQEntriesUpdateConnectionInput = {
-              node?: InputMaybe<FAQEntryUpdateInput>;
+            export type FaqEntriesUpdateConnectionInput = {
+              node?: InputMaybe<FaqEntryUpdateInput>;
               edge?: InputMaybe<FaqEntryInFaqUpdateInput>;
             };
 
-            export type FAQEntriesUpdateFieldInput = {
-              where?: InputMaybe<FAQEntriesConnectionWhere>;
-              connectOrCreate?: InputMaybe<Array<FAQEntriesConnectOrCreateFieldInput>>;
-              create?: InputMaybe<Array<FAQEntriesCreateFieldInput>>;
-              connect?: InputMaybe<Array<FAQEntriesConnectFieldInput>>;
-              update?: InputMaybe<FAQEntriesUpdateConnectionInput>;
-              delete?: InputMaybe<Array<FAQEntriesDeleteFieldInput>>;
-              disconnect?: InputMaybe<Array<FAQEntriesDisconnectFieldInput>>;
+            export type FaqEntriesUpdateFieldInput = {
+              where?: InputMaybe<FaqEntriesConnectionWhere>;
+              connectOrCreate?: InputMaybe<Array<FaqEntriesConnectOrCreateFieldInput>>;
+              create?: InputMaybe<Array<FaqEntriesCreateFieldInput>>;
+              connect?: InputMaybe<Array<FaqEntriesConnectFieldInput>>;
+              update?: InputMaybe<FaqEntriesUpdateConnectionInput>;
+              delete?: InputMaybe<Array<FaqEntriesDeleteFieldInput>>;
+              disconnect?: InputMaybe<Array<FaqEntriesDisconnectFieldInput>>;
             };
 
-            export type FAQEntryConnectInput = {
-              inFAQs?: InputMaybe<Array<FAQEntryInFAQsConnectFieldInput>>;
+            export type FaqEntryConnectInput = {
+              inFAQs?: InputMaybe<Array<FaqEntryInFaQsConnectFieldInput>>;
             };
 
-            export type FAQEntryConnectOrCreateInput = {
-              inFAQs?: InputMaybe<Array<FAQEntryInFAQsConnectOrCreateFieldInput>>;
+            export type FaqEntryConnectOrCreateInput = {
+              inFAQs?: InputMaybe<Array<FaqEntryInFaQsConnectOrCreateFieldInput>>;
             };
 
-            export type FAQEntryConnectOrCreateWhere = {
-              node: FAQEntryUniqueWhere;
+            export type FaqEntryConnectOrCreateWhere = {
+              node: FaqEntryUniqueWhere;
             };
 
-            export type FAQEntryConnectWhere = {
-              node: FAQEntryWhere;
+            export type FaqEntryConnectWhere = {
+              node: FaqEntryWhere;
             };
 
-            export type FAQEntryCreateInput = {
+            export type FaqEntryCreateInput = {
               title: Scalars[\\"String\\"];
               body: Scalars[\\"String\\"];
-              inFAQs?: InputMaybe<FAQEntryInFAQsFieldInput>;
+              inFAQs?: InputMaybe<FaqEntryInFaQsFieldInput>;
             };
 
-            export type FAQEntryDeleteInput = {
-              inFAQs?: InputMaybe<Array<FAQEntryInFAQsDeleteFieldInput>>;
+            export type FaqEntryDeleteInput = {
+              inFAQs?: InputMaybe<Array<FaqEntryInFaQsDeleteFieldInput>>;
             };
 
-            export type FAQEntryDisconnectInput = {
-              inFAQs?: InputMaybe<Array<FAQEntryInFAQsDisconnectFieldInput>>;
+            export type FaqEntryDisconnectInput = {
+              inFAQs?: InputMaybe<Array<FaqEntryInFaQsDisconnectFieldInput>>;
             };
 
             export type FaqEntryInFaqCreateInput = {
               position?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
-            export type FAQEntryInFAQsAggregateInput = {
+            export type FaqEntryInFaQsAggregateInput = {
               count?: InputMaybe<Scalars[\\"Int\\"]>;
               count_LT?: InputMaybe<Scalars[\\"Int\\"]>;
               count_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
               count_GT?: InputMaybe<Scalars[\\"Int\\"]>;
               count_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              AND?: InputMaybe<Array<FAQEntryInFAQsAggregateInput>>;
-              OR?: InputMaybe<Array<FAQEntryInFAQsAggregateInput>>;
-              NOT?: InputMaybe<FAQEntryInFAQsAggregateInput>;
-              node?: InputMaybe<FAQEntryInFAQsNodeAggregationWhereInput>;
-              edge?: InputMaybe<FAQEntryInFAQsEdgeAggregationWhereInput>;
+              AND?: InputMaybe<Array<FaqEntryInFaQsAggregateInput>>;
+              OR?: InputMaybe<Array<FaqEntryInFaQsAggregateInput>>;
+              NOT?: InputMaybe<FaqEntryInFaQsAggregateInput>;
+              node?: InputMaybe<FaqEntryInFaQsNodeAggregationWhereInput>;
+              edge?: InputMaybe<FaqEntryInFaQsEdgeAggregationWhereInput>;
             };
 
-            export type FAQEntryInFAQsConnectFieldInput = {
-              where?: InputMaybe<FAQConnectWhere>;
-              connect?: InputMaybe<Array<FAQConnectInput>>;
+            export type FaqEntryInFaQsConnectFieldInput = {
+              where?: InputMaybe<FaqConnectWhere>;
+              connect?: InputMaybe<Array<FaqConnectInput>>;
               edge?: InputMaybe<FaqEntryInFaqCreateInput>;
               /** Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0. */
               overwrite?: Scalars[\\"Boolean\\"];
             };
 
-            export type FAQEntryInFAQsConnectionSort = {
+            export type FaqEntryInFaQsConnectionSort = {
               edge?: InputMaybe<FaqEntryInFaqSort>;
-              node?: InputMaybe<FAQSort>;
+              node?: InputMaybe<FaqSort>;
             };
 
-            export type FAQEntryInFAQsConnectionWhere = {
-              AND?: InputMaybe<Array<FAQEntryInFAQsConnectionWhere>>;
-              OR?: InputMaybe<Array<FAQEntryInFAQsConnectionWhere>>;
-              NOT?: InputMaybe<FAQEntryInFAQsConnectionWhere>;
+            export type FaqEntryInFaQsConnectionWhere = {
+              AND?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
+              OR?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
+              NOT?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               edge?: InputMaybe<FaqEntryInFaqWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               edge_NOT?: InputMaybe<FaqEntryInFaqWhere>;
-              node?: InputMaybe<FAQWhere>;
+              node?: InputMaybe<FaqWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              node_NOT?: InputMaybe<FAQWhere>;
+              node_NOT?: InputMaybe<FaqWhere>;
             };
 
-            export type FAQEntryInFAQsConnectOrCreateFieldInput = {
-              where: FAQConnectOrCreateWhere;
-              onCreate: FAQEntryInFAQsConnectOrCreateFieldInputOnCreate;
+            export type FaqEntryInFaQsConnectOrCreateFieldInput = {
+              where: FaqConnectOrCreateWhere;
+              onCreate: FaqEntryInFaQsConnectOrCreateFieldInputOnCreate;
             };
 
-            export type FAQEntryInFAQsConnectOrCreateFieldInputOnCreate = {
-              node: FAQOnCreateInput;
+            export type FaqEntryInFaQsConnectOrCreateFieldInputOnCreate = {
+              node: FaqOnCreateInput;
               edge?: InputMaybe<FaqEntryInFaqCreateInput>;
             };
 
-            export type FAQEntryInFAQsCreateFieldInput = {
-              node: FAQCreateInput;
+            export type FaqEntryInFaQsCreateFieldInput = {
+              node: FaqCreateInput;
               edge?: InputMaybe<FaqEntryInFaqCreateInput>;
             };
 
-            export type FAQEntryInFAQsDeleteFieldInput = {
-              where?: InputMaybe<FAQEntryInFAQsConnectionWhere>;
-              delete?: InputMaybe<FAQDeleteInput>;
+            export type FaqEntryInFaQsDeleteFieldInput = {
+              where?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
+              delete?: InputMaybe<FaqDeleteInput>;
             };
 
-            export type FAQEntryInFAQsDisconnectFieldInput = {
-              where?: InputMaybe<FAQEntryInFAQsConnectionWhere>;
-              disconnect?: InputMaybe<FAQDisconnectInput>;
+            export type FaqEntryInFaQsDisconnectFieldInput = {
+              where?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
+              disconnect?: InputMaybe<FaqDisconnectInput>;
             };
 
-            export type FAQEntryInFAQsEdgeAggregationWhereInput = {
-              AND?: InputMaybe<Array<FAQEntryInFAQsEdgeAggregationWhereInput>>;
-              OR?: InputMaybe<Array<FAQEntryInFAQsEdgeAggregationWhereInput>>;
-              NOT?: InputMaybe<FAQEntryInFAQsEdgeAggregationWhereInput>;
+            export type FaqEntryInFaQsEdgeAggregationWhereInput = {
+              AND?: InputMaybe<Array<FaqEntryInFaQsEdgeAggregationWhereInput>>;
+              OR?: InputMaybe<Array<FaqEntryInFaQsEdgeAggregationWhereInput>>;
+              NOT?: InputMaybe<FaqEntryInFaQsEdgeAggregationWhereInput>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               position_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
               position_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
@@ -2459,16 +2459,16 @@ describe("generate", () => {
               position_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
-            export type FAQEntryInFAQsFieldInput = {
-              connectOrCreate?: InputMaybe<Array<FAQEntryInFAQsConnectOrCreateFieldInput>>;
-              create?: InputMaybe<Array<FAQEntryInFAQsCreateFieldInput>>;
-              connect?: InputMaybe<Array<FAQEntryInFAQsConnectFieldInput>>;
+            export type FaqEntryInFaQsFieldInput = {
+              connectOrCreate?: InputMaybe<Array<FaqEntryInFaQsConnectOrCreateFieldInput>>;
+              create?: InputMaybe<Array<FaqEntryInFaQsCreateFieldInput>>;
+              connect?: InputMaybe<Array<FaqEntryInFaQsConnectFieldInput>>;
             };
 
-            export type FAQEntryInFAQsNodeAggregationWhereInput = {
-              AND?: InputMaybe<Array<FAQEntryInFAQsNodeAggregationWhereInput>>;
-              OR?: InputMaybe<Array<FAQEntryInFAQsNodeAggregationWhereInput>>;
-              NOT?: InputMaybe<FAQEntryInFAQsNodeAggregationWhereInput>;
+            export type FaqEntryInFaQsNodeAggregationWhereInput = {
+              AND?: InputMaybe<Array<FaqEntryInFaQsNodeAggregationWhereInput>>;
+              OR?: InputMaybe<Array<FaqEntryInFaQsNodeAggregationWhereInput>>;
+              NOT?: InputMaybe<FaqEntryInFaQsNodeAggregationWhereInput>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               id_EQUAL?: InputMaybe<Scalars[\\"ID\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
@@ -2532,19 +2532,19 @@ describe("generate", () => {
               position?: InputMaybe<SortDirection>;
             };
 
-            export type FAQEntryInFAQsUpdateConnectionInput = {
-              node?: InputMaybe<FAQUpdateInput>;
+            export type FaqEntryInFaQsUpdateConnectionInput = {
+              node?: InputMaybe<FaqUpdateInput>;
               edge?: InputMaybe<FaqEntryInFaqUpdateInput>;
             };
 
-            export type FAQEntryInFAQsUpdateFieldInput = {
-              where?: InputMaybe<FAQEntryInFAQsConnectionWhere>;
-              connectOrCreate?: InputMaybe<Array<FAQEntryInFAQsConnectOrCreateFieldInput>>;
-              create?: InputMaybe<Array<FAQEntryInFAQsCreateFieldInput>>;
-              connect?: InputMaybe<Array<FAQEntryInFAQsConnectFieldInput>>;
-              update?: InputMaybe<FAQEntryInFAQsUpdateConnectionInput>;
-              delete?: InputMaybe<Array<FAQEntryInFAQsDeleteFieldInput>>;
-              disconnect?: InputMaybe<Array<FAQEntryInFAQsDisconnectFieldInput>>;
+            export type FaqEntryInFaQsUpdateFieldInput = {
+              where?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
+              connectOrCreate?: InputMaybe<Array<FaqEntryInFaQsConnectOrCreateFieldInput>>;
+              create?: InputMaybe<Array<FaqEntryInFaQsCreateFieldInput>>;
+              connect?: InputMaybe<Array<FaqEntryInFaQsConnectFieldInput>>;
+              update?: InputMaybe<FaqEntryInFaQsUpdateConnectionInput>;
+              delete?: InputMaybe<Array<FaqEntryInFaQsDeleteFieldInput>>;
+              disconnect?: InputMaybe<Array<FaqEntryInFaQsDisconnectFieldInput>>;
             };
 
             export type FaqEntryInFaqUpdateInput = {
@@ -2569,43 +2569,43 @@ describe("generate", () => {
               position_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
-            export type FAQEntryOnCreateInput = {
+            export type FaqEntryOnCreateInput = {
               title: Scalars[\\"String\\"];
               body: Scalars[\\"String\\"];
             };
 
-            export type FAQEntryOptions = {
+            export type FaqEntryOptions = {
               /** Specify one or more FAQEntrySort objects to sort FaqEntries by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<FAQEntrySort>>;
+              sort?: InputMaybe<Array<FaqEntrySort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
-            export type FAQEntryRelationInput = {
-              inFAQs?: InputMaybe<Array<FAQEntryInFAQsCreateFieldInput>>;
+            export type FaqEntryRelationInput = {
+              inFAQs?: InputMaybe<Array<FaqEntryInFaQsCreateFieldInput>>;
             };
 
             /** Fields to sort FaqEntries by. The order in which sorts are applied is not guaranteed when specifying many fields in one FAQEntrySort object. */
-            export type FAQEntrySort = {
+            export type FaqEntrySort = {
               id?: InputMaybe<SortDirection>;
               title?: InputMaybe<SortDirection>;
               body?: InputMaybe<SortDirection>;
             };
 
-            export type FAQEntryUniqueWhere = {
+            export type FaqEntryUniqueWhere = {
               id?: InputMaybe<Scalars[\\"ID\\"]>;
             };
 
-            export type FAQEntryUpdateInput = {
+            export type FaqEntryUpdateInput = {
               title?: InputMaybe<Scalars[\\"String\\"]>;
               body?: InputMaybe<Scalars[\\"String\\"]>;
-              inFAQs?: InputMaybe<Array<FAQEntryInFAQsUpdateFieldInput>>;
+              inFAQs?: InputMaybe<Array<FaqEntryInFaQsUpdateFieldInput>>;
             };
 
-            export type FAQEntryWhere = {
-              OR?: InputMaybe<Array<FAQEntryWhere>>;
-              AND?: InputMaybe<Array<FAQEntryWhere>>;
-              NOT?: InputMaybe<FAQEntryWhere>;
+            export type FaqEntryWhere = {
+              OR?: InputMaybe<Array<FaqEntryWhere>>;
+              AND?: InputMaybe<Array<FaqEntryWhere>>;
+              NOT?: InputMaybe<FaqEntryWhere>;
               id?: InputMaybe<Scalars[\\"ID\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT?: InputMaybe<Scalars[\\"ID\\"]>;
@@ -2652,69 +2652,69 @@ describe("generate", () => {
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               body_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               /** @deprecated Use \`inFAQs_SOME\` instead. */
-              inFAQs?: InputMaybe<FAQWhere>;
+              inFAQs?: InputMaybe<FaqWhere>;
               /** @deprecated Use \`inFAQs_NONE\` instead. */
-              inFAQs_NOT?: InputMaybe<FAQWhere>;
-              inFAQsAggregate?: InputMaybe<FAQEntryInFAQsAggregateInput>;
+              inFAQs_NOT?: InputMaybe<FaqWhere>;
+              inFAQsAggregate?: InputMaybe<FaqEntryInFaQsAggregateInput>;
               /** Return FAQEntries where all of the related FAQS match this filter */
-              inFAQs_ALL?: InputMaybe<FAQWhere>;
+              inFAQs_ALL?: InputMaybe<FaqWhere>;
               /** Return FAQEntries where none of the related FAQS match this filter */
-              inFAQs_NONE?: InputMaybe<FAQWhere>;
+              inFAQs_NONE?: InputMaybe<FaqWhere>;
               /** Return FAQEntries where one of the related FAQS match this filter */
-              inFAQs_SINGLE?: InputMaybe<FAQWhere>;
+              inFAQs_SINGLE?: InputMaybe<FaqWhere>;
               /** Return FAQEntries where some of the related FAQS match this filter */
-              inFAQs_SOME?: InputMaybe<FAQWhere>;
+              inFAQs_SOME?: InputMaybe<FaqWhere>;
               /** @deprecated Use \`inFAQsConnection_SOME\` instead. */
-              inFAQsConnection?: InputMaybe<FAQEntryInFAQsConnectionWhere>;
+              inFAQsConnection?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** @deprecated Use \`inFAQsConnection_NONE\` instead. */
-              inFAQsConnection_NOT?: InputMaybe<FAQEntryInFAQsConnectionWhere>;
+              inFAQsConnection_NOT?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** Return FAQEntries where all of the related FAQEntryInFAQsConnections match this filter */
-              inFAQsConnection_ALL?: InputMaybe<FAQEntryInFAQsConnectionWhere>;
+              inFAQsConnection_ALL?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** Return FAQEntries where none of the related FAQEntryInFAQsConnections match this filter */
-              inFAQsConnection_NONE?: InputMaybe<FAQEntryInFAQsConnectionWhere>;
+              inFAQsConnection_NONE?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** Return FAQEntries where one of the related FAQEntryInFAQsConnections match this filter */
-              inFAQsConnection_SINGLE?: InputMaybe<FAQEntryInFAQsConnectionWhere>;
+              inFAQsConnection_SINGLE?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** Return FAQEntries where some of the related FAQEntryInFAQsConnections match this filter */
-              inFAQsConnection_SOME?: InputMaybe<FAQEntryInFAQsConnectionWhere>;
+              inFAQsConnection_SOME?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
             };
 
-            export type FAQOnCreateInput = {
+            export type FaqOnCreateInput = {
               activated: Scalars[\\"Boolean\\"];
               name: Scalars[\\"String\\"];
             };
 
-            export type FAQOptions = {
+            export type FaqOptions = {
               /** Specify one or more FAQSort objects to sort Faqs by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<FAQSort>>;
+              sort?: InputMaybe<Array<FaqSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
-            export type FAQRelationInput = {
-              entries?: InputMaybe<Array<FAQEntriesCreateFieldInput>>;
+            export type FaqRelationInput = {
+              entries?: InputMaybe<Array<FaqEntriesCreateFieldInput>>;
             };
 
             /** Fields to sort Faqs by. The order in which sorts are applied is not guaranteed when specifying many fields in one FAQSort object. */
-            export type FAQSort = {
+            export type FaqSort = {
               id?: InputMaybe<SortDirection>;
               activated?: InputMaybe<SortDirection>;
               name?: InputMaybe<SortDirection>;
             };
 
-            export type FAQUniqueWhere = {
+            export type FaqUniqueWhere = {
               id?: InputMaybe<Scalars[\\"ID\\"]>;
             };
 
-            export type FAQUpdateInput = {
+            export type FaqUpdateInput = {
               activated?: InputMaybe<Scalars[\\"Boolean\\"]>;
               name?: InputMaybe<Scalars[\\"String\\"]>;
-              entries?: InputMaybe<Array<FAQEntriesUpdateFieldInput>>;
+              entries?: InputMaybe<Array<FaqEntriesUpdateFieldInput>>;
             };
 
-            export type FAQWhere = {
-              OR?: InputMaybe<Array<FAQWhere>>;
-              AND?: InputMaybe<Array<FAQWhere>>;
-              NOT?: InputMaybe<FAQWhere>;
+            export type FaqWhere = {
+              OR?: InputMaybe<Array<FaqWhere>>;
+              AND?: InputMaybe<Array<FaqWhere>>;
+              NOT?: InputMaybe<FaqWhere>;
               id?: InputMaybe<Scalars[\\"ID\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT?: InputMaybe<Scalars[\\"ID\\"]>;
@@ -2749,33 +2749,33 @@ describe("generate", () => {
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               /** @deprecated Use \`entries_SOME\` instead. */
-              entries?: InputMaybe<FAQEntryWhere>;
+              entries?: InputMaybe<FaqEntryWhere>;
               /** @deprecated Use \`entries_NONE\` instead. */
-              entries_NOT?: InputMaybe<FAQEntryWhere>;
-              entriesAggregate?: InputMaybe<FAQEntriesAggregateInput>;
+              entries_NOT?: InputMaybe<FaqEntryWhere>;
+              entriesAggregate?: InputMaybe<FaqEntriesAggregateInput>;
               /** Return FAQS where all of the related FAQEntries match this filter */
-              entries_ALL?: InputMaybe<FAQEntryWhere>;
+              entries_ALL?: InputMaybe<FaqEntryWhere>;
               /** Return FAQS where none of the related FAQEntries match this filter */
-              entries_NONE?: InputMaybe<FAQEntryWhere>;
+              entries_NONE?: InputMaybe<FaqEntryWhere>;
               /** Return FAQS where one of the related FAQEntries match this filter */
-              entries_SINGLE?: InputMaybe<FAQEntryWhere>;
+              entries_SINGLE?: InputMaybe<FaqEntryWhere>;
               /** Return FAQS where some of the related FAQEntries match this filter */
-              entries_SOME?: InputMaybe<FAQEntryWhere>;
+              entries_SOME?: InputMaybe<FaqEntryWhere>;
               /** @deprecated Use \`entriesConnection_SOME\` instead. */
-              entriesConnection?: InputMaybe<FAQEntriesConnectionWhere>;
+              entriesConnection?: InputMaybe<FaqEntriesConnectionWhere>;
               /** @deprecated Use \`entriesConnection_NONE\` instead. */
-              entriesConnection_NOT?: InputMaybe<FAQEntriesConnectionWhere>;
+              entriesConnection_NOT?: InputMaybe<FaqEntriesConnectionWhere>;
               /** Return FAQS where all of the related FAQEntriesConnections match this filter */
-              entriesConnection_ALL?: InputMaybe<FAQEntriesConnectionWhere>;
+              entriesConnection_ALL?: InputMaybe<FaqEntriesConnectionWhere>;
               /** Return FAQS where none of the related FAQEntriesConnections match this filter */
-              entriesConnection_NONE?: InputMaybe<FAQEntriesConnectionWhere>;
+              entriesConnection_NONE?: InputMaybe<FaqEntriesConnectionWhere>;
               /** Return FAQS where one of the related FAQEntriesConnections match this filter */
-              entriesConnection_SINGLE?: InputMaybe<FAQEntriesConnectionWhere>;
+              entriesConnection_SINGLE?: InputMaybe<FaqEntriesConnectionWhere>;
               /** Return FAQS where some of the related FAQEntriesConnections match this filter */
-              entriesConnection_SOME?: InputMaybe<FAQEntriesConnectionWhere>;
+              entriesConnection_SOME?: InputMaybe<FaqEntriesConnectionWhere>;
             };
 
-            export interface IDAggregateInputNonNullable {
+            export interface IdAggregateInputNonNullable {
               shortest?: boolean;
               longest?: boolean;
             }
@@ -2785,55 +2785,55 @@ describe("generate", () => {
             }
             export interface FAQAggregateSelectionInput {
               count?: boolean;
-              id?: IDAggregateInputNonNullable;
+              id?: IdAggregateInputNonNullable;
               name?: StringAggregateInputNonNullable;
             }
 
             export declare class FAQModel {
               public find(args?: {
-                where?: FAQWhere;
+                where?: FaqWhere;
 
-                options?: FAQOptions;
+                options?: FaqOptions;
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
                 context?: any;
                 rootValue?: any;
               }): Promise<FAQ[]>;
               public create(args: {
-                input: FAQCreateInput[];
+                input: FaqCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
                 context?: any;
                 rootValue?: any;
               }): Promise<CreateFaqsMutationResponse>;
               public update(args: {
-                where?: FAQWhere;
-                update?: FAQUpdateInput;
-                connect?: FAQConnectInput;
-                disconnect?: FAQDisconnectInput;
-                create?: FAQCreateInput;
-                connectOrCreate?: FAQConnectOrCreateInput;
+                where?: FaqWhere;
+                update?: FaqUpdateInput;
+                connect?: FaqConnectInput;
+                disconnect?: FaqDisconnectInput;
+                create?: FaqCreateInput;
+                connectOrCreate?: FaqConnectOrCreateInput;
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
                 context?: any;
                 rootValue?: any;
               }): Promise<UpdateFaqsMutationResponse>;
               public delete(args: {
-                where?: FAQWhere;
-                delete?: FAQDeleteInput;
+                where?: FaqWhere;
+                delete?: FaqDeleteInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
-                where?: FAQWhere;
+                where?: FaqWhere;
 
-                aggregate: FAQAggregateSelectionInput;
+                aggregate: FaqAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
-              }): Promise<FAQAggregateSelection>;
+              }): Promise<FaqAggregateSelection>;
             }
 
-            export interface IDAggregateInputNonNullable {
+            export interface IdAggregateInputNonNullable {
               shortest?: boolean;
               longest?: boolean;
             }
@@ -2843,53 +2843,53 @@ describe("generate", () => {
             }
             export interface FAQEntryAggregateSelectionInput {
               count?: boolean;
-              id?: IDAggregateInputNonNullable;
+              id?: IdAggregateInputNonNullable;
               title?: StringAggregateInputNonNullable;
               body?: StringAggregateInputNonNullable;
             }
 
             export declare class FAQEntryModel {
               public find(args?: {
-                where?: FAQEntryWhere;
+                where?: FaqEntryWhere;
 
-                options?: FAQEntryOptions;
+                options?: FaqEntryOptions;
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
                 context?: any;
                 rootValue?: any;
               }): Promise<FAQEntry[]>;
               public create(args: {
-                input: FAQEntryCreateInput[];
+                input: FaqEntryCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
                 context?: any;
                 rootValue?: any;
               }): Promise<CreateFaqEntriesMutationResponse>;
               public update(args: {
-                where?: FAQEntryWhere;
-                update?: FAQEntryUpdateInput;
-                connect?: FAQEntryConnectInput;
-                disconnect?: FAQEntryDisconnectInput;
-                create?: FAQEntryCreateInput;
-                connectOrCreate?: FAQEntryConnectOrCreateInput;
+                where?: FaqEntryWhere;
+                update?: FaqEntryUpdateInput;
+                connect?: FaqEntryConnectInput;
+                disconnect?: FaqEntryDisconnectInput;
+                create?: FaqEntryCreateInput;
+                connectOrCreate?: FaqEntryConnectOrCreateInput;
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
                 context?: any;
                 rootValue?: any;
               }): Promise<UpdateFaqEntriesMutationResponse>;
               public delete(args: {
-                where?: FAQEntryWhere;
-                delete?: FAQEntryDeleteInput;
+                where?: FaqEntryWhere;
+                delete?: FaqEntryDeleteInput;
                 context?: any;
                 rootValue?: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
               public aggregate(args: {
-                where?: FAQEntryWhere;
+                where?: FaqEntryWhere;
 
-                aggregate: FAQEntryAggregateSelectionInput;
+                aggregate: FaqEntryAggregateSelectionInput;
                 context?: any;
                 rootValue?: any;
-              }): Promise<FAQEntryAggregateSelection>;
+              }): Promise<FaqEntryAggregateSelection>;
             }
 
             export interface ModelMap {
