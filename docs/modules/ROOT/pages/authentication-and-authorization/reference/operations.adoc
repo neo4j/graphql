@@ -42,12 +42,12 @@ For create Mutations, `CREATE` rules on the object will be evaluated for each no
 ----
 mutation {
     createMovies(input: [
-        {                      # CREATE ON OBJECT Movie
-            title: "The Matrix # CREATE ON FIELD_DEFINITION Movie.title
+        {                       # CREATE ON OBJECT Movie
+            title: "The Matrix" # CREATE ON FIELD_DEFINITION Movie.title
         }
     ]) {
-        movies {               # READ ON OBJECT Movie       
-            title              # READ ON FIELD_DEFINITION Movie.title
+        movies {                # READ ON OBJECT Movie       
+            title               # READ ON FIELD_DEFINITION Movie.title
         }
     }
 }
