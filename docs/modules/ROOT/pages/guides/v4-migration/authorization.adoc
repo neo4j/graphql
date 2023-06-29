@@ -39,6 +39,40 @@ new Neo4jGraphQL({
 })
 ----
 
+== Server
+
+Previously, you could pass in the entire request object and the library would fish the `Authorization` header out:
+
+[source, typescript, indent=0]
+----
+const server = new ApolloServer({
+    schema, // schema from Neo4jGraphQL.getSchema()
+});
+
+const { url } = await startStandaloneServer(server, {
+    listen: { port: 4000 },
+    context: async ({ req }) => ({ req }),
+});
+----
+
+With the new implementation, the library expects the `Authorization` header to be extracted in the format of a bearer token in the `token` field of the context:
+
+[source, typescript, indent=0]
+----
+const server = new ApolloServer({
+    schema, // schema from Neo4jGraphQL.getSchema()
+});
+
+const { url } = await startStandaloneServer(server, {
+    listen: { port: 4000 },
+    context: async ({ req }) => ({
+        token: req.headers.Authorization,
+    }),
+});
+----
+
+This is to acknowledge the fact that there are a variety of servers which don't have a `req` object (such as serverless functions, which use `event`). This is a uniform experience, no matter what server you use.
+
 === `rolesPath`
 
 `rolesPath` was used to configure a custom path for the "roles" claim in the JWT structure. This configuration has now been moved into the type definitions themselves. So given a previous instantiation:
