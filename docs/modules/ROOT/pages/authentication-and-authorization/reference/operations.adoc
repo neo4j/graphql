@@ -2,7 +2,7 @@
 
 This reference runs through a number of worked GraphQL queries and how each location in each query triggers the evaluation of different authentication/authorization rules.
 
-Each relevant location will have a comment such as `CREATE ON OBJECT Movie`, which means an authentication directive such as the following would be evaluated:
+Each relevant location has a comment such as `CREATE ON OBJECT Movie`, which means an authentication directive such as the following would be evaluated:
 
 [source, graphql, indent=0]
 ----
@@ -12,9 +12,9 @@ type Movie @authentication(operations: [CREATE]) {
 }
 ----
 
-This would also apply if the directive had no argumnts, because `operations` defaults to _all_ operations.
+This also applies if the directive had no arguments, because `operations` defaults to _all_ operations.
 
-The examples will apply to the `@authentication` directive, and also any rules within an `@authorization` directive.
+The following examples apply to the `@authentication` directive, and also any rules within an `@authorization` directive.
 
 == Examples
 
@@ -102,7 +102,7 @@ mutation {
 
 === Subscription
 
-For a simple Subscription to creation events, both `SUBSCRIBE` and `READ` operations will trigger rules:
+For a simple Subscription to creation events, both `SUBSCRIBE` and `READ` operations trigger rules:
 
 [source, graphql, indent=0]
 ----

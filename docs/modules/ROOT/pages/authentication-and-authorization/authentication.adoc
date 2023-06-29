@@ -6,7 +6,7 @@ will never reach the database.
 
 == Configuration
 
-Given a type `User`, authentication can be configured for the entire type:
+Authentication can be configured for an entire type, for example, the type `User`:
 
 [source, graphql, indent=0]
 ----
@@ -17,15 +17,15 @@ type User @authentication {
 }
 ----
 
-Given the definition above, authentication will be validated when any of the following operations are _attempted_:
+Authentication will thus be validated when any of the following operations are _attempted_:
 
-* Create (`createUsers` Mutation, or `create` or `connectOrCreate` nested operation via a related type)
-* Read (`users`, `usersConnection` or `usersAggregate` Query, or access via related type)
-* Update (`updateUsers` Mutation, or `update` nested operation via a related type)
-* Delete (`deleteUsers` Mutation, or `delete` nested operation via a related type)
-* Create relationship (`connect` or `connectOrCreate` nested operation via a related type)
-* Delete relationship (`disconnect` nested operation via a related type)
-* Subscribe (all Subscription operations related to type `User`)
+* *Create*: `createUsers` mutation, `create`, or `connectOrCreate` nested operation via a related type.
+* *Read*: `users`, `usersConnection`, `usersAggregate` query, or access via related type.
+* *Update*: `updateUsers` mutation or `update` nested operation via a related type.
+* *Delete*: `deleteUsers` mutation or `delete` nested operation via a related type.
+* *Create relationship*: `connect` or `connectOrCreate` nested operation via a related type.
+* *Delete relationship*: `disconnect` nested operation via a related type.
+* *Subscribe*: all subscription operations related to type `User`.
 
 Additionally, the directive can be configured on a per-field basis, for example:
 
@@ -40,10 +40,8 @@ type User {
 
 This will only be evaluated in the following circumstances:
 
-* `password` field is set on either:
-    * Create
-    * Update
-* `password` field is present in a selection set
+* The `password` field is set on either `create` or `update`.
+* The `password` field is present in a selection set.
 
 === Operations
 
@@ -57,7 +55,6 @@ Authentication can be configured to only be validated on certain operations:
 * `DELETE_RELATIONSHIP`
 * `SUBSCRIBE`
 
-The descriptions of which mirror the example above.
 
 For instance, to only require authentication for the update or deletion of a user:
 
@@ -72,8 +69,8 @@ type User @authentication(operations: [UPDATE, DELETE]) {
 
 === Additional verification
 
-Additional checks against JWT claims can be performed at authentication time. For instance, if it was a requirements
-that only users with role "admin" can delete users:
+Additional checks against JWT claims can be performed together with authentication. 
+For instance, if it was a requirement that only users with the `admin` role can delete users:
 
 [source, graphql, indent=0]
 ----
@@ -86,7 +83,8 @@ type User @authentication(operations: [DELETE], jwt: { roles_INCLUDES: "admin" }
 
 == Global authentication
 
-Additionally, authentication can be applied to the entire schema, which will ensure authentication is checked for every matching request.
+Additionally, authentication can be applied to the entire schema.
+This ensures authentication is checked for every matching request.
 
 This is done via extending the schema:
 

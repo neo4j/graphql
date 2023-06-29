@@ -1,18 +1,18 @@
 = Context population
 
-The request context can be populated with a number of different values to influence the behaviour of the Neo4j GraphQL Library.
+The request context can be populated with a number of different values to influence the behavior of the Neo4j GraphQL Library.
 
 == `driverConfig`
 
 == `executionContext`
 
-The Neo4j driver, session or transaction which will be used to execute the translated query.
+The Neo4j driver, session or transaction which is used to execute the translated query.
 
 == `jwt`
 
-A decoded JWT payload A decoded JWT payload which can be provided for use in authentication and authorization.
+A decoded JWT payload which can be provided for use in Authentication and Authorization.
 
-Takes precedence over `token` if provided.
+It takes precedence over `token`, if provided.
 
 For example:
 
@@ -33,16 +33,16 @@ For example:
 
 The bearer token to be decoded/verified for use in authentication and authorization.
 
-Normally found in the `Authorization` HTTP header. Can be provided with or without authentication scheme.
+It can be found in the `Authorization` HTTP header and be provided with or without an authentication scheme.
+For example:
 
-An example with the authentication scheme:
 
 [source, plaintext, indent=0]
 ----
 Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 ----
 
-An example without the authentication scheme:
+In case you do not want to use the authentication scheme, do the following:
 
 [source, plaintext, indent=0]
 ----

@@ -9,7 +9,7 @@ The Neo4j GraphQL Library can accept JSON Web Tokens via two mechanisms:
 
 If using the former, the library will need to be configured with a key to decode and verify the token.
 
-The following code block demonstrates using Apollo Server, extracting the `Authorization` header from the request and putting it into the appropriate context field:
+The following code block demonstrates using Apollo Server, extracting the `Authorization` header from the request, and putting it into the appropriate context field:
 
 [source, typescript, indent=0]
 ----
@@ -29,7 +29,7 @@ Optionally, if a custom decoding mechanism is required, that same header can be 
 
 === Symmetric secret
 
-To configure the library with a symmetric secret, "secret", the following instantiation is required:
+To configure the library with a symmetric secret (e.g. "secret"), the following instantiation is required:
 
 [source, typescript, indent=0]
 ----
@@ -65,9 +65,9 @@ new Neo4jGraphQL({
 
 By default, filtering is available on https://www.rfc-editor.org/rfc/rfc7519#section-4.1[the registered claim names] in the JWT specification.
 
-Filtering can be configured for additional JWT claims using the `@jwt` directive and in some circumstances, the `@jwtClaim` directive.
+Filtering can be configured for additional JWT claims using the `@jwt` directive and, in some circumstances, the `@jwtClaim` directive.
 
-If configuring an additional `roles` claim which is an array of strings located at the root of the JWT payload, the following must be added to the type definitions:
+If you configure an additional `roles` claim, which is an array of strings located at the root of the JWT payload, the following must be added to the type definitions:
 
 [source, graphql, indent=0]
 ----
@@ -80,7 +80,7 @@ Note that the type name here, `JWT`, is not required, and this can have any name
 
 === Nested claims
 
-If the `roles` claim from above is not located at the JWT payload root, but instead in a nested location, for example:
+If the previous `roles` claim is not located at the JWT payload root, but instead in a nested location, for example:
 
 [source, json, indent=0]
 ----
@@ -92,7 +92,7 @@ If the `roles` claim from above is not located at the JWT payload root, but inst
 }
 ----
 
-This will need to be configured using the `@jwtClaim` directive:
+This needs to be configured using the `@jwtClaim` directive:
 
 [source, graphql, indent=0]
 ----
@@ -113,7 +113,7 @@ Additionally, if this nested location contains any `.` characters in the path, f
 }
 ----
 
-These characters will need to be escaped:
+These characters need to be escaped:
 
 [source, graphql, indent=0]
 ----
@@ -122,4 +122,7 @@ type JWT @jwt {
 }
 ----
 
-NOTE: The seemingly excessive escaping is required to doubly escape - once for GraphQL, and once for `dot-prop` which is used under the hood to resolve the path.
+[NOTE]
+====
+The seemingly excessive escaping is required to doubly escape: once for GraphQL and once for `dot-prop`, which is used under the hood to resolve the path.
+====
