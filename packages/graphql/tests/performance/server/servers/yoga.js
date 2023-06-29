@@ -19,7 +19,7 @@
 "use strict";
 
 import neo4j from "neo4j-driver";
-// eslint-disable-next-line import/no-unresolved
+ 
 import { Neo4jGraphQL } from "@neo4j/graphql";
 // eslint-disable-next-line import/named
 import { createYoga } from "graphql-yoga";

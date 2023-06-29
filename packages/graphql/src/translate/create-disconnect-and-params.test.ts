@@ -17,12 +17,15 @@
  * limitations under the License.
  */
 
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import type { Neo4jGraphQL } from "../classes";
 import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 import { RelationshipQueryDirectionOption } from "../constants";
 import { defaultNestedOperations } from "../graphql/directives/relationship";
-import type { Context, RelationField } from "../types";
+import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
+import type { RelationField } from "../types";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 
 describe("createDisconnectAndParams", () => {
@@ -93,13 +96,18 @@ describe("createDisconnectAndParams", () => {
             relationships: [],
         };
 
-        // @ts-ignore
-        const context: Context = {
+        const context = new ContextBuilder({
             neoSchema,
             nodes: [node],
             relationships: [],
             neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4.0"),
-        };
+            schemaModel: new Neo4jGraphQLSchemaModel({
+                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
+                compositeEntities: [],
+                operations: {},
+                annotations: [],
+            }),
+        }).instance();
 
         const result = createDisconnectAndParams({
             withVars: ["this"],

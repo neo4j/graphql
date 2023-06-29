@@ -43,6 +43,6 @@ export { writeonlyDirective } from "./writeonly";
 export { mutationDirective } from "./mutation";
 export { queryDirective } from "./query";
 export { subscriptionDirective } from "./subscription";
+export { jwt } from "./jwt-payload";
 export { filterableDirective } from "./filterable";
-export { jwtPayload } from "./jwt-payload";
 export { jwtClaim } from "./jwt-claim";

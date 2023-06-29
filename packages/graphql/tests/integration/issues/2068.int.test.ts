@@ -22,8 +22,8 @@ import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { UniqueType } from "../../utils/graphql-types";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/pull/2068", () => {
     let driver: Driver;
@@ -64,10 +64,10 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             }
 
             extend type ${userType.name}
-                @auth(rules: [{ operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT], where: { id: "$jwt.sub" } }])
+                @authorization(filter: [{ operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }])
 
             extend type ${userType.name} {
-                password: String! @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
+                password: String! @authorization(filter: [{ operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             }
         `;
 
@@ -97,12 +97,12 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     CREATE (:${contentType.name} {id: "${contentID}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userID });
+                const token = createBearerToken(secret, { sub: userID });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -142,12 +142,12 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     CREATE (:${contentType.name} {id: "${contentID}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userID1 });
+                const token = createBearerToken(secret, { sub: userID1 });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -184,12 +184,12 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     CREATE (:${userType.name} {id: "${userID}"})-[:HAS_CONTENT]->(:${contentType.name} {id: "${contentID}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userID });
+                const token = createBearerToken(secret, { sub: userID });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -226,12 +226,12 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     CREATE (:${userType.name} {id: "${userID}"})-[:HAS_CONTENT]->(:${contentType.name} {id: "${contentID}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userID });
+                const token = createBearerToken(secret, { sub: userID });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -390,8 +390,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         const movieTitle = "Cool Movie";
         const requiredRole = "admin";
         const forbiddenMessage = "Forbidden";
-        const validReq = createJwtRequest(secret, { roles: [requiredRole] });
-        const invalidReq = createJwtRequest(secret, { roles: [] });
+        const validToken = createBearerToken(secret, { roles: [requiredRole] });
+        const invalidToken = createBearerToken(secret, { roles: [] });
 
         /**
          * Generate type definitions for connectOrCreate auth tests.
@@ -402,12 +402,16 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             const movieType = new UniqueType("Movie");
             const genreType = new UniqueType("Genre");
             const typeDefs = `
+                type JWTPayload @jwt {
+                    roles: [String!]!
+                }
+                
                 type ${movieType.name} {
                     title: String
                     genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT)
                 }
         
-                type ${genreType.name} @auth(rules: [{ operations: ${operations}, roles: ["${requiredRole}"] }]) {
+                type ${genreType.name} @authorization(validate: [{ operations: ${operations}, where: { jwt: { roles_INCLUDES: "${requiredRole}" } } }]) {
                     name: String @unique
                 }
             `;
@@ -447,8 +451,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 }
             `;
         }
-        test("Create with createOrConnect and CONNECT operation rule - valid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CONNECT]");
+        test("Create with createOrConnect and CREATE_RELATIONSHIP operation rule - valid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE_RELATIONSHIP]");
             const createOperation = movieType.operations.create;
 
             const neoSchema = new Neo4jGraphQL({
@@ -462,7 +466,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: validReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -479,8 +483,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Create with createOrConnect and CONNECT operation rule - invalid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CONNECT]");
+        test("Create with createOrConnect and CREATE_RELATIONSHIP operation rule - invalid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE_RELATIONSHIP]");
             const createOperation = movieType.operations.create;
 
             const neoSchema = new Neo4jGraphQL({
@@ -494,7 +498,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
                 });
 
                 expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
@@ -517,7 +521,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: validReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -549,7 +553,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
                 });
 
                 expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
@@ -557,8 +561,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Create with createOrConnect and CREATE, CONNECT operation rule - valid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CREATE, CONNECT]");
+        test("Create with createOrConnect and CREATE, CREATE_RELATIONSHIP operation rule - valid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE, CREATE_RELATIONSHIP]");
             const createOperation = movieType.operations.create;
 
             const neoSchema = new Neo4jGraphQL({
@@ -572,7 +576,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: validReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -589,8 +593,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Create with createOrConnect and CREATE, CONNECT operation rule - invalid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CREATE, CONNECT]");
+        test("Create with createOrConnect and CREATE, CREATE_RELATIONSHIP operation rule - invalid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE, CREATE_RELATIONSHIP]");
             const createOperation = movieType.operations.create;
 
             const neoSchema = new Neo4jGraphQL({
@@ -604,7 +608,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
                 });
 
                 expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
@@ -627,7 +631,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: validReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -644,8 +648,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Update with createOrConnect and CONNECT operation rule - valid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CONNECT]");
+        test("Update with createOrConnect and CREATE_RELATIONSHIP operation rule - valid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE_RELATIONSHIP]");
             const updateOperation = movieType.operations.update;
 
             const neoSchema = new Neo4jGraphQL({
@@ -661,7 +665,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: validReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -678,8 +682,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Update with createOrConnect and CONNECT operation rule - invalid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CONNECT]");
+        test("Update with createOrConnect and CREATE_RELATIONSHIP operation rule - invalid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE_RELATIONSHIP]");
             const updateOperation = movieType.operations.update;
 
             const neoSchema = new Neo4jGraphQL({
@@ -695,7 +699,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
                 });
 
                 expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
@@ -720,7 +724,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: validReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -754,7 +758,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
                 });
 
                 expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
@@ -762,8 +766,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Update with createOrConnect and CREATE, CONNECT operation rule - valid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CREATE, CONNECT]");
+        test("Update with createOrConnect and CREATE, CREATE_RELATIONSHIP operation rule - valid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE, CREATE_RELATIONSHIP]");
             const updateOperation = movieType.operations.update;
 
             const neoSchema = new Neo4jGraphQL({
@@ -779,7 +783,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: validReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -796,8 +800,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 await session.close();
             }
         });
-        test("Update with createOrConnect and CREATE, CONNECT operation rule - invalid auth", async () => {
-            const [movieType, , typeDefs] = getTypedef("[CREATE, CONNECT]");
+        test("Update with createOrConnect and CREATE, CREATE_RELATIONSHIP operation rule - invalid auth", async () => {
+            const [movieType, , typeDefs] = getTypedef("[CREATE, CREATE_RELATIONSHIP]");
             const updateOperation = movieType.operations.update;
 
             const neoSchema = new Neo4jGraphQL({
@@ -813,7 +817,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
                 });
 
                 expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
@@ -838,7 +842,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: validReq }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();

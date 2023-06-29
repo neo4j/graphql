@@ -23,7 +23,7 @@ import Debug from "debug";
 
 const debug = Debug(DEBUG_AUTH);
 
-export function getToken(req: RequestLike): string | undefined {
+export function getToken(req: RequestLike | undefined): string | undefined {
     if (!req) {
         debug("Could not get .req or .request from context");
         return;
@@ -41,6 +41,11 @@ export function getToken(req: RequestLike): string | undefined {
 }
 
 export function parseBearerToken(bearerAuth: string): string | undefined {
+    if (!bearerAuth.startsWith("Bearer ")) {
+        debug("Authorization header with authentication scheme 'Bearer <token>'");
+        return bearerAuth;
+    }
+
     const token = bearerAuth.split("Bearer ")[1];
     if (!token) {
         debug("Authorization header was not in expected format 'Bearer <token>'");

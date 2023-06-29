@@ -20,7 +20,7 @@
 import { Neo4jGraphQLAuthenticationError } from "../../classes";
 import type { SubscriptionContext } from "./subscriptions/types";
 import type { Context, Neo4jGraphQLAuthPlugin } from "../../types";
-import type { JwtPayload } from "../../types/deprecated/auth/jwt-payload";
+import type { JwtPayload } from "../../types/jwt-payload";
 
 export async function decodeToken(
     token: string | undefined,

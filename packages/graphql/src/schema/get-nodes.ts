@@ -50,7 +50,7 @@ function getNodes(
     options: {
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
-        validateResolvers: boolean;
+        validateResolvers?: boolean;
     }
 ): Nodes {
     let pointInTypeDefs = false;
@@ -66,6 +66,7 @@ function getNodes(
                 ![
                     "auth",
                     "authorization",
+                    "authentication",
                     "exclude",
                     "node",
                     "fulltext",
@@ -76,7 +77,7 @@ function getNodes(
                     "query",
                     "mutation",
                     "subscription",
-                    "jwtPayload",
+                    "jwt",
                 ].includes(x.name.value)
         );
         const propagatedDirectives = (definition.directives || []).filter((x) =>

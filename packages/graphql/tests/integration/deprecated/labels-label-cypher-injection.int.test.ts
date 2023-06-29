@@ -24,6 +24,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
 import { createJwtRequest } from "../../utils/create-jwt-request";
+import { Neo4jGraphQLAuthJWTPlugin } from "../../../../plugins/graphql-plugin-auth/src";
 
 describe("Label cypher injection", () => {
     let schema: GraphQLSchema;
@@ -94,9 +95,7 @@ describe("Label cypher injection", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
-            features: {
-                authorization: { key: "1234" },
-            },
+            plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret: "1234" }) },
         });
         schema = await neoGraphql.getSchema();
 

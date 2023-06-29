@@ -17,4 +17,22 @@
  * limitations under the License.
  */
 
+import type { AuthorizationOperation } from "../../authorization";
+
 export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "SUBSCRIBE";
+
+export function authorizationOperationToAuthOperation(operation: AuthorizationOperation): AuthOperations {
+    switch (operation) {
+        case "READ":
+        case "CREATE":
+        case "UPDATE":
+        case "DELETE":
+            return operation;
+        case "CREATE_RELATIONSHIP":
+            return "CONNECT";
+        case "DELETE_RELATIONSHIP":
+            return "DISCONNECT";
+        case "AGGREGATE":
+            return "READ";
+    }
+}
