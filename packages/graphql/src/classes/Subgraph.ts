@@ -164,13 +164,7 @@ export class Subgraph {
         directives: Array<GraphQLDirective>;
         types: Array<GraphQLNamedType>;
     } {
-        // Remove any operations from the extension - we only care for the `@link` directive
-        const emptyExtension: SchemaExtensionNode = {
-            ...this.linkExtension,
-            operationTypes: [],
-        };
-
-        const document = parse(print(emptyExtension));
+        const document = parse(print(this.linkExtension));
 
         const schema = buildSubgraphSchema({ typeDefs: document });
 
@@ -201,7 +195,14 @@ export class Subgraph {
                             if (argument.name.value === "url" && argument.value.kind === Kind.STRING) {
                                 const url = argument.value.value;
                                 if (url.startsWith("https://specs.apollo.dev/federation/v2")) {
-                                    return { extension: definition, directive };
+                                    // Remove any other directives and operations from the extension
+                                    // We only care for the `@link` directive
+                                    const extensionWithLinkOnly = {
+                                        ...definition,
+                                        directives: definition.directives.filter((d) => d.name.value === "link"),
+                                        operationTypes: [],
+                                    };
+                                    return { extension: extensionWithLinkOnly, directive };
                                 }
                             }
                         }

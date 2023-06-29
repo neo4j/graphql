@@ -321,9 +321,9 @@ function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotati
     const entityAnnotations: Annotation[] = [];
 
     // We only ever want to create one annotation even when an entity contains several key directives
-    const hasKeyDirective = directives.find((directive) => directive.name.value === "key");
-    if (hasKeyDirective) {
-        entityAnnotations.push(parseKeyAnnotation(directives));
+    const keyDirectives = directives.filter((directive) => directive.name.value === "key");
+    if (keyDirectives) {
+        entityAnnotations.push(parseKeyAnnotation(keyDirectives));
     }
 
     const annotations: Annotation[] = filterTruthy(

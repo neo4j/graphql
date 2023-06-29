@@ -569,6 +569,752 @@ describe("schema validation", () => {
         });
     });
 
+    describe("@subscriptionsAuthorization", () => {
+        describe("on OBJECT", () => {
+            test("should not returns errors when is correctly used", () => {
+                const userDocument = gql`
+                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when is correctly used, with specifiedDirective", () => {
+                const userDocument = gql`
+                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String! @deprecated(reason: "name is deprecated")
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when used correctly in several place", () => {
+                const userDocument = gql`
+                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name", () => {
+                const userDocument = gql`
+                    type User @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+                );
+            });
+
+            test("validation should works when used with other directives", () => {
+                const userDocument = gql`
+                    type User
+                        @plural(value: "Users")
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name, when used with other directives", () => {
+                const userDocument = gql`
+                    type User
+                        @plural(value: "Users")
+                        @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+                );
+            });
+        });
+
+        describe("on FIELD", () => {
+            test("should not returns errors with a correct usage", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID! @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
+                        name: String!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+                );
+            });
+
+            test("validation should works when used with other directives", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String!
+                        posts: [Post!]!
+                            @relationship(type: "HAS_POSTS", direction: IN)
+                            @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                    }
+
+                    type Post {
+                        id: ID!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name, when used with other directives", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String!
+                        posts: [Post!]!
+                            @relationship(type: "HAS_POSTS", direction: IN)
+                            @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
+                    }
+
+                    type Post {
+                        id: ID!
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+                );
+            });
+        });
+
+        describe("on INTERFACE", () => {
+            test("should error", () => {
+                const userDocument = gql`
+                    type User implements Member {
+                        id: ID!
+                        name: String!
+                    }
+
+                    interface Member @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                    }
+
+                    type Post {
+                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrow(
+                    'Directive "@MemberSubscriptionsAuthorization" may not be used on INTERFACE.'
+                );
+            });
+        });
+
+        describe("on OBJECT_EXTENSION", () => {
+            test("should not returns errors when is correctly used", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should returns errors when used correctly in both type and extension", () => {
+                const userDocument = gql`
+                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"The directive \\"@UserSubscriptionsAuthorization\\" can only be used once at this location."`
+                );
+            });
+
+            test("should returns errors when used correctly in both a type field and an extension for the same field", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                    }
+
+                    type Post {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User {
+                        name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"The directive \\"@UserSubscriptionsAuthorization\\" can only be used once at this location."`
+                );
+            });
+
+            test("should not returns errors when used correctly in both type and an extension field", () => {
+                const userDocument = gql`
+                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User {
+                        name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when used correctly in multiple extension fields", () => {
+                const userDocument = gql`
+                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User {
+                        id: ID! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                        name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when used correctly in different type and field across several extensions", () => {
+                const userDocument = gql`
+                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        id: ID!
+                        name: String!
+                    }
+
+                    extend type User {
+                        name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                    }
+
+                    extend type User {
+                        id: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should returns errors when used correctly in more than one extension", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: IN)
+                    }
+
+                    type Post {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                    extend type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"The directive \\"@UserSubscriptionsAuthorization\\" can only be used once at this location."`
+                );
+            });
+
+            test("should validate directive argument name", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+                );
+            });
+
+            test("validation should works when used with other directives", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User
+                        @plural(value: "Users")
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name, when used with other directives", () => {
+                const userDocument = gql`
+                    type User {
+                        id: ID!
+                        name: String!
+                    }
+                    extend type User
+                        @plural(value: "Users")
+                        @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+                );
+            });
+        });
+
+        describe("on INTERFACE_EXTENSION", () => {
+            test("should error", () => {
+                const userDocument = gql`
+                    type User implements Member {
+                        id: ID!
+                        name: String!
+                    }
+
+                    interface Member {
+                        id: ID!
+                    }
+                    extend interface Member
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+
+                    type Post {
+                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
+                    }
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrow(
+                    'Directive "@MemberSubscriptionsAuthorization" may not be used on INTERFACE.'
+                );
+            });
+        });
+
+        describe("mixed usage", () => {
+            test("should not returns errors when used correctly in several place", () => {
+                const userDocument = gql`
+                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                        author: User!
+                            @relationship(type: "HAS_AUTHOR", direction: IN)
+                            @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                    }
+
+                    type Document implements File {
+                        name: String
+                        length: Int
+                    }
+
+                    interface File {
+                        name: String
+                    }
+
+                    extend type Document
+                        @subscriptionsAuthorization(filter: [{ where: { node: { name: "$jwt.sub" } } }])
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).not.toThrow();
+            });
+            test("should returns errors when incorrectly used in several place", () => {
+                const userDocument = gql`
+                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                            @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
+                        author: User!
+                            @relationship(type: "HAS_AUTHOR", direction: IN)
+                            @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                    }
+
+                    type Document implements File {
+                        name: String
+                        length: Int
+                    }
+
+                    interface File {
+                        name: String
+                    }
+
+                    extend type Document
+                        @subscriptionsAuthorization(filter: [{ where: { node: { name: "$jwt.sub" } } }])
+                `;
+
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@PostSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+                );
+            });
+        });
+
+        describe("with federated schema", () => {
+            test("should not returns errors when is correctly used", () => {
+                const userDocument = gql`
+                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
+
+                    type User
+                        @shareable
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        content: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                    }
+                `;
+                const subgraph = new Subgraph(userDocument);
+                const { directives, types } = subgraph.getValidationDefinitions();
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+
+                const executeValidate = () =>
+                    validateUserDefinition({
+                        userDocument,
+                        augmentedDocument,
+                        additionalDirectives: directives,
+                        additionalTypes: types,
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when is correctly used, with specifiedDirective", () => {
+                const userDocument = gql`
+                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
+
+                    type User
+                        @shareable
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String! @deprecated(reason: "name is deprecated")
+                    }
+
+                    type Post {
+                        content: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                    }
+                `;
+                const subgraph = new Subgraph(userDocument);
+                const { directives, types } = subgraph.getValidationDefinitions();
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+
+                const executeValidate = () =>
+                    validateUserDefinition({
+                        userDocument,
+                        augmentedDocument,
+                        additionalDirectives: directives,
+                        additionalTypes: types,
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should not returns errors when used correctly in several place", () => {
+                const userDocument = gql`
+                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
+
+                    type User
+                        @shareable
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post @subscriptionsAuthorization(filter: [{ where: { node: { content: "$jwt.sub" } } }]) {
+                        content: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                    }
+                `;
+                const subgraph = new Subgraph(userDocument);
+                const { directives, types } = subgraph.getValidationDefinitions();
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+
+                const executeValidate = () =>
+                    validateUserDefinition({
+                        userDocument,
+                        augmentedDocument,
+                        additionalDirectives: directives,
+                        additionalTypes: types,
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name", () => {
+                const userDocument = gql`
+                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
+
+                    type User
+                        @shareable
+                        @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        content: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                    }
+                `;
+                const subgraph = new Subgraph(userDocument);
+                const { directives, types } = subgraph.getValidationDefinitions();
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+
+                const executeValidate = () =>
+                    validateUserDefinition({
+                        userDocument,
+                        augmentedDocument,
+                        additionalDirectives: directives,
+                        additionalTypes: types,
+                    });
+
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+                );
+            });
+
+            test("validation should works when used with other directives", () => {
+                const userDocument = gql`
+                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
+
+                    type User
+                        @plural(value: "Users")
+                        @shareable
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        content: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                    }
+                `;
+                const subgraph = new Subgraph(userDocument);
+                const { directives, types } = subgraph.getValidationDefinitions();
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+
+                const executeValidate = () =>
+                    validateUserDefinition({
+                        userDocument,
+                        augmentedDocument,
+                        additionalDirectives: directives,
+                        additionalTypes: types,
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should validate directive argument name, when used with other directives", () => {
+                const userDocument = gql`
+                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
+
+                    type User
+                        @plural(value: "Users")
+                        @shareable
+                        @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                        id: ID!
+                        name: String!
+                    }
+
+                    type Post {
+                        content: String!
+                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
+                    }
+                `;
+                const subgraph = new Subgraph(userDocument);
+                const { directives, types } = subgraph.getValidationDefinitions();
+                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                    generateSubscriptions: true,
+                });
+
+                const executeValidate = () =>
+                    validateUserDefinition({
+                        userDocument,
+                        augmentedDocument,
+                        additionalDirectives: directives,
+                        additionalTypes: types,
+                    });
+                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
+                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+                );
+            });
+        });
+    });
+
     describe("@authorization", () => {
         describe("on OBJECT", () => {
             test("should not returns errors when is correctly used", () => {
@@ -1335,752 +2081,6 @@ describe("schema validation", () => {
                 expect(errors[0]).toHaveProperty(
                     "message",
                     'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
-                );
-            });
-        });
-    });
-
-    describe("@subscriptionsAuthorization", () => {
-        describe("on OBJECT", () => {
-            test("should not returns errors when is correctly used", () => {
-                const userDocument = gql`
-                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should not returns errors when is correctly used, with specifiedDirective", () => {
-                const userDocument = gql`
-                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String! @deprecated(reason: "name is deprecated")
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should not returns errors when used correctly in several place", () => {
-                const userDocument = gql`
-                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-
-                    type Post @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should validate directive argument name", () => {
-                const userDocument = gql`
-                    type User @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
-                );
-            });
-
-            test("validation should works when used with other directives", () => {
-                const userDocument = gql`
-                    type User
-                        @plural(value: "Users")
-                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should validate directive argument name, when used with other directives", () => {
-                const userDocument = gql`
-                    type User
-                        @plural(value: "Users")
-                        @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
-                );
-            });
-        });
-
-        describe("on FIELD", () => {
-            test("should not returns errors with a correct usage", () => {
-                const userDocument = gql`
-                    type User {
-                        id: ID! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                        name: String!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should validate directive argument name", () => {
-                const userDocument = gql`
-                    type User {
-                        id: ID! @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
-                        name: String!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
-                );
-            });
-
-            test("validation should works when used with other directives", () => {
-                const userDocument = gql`
-                    type User {
-                        id: ID!
-                        name: String!
-                        posts: [Post!]!
-                            @relationship(type: "HAS_POSTS", direction: IN)
-                            @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-
-                    type Post {
-                        id: ID!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should validate directive argument name, when used with other directives", () => {
-                const userDocument = gql`
-                    type User {
-                        id: ID!
-                        name: String!
-                        posts: [Post!]!
-                            @relationship(type: "HAS_POSTS", direction: IN)
-                            @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-
-                    type Post {
-                        id: ID!
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
-                );
-            });
-        });
-
-        describe("on INTERFACE", () => {
-            test("should error", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Member @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                    }
-
-                    type Post {
-                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrow(
-                    'Directive "@MemberSubscriptionsAuthorization" may not be used on INTERFACE.'
-                );
-            });
-        });
-
-        describe("on OBJECT_EXTENSION", () => {
-            test("should not returns errors when is correctly used", () => {
-                const userDocument = gql`
-                    type User {
-                        id: ID!
-                        name: String!
-                    }
-                    extend type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should returns errors when used correctly in both type and extension", () => {
-                const userDocument = gql`
-                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-
-                    type Post {
-                        id: ID!
-                        name: String!
-                    }
-                    extend type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@UserSubscriptionsAuthorization\\" can only be used once at this location."`
-                );
-            });
-
-            test("should returns errors when used correctly in both a type field and an extension for the same field", () => {
-                const userDocument = gql`
-                    type User {
-                        id: ID!
-                        name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-
-                    type Post {
-                        id: ID!
-                        name: String!
-                    }
-                    extend type User {
-                        name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@UserSubscriptionsAuthorization\\" can only be used once at this location."`
-                );
-            });
-
-            test("should not returns errors when used correctly in both type and an extension field", () => {
-                const userDocument = gql`
-                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-
-                    type Post {
-                        id: ID!
-                        name: String!
-                    }
-                    extend type User {
-                        name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should not returns errors when used correctly in multiple extension fields", () => {
-                const userDocument = gql`
-                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-
-                    type Post {
-                        id: ID!
-                        name: String!
-                    }
-                    extend type User {
-                        id: ID! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                        name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should not returns errors when used correctly in different type and field across several extensions", () => {
-                const userDocument = gql`
-                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-
-                    type Post {
-                        id: ID!
-                        name: String!
-                    }
-
-                    extend type User {
-                        name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-
-                    extend type User {
-                        id: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should returns errors when used correctly in more than one extension", () => {
-                const userDocument = gql`
-                    type User {
-                        id: ID!
-                        name: String!
-                        author: User! @relationship(type: "HAS_AUTHOR", direction: IN)
-                    }
-
-                    type Post {
-                        id: ID!
-                        name: String!
-                    }
-                    extend type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    extend type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@UserSubscriptionsAuthorization\\" can only be used once at this location."`
-                );
-            });
-
-            test("should validate directive argument name", () => {
-                const userDocument = gql`
-                    type User {
-                        id: ID!
-                        name: String!
-                    }
-                    extend type User @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
-                );
-            });
-
-            test("validation should works when used with other directives", () => {
-                const userDocument = gql`
-                    type User {
-                        id: ID!
-                        name: String!
-                    }
-                    extend type User
-                        @plural(value: "Users")
-                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should validate directive argument name, when used with other directives", () => {
-                const userDocument = gql`
-                    type User {
-                        id: ID!
-                        name: String!
-                    }
-                    extend type User
-                        @plural(value: "Users")
-                        @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
-                );
-            });
-        });
-
-        describe("on INTERFACE_EXTENSION", () => {
-            test("should error", () => {
-                const userDocument = gql`
-                    type User implements Member {
-                        id: ID!
-                        name: String!
-                    }
-
-                    interface Member {
-                        id: ID!
-                    }
-                    extend interface Member
-                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-
-                    type Post {
-                        author: Member @relationship(type: "HAS_AUTHOR", direction: IN)
-                    }
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrow(
-                    'Directive "@MemberSubscriptionsAuthorization" may not be used on INTERFACE.'
-                );
-            });
-        });
-
-        describe("mixed usage", () => {
-            test("should not returns errors when used correctly in several place", () => {
-                const userDocument = gql`
-                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-
-                    type Post @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                        author: User!
-                            @relationship(type: "HAS_AUTHOR", direction: IN)
-                            @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-
-                    type Document implements File {
-                        name: String
-                        length: Int
-                    }
-
-                    interface File {
-                        name: String
-                    }
-
-                    extend type Document
-                        @subscriptionsAuthorization(filter: [{ where: { node: { name: "$jwt.sub" } } }])
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).not.toThrow();
-            });
-            test("should returns errors when incorrectly used in several place", () => {
-                const userDocument = gql`
-                    type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-
-                    type Post @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                            @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
-                        author: User!
-                            @relationship(type: "HAS_AUTHOR", direction: IN)
-                            @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
-                    }
-
-                    type Document implements File {
-                        name: String
-                        length: Int
-                    }
-
-                    interface File {
-                        name: String
-                    }
-
-                    extend type Document
-                        @subscriptionsAuthorization(filter: [{ where: { node: { name: "$jwt.sub" } } }])
-                `;
-
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-                const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@PostSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
-                );
-            });
-        });
-
-        describe("with federated schema", () => {
-            test("should not returns errors when is correctly used", () => {
-                const userDocument = gql`
-                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
-
-                    type User
-                        @shareable
-                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-
-                    type Post {
-                        content: String!
-                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
-                    }
-                `;
-                const subgraph = new Subgraph(userDocument);
-                const { directives, types } = subgraph.getValidationDefinitions();
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-
-                const executeValidate = () =>
-                    validateUserDefinition({
-                        userDocument,
-                        augmentedDocument,
-                        additionalDirectives: directives,
-                        additionalTypes: types,
-                    });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should not returns errors when is correctly used, with specifiedDirective", () => {
-                const userDocument = gql`
-                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
-
-                    type User
-                        @shareable
-                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String! @deprecated(reason: "name is deprecated")
-                    }
-
-                    type Post {
-                        content: String!
-                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
-                    }
-                `;
-                const subgraph = new Subgraph(userDocument);
-                const { directives, types } = subgraph.getValidationDefinitions();
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-
-                const executeValidate = () =>
-                    validateUserDefinition({
-                        userDocument,
-                        augmentedDocument,
-                        additionalDirectives: directives,
-                        additionalTypes: types,
-                    });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should not returns errors when used correctly in several place", () => {
-                const userDocument = gql`
-                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
-
-                    type User
-                        @shareable
-                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-
-                    type Post @subscriptionsAuthorization(filter: [{ where: { node: { content: "$jwt.sub" } } }]) {
-                        content: String!
-                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
-                    }
-                `;
-                const subgraph = new Subgraph(userDocument);
-                const { directives, types } = subgraph.getValidationDefinitions();
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-
-                const executeValidate = () =>
-                    validateUserDefinition({
-                        userDocument,
-                        augmentedDocument,
-                        additionalDirectives: directives,
-                        additionalTypes: types,
-                    });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should validate directive argument name", () => {
-                const userDocument = gql`
-                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
-
-                    type User
-                        @shareable
-                        @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-
-                    type Post {
-                        content: String!
-                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
-                    }
-                `;
-                const subgraph = new Subgraph(userDocument);
-                const { directives, types } = subgraph.getValidationDefinitions();
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-
-                const executeValidate = () =>
-                    validateUserDefinition({
-                        userDocument,
-                        augmentedDocument,
-                        additionalDirectives: directives,
-                        additionalTypes: types,
-                    });
-
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
-                );
-            });
-
-            test("validation should works when used with other directives", () => {
-                const userDocument = gql`
-                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
-
-                    type User
-                        @plural(value: "Users")
-                        @shareable
-                        @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-
-                    type Post {
-                        content: String!
-                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
-                    }
-                `;
-                const subgraph = new Subgraph(userDocument);
-                const { directives, types } = subgraph.getValidationDefinitions();
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-
-                const executeValidate = () =>
-                    validateUserDefinition({
-                        userDocument,
-                        augmentedDocument,
-                        additionalDirectives: directives,
-                        additionalTypes: types,
-                    });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("should validate directive argument name, when used with other directives", () => {
-                const userDocument = gql`
-                    extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
-
-                    type User
-                        @plural(value: "Users")
-                        @shareable
-                        @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-                        id: ID!
-                        name: String!
-                    }
-
-                    type Post {
-                        content: String!
-                        author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
-                    }
-                `;
-                const subgraph = new Subgraph(userDocument);
-                const { directives, types } = subgraph.getValidationDefinitions();
-                const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
-                    generateSubscriptions: true,
-                });
-
-                const executeValidate = () =>
-                    validateUserDefinition({
-                        userDocument,
-                        augmentedDocument,
-                        additionalDirectives: directives,
-                        additionalTypes: types,
-                    });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
                 );
             });
         });

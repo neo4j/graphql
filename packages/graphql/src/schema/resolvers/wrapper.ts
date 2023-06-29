@@ -219,7 +219,6 @@ export const wrapSubscription =
                 if (!contextParams.authorization && resolverArgs.authorization.globalAuthentication) {
                     throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
                 } else {
-                    // TODO: verification was not part of this?!
                     try {
                         const authorization = resolverArgs.authorization;
                         const jwt = await authorization.decodeBearerTokenWithVerify(contextParams.authorization);

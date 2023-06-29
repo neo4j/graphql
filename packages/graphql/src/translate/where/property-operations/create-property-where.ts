@@ -41,12 +41,14 @@ export function createPropertyWhere({
     element,
     targetElement,
     context,
+    useExistExpr = true,
 }: {
     key: string;
     value: any;
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
+    useExistExpr?: boolean;
 }): PredicateReturn {
     const match = whereRegEx.exec(key);
     if (!match) {
@@ -123,6 +125,7 @@ export function createPropertyWhere({
                 operator,
                 value,
                 isNot,
+                useExistExpr,
             });
         }
 
@@ -134,6 +137,7 @@ export function createPropertyWhere({
                 context,
                 parentNode: targetElement as Cypher.Node,
                 operator,
+                useExistExpr,
             });
         }
 

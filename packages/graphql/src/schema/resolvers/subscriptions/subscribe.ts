@@ -28,6 +28,7 @@ import type { SubscriptionEventType, SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where/where";
 import { subscriptionAuthorization } from "./where/authorization";
+import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { GraphQLResolveInfo } from "graphql";
 import { checkAuthentication } from "./authentication/check-authentication";
 import { checkAuthenticationOnSelectionSet } from "./authentication/check-authentication-selection-set";
@@ -62,13 +63,10 @@ export function generateSubscribeMethod({
     ): AsyncIterator<[SubscriptionsEvent]> => {
         checkAuthenticationOnSelectionSet(resolveInfo, node, type, context);
         const entities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
-        const concreteEntity = entities[0];
-
-        if (!concreteEntity) {
-            throw new Error("Could not find entity");
+        if (entities.length) {
+            const concreteEntity = entities[0] as ConcreteEntity;
+            checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
         }
-
-        checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
 
         // TODO 4.0.0 remove this
         if (node.auth) {

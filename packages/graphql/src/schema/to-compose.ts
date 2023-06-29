@@ -123,6 +123,9 @@ export function objectFieldsToSubscriptionsWhereInputFields(
     fields: BaseField[]
 ): Record<string, InputField> {
     return fields.reduce((res, f) => {
+        if (!f.filterableOptions.byValue) {
+            return res;
+        }
         const fieldType = f.typeMeta.input.where.pretty;
 
         const ifArrayOfAnyTypeExceptBoolean = f.typeMeta.array && f.typeMeta.name !== "Boolean";

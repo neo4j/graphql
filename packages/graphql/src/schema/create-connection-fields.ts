@@ -93,16 +93,18 @@ function createConnectionFields({
                 },
             });
         }
-
-        whereInput.addFields({
-            [connectionField.fieldName]: connectionWhere,
-            [`${connectionField.fieldName}_NOT`]: {
-                type: connectionWhere,
-            },
-        });
+        if (connectionField.relationship.filterableOptions.byValue) {
+            whereInput.addFields({
+                [connectionField.fieldName]: connectionWhere,
+                [`${connectionField.fieldName}_NOT`]: {
+                    type: connectionWhere,
+                },
+            });
+        }
+        
 
         // n..m Relationships
-        if (connectionField.relationship.typeMeta.array) {
+        if (connectionField.relationship.typeMeta.array && connectionField.relationship.filterableOptions.byValue) {
             addRelationshipArrayFilters({
                 whereInput,
                 fieldName: connectionField.fieldName,

@@ -65,12 +65,15 @@ export function createAuthorizationWherePredicate({
         }
 
         if (key === "node") {
+            const useExistExpr = context.neo4jDatabaseInfo?.gte("5");
+
             const { predicate, preComputedSubqueries } = createWherePredicate({
                 element: node,
                 context,
                 // This doesn't _have_ to be done like this, we could just populate with the actual values instead of this approach - to discuss with Andres!
                 whereInput: populateWhereParams({ where: value, context }),
                 targetElement: target,
+                useExistExpr,
             });
 
             if (predicate) {

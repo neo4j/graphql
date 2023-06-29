@@ -123,6 +123,11 @@ export type SettableOptions = {
     onUpdate: boolean;
 };
 
+export type FilterableOptions = {
+    byValue: boolean;
+    byAggregate: boolean;
+};
+
 /**
  * Representation a ObjectTypeDefinitionNode field.
  */
@@ -140,6 +145,7 @@ export interface BaseField {
     unique?: Unique;
     selectableOptions: SelectableOptions;
     settableOptions: SettableOptions;
+    filterableOptions: FilterableOptions;
 }
 
 /**

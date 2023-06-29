@@ -50,3 +50,73 @@ The following would throw an `Error`:
 ----
 const User = ogm.model("NotFound");
 ----
+
+
+[[ogm-api-reference-assertconstraints]]
+== `assertIndexesAndConstraints`
+
+Asynchronous method to assert the existence of database constraints, that either resolves to `void` in a successful scenario, or throws an error if the necessary constraints do not exist following its execution.
+
+Takes an `input` object as a parameter, the supported fields of which are described below.
+
+=== Example
+
+Given the following type definitions saved to the variable `typeDefs` and a valid driver instance saved to the variable `driver`:
+
+[source, graphql, indent=0]
+----
+type Book {
+    isbn: String! @unique
+}
+----
+
+And the construction and initialisation of an `OGM`, using:
+
+[source, javascript, indent=0]
+----
+const ogm = new OGM({
+    typeDefs,
+});
+await ogm.init();
+----
+
+The following will check whether a unique node property constraint exists for label "Book" and property "isbn", and throw an error if it does not:
+
+[source, javascript, indent=0]
+----
+await ogm.assertIndexesAndConstraints();
+----
+
+The next example will create the constraint if it does not exist:
+
+[source, javascript, indent=0]
+----
+await ogm.assertIndexesAndConstraints({ options: { create: true } });
+----
+
+[[ogm-api-reference-assertconstraints-input]]
+=== Input
+
+Accepts the arguments below:
+
+[cols="1,2,3"]
+|===
+|Name |Type |Description
+
+|`options`
+|xref::ogm/api-reference/ogm.adoc#ogm-api-reference-assertconstraints-input-assertconstraintsoptions[`AssertConstraintsOptions`]
+|Options for the execution of `assertIndexesAndConstraints`.
+|===
+
+
+[[ogm-api-reference-assertconstraints-input-assertconstraintsoptions]]
+==== `AssertConstraintsOptions`
+
+[cols="1,2,3"]
+|===
+|Name |Type |Description
+
+|`create`
+|`boolean`
+|Whether or not to create constraints if they do not yet exist. Disabled by default.
+|===
