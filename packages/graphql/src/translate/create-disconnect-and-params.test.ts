@@ -65,6 +65,10 @@ describe("createDisconnectAndParams", () => {
                         onCreate: true,
                         onUpdate: true,
                     },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                     nestedOperations: defaultNestedOperations,

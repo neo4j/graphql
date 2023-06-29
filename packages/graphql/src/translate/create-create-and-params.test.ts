@@ -67,6 +67,10 @@ describe("createCreateAndParams", () => {
                         onCreate: true,
                         onUpdate: true,
                     },
+                    filterableOptions: {
+                        byValue: true,
+                        byAggregate: true,
+                    },
                     otherDirectives: [],
                     arguments: [],
                 },
