@@ -136,7 +136,7 @@ export function filterByAuthorizationRules({
             });
         }
 
-        if (wherePropertyKey === "jwtPayload") {
+        if (wherePropertyKey === "jwt") {
             return filterByValues(wherePropertyValue, context.jwt as Record<string, any>);
         }
 

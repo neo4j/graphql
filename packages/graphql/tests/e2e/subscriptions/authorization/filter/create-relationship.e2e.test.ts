@@ -50,8 +50,8 @@ describe("Subscriptions authorization with relationship creation events", () => 
             type ${User}
                 @subscriptionsAuthorization(
                     filter: [
-                        { where: { relationship: { follows: { node: { id: "$jwt.sub" } } }, jwtPayload: { roles_INCLUDES: "user" } } }
-                        { where: { jwtPayload: { roles_INCLUDES: "admin" } } }
+                        { where: { relationship: { follows: { node: { id: "$jwt.sub" } } }, jwt: { roles_INCLUDES: "user" } } }
+                        { where: { jwt: { roles_INCLUDES: "admin" } } }
                     ]
                 ) {
                 id: ID!

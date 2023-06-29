@@ -57,7 +57,7 @@ export function populateWhereParams({
                 parsed[k] = value;
             } else if (v.startsWith("$context")) {
                 const path = v.substring(9);
-                const contextValueParameter = new Cypher.Param(dotProp.get(context, path));
+                const contextValueParameter = dotProp.get(context, path);
                 parsed[k] = contextValueParameter || "";
             } else {
                 parsed[k] = v;

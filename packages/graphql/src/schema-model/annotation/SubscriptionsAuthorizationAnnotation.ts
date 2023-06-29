@@ -32,7 +32,7 @@ export type SubscriptionsAuthorizationWhere = {
     AND?: SubscriptionsAuthorizationWhere[];
     OR?: SubscriptionsAuthorizationWhere[];
     NOT?: SubscriptionsAuthorizationWhere;
-    jwtPayload?: GraphQLWhereArg;
+    jwt?: GraphQLWhereArg;
     node?: GraphQLWhereArg;
     relationship?: GraphQLWhereArg;
 };

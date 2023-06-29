@@ -207,7 +207,7 @@ describe("ConcreteEntity generation", () => {
                     events: SubscriptionsAuthorizationFilterEventRule,
                     requireAuthentication: true,
                     where: {
-                        jwtPayload: undefined,
+                        jwt: undefined,
                         node: { id: "$jwt.sub" },
                     },
                 },
@@ -223,7 +223,7 @@ describe("ConcreteEntity generation", () => {
                     events: SubscriptionsAuthorizationFilterEventRule,
                     requireAuthentication: true,
                     where: {
-                        jwtPayload: undefined,
+                        jwt: undefined,
                         node: { id: "$jwt.sub" },
                     },
                 },

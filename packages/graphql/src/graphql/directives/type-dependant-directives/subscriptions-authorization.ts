@@ -90,7 +90,7 @@ function createSubscriptionsAuthorizationWhere(
                           },
                       }
                     : {}),
-                jwtPayload: {
+                jwt: {
                     type: jwtPayloadWhere,
                 },
             };
