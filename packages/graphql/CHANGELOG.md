@@ -1,5 +1,25 @@
 # @neo4j/graphql
 
+## 3.22.0
+
+### Minor Changes
+
+-   [#3509](https://github.com/neo4j/graphql/pull/3509) [`cc201e6fc`](https://github.com/neo4j/graphql/commit/cc201e6fc6f0146f0cf80aad2bcaf086a215554c) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Introduced schema configuration directive: `@filterable`.
+
+    Usage:
+
+    ```graphql
+    type User {
+        name: String @filterable(byValue: true, byAggregate: true)
+    }
+    ```
+
+### Patch Changes
+
+-   [#3542](https://github.com/neo4j/graphql/pull/3542) [`f779a0061`](https://github.com/neo4j/graphql/commit/f779a00612adc4e0c42a3696435cbf6072dcfe31) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #3541 which caused an error when using `@key` and other directives on the same type
+
+-   [#3538](https://github.com/neo4j/graphql/pull/3538) [`56a733023`](https://github.com/neo4j/graphql/commit/56a733023f6f300b92c8811e37bf6884dc661133) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #3537 which prevented extending the schema with `@neo4j/graphql` directives when calling `getSubgraphSchema()`
+
 ## 3.21.0
 
 ### Minor Changes

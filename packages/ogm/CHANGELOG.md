@@ -1,5 +1,16 @@
 # @neo4j/graphql-ogm
 
+## 3.22.0
+
+### Patch Changes
+
+-   [#3117](https://github.com/neo4j/graphql/pull/3117) [`c30569a97`](https://github.com/neo4j/graphql/commit/c30569a976f0f6a436ce11016845be47852a54cd) Thanks [@g10](https://github.com/g10)! - feat: expose `assertIndexesAndConstraints` on OGM
+
+-   [#3556](https://github.com/neo4j/graphql/pull/3556) [`4f221fdb2`](https://github.com/neo4j/graphql/commit/4f221fdb2d416f41c77a35bd6c7779f16927d246) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Preserve library generated casing when generating TypeScript types using the OGM.
+
+-   Updated dependencies [[`f779a0061`](https://github.com/neo4j/graphql/commit/f779a00612adc4e0c42a3696435cbf6072dcfe31), [`cc201e6fc`](https://github.com/neo4j/graphql/commit/cc201e6fc6f0146f0cf80aad2bcaf086a215554c), [`56a733023`](https://github.com/neo4j/graphql/commit/56a733023f6f300b92c8811e37bf6884dc661133)]:
+    -   @neo4j/graphql@3.22.0
+
 ## 3.21.0
 
 ### Patch Changes
