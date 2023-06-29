@@ -34,7 +34,7 @@ export function checkAuthentication({
 }: {
     context: Context;
     node: Node;
-    targetOperations: AuthenticationOperation[]; // one of these have to be present in the authentication.operations options
+    targetOperations: AuthenticationOperation[];
     field?: string;
 }) {
     const schemaLevelAnnotation = context.schemaModel.annotations.authentication;
