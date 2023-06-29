@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
- 
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { printSchema } from "graphql";
 
