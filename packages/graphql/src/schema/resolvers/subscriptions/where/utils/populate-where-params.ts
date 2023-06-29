@@ -40,19 +40,12 @@ export function populateWhereParams({
         } else if (typeof v === "object") {
             parsed[k] = populateWhereParams({ where: v, context });
         } else if (typeof v === "string") {
-            // sub
             if (v.startsWith("$jwt")) {
                 const path = v.substring(5);
 
-                const value = dotProp.get(context.jwt, path);
+                const mappedPath = context.jwtPayloadFieldsMap?.get(path);
 
-                // const mappedPath = context.authorization.claims?.get(path);
-
-                // const jwtProperty = context.authorization.jwtParam.property(...(mappedPath || path).split("."));
-
-                // // coalesce jwt parameter values to be an empty string which can be evaluated in a boolean expression
-                // // comparing against null will always produce null, which results in errors in apoc.util.validatePredicate
-                // const coalesce = Cypher.coalesce(jwtProperty, new Cypher.Literal(""));
+                const value = dotProp.get(context.jwt, mappedPath || path);
 
                 parsed[k] = value;
             } else if (v.startsWith("$context")) {
