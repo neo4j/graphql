@@ -16,15 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-"use strict";
+
+"use strict"
 
 import neo4j from "neo4j-driver";
- 
+// eslint-disable-next-line import/no-unresolved
 import { Neo4jGraphQL } from "@neo4j/graphql";
-// eslint-disable-next-line import/named
-import { createYoga } from "graphql-yoga";
+import fastify from 'fastify';
+import mercurius from 'mercurius';
 import { getLargeSchema } from "../typedefs.js";
-import { createServer } from "http";
 
 async function main() {
     const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
@@ -35,18 +35,22 @@ async function main() {
     const neoSchema = new Neo4jGraphQL({
         typeDefs: getLargeSchema(1),
         driver,
+        config: {
+            addMeasurementsToExtension: true,
+        },
     });
+
     const schema = await neoSchema.getSchema();
 
     await neoSchema.assertIndexesAndConstraints({ options: { create: true } });
 
-    const yoga = createYoga({
+    const app = fastify({ logger: false });
+
+    app.register(mercurius, {
         schema,
     });
 
-    const server = createServer(yoga);
-
-    server.listen(4000, () => {
+    await app.listen({ port: 4000 }).then(() => {
         console.info("Server is running on http://localhost:4000/graphql");
     });
 }
