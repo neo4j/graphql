@@ -48,7 +48,7 @@ function getFieldTypeMeta(typeNode: TypeNode): TypeMeta {
     const pretty = getPrettyName(typeNode);
     const array = /\[.+\]/g.test(pretty);
     const required = typeNode.kind === Kind.NON_NULL_TYPE;
-
+  
     // Things to do with the T inside the Array [T]
     let arrayTypePretty = "";
     let arrayTypeRequired = false;

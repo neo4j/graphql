@@ -19,44 +19,103 @@
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes/Error";
 import type { Annotation, Annotations } from "../annotation/Annotation";
-import { annotationToKey } from "../annotation/Annotation";
+import { AnnotationsKey, annotationToKey } from "../annotation/Annotation";
 
-export enum AttributeType {
+export enum StandardGraphQLScalarType {
+    Int = "Int",
+    Float = "Float",
+    String = "String",
     Boolean = "Boolean",
     ID = "ID",
-    String = "String",
-    Int = "Int",
+} 
+
+export enum Neo4jGraphQLPointType {
+    CartesianPoint = "CartesianPoint",
+    Point = "Point",
+}
+
+export enum Neo4jGraphQLNumberType {
     BigInt = "BigInt",
-    Float = "Float",
+}
+
+export enum Neo4jGraphQLTemporalType {
     DateTime = "DateTime",
     LocalDateTime = "LocalDateTime",
     Time = "Time",
     LocalTime = "LocalTime",
     Date = "Date",
     Duration = "Duration",
-    Point = "Point",
+}
+
+type Neo4jGraphQLScalarType = Neo4jGraphQLTemporalType | Neo4jGraphQLNumberType | Neo4jGraphQLPointType;
+
+export type AttributeType = ScalarType | UserScalarType | ObjectType | ListType | EnumType;
+
+
+export type ScalarTypeType = "Neo4jGraphQLTemporalType" | "Neo4jGraphQLNumberType" | "Neo4jGraphQLPointType" | "StandardGraphQLScalarType";
+export class ScalarType  {
+    name: StandardGraphQLScalarType | Neo4jGraphQLScalarType;
+    isRequired: boolean;
+    ofType: ScalarTypeType;
+    constructor (name: StandardGraphQLScalarType | Neo4jGraphQLScalarType, isRequired: boolean, ofType: ScalarTypeType) {
+        this.name = name;
+        this.isRequired = isRequired;
+        this.ofType = ofType;
+    }
+}
+
+
+export class UserScalarType {
+    name: string;
+    isRequired: boolean;
+    constructor(name: string, isRequired: boolean) {
+        this.name = name;
+        this.isRequired = isRequired;
+    }
+}
+
+export class ObjectType  {
+    name: string;
+    isRequired: boolean;
+    constructor(name: string, isRequired: boolean) {
+        this.name = name;
+        this.isRequired = isRequired;
+    }
+}
+
+export class ListType {
+    ofType: AttributeType;
+    isRequired: boolean;
+    constructor(ofType: AttributeType, isRequired: boolean) {
+        this.ofType = ofType;
+        this.isRequired = isRequired;
+    }
+}
+
+export class EnumType {
+    name: string;
+    constructor(name: string) {
+        this.name = name;
+    }
 }
 
 export class Attribute {
     public readonly name: string;
     public readonly annotations: Partial<Annotations> = {};
     public readonly type: AttributeType;
-    public readonly isArray: boolean;
+    public isCypherField = false;
 
     constructor({
         name,
         annotations,
         type,
-        isArray,
     }: {
         name: string;
         annotations: Annotation[];
         type: AttributeType;
-        isArray: boolean;
     }) {
         this.name = name;
         this.type = type;
-        this.isArray = isArray;
 
         for (const annotation of annotations) {
             this.addAnnotation(annotation);
@@ -68,9 +127,9 @@ export class Attribute {
             name: this.name,
             annotations: Object.values(this.annotations),
             type: this.type,
-            isArray: this.isArray,
         });
     }
+
 
     private addAnnotation(annotation: Annotation): void {
         const annotationKey = annotationToKey(annotation);
@@ -78,6 +137,9 @@ export class Attribute {
             throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
         }
 
+        if (annotationKey === AnnotationsKey.cypher) {
+            this.isCypherField = true;
+        }
         // We cast to any because we aren't narrowing the Annotation type here.
         // There's no reason to narrow either, since we care more about performance.
         this.annotations[annotationKey] = annotation as any;

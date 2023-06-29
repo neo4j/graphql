@@ -16,12 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {
-    DirectiveNode,
-    DocumentNode,
-    FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
-    ObjectTypeDefinitionNode,
+import type { TypeNode } from "graphql";
+import {
+    Kind,
+    type DirectiveNode,
+    type DocumentNode,
+    type FieldDefinitionNode,
+    type InterfaceTypeDefinitionNode,
+    type ObjectTypeDefinitionNode,
 } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import type { DefinitionNodes } from "../schema/get-definition-nodes";
@@ -30,7 +32,14 @@ import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import type { Annotation } from "./annotation/Annotation";
-import { Attribute, AttributeType } from "./attribute/Attribute";
+import type { AttributeType } from "./attribute/Attribute";
+import {
+    StandardGraphQLScalarType,
+    Neo4jGraphQLPointType,
+    Attribute,
+    ListType,
+    ScalarType,
+} from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import { parseAuthorizationAnnotation } from "./parser/authorization-annotation";
@@ -236,7 +245,56 @@ function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments:
     return [definition.name.value];
 }
 
-function generateField(field: FieldDefinitionNode): Attribute | undefined {
+function parseTypeNode(typeNode: TypeNode, isRequired = false): AttributeType {
+    switch (typeNode.kind) {
+        case Kind.NAMED_TYPE:
+            if (Object.values(StandardGraphQLScalarType).includes(typeNode.name.value as any)) {
+                return new ScalarType(
+                    typeNode.name.value as StandardGraphQLScalarType,
+                    isRequired,
+                    "StandardGraphQLScalarType"
+                );
+            }
+            if (Object.values(Neo4jGraphQLPointType).includes(typeNode.name.value as any)) {
+                return new ScalarType(
+                    typeNode.name.value as Neo4jGraphQLPointType,
+                    isRequired,
+                    "Neo4jGraphQLPointType"
+                );
+            }
+            if (Object.values(StandardGraphQLScalarType).includes(typeNode.name.value as any)) {
+                return new ScalarType(
+                    typeNode.name.value as StandardGraphQLScalarType,
+                    isRequired,
+                    "StandardGraphQLScalarType"
+                );
+            }
+            return new ScalarType(
+                typeNode.name.value as StandardGraphQLScalarType,
+                isRequired,
+                "StandardGraphQLScalarType"
+            ); // TODO: solve case for enums objects etc... at this moment we treat them as scalars
+
+        case Kind.LIST_TYPE: {
+            const innerType = parseTypeNode(typeNode.type);
+            return new ListType(innerType, isRequired);
+        }
+        case Kind.NON_NULL_TYPE:
+            return parseTypeNode(typeNode.type, true);
+    }
+}
+
+function generateField(field: FieldDefinitionNode): Attribute {
+    const name = field.name.value;
+    const type = parseTypeNode(field.type);
+    const annotations = createFieldAnnotations(field.directives || []);
+    return new Attribute({
+        name,
+        annotations,
+        type,
+    });
+}
+/* function generateField(field: FieldDefinitionNode): Attribute | undefined {
     const typeMeta = getFieldTypeMeta(field.type); // TODO: without originalType
     if (isAttributeType(typeMeta.name)) {
         const annotations = createFieldAnnotations(field.directives || []);
@@ -247,11 +305,11 @@ function generateField(field: FieldDefinitionNode): Attribute | undefined {
             isArray: Boolean(typeMeta.array),
         });
     }
-}
+} */
 
-function isAttributeType(typeName: string): typeName is AttributeType {
+/* function isAttributeType(typeName: string): typeName is AttributeType {
     return Object.values(AttributeType).includes(typeName as any);
-}
+} */
 
 function findDirective(directives: readonly DirectiveNode[], name: string): DirectiveNode | undefined {
     return directives.find((d) => {

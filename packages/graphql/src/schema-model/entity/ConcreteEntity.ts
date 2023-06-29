@@ -31,6 +31,7 @@ export class ConcreteEntity implements Entity {
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly relationships: Map<string, Relationship> = new Map();
     public readonly annotations: Partial<Annotations> = {};
+    // TODO: 
 
     constructor({
         name,

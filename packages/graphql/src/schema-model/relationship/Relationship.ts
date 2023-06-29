@@ -26,8 +26,8 @@ import type { Entity } from "../entity/Entity";
 export type RelationshipDirection = "IN" | "OUT";
 
 export class Relationship {
-    public readonly name: string;
-    public readonly type: string;
+    public readonly name: string; //Movie.genres
+    public readonly type: string; // "HAS_GENRE"
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly source: ConcreteEntity; // Origin field of relationship
     public readonly target: Entity;
