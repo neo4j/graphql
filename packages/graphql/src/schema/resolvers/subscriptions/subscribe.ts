@@ -28,7 +28,6 @@ import type { SubscriptionEventType, SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where/where";
 import { subscriptionAuthorization } from "./where/authorization";
-import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { GraphQLResolveInfo } from "graphql";
 import { checkAuthentication } from "./authentication/check-authentication";
 import { checkAuthenticationOnSelectionSet } from "./authentication/check-authentication-selection-set";
