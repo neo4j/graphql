@@ -63,10 +63,13 @@ export function generateSubscribeMethod({
     ): AsyncIterator<[SubscriptionsEvent]> => {
         checkAuthenticationOnSelectionSet(resolveInfo, node, type, context);
         const entities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
-        if (entities.length) {
-            const concreteEntity = entities[0] as ConcreteEntity;
-            checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
+        const concreteEntity = entities[0];
+
+        if (!concreteEntity) {
+            throw new Error("Could not find entity");
         }
+
+        checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
 
         // TODO 4.0.0 remove this
         if (node.auth) {
