@@ -44,9 +44,6 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
         Valuation = new UniqueType("Valuation");
 
         const typeDefs = `
-            type JWT @jwt {
-                roles: [String!]!
-            }
             type ${Agent} @exclude(operations: [DELETE]) {
                 uuid: ID! @id
                 archivedAt: DateTime
@@ -54,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
                 valuations: [${Valuation}!]! @relationship(type: "IS_VALUATION_AGENT", direction: OUT)
             }
             extend type ${Agent}
-                @authorization(validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "Admin" } } }], filter: [{ where: { node: { archivedAt: null } } }])
+                @auth(rules: [{ operations: [CREATE], roles: ["Admin"] }, { where: { archivedAt: null } }])
 
             type ${Valuation} @exclude(operations: [DELETE]) {
                 uuid: ID! @id
@@ -62,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
 
                 agent: ${Agent}! @relationship(type: "IS_VALUATION_AGENT", direction: IN)
             }
-            extend type ${Valuation} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
+            extend type ${Valuation} @auth(rules: [{ where: { archivedAt: null } }])
         `;
 
         await session.run(`
