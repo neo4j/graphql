@@ -19,13 +19,11 @@
 
 import type { Context, GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
-import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import type { AuthorizationOperation } from "../types/authorization";
-import { authorizationOperationToAuthOperation } from "../types/deprecated/auth/auth-operations";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -151,21 +149,6 @@ export function createMatchClause({
 
         if (preComputedSubqueries && !preComputedSubqueries.empty) {
             preComputedWhereFieldSubqueries = Cypher.concat(preComputedWhereFieldSubqueries, preComputedSubqueries);
-        }
-    } else {
-        // TODO: Authorization - delete for 4.0.0
-        const { cypher: authCypher, params: authParams } = createAuthAndParams({
-            operations: authorizationOperationToAuthOperation(operation),
-            entity: node,
-            context,
-            where: { varName: matchNode, node },
-        });
-        if (authCypher) {
-            const authQuery = new Cypher.RawCypher(() => {
-                return [authCypher, authParams];
-            });
-
-            whereClause.where(authQuery);
         }
     }
 

@@ -34,8 +34,6 @@ import {
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
 import type { CypherQueryOptions } from "../types";
-import type { AuthContext } from "../types/deprecated/auth/auth-context";
-import createAuthParam from "../translate/create-auth-param";
 import type { GraphQLResolveInfo } from "graphql";
 import { print } from "graphql";
 
@@ -81,7 +79,6 @@ export type ExecutionContext = Driver | Session | Transaction;
 
 export type ExecutorConstructorParam = {
     executionContext: ExecutionContext;
-    auth?: AuthContext;
     queryOptions?: CypherQueryOptions;
     database?: string;
     bookmarks?: string | string[];
@@ -98,20 +95,14 @@ export class Executor {
     public lastBookmark: string | null;
 
     private queryOptions: CypherQueryOptions | undefined;
-    private auth: AuthContext;
 
     private database: string | undefined;
     private bookmarks: string | string[] | undefined;
 
-    constructor({ executionContext, auth, queryOptions, database, bookmarks }: ExecutorConstructorParam) {
+    constructor({ executionContext, queryOptions, database, bookmarks }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
         this.queryOptions = queryOptions;
-        if (auth) {
-            this.auth = auth;
-        } else {
-            this.auth = createAuthParam({ context: {} });
-        }
         this.database = database;
         this.bookmarks = bookmarks;
     }
@@ -177,14 +168,6 @@ export class Executor {
         return query;
     }
 
-    private generateParameters(query: string, parameters: any): Record<string, any> {
-        if (query.includes("$auth.") || query.includes("auth: $auth") || query.includes("auth:$auth")) {
-            return { ...parameters, auth: this.auth };
-        }
-
-        return parameters;
-    }
-
     private getSessionParam(defaultAccessMode: SessionMode): SessionParam {
         // Always specify a default database to avoid requests for routing table
         const sessionParam: SessionParam = { defaultAccessMode, database: "neo4j" };
@@ -243,14 +226,13 @@ export class Executor {
 
     private async transactionRun(query: string, parameters, transaction: Transaction): Promise<ExecutorResult> {
         const queryToRun = this.generateQuery(query);
-        const parametersToRun = this.generateParameters(query, parameters);
 
         debug(
             "%s",
-            `About to execute Cypher:\nCypher:\n${queryToRun}\nParams:\n${JSON.stringify(parametersToRun, null, 2)}`
+            `About to execute Cypher:\nCypher:\n${queryToRun}\nParams:\n${JSON.stringify(parameters, null, 2)}`
         );
 
-        const result = await transaction.run(queryToRun, parametersToRun);
+        const result = await transaction.run(queryToRun, parameters);
 
         return { result };
     }

@@ -23,7 +23,6 @@ import { Neo4jGraphQLError } from "../../../classes";
 import type Node from "../../../classes/Node";
 import type { NodeSubscriptionsEvent, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
-import { SubscriptionAuth } from "./subscription-auth";
 import type { SubscriptionEventType, SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where/where";
@@ -65,19 +64,6 @@ export function generateSubscribeMethod({
         if (entities.length) {
             const concreteEntity = entities[0] as ConcreteEntity;
             checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
-        }
-
-        // TODO 4.0.0 remove this
-        if (node.auth) {
-            const authRules = node.auth.getRules(["SUBSCRIBE"]);
-            for (const rule of authRules) {
-                if (!SubscriptionAuth.validateAuthenticationRule(rule, context)) {
-                    throw new Error("Error, request not authenticated");
-                }
-                if (!SubscriptionAuth.validateRolesRule(rule, context)) {
-                    throw new Error("Error, request not authorized");
-                }
-            }
         }
 
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);

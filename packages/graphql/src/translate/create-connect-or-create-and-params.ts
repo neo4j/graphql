@@ -21,8 +21,6 @@ import type { RelationField, Context, PrimitiveField, PredicateReturn } from "..
 import type { Node, Relationship } from "../classes";
 import { Neo4jGraphQLError } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
-import { createAuthAndParams } from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { asArray, omitFields } from "../utils/utils";
 import Cypher from "@neo4j/cypher-builder";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
@@ -189,16 +187,6 @@ function createConnectOrCreatePartialStatement({
 
     mergeQuery = Cypher.concat(mergeQuery, mergeCypher);
 
-    const authQuery = createAuthStatement({
-        node: refNode,
-        context,
-        nodeName: baseName,
-    });
-
-    if (authQuery) {
-        mergeQuery = Cypher.concat(mergeQuery, new Cypher.With("*"), authQuery);
-    }
-
     const authorizationAfterPredicateReturn = createAuthorizationAfterConnectOrCreate({
         context,
         sourceNode: node,
@@ -325,36 +313,6 @@ function mergeStatement({
     }
 
     return Cypher.concat(merge, relationshipMerge, withClause);
-}
-
-function createAuthStatement({
-    node,
-    context,
-    nodeName,
-}: {
-    node: Node;
-    context: Context;
-    nodeName: string;
-}): Cypher.Clause | undefined {
-    if (!node.auth) return undefined;
-
-    const { cypher, params } = createAuthAndParams({
-        entity: node,
-        operations: ["CONNECT", "CREATE"],
-        context,
-        allow: { node, varName: nodeName },
-    });
-
-    if (!cypher) return undefined;
-
-    return new Cypher.RawCypher(() => {
-        const predicate = `NOT (${cypher})`;
-        const message = AUTH_FORBIDDEN_ERROR;
-
-        const cypherStr = `CALL apoc.util.validate(${predicate}, "${message}", [0])`;
-
-        return [cypherStr, params];
-    });
 }
 
 function createAuthorizationBeforeConnectOrCreate({

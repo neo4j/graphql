@@ -22,7 +22,6 @@ import { mergeDeep } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import type { GraphQLOptionsArg, GraphQLWhereArg, Context, GraphQLSortArg, CypherFieldReferenceMap } from "../types";
-import { createAuthPredicates } from "./create-auth-predicates";
 import { createDatetimeExpression } from "./projection/elements/create-datetime-element";
 import { createPointExpression } from "./projection/elements/create-point-element";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -42,24 +41,13 @@ import { compileCypher } from "../utils/compile-cypher";
 interface Res {
     projection: Cypher.Expr[];
     params: any;
-    // TODO: Authorization - delete for 4.0.0
-    meta: ProjectionMeta;
     subqueries: Array<Cypher.Clause>;
     subqueriesBeforeSort: Array<Cypher.Clause>;
     predicates: Cypher.Predicate[];
 }
 
-// TODO: Authorization - delete for 4.0.0
-export interface ProjectionMeta {
-    authValidatePredicates?: Cypher.Predicate[];
-    authorizationPredicates: Cypher.Predicate[];
-    authorizationSubqueries: Cypher.CompositeClause | undefined;
-}
-
 export type ProjectionResult = {
     params: Record<string, any>;
-    // TODO: Authorization - delete for 4.0.0
-    meta: ProjectionMeta;
     // Subqueries required for sorting on fields before the projection
     subqueriesBeforeSort: Array<Cypher.Clause>;
     // Subqueries required for fields in the projection
@@ -122,32 +110,10 @@ export default function createProjectionAndParams({
 
                 if (predicate) {
                     res.predicates.push(predicate);
-                    res.meta.authorizationPredicates.push(predicate);
                 }
 
                 if (preComputedSubqueries && !preComputedSubqueries.empty) {
                     res.subqueries.push(preComputedSubqueries);
-                    res.meta.authorizationSubqueries = Cypher.concat(
-                        res.meta.authorizationSubqueries,
-                        preComputedSubqueries
-                    );
-                }
-            } else if (authableField.auth) {
-                // TODO: Authorization - delete for 4.0.0
-                const allowAndParams = createAuthPredicates({
-                    entity: authableField,
-                    operations: "READ",
-                    context,
-                    allow: {
-                        node,
-                        varName,
-                    },
-                });
-                if (allowAndParams) {
-                    if (!res.meta.authValidatePredicates) {
-                        res.meta.authValidatePredicates = [];
-                    }
-                    res.meta.authValidatePredicates?.push(allowAndParams);
                 }
             }
         }
@@ -255,9 +221,6 @@ export default function createProjectionAndParams({
                         relationField,
                         relationshipDirection: direction,
                         optionsInput,
-                        authorizationPredicates: recurse.meta?.authorizationPredicates,
-                        authorizationSubqueries: recurse.meta?.authorizationSubqueries,
-                        authValidatePredicates: recurse.meta?.authValidatePredicates,
                         addSkipAndLimit: false,
                         collect: false,
                     });
@@ -312,9 +275,6 @@ export default function createProjectionAndParams({
                 relationField,
                 relationshipDirection: direction,
                 optionsInput,
-                authorizationPredicates: recurse.meta?.authorizationPredicates,
-                authorizationSubqueries: recurse.meta?.authorizationSubqueries,
-                authValidatePredicates: recurse.meta?.authValidatePredicates,
             });
             res.subqueries.push(new Cypher.Call(subquery).innerWith(varName));
             res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${compileCypher(subqueryReturnAlias, env)}`));
@@ -443,30 +403,26 @@ export default function createProjectionAndParams({
         ...generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
     ]);
 
-    const { params, meta, subqueriesBeforeSort, subqueries, predicates, projection } = Object.values(
-        mergedFields
-    ).reduce(reducer, {
-        projection: resolveType
-            ? [
-                  new Cypher.RawCypher(`__resolveType: "${node.name}"`),
-                  new Cypher.RawCypher((env) => `__id: id(${compileCypher(varName, env)})`),
-              ]
-            : [],
-        params: {},
-        meta: {
-            authorizationPredicates: [],
-            authorizationSubqueries: undefined,
-        },
-        subqueries: [],
-        subqueriesBeforeSort: [],
-        predicates: [],
-    });
+    const { params, subqueriesBeforeSort, subqueries, predicates, projection } = Object.values(mergedFields).reduce(
+        reducer,
+        {
+            projection: resolveType
+                ? [
+                      new Cypher.RawCypher(`__resolveType: "${node.name}"`),
+                      new Cypher.RawCypher((env) => `__id: id(${compileCypher(varName, env)})`),
+                  ]
+                : [],
+            params: {},
+            subqueries: [],
+            subqueriesBeforeSort: [],
+            predicates: [],
+        }
+    );
     const projectionCypher = new Cypher.RawCypher((env) => {
         return `{ ${projection.map((proj) => compileCypher(proj, env)).join(", ")} }`;
     });
     return {
         params,
-        meta,
         subqueriesBeforeSort,
         subqueries,
         predicates,
@@ -536,10 +492,6 @@ function createFulltextProjection({
         return {
             projection: new Cypher.Map(),
             params: {},
-            meta: {
-                authorizationPredicates: [],
-                authorizationSubqueries: undefined,
-            },
             subqueries: [],
             subqueriesBeforeSort: [],
             predicates: [],

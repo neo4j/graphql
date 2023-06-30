@@ -28,9 +28,7 @@ import type { Node, Relationship } from "../classes";
 import type { Executor } from "../classes/Executor";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
-import type { Auth } from "./deprecated/auth/auth";
 import type { JwtPayload } from "./jwt-payload";
-import type { AuthContext } from "./deprecated/auth/auth-context";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
 
 export { Node } from "../classes";
@@ -56,7 +54,6 @@ export interface Context extends Neo4jGraphQLContext {
     relationships: Relationship[];
     schemaModel: Neo4jGraphQLSchemaModel;
     schema: GraphQLSchema;
-    auth?: AuthContext;
     callbacks?: Neo4jGraphQLCallbacks;
     plugins?: Neo4jGraphQLPlugins;
     features: ContextFeatures;
@@ -138,7 +135,6 @@ export interface BaseField {
     otherDirectives: DirectiveNode[];
     arguments: InputValueDefinitionNode[];
     private?: boolean;
-    auth?: Auth;
     description?: string;
     readonly?: boolean;
     writeonly?: boolean;

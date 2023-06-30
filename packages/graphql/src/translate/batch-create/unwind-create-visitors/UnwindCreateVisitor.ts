@@ -33,12 +33,9 @@ import { filterTruthy } from "../../../utils/utils";
 import type { Expr, Map, MapProjection } from "@neo4j/cypher-builder";
 import Cypher from "@neo4j/cypher-builder";
 import mapToDbProperty from "../../../utils/map-to-db-property";
-import { createAuthPredicates } from "../../create-auth-predicates";
-import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { createAuthorizationAfterPredicate } from "../../authorization/create-authorization-after-predicate";
 import { checkAuthentication } from "../../authorization/check-authentication";
-import { compileCypher } from "../../../utils/compile-cypher";
 
 type UnwindCreateScopeDefinition = {
     unwindVar: Cypher.Variable;
@@ -137,16 +134,12 @@ export class UnwindCreateVisitor implements Visitor {
             }
         }
 
-        // TODO: Authorization - delete for 4.0.0
-        const authFieldsClause = this.getAuthFieldClause(create, this.context, currentNode, this.unwindVar);
-
         const clause = Cypher.concat(
             ...filterTruthy([
                 createClause,
                 ...nestedClauses,
                 authNodeClause,
                 authorizationFieldsClause,
-                authFieldsClause,
                 relationshipValidationClause,
                 new Cypher.Return(currentNode),
             ])
@@ -259,13 +252,9 @@ export class UnwindCreateVisitor implements Visitor {
             }
         }
 
-        // TODO: Authorization - delete for 4.0.0
-        const authFieldsClause = this.getAuthFieldClause(nestedCreate, this.context, currentNode, nodeVar);
-
         subQueryStatements.push(...nestedClauses);
         subQueryStatements.push(authNodeClause);
         subQueryStatements.push(authorizationFieldsClause);
-        subQueryStatements.push(authFieldsClause);
         subQueryStatements.push(relationshipValidationClause);
         subQueryStatements.push(new Cypher.Return([Cypher.collect(new Cypher.Literal(null)), new Cypher.Variable()]));
         const subQuery = Cypher.concat(...subQueryStatements);
@@ -304,76 +293,6 @@ export class UnwindCreateVisitor implements Visitor {
 
                 return new Cypher.With("*").where(predicate);
             }
-        } else if (node.auth) {
-            // TODO: Authorization - delete for 4.0.0
-            const authExpr = createAuthPredicates({
-                entity: node,
-                operations: "CREATE",
-                context,
-                bind: { node, varName: nodeRef },
-            });
-            if (authExpr) {
-                return Cypher.concat(
-                    new Cypher.With("*").where(
-                        Cypher.apoc.util.validatePredicate(Cypher.not(authExpr), AUTH_FORBIDDEN_ERROR)
-                    )
-                );
-            }
-        }
-    }
-
-    // TODO: Authorization - delete for 4.0.0
-    private getAuthFieldClause(
-        astNode: CreateAST | NestedCreateAST,
-        context: Context,
-        nodeRef: Cypher.Node,
-        unwindVar: Cypher.Variable
-    ): Cypher.RawCypher | undefined {
-        const authFields = astNode.node.primitiveFields.filter((field) => field.auth);
-        const usedAuthFields = astNode.nodeProperties
-            .flatMap((property) => {
-                return authFields.filter((authField) => authField.fieldName === property);
-            })
-            .filter((n) => n);
-        if (usedAuthFields.length) {
-            return new Cypher.RawCypher((env: Cypher.Environment) => {
-                const fieldsPredicates = usedAuthFields
-                    .map((field) => {
-                        const fieldAuthCypher = createAuthPredicates({
-                            entity: field,
-                            operations: "CREATE",
-                            context,
-                            bind: {
-                                node: astNode.node,
-                                varName: nodeRef,
-                            },
-                        });
-                        if (fieldAuthCypher) {
-                            return Cypher.or(Cypher.isNull(unwindVar.property(field.fieldName)), fieldAuthCypher);
-                        }
-                    })
-                    .filter((predicate) => predicate !== undefined) as Cypher.BooleanOp[];
-                if (fieldsPredicates.length) {
-                    const predicate = Cypher.not(Cypher.and(...fieldsPredicates));
-
-                    const fieldsAuth = compileCypher(
-                        Cypher.concat(
-                            new Cypher.With("*").where(
-                                Cypher.apoc.util.validatePredicate(predicate, AUTH_FORBIDDEN_ERROR)
-                            )
-                        ),
-                        env
-                    );
-
-                    const fieldsPredicateParams = fieldsPredicates.reduce((prev, next) => {
-                        return {
-                            ...prev[1],
-                            ...next[1],
-                        };
-                    }, {});
-                    return [fieldsAuth, fieldsPredicateParams as [string, Record<string, any>]];
-                }
-            });
         }
     }
 
