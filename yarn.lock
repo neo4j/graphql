@@ -7428,10 +7428,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node16@npm:1.0.4":
-  version: 1.0.4
-  resolution: "@tsconfig/node16@npm:1.0.4"
-  checksum: 202319785901f942a6e1e476b872d421baec20cf09f4b266a1854060efbf78cde16a4d256e8bc949d31e6cd9a90f1e8ef8fb06af96a65e98338a2b6b0de0a0ff
+"@tsconfig/node16@npm:16.1.0":
+  version: 16.1.0
+  resolution: "@tsconfig/node16@npm:16.1.0"
+  checksum: a0a176492e3802a5340eda1e61eabc8d4767e46496bc080ce9c381993ce8c5fb3df8f65267c3a9af4335bc00a85028845f795ea27545f63d62b93ab6675cf8fa
   languageName: node
   linkType: hard
 
@@ -21272,7 +21272,7 @@ __metadata:
   dependencies:
     "@changesets/changelog-github": 0.4.8
     "@changesets/cli": 2.26.2
-    "@tsconfig/node16": 1.0.4
+    "@tsconfig/node16": 16.1.0
     "@typescript-eslint/eslint-plugin": 5.60.1
     "@typescript-eslint/parser": 5.60.1
     concurrently: 8.2.0
