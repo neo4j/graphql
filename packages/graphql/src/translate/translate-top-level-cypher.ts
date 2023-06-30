@@ -21,12 +21,15 @@ import type { GraphQLResolveInfo } from "graphql";
 import createProjectionAndParams from "./create-projection-and-params";
 import type { Context, CypherField } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, AUTHORIZATION_UNAUTHENTICATED } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
+import { Neo4jGraphQLError } from "../classes";
+import { filterByValues } from "./authorization/utils/filter-by-values";
 import { compileCypher } from "../utils/compile-cypher";
+import { applyAuthentication } from "./authorization/utils/apply-authentication";
 
 export function translateTopLevelCypher({
     context,
@@ -43,9 +46,38 @@ export function translateTopLevelCypher({
     statement: string;
     type: "Query" | "Mutation";
 }): Cypher.CypherResult {
+    const operation = context.schemaModel.operations[type];
+    if (!operation) {
+        throw new Error(`Failed to find operation ${type} in Schema Model.`);
+    }
+    const operationField = operation.findFields(field.fieldName);
+    if (!operationField) {
+        throw new Error(`Failed to find field ${field.fieldName} on operation ${type}.`);
+    }
+    const annotation = operationField.annotations.authentication;
+    if (annotation) {
+        applyAuthentication({ context, annotation });
+    }
+    const authorizationAnnotation = operationField.annotations.authorization;
+    if (authorizationAnnotation) {
+        const authorizationResults = authorizationAnnotation.validate?.map((rule) =>
+            filterByValues(rule.where, { jwt: context.authorization.jwt })
+        );
+        if (authorizationResults?.every((result) => result === false)) {
+            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+        }
+    }
+
     context.resolveTree = getNeo4jResolveTree(info);
     const { resolveTree } = context;
-    let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
+    let params = {
+        ...args,
+        auth: createAuthParam({ context }),
+        cypherParams: context.cypherParams,
+    };
+    if (statement.includes("$jwt")) {
+        params.jwt = context.authorization.jwtParam.value;
+    }
     const cypherStrs: string[] = [];
 
     const { cypher: authCypher, params: authParams } = createAuthAndParams({ entity: field, context });
@@ -56,6 +88,8 @@ export function translateTopLevelCypher({
 
     let projectionStr;
     const projectionAuthStrs: Cypher.Predicate[] = [];
+    const projectionValidatePredicates: Cypher.Predicate[] = [];
+
     const projectionSubqueries: Cypher.Clause[] = [];
 
     const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
@@ -67,6 +101,7 @@ export function translateTopLevelCypher({
             meta,
             subqueries,
             subqueriesBeforeSort,
+            predicates,
         } = createProjectionAndParams({
             resolveTree,
             node: referenceNode,
@@ -80,6 +115,10 @@ export function translateTopLevelCypher({
 
         if (meta.authValidatePredicates?.length) {
             projectionAuthStrs.push(...projectionAuthStrs, Cypher.and(...meta.authValidatePredicates));
+        }
+
+        if (predicates.length) {
+            projectionValidatePredicates.push(...predicates);
         }
     }
 
@@ -112,6 +151,7 @@ export function translateTopLevelCypher({
                         params: p,
                         meta,
                         subqueries,
+                        predicates,
                     } = createProjectionAndParams({
                         resolveTree,
                         node,
@@ -123,6 +163,9 @@ export function translateTopLevelCypher({
                     params = { ...params, ...p };
                     if (meta.authValidatePredicates?.length) {
                         projectionAuthStrs.push(Cypher.and(...meta.authValidatePredicates));
+                    }
+                    if (predicates.length) {
+                        projectionValidatePredicates.push(...predicates);
                     }
                     headStrs.push(
                         new Cypher.RawCypher((env) => {
@@ -161,6 +204,10 @@ export function translateTopLevelCypher({
         { strs: initApocParamsStrs, params }
     );
 
+    if (statement.includes("$jwt")) {
+        apocParams.strs.push("jwt: $jwt");
+    }
+
     params = { ...params, ...apocParams.params };
 
     if (type === "Query") {
@@ -186,12 +233,22 @@ export function translateTopLevelCypher({
     const projectionSubquery = Cypher.concat(...projectionSubqueries);
 
     return new Cypher.RawCypher((env) => {
+        const authPredicates: Cypher.Predicate[] = [];
+
+        if (projectionValidatePredicates.length) {
+            authPredicates.push(Cypher.and(...projectionValidatePredicates));
+        }
+
         if (projectionAuthStrs.length) {
             const validatePred = Cypher.apoc.util.validatePredicate(
                 Cypher.not(Cypher.and(...projectionAuthStrs)),
                 AUTH_FORBIDDEN_ERROR
             );
-            cypherStrs.push(`WHERE ${compileCypher(validatePred, env)}`);
+            authPredicates.push(validatePred);
+        }
+
+        if (authPredicates.length) {
+            cypherStrs.push(`WHERE ${compileCypher(Cypher.and(...authPredicates), env)}`);
         }
 
         const subqueriesStr = projectionSubquery ? `\n${compileCypher(projectionSubquery, env)}` : "";

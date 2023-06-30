@@ -22,13 +22,13 @@ import { Neo4jGraphQL } from "../../../src";
 import type { GraphQLInputObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
 
 describe("@filterable directive", () => {
-    let plugin: TestSubscriptionsPlugin;
+    let plugin: TestSubscriptionsMechanism;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsPlugin();
+        plugin = new TestSubscriptionsMechanism();
     });
 
     describe("on SCALAR", () => {
@@ -47,7 +47,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -64,13 +64,7 @@ describe("@filterable directive", () => {
             const title_STARTS_WITH = movieWhereFields["title_STARTS_WITH"];
             const title_ENDS_WITH = movieWhereFields["title_ENDS_WITH"];
 
-            const titleFilters = [
-                title,
-                title_IN,
-                title_CONTAINS,
-                title_STARTS_WITH,
-                title_ENDS_WITH,
-            ];
+            const titleFilters = [title, title_IN, title_CONTAINS, title_STARTS_WITH, title_ENDS_WITH];
 
             for (const scalarFilter of titleFilters) {
                 expect(scalarFilter).toBeDefined();
@@ -79,7 +73,7 @@ describe("@filterable directive", () => {
             const movieSubscriptionWhereType = schema.getType("MovieSubscriptionWhere") as GraphQLInputObjectType;
 
             expect(movieSubscriptionWhereType).toBeDefined();
-            
+
             const movieSubscriptionWhereFields = movieSubscriptionWhereType.getFields();
 
             const subscriptionTitle = movieSubscriptionWhereFields["title"];
@@ -162,7 +156,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -178,13 +172,7 @@ describe("@filterable directive", () => {
             const title_STARTS_WITH = movieWhereFields["title_STARTS_WITH"];
             const title_ENDS_WITH = movieWhereFields["title_ENDS_WITH"];
 
-            const titleFilters = [
-                title,
-                title_IN,
-                title_CONTAINS,
-                title_STARTS_WITH,
-                title_ENDS_WITH,
-            ];
+            const titleFilters = [title, title_IN, title_CONTAINS, title_STARTS_WITH, title_ENDS_WITH];
 
             for (const scalarFilter of titleFilters) {
                 expect(scalarFilter).toBeDefined();
@@ -193,7 +181,7 @@ describe("@filterable directive", () => {
             const movieSubscriptionWhereType = schema.getType("MovieSubscriptionWhere") as GraphQLInputObjectType;
 
             expect(movieSubscriptionWhereType).toBeDefined();
-            
+
             const movieSubscriptionWhereFields = movieSubscriptionWhereType.getFields();
 
             const subscriptionTitle = movieSubscriptionWhereFields["title"];
@@ -275,7 +263,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -292,13 +280,7 @@ describe("@filterable directive", () => {
             const title_STARTS_WITH = movieWhereFields["title_STARTS_WITH"];
             const title_ENDS_WITH = movieWhereFields["title_ENDS_WITH"];
 
-            const titleFilters = [
-                title,
-                title_IN,
-                title_CONTAINS,
-                title_STARTS_WITH,
-                title_ENDS_WITH,
-            ];
+            const titleFilters = [title, title_IN, title_CONTAINS, title_STARTS_WITH, title_ENDS_WITH];
 
             for (const scalarFilter of titleFilters) {
                 expect(scalarFilter).toBeUndefined();
@@ -307,7 +289,7 @@ describe("@filterable directive", () => {
             const movieSubscriptionWhereType = schema.getType("MovieSubscriptionWhere") as GraphQLInputObjectType;
 
             expect(movieSubscriptionWhereType).toBeUndefined(); // is completely removed as does not contains any filterable fields
-            
+
             const aggregationWhereInput = schema.getType(
                 "ActorMoviesNodeAggregationWhereInput"
             ) as GraphQLInputObjectType;
@@ -371,7 +353,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -421,7 +403,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -471,7 +453,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -521,7 +503,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -575,7 +557,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -629,7 +611,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -683,7 +665,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -717,58 +699,58 @@ describe("@filterable directive", () => {
         });
 
         test("disable value filters", async () => {
-          const typeDefs = gql`
-              type Actor implements Person {
-                  username: String!
-                  password: String!
-                  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
-              }
+            const typeDefs = gql`
+                type Actor implements Person {
+                    username: String!
+                    password: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
 
-              interface Person {
-                  username: String!
-              }
+                interface Person {
+                    username: String!
+                }
 
-              type Movie {
-                  title: String
-                  actors: [Person!]!
-                      @relationship(type: "ACTED_IN", direction: IN)
-                      @filterable(byValue: false, byAggregate: false)
-              }
-          `;
-          const neoSchema = new Neo4jGraphQL({
-              typeDefs,
-              plugins: {
-                  subscriptions: plugin,
-              },
-          });
-          const schema = await neoSchema.getSchema();
+                type Movie {
+                    title: String
+                    actors: [Person!]!
+                        @relationship(type: "ACTED_IN", direction: IN)
+                        @filterable(byValue: false, byAggregate: false)
+                }
+            `;
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: {
+                    subscriptions: plugin,
+                },
+            });
+            const schema = await neoSchema.getSchema();
 
-          const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
-          expect(movieWhereType).toBeDefined();
+            const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
+            expect(movieWhereType).toBeDefined();
 
-          const movieWhereFields = movieWhereType.getFields();
+            const movieWhereFields = movieWhereType.getFields();
 
-          const actorsConnection = movieWhereFields["actorsConnection"];
-          const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
-          const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
-          const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
-          const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
+            const actorsConnection = movieWhereFields["actorsConnection"];
+            const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
+            const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
+            const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
+            const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
-          const actorsConnectionFilters = [
-              actorsConnection,
-              actorsConnectionALL,
-              actorsConnectionNONE,
-              actorsConnectionSINGLE,
-              actorsConnectionSOME,
-          ];
+            const actorsConnectionFilters = [
+                actorsConnection,
+                actorsConnectionALL,
+                actorsConnectionNONE,
+                actorsConnectionSINGLE,
+                actorsConnectionSOME,
+            ];
 
-          for (const relationshipFilter of actorsConnectionFilters) {
-              expect(relationshipFilter).toBeUndefined();
-          }
+            for (const relationshipFilter of actorsConnectionFilters) {
+                expect(relationshipFilter).toBeUndefined();
+            }
 
-          const actorsAggregate = movieWhereFields["actorsAggregate"];
-          expect(actorsAggregate).toBeUndefined();
-      });
+            const actorsAggregate = movieWhereFields["actorsAggregate"];
+            expect(actorsAggregate).toBeUndefined();
+        });
     });
 
     describe("on UNION RELATIONSHIP FIELD, (aggregation are no generated for abstract types)", () => {
@@ -795,7 +777,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -853,7 +835,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -911,7 +893,7 @@ describe("@filterable directive", () => {
             `;
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
                 },
             });
@@ -962,7 +944,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });
@@ -1777,7 +1759,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });
@@ -2627,7 +2609,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });
@@ -3441,7 +3423,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });
@@ -4205,7 +4187,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });
@@ -5057,7 +5039,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });
@@ -5881,7 +5863,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });
@@ -6648,7 +6630,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });
@@ -7491,7 +7473,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });
@@ -8334,7 +8316,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });
@@ -9181,7 +9163,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });
@@ -10401,7 +10383,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });
@@ -11621,7 +11603,7 @@ describe("@filterable directive", () => {
                 `;
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
-                    plugins: {
+                    features: {
                         subscriptions: plugin,
                     },
                 });

@@ -101,13 +101,13 @@ function getObjFieldMeta({
     unions: UnionTypeDefinitionNode[];
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
-    validateResolvers: boolean;
+    validateResolvers?: boolean;
     callbacks?: Neo4jGraphQLCallbacks;
     customResolvers?: IResolvers | Array<IResolvers>;
 }): ObjectFields {
     const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
     const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
-    const objIsJwtPayload = (obj.directives || []).find((d) => d.name.value === "jwtPayload");
+    const objIsJwtPayload = (obj.directives || []).find((d) => d.name.value === "jwt");
 
     return obj?.fields?.reduce(
         (res: ObjectFields, field) => {
@@ -180,6 +180,7 @@ function getObjFieldMeta({
                             "id",
                             "auth",
                             "authorization",
+                            "authentication",
                             "readonly",
                             "writeonly",
                             "customResolver",
@@ -218,9 +219,7 @@ function getObjFieldMeta({
 
             if (jwtClaimDirective) {
                 if (!objIsJwtPayload) {
-                    throw new Error(
-                        "@jwtClaim directive can only be used on fields within a type annotated with @jwtPayload"
-                    );
+                    throw new Error("@jwtClaim directive can only be used on fields within a type annotated with @jwt");
                 }
                 if ((field.directives as DirectiveNode[]).length > 1) {
                     throw new Error("@jwtClaim directive cannot be combined with other directives.");

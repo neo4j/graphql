@@ -28,6 +28,8 @@ import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
 import { createAuthPredicates } from "./create-auth-predicates";
+import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 interface Res {
     strs: string[];
@@ -60,7 +62,11 @@ function createDeleteAndParams({
     parameterPrefix: string;
     recursing?: boolean;
 }): [string, any] {
+    checkAuthentication({ context, node, targetOperations: ["DELETE"] });
+
     function reducer(res: Res, [key, value]: [string, any]) {
+        checkAuthentication({ context, node, targetOperations: ["DELETE"], field: key });
+
         const relationField = node.relationFields.find((x) => key === x.fieldName);
 
         if (relationField) {
@@ -86,6 +92,8 @@ function createDeleteAndParams({
             const outStr = relationField.direction === "OUT" ? "->" : "-";
 
             refNodes.forEach((refNode) => {
+                checkAuthentication({ context, node: refNode, targetOperations: ["DELETE"] });
+
                 const v = relationField.union ? value[refNode.name] : value;
                 const deletes = relationField.typeMeta.array ? v : [v];
 
@@ -101,6 +109,7 @@ function createDeleteAndParams({
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                     const nodeToDelete = `${variableName}_to_delete`;
                     const labels = refNode.getLabelString(context);
+                    const withRelationshipStr = context.subscriptionsEnabled ? `, ${relationshipVariable}` : "";
 
                     const varsWithoutMeta = filterMetaVariable(withVars).join(", ");
                     innerStrs.push("WITH *");
@@ -150,16 +159,40 @@ function createDeleteAndParams({
                         }
                     }
 
-                    const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
-                        operations: "DELETE",
-                        entity: refNode,
+                    const authorizationAndParams = createAuthorizationBeforeAndParams({
                         context,
-                        where: { varName: variableName, node: refNode },
+                        nodes: [
+                            {
+                                variable: variableName,
+                                node: refNode,
+                            },
+                        ],
+                        operations: ["DELETE"],
                     });
-                    if (authWhereCypher) {
-                        whereStrs.push(authWhereCypher);
-                        res.params = { ...res.params, ...authWhereParams };
+
+                    if (authorizationAndParams) {
+                        const { cypher, params, subqueries } = authorizationAndParams;
+
+                        whereStrs.push(cypher);
+                        res.params = { ...res.params, ...params };
+
+                        if (subqueries) {
+                            res.strs.push(subqueries);
+                        }
+                    } else {
+                        // TODO: Authorization - delete for 4.0.0
+                        const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
+                            operations: "DELETE",
+                            entity: refNode,
+                            context,
+                            where: { varName: variableName, node: refNode },
+                        });
+                        if (authWhereCypher) {
+                            whereStrs.push(authWhereCypher);
+                            res.params = { ...res.params, ...authWhereParams };
+                        }
                     }
+
                     if (whereStrs.length) {
                         const predicate = `${whereStrs.join(" AND ")}`;
                         if (aggregationWhere) {
@@ -175,19 +208,21 @@ function createDeleteAndParams({
                         }
                     }
 
-                    const { cypher: authAllowCypher, params: authAllowParams } = createAuthAndParams({
-                        entity: refNode,
-                        operations: "DELETE",
-                        context,
-                        allow: { node: refNode, varName: variableName },
-                    });
-
-                    if (authAllowCypher) {
-                        innerStrs.push(`WITH ${[...withVars, variableName, relationshipVariable].join(", ")}`);
-                        innerStrs.push(
-                            `CALL apoc.util.validate(NOT (${authAllowCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-                        );
-                        res.params = { ...res.params, ...authAllowParams };
+                    // TODO: Authorization - delete for 4.0.0
+                    if (!authorizationAndParams) {
+                        const { cypher: authAllowCypher, params: authAllowParams } = createAuthAndParams({
+                            entity: refNode,
+                            operations: "DELETE",
+                            context,
+                            allow: { node: refNode, varName: variableName },
+                        });
+                        if (authAllowCypher) {
+                            res.strs.push(`WITH ${[...withVars, variableName].join(", ")}${withRelationshipStr}`);
+                            res.strs.push(
+                                `CALL apoc.util.validate(NOT (${authAllowCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                            );
+                            res.params = { ...res.params, ...authAllowParams };
+                        }
                     }
 
                     if (d.delete) {

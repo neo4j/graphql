@@ -10,7 +10,7 @@
     "dependencies": {
         "@apollo/server": "^4.7.0",
         "@graphql-tools/wrap": "^9.3.6",
-        "@neo4j/graphql": "^3.21.0",
+        "@neo4j/graphql": "^3.22.0",
         "graphql": "16.7.1",
         "graphql-tag": "^2.12.6",
         "neo4j-driver": "^5.5.0"
@@ -21,6 +21,6 @@
         "ts-loader": "9.4.4",
         "tsconfig-paths-webpack-plugin": "4.0.1",
         "typescript": "5.1.6",
-        "webpack": "5.88.0"
+        "webpack": "5.88.1"
     }
 }

@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("Cypher Aggregations with Auth", () => {
     const secret = "secret";
@@ -32,24 +31,42 @@ describe("Cypher Aggregations with Auth", () => {
     beforeAll(() => {
         typeDefs = gql`
             type User {
-                id: ID @auth(rules: [{ allow: { id: "$jwt.sub" } }])
-                name: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
-                imdbRatingInt: Int! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
-                imdbRatingFloat: Float! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
-                imdbRatingBigInt: BigInt! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
-                createdAt: DateTime @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+                id: ID
+                    @authorization(
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    )
+                name: String!
+                    @authorization(
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    )
+                imdbRatingInt: Int!
+                    @authorization(
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    )
+                imdbRatingFloat: Float!
+                    @authorization(
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    )
+                imdbRatingBigInt: BigInt!
+                    @authorization(
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    )
+                createdAt: DateTime
+                    @authorization(
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    )
             }
 
-            extend type User @auth(rules: [{ allow: { id: "$jwt.sub" }, where: { id: "$jwt.sub" } }])
+            extend type User
+                @authorization(
+                    validate: [{ operations: [AGGREGATE], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
+                    filter: [{ operations: [AGGREGATE], where: { node: { id: "$jwt.sub" } } }]
+                )
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
-            },
+            features: { authorization: { key: secret } },
         });
     });
 
@@ -62,22 +79,24 @@ describe("Cypher Aggregations with Auth", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { sub: "super_admin" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE (($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             RETURN { count: count(this) }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth_param0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -91,23 +110,25 @@ describe("Cypher Aggregations with Auth", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { sub: "super_admin" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.name = $param0 AND (this.id IS NOT NULL AND this.id = $auth_param0))
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE (this.name = $param0 AND (($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])))
             RETURN { count: count(this) }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some-name\\",
-                \\"auth_param0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -124,23 +145,26 @@ describe("Cypher Aggregations with Auth", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { sub: "super_admin" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE (($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { imdbRatingInt: { min: min(this.imdbRatingInt), max: max(this.imdbRatingInt) } }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth_param0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -157,23 +181,26 @@ describe("Cypher Aggregations with Auth", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { sub: "super_admin" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE (($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { imdbRatingFloat: { min: min(this.imdbRatingFloat), max: max(this.imdbRatingFloat) } }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth_param0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -190,23 +217,26 @@ describe("Cypher Aggregations with Auth", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { sub: "super_admin" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE (($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { imdbRatingBigInt: { min: min(this.imdbRatingBigInt), max: max(this.imdbRatingBigInt) } }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth_param0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -223,23 +253,26 @@ describe("Cypher Aggregations with Auth", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { sub: "super_admin" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE (($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { id: { shortest: min(this.id), longest: max(this.id) } }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth_param0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -256,16 +289,15 @@ describe("Cypher Aggregations with Auth", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { sub: "super_admin" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE (($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { name: { shortest:
                                         reduce(aggVar = collect(this.name)[0], current IN collect(this.name) |
                                             CASE
@@ -285,8 +317,12 @@ describe("Cypher Aggregations with Auth", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth_param0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -303,23 +339,26 @@ describe("Cypher Aggregations with Auth", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { sub: "super_admin" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.id IS NOT NULL AND this.id = $auth_param0)
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE (($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { createdAt: { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"auth_param0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });

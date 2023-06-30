@@ -23,15 +23,15 @@ import type { DirectiveNode, GraphQLResolveInfo, GraphQLSchema, InputValueDefini
 import type { Directive } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
-import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
+import type { Integer } from "neo4j-driver";
 import type { Node, Relationship } from "../classes";
 import type { Executor } from "../classes/Executor";
-import type { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { Auth } from "./deprecated/auth/auth";
+import type { JwtPayload } from "./jwt-payload";
 import type { AuthContext } from "./deprecated/auth/auth-context";
-import type { JwtPayload } from "./deprecated/auth/jwt-payload";
+import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
 
 export { Node } from "../classes";
 
@@ -40,12 +40,18 @@ export type DriverConfig = {
     bookmarks?: string | string[];
 };
 
-export interface Context {
-    driver?: Driver;
-    driverConfig?: DriverConfig;
+type AuthorizationContext = {
+    jwt?: JwtPayload;
+    jwtParam: Cypher.Param;
+    isAuthenticated: boolean;
+    isAuthenticatedParam: Cypher.Param;
+    claims?: Map<string, string>;
+    jwtDefault: Cypher.Param;
+};
+
+export interface Context extends Neo4jGraphQLContext {
     resolveTree: ResolveTree;
     info: GraphQLResolveInfo;
-    neo4jDatabaseInfo: Neo4jDatabaseInfo;
     nodes: Node[];
     relationships: Relationship[];
     schemaModel: Neo4jGraphQLSchemaModel;
@@ -54,11 +60,10 @@ export interface Context {
     callbacks?: Neo4jGraphQLCallbacks;
     plugins?: Neo4jGraphQLPlugins;
     features: ContextFeatures;
-    jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
-    executionContext: Driver | Session | Transaction;
     executor: Executor;
     extensions?: Record<string, any>;
+    authorization: AuthorizationContext;
     [k: string]: any;
 }
 
@@ -535,9 +540,10 @@ export interface Neo4jPopulatedBySettings {
     callbacks?: Neo4jGraphQLCallbacks;
 }
 export interface Neo4jAuthorizationSettings {
-    key: Key | ((req: RequestLike) => Key);
+    key: Key | ((context: Neo4jGraphQLContext) => Key);
     verify?: boolean;
     verifyOptions?: JWTVerifyOptions;
+    globalAuthentication?: boolean;
 }
 export interface RemoteJWKS {
     url: string | URL;

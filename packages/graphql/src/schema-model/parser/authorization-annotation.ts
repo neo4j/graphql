@@ -37,9 +37,7 @@ export function parseAuthorizationAnnotation(directive: DirectiveNode): Authoriz
     };
     if (!filter && !validate) {
         throw new Neo4jGraphQLSchemaValidationError(
-            `@authorization requires at least one of ${AuthorizationAnnotationArguments.join(
-                ", "
-            )} arguments`
+            `@authorization requires at least one of ${AuthorizationAnnotationArguments.join(", ")} arguments`
         );
     }
     if (Object.keys(unrecognizedArguments).length) {
@@ -47,10 +45,12 @@ export function parseAuthorizationAnnotation(directive: DirectiveNode): Authoriz
             `@authorization unrecognized arguments: ${Object.keys(unrecognizedArguments).join(", ")}`
         );
     }
+
     const filterRules = filter?.map((rule) => new AuthorizationFilterRule(rule as AuthorizationFilterRuleConstructor));
     const validateRules = validate?.map(
         (rule) => new AuthorizationValidateRule(rule as AuthorizationValidateRuleConstructor)
     );
+
     return new AuthorizationAnnotation({
         filter: filterRules,
         validate: validateRules,

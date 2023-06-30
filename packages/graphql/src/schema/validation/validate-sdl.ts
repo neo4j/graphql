@@ -18,11 +18,11 @@
  */
 
 import type { Maybe } from "@graphql-tools/utils/typings/types";
-import type { DocumentNode, GraphQLError, GraphQLSchema } from "graphql";
+import type { DocumentNode, GraphQLSchema, GraphQLError } from "graphql";
 import { visit, visitInParallel } from "graphql";
 import type { SDLValidationRule } from "graphql/validation/ValidationContext";
 import { SDLValidationContext } from "graphql/validation/ValidationContext";
-
+import { mapError } from "./utils/map-error";
 
 export function validateSDL(
     documentAST: DocumentNode,
@@ -31,7 +31,8 @@ export function validateSDL(
 ): ReadonlyArray<GraphQLError> {
     const errors: Array<GraphQLError> = [];
     const context = new SDLValidationContext(documentAST, schemaToExtend, (error) => {
-        errors.push(error);
+        const mappedError = mapError(error);
+        errors.push(mappedError);
     });
     const visitors = rules.map((rule) => rule(context));
     visit(documentAST, visitInParallel(visitors));

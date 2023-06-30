@@ -79,6 +79,7 @@ export async function translateQuery(
     query: DocumentNode,
     options?: {
         req?: IncomingMessage;
+        token?: string;
         variableValues?: Record<string, any>;
         neo4jVersion?: string;
         contextValues?: Record<string, any>;
@@ -90,6 +91,10 @@ export async function translateQuery(
 
     if (options?.req) {
         contextValue.req = options.req;
+    }
+
+    if (options?.token) {
+        contextValue.token = options.token;
     }
 
     if (options?.contextValues) {

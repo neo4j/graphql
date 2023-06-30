@@ -227,7 +227,7 @@ describe("Subscription authentication", () => {
                 `);
 
             const result = await createMovie("movie1", server);
-
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([
                 {
@@ -254,7 +254,7 @@ describe("Subscription authentication", () => {
                     `);
 
             const result = await createMovie("movie1", server);
-
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authenticated" })]);
@@ -437,7 +437,7 @@ describe("Subscription authentication", () => {
                 `,
                 })
                 .expect(200);
-
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toIncludeSameMembers([
                 {
@@ -564,7 +564,7 @@ describe("Subscription authentication", () => {
                 `,
                 })
                 .expect(200);
-
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toIncludeSameMembers([
                 {
@@ -712,7 +712,7 @@ describe("Subscription authentication", () => {
                 `);
 
             const result = await createMovie("movie1", server);
-
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([
                 {
@@ -746,7 +746,7 @@ describe("Subscription authentication", () => {
         });
     });
 
-    describe("auth without subscribe oprations", () => {
+    describe("auth without subscribe operations", () => {
         let server: TestGraphQLServer;
         let wsClient: WebSocketTestClient;
 
@@ -802,7 +802,7 @@ describe("Subscription authentication", () => {
                     `);
 
             const result = await createMovie("movie1", server);
-
+            await wsClient.waitForEvents(1);
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([
                 {
@@ -817,6 +817,7 @@ describe("Subscription authentication", () => {
         });
     });
 
+    // what are these trying to achieve?
     describe("auth with isAuthenticated set to false", () => {
         let server: TestGraphQLServer;
         let wsClient: WebSocketTestClient;
