@@ -23,6 +23,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/2437", () => {
     let driver: Driver;
@@ -47,12 +48,14 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
             type JWT @jwt {
                 roles: [String!]!
             }
+
             type ${Agent} @exclude(operations: [DELETE]) {
                 uuid: ID! @id
                 archivedAt: DateTime
 
                 valuations: [${Valuation}!]! @relationship(type: "IS_VALUATION_AGENT", direction: OUT)
             }
+
             extend type ${Agent}
                 @authorization(validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "Admin" } } }], filter: [{ where: { node: { archivedAt: null } } }])
 
@@ -62,6 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
 
                 agent: ${Agent}! @relationship(type: "IS_VALUATION_AGENT", direction: IN)
             }
+
             extend type ${Valuation} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
         `;
 
@@ -83,6 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
+            features: { authorization: { key: "secret" } },
         });
     });
 
@@ -117,7 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token: createBearerToken("secret") }),
         });
 
         expect(result.errors).toBeFalsy();
