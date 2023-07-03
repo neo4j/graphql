@@ -99,7 +99,7 @@ export function filterByAuthorizationRules({
                         receivedProperties: event.properties.old,
                     });
                 case "create_relationship":
-                case "delete_relationship":
+                case "delete_relationship": {
                     const receivedEventRelationshipType = event.relationshipName;
                     const relationships = node.relationFields.filter((f) => f.type === receivedEventRelationshipType);
                     if (!relationships.length) {
@@ -112,6 +112,7 @@ export function filterByAuthorizationRules({
                         whereProperties: wherePropertyValue,
                         receivedProperties: receivedEventProperties[key],
                     });
+                }
             }
         }
 

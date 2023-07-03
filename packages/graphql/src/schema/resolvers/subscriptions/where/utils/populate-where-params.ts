@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
 import dotProp from "dot-prop";
 import type { SubscriptionContext } from "../../types";
 import type { SubscriptionsAuthorizationWhere } from "../../../../../schema-model/annotation/SubscriptionsAuthorizationAnnotation";
