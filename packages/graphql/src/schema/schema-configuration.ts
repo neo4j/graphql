@@ -53,7 +53,7 @@ export type SchemaConfigurationFlags = {
 function getDefaultSchemaConfigurationFlags(): SchemaConfigurationFlags {
     return {
         read: true,
-        aggregate: true,
+        aggregate: false,
         create: true,
         delete: true,
         update: true,

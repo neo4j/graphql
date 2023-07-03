@@ -60,7 +60,7 @@ export const relationshipDirective = new GraphQLDirective({
         },
         aggregate: {
             type: GraphQLBoolean,
-            defaultValue: true,
+            defaultValue: false,
             description: "Prevent aggregation for this relationship",
         },
     },
