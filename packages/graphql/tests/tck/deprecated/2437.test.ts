@@ -20,7 +20,6 @@
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
-import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/2437", () => {
     let typeDefs: string;
@@ -28,10 +27,6 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
 
     beforeAll(() => {
         typeDefs = `
-            type JWT @jwt {
-                roles: [String!]!
-            }
-
             type Agent @exclude(operations: [DELETE]) {
                 uuid: ID! @id
                 archivedAt: DateTime
@@ -39,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
                 valuations: [Valuation!]! @relationship(type: "IS_VALUATION_AGENT", direction: OUT)
             }
             extend type Agent
-                @authorization(validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "Admin" } } }], filter: [{ where: { node: { archivedAt: null } } }])
+                @auth(rules: [{ operations: [CREATE], roles: ["Admin"] }, { where: { archivedAt: null } }])
 
             type Valuation @exclude(operations: [DELETE]) {
                 uuid: ID! @id
@@ -47,12 +42,11 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
 
                 agent: Agent! @relationship(type: "IS_VALUATION_AGENT", direction: IN)
             }
-            extend type Valuation @authorization(filter: [{ where: { node: { archivedAt: null } } }])
+            extend type Valuation @auth(rules: [{ where: { archivedAt: null } }])
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            features: { authorization: { key: "secret" } },
         });
     });
 
@@ -74,18 +68,15 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
                 }
             }
         `;
-        const result = await translateQuery(neoSchema, query, {
-            contextValues: { token: createBearerToken("secret") },
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Agent\`)
-            WITH *
-            WHERE (this.uuid = $param0 AND ($isAuthenticated = true AND this.archivedAt IS NULL))
+            WHERE (this.uuid = $param0 AND this.archivedAt IS NULL)
             CALL {
                 WITH this
                 MATCH (this)-[this0:\`IS_VALUATION_AGENT\`]->(this1:\`Valuation\`)
-                WHERE ($isAuthenticated = true AND this1.archivedAt IS NULL)
+                WHERE this1.archivedAt IS NULL
                 WITH { node: { uuid: this1.uuid } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -93,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge
-                    LIMIT $param2
+                    LIMIT $param1
                     RETURN collect(edge) AS var2
                 }
                 WITH var2 AS edges, totalCount
@@ -105,8 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"a1\\",
-                \\"isAuthenticated\\": true,
-                \\"param2\\": {
+                \\"param1\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
