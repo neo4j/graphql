@@ -23,6 +23,7 @@ import type { AuthorizationOperation } from "../../../types/authorization";
 import { createAuthorizationAfterPredicate } from "../create-authorization-after-predicate";
 import type { NodeMap } from "../types/node-map";
 import { compileCypher } from "../../../utils/compile-cypher";
+import { compilePredicateReturn } from "./compile-predicate-return";
 
 export type AuthorizationAfterAndParams = {
     cypher: string;
@@ -63,25 +64,7 @@ export function createAuthorizationAfterAndParams({
     });
 
     if (predicateReturn) {
-        const result: AuthorizationAfterAndParams = { cypher: "", params: {} };
-
-        const { predicate, preComputedSubqueries } = predicateReturn;
-
-        if (predicate) {
-            const predicateCypher = new Cypher.RawCypher((env) => {
-                return compileCypher(predicate, env);
-            });
-            const { cypher, params } = predicateCypher.build("authorization_");
-            result.cypher = cypher;
-            result.params = params;
-        }
-
-        if (preComputedSubqueries && !preComputedSubqueries.empty) {
-            const { cypher } = preComputedSubqueries.build("authorization_");
-            result.subqueries = cypher;
-        }
-
-        return result;
+        return compilePredicateReturn(predicateReturn);
     }
 
     return undefined;
