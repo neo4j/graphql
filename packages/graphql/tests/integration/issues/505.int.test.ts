@@ -61,27 +61,29 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         }
 
         type ${pageType}
-            @auth(
-                rules: [
+            @authorization(
+                filter: [
                     {
                         operations: [READ]
                         where: {
-                            OR: [
-                                { owner: { authId: "$jwt.sub" } }
-                                {
-                                    AND: [
-                                        { shared: true }
-                                        {
-                                            workspace: {
-                                                OR: [
-                                                    { members: { authId: "$jwt.sub" } }
-                                                    { admins: { authId: "$jwt.sub" } }
-                                                ]
+                            node: { 
+                                OR: [
+                                    { owner: { authId: "$jwt.sub" } } 
+                                    {
+                                        AND: [
+                                            { shared: true } 
+                                            {
+                                                workspace: {
+                                                    OR: [
+                                                        { members: { authId: "$jwt.sub" } } 
+                                                        { admins: { authId: "$jwt.sub" } } 
+                                                    ]
+                                                }
                                             }
-                                        }
-                                    ]
-                                }
-                            ]
+                                        ]
+                                    }
+                                ]
+                            }
                         }
                     }
                 ]
