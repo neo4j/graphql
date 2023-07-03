@@ -21,12 +21,15 @@ import type { GraphQLWhereArg } from "../../types";
 
 export const SubscriptionsAuthorizationAnnotationArguments = ["filter"] as const;
 
-export type SubscriptionsAuthorizationFilterEvent =
-    | "CREATE"
-    | "UPDATE"
-    | "DELETE"
-    | "CREATE_RELATIONSHIP"
-    | "DELETE_RELATIONSHIP";
+export const SubscriptionsAuthorizationFilterEventRule = [
+    "CREATE",
+    "UPDATE",
+    "DELETE",
+    "CREATE_RELATIONSHIP",
+    "DELETE_RELATIONSHIP",
+] as const;
+
+export type SubscriptionsAuthorizationFilterEvent = (typeof SubscriptionsAuthorizationFilterEventRule)[number];
 
 export type SubscriptionsAuthorizationWhere = {
     AND?: SubscriptionsAuthorizationWhere[];
@@ -36,14 +39,6 @@ export type SubscriptionsAuthorizationWhere = {
     node?: GraphQLWhereArg;
     relationship?: GraphQLWhereArg;
 };
-
-export const SubscriptionsAuthorizationFilterEventRule: ReadonlyArray<SubscriptionsAuthorizationFilterEvent> = [
-    "CREATE",
-    "UPDATE",
-    "DELETE",
-    "CREATE_RELATIONSHIP",
-    "DELETE_RELATIONSHIP",
-];
 
 export class SubscriptionsAuthorizationAnnotation {
     public filter?: SubscriptionsAuthorizationFilterRule[];
