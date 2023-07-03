@@ -3,7 +3,7 @@
 
 == Operators
 
-When querying for data, a number of operators are available for different types in the `where` argument of a Query or Mutation.
+When querying for data, a number of operators are available for different types in the `where` argument of a query or mutation.
 
 === Equality operators
 
@@ -153,9 +153,9 @@ These are stand-alone operators - that is, they are used as such and not appende
 
 Using the type definitions from xref::queries.adoc[Queries], below are some example of how filtering can be applied when querying for data.
 
-=== At the root of a Query
+=== At the root of a query
 
-By using the `where` argument on the Query field in question, you can return a User with a particular ID:
+By using the `where` argument on the query field in question, you can return a User with a particular ID:
 
 [source, graphql, indent=0]
 ----

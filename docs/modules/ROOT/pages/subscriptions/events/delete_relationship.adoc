@@ -1,5 +1,5 @@
 [[delete_relationship]]
-= Delete Relationship Subscriptions
+= Delete relationship subscriptions
 
 Subscriptions to `DELETE_RELATIONSHIP` events will listen for relationships to a node of the specified type that have been deleted. 
 

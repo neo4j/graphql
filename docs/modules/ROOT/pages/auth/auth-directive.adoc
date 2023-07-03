@@ -33,7 +33,7 @@ You can have many rules for many operations. Each rule is fallen through until a
 
 NOTE: Note that the absence of an `operations` argument will imply _all_ operations.
 
-Many different operations can be called at once, for example in the following Mutation:
+Many different operations can be called at once, for example in the following mutation:
 
 [source, graphql, indent=0]
 ----

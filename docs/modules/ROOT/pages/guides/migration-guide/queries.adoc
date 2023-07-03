@@ -1,7 +1,7 @@
 [[migration-guide-queries]]
 = Queries
 
-Using `neo4j-graphql-js`, all of the arguments for a Query were root-level arguments. For example, for the following simple type definition:
+Using `neo4j-graphql-js`, all of the arguments for a query were root-level arguments. For example, for the following simple type definition:
 
 [source, graphql, indent=0]
 ----
@@ -11,7 +11,7 @@ type Movie {
 }
 ----
 
-The following Query would have been generated:
+The following query would have been generated:
 
 [source, graphql, indent=0]
 ----
@@ -39,7 +39,7 @@ Changes to note for migration:
 [[migration-guide-queries-filtering]]
 == Filtering (`where`)
 
-Simple equality fields are no longer available at the root of Query fields. As a simple demonstration, a simple query using `neo4j-graphql-js` that looked like:
+Simple equality fields are no longer available at the root of query fields. As a simple demonstration, a simple query using `neo4j-graphql-js` that looked like:
 
 [source, graphql, indent=0]
 ----

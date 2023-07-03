@@ -59,7 +59,7 @@ Reference: xref::type-definitions/default-values.adoc#type-definitions-default-v
 
 == `@exclude`
 
-The `@exclude` directive is used on object types to instruct them to be skipped during Query, Mutation and Subscription generation.
+The `@exclude` directive is used on object types to instruct them to be skipped during query, mutation and subscription generation.
 
 Reference: xref::type-definitions/schema-configuration/index.adoc#_exclude[`@exclude`]
 
@@ -77,7 +77,7 @@ Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogener
 
 == `@mutation`
 
-This directive is used to limit the availability of Mutation operations in the library.
+This directive is used to limit the availability of mutation operations in the library.
 
 Reference: xref::type-definitions/schema-configuration/type-configuration.adoc#_mutation[`@mutation`]
 
@@ -117,7 +117,7 @@ Reference: xref::ogm/private.adoc[`@private` Directive]
 
 == `@query`
 
-This directive is used to limit the availability of Query operations in the library.
+This directive is used to limit the availability of query operations in the library.
 
 Reference: xref::type-definitions/schema-configuration/type-configuration.adoc#_query[`@query`]
 
@@ -167,7 +167,7 @@ Reference: xref::type-definitions/schema-configuration/field-configuration.adoc#
 
 == `@subscription`
 
-This directive is used to limit Subscription operations in the library.
+This directive is used to limit subscription operations in the library.
 
 Reference: xref::type-definitions/schema-configuration/type-configuration.adoc#_subscription[`@subscription`]
 

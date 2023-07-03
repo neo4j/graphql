@@ -1,5 +1,5 @@
 [[update]]
-= Update Subscriptions
+= Update subscriptions
 
 Subscription to `UPDATE` events will listen to node properties changes. A new event will be triggered for each mutation that modifies the node top-level properties.
 

@@ -1,5 +1,5 @@
 [[delete]]
-= Delete Subscriptions
+= Delete subscriptions
 
 Subscriptions to `DELETE` events will trigger on deleted nodes.
 

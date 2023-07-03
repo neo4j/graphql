@@ -1,9 +1,9 @@
 [[ogm-api-reference-model-create]]
 = `create`
 
-This method can be used to update nodes, and maps to the underlying xref::mutations/create.adoc[Create] Mutation.
+This method can be used to update nodes, and maps to the underlying xref::mutations/create.adoc[Create] mutation.
 
-Returns a `Promise` that resolves to the equivalent of the Mutation response for this operation.
+Returns a `Promise` that resolves to the equivalent of the mutation response for this operation.
 
 == Example
 
@@ -29,20 +29,20 @@ await Movie.create({ input: [{ title: "The Matrix" }] })
 |`selectionSet` +
  +
  Type: `string` or `DocumentNode` or `SelectionSetNode`
-|Selection set for the Mutation, see xref::ogm/selection-set.adoc[Selection Set] for more information.
+|Selection set for the mutation, see xref::ogm/selection-set.adoc[Selection Set] for more information.
 
 |`args` +
  +
  Type: `any`
-|The `args` value for the GraphQL Mutation.
+|The `args` value for the GraphQL mutation.
 
 |`context` +
  +
  Type: `any`
-|The `context` value for the GraphQL Mutation.
+|The `context` value for the GraphQL mutation.
 
 |`rootValue` +
  +
  Type: `any`
-|The `rootValue` value for the GraphQL Mutation.
+|The `rootValue` value for the GraphQL mutation.
 |===
