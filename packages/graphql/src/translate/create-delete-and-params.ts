@@ -102,17 +102,16 @@ function createDeleteAndParams({
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                     const nodeToDelete = `${variableName}_to_delete`;
                     const labels = refNode.getLabelString(context);
-                    const withRelationshipStr = context.subscriptionsEnabled ? `, ${relationshipVariable}` : "";
 
                     const varsWithoutMeta = filterMetaVariable(withVars).join(", ");
                     innerStrs.push("WITH *");
                     innerStrs.push("CALL {");
                     if (withVars) {
                         if (context.subscriptionsEnabled) {
-                            innerStrs.push(`WITH ${varsWithoutMeta}`);
-                            innerStrs.push(`WITH ${varsWithoutMeta}, []  AS ${META_CYPHER_VARIABLE}`);
+                            innerStrs.push(`WITH *`);
+                            innerStrs.push(`WITH *, []  AS ${META_CYPHER_VARIABLE}`);
                         } else {
-                            innerStrs.push(`WITH ${withVars.join(", ")}`);
+                            innerStrs.push(`WITH *`);
                         }
                     }
                     innerStrs.push(
