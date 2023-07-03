@@ -28,14 +28,14 @@ describe("Cypher Aggregations where node with Int", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User {
+            type User @query(aggregate: true) {
                 someInt: Int
                 someIntAlias: Int @alias(property: "_someIntAlias")
             }
 
-            type Post {
+            type Post @query(aggregate: true) {
                 content: String!
-                likes: [User!]! @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, aggregate: true)
             }
         `;
 

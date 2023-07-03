@@ -28,16 +28,16 @@ describe("Field Level Aggregations", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie {
+            type Movie @query(aggregate: true) {
                 title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
                 released: DateTime
             }
 
-            type Actor {
+            type Actor @query(aggregate: true) {
                 name: String
                 age: Int
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, aggregate: true)
             }
         `;
 

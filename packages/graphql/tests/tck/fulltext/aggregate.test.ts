@@ -28,7 +28,7 @@ describe("Cypher -> fulltext -> Aggregate", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) {
+            type Movie @query(aggregate: true) @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) {
                 title: String
             }
         `;

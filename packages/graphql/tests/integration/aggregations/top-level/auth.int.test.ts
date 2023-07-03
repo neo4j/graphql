@@ -45,7 +45,7 @@ describe("aggregations-top_level-auth", () => {
         const randomType = new UniqueType("Movie");
 
         const typeDefs = `
-            type ${randomType.name} {
+            type ${randomType.name} @query(aggregate: true) {
                 id: ID
             }
 
@@ -101,7 +101,7 @@ describe("aggregations-top_level-auth", () => {
                 posts: [Post!]! @relationship(type: "POSTED", direction: OUT)
             }
 
-            type Post {
+            type Post @query(aggregate: true) {
                 content: String
                 creator: User! @relationship(type: "POSTED", direction: IN)
             }
@@ -159,7 +159,7 @@ describe("aggregations-top_level-auth", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingInt: Int @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
@@ -221,7 +221,7 @@ describe("aggregations-top_level-auth", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 someId: ID @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
@@ -283,7 +283,7 @@ describe("aggregations-top_level-auth", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 someString: String @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
@@ -345,7 +345,7 @@ describe("aggregations-top_level-auth", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingFloat: Float @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
@@ -407,7 +407,7 @@ describe("aggregations-top_level-auth", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingBigInt: BigInt @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
@@ -469,7 +469,7 @@ describe("aggregations-top_level-auth", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 createdAt: DateTime @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
@@ -531,7 +531,7 @@ describe("aggregations-top_level-auth", () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 id: ID
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
                 screenTime: Duration @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])

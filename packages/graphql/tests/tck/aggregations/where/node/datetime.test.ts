@@ -28,14 +28,14 @@ describe("Cypher Aggregations where node with DateTime", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User {
+            type User @query(aggregate: true) {
                 someDateTime: DateTime
                 someDateTimeAlias: DateTime @alias(property: "_someDateTimeAlias")
             }
 
-            type Post {
+            type Post @query(aggregate: true) {
                 content: String!
-                likes: [User!]! @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, aggregate: true)
             }
         `;
 

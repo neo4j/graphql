@@ -28,14 +28,14 @@ describe("Cypher Aggregations where node with Time", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User {
+            type User @query(aggregate: true) {
                 someTime: Time
                 someTimeAlias: Time @alias(property: "_someTimeAlias")
             }
 
-            type Post {
+            type Post @query(aggregate: true) {
                 content: String!
-                likes: [User!]! @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, aggregate: true)
             }
         `;
 

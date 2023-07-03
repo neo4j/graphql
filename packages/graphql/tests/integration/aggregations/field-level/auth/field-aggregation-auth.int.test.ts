@@ -32,19 +32,19 @@ describe("Field Level Aggregations Auth", () => {
     const typeMovie = new UniqueType("Movie");
     const typeActor = new UniqueType("Actor");
     const typeDefs = `
-    type ${typeMovie.name} {
+    type ${typeMovie.name} @query(aggregate: true) {
         name: String
         year: Int
         createdAt: DateTime
         testId: Int
-        ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+        ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
     }
 
     type ${typeActor.name} {
         name: String
         year: Int
         createdAt: DateTime
-        ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+        ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, aggregate: true)
     }`;
     const secret = "secret";
 

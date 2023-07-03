@@ -31,7 +31,7 @@ describe("Cypher Aggregations with Auth", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User {
+            type User @query(aggregate: true) {
                 id: ID @auth(rules: [{ allow: { id: "$jwt.sub" } }])
                 name: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
                 imdbRatingInt: Int! @auth(rules: [{ allow: { id: "$jwt.sub" } }])

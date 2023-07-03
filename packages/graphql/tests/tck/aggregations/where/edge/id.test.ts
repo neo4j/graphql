@@ -28,13 +28,13 @@ describe("Cypher Aggregations where edge with ID", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User {
+            type User @query(aggregate: true) {
                 name: String!
             }
 
-            type Post {
+            type Post @query(aggregate: true) {
                 content: String!
-                likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Liked")
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Liked", aggregate: true)
             }
 
             interface Liked @relationshipProperties {

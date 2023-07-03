@@ -1420,7 +1420,7 @@ describe("schema validation", () => {
 
         test("should returns errors when is not correctly used", () => {
             const userDocument = gql`
-                type User {
+                type User @query(aggregate: true) {
                     id: ID!
                     keanu: String!
                 }

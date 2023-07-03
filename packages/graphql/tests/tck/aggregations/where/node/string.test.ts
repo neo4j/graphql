@@ -28,14 +28,14 @@ describe("Cypher Aggregations where node with String", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User {
+            type User @query(aggregate: true) {
                 name: String!
                 someStringAlias: String @alias(property: "_someStringAlias")
             }
 
-            type Post {
+            type Post @query(aggregate: true) {
                 content: String!
-                likes: [User!]! @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, aggregate: true)
             }
         `;
 

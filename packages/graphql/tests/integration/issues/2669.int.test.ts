@@ -41,10 +41,10 @@ describe("https://github.com/neo4j/graphql/issues/2669", () => {
         typeDefs = `
         type ${typeMovie.name} {
             title: String
-            actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn", aggregate: true)
         }
 
-        type ${typeActor.name} {
+        type ${typeActor.name} @query(aggregate: true) {
             myName: String @alias(property: "name")
             age: Int
             movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")

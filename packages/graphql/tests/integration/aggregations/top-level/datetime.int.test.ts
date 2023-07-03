@@ -40,7 +40,7 @@ describe("aggregations-top_level-datetime", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testString: String
                 createdAt: DateTime
             }
@@ -104,7 +104,7 @@ describe("aggregations-top_level-datetime", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testString: String
                 createdAt: DateTime
             }
@@ -171,7 +171,7 @@ describe("aggregations-top_level-datetime", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testString: String
                 createdAt: DateTime
             }

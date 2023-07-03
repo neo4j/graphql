@@ -58,7 +58,7 @@ describe("aggregations-top_level-string", () => {
 
     test("should return the shortest of node properties", async () => {
         const typeDefs = `
-            type ${typeMovie} {
+            type ${typeMovie} @query(aggregate: true) {
                 testId: ID
                 title: String
             }
@@ -114,7 +114,7 @@ describe("aggregations-top_level-string", () => {
 
     test("should return the longest of node properties", async () => {
         const typeDefs = `
-            type ${typeMovie} {
+            type ${typeMovie} @query(aggregate: true) {
                 testId: ID
                 title: String
             }
@@ -170,7 +170,7 @@ describe("aggregations-top_level-string", () => {
 
     test("should return the shortest and longest of node properties", async () => {
         const typeDefs = `
-            type ${typeMovie} {
+            type ${typeMovie} @query(aggregate: true) {
                 testId: ID
                 title: String
             }

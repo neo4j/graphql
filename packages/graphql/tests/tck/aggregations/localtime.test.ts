@@ -28,7 +28,7 @@ describe("Cypher Aggregations LocalTime", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie {
+            type Movie @query(aggregate: true){
                 createdAt: LocalTime!
             }
         `;

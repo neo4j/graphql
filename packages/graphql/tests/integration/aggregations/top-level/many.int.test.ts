@@ -50,7 +50,7 @@ describe("aggregations-top_level-many", () => {
 
     test("should preform many aggregations and return correct data", async () => {
         const typeDefs = `
-            type ${typeMovie} {
+            type ${typeMovie} @query(aggregate: true) {
                 testId: ID!
                 id: ID!
                 title: String!

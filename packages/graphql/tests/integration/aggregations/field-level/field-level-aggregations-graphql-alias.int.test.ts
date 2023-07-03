@@ -39,16 +39,16 @@ describe("Field Level Aggregations Graphql alias", () => {
         driver = await neo4j.getDriver();
 
         typeDefs = `
-        type ${typeMovie.name} {
+        type ${typeMovie.name} @query(aggregate: true) {
             title: String
-            ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
+            ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn", aggregate: true)
         }
 
-        type ${typeActor.name} {
+        type ${typeActor.name} @query(aggregate: true) {
             name: String
             age: Int
             born: DateTime
-            ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
+            ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn", aggregate: true)
         }
 
         interface ActedIn @relationshipProperties {

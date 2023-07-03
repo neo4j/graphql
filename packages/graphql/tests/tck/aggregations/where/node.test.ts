@@ -28,13 +28,13 @@ describe("Cypher Where Aggregations with @node directive", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User @node(labels: ["_User", "additionalUser"]) {
+            type User @query(aggregate: true) @node(labels: ["_User", "additionalUser"]) {
                 someName: String
             }
 
-            type Post @node(labels: ["_Post", "additionalPost"]) {
+            type Post @query(aggregate: true) @node(labels: ["_Post", "additionalPost"]) {
                 content: String!
-                likes: [User!]! @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, aggregate: true)
             }
         `;
 

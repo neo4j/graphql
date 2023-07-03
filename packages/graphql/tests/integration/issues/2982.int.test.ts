@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/2982", () => {
         const typeDefs = `
             type ${User} {
                 id: ID!
-                ${Post.plural}: [${Post}!]! @relationship(type: "USER_POSTS", direction: OUT)
+                ${Post.plural}: [${Post}!]! @relationship(type: "USER_POSTS", direction: OUT, aggregate: true)
             }
 
             interface ${Post} {
@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/2982", () => {
 
             type ${BlogArticle} implements ${Post} {
                 id: ID!
-                ${Comment.plural}: [${Comment}!]! @relationship(type: "ARTICLE_COMMENTS", direction: OUT)
+                ${Comment.plural}: [${Comment}!]! @relationship(type: "ARTICLE_COMMENTS", direction: OUT, aggregate: true)
             }
         `;
 

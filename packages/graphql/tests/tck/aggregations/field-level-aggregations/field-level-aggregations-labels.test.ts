@@ -28,15 +28,15 @@ describe("Field Level Aggregations Alias", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie @node(labels: ["Film"]) {
+            type Movie @query(aggregate: true) @node(labels: ["Film"]) {
                 title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn", aggregate: true)
             }
 
-            type Actor @node(labels: ["Person"]) {
+            type Actor @query(aggregate: true) @node(labels: ["Person"]) {
                 name: String
                 age: Int
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn", aggregate: true)
             }
 
             interface ActedIn @relationshipProperties {

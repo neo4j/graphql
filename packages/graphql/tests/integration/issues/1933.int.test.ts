@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
                 firstName: String! @readonly
                 lastName: String @readonly
                 projects: [${projectType}!]!
-                    @relationship(type: "PARTICIPATES", direction: OUT, properties: "EmployeeParticipationProperties")
+                    @relationship(type: "PARTICIPATES", direction: OUT, properties: "EmployeeParticipationProperties", aggregate: true)
             }
         
             interface EmployeeParticipationProperties @relationshipProperties {

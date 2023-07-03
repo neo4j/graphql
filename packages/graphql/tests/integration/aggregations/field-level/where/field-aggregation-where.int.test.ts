@@ -39,16 +39,16 @@ describe("Field Level Aggregations Where", () => {
         driver = await neo4j.getDriver();
 
         typeDefs = `
-        type ${typeMovie.name} {
+        type ${typeMovie.name} @query(aggregate: true) {
             title: String
-            actors: [${typePerson.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
+            actors: [${typePerson.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn", aggregate: true)
         }
 
         type ${typePerson.name} {
             name: String
             age: Int
             born: DateTime
-            movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
+            movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn", aggregate: true)
         }
 
         interface ActedIn @relationshipProperties {

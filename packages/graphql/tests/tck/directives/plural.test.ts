@@ -28,7 +28,7 @@ describe("Plural directive", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Tech @plural(value: "Techs") {
+            type Tech @query(aggregate: true) @plural(value: "Techs") {
                 name: String
             }
         `;

@@ -28,14 +28,14 @@ describe("Cypher Aggregations where node with LocalTime", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User {
+            type User @query(aggregate: true) {
                 someLocalTime: LocalTime
                 someLocalTimeAlias: LocalTime @alias(property: "_someLocalTimeAlias")
             }
 
-            type Post {
+            type Post @query(aggregate: true) {
                 content: String!
-                likes: [User!]! @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, aggregate: true)
             }
         `;
 

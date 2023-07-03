@@ -39,7 +39,7 @@ describe(`Field Level Auth Where Requests`, () => {
         name: String
         year: Int
         createdAt: DateTime
-        ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+        ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
     }
 
     type ${typeActor.name} {

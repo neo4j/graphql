@@ -23,7 +23,42 @@ import type { GraphQLFieldMap } from "graphql";
 
 describe("@query directive", () => {
     describe("on OBJECT", () => {
-        test("default arguments should disable aggregation", async () => {
+        test("if not defined aggregation should be disable", async () => {
+            const typeDefs = gql`
+                type Actor {
+                    username: String!
+                    password: String!
+                }
+
+                type Movie {
+                    title: String
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
+            const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
+
+            const movies = queryFields["movies"];
+            const actors = queryFields["actors"];
+
+            expect(movies).toBeDefined();
+            expect(actors).toBeDefined();
+
+            const moviesConnection = queryFields["moviesConnection"];
+            const actorsConnection = queryFields["actorsConnection"];
+
+            expect(moviesConnection).toBeDefined();
+            expect(actorsConnection).toBeDefined();
+
+            const moviesAggregate = queryFields["moviesAggregate"];
+            const actorsAggregate = queryFields["actorsAggregate"];
+
+            expect(moviesAggregate).toBeUndefined();
+            expect(actorsAggregate).toBeUndefined();
+        });
+
+        test("default arguments should disable aggregation (aggregation are already disabled on 4.0.0, it's a no-op)", async () => {
             const typeDefs = gql`
                 type Actor {
                     username: String!
@@ -55,7 +90,7 @@ describe("@query directive", () => {
             const actorsAggregate = queryFields["actorsAggregate"];
 
             expect(moviesAggregate).toBeUndefined();
-            expect(actorsAggregate).toBeDefined();
+            expect(actorsAggregate).toBeUndefined();
         });
 
         test("should enable aggregation", async () => {
@@ -90,7 +125,7 @@ describe("@query directive", () => {
             const moviesAggregate = queryFields["moviesAggregate"];
             const actorsAggregate = queryFields["actorsAggregate"];
 
-            expect(moviesAggregate).toBeDefined();
+            expect(moviesAggregate).toBeUndefined();
             expect(actorsAggregate).toBeDefined();
         });
 
@@ -124,7 +159,7 @@ describe("@query directive", () => {
             const moviesAggregate = queryFields["moviesAggregate"];
             const actorsAggregate = queryFields["actorsAggregate"];
 
-            expect(moviesAggregate).toBeDefined();
+            expect(moviesAggregate).toBeUndefined();
             expect(actorsAggregate).toBeUndefined();
         });
 
@@ -158,13 +193,13 @@ describe("@query directive", () => {
             const moviesAggregate = queryFields["moviesAggregate"];
             const actorsAggregate = queryFields["actorsAggregate"];
 
-            expect(moviesAggregate).toBeDefined();
+            expect(moviesAggregate).toBeUndefined();
             expect(actorsAggregate).toBeDefined();
         });
     });
 
     describe("on SCHEMA", () => {
-        test("default arguments should disable aggregation", async () => {
+        test("default arguments should disable aggregation, (aggregation are already disabled on 4.0.0, it's a no-op)", async () => {
             const typeDefs = gql`
                 type Actor {
                     username: String!

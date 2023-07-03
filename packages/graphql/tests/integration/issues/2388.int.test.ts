@@ -56,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
             id: ID! @id
         }
 
-        type ${PartUsage}
+        type ${PartUsage} @query(aggregate: true)
         @auth(rules: [
             { operations: [READ, CREATE, UPDATE, DELETE, CONNECT, DISCONNECT], roles: ["upstream"] }
             { operations: [READ], roles: ["downstream"] }
@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
         ])
         {
             partUsages: [${PartUsage}!]!
-            @relationship(type: "USAGE_OF", direction: IN)
+            @relationship(type: "USAGE_OF", direction: IN, aggregate: true)
         }
         `;
 

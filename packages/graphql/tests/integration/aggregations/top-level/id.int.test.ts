@@ -40,7 +40,7 @@ describe("aggregations-top_level-id", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testId: ID
                 id: ID
             }
@@ -102,7 +102,7 @@ describe("aggregations-top_level-id", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testId: ID
                 id: ID
             }
@@ -164,7 +164,7 @@ describe("aggregations-top_level-id", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testId: ID
                 id: ID
             }

@@ -45,7 +45,7 @@ describe("Aggregate -> count", () => {
         const randomType = new UniqueType("Movie");
 
         const typeDefs = `
-            type ${randomType.name} {
+            type ${randomType.name} @query(aggregate: true) {
                 id: ID
             }
         `;
@@ -90,7 +90,7 @@ describe("Aggregate -> count", () => {
         const randomType = new UniqueType("Movie");
 
         const typeDefs = `
-            type ${randomType.name} {
+            type ${randomType.name} @query(aggregate: true) {
                 id: ID
             }
         `;
@@ -145,7 +145,7 @@ describe("Aggregate -> count", () => {
         const jobPlanType = new UniqueType("JobPlan");
 
         const typeDefs = gql`
-            type ${jobPlanType.name} {
+            type ${jobPlanType.name} @query(aggregate: true) {
                 id: ID! @id
                 tenantID: ID!
                 name: String!

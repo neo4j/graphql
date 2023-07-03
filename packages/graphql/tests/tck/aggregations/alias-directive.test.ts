@@ -28,7 +28,7 @@ describe("Cypher Aggregations Many with Alias directive", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie {
+            type Movie @query(aggregate: true) {
                 id: ID! @alias(property: "_id")
                 title: String! @alias(property: "_title")
                 imdbRating: Int! @alias(property: "_imdb Rating")

@@ -28,7 +28,7 @@ describe("Cypher Aggregations BigInt", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type File {
+            type File @query(aggregate: true) {
                 size: BigInt!
             }
         `;

@@ -31,7 +31,7 @@ describe("QueryDirection in relationships aggregations", () => {
             type User {
                 name: String!
                 friends: [User!]!
-                    @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
+                    @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DEFAULT_UNDIRECTED, aggregate: true)
             }
         `;
 
@@ -66,7 +66,7 @@ describe("QueryDirection in relationships aggregations", () => {
         typeDefs = gql`
             type User {
                 name: String!
-                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DIRECTED_ONLY)
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: DIRECTED_ONLY, aggregate: true)
             }
         `;
 
@@ -101,7 +101,7 @@ describe("QueryDirection in relationships aggregations", () => {
         typeDefs = gql`
             type User {
                 name: String!
-                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: UNDIRECTED_ONLY)
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, queryDirection: UNDIRECTED_ONLY, aggregate: true)
             }
         `;
 

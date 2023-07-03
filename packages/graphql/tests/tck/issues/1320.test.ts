@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
 
             type Team {
                 code: String!
-                ownsRisks: [Risk!]! @relationship(type: "OWNS_RISK", direction: OUT)
+                ownsRisks: [Risk!]! @relationship(type: "OWNS_RISK", direction: OUT, aggregate: true)
             }
 
             enum MitigationState {

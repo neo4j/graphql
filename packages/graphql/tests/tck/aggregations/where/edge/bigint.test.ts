@@ -28,13 +28,13 @@ describe("Cypher Aggregations where edge with BigInt", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User {
+            type User @query(aggregate: true) {
                 someBigInt: BigInt
             }
 
-            type Post {
+            type Post @query(aggregate: true) {
                 content: String!
-                likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes", aggregate: true)
             }
 
             interface Likes @relationshipProperties {

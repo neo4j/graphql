@@ -32,11 +32,11 @@ describe(`Field Level Auth Where Requests`, () => {
     const typeMovie = new UniqueType("Movie");
     const typeActor = new UniqueType("Actor");
     const typeDefs = `
-    type ${typeMovie.name} {
+    type ${typeMovie.name} @query(aggregate: true) {
         name: String
         year: Int
         createdAt: DateTime
-        ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+        ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
     }
 
     type ${typeActor.name} {

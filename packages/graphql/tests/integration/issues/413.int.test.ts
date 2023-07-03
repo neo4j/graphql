@@ -43,7 +43,7 @@ describe("413", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = gql`
-            type JobPlan {
+            type JobPlan @query(aggregate: true) {
                 id: ID! @id
                 tenantID: ID!
                 name: String!

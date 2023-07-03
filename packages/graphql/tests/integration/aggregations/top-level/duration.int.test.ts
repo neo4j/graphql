@@ -41,7 +41,7 @@ describe("aggregations-top_level-duration", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testString: String
                 runningTime: Duration
             }
@@ -108,7 +108,7 @@ describe("aggregations-top_level-duration", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testString: String
                 runningTime: Duration
             }
@@ -175,7 +175,7 @@ describe("aggregations-top_level-duration", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true){
                 testString: String
                 runningTime: Duration
             }

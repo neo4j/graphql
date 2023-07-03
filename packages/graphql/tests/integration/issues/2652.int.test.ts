@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/2652", () => {
         const typeDefs = `
             type Location @auth(rules: [{ isAuthenticated: true }]) {
                 id: ID!
-                reviews: [LocationReview!]! @relationship(type: "HAS_REVIEW", direction: OUT)
+                reviews: [LocationReview!]! @relationship(type: "HAS_REVIEW", direction: OUT, aggregate: true)
             }
 
             type LocationReview @auth(rules: [{ isAuthenticated: true }]) {

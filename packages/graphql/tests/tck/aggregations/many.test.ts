@@ -28,7 +28,7 @@ describe("Cypher Aggregations Many", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie {
+            type Movie @query(aggregate: true) {
                 id: ID!
                 title: String!
                 imdbRating: Int!

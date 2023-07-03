@@ -28,14 +28,14 @@ describe("Cypher Aggregations Many while Alias fields", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie @node(labels: ["Film"]) {
+            type Movie @query(aggregate: true) @node(labels: ["Film"]) {
                 id: ID!
                 title: String!
                 imdbRating: Int!
                 createdAt: DateTime!
             }
 
-            type Actor @node(labels: ["Actor", "Person", "Alien"]) {
+            type Actor @query(aggregate: true) @node(labels: ["Actor", "Person", "Alien"]) {
                 id: ID!
                 name: String!
                 imdbRating: Int!

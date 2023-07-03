@@ -40,7 +40,7 @@ describe("aggregations-top_level-float", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testString: String
                 imdbRating: Float
             }
@@ -102,7 +102,7 @@ describe("aggregations-top_level-float", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testString: String
                 imdbRating: Float
             }
@@ -164,7 +164,7 @@ describe("aggregations-top_level-float", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testString: String
                 imdbRating: Float
             }
@@ -226,7 +226,7 @@ describe("aggregations-top_level-float", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testString: String
                 imdbRating: Float
             }
@@ -288,7 +288,7 @@ describe("aggregations-top_level-float", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            type Movie {
+            type Movie @query(aggregate: true) {
                 testString: String
                 imdbRating: Float
             }

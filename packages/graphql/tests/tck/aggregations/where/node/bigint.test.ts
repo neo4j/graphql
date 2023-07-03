@@ -28,14 +28,14 @@ describe("Cypher Aggregations where node with BigInt", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type User {
+            type User @query(aggregate: true) {
                 someBigInt: BigInt
                 someBigIntAlias: BigInt @alias(property: "_someBigIntAlias")
             }
 
-            type Post {
+            type Post @query(aggregate: true) {
                 content: String!
-                likes: [User!]! @relationship(type: "LIKES", direction: IN)
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, aggregate: true)
             }
         `;
 

@@ -28,7 +28,7 @@ describe("Cypher Aggregations Float", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie {
+            type Movie @query(aggregate: true) {
                 actorCount: Float!
             }
         `;

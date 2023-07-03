@@ -30,7 +30,7 @@ describe("Undirected Aggregations", () => {
         typeDefs = gql`
             type User {
                 name: String!
-                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT)
+                friends: [User!]! @relationship(type: "FRIENDS_WITH", direction: OUT, aggregate: true)
             }
         `;
 

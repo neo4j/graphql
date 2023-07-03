@@ -42,7 +42,7 @@ describe("aggregations-top_level-basic", () => {
         const randomType = new UniqueType("Movie");
 
         const typeDefs = `
-            type ${randomType.name} {
+            type ${randomType.name} @query(aggregate: true) {
                 id: ID
             }
         `;
