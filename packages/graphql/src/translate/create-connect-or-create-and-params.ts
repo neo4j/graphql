@@ -101,33 +101,6 @@ export function createConnectOrCreateAndParams({
     });
 
     const wrappedQueries = statements.map((statement) => {
-        // const countResult = new Cypher.RawCypher(() => {
-        //     if (context.subscriptionsEnabled) {
-        //         return "meta as update_meta";
-        //     }
-        //     return "COUNT(*) AS _";
-        // });
-        // const returnStatement = new Cypher.Return(countResult);
-        // const withStatement = new Cypher.With(...withVarsVariables);
-        // const callStatement = new Cypher.Call(Cypher.concat(statement, returnStatement)).innerWith(
-        //     ...withVarsVariables
-        // );
-        // const subqueryClause = Cypher.concat(withStatement, callStatement);
-        // if (context.subscriptionsEnabled) {
-        //     const afterCallWithStatement = new Cypher.With("*", [new Cypher.NamedVariable("update_meta"), "meta"]);
-        //     Cypher.concat(subqueryClause, afterCallWithStatement);
-        // }
-
-        // return subqueryClause;
-
-        // let subquery: Cypher.Clause = statement;
-
-        // if (context.subscriptionsEnabled) {
-        //     const susbcriptionsMeta = new Cypher.RawCypher("meta as update_meta");
-        //     const returnStatement = new Cypher.Return(susbcriptionsMeta);
-        //     subquery = Cypher.concat(statement, returnStatement);
-        // }
-
         const countResult = new Cypher.RawCypher(() => {
             if (context.subscriptionsEnabled) {
                 return "meta as update_meta";
