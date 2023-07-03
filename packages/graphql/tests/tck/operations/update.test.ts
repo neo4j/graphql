@@ -673,7 +673,7 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL {
-            WITH this
+            WITH *
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:\`ACTED_IN\`]-(this_delete_actors0:Actor)
             WHERE (this_delete_actors0_relationship.screenTime = $updateMovies_args_delete_actors0_where_this_delete_actors0param0 AND this_delete_actors0.name = $updateMovies_args_delete_actors0_where_this_delete_actors0param1)
             WITH this_delete_actors0_relationship, collect(DISTINCT this_delete_actors0) AS this_delete_actors0_to_delete
@@ -748,7 +748,7 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL {
-            WITH this
+            WITH *
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:\`ACTED_IN\`]-(this_delete_actors0:Actor)
             WHERE this_delete_actors0.name = $updateMovies_args_delete_actors0_where_this_delete_actors0param0
             WITH this_delete_actors0_relationship, collect(DISTINCT this_delete_actors0) AS this_delete_actors0_to_delete
@@ -833,7 +833,7 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL {
-            WITH this
+            WITH *
             OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:\`ACTED_IN\`]-(this_actors0_delete0:Actor)
             WHERE this_actors0_delete0.name = $updateMovies_args_update_actors0_delete0_where_this_actors0_delete0param0
             WITH this_actors0_delete0_relationship, collect(DISTINCT this_actors0_delete0) AS this_actors0_delete0_to_delete
@@ -902,12 +902,12 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL {
-            WITH this
+            WITH *
             OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:\`ACTED_IN\`]-(this_actors0_delete0:Actor)
             WHERE this_actors0_delete0.name = $updateMovies_args_update_actors0_delete0_where_this_actors0_delete0param0
             WITH *
             CALL {
-            WITH this, this_actors0_delete0
+            WITH *
             OPTIONAL MATCH (this_actors0_delete0)-[this_actors0_delete0_movies0_relationship:\`ACTED_IN\`]->(this_actors0_delete0_movies0:Movie)
             WHERE this_actors0_delete0_movies0.id = $updateMovies_args_update_actors0_delete0_delete_movies0_where_this_actors0_delete0_movies0param0
             WITH this_actors0_delete0_movies0_relationship, collect(DISTINCT this_actors0_delete0_movies0) AS this_actors0_delete0_movies0_to_delete

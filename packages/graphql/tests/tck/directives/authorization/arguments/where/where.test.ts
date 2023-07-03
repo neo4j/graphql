@@ -771,7 +771,7 @@ describe("Cypher Auth Where", () => {
             WITH *, count(authorization_this0) AS creatorCount
             WITH *
             CALL {
-            WITH this
+            WITH *
             OPTIONAL MATCH (this)-[this_posts0_relationship:\`HAS_POST\`]->(this_posts0:Post)
             WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, $jwtDefault)))
             WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete

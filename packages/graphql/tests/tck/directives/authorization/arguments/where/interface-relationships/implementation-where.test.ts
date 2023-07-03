@@ -615,7 +615,7 @@ describe("Cypher Auth Where", () => {
             WHERE ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault))
             WITH *
             CALL {
-            WITH this
+            WITH *
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:\`HAS_CONTENT\`]->(this_content_Comment0:Comment)
             WITH this_content_Comment0_relationship, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
             CALL {
@@ -628,7 +628,7 @@ describe("Cypher Auth Where", () => {
             WITH *, count(authorization_this0) AS creatorCount
             WITH *
             CALL {
-            WITH this
+            WITH *
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:\`HAS_CONTENT\`]->(this_content_Post0:Post)
             WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND authorization_this0.id = coalesce($jwt.sub, $jwtDefault)))
             WITH this_content_Post0_relationship, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
