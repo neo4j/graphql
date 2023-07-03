@@ -58,54 +58,69 @@ export function filterRelationshipKey({
     const relationshipPropertiesInterfaceName = receivedEventRelationship.properties || "";
 
     const { edge: edgeProperty, node: nodeProperty, ...unionTypes } = receivedEventRelationshipData;
-    if (
-        edgeProperty &&
-        !filterRelationshipEdgeProperty({
-            relationshipFields,
-            relationshipPropertiesInterfaceName,
-            edgeProperty,
-            receivedEventProperties,
-        })
-    ) {
-        return false;
-    }
-    const key = receivedEventRelationship.direction === "IN" ? "from" : "to";
-    if (nodeProperty) {
-        if (isInterfaceType(nodeProperty, receivedEventRelationship)) {
-            const targetNodeTypename = receivedEvent[`${key}Typename`];
-            if (
-                !filterRelationshipInterfaceProperty({
-                    nodeProperty,
-                    nodes,
-                    receivedEventProperties,
-                    targetNodeTypename,
-                    key,
-                })
-            ) {
-                return false;
-            }
-        } else if (isStandardType(nodeProperty, receivedEventRelationship)) {
-            // standard type fields
-            const nodeTo = nodes.find((n) => n.name === receivedEventRelationship.typeMeta.name) as Node;
-            if (
-                !filterByProperties({
-                    node: nodeTo,
-                    whereProperties: nodeProperty,
-                    receivedProperties: receivedEventProperties[key],
-                })
-            ) {
-                return false;
-            }
+
+    // relationship properties
+    if (edgeProperty) {
+        // apply the filter
+        if (
+            !filterRelationshipEdgeProperty({
+                relationshipFields,
+                relationshipPropertiesInterfaceName,
+                edgeProperty,
+                receivedEventProperties,
+            })
+        ) {
+            return false;
         }
     }
-    if (Object.keys(unionTypes).length) {
-        // union types
+
+    const key = receivedEventRelationship.direction === "IN" ? "from" : "to";
+
+    const isSimpleRelationship = nodeProperty && isStandardType(nodeProperty, receivedEventRelationship);
+    const isInterfaceRelationship = nodeProperty && isInterfaceType(nodeProperty, receivedEventRelationship);
+    const isUnionRelationship = Object.keys(unionTypes).length;
+
+    if (isSimpleRelationship) {
+        const nodeTo = nodes.find((n) => n.name === receivedEventRelationship.typeMeta.name) as Node;
+
+        // apply the filter
+        if (
+            !filterByProperties({
+                node: nodeTo,
+                whereProperties: nodeProperty,
+                receivedProperties: receivedEventProperties[key],
+            })
+        ) {
+            return false;
+        }
+    }
+
+    if (isInterfaceRelationship) {
+        const targetNodeTypename = receivedEvent[`${key}Typename`];
+
+        // apply the filter
+        if (
+            !filterRelationshipInterfaceProperty({
+                nodeProperty,
+                nodes,
+                receivedEventProperties,
+                targetNodeTypename,
+                key,
+            })
+        ) {
+            return false;
+        }
+    }
+
+    if (isUnionRelationship) {
         const targetNodeTypename = receivedEvent[`${key}Typename`];
         const targetNodePropsByTypename = unionTypes[targetNodeTypename] as Record<string, UnionType>;
         const isRelationshipOfReceivedTypeFilteredOut = !targetNodePropsByTypename;
         if (isRelationshipOfReceivedTypeFilteredOut) {
             return false;
         }
+
+        // apply the filter
         if (
             !filterRelationshipUnionProperties({
                 targetNodePropsByTypename,
