@@ -223,6 +223,7 @@ export default function createProjectionAndParams({
                         optionsInput,
                         addSkipAndLimit: false,
                         collect: false,
+                        nestedPredicates: recurse.predicates,
                     });
 
                     const unionWith = new Cypher.With("*");
@@ -275,6 +276,7 @@ export default function createProjectionAndParams({
                 relationField,
                 relationshipDirection: direction,
                 optionsInput,
+                nestedPredicates: recurse.predicates,
             });
             res.subqueries.push(new Cypher.Call(subquery).innerWith(varName));
             res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${compileCypher(subqueryReturnAlias, env)}`));

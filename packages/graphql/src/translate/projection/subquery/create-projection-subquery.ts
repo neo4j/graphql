@@ -38,6 +38,7 @@ export function createProjectionSubquery({
     relationField,
     relationshipDirection,
     optionsInput,
+    nestedPredicates = [],
     addSkipAndLimit = true,
     collect = true,
 }: {
@@ -52,6 +53,7 @@ export function createProjectionSubquery({
     relationField: RelationField;
     relationshipDirection: CypherRelationshipDirection;
     optionsInput: GraphQLOptionsArg;
+    nestedPredicates?: Cypher.Predicate[];
     addSkipAndLimit?: boolean;
     collect?: boolean;
 }): Cypher.Clause {
@@ -67,7 +69,7 @@ export function createProjectionSubquery({
         .to(targetNode);
 
     const subqueryMatch = new Cypher.Match(pattern);
-    const predicates: Cypher.Predicate[] = [];
+    const predicates = nestedPredicates;
 
     const projection = new Cypher.RawCypher((env) => {
         // TODO: use MapProjection
