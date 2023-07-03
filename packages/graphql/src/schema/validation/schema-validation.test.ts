@@ -633,8 +633,13 @@ describe("schema validation", () => {
                     generateSubscriptions: true,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
                 );
             });
 
@@ -670,8 +675,13 @@ describe("schema validation", () => {
                     generateSubscriptions: true,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
                 );
             });
         });
@@ -706,8 +716,13 @@ describe("schema validation", () => {
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
                 );
             });
 
@@ -754,8 +769,13 @@ describe("schema validation", () => {
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
                 );
             });
         });
@@ -782,7 +802,7 @@ describe("schema validation", () => {
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrow(
-                    'Directive "@MemberSubscriptionsAuthorization" may not be used on INTERFACE.'
+                    'Directive "@subscriptionsAuthorization" may not be used on INTERFACE.'
                 );
             });
         });
@@ -822,8 +842,13 @@ describe("schema validation", () => {
                     generateSubscriptions: true,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@UserSubscriptionsAuthorization\\" can only be used once at this location."`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'The directive "@subscriptionsAuthorization" can only be used once at this location.'
                 );
             });
 
@@ -847,8 +872,13 @@ describe("schema validation", () => {
                     generateSubscriptions: true,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@UserSubscriptionsAuthorization\\" can only be used once at this location."`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'The directive "@subscriptionsAuthorization" can only be used once at this location.'
                 );
             });
 
@@ -947,8 +977,13 @@ describe("schema validation", () => {
                     generateSubscriptions: true,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"The directive \\"@UserSubscriptionsAuthorization\\" can only be used once at this location."`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'The directive "@subscriptionsAuthorization" can only be used once at this location.'
                 );
             });
 
@@ -965,8 +1000,13 @@ describe("schema validation", () => {
                     generateSubscriptions: true,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
                 );
             });
 
@@ -1004,8 +1044,13 @@ describe("schema validation", () => {
                     generateSubscriptions: true,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
                 );
             });
         });
@@ -1034,7 +1079,7 @@ describe("schema validation", () => {
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrow(
-                    'Directive "@MemberSubscriptionsAuthorization" may not be used on INTERFACE.'
+                    'Directive "@subscriptionsAuthorization" may not be used on INTERFACE.'
                 );
             });
         });
@@ -1107,8 +1152,13 @@ describe("schema validation", () => {
                     generateSubscriptions: true,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@PostSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
                 );
             });
         });
@@ -1240,8 +1290,12 @@ describe("schema validation", () => {
                         additionalTypes: types,
                     });
 
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
                 );
             });
 
@@ -1308,8 +1362,13 @@ describe("schema validation", () => {
                         additionalDirectives: directives,
                         additionalTypes: types,
                     });
-                expect(executeValidate).toThrowErrorMatchingInlineSnapshot(
-                    `"Unknown argument \\"wrongFilter\\" on directive \\"@UserSubscriptionsAuthorization\\". Did you mean \\"filter\\"?"`
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
                 );
             });
         });
