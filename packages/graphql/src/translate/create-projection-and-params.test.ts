@@ -22,6 +22,8 @@ import createProjectionAndParams from "./create-projection-and-params";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import Cypher from "@neo4j/cypher-builder";
+import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import { compileCypher } from "../utils/compile-cypher";
 
 describe("createProjectionAndParams", () => {
@@ -86,6 +88,12 @@ describe("createProjectionAndParams", () => {
 
         const context = new ContextBuilder({
             neoSchema: { nodes: [node] },
+            schemaModel: new Neo4jGraphQLSchemaModel({
+                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
+                compositeEntities: [],
+                operations: {},
+                annotations: [],
+            }),
             resolveTree,
         }).instance();
 
@@ -163,6 +171,12 @@ describe("createProjectionAndParams", () => {
 
         const context = new ContextBuilder({
             neoSchema: { nodes: [node] },
+            schemaModel: new Neo4jGraphQLSchemaModel({
+                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
+                compositeEntities: [],
+                operations: {},
+                annotations: [],
+            }),
             resolveTree,
         }).instance();
 

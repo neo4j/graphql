@@ -52,7 +52,7 @@ new Neo4jGraphQL({
 As part of this proposal, users will be able to define the structure of their JWT payload using two GraphQL directives:
 
 ```gql
-directive @jwtPayload on OBJECT
+directive @jwt on OBJECT
 directive @jwtClaim(
   path: String!
 ) on FIELD_DEFINITION
@@ -60,14 +60,14 @@ directive @jwtClaim(
 
 These directives are for flagging the structure for the representation of the JWT payload structure.
 
-The `@jwtPayload` directive can be used only once in a user's type definitions, and flags the object representing the payload. The type decorated with `@jwtPayload` will only be allowed to contain fields of primitive types, or their list variants.
+The `@jwt` directive can be used only once in a user's type definitions, and flags the object representing the payload. The type decorated with `@jwt` will only be allowed to contain fields of primitive types, or their list variants.
 
-The `@jwtClaim` directive can only be used within the type flagged with the `@jwtPayload` directive. It only needs to be used if the GraphQL fieldname isn't a direct map to the JWT claim.
+The `@jwtClaim` directive can only be used within the type flagged with the `@jwt` directive. It only needs to be used if the GraphQL fieldname isn't a direct map to the JWT claim.
 
 Then a type such as the following can be included in users' type definitions:
 
 ```gql
-type JWTPayload @jwtPayload {
+type JWTPayload @jwt {
   roles: [String!]!
   application1Groups: [String!]! @jwtClaim(path: "applications[0].groups")
 }
@@ -75,7 +75,7 @@ type JWTPayload @jwtPayload {
 
 This will be used for the generation of filters later down the line.
 
-We will automatically map the Registered Claim Names according to the JWT specification (https://www.rfc-editor.org/rfc/rfc7519#section-4.1):
+We will automatically map the Registered Claim Names according to the JWT specification (<https://www.rfc-editor.org/rfc/rfc7519#section-4.1>):
 
 * `iss`
 * `sub`
@@ -292,10 +292,10 @@ input UserWhere {
 
 #### JWT Payload filtering
 
-The generated types for the directive will depend on the type labelled with `@jwtPayload`. Given the following:
+The generated types for the directive will depend on the type labelled with `@jwt`. Given the following:
 
 ```gql
-type JWTPayload @jwtPayload {
+type JWTPayload @jwt {
   roles: [String!]!
   application1Groups: [String!]! @jwtClaim(path: "applications[0].groups")
 }
@@ -362,7 +362,7 @@ input UserAuthorizationWhere {
   OR: [UserAuthorizationWhere!]
   AND: [UserAuthorizationWhere!]
   NOT: UserAuthorizationWhere
-  jwtPayload: JWTPayloadWhere
+  jwt: JWTPayloadWhere
   node: UserWhere
 }
 
@@ -414,7 +414,7 @@ input PostAuthorizationWhere {
   OR: [PostAuthorizationWhere!]
   AND: [PostAuthorizationWhere!]
   NOT: PostAuthorizationWhere
-  jwtPayload: JWTPayloadWhere
+  jwt: JWTPayloadWhere
   node: PostWhere
 }
 
@@ -494,7 +494,7 @@ input ${typename}AuthorizationWhere {
   OR: [${typename}AuthorizationWhere!]
   AND: [${typename}AuthorizationWhere!]
   NOT: ${typename}AuthorizationWhere
-  jwtPayload: JWTPayloadWhere
+  jwt: JWTPayloadWhere
   node: ${typename}Where
 }
 
@@ -558,7 +558,7 @@ input PostAuthorizationWhere {
   OR: [PostAuthorizationWhere!]
   AND: [PostAuthorizationWhere!]
   NOT: PostAuthorizationWhere
-  jwtPayload: JWTPayloadWhere
+  jwt: JWTPayloadWhere
   node: PostWhere
 }
 
@@ -584,7 +584,7 @@ input UserAuthorizationWhere {
   OR: [UserAuthorizationWhere!]
   AND: [UserAuthorizationWhere!]
   NOT: UserAuthorizationWhere
-  jwtPayload: JWTPayloadWhere
+  jwt: JWTPayloadWhere
   node: UserWhere
 }
 

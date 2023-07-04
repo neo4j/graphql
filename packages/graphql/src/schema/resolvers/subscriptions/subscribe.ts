@@ -27,6 +27,10 @@ import { SubscriptionAuth } from "./subscription-auth";
 import type { SubscriptionEventType, SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where/where";
+import { subscriptionAuthorization } from "./where/authorization";
+import type { GraphQLResolveInfo } from "graphql";
+import { checkAuthentication } from "./authentication/check-authentication";
+import { checkAuthenticationOnSelectionSet } from "./authentication/check-authentication-selection-set";
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) {
@@ -50,7 +54,23 @@ export function generateSubscribeMethod({
     nodes?: Node[];
     relationshipFields?: Map<string, ObjectFields>;
 }) {
-    return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
+    return (
+        _root: any,
+        args: SubscriptionArgs,
+        context: SubscriptionContext,
+        resolveInfo: GraphQLResolveInfo
+    ): AsyncIterator<[SubscriptionsEvent]> => {
+        checkAuthenticationOnSelectionSet(resolveInfo, node, type, context);
+        const entities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
+        const concreteEntity = entities[0];
+
+        if (!concreteEntity) {
+            throw new Error("Could not find entity");
+        }
+
+        checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
+
+        // TODO 4.0.0 remove this
         if (node.auth) {
             const authRules = node.auth.getRules(["SUBSCRIBE"]);
             for (const rule of authRules) {
@@ -64,11 +84,11 @@ export function generateSubscribeMethod({
         }
 
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
-
         if (["create", "update", "delete"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 return (
                     (data[0] as NodeSubscriptionsEvent).typename === node.name &&
+                    subscriptionAuthorization({ event: data[0], node, entity: concreteEntity, context }) &&
                     subscriptionWhere({ where: args.where, event: data[0], node }) &&
                     updateDiffFilter(data[0])
                 );
@@ -89,6 +109,14 @@ export function generateSubscribeMethod({
 
                 return (
                     !!relationFieldName &&
+                    subscriptionAuthorization({
+                        event: data[0],
+                        node,
+                        entity: concreteEntity,
+                        nodes,
+                        relationshipFields,
+                        context,
+                    }) &&
                     subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields })
                 );
             });

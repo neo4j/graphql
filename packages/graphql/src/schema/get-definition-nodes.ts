@@ -44,6 +44,7 @@ export type DefinitionNodes = {
     directives: DirectiveDefinitionNode[];
     unionTypes: UnionTypeDefinitionNode[];
     schemaExtensions: SchemaExtensionNode[];
+    operations: ObjectTypeDefinitionNode[];
 };
 
 export function getDefinitionNodes(document: DocumentNode): DefinitionNodes {
@@ -56,6 +57,8 @@ export function getDefinitionNodes(document: DocumentNode): DefinitionNodes {
                 case Kind.OBJECT_TYPE_DEFINITION:
                     if (!isRootType(definition)) {
                         definitionNodes.objectTypes.push(definition);
+                    } else {
+                        definitionNodes.operations.push(definition);
                     }
                     break;
                 case Kind.ENUM_TYPE_DEFINITION:
@@ -93,6 +96,7 @@ export function getDefinitionNodes(document: DocumentNode): DefinitionNodes {
             directives: [],
             unionTypes: [],
             schemaExtensions: [],
+            operations: [],
         }
     );
 }

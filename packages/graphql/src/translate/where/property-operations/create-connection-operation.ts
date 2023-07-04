@@ -35,12 +35,14 @@ export function createConnectionOperation({
     context,
     parentNode,
     operator,
+    useExistExpr = true,
 }: {
     connectionField: ConnectionField;
     value: any;
     context: Context;
     parentNode: Cypher.Node;
     operator: string | undefined;
+    useExistExpr?: boolean;
 }): PredicateReturn {
     let nodeEntries: Record<string, any>;
 
@@ -96,6 +98,7 @@ export function createConnectionOperation({
             whereInput: entry[1],
             whereOperator: operator as WhereOperator,
             refEdge: contextRelationship,
+            useExistExpr,
         });
 
         operations.push(predicate);
@@ -115,6 +118,7 @@ export function createConnectionWherePropertyOperation({
     targetNode,
     node,
     edge,
+    useExistExpr = true,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -122,6 +126,7 @@ export function createConnectionWherePropertyOperation({
     edge: Relationship;
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
+    useExistExpr?: boolean;
 }): PredicateReturn {
     const preComputedSubqueriesResult: (Cypher.CompositeClause | undefined)[] = [];
     const params: (Cypher.Predicate | undefined)[] = [];
@@ -136,6 +141,7 @@ export function createConnectionWherePropertyOperation({
                     targetNode,
                     node,
                     edge,
+                    useExistExpr,
                 });
                 subOperations.push(predicate);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
@@ -154,6 +160,7 @@ export function createConnectionWherePropertyOperation({
                 whereInput: nestedProperties,
                 context,
                 element: edge,
+                useExistExpr,
             });
 
             params.push(result);
@@ -181,6 +188,7 @@ export function createConnectionWherePropertyOperation({
                 whereInput: nestedProperties,
                 context,
                 element: node,
+                useExistExpr,
             });
 
             // NOTE: _NOT is handled by the size()=0

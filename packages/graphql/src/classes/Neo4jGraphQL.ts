@@ -18,41 +18,43 @@
  */
 
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
+import Debug from "debug";
+import type {
+    DriverConfig,
+    CypherQueryOptions,
+    Neo4jGraphQLPlugins,
+    Neo4jGraphQLCallbacks,
+    Neo4jFeaturesSettings,
+    StartupValidationConfig,
+} from "../types";
+import { makeAugmentedSchema } from "../schema";
+import type Node from "./Node";
+import type Relationship from "./Relationship";
+import checkNeo4jCompat from "./utils/verify-database";
+import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
+import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
+import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
+import type { WrapResolverArguments } from "../schema/resolvers/wrapper";
+import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
+import { asArray } from "../utils/utils";
+import { DEBUG_ALL } from "../constants";
+import type { Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
+import { getNeo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
+import type { ExecutorConstructorParam } from "./Executor";
+import { Executor } from "./Executor";
+import { generateModel } from "../schema-model/generate-model";
+import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import type { TypeSource } from "@graphql-tools/utils";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
-import Debug from "debug";
 import type { DocumentNode, GraphQLSchema } from "graphql";
 import type { Driver } from "neo4j-driver";
-import { DEBUG_ALL } from "../constants";
-import { makeAugmentedSchema } from "../schema";
-import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
-import { generateModel } from "../schema-model/generate-model";
-import { makeSchemaToAugment } from "../schema/make-schema-to-augment";
-import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
-import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
-import type {
-    CypherQueryOptions,
-    DriverConfig,
-    Neo4jFeaturesSettings,
-    Neo4jGraphQLCallbacks,
-    Neo4jGraphQLPlugins,
-    StartupValidationConfig,
-} from "../types";
-import { asArray } from "../utils/utils";
-import type { ExecutorConstructorParam } from "./Executor";
-import { Executor } from "./Executor";
-import type { Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
-import { getNeo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
-import type Node from "./Node";
-import type Relationship from "./Relationship";
-import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
-import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
-import checkNeo4jCompat from "./utils/verify-database";
+import { makeDocumentToAugment } from "../schema/make-document-to-augment";
+import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -96,6 +98,8 @@ class Neo4jGraphQL {
     private _relationships?: Relationship[];
     private plugins?: Neo4jGraphQLPlugins;
 
+    private jwtFieldsMap?: Map<string, string>;
+
     private schemaModel?: Neo4jGraphQLSchemaModel;
 
     private executableSchema?: Promise<GraphQLSchema>;
@@ -104,6 +108,8 @@ class Neo4jGraphQL {
     private pluginsInit?: Promise<void>;
 
     private dbInfo?: Neo4jDatabaseInfo;
+
+    private authorization?: Neo4jGraphQLAuthorization;
 
     constructor(input: Neo4jGraphQLConstructor) {
         const { config = {}, driver, plugins, features, ...schemaDefinition } = input;
@@ -115,6 +121,12 @@ class Neo4jGraphQL {
         this.schemaDefinition = schemaDefinition;
 
         this.checkEnableDebug();
+
+        if (this.features?.authorization) {
+            const authorizationSettings = this.features?.authorization;
+
+            this.authorization = new Neo4jGraphQLAuthorization(authorizationSettings);
+        }
     }
 
     public get nodes(): Node[] {
@@ -209,10 +221,10 @@ class Neo4jGraphQL {
         try {
             const initialDocument = this.getDocument(this.schemaDefinition.typeDefs);
 
-            validateDocument(initialDocument);
+            validateDocument({ document: initialDocument, features: this.features });
 
-            const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
-            const { jwtPayload } = typesExcludedFromGeneration;
+            const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
+            const { jwt } = typesExcludedFromGeneration;
 
             const { typeDefs } = makeAugmentedSchema(document, {
                 features: this.features,
@@ -222,8 +234,13 @@ class Neo4jGraphQL {
                 userCustomResolvers: undefined,
             });
 
-            validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwtPayload });
+            validateUserDefinition({
+                userDocument: document,
+                augmentedDocument: typeDefs,
+                jwt: jwt?.type,
+            });
         } catch (error) {
+            // TODO: include path here
             if (error instanceof Error) {
                 const validationErrors = error.message.split("\n\n");
                 return { isValid: false, validationErrors };
@@ -283,14 +300,15 @@ class Neo4jGraphQL {
             callbacks: this.features?.populatedBy?.callbacks ?? this.config.callbacks,
         };
 
-        const wrapResolverArgs = {
+        const wrapResolverArgs: WrapResolverArguments = {
             driver: this.driver,
             config,
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: this.schemaModel,
             plugins: this.plugins,
-            authorization: this.features?.authorization,
+            authorization: this.authorization,
+            jwtPayloadFieldsMap: this.jwtFieldsMap,
         };
 
         const resolversComposition = {
@@ -329,11 +347,14 @@ class Neo4jGraphQL {
             const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
             if (validateTypeDefs) {
-                validateDocument(initialDocument);
+                validateDocument({ document: initialDocument, features: this.features });
             }
 
-            const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
-            const { jwtPayload } = typesExcludedFromGeneration;
+            const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
+            const { jwt } = typesExcludedFromGeneration;
+            if (jwt) {
+                this.jwtFieldsMap = jwt.jwtFieldsMap;
+            }
 
             if (!this.schemaModel) {
                 this.schemaModel = generateModel(document);
@@ -349,7 +370,11 @@ class Neo4jGraphQL {
             });
 
             if (validateTypeDefs) {
-                validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwtPayload });
+                validateUserDefinition({
+                    userDocument: document,
+                    augmentedDocument: typeDefs,
+                    jwt: jwt?.type,
+                });
             }
 
             this._nodes = nodes;
@@ -377,11 +402,19 @@ class Neo4jGraphQL {
         const { validateTypeDefs, validateResolvers } = this.parseStartupValidationConfig();
 
         if (validateTypeDefs) {
-            validateDocument(initialDocument, directives, types);
+            validateDocument({
+                document: initialDocument,
+                features: this.features,
+                additionalDirectives: directives,
+                additionalTypes: types,
+            });
         }
 
-        const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
-        const { jwtPayload } = typesExcludedFromGeneration;
+        const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
+        const { jwt } = typesExcludedFromGeneration;
+        if (jwt) {
+            this.jwtFieldsMap = jwt.jwtFieldsMap;
+        }
 
         if (!this.schemaModel) {
             this.schemaModel = generateModel(document);
@@ -403,7 +436,7 @@ class Neo4jGraphQL {
                 augmentedDocument: typeDefs,
                 additionalDirectives: directives,
                 additionalTypes: types,
-                jwtPayload,
+                jwt: jwt?.type,
             });
         }
 

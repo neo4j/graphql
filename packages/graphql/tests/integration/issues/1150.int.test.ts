@@ -21,10 +21,9 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1150", () => {
     const secret = "secret";
@@ -37,12 +36,17 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         driver = await neo4j.getDriver();
 
         const typeDefs = gql`
+            type JWTPayload @jwt {
+                roles: [String!]!
+            }
+
             type Battery {
                 id: ID! @id(autogenerate: false)
                 current: Boolean!
             }
 
-            extend type Battery @auth(rules: [{ isAuthenticated: true, roles: ["admin"] }])
+            extend type Battery
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "admin" } } }])
 
             type CombustionEngine {
                 id: ID! @id(autogenerate: false)
@@ -72,10 +76,10 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
+            features: {
+                authorization: {
+                    key: secret,
+                },
             },
         });
         schema = await neoGraphql.getSchema();
@@ -118,11 +122,11 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             }
         `;
 
-        const req = createJwtRequest(secret, { roles: "admin" });
+        const token = createBearerToken(secret, { roles: "admin" });
         const res = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(res.errors).toBeUndefined();

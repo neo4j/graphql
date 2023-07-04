@@ -29,7 +29,9 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow('Directive "@coalesce" may not be used on OBJECT.');
+        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+            'Directive "@coalesce" may not be used on OBJECT.'
+        );
     });
 
     test("should throw an error if a directive is missing an argument", () => {
@@ -39,7 +41,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
             'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
         );
     });
@@ -51,7 +53,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow('Unknown type "Unknown".');
+        expect(() => validateDocument({ document: doc, features: undefined })).toThrow('Unknown type "Unknown".');
     });
 
     test("should throw an error if a user tries to pass in their own Point definition", () => {
@@ -66,7 +68,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
             'Type "Point" already exists in the schema. It cannot also be defined in this type definition.'
         );
     });
@@ -80,7 +82,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
             'Type "DateTime" already exists in the schema. It cannot also be defined in this type definition.'
         );
     });
@@ -94,7 +96,7 @@ describe("validateDocument", () => {
             extend type User @fulltext
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
             'Directive "@fulltext" argument "indexes" of type "[FullTextInput]!" is required, but it was not provided.'
         );
     });
@@ -111,7 +113,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
             'Type "PointInput" already exists in the schema. It cannot also be defined in this type definition.'
         );
     });
@@ -127,7 +129,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
             "Interface field UserInterface.age expected but User does not provide it."
         );
     });
@@ -141,7 +143,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument(doc)).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
             'Directive "@relationship" already exists in the schema. It cannot be redefined.'
         );
     });
@@ -153,7 +155,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        const res = validateDocument(doc);
+        const res = validateDocument({ document: doc, features: undefined });
         expect(res).toBeUndefined();
     });
 
@@ -181,7 +183,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        const res = validateDocument(doc);
+        const res = validateDocument({ document: doc, features: undefined });
         expect(res).toBeUndefined();
     });
 
@@ -203,7 +205,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc);
+            const res = validateDocument({ document: doc, features: undefined });
             expect(res).toBeUndefined();
         });
 
@@ -214,7 +216,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument(doc)).toThrow(
+            expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
                 'Directive "@relationshipProperties" may not be used on OBJECT.'
             );
         });
@@ -226,7 +228,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument(doc)).toThrow(
+            expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
                 'Directive "@relationshipProperties" may not be used on FIELD_DEFINITION.'
             );
         });
@@ -307,7 +309,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        const res = validateDocument(doc);
+        const res = validateDocument({ document: doc, features: undefined });
         expect(res).toBeUndefined();
     });
 
@@ -323,7 +325,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc);
+            const res = validateDocument({ document: doc, features: undefined });
             expect(res).toBeUndefined();
         });
     });
@@ -341,7 +343,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc);
+            const res = validateDocument({ document: doc, features: undefined });
             expect(res).toBeUndefined();
         });
 
@@ -357,7 +359,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc);
+            const res = validateDocument({ document: doc, features: undefined });
             expect(res).toBeUndefined();
         });
     });
@@ -481,7 +483,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc);
+            const res = validateDocument({ document: doc, features: undefined });
             expect(res).toBeUndefined();
         });
     });
@@ -504,7 +506,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc);
+            const res = validateDocument({ document: doc, features: undefined });
             expect(res).toBeUndefined();
         });
     });
@@ -516,7 +518,7 @@ describe("validateDocument", () => {
                     name: String @alias
                 }
             `;
-            expect(() => validateDocument(doc)).toThrow(
+            expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
                 'Directive "@alias" argument "property" of type "String!" is required, but it was not provided.'
             );
         });
@@ -526,7 +528,9 @@ describe("validateDocument", () => {
                     name: String
                 }
             `;
-            expect(() => validateDocument(doc)).toThrow('Directive "@alias" may not be used on OBJECT.');
+            expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+                'Directive "@alias" may not be used on OBJECT.'
+            );
         });
         test("should not throw when used correctly", () => {
             const doc = gql`
@@ -534,7 +538,7 @@ describe("validateDocument", () => {
                     name: String @alias(property: "dbName")
                 }
             `;
-            const res = validateDocument(doc);
+            const res = validateDocument({ document: doc, features: undefined });
             expect(res).toBeUndefined();
         });
     });
@@ -548,7 +552,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument(doc)).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error
                 );
             });
@@ -560,7 +564,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument(doc)).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error
                 );
             });
@@ -572,7 +576,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument(doc)).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error
                 );
             });
@@ -595,7 +599,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument(doc)).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error
                 );
             });
@@ -616,7 +620,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument(doc)).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error
                 );
             });
@@ -637,7 +641,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument(doc)).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error
                 );
             });
@@ -652,7 +656,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc);
+            const res = validateDocument({ document: doc, features: undefined });
             expect(res).toBeUndefined();
         });
     });
@@ -673,7 +677,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument(doc);
+            const res = validateDocument({ document: doc, features: undefined });
             expect(res).toBeUndefined();
         });
     });

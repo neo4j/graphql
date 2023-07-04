@@ -32,11 +32,13 @@ export function createWherePredicate({
     whereInput,
     context,
     element,
+    useExistExpr = true,
 }: {
     targetElement: Cypher.Variable;
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
+    useExistExpr?: boolean;
 }): PredicateReturn {
     const whereFields = Object.entries(whereInput);
     const predicates: Cypher.Predicate[] = [];
@@ -63,6 +65,7 @@ export function createWherePredicate({
             element,
             targetElement,
             context,
+            useExistExpr,
         });
         if (predicate) {
             predicates.push(predicate);

@@ -530,6 +530,42 @@ describe("makeAugmentedSchema", () => {
                 "Directive @unique cannot be used in combination with @relationship"
             );
         });
+
+        test("@authentication can't be used with @relationship", () => {
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT) @authentication
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "Directive @relationship cannot be used in combination with @authentication"
+            );
+        });
+
+        test("@authorization can't be used with @relationship", () => {
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    actors: [Actor!]!
+                        @relationship(type: "ACTED_IN", direction: OUT)
+                        @authorization(validate: [{ where: { id: "1" } }])
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "Directive @relationship cannot be used in combination with @authorization"
+            );
+        });
     });
 
     describe("@private", () => {

@@ -23,6 +23,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/2396", () => {
     let driver: Driver;
@@ -58,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 address: [${Address}!]! @relationship(type: "HAS_POSTAL_CODE", direction: IN)
             }
 
-            extend type ${PostalCode} @auth(rules: [{ where: { archivedAt: null } }])
+            extend type ${PostalCode} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
 
             type ${Address} @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
@@ -69,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 postalCode: ${PostalCode}! @relationship(type: "HAS_POSTAL_CODE", direction: OUT)
             }
 
-            extend type ${Address} @auth(rules: [{ where: { archivedAt: null } }])
+            extend type ${Address} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
 
             type ${Mandate} @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
@@ -82,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 valuation: ${Valuation}! @relationship(type: "HAS_VALUATION", direction: OUT)
             }
 
-            extend type ${Mandate} @auth(rules: [{ where: { archivedAt: null } }])
+            extend type ${Mandate} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
 
             type ${Valuation} @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
@@ -93,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 estate: ${Estate} @relationship(type: "VALUATION_FOR", direction: OUT)
             }
 
-            extend type ${Valuation} @auth(rules: [{ where: { archivedAt: null } }])
+            extend type ${Valuation} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
 
             enum EstateType {
                 APARTMENT
@@ -123,7 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 address: ${Address} @relationship(type: "HAS_ADDRESS", direction: OUT)
             }
 
-            extend type ${Estate} @auth(rules: [{ where: { archivedAt: null } }])
+            extend type ${Estate} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
         `;
 
         const input = [
@@ -699,6 +700,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
+            features: { authorization: { key: "secret" } },
         });
 
         const query = `
@@ -715,7 +717,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { input },
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token: createBearerToken("secret") }),
         });
     });
 
@@ -760,7 +762,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token: createBearerToken("secret") }),
             variableValues,
         });
 
@@ -803,7 +805,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token: createBearerToken("secret") }),
             variableValues,
         });
 
@@ -849,7 +851,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token: createBearerToken("secret") }),
             variableValues,
         });
 

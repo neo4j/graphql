@@ -21,6 +21,7 @@ const DEBUG_PREFIX = "@neo4j/graphql";
 
 export const AUTH_FORBIDDEN_ERROR = "@neo4j/graphql/FORBIDDEN";
 export const AUTH_UNAUTHENTICATED_ERROR = "@neo4j/graphql/UNAUTHENTICATED";
+export const AUTHORIZATION_UNAUTHENTICATED = "Unauthenticated";
 export const MIN_VERSIONS = [{ majorMinor: "4.3", neo4j: "4.3.2" }] as const;
 export const REQUIRED_APOC_FUNCTIONS = [
     "apoc.util.validatePredicate",

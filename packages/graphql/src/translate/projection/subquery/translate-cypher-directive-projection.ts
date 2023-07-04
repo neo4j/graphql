@@ -33,6 +33,7 @@ interface Res {
     meta: ProjectionMeta;
     subqueries: Array<Cypher.Clause>;
     subqueriesBeforeSort: Array<Cypher.Clause>;
+    predicates: Cypher.Predicate[];
 }
 
 export function translateCypherDirectiveProjection({
@@ -66,8 +67,13 @@ export function translateCypherDirectiveProjection({
     const fieldFields = field.fieldsByTypeName;
 
     const subqueries: Cypher.Clause[] = [];
+    const predicates: Cypher.Predicate[] = [];
     let projectionExpr: Cypher.Expr | undefined;
     let hasUnionLabelsPredicate: Cypher.Predicate | undefined;
+
+    if (cypherField.statement.includes("$jwt")) {
+        res.params.jwt = context.authorization.jwtParam.value;
+    }
 
     if (referenceNode) {
         const {
@@ -75,6 +81,7 @@ export function translateCypherDirectiveProjection({
             params: p,
             subqueries: nestedSubqueries,
             subqueriesBeforeSort: nestedSubqueriesBeforeSort,
+            predicates: nestedPredicates,
         } = createProjectionAndParams({
             resolveTree: field,
             node: referenceNode || node,
@@ -88,6 +95,7 @@ export function translateCypherDirectiveProjection({
         });
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
+        predicates.push(...nestedPredicates);
     } else if (entity instanceof CompositeEntity) {
         const unionProjections: Array<{ predicate: Cypher.Predicate; projection: Cypher.Expr }> = [];
         const labelsSubPredicates: Cypher.Predicate[] = [];
@@ -116,6 +124,7 @@ export function translateCypherDirectiveProjection({
                         projection: str,
                         params: p,
                         subqueries: nestedSubqueries,
+                        predicates: nestedPredicates,
                     } = createProjectionAndParams({
                         resolveTree: field,
                         node: refNode,
@@ -139,6 +148,8 @@ export function translateCypherDirectiveProjection({
                         projection,
                         predicate: labelsSubPredicate,
                     });
+
+                    res.predicates.push(...nestedPredicates);
 
                     res.params = { ...res.params, ...p };
                 } else {

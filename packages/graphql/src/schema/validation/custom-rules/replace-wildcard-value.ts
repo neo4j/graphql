@@ -18,7 +18,7 @@
  */
 
 import { astFromValueUntyped } from "@graphql-tools/utils";
-import type { ASTVisitor, GraphQLSchema, ObjectTypeDefinitionNode, TypeNode } from "graphql";
+import type { ASTVisitor, GraphQLSchema, ObjectTypeDefinitionNode, TypeNode, ValueNode } from "graphql";
 import { Kind } from "graphql";
 import { getStandardJwtDefinition } from "../../../graphql/directives/type-dependant-directives/jwt-payload";
 
@@ -39,7 +39,7 @@ function getDefaultValueForTypename(typeName: string): DefaultValue {
             return null;
     }
 }
-function makeReplacementFieldNode(fieldType: TypeNode) {
+function makeReplacementFieldNode(fieldType: TypeNode): ValueNode | null {
     let replacementValue: DefaultValue = null;
     if (fieldType.kind === Kind.NAMED_TYPE) {
         replacementValue = getDefaultValueForTypename(fieldType.name.value);
@@ -50,14 +50,8 @@ function makeReplacementFieldNode(fieldType: TypeNode) {
     return astFromValueUntyped(replacementValue);
 }
 
-export function makeReplaceWildcardVisitor({
-    jwtPayload,
-    schema,
-}: {
-    jwtPayload?: ObjectTypeDefinitionNode;
-    schema: GraphQLSchema;
-}) {
-    return function ReplaceWildcardValue(): ASTVisitor {
+export function makeReplaceWildcardVisitor({ jwt, schema }: { jwt?: ObjectTypeDefinitionNode; schema: GraphQLSchema }) {
+    return function replaceWildcardValue(): ASTVisitor {
         return {
             ObjectField: {
                 leave(node) {
@@ -70,7 +64,7 @@ export function makeReplaceWildcardVisitor({
                     }
                     const jwtFieldName = fieldValue.substring(5);
                     const jwtField =
-                        jwtPayload?.fields?.find((f) => f.name.value === jwtFieldName) ||
+                        jwt?.fields?.find((f) => f.name.value === jwtFieldName) ||
                         getStandardJwtDefinition(schema)?.fields?.find((f) => f.name.value === jwtFieldName);
                     if (jwtField) {
                         const fieldWithReplacedValue = makeReplacementFieldNode(jwtField.type) || node.value;
