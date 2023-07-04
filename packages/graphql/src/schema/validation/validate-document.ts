@@ -119,7 +119,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
             .map((field) => {
                 if (
                     field.directives?.some((directive) =>
-                        ["authentication", "authorization"].includes(directive.name.value)
+                        ["authentication", "authorization", "subscriptionsAuthorization"].includes(directive.name.value)
                     ) &&
                     !features?.authorization
                 ) {
@@ -132,7 +132,10 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                     ...field,
                     arguments: filterInputTypes(field.arguments),
                     directives: field.directives?.filter(
-                        (directive) => !["auth", "authentication", "authorization"].includes(directive.name.value)
+                        (directive) =>
+                            !["auth", "authentication", "authorization", "subscriptionsAuthorization"].includes(
+                                directive.name.value
+                            )
                     ),
                 };
             });
@@ -178,7 +181,10 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                     {
                         ...def,
                         directives: def.directives?.filter(
-                            (x) => !["auth", "authentication", "authorization"].includes(x.name.value)
+                            (x) =>
+                                !["auth", "authentication", "authorization", "subscriptionsAuthorization"].includes(
+                                    x.name.value
+                                )
                         ),
                         fields,
                     },

@@ -34,6 +34,10 @@ import type { SDLValidationRule } from "graphql/validation/ValidationContext";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
 import { validateSDL } from "./validate-sdl";
 import { makeReplaceWildcardVisitor } from "./custom-rules/replace-wildcard-value";
+import {
+    subscriptionsAuthorizationDefinitionsEnricher,
+    subscriptionsAuthorizationDirectiveEnricher,
+} from "./enrichers/subscriptions-authorization";
 import { createAuthenticationDirectiveDefinition } from "../../graphql/directives/type-dependant-directives/authentication";
 import { authenticationDirectiveEnricher } from "./enrichers/authentication";
 
@@ -66,6 +70,8 @@ function makeValidationDocument(
     const enrichers: Enricher[] = [];
     enrichers.push(authorizationDefinitionsEnricher(enricherContext)); // Add Authorization directive definitions, for instance UserAuthorization
     enrichers.push(authorizationDirectiveEnricher(enricherContext)); // Apply the previously generated directive definitions to the authorized types
+    enrichers.push(subscriptionsAuthorizationDefinitionsEnricher(enricherContext)); // Add SubscriptionsAuthorization directive definitions, for instance UserSubscriptionsAuthorization
+    enrichers.push(subscriptionsAuthorizationDirectiveEnricher(enricherContext)); // Apply the previously generated directive definitions to the authorized types
     enrichers.push(authenticationDirectiveEnricher(enricherContext)); // Apply the previously generated directive definitions to the authenticated types
     const additionalDefinitions = getAdditionalDefinitions(jwt);
     return enrichDocument(enrichers, additionalDefinitions, augmentedDocument);

@@ -165,7 +165,7 @@ function getObjFieldMeta({
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
             const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
             const fieldObject = objects.find((x) => x.name.value === typeMeta.name);
-    
+
             const selectableOptions = parseSelectableDirective(selectableDirective);
             const settableOptions = parseSettableDirective(settableDirective);
             const filterableOptions = parseFilterableDirective(filterableDirective);
@@ -200,6 +200,7 @@ function getObjFieldMeta({
                             "jwtClaim",
                             "selectable",
                             "settable",
+                            "subscriptionsAuthorization",
                             "filterable",
                         ].includes(x.name.value)
                 ),
