@@ -20,9 +20,12 @@
 import createUpdateAndParams from "./create-update-and-params";
 import type { Neo4jGraphQL } from "../classes";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import type { BaseField, Context } from "../types";
+import type { BaseField } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
+import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 
 describe("createUpdateAndParams", () => {
     test("should return the correct update and params", () => {
@@ -56,6 +59,10 @@ describe("createUpdateAndParams", () => {
                 onCreate: true,
                 onUpdate: true,
             },
+            filterableOptions: {
+                byValue: true,
+                byAggregate: true,
+            },
             otherDirectives: [],
             arguments: [],
         };
@@ -70,8 +77,15 @@ describe("createUpdateAndParams", () => {
             nodes: [node],
         };
 
-        // @ts-ignore
-        const context: Context = { neoSchema };
+        const context = new ContextBuilder({
+            neoSchema,
+            schemaModel: new Neo4jGraphQLSchemaModel({
+                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
+                compositeEntities: [],
+                operations: {},
+                annotations: [],
+            }),
+        }).instance();
 
         const result = createUpdateAndParams({
             updateInput: { id: "new" },

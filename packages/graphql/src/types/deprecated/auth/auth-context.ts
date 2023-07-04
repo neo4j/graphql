@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { JwtPayload } from "./jwt-payload";
+import type { JwtPayload } from "../../jwt-payload";
 
 export interface AuthContext {
     isAuthenticated: boolean;

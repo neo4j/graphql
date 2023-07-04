@@ -17,23 +17,26 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1150", () => {
     test("union types with auth and connection-where", async () => {
         const secret = "secret";
 
         const typeDefs = gql`
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
             type Battery {
                 id: ID! @id(autogenerate: false)
                 current: Boolean!
             }
 
-            extend type Battery @auth(rules: [{ isAuthenticated: true, roles: ["admin"] }])
+            extend type Battery @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
 
             type CombustionEngine {
                 id: ID! @id(autogenerate: false)
@@ -63,11 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
-            },
+            features: { authorization: { key: secret } },
         });
 
         const query = gql`
@@ -102,9 +101,9 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             }
         `;
 
-        const req = createJwtRequest(secret, { roles: ["admin"] });
+        const token = createBearerToken(secret, { roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -119,26 +118,26 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                     CALL {
                         WITH this1
                         MATCH (this1:\`DriveComposition\`)-[this2:\`HAS\`]->(this3:\`Battery\`)
-                        WHERE (this2.current = $param2 AND apoc.util.validatePredicate(NOT ((any(var5 IN [\\"admin\\"] WHERE any(var4 IN $auth.roles WHERE var4 = var5)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                        WHERE (this2.current = $param2 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param4 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                         WITH { current: this2.current, node: { __resolveType: \\"Battery\\", __id: id(this3), id: this3.id } } AS edge
                         RETURN edge
                         UNION
                         WITH this1
-                        MATCH (this1:\`DriveComposition\`)-[this6:\`HAS\`]->(this7:\`CombustionEngine\`)
-                        WHERE this6.current = $param4
-                        WITH { current: this6.current, node: { __resolveType: \\"CombustionEngine\\", __id: id(this7), id: this7.id } } AS edge
+                        MATCH (this1:\`DriveComposition\`)-[this4:\`HAS\`]->(this5:\`CombustionEngine\`)
+                        WHERE this4.current = $param6
+                        WITH { current: this4.current, node: { __resolveType: \\"CombustionEngine\\", __id: id(this5), id: this5.id } } AS edge
                         RETURN edge
                     }
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var8
+                    RETURN { edges: edges, totalCount: totalCount } AS var6
                 }
-                WITH { node: { driveComponentConnection: var8 } } AS edge
+                WITH { node: { driveComponentConnection: var6 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var9
+                RETURN { edges: edges, totalCount: totalCount } AS var7
             }
-            RETURN this { .current, driveCompositionsConnection: var9 } AS this"
+            RETURN this { .current, driveCompositionsConnection: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -146,18 +145,14 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                 \\"param0\\": true,
                 \\"param1\\": true,
                 \\"param2\\": true,
-                \\"param4\\": true,
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"param4\\": \\"admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ]
-                    }
-                }
+                    ]
+                },
+                \\"param6\\": true
             }"
         `);
     });

@@ -20,11 +20,10 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import type { IncomingMessage } from "http";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src";
 import { UniqueType } from "../utils/graphql-types";
-import { createJwtRequest } from "../utils/create-jwt-request";
+import { createBearerToken } from "../utils/create-bearer-token";
 
 describe("Interfaces tests", () => {
     const secret = "the-secret";
@@ -38,11 +37,11 @@ describe("Interfaces tests", () => {
     const OtherNodeType = new UniqueType("OtherNode");
     const MyImplementationType = new UniqueType("MyImplementation");
 
-    async function graphqlQuery(query: string, req: IncomingMessage) {
+    async function graphqlQuery(query: string, token: string) {
         return graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
     }
 
@@ -66,9 +65,9 @@ describe("Interfaces tests", () => {
                 id: ID! @id
             }
 
-            extend type ${SomeNodeType} @auth(rules: [{ isAuthenticated: true }])
+            extend type ${SomeNodeType} @authentication
 
-            extend type ${OtherNodeType} @auth(rules: [{ isAuthenticated: true }])
+            extend type ${OtherNodeType} @authentication
         `;
 
         session = await neo4j.getSession();
@@ -109,8 +108,8 @@ describe("Interfaces tests", () => {
             }
         `;
 
-        const req = createJwtRequest(secret, {});
-        const queryResult = await graphqlQuery(query, req);
+        const token = createBearerToken(secret, {});
+        const queryResult = await graphqlQuery(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             [SomeNodeType.plural]: [

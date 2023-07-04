@@ -22,6 +22,7 @@ import type {
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
+    SchemaExtensionNode,
 } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import type { DefinitionNodes } from "../schema/get-definition-nodes";
@@ -29,6 +30,7 @@ import { getDefinitionNodes } from "../schema/get-definition-nodes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
+import type { Operations } from "./Neo4jGraphQLSchemaModel";
 import type { Annotation } from "./annotation/Annotation";
 import { Attribute, AttributeType } from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
@@ -39,9 +41,17 @@ import { parseKeyAnnotation } from "./parser/key-annotation";
 import { parseArguments } from "./parser/utils";
 import type { RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
+import { parseAuthenticationAnnotation } from "./parser/authentication-annotation";
+import { Operation } from "./Operation";
+import { Field } from "./attribute/Field";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionNodes = getDefinitionNodes(document);
+
+    const operations: Operations = definitionNodes.operations.reduce((acc, definition): Operations => {
+        acc[definition.name.value] = generateOperation(definition);
+        return acc;
+    }, {});
 
     // init interface to typeNames map
     const interfaceToImplementingTypeNamesMap = initInterfacesToTypeNamesMap(definitionNodes);
@@ -69,10 +79,26 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
             concreteEntitiesMap
         );
     });
+
+    const schemaDirectives = definitionNodes.schemaExtensions.reduce(
+        (directives: DirectiveNode[], schemaExtension: SchemaExtensionNode) => {
+            if (schemaExtension.directives) {
+                directives.push(...schemaExtension.directives);
+            }
+            return directives;
+        },
+        []
+    );
+
+    const annotations = createSchemaModelAnnotations(schemaDirectives);
+
     const schema = new Neo4jGraphQLSchemaModel({
         compositeEntities: [...unionEntities, ...interfaceEntities],
         concreteEntities,
+        operations,
+        annotations,
     });
+
     definitionNodes.objectTypes.map((def) => hydrateRelationships(def, schema, definitionNodes));
     return schema;
 }
@@ -198,7 +224,7 @@ function generateRelationshipField(
             throw new Error(
                 `There is no matching interface defined with @relationshipProperties for properties "${properties}"`
             );
-        const fields = (propertyInterface.fields || []).map((field) => generateField(field));
+        const fields = (propertyInterface.fields || []).map((field) => generateAttribute(field));
         attributes = filterTruthy(fields);
     }
     return new Relationship({
@@ -212,7 +238,7 @@ function generateRelationshipField(
 }
 
 function generateConcreteEntity(definition: ObjectTypeDefinitionNode): ConcreteEntity {
-    const fields = (definition.fields || []).map((fieldDefinition) => generateField(fieldDefinition));
+    const fields = (definition.fields || []).map((fieldDefinition) => generateAttribute(fieldDefinition));
 
     const directives = (definition.directives || []).reduce((acc, directive) => {
         acc.set(directive.name.value, parseArguments(directive));
@@ -236,17 +262,23 @@ function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments:
     return [definition.name.value];
 }
 
-function generateField(field: FieldDefinitionNode): Attribute | undefined {
+function generateAttribute(field: FieldDefinitionNode): Attribute | undefined {
     const typeMeta = getFieldTypeMeta(field.type); // TODO: without originalType
-    if (isAttributeType(typeMeta.name)) {
-        const annotations = createFieldAnnotations(field.directives || []);
-        return new Attribute({
-            name: field.name.value,
-            annotations,
-            type: typeMeta.name,
-            isArray: Boolean(typeMeta.array),
-        });
-    }
+    const attributeType = isAttributeType(typeMeta.name) ? typeMeta.name : AttributeType.ObjectType;
+    const annotations = createFieldAnnotations(field.directives || []);
+    return new Attribute({
+        name: field.name.value,
+        annotations,
+        type: attributeType,
+        isArray: Boolean(typeMeta.array),
+    });
+}
+function generateField(field: FieldDefinitionNode): Field | undefined {
+    const annotations = createFieldAnnotations(field.directives || []);
+    return new Field({
+        name: field.name.value,
+        annotations,
+    });
 }
 
 function isAttributeType(typeName: string): typeName is AttributeType {
@@ -267,6 +299,8 @@ function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotatio
                     return parseCypherAnnotation(directive);
                 case "authorization":
                     return parseAuthorizationAnnotation(directive);
+                case "authentication":
+                    return parseAuthenticationAnnotation(directive);
                 default:
                     return undefined;
             }
@@ -288,6 +322,8 @@ function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotati
             switch (directive.name.value) {
                 case "authorization":
                     return parseAuthorizationAnnotation(directive);
+                case "authentication":
+                    return parseAuthenticationAnnotation(directive);
                 default:
                     return undefined;
             }
@@ -295,4 +331,31 @@ function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotati
     );
 
     return entityAnnotations.concat(annotations);
+}
+
+function createSchemaModelAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
+    const schemaModelAnnotations: Annotation[] = [];
+
+    const annotations: Annotation[] = filterTruthy(
+        directives.map((directive) => {
+            switch (directive.name.value) {
+                case "authentication":
+                    return parseAuthenticationAnnotation(directive);
+                default:
+                    return undefined;
+            }
+        })
+    );
+
+    return schemaModelAnnotations.concat(annotations);
+}
+
+function generateOperation(definition: ObjectTypeDefinitionNode): Operation {
+    const fields = (definition.fields || []).map((fieldDefinition) => generateField(fieldDefinition));
+
+    return new Operation({
+        name: definition.name.value,
+        fields: filterTruthy(fields),
+        annotations: createEntityAnnotations(definition.directives || []),
+    });
 }

@@ -26,6 +26,7 @@ import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 export function translateDelete({ context, node }: { context: Context; node: Node }): Cypher.CypherResult {
     const { resolveTree } = context;
@@ -49,6 +50,7 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
+    // TODO: Authorization - delete for 4.0.0 (provided by translateTopLevelMatch)
     const { cypher: authCypher, params: authParams } = createAuthAndParams({
         operations: "DELETE",
         entity: node,
@@ -83,6 +85,8 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
                 : {}),
             ...deleteAndParams[1],
         };
+    } else {
+        checkAuthentication({ context, node, targetOperations: ["DELETE"] });
     }
 
     if (context.subscriptionsEnabled && !deleteInput) {

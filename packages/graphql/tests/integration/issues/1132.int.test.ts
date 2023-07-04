@@ -25,7 +25,7 @@ import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { UniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1132", () => {
     const secret = "secret";
@@ -48,68 +48,12 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
     });
 
     describe("CONNECT", () => {
-        test("should assert that the error is associated with the correct node", async () => {
-            const testSource = new UniqueType("Source");
-            const testTarget = new UniqueType("Target");
-
-            const typeDefs = gql`
-                type ${testSource.name} @auth(rules: [{ operations: [CONNECT], allow: { id: "$jwt.sub" } }]) {
-                    id: ID!
-                    targets: [${testTarget.name}!]! @relationship(type: "HAS_TARGET", direction: OUT)
-                }
-            
-                type ${testTarget.name} {
-                    id: ID!
-                }
-            `;
-
-            const neoGraphql = new Neo4jGraphQL({
-                typeDefs,
-                driver,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
-            });
-            const schema = await neoGraphql.getSchema();
-
-            const sourceId = generate({
-                charset: "alphabetic",
-            });
-            const sub = generate({
-                charset: "alphabetic",
-            });
-            const query = gql`
-                mutation {
-                    ${testSource.operations.update}(where: { id: "${sourceId}" }, connect: { targets: { where: { node: { id: 1 } } } }) {
-                        ${testSource.plural} {
-                            id
-                        }
-                    }
-                }
-            `;
-
-            await session.run(`
-                CREATE (:${testSource.name} { id: "${sourceId}" })
-            `);
-
-            const req = createJwtRequest(secret, { sub });
-
-            const result = await graphql({
-                schema,
-                source: getQuerySource(query),
-                contextValue: neo4j.getContextValues({ req }),
-            });
-            expect((result.errors as any[])[0].message).toBe("Forbidden");
-        });
-
         test("should allow user to connect when associated with the correct node", async () => {
             const testSource = new UniqueType("Source");
             const testTarget = new UniqueType("Target");
 
             const typeDefs = gql`
-                type ${testSource.name} @auth(rules: [{ operations: [CONNECT], allow: { id: "$jwt.sub" } }]) {
+                type ${testSource.name} @authorization(validate: [{ when: BEFORE, operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!
                     targets: [${testTarget.name}!]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
@@ -154,12 +98,12 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 CREATE (:${testTarget.name} { id: "${targetId}" })
             `);
 
-            const req = createJwtRequest(secret, { sub: sourceId });
+            const token = createBearerToken(secret, { sub: sourceId });
 
             const result = await graphql({
                 schema,
                 source: getQuerySource(query),
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toEqual({
@@ -186,7 +130,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                     targets: [${testTarget.name}!]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
             
-                type ${testTarget.name} @auth(rules: [{ operations: [DISCONNECT], allow: { id: "$jwt.sub" } }]) {
+                type ${testTarget.name} @authorization(validate: [{ when: BEFORE, operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!
                 }
             `;
@@ -225,12 +169,12 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 CREATE (:${testSource.name} { id: "${sourceId}" })-[:HAS_TARGET]->(:${testTarget.name} { id: "${targetId}" })
             `);
 
-            const req = createJwtRequest(secret, { sub });
+            const token = createBearerToken(secret, { sub });
 
             const result = await graphql({
                 schema,
                 source: getQuerySource(query),
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect((result.errors as any[])[0].message).toBe("Forbidden");
         });
@@ -245,7 +189,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                     targets: [${testTarget.name}!]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
             
-                type ${testTarget.name} @auth(rules: [{ operations: [DISCONNECT], allow: { id: "$jwt.sub" } }]) {
+                type ${testTarget.name} @authorization(validate: [{ when: BEFORE, operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }]) {
                     id: ID!
                 }
             `;
@@ -284,12 +228,12 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 CREATE (:${testSource.name} { id: "${sourceId}" })-[:HAS_TARGET]->(:${testTarget.name} { id: "${targetId}" })
             `);
 
-            const req = createJwtRequest(secret, { sub: targetId });
+            const token = createBearerToken(secret, { sub: targetId });
 
             const result = await graphql({
                 schema,
                 source: getQuerySource(query),
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toEqual({

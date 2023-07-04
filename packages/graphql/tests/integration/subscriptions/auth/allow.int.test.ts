@@ -22,10 +22,10 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("auth/allow", () => {
     let driver: Driver;
@@ -70,7 +70,7 @@ describe("auth/allow", () => {
                     id: ID
                 }
 
-                extend type ${userType.name} @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
+                extend type ${userType.name} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -100,12 +100,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -123,7 +123,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
+                    password: String @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
                 }
             `;
 
@@ -154,12 +154,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}", password: "letmein"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -182,7 +182,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
+                    password: String @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
                 }
             `;
 
@@ -219,12 +219,12 @@ describe("auth/allow", () => {
                     CREATE (:${postType.name} {id: "${postId}"})<-[:HAS_POST]-(:${userType.name} {id: "${userId}", password: "letmein"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -247,7 +247,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
+                    password: String @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: "$jwt.sub" } } }])
                 }
             `;
 
@@ -288,12 +288,12 @@ describe("auth/allow", () => {
                     CREATE (:${postType.name} {id: "${postId}"})<-[:HAS_POST]-(:${userType.name} {id: "${userId}", password: "letmein"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -318,7 +318,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${postType.name}
-                    @auth(rules: [{ operations: [READ], allow: { creator: { id: "$jwt.sub" } } }])
+                    @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -355,12 +355,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -385,7 +385,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${postType.name}
-                    @auth(rules: [{ operations: [READ], allow: { creator: { id: "$jwt.sub" } } }])
+                    @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -426,12 +426,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -464,7 +464,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${commentType.name}
-                    @auth(rules: [{ operations: [READ], allow: { creator: { id: "$jwt.sub" } } }])
+                    @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -507,12 +507,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})-[:HAS_COMMENT]->(:${commentType.name} {id: "${commentId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -532,7 +532,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name}
-                    @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub"  } }])
+                    @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -564,12 +564,12 @@ describe("auth/allow", () => {
                     CREATE (: ${userType.name} {id: "${userId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -587,7 +587,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub" }}])
+                    password: String @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
                 }
 
             `;
@@ -621,12 +621,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -649,7 +649,7 @@ describe("auth/allow", () => {
                     id: ID
                 }
 
-                extend type ${userType.name} @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub" }}])
+                extend type ${userType.name} @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -688,12 +688,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -717,7 +717,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${userType.name} {
-                    password: String @auth(rules: [{ operations: [UPDATE], allow: { id: "$jwt.sub" }}])
+                    password: String @authorization(validate: [{ when: [BEFORE], operations: [UPDATE], where: { node: { id: "$jwt.sub" } } }])
                 }
             `;
 
@@ -757,12 +757,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -781,7 +781,7 @@ describe("auth/allow", () => {
                     id: ID
                 }
 
-                extend type ${userType.name} @auth(rules: [{ operations: [DELETE], allow: { id: "$jwt.sub" }}])
+                extend type ${userType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE], where: { node: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -813,12 +813,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -842,7 +842,7 @@ describe("auth/allow", () => {
                     creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type ${postType.name} @auth(rules: [{ operations: [DELETE], allow: { creator: { id: "$jwt.sub" } }}])
+                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -887,12 +887,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -917,7 +917,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @auth(rules: [{ operations: [DISCONNECT], allow: { creator: { id: "$jwt.sub" } }}])
+                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -956,12 +956,12 @@ describe("auth/allow", () => {
                     CREATE (:${userType.name} {id: "${userId}"})-[:HAS_POST]->(:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -991,7 +991,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @auth(rules: [{ operations: [DISCONNECT], allow: { creator: { id: "$jwt.sub" } }}])
+                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -1046,12 +1046,12 @@ describe("auth/allow", () => {
                                     (:${commentType.name} {id: "${commentId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -1076,7 +1076,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @auth(rules: [{ operations: [CONNECT], allow: { creator: { id: "$jwt.sub" } }}])
+                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -1116,12 +1116,12 @@ describe("auth/allow", () => {
                     CREATE (:${postType.name} {id: "${postId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -1151,7 +1151,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @auth(rules: [{ operations: [CONNECT], allow: { creator: { id: "$jwt.sub" } }}])
+                extend type ${postType.name} @authorization(validate: [{ when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { creator: { id: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -1205,12 +1205,12 @@ describe("auth/allow", () => {
                     CREATE (:${postType.name} {id: "${postId}"})-[:HAS_COMMENT]->(:${commentType.name} {id: "${commentId}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: "invalid" });
+                const token = createBearerToken(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

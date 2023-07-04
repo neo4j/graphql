@@ -21,6 +21,7 @@ import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1760", () => {
     let typeDefs: DocumentNode;
@@ -28,13 +29,17 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
 
     beforeAll(() => {
         typeDefs = gql`
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
             interface BusinessObject {
                 id: ID! @id(autogenerate: false)
                 nameDetails: NameDetails
             }
 
             type ApplicationVariant implements BusinessObject
-                @auth(rules: [{ isAuthenticated: true, roles: ["ALL"] }])
+                @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 markets: [Market!]! @relationship(type: "HAS_MARKETS", direction: OUT)
                 id: ID! @id(autogenerate: false)
@@ -46,20 +51,20 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
 
             type NameDetails
-                @auth(rules: [{ isAuthenticated: true, roles: ["ALL"] }])
+                @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, READ, UPDATE, DELETE]) {
                 fullName: String!
             }
 
             type Market implements BusinessObject
-                @auth(rules: [{ isAuthenticated: true, roles: ["ALL"] }])
+                @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 id: ID! @id(autogenerate: false)
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", direction: OUT)
             }
 
             type BaseObject
-                @auth(rules: [{ isAuthenticated: true, roles: ["ALL"] }])
+                @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 id: ID! @id
             }
@@ -67,6 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
+            features: { authorization: { key: "secret" } },
         });
     });
 
@@ -121,11 +127,13 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
 
         const result = await translateQuery(neoSchema, query, {
             variableValues,
+            contextValues: { token: createBearerToken("secret") },
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`ApplicationVariant\`)
-            WHERE (this.current = $param0 AND apoc.util.validatePredicate(NOT ((any(var1 IN [\\"ALL\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH *
+            WHERE (this.current = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param2 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
                 CALL {
@@ -133,67 +141,72 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     WITH this AS this
                     MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id as res
                 }
-                UNWIND res AS this2
-                RETURN head(collect(this2)) AS this2
+                UNWIND res AS this0
+                RETURN head(collect(this0)) AS this0
             }
             WITH *
-            ORDER BY this2 ASC
-            SKIP $param2
-            LIMIT $param3
+            ORDER BY this0 ASC
+            SKIP $param4
+            LIMIT $param5
             CALL {
                 WITH this
-                MATCH (this)-[this3:\`HAS_NAME\`]->(this4:\`NameDetails\`)
-                WHERE apoc.util.validatePredicate(NOT ((any(var6 IN [\\"ALL\\"] WHERE any(var5 IN $auth.roles WHERE var5 = var6)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH { node: { fullName: this4.fullName } } AS edge
+                MATCH (this)-[this1:\`HAS_NAME\`]->(this2:\`NameDetails\`)
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param6 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH { node: { fullName: this2.fullName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var7
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
             CALL {
                 WITH this
-                MATCH (this)-[this8:\`HAS_MARKETS\`]->(this9:\`Market\`)
-                WHERE apoc.util.validatePredicate(NOT ((any(var11 IN [\\"ALL\\"] WHERE any(var10 IN $auth.roles WHERE var10 = var11)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)-[this4:\`HAS_MARKETS\`]->(this5:\`Market\`)
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param7 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
-                    WITH this9
-                    MATCH (this9:\`Market\`)-[this12:\`HAS_NAME\`]->(this13:\`NameDetails\`)
-                    WHERE apoc.util.validatePredicate(NOT ((any(var15 IN [\\"ALL\\"] WHERE any(var14 IN $auth.roles WHERE var14 = var15)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH { node: { fullName: this13.fullName } } AS edge
+                    WITH this5
+                    MATCH (this5:\`Market\`)-[this6:\`HAS_NAME\`]->(this7:\`NameDetails\`)
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param8 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH { node: { fullName: this7.fullName } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var16
+                    RETURN { edges: edges, totalCount: totalCount } AS var8
                 }
-                WITH { node: { nameDetailsConnection: var16 } } AS edge
+                WITH { node: { nameDetailsConnection: var8 } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var17
+                RETURN { edges: edges, totalCount: totalCount } AS var9
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this18:\`HAS_BASE\`]-(this19:\`BaseObject\`)
-                WHERE apoc.util.validatePredicate(NOT ((any(var21 IN [\\"ALL\\"] WHERE any(var20 IN $auth.roles WHERE var20 = var21)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH { node: { id: this19.id } } AS edge
+                MATCH (this)<-[this10:\`HAS_BASE\`]-(this11:\`BaseObject\`)
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param9 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH { node: { id: this11.id } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var22
+                RETURN { edges: edges, totalCount: totalCount } AS var12
             }
-            RETURN this { relatedId: this2, nameDetailsConnection: var7, marketsConnection: var17, baseObjectConnection: var22 } AS this"
+            RETURN this { relatedId: this0, nameDetailsConnection: var3, marketsConnection: var9, baseObjectConnection: var12 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
-                \\"param2\\": {
+                \\"isAuthenticated\\": true,
+                \\"param2\\": \\"ALL\\",
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
+                \\"param4\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 },
-                \\"param3\\": {
+                \\"param5\\": {
                     \\"low\\": 50,
                     \\"high\\": 0
                 },
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"param6\\": \\"ALL\\",
+                \\"param7\\": \\"ALL\\",
+                \\"param8\\": \\"ALL\\",
+                \\"param9\\": \\"ALL\\"
             }"
         `);
     });

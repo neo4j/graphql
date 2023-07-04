@@ -33,15 +33,19 @@ import { createConnectionEventMeta } from "./subscriptions/create-connection-eve
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
+import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 interface Res {
     creates: string[];
     params: any;
-    meta?: CreateMeta;
+    meta: CreateMeta;
 }
 
 interface CreateMeta {
     authStrs: string[];
+    authorizationPredicates: string[];
+    authorizationSubqueries: string[];
 }
 
 function createCreateAndParams({
@@ -71,12 +75,18 @@ function createCreateAndParams({
             }`
         );
     }
+    checkAuthentication({ context, node, targetOperations: ["CREATE"] });
+
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
         const dbFieldName = mapToDbProperty(node, key);
+
+        if (primitiveField) {
+            checkAuthentication({ context, node, targetOperations: ["CREATE"], field: primitiveField.fieldName });
+        }
 
         if (relationField) {
             const refNodes: Node[] = [];
@@ -251,23 +261,42 @@ function createCreateAndParams({
             return res;
         }
 
-        if (primitiveField?.auth) {
-            const { cypher: authCypher, params: authParams } = createAuthAndParams({
-                entity: primitiveField,
-                operations: "CREATE",
-                context,
-                bind: { node, varName },
-            });
-            if (authCypher) {
-                if (!res.meta) {
-                    res.meta = { authStrs: [] };
-                }
+        const authorizationAndParams = createAuthorizationAfterAndParams({
+            context,
+            nodes: [
+                {
+                    variable: varName,
+                    node,
+                    fieldName: primitiveField?.fieldName,
+                },
+            ],
+            operations: ["CREATE"],
+        });
 
-                res.meta.authStrs.push(authCypher);
-                res.params = { ...res.params, ...authParams };
+        if (authorizationAndParams) {
+            const { cypher, params: authParams, subqueries } = authorizationAndParams;
+
+            if (subqueries) {
+                res.meta.authorizationSubqueries.push(subqueries);
+            }
+            res.meta.authorizationPredicates.push(cypher);
+            res.params = { ...res.params, ...authParams };
+        } else {
+            // TODO: Authorization - delete for 4.0.0
+
+            if (primitiveField?.auth) {
+                const { cypher: authCypher, params: authParams } = createAuthAndParams({
+                    entity: primitiveField,
+                    operations: "CREATE",
+                    context,
+                    bind: { node, varName },
+                });
+                if (authCypher) {
+                    res.meta.authStrs.push(authCypher);
+                    res.params = { ...res.params, ...authParams };
+                }
             }
         }
-
         if (pointField) {
             if (pointField.typeMeta.array) {
                 res.creates.push(`SET ${varName}.${dbFieldName} = [p in $${varNameKey} | point(p)]`);
@@ -310,6 +339,11 @@ function createCreateAndParams({
     let { creates, params, meta } = Object.entries(input).reduce(reducer, {
         creates: initial,
         params: {},
+        meta: {
+            authStrs: [],
+            authorizationPredicates: [],
+            authorizationSubqueries: [],
+        },
     });
 
     if (context.subscriptionsEnabled) {
@@ -318,20 +352,52 @@ function createCreateAndParams({
         creates.push(`WITH ${withStrs.join(", ")}, ${filterMetaVariable(withVars).join(", ")}`);
     }
 
-    if (node.auth) {
-        const { cypher: authCypher, params: authParams } = createAuthAndParams({
-            entity: node,
-            operations: "CREATE",
-            context,
-            bind: { node, varName },
-        });
-        if (authCypher) {
-            creates.push(`WITH ${withVars.join(", ")}`);
-            creates.push(`CALL apoc.util.validate(NOT (${authCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-            params = { ...params, ...authParams };
+    const { authorizationPredicates, authorizationSubqueries } = meta;
+    const authorizationAndParams = createAuthorizationAfterAndParams({
+        context,
+        nodes: [
+            {
+                variable: varName,
+                node,
+            },
+        ],
+        operations: ["CREATE"],
+    });
+
+    if (authorizationAndParams) {
+        const { cypher, params: authParams, subqueries } = authorizationAndParams;
+        if (subqueries) {
+            authorizationSubqueries.push(subqueries);
+        }
+        authorizationPredicates.push(cypher);
+        params = { ...params, ...authParams };
+    } else {
+        // TODO: Authorization - delete for 4.0.0
+        if (node.auth) {
+            const { cypher: authCypher, params: authParams } = createAuthAndParams({
+                entity: node,
+                operations: "CREATE",
+                context,
+                bind: { node, varName },
+            });
+            if (authCypher) {
+                creates.push(`WITH ${withVars.join(", ")}`);
+                creates.push(`CALL apoc.util.validate(NOT (${authCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+                params = { ...params, ...authParams };
+            }
         }
     }
 
+    if (authorizationPredicates.length) {
+        creates.push(`WITH ${withVars.join(", ")}`);
+        if (authorizationSubqueries.length) {
+            creates.push(...authorizationSubqueries);
+            creates.push(`WITH *`);
+        }
+        creates.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
+    }
+
+    // TODO: Authorization - delete for 4.0.0
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
         creates.push(`CALL apoc.util.validate(NOT (${meta.authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
