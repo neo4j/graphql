@@ -45,7 +45,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 serviceDate: TimeGraph! @relationship(type: "BUSSED_ON", direction: OUT)
             }
 
-            interface Church @auth(rules: [{ isAuthenticated: true }]) {
+            interface Church {
                 id: ID @id
                 name: String!
                 serviceLogs: [ServiceLog!]! @relationship(type: "HAS_HISTORY", direction: OUT)
@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     )
             }
 
-            type TimeGraph @auth(rules: [{ isAuthenticated: true }]) {
+            type TimeGraph {
                 date: Date
             }
 
@@ -112,12 +112,12 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Bacenta\`)
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this.id = $param0
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
                 WITH DISTINCT records, date LIMIT $limit
-                RETURN records ORDER BY date.date DESC\\", { limit: $param2, this: this, auth: $auth }) AS this0
+                RETURN records ORDER BY date.date DESC\\", { limit: $param1, this: this, auth: $auth }) AS this0
                 CALL {
                     WITH this0
                     UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
@@ -127,7 +127,6 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this2:BUSSED_ON]->(this3:\`TimeGraph\`)
-                    WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this3 { .date } AS this3
                     RETURN head(collect(this3)) AS var4
                 }
@@ -139,7 +138,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"param2\\": {
+                \\"param1\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
