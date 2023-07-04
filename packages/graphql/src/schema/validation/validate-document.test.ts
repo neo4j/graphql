@@ -21,6 +21,294 @@ import { gql } from "graphql-tag";
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import validateDocument from "./validate-document";
 
+describe("validation2.0", () => {
+    describe("Directive Argument", () => {
+        // TODO: @exclude?
+        describe("@cypher", () => {
+            test("@cypher columnName required", () => {
+                const doc = gql`
+                    type User {
+                        name: String
+                            @cypher(
+                                statement: """
+                                WITH "whatever" AS x RETURN x
+                                """
+                            )
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@cypher" argument "columnName" of type "String!" is required, but it was not provided.'
+                );
+            });
+            test("@cypher statement required", () => {
+                const doc = gql`
+                    type User {
+                        name: String @cypher(columnName: "x")
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@cypher" argument "statement" of type "String!" is required, but it was not provided.'
+                );
+            });
+            test("@cypher ok", () => {
+                const doc = gql`
+                    type User {
+                        name: String
+                            @cypher(
+                                statement: """
+                                WITH "whatever" AS x RETURN x
+                                """
+                                columnName: "x"
+                            )
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).not.toThrow();
+            });
+        });
+        describe("@alias", () => {
+            test("@alias property required", () => {
+                const doc = gql`
+                    type User {
+                        name: String @alias
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@alias" argument "property" of type "String!" is required, but it was not provided.'
+                );
+            });
+            test("@cypher ok", () => {
+                const doc = gql`
+                    type User {
+                        name: String @alias(property: "sub")
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).not.toThrow();
+            });
+        });
+        describe("@coalesce", () => {
+            test("@coalesce property required", () => {
+                const doc = gql`
+                    type User {
+                        name: String @coalesce
+                    }
+                `;
+                // TODO: is "ScalarOrEnum" type exposed to the user?
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
+                );
+            });
+            test("@coalesce ok", () => {
+                const doc = gql`
+                    type User {
+                        name: String @coalesce(value: "dummy")
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).not.toThrow();
+            });
+        });
+        describe("@default", () => {
+            test("@default property required", () => {
+                const doc = gql`
+                    type User {
+                        name: String @default
+                    }
+                `;
+                // TODO: is "ScalarOrEnum" type exposed to the user?
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@default" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
+                );
+            });
+            test("@default ok", () => {
+                const doc = gql`
+                    type User {
+                        name: String @default(value: "dummy")
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).not.toThrow();
+            });
+        });
+        describe("@fulltext", () => {
+            test("@fulltext property required", () => {
+                const doc = gql`
+                    type User @fulltext {
+                        name: String
+                    }
+                `;
+                // TODO: is "[FullTextInput]!" type exposed to the user?
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@fulltext" argument "indexes" of type "[FullTextInput]!" is required, but it was not provided.'
+                );
+            });
+            test.only("@fulltext.indexes property required", () => {
+                const doc = gql`
+                    type User @fulltext(indexes: [{ name: "something" }]) {
+                        name: String
+                    }
+                `;
+                // TODO: fix this, no error thrown bc nested property
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@fulltext" argument "indexes" of type "ScalarOrEnum!" is required, but it was not provided.'
+                );
+            });
+            test("@fulltext ok", () => {
+                const doc = gql`
+                    type User @fulltext(indexes: [{ fields: ["name"] }]) {
+                        name: String
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).not.toThrow();
+            });
+        });
+        describe("@jwtClaim", () => {
+            test("@jwtClaim property required", () => {
+                const doc = gql`
+                    type User {
+                        name: String @jwtClaim
+                    }
+                `;
+                // TODO: is "ScalarOrEnum" type exposed to the user?
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@jwtClaim" argument "path" of type "String!" is required, but it was not provided.'
+                );
+            });
+            test("@jwtClaim ok", () => {
+                const doc = gql`
+                    type User {
+                        name: String @jwtClaim(path: "dummy")
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).not.toThrow();
+            });
+        });
+        describe("@node", () => {
+            test.skip("@node.labels required", () => {
+                const doc = gql`
+                    type User @node(labels: []) {
+                        name: String
+                    }
+                `;
+                // TODO: fix this, no error thrown bc nested property
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@node" argument "labels" of type "String!" is required, but it was not provided.'
+                );
+            });
+            test("@node ok", () => {
+                const doc = gql`
+                    type User @node(labels: ["awesome"]) {
+                        name: String
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).not.toThrow();
+            });
+        });
+        describe("@plural", () => {
+            test("@plural property required", () => {
+                const doc = gql`
+                    type User @plural {
+                        name: String
+                    }
+                `;
+                // TODO: is "ScalarOrEnum" type exposed to the user?
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@plural" argument "value" of type "String!" is required, but it was not provided.'
+                );
+            });
+            test("@plural ok", () => {
+                const doc = gql`
+                    type User @plural(value: "kings") {
+                        name: String
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).not.toThrow();
+            });
+        });
+        describe("@populatedBy", () => {
+            test("@populatedBy property required", () => {
+                const doc = gql`
+                    type User {
+                        name: String @populatedBy
+                    }
+                `;
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@populatedBy" argument "callback" of type "String!" is required, but it was not provided.'
+                );
+            });
+            test("@populatedBy ok", () => {
+                const doc = gql`
+                    type User {
+                        name: String @populatedBy(callback: "myCallback")
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).not.toThrow();
+            });
+        });
+        describe("@relationship", () => {
+            test("@relationship properties required", () => {
+                const doc = gql`
+                    type User {
+                        name: Post @relationship
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@relationship" argument "type" of type "String!" is required, but it was not provided.'
+                );
+            });
+            test("@relationship type required", () => {
+                const doc = gql`
+                    type User {
+                        name: Post @relationship(direction: IN)
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@relationship" argument "type" of type "String!" is required, but it was not provided.'
+                );
+            });
+            test("@relationship direction required", () => {
+                const doc = gql`
+                    type User {
+                        name: Post @relationship(type: "HAS_POST")
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+                expect(() => validateDocument({ document: doc })).toThrow(
+                    'Directive "@relationship" argument "direction" of type "RelationshipDirection!" is required, but it was not provided.'
+                );
+            });
+            test("@relationship ok", () => {
+                const doc = gql`
+                    type User {
+                        name: Post @relationship(direction: IN, type: "HAS_POST")
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                expect(() => validateDocument({ document: doc })).not.toThrow();
+            });
+        });
+    });
+});
 describe("validateDocument", () => {
     test("should throw an error if a directive is in the wrong location", () => {
         const doc = gql`
