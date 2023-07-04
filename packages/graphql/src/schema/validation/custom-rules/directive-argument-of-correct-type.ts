@@ -28,11 +28,18 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
     return {
         Directive(directiveNode: DirectiveNode) {
             // Validate only Authorization usage
-            if (!directiveNode.name.value.includes("Authorization")) {
+            console.log("hello", directiveNode.name.value);
+            if (!directiveNode.name.value.includes("Authorization") && !directiveNode.name.value.includes("fulltext")) {
                 return;
             }
+            console.log("continue with", directiveNode.name.value);
 
-            const directiveDefinition = schema.getDirective(directiveNode.name.value);
+            const directiveDefinitionFromDocument = schema.getDirective(directiveNode.name.value);
+            // console.log("def", directiveDefinitionFromDocument);
+            const directiveDefinitionFromSchema = context.getSchema()?.getDirective(directiveNode.name.value);
+            // console.log("def2", directiveDefinitionFromSchema);
+
+            const directiveDefinition = directiveDefinitionFromDocument || directiveDefinitionFromSchema;
 
             if (!directiveDefinition) {
                 // Do not report, delegate this report to KnownDirectivesRule
@@ -40,7 +47,11 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
             }
 
             directiveNode.arguments?.forEach((argument) => {
-                const argumentDefinition = findArgumentDefinitionNodeByName(directiveDefinition.args, argument.name.value);
+                const argumentDefinition = findArgumentDefinitionNodeByName(
+                    directiveDefinition.args,
+                    argument.name.value
+                );
+                console.log("arg", argumentDefinition);
                 if (!argumentDefinition) {
                     return;
                 }
