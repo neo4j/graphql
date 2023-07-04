@@ -120,16 +120,6 @@ describe("makeAugmentedSchema", () => {
         expect(() => makeAugmentedSchema(typeDefs)).toThrow("cannot auto-generate an array");
     });
 
-    test("should throw cannot have auth directive on a relationship", () => {
-        const typeDefs = gql`
-            type Movie {
-                movie: Movie! @relationship(type: "NODE", direction: OUT) @auth(rules: [{ operations: [CREATE] }])
-            }
-        `;
-
-        expect(() => makeAugmentedSchema(typeDefs)).toThrow("cannot have auth directive on a relationship");
-    });
-
     describe("REGEX", () => {
         test("should remove the MATCHES filter by default", () => {
             const typeDefs = gql`

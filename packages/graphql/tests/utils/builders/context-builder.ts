@@ -24,7 +24,6 @@ import { GraphQLSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
 import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
 import type { Context } from "../../../src/types";
-import type { AuthContext } from "../../../src/types/deprecated/auth/auth-context";
 import { Builder } from "./builder";
 import { Executor } from "../../../src/classes/Executor";
 import { Neo4jGraphQLSchemaModel } from "../../../src/schema-model/Neo4jGraphQLSchemaModel";
@@ -51,9 +50,8 @@ export class ContextBuilder extends Builder<Context, Context> {
             schema: new GraphQLSchema({}),
             subscriptionsEnabled: false,
             executionContext: {} as neo4j.Driver,
-            executor: new Executor({ executionContext: {} as neo4j.Driver, auth: {} as AuthContext }),
+            executor: new Executor({ executionContext: {} as neo4j.Driver }),
             neo4jDatabaseInfo: {} as Neo4jDatabaseInfo,
-            authParam: new Cypher.Param({}),
             info: {} as GraphQLResolveInfo,
             features: {},
             authorization: {

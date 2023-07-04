@@ -633,11 +633,7 @@ describe("Cypher directive", () => {
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"title\\": \\"The Matrix\\",
-                    \\"auth\\": {
-                        \\"isAuthenticated\\": false,
-                        \\"roles\\": []
-                    }
+                    \\"title\\": \\"The Matrix\\"
                 }"
             `);
         });
@@ -698,11 +694,7 @@ describe("Cypher directive", () => {
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"title\\": \\"The Matrix\\",
-                    \\"auth\\": {
-                        \\"isAuthenticated\\": false,
-                        \\"roles\\": []
-                    }
+                    \\"title\\": \\"The Matrix\\"
                 }"
             `);
         });

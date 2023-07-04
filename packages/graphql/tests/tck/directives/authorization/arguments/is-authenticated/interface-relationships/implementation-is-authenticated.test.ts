@@ -396,7 +396,7 @@ describe("Cypher Auth isAuthenticated", () => {
             "MATCH (this:\`User\`)
             WITH *
             CALL {
-            WITH this
+            WITH *
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:\`HAS_CONTENT\`]->(this_content_Comment0:Comment)
             WITH this_content_Comment0_relationship, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
             CALL {
@@ -407,7 +407,7 @@ describe("Cypher Auth isAuthenticated", () => {
             }
             WITH *
             CALL {
-            WITH this
+            WITH *
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:\`HAS_CONTENT\`]->(this_content_Post0:Post)
             WITH this_content_Post0_relationship, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
             CALL {

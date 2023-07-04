@@ -28,15 +28,11 @@ import { getNeo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { AUTH_FORBIDDEN_ERROR, DEBUG_GRAPHQL } from "../../constants";
-import createAuthParam from "../../translate/create-auth-param";
 import type { Context, ContextFeatures, Neo4jGraphQLPlugins } from "../../types";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
-import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
-import { IncomingMessage } from "http";
 import Cypher from "@neo4j/cypher-builder";
 import type { Neo4jGraphQLAuthorization } from "../../classes/authorization/Neo4jGraphQLAuthorization";
-import { getToken, parseBearerToken } from "../../classes/authorization/parse-request-token";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -134,19 +130,6 @@ export const wrapResolver =
                     };
                 }
             }
-
-            // TODO: remove this if after migrating to new authorization constructor
-
-            if (context.plugins.auth) {
-                const req = context.req || context.request;
-                context.plugins.auth.tryToResolveKeys(context instanceof IncomingMessage ? context : req);
-                let token: string | undefined = undefined;
-                const bearer = getToken(req);
-                if (bearer) {
-                    token = parseBearerToken(bearer);
-                }
-                context.jwt = await decodeToken(token, context.plugins.auth);
-            }
         } else {
             const isAuthenticated = true;
             const jwt = context.jwt;
@@ -160,15 +143,8 @@ export const wrapResolver =
             };
         }
 
-        verifyGlobalAuthentication(context, context.plugins?.auth);
-
-        const authParam = createAuthParam({ context });
-
-        context.auth = authParam;
-
         const executorConstructorParam: ExecutorConstructorParam = {
             executionContext: context.executionContext,
-            auth: context.auth,
         };
 
         if (config.queryOptions) {
@@ -235,16 +211,8 @@ export const wrapSubscription =
                         subscriptionContext.jwt = undefined;
                     }
                 }
-            } else {
-                if (contextParams.authorization) {
-                    // TODO: remove this else after migrating to new authorization constructor
-                    const token = parseBearerToken(contextParams.authorization);
-                    subscriptionContext.jwt = await decodeToken(token, plugins.auth);
-                }
             }
         }
-
-        verifyGlobalAuthentication(subscriptionContext, plugins.auth);
 
         return next(root, args, { ...context, ...contextParams, ...subscriptionContext }, info);
     };

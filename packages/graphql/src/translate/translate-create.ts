@@ -145,15 +145,6 @@ export default async function translateCreate({
                 authPredicates.push(Cypher.and(...projection.predicates));
             }
 
-            if (projection.meta?.authValidatePredicates?.length) {
-                authPredicates.push(
-                    Cypher.apoc.util.validatePredicate(
-                        Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                        AUTH_FORBIDDEN_ERROR
-                    )
-                );
-            }
-
             if (authPredicates.length) {
                 return {
                     projection: projectionExpr,

@@ -26,7 +26,6 @@ import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
-import { createAuthAndParams } from "./create-auth-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -247,20 +246,6 @@ export default function createUpdateAndParams({
 
                             if (subqueries) {
                                 innerUpdate.push(subqueries);
-                            }
-                        } else {
-                            // TODO: Authorization - delete for 4.0.0
-                            if (node.auth) {
-                                const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
-                                    operations: "UPDATE",
-                                    entity: refNode,
-                                    context,
-                                    where: { varName: variableName, node: refNode },
-                                });
-                                if (authWhereCypher) {
-                                    whereStrs.push(authWhereCypher);
-                                    res.params = { ...res.params, ...authWhereParams };
-                                }
                             }
                         }
 
@@ -602,21 +587,6 @@ export default function createUpdateAndParams({
                 }
 
                 res.params = { ...res.params, ...authWhereParams };
-            } else {
-                // TODO: Authorization - delete for 4.0.0
-                if (authableField.auth) {
-                    const { cypher: preAuthCypher, params: preAuthParams } = createAuthAndParams({
-                        entity: authableField,
-                        operations: "UPDATE",
-                        context,
-                        allow: { varName, node },
-                    });
-
-                    if (preAuthCypher) {
-                        res.meta.preAuthStrs.push(preAuthCypher);
-                        res.params = { ...res.params, ...preAuthParams };
-                    }
-                }
             }
 
             const authorizationAfterAndParams = createAuthorizationAfterAndParams({
@@ -635,23 +605,6 @@ export default function createUpdateAndParams({
                 }
 
                 res.params = { ...res.params, ...authWhereParams };
-            } else {
-                // TODO: Authorization - delete for 4.0.0
-                if (authableField.auth) {
-                    const { cypher: postAuthCypher, params: postAuthParams } = createAuthAndParams({
-                        entity: authableField,
-                        operations: "UPDATE",
-                        skipRoles: true,
-                        skipIsAuthenticated: true,
-                        context,
-                        bind: { node, varName },
-                    });
-
-                    if (postAuthCypher) {
-                        res.meta.postAuthStrs.push(postAuthCypher);
-                        res.params = { ...res.params, ...postAuthParams };
-                    }
-                }
             }
         }
 
@@ -733,20 +686,6 @@ export default function createUpdateAndParams({
 
     const withStr = `WITH ${withVars.join(", ")}`;
 
-    // TODO: Authorization - delete for 4.0.0
-    if (node.auth) {
-        const { cypher: preAuthCypher, params: preAuthParams } = createAuthAndParams({
-            entity: node,
-            context,
-            allow: { node, varName },
-            operations: "UPDATE",
-        });
-        if (preAuthCypher) {
-            preAuthStrs.push(preAuthCypher);
-            params = { ...params, ...preAuthParams };
-        }
-    }
-
     const authorizationAfterAndParams = createAuthorizationAfterAndParams({
         context,
         nodes: [{ node, variable: varName }],
@@ -763,22 +702,6 @@ export default function createUpdateAndParams({
 
             authorizationAfterStrs.push(cypher);
             params = { ...params, ...authWhereParams };
-        }
-    } else {
-        // TODO: Authorization - delete for 4.0.0
-        if (node.auth) {
-            const { cypher: postAuthCypher, params: postAuthParams } = createAuthAndParams({
-                entity: node,
-                context,
-                skipIsAuthenticated: true,
-                skipRoles: true,
-                operations: "UPDATE",
-                bind: { node, varName },
-            });
-            if (postAuthCypher) {
-                postAuthStrs.push(postAuthCypher);
-                params = { ...params, ...postAuthParams };
-            }
         }
     }
 

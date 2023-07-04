@@ -771,7 +771,7 @@ describe("Cypher Auth Where with Roles", () => {
             WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (this.id = coalesce($jwt.sub, $jwtDefault) AND $param3 IN $jwt.roles)) OR ($isAuthenticated = true AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             CALL {
-            WITH this
+            WITH *
             OPTIONAL MATCH (this)-[this_posts0_relationship:\`HAS_POST\`]->(this_posts0:Post)
             WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (single(authorization_this0 IN [(this_posts0)<-[:\`HAS_POST\`]-(authorization_this0:\`User\`) WHERE authorization_this0.id = coalesce($jwt.sub, $jwtDefault) | 1] WHERE true) AND $authorization_param3 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete

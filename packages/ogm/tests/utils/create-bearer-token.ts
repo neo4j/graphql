@@ -17,11 +17,17 @@
  * limitations under the License.
  */
 
-import type { JwtPayload } from "../../jwt-payload";
+import jsonwebtoken from "jsonwebtoken";
 
-export interface AuthContext {
-    isAuthenticated: boolean;
-    roles: string[];
-    bindPredicate?: "any" | "all";
-    jwt?: JwtPayload;
+export function createBearerToken(secret: string, extraData: Record<string, any> = {}): string {
+    const token = jsonwebtoken.sign(
+        {
+            roles: [],
+            ...extraData,
+        },
+        secret,
+        { noTimestamp: true }
+    );
+
+    return `Bearer ${token}`;
 }

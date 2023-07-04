@@ -21,8 +21,6 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Node } from "../../../classes";
 import type { GraphQLSortArg, Context, CypherField, CypherFieldReferenceMap } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
-
-import type { ProjectionMeta } from "../../create-projection-and-params";
 import createProjectionAndParams from "../../create-projection-and-params";
 import { CompositeEntity } from "../../../schema-model/entity/CompositeEntity";
 import { compileCypher } from "../../../utils/compile-cypher";
@@ -30,7 +28,6 @@ import { compileCypher } from "../../../utils/compile-cypher";
 interface Res {
     projection: Cypher.Expr[];
     params: any;
-    meta: ProjectionMeta;
     subqueries: Array<Cypher.Clause>;
     subqueriesBeforeSort: Array<Cypher.Clause>;
     predicates: Cypher.Predicate[];

@@ -19,7 +19,6 @@
 
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../classes";
-import type { AuthContext } from "../types/deprecated/auth/auth-context";
 import {
     CypherConnectComponentsPlanner,
     CypherExpressionEngine,
@@ -100,7 +99,6 @@ describe("execute", () => {
                         neoSchema,
                         executor: new Executor({
                             executionContext: driver,
-                            auth: {} as AuthContext,
                             database,
                             bookmarks,
                         }),
@@ -176,7 +174,6 @@ describe("execute", () => {
                     neoSchema,
                     executor: new Executor({
                         executionContext: driver,
-                        auth: {} as AuthContext,
                         database,
                         bookmarks,
                         queryOptions: {},
@@ -256,7 +253,6 @@ describe("execute", () => {
                     neoSchema,
                     executor: new Executor({
                         executionContext: driver,
-                        auth: {} as AuthContext,
                         database,
                         bookmarks,
                         queryOptions: {

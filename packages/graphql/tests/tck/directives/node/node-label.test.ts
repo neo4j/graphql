@@ -472,7 +472,7 @@ describe("Label in Node directive", () => {
             WHERE this.id = $param0
             WITH *
             CALL {
-            WITH this
+            WITH *
             OPTIONAL MATCH (this)<-[this_actors0_relationship:\`ACTED_IN\`]-(this_actors0:\`Person\`)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
             WITH this_actors0_relationship, collect(DISTINCT this_actors0) AS this_actors0_to_delete

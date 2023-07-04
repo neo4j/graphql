@@ -35,7 +35,6 @@ import type {
     DirectiveNode,
 } from "graphql";
 import { Kind } from "graphql";
-import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
 import { getCypherMeta } from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
@@ -142,7 +141,6 @@ function getObjFieldMeta({
                 interfaceField,
             });
             const typeMeta = getFieldTypeMeta(field.type);
-            const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
             const defaultDirective = directives.find((x) => x.name.value === "default");
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
@@ -160,7 +158,7 @@ function getObjFieldMeta({
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
             const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
             const fieldObject = objects.find((x) => x.name.value === typeMeta.name);
-    
+
             const selectableOptions = parseSelectableDirective(selectableDirective);
             const settableOptions = parseSettableDirective(settableDirective);
             const filterableOptions = parseFilterableDirective(filterableDirective);
@@ -178,7 +176,6 @@ function getObjFieldMeta({
                             "relationship",
                             "cypher",
                             "id",
-                            "auth",
                             "authorization",
                             "authentication",
                             "readonly",
@@ -198,7 +195,6 @@ function getObjFieldMeta({
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
-                ...(authDirective ? { auth: getAuth(authDirective) } : {}),
                 description: field.description?.value,
                 readonly:
                     directives.some((d) => d.name.value === "readonly") ||
@@ -227,10 +223,6 @@ function getObjFieldMeta({
             }
 
             if (relationshipMeta) {
-                if (authDirective) {
-                    throw new Error("cannot have auth directive on a relationship");
-                }
-
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
                 }

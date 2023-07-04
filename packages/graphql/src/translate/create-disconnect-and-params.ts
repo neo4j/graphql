@@ -19,8 +19,6 @@
 
 import type { Node, Relationship } from "../classes";
 import type { RelationField, Context } from "../types";
-import { createAuthAndParams } from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
@@ -135,83 +133,17 @@ function createDisconnectAndParams({
             if (subqueries) {
                 subquery.push(subqueries);
             }
+        }
 
-            if (whereStrs.length) {
-                const predicate = `${whereStrs.join(" AND ")}`;
-                if (aggregationWhere) {
-                    const columns = [new Cypher.NamedVariable(relVarName), new Cypher.NamedVariable(variableName)];
-                    const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
-                    const { cypher } = caseWhereClause.build("aggregateWhereFilter");
-                    subquery.push(cypher);
-                } else {
-                    subquery.push(`WHERE ${predicate}`);
-                }
-            }
-        } else {
-            // TODO: Authorization - delete for 4.0.0
-            if (relatedNode.auth) {
-                const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
-                    operations: "DISCONNECT",
-                    entity: relatedNode,
-                    context,
-                    where: { varName: variableName, node: relatedNode },
-                });
-                if (authWhereCypher) {
-                    whereStrs.push(authWhereCypher);
-                    params = { ...params, ...authWhereParams };
-                }
-            }
-
-            if (whereStrs.length) {
-                const predicate = `${whereStrs.join(" AND ")}`;
-                if (aggregationWhere) {
-                    const columns = [new Cypher.NamedVariable(relVarName), new Cypher.NamedVariable(variableName)];
-                    const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
-                    const { cypher } = caseWhereClause.build("aggregateWhereFilter");
-                    subquery.push(cypher);
-                } else {
-                    subquery.push(`WHERE ${predicate}`);
-                }
-            }
-
-            const nodeMatrix: { node: Node; name: string }[] = [
-                { node: parentNode, name: parentVar },
-                { node: relatedNode, name: variableName },
-            ];
-
-            const preAuth = nodeMatrix.reduce(
-                (result: Res, { node, name }) => {
-                    if (!node.auth) {
-                        return result;
-                    }
-
-                    const { cypher, params } = createAuthAndParams({
-                        entity: node,
-                        operations: "DISCONNECT",
-                        context,
-                        allow: { node, varName: name },
-                    });
-
-                    if (!cypher) {
-                        return result;
-                    }
-
-                    result.disconnects.push(cypher);
-                    result.params = { ...result.params, ...params };
-
-                    return result;
-                },
-                { disconnects: [], params: {} }
-            );
-
-            if (preAuth.disconnects.length) {
-                subquery.push(`WITH ${[...withVars, variableName, relVarName].join(", ")}`);
-                subquery.push(
-                    `CALL apoc.util.validate(NOT (${preAuth.disconnects.join(
-                        " AND "
-                    )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-                );
-                params = { ...params, ...preAuth.params };
+        if (whereStrs.length) {
+            const predicate = `${whereStrs.join(" AND ")}`;
+            if (aggregationWhere) {
+                const columns = [new Cypher.NamedVariable(relVarName), new Cypher.NamedVariable(variableName)];
+                const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
+                const { cypher } = caseWhereClause.build("aggregateWhereFilter");
+                subquery.push(cypher);
+            } else {
+                subquery.push(`WHERE ${predicate}`);
             }
         }
 
@@ -404,44 +336,6 @@ function createDisconnectAndParams({
                 subquery.push(`WHERE ${cypher}`);
                 params = { ...params, ...authWhereParams };
             }
-        } else {
-            // TODO: Authorization - delete for 4.0.0
-            const postAuth = [parentNode, relatedNode].reduce(
-                (result: Res, node) => {
-                    if (!node.auth) {
-                        return result;
-                    }
-
-                    const { cypher, params } = createAuthAndParams({
-                        entity: node,
-                        operations: "DISCONNECT",
-                        context,
-                        skipRoles: true,
-                        skipIsAuthenticated: true,
-                        bind: { node, varName: variableName },
-                    });
-
-                    if (!cypher) {
-                        return result;
-                    }
-
-                    result.disconnects.push(cypher);
-                    result.params = { ...result.params, ...params };
-
-                    return result;
-                },
-                { disconnects: [], params: {} }
-            );
-
-            if (postAuth.disconnects.length) {
-                subquery.push(`WITH ${[...withVars, variableName].join(", ")}`);
-                subquery.push(
-                    `CALL apoc.util.validate(NOT (${postAuth.disconnects.join(
-                        " AND "
-                    )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-                );
-                params = { ...params, ...postAuth.params };
-            }
         }
 
         if (context.subscriptionsEnabled) {
@@ -455,21 +349,6 @@ function createDisconnectAndParams({
     }
 
     function reducer(res: Res, disconnect: { where: any; disconnect: any }, index: number): Res {
-        // TODO: Authorization - delete for 4.0.0
-        if (parentNode.auth) {
-            const { cypher: authCypher, params: authParams } = createAuthAndParams({
-                operations: "DISCONNECT",
-                entity: parentNode,
-                context,
-                where: { varName: parentVar, node: parentNode },
-            });
-            if (authCypher) {
-                res.disconnects.push(`WITH ${withVars.join(", ")}`);
-                res.disconnects.push(`WHERE ${authCypher}`);
-                res.params = { ...res.params, ...authParams };
-            }
-        }
-
         if (isFirstLevel) {
             res.disconnects.push(`WITH ${withVars.join(", ")}`);
         }

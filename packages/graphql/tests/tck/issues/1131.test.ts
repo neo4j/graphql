@@ -94,6 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                     this_isInPublication0_connectOrCreate0.uri = $this_isInPublication0_connectOrCreate_param1,
                     this_isInPublication0_connectOrCreate0.prefLabel = $this_isInPublication0_connectOrCreate_param2
                 MERGE (this)-[this_isInPublication0_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication0_connectOrCreate0)
+                RETURN count(*) AS _
             }
             WITH this
             CALL {
@@ -103,6 +104,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                     this_isInPublication1_connectOrCreate0.uri = $this_isInPublication1_connectOrCreate_param1,
                     this_isInPublication1_connectOrCreate0.prefLabel = $this_isInPublication1_connectOrCreate_param2
                 MERGE (this)-[this_isInPublication1_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication1_connectOrCreate0)
+                RETURN count(*) AS _
             }
             WITH *
             CALL {

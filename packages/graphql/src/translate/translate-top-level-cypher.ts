@@ -20,11 +20,9 @@
 import type { GraphQLResolveInfo } from "graphql";
 import createProjectionAndParams from "./create-projection-and-params";
 import type { Context, CypherField } from "../types";
-import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR, AUTHORIZATION_UNAUTHENTICATED } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
-import createAuthParam from "./create-auth-param";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
 import { Neo4jGraphQLError } from "../classes";
 import { filterByValues } from "./authorization/utils/filter-by-values";
@@ -72,19 +70,12 @@ export function translateTopLevelCypher({
     const { resolveTree } = context;
     let params = {
         ...args,
-        auth: createAuthParam({ context }),
         cypherParams: context.cypherParams,
     };
     if (statement.includes("$jwt")) {
         params.jwt = context.authorization.jwtParam.value;
     }
     const cypherStrs: string[] = [];
-
-    const { cypher: authCypher, params: authParams } = createAuthAndParams({ entity: field, context });
-    if (authCypher) {
-        params = { ...params, ...authParams };
-        cypherStrs.push(`CALL apoc.util.validate(NOT (${authCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-    }
 
     let projectionStr;
     const projectionAuthStrs: Cypher.Predicate[] = [];
@@ -98,7 +89,6 @@ export function translateTopLevelCypher({
         const {
             projection: str,
             params: p,
-            meta,
             subqueries,
             subqueriesBeforeSort,
             predicates,
@@ -112,10 +102,6 @@ export function translateTopLevelCypher({
         projectionStr = str;
         projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
         params = { ...params, ...p };
-
-        if (meta.authValidatePredicates?.length) {
-            projectionAuthStrs.push(...projectionAuthStrs, Cypher.and(...meta.authValidatePredicates));
-        }
 
         if (predicates.length) {
             projectionValidatePredicates.push(...predicates);
@@ -149,7 +135,6 @@ export function translateTopLevelCypher({
                     const {
                         projection: str,
                         params: p,
-                        meta,
                         subqueries,
                         predicates,
                     } = createProjectionAndParams({
@@ -161,9 +146,6 @@ export function translateTopLevelCypher({
                     });
                     projectionSubqueries.push(...subqueries);
                     params = { ...params, ...p };
-                    if (meta.authValidatePredicates?.length) {
-                        projectionAuthStrs.push(Cypher.and(...meta.authValidatePredicates));
-                    }
                     if (predicates.length) {
                         projectionValidatePredicates.push(...predicates);
                     }
