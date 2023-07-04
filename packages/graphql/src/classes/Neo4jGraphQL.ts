@@ -354,9 +354,10 @@ class Neo4jGraphQL {
 
             const validationConfig = this.parseStartupValidationConfig();
 
-            if (validationConfig.validateTypeDefs) {
-                validateDocument({ document: initialDocument, validationConfig });
-            }
+            // if (validationConfig.validateTypeDefs) {
+            //     validateDocument({ document: initialDocument, validationConfig });
+            // }
+            validateDocument({ document: initialDocument, validationConfig });
 
             const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
             const { jwtPayload } = typesExcludedFromGeneration;

@@ -43,6 +43,9 @@ import { isRootType } from "../../utils/is-root-type";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import type { ValidationConfig } from "../../classes/Neo4jGraphQL";
 import { defaultValidationConfig } from "../../classes/Neo4jGraphQL";
+import { validateSDL } from "./validate-sdl";
+import { specifiedSDLRules } from "graphql/validation/specifiedRules";
+import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -189,6 +192,14 @@ function getBaseSchema({
         ],
     });
 
+    // ==================== for rules testing ====
+    const errors = validateSDL(doc, [...specifiedSDLRules, DirectiveArgumentOfCorrectType], schemaToExtend);
+    const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
+    if (filteredErrors.length) {
+        console.log("Validate Document: END with ERRORS");
+        throw new Error(filteredErrors.join("\n"));
+    }
+    // ===========================================
     return extendSchema(schemaToExtend, doc, { assumeValid: !validateTypeDefs });
 }
 
