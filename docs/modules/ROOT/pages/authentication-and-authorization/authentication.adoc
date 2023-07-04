@@ -93,4 +93,4 @@ This is done via extending the schema:
 extend schema @authentication
 ----
 
-Note that both the `operations` and `jwt` arguments also work as expected in this scenario.
+The `operations` and `jwt` arguments can also be used when the directive is applied to a schema extension.

@@ -1,15 +1,14 @@
 = Authorization
 
-Explicit authentication, configured using the `@authentication` directive, is only ever evaluated 
-during Cypher translation time, and unauthenticated requests with queries requiring authentication 
-will never reach the database.
-
 Authorization rules concern themselves with specific data which is executed against during a generated Cypher query.
-They are evaluated via predicates in the Cypher generated from a GraphQL query, so they execute within the context of nodes 
-and their properties.
+They are evaluated via predicates in the Cypher generated from a GraphQL query, so they execute within the context of nodes and their properties.
 
 All authorization rules have an implied requirement for authentication, given that the rules are normally evaluated
 against values in the JWT payload.
+
+In the case of explicit authentication, configured using the `@authentication` directive, is only ever evaluated 
+during Cypher translation time, and unauthenticated requests with queries requiring authentication 
+will never reach the database.
 
 == Rules
 

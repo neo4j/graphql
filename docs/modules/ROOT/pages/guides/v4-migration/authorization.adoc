@@ -73,11 +73,10 @@ const { url } = await startStandaloneServer(server, {
 ----
 
 This is to acknowledge the fact that there are a variety of servers which don't have a `req` object (such as serverless functions, which use `event`). 
-This is a uniform experience, no matter what server you use.
 
 === `rolesPath`
 
-The `rolesPath` instantiation was used to configure a custom path for the "roles" claim in the JWT structure. 
+The `rolesPath` argument was used to configure a custom path for the "roles" claim in the JWT structure. 
 This configuration has now been moved into the type definitions themselves. 
 So given a previous instantiation:
 
