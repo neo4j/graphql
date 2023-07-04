@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 MERGE (this)<-[this_connectOrCreate_children_this0:\`HAS\`]-(this_connectOrCreate_children0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_children_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN COUNT(*) AS _
+                RETURN count(*) AS _
             }
             WITH this
             CALL {
@@ -103,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 MERGE (this)<-[this_connectOrCreate_children_this1:\`HAS\`]-(this_connectOrCreate_children1)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_children_param7 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN COUNT(*) AS _
+                RETURN count(*) AS _
             }
             WITH *
             RETURN 'Query cannot conclude with CALL'"

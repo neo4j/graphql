@@ -87,7 +87,7 @@ describe("Create or Connect", () => {
                     MERGE (this0)-[this0_movies_connectOrCreate_this0:\`ACTED_IN\`]->(this0_movies_connectOrCreate0)
                     ON CREATE SET
                         this0_movies_connectOrCreate_this0.screentime = $this0_movies_connectOrCreate_param2
-                    RETURN COUNT(*) AS _
+                    RETURN count(*) AS _
                 }
                 RETURN this0
                 }
@@ -145,7 +145,7 @@ describe("Create or Connect", () => {
                     MERGE (this)-[this_movies0_connectOrCreate_this0:\`ACTED_IN\`]->(this_movies0_connectOrCreate0)
                     ON CREATE SET
                         this_movies0_connectOrCreate_this0.screentime = $this_movies0_connectOrCreate_param2
-                    RETURN COUNT(*) AS _
+                    RETURN count(*) AS _
                 }
                 RETURN collect(DISTINCT this { .name }) AS data"
             `);
@@ -234,7 +234,7 @@ describe("Create or Connect", () => {
                     MERGE (this0)-[this0_movies_connectOrCreate_this0:\`ACTED_IN\`]->(this0_movies_connectOrCreate0)
                     ON CREATE SET
                         this0_movies_connectOrCreate_this0.screentime = $this0_movies_connectOrCreate_param2
-                    RETURN COUNT(*) AS _
+                    RETURN count(*) AS _
                 }
                 RETURN this0
                 }
@@ -294,7 +294,7 @@ describe("Create or Connect", () => {
                     MERGE (this0)-[this0_movies_connectOrCreate_this0:\`ACTED_IN\`]->(this0_movies_connectOrCreate0)
                     ON CREATE SET
                         this0_movies_connectOrCreate_this0.screentime = $this0_movies_connectOrCreate_param2
-                    RETURN COUNT(*) AS _
+                    RETURN count(*) AS _
                 }
                 RETURN this0
                 }
@@ -354,7 +354,7 @@ describe("Create or Connect", () => {
                     MERGE (this)-[this_movies0_connectOrCreate_this0:\`ACTED_IN\`]->(this_movies0_connectOrCreate0)
                     ON CREATE SET
                         this_movies0_connectOrCreate_this0.screentime = $this_movies0_connectOrCreate_param2
-                    RETURN COUNT(*) AS _
+                    RETURN count(*) AS _
                 }
                 RETURN collect(DISTINCT this { .name }) AS data"
             `);
@@ -412,7 +412,7 @@ describe("Create or Connect", () => {
                     MERGE (this)-[this_movies0_connectOrCreate_this0:\`ACTED_IN\`]->(this_movies0_connectOrCreate0)
                     ON CREATE SET
                         this_movies0_connectOrCreate_this0.screentime = $this_movies0_connectOrCreate_param2
-                    RETURN COUNT(*) AS _
+                    RETURN count(*) AS _
                 }
                 RETURN collect(DISTINCT this { .name }) AS data"
             `);
@@ -502,7 +502,7 @@ describe("Create or Connect", () => {
                         this0_movies_connectOrCreate_this0.createdAt = datetime(),
                         this0_movies_connectOrCreate_this0.id = randomUUID(),
                         this0_movies_connectOrCreate_this0.screentime = $this0_movies_connectOrCreate_param2
-                    RETURN COUNT(*) AS _
+                    RETURN count(*) AS _
                 }
                 RETURN this0
                 }
@@ -562,7 +562,7 @@ describe("Create or Connect", () => {
                         this_movies0_connectOrCreate_this0.createdAt = datetime(),
                         this_movies0_connectOrCreate_this0.id = randomUUID(),
                         this_movies0_connectOrCreate_this0.screentime = $this_movies0_connectOrCreate_param2
-                    RETURN COUNT(*) AS _
+                    RETURN count(*) AS _
                 }
                 RETURN collect(DISTINCT this { .name }) AS data"
             `);

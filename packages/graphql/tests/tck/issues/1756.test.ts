@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
                     this0_genre_connectOrCreate0.value = $this0_genre_connectOrCreate_param1,
                     this0_genre_connectOrCreate0.id = $resolvedCallbacks.this0_genre_connectOrCreate0_id_nanoid
                 MERGE (this0)-[this0_genre_connectOrCreate_this0:\`HAS_GENRE\`]->(this0_genre_connectOrCreate0)
-                RETURN COUNT(*) AS _
+                RETURN count(*) AS _
             }
             RETURN this0
             }

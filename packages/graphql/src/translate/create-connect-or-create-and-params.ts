@@ -101,13 +101,9 @@ export function createConnectOrCreateAndParams({
     });
 
     const wrappedQueries = statements.map((statement) => {
-        const countResult = new Cypher.RawCypher(() => {
-            if (context.subscriptionsEnabled) {
-                return "meta as update_meta";
-            }
-            return "COUNT(*) AS _";
-        });
-        const returnStatement = new Cypher.Return(countResult);
+        const returnStatement = context.subscriptionsEnabled
+            ? new Cypher.Return([new Cypher.NamedVariable("meta"), "update_meta"])
+            : new Cypher.Return([Cypher.count(new Cypher.RawCypher("*")), "_"]);
 
         const withStatement = new Cypher.With(...withVarsVariables);
 
