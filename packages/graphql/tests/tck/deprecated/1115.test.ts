@@ -21,7 +21,6 @@ import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
-import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1115", () => {
     let typeDefs: DocumentNode;
@@ -29,33 +28,24 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type JWT @jwt {
-                roles: [String!]!
-            }
-
             type Parent {
                 children: [Child!]! @relationship(type: "HAS", direction: IN)
             }
-
             type Child {
                 tcId: String @unique
             }
 
             extend type Child
-                @authorization(
-                    validate: [
-                        {
-                            operations: [READ, CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { jwt: { roles_INCLUDES: "upstream" } }
-                        }
-                        { operations: [READ], where: { jwt: { roles_INCLUDES: "downstream" } } }
+                @auth(
+                    rules: [
+                        { operations: [READ, CREATE, UPDATE, DELETE, CONNECT, DISCONNECT], roles: ["upstream"] }
+                        { operations: [READ], roles: ["downstream"] }
                     ]
                 )
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            features: { authorization: { key: "secret" } },
         });
     });
 
@@ -77,9 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query, {
-            contextValues: { token: createBearerToken("secret") },
-        });
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Parent\`)
@@ -91,18 +79,18 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                     this_connectOrCreate_children0.tcId = $this_connectOrCreate_children_param1
                 MERGE (this)<-[this_connectOrCreate_children_this0:HAS]-(this_connectOrCreate_children0)
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_children_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"upstream\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN COUNT(*) AS _
             }
             WITH this
             CALL {
                 WITH this
-                MERGE (this_connectOrCreate_children1:\`Child\` { tcId: $this_connectOrCreate_children_param5 })
+                MERGE (this_connectOrCreate_children1:\`Child\` { tcId: $this_connectOrCreate_children_param2 })
                 ON CREATE SET
-                    this_connectOrCreate_children1.tcId = $this_connectOrCreate_children_param6
+                    this_connectOrCreate_children1.tcId = $this_connectOrCreate_children_param3
                 MERGE (this)<-[this_connectOrCreate_children_this1:HAS]-(this_connectOrCreate_children1)
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_children_param7 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"upstream\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN COUNT(*) AS _
             }
             WITH *
@@ -112,15 +100,13 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
             "{
                 \\"this_connectOrCreate_children_param0\\": \\"123\\",
                 \\"this_connectOrCreate_children_param1\\": \\"123\\",
-                \\"isAuthenticated\\": true,
-                \\"this_connectOrCreate_children_param3\\": \\"upstream\\",
-                \\"jwt\\": {
+                \\"this_connectOrCreate_children_param2\\": \\"456\\",
+                \\"this_connectOrCreate_children_param3\\": \\"456\\",
+                \\"resolvedCallbacks\\": {},
+                \\"auth\\": {
+                    \\"isAuthenticated\\": false,
                     \\"roles\\": []
-                },
-                \\"this_connectOrCreate_children_param5\\": \\"456\\",
-                \\"this_connectOrCreate_children_param6\\": \\"456\\",
-                \\"this_connectOrCreate_children_param7\\": \\"upstream\\",
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

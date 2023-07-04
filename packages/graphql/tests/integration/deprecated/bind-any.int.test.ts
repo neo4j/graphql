@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver, Session } from "neo4j-driver";
 import { graphql, GraphQLError } from "graphql";
 import Neo4j from "../neo4j";
@@ -27,6 +28,7 @@ import { cleanNodes } from "../../utils/clean-nodes";
 describe("https://github.com/neo4j/graphql/issues/2474", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let typeDefs: string;
     let session: Session;
 
     let User: UniqueType;
@@ -45,6 +47,23 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
 
         session = await neo4j.getSession();
 
+        typeDefs = `
+            type ${User} {
+                id: String!
+            }
+
+            type ${Organization} {
+                id: String!
+                users: [${User}!]! @relationship(type: "IS_MEMBER_OF", direction: IN)
+            }
+
+            type ${Group} @auth(rules: [{ operations: [CREATE], bind: { organization: { users: { id: "$jwt.sub" } } } }]) {
+                id: String!
+                name: String
+                organization: ${Organization}! @relationship(type: "HAS_GROUP", direction: IN)
+            }
+        `;
+
         await session.run(`
         CREATE(o:${Organization} { id: "org_1" })
         CREATE(:${User} { id: "user1" })-[:IS_MEMBER_OF]->(o)
@@ -62,27 +81,15 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
     });
 
     test("should allow the operation when predicate is any", async () => {
-        const typeDefs = `
-            type ${User} {
-                id: String!
-            }
-
-            type ${Organization} {
-                id: String!
-                users: [${User}!]! @relationship(type: "IS_MEMBER_OF", direction: IN)
-            }
-
-            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization: { users_SOME: { id: "$jwt.sub" } } } } }]) {
-                id: String!
-                name: String
-                organization: ${Organization}! @relationship(type: "HAS_GROUP", direction: IN)
-            }
-        `;
-
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            features: { authorization: { key: "secret" } },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                    bindPredicate: "any",
+                }),
+            },
         });
 
         const query = `
@@ -124,27 +131,14 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
     });
 
     test("should disallow the operation when predicate is all (default behaviour)", async () => {
-        const typeDefs = `
-            type ${User} {
-                id: String!
-            }
-
-            type ${Organization} {
-                id: String!
-                users: [${User}!]! @relationship(type: "IS_MEMBER_OF", direction: IN)
-            }
-
-            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization: { users_ALL: { id: "$jwt.sub" } } } } }]) {
-                id: String!
-                name: String
-                organization: ${Organization}! @relationship(type: "HAS_GROUP", direction: IN)
-            }
-        `;
-
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            features: { authorization: { key: "secret" } },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
         });
 
         const query = `
