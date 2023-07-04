@@ -158,6 +158,8 @@ function getObjFieldMeta({
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
             const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
             const fieldObject = objects.find((x) => x.name.value === typeMeta.name);
+            const fieldTemporal = ["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name);
+            const fieldPoint = ["Point", "CartesianPoint"].includes(typeMeta.name);
 
             const baseField: BaseField = {
                 fieldName: field.name.value,
@@ -463,7 +465,7 @@ function getObjFieldMeta({
                 };
                 res.objectFields.push(objectField);
             } else {
-                if (["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name)) {
+                if (fieldTemporal) {
                     const temporalField: TemporalField = {
                         ...baseField,
                     };
@@ -504,7 +506,7 @@ function getObjFieldMeta({
                     }
 
                     res.temporalFields.push(temporalField);
-                } else if (["Point", "CartesianPoint"].includes(typeMeta.name)) {
+                } else if (fieldPoint) {
                     if (defaultDirective) {
                         throw new Error("@default directive can only be used on primitive type fields");
                     }
