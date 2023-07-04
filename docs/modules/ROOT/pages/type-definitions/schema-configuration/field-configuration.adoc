@@ -418,7 +418,7 @@ directive @readonly on FIELD_DEFINITION
 
 == `@writeonly` label:deprecated[]
 
-With this directive, fields will only be featured in input types and will not be available for querying the object type through a Query or through a Mutation response.
+With this directive, fields will only be featured in input types and will not be available for querying the object type through a Query or through a mutation response.
 
 [NOTE]
 ====

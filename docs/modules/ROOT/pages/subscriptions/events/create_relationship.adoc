@@ -1,5 +1,5 @@
 [[create_relationship]]
-= Create Relationship Subscriptions
+= Create relationship subscriptions
 
 Subscriptions to `CREATE_RELATIONSHIP` events will listen for newly created relationships to a node of the specified type. 
 

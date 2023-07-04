@@ -116,7 +116,7 @@ In summary, there are three choices for the application of directives when using
 [[type-definitions-interfaced-types-querying]]
 == Querying an interface
 
-Which implementations are returned by a Query are dictated by the `where` filter applied.
+Which implementations are returned by a query are dictated by the `where` filter applied.
 
 For example, the following will return all productions with title starting "The " for every actor:
 
@@ -264,7 +264,7 @@ mutation CreateActorAndProductions {
 }
 ----
 
-The above Mutation will:
+The above mutation will:
 
 1. Find any `Actor` nodes with the name "Woody Harrelson"
 2. Connect those nodes to any `Production` (`Movie` or `Series`) nodes with the title "Zombieland"

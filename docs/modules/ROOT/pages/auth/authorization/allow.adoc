@@ -1,6 +1,9 @@
 [[auth-authorization-allow]]
 = Allow
 
+WARNING: The `@auth` directive has been replaced by `@authentication` and `@authorization`. `@auth` will be removed in version 4.0.0. 
+Please see the xref::guides/v4-migration/authorization.adoc[upgrade guide] for details on how to upgrade.
+
 Use `allow` to ensure that on matched nodes, there is equality between a value on the JWT and a property on each matched node. Taking a closer look, create two users in a hypothetical empty database:
 
 [source, cypher, indent=0]

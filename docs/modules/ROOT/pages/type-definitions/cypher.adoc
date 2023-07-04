@@ -229,9 +229,9 @@ type Movie {
 }
 ----
 
-=== On a Query type field
+=== On a query type field
 
-The example below demonstrates a simple Query to return all of the actors in the database:
+The example below demonstrates a simple query to return all of the actors in the database:
 
 [source, graphql, indent=0]
 ----
@@ -251,9 +251,9 @@ type Query {
 }
 ----
 
-=== On a Mutation type field
+=== On a mutation type field
 
-The example below demonstrates a simple Mutation using a Cypher query to insert a single actor with the specified name argument:
+The example below demonstrates a simple mutation using a Cypher query to insert a single actor with the specified name argument:
 
 [source, graphql, indent=0]
 ----
