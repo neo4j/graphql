@@ -3898,22 +3898,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.8.1, @neo4j-ndl/base@npm:^1.8.1":
-  version: 1.8.1
-  resolution: "@neo4j-ndl/base@npm:1.8.1"
-  checksum: a6e296eea47a09e23bce90d0e061b608f68d44ee7a102132464f5e96b494e64cfc4c654b314c6d50c7adf866ff3e1fcec5a4bf9e7b4e968af88523b57a3b74b6
+"@neo4j-ndl/base@npm:1.8.2, @neo4j-ndl/base@npm:^1.8.2":
+  version: 1.8.2
+  resolution: "@neo4j-ndl/base@npm:1.8.2"
+  checksum: 421f346032a32be270e8b6d93d37231f90736c235f61e57740e5724a4f5ae1af6205e16fd04a3a273ddf04dbabf2ff82b25d01e92424dff8c01b226d9c2f9b31
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.8.2":
-  version: 1.8.2
-  resolution: "@neo4j-ndl/react@npm:1.8.2"
+"@neo4j-ndl/react@npm:1.8.5":
+  version: 1.8.5
+  resolution: "@neo4j-ndl/react@npm:1.8.5"
   dependencies:
     "@floating-ui/react": ^0.24.2
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^1.8.1
-    "@tanstack/react-table": ^8.5.22
+    "@neo4j-ndl/base": ^1.8.2
+    "@tanstack/react-table": ^8.9.3
     classnames: ^2.3.1
     detect-browser: ^5.3.0
     re-resizable: ^6.9.9
@@ -3928,7 +3928,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: ">=16.8.0"
-  checksum: d26f3770c238a81e4c2d2415da3ddfdda07e48d79aedb7df144d75841e3e5c6c2b192b822ffc5b8dd5823c7c92c6b52af046725c46bc4913b6d698928b13ff10
+  checksum: 514aaa6f485be4cc3a90715bd7909711942e12a5f38e71eee30943f9a043a1dec07fc6b05290eb91054ac3d5e7f706ac24d077d92057aa50ba45724ec47c66c3
   languageName: node
   linkType: hard
 
@@ -4028,8 +4028,8 @@ __metadata:
     "@dnd-kit/modifiers": 6.0.1
     "@dnd-kit/sortable": 7.0.2
     "@graphiql/react": 0.18.0
-    "@neo4j-ndl/base": 1.8.1
-    "@neo4j-ndl/react": 1.8.2
+    "@neo4j-ndl/base": 1.8.2
+    "@neo4j-ndl/react": 1.8.5
     "@neo4j/graphql": 3.22.0
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.35.1
@@ -7339,22 +7339,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-table@npm:^8.5.22":
-  version: 8.7.9
-  resolution: "@tanstack/react-table@npm:8.7.9"
+"@tanstack/react-table@npm:^8.9.3":
+  version: 8.9.3
+  resolution: "@tanstack/react-table@npm:8.9.3"
   dependencies:
-    "@tanstack/table-core": 8.7.9
+    "@tanstack/table-core": 8.9.3
   peerDependencies:
     react: ">=16"
     react-dom: ">=16"
-  checksum: 3c704ac903405972641c9857e1466025bcdac04ee4890d64b018386cad5a778aca3a8d3f78542ae7a0ed609841d32ef3a7e563b079e87fa93b9ae8570a310499
+  checksum: a71fbbc608bb11b79ecd2b1a838fad2fc4140f9eb1a25bd44b6b1b4c6acd52741b5745e3e022390c642c284d0d528249360e322c0dbc3d34fea031611c207a7d
   languageName: node
   linkType: hard
 
-"@tanstack/table-core@npm:8.7.9":
-  version: 8.7.9
-  resolution: "@tanstack/table-core@npm:8.7.9"
-  checksum: 78d2314928c29559088e4bada0248cc7f94e93756e1a2c1f37a651db30276e9ae960d647bd3a61b67b3f0f9f7e4dec5dd58eb49b8adb80ee5952ef417b6e581f
+"@tanstack/table-core@npm:8.9.3":
+  version: 8.9.3
+  resolution: "@tanstack/table-core@npm:8.9.3"
+  checksum: 52c7e57daaa3160450fb0bde702ec0b8aab159e2b19efd1012e03b3e167acc52839f5b39578cc8bf96e91346719f400d0435a5191384c168d9477da82f276c38
   languageName: node
   linkType: hard
 
