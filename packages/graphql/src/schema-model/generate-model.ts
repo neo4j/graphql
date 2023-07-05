@@ -34,8 +34,8 @@ import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import type { Annotation } from "./annotation/Annotation";
 import type { AttributeType } from "./attribute/Attribute";
 import {
-    StandardGraphQLScalarType,
-    Neo4jGraphQLPointType,
+    GraphQLBuiltInScalarType,
+    Neo4jGraphQLSpatialType,
     Attribute,
     ListType,
     ScalarType,
@@ -248,31 +248,31 @@ function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments:
 function parseTypeNode(typeNode: TypeNode, isRequired = false): AttributeType {
     switch (typeNode.kind) {
         case Kind.NAMED_TYPE:
-            if (Object.values(StandardGraphQLScalarType).includes(typeNode.name.value as any)) {
+            if (Object.values(GraphQLBuiltInScalarType).includes(typeNode.name.value as any)) {
                 return new ScalarType(
-                    typeNode.name.value as StandardGraphQLScalarType,
+                    typeNode.name.value as GraphQLBuiltInScalarType,
                     isRequired,
-                    "StandardGraphQLScalarType"
+                    "GraphQLBuiltInScalarType"
                 );
             }
-            if (Object.values(Neo4jGraphQLPointType).includes(typeNode.name.value as any)) {
+            if (Object.values(Neo4jGraphQLSpatialType).includes(typeNode.name.value as any)) {
                 return new ScalarType(
-                    typeNode.name.value as Neo4jGraphQLPointType,
+                    typeNode.name.value as Neo4jGraphQLSpatialType,
                     isRequired,
                     "Neo4jGraphQLPointType"
                 );
             }
-            if (Object.values(StandardGraphQLScalarType).includes(typeNode.name.value as any)) {
+            if (Object.values(GraphQLBuiltInScalarType).includes(typeNode.name.value as any)) {
                 return new ScalarType(
-                    typeNode.name.value as StandardGraphQLScalarType,
+                    typeNode.name.value as GraphQLBuiltInScalarType,
                     isRequired,
-                    "StandardGraphQLScalarType"
+                    "GraphQLBuiltInScalarType"
                 );
             }
             return new ScalarType(
-                typeNode.name.value as StandardGraphQLScalarType,
+                typeNode.name.value as GraphQLBuiltInScalarType,
                 isRequired,
-                "StandardGraphQLScalarType"
+                "GraphQLBuiltInScalarType"
             ); // TODO: solve case for enums objects etc... at this moment we treat them as scalars
 
         case Kind.LIST_TYPE: {

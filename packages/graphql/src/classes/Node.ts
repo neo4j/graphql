@@ -190,8 +190,8 @@ class Node extends GraphElement {
             ...this.temporalFields,
             ...this.enumFields,
             ...this.objectFields,
-            ...this.scalarFields,
-            ...this.primitiveFields,
+            ...this.scalarFields, // this are just custom scalars
+            ...this.primitiveFields, // this are instead built-in scalars, confirmed By Alexandra
             ...this.interfaceFields,
             ...this.objectFields,
             ...this.unionFields,
@@ -200,6 +200,7 @@ class Node extends GraphElement {
     }
 
     /** Fields you can apply auth allow and bind to */
+    // Maybe we can remove this as they may not be used anymore in the new auth system
     public get authableFields(): AuthableField[] {
         return [
             ...this.primitiveFields,
@@ -253,6 +254,7 @@ class Node extends GraphElement {
             },
         };
     }
+
 
     public get fulltextTypeNames(): FulltextTypeNames {
         return {

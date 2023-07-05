@@ -43,6 +43,7 @@ function getPrettyName(type: TypeNode): string {
     return result;
 }
 
+
 function getFieldTypeMeta(typeNode: TypeNode): TypeMeta {
     const name = getName(typeNode);
     const pretty = getPrettyName(typeNode);

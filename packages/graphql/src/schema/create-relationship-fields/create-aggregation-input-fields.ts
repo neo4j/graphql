@@ -120,7 +120,7 @@ function createAverageAggregationInputFields(aggregationInput: InputTypeComposer
                     type: field.typeMeta.name,
                     directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
                 },
-                [`${field.fieldName}_AVERAGE_${operator}`]: averageType,
+                [`${field.fieldName}_AVERAGE_${operator}`]: averageType, // `${field.fieldName}_AVERAGE_${operator}` is attributeModel.getAggregationModel().getAverage() averageType is AttrbuteModel.getTypeName()
                 [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
                 [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
                 ...(field.typeMeta.name !== "Duration"
