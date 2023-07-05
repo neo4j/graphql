@@ -254,7 +254,7 @@ The following changes were made for this migration:
 
 * A `validate` rule has been used, which will throw an error without the role as per the `roles` argument in the `@auth` directive. 
 This can alternatively be a `filter` rule to just return zero results if a user does not have the required role.
-* `roles` has become `roles_INCLUDES`, because the xref::reference/filtering.adoc[full filtering capabilities of the library] can now be used within the `@authorization` directive.
+* `roles` has become `roles_INCLUDES`, because the xref::filtering.adoc[full filtering capabilities of the library] can now be used within the `@authorization` directive.
 * `roles` is no longer a top-level rule field, but nested within `where` under `jwt`.
 Any number of JWT claims can now be compared against, if configured within the type decorated with `@jwt`.
 
