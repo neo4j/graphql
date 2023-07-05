@@ -48,7 +48,6 @@ import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchema
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
-import type { TypeSource } from "@graphql-tools/utils";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import { parse, type DocumentNode, type GraphQLSchema } from "graphql";
 import type { Driver } from "neo4j-driver";
