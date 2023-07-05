@@ -20,6 +20,7 @@
 import type { ArgumentNode, DirectiveNode } from "graphql";
 import { GraphQLError } from "graphql";
 import { VALIDATION_ERROR_CODES } from "./validation-error-codes";
+import { lowerFirst } from "../../../utils/lower-first";
 
 export function mapError(error: GraphQLError): GraphQLError {
     const { nodes, message } = error;
@@ -118,7 +119,7 @@ function mapCustomRuleError(error: GraphQLError): GraphQLError {
     return error;
 }
 
-const RENAMED_DIRECTIVE_OR_TYPE = /(\s?"([^\s]*?(Authorization|Authentication)[^\s]*?)")/;
+const RENAMED_DIRECTIVE_OR_TYPE = /(\s?"([^\s]*?(SubscriptionsAuthorization|Authorization|Authentication)[^\s]*?)")/;
 const WHERE_TYPE = /type(\s\\?".+?\\?")/; // <typename>Where / JwtPayloadWhere
 const JWT_PAYLOAD_DUMMY_VALUE_ERROR =
     /(?:(?:String)|(?:Int)|(?:Float)|(?:Boolean))(?: cannot represent a?\s?)(?:(?:non string)|(?:non-integer)|(?:non numeric)|(?:non boolean))(?: value)(:.+)/;
@@ -139,7 +140,7 @@ function renameMysteryDirective(initialMessage: string): string | undefined {
     if (!renamedDirectiveName || !directiveName) {
         return;
     }
-    return initialMessage.replace(renamedDirectiveName, `@${directiveName?.toLowerCase()}`);
+    return initialMessage.replace(renamedDirectiveName, `@${lowerFirst(directiveName)}`);
 }
 
 /**

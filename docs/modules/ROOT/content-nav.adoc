@@ -36,6 +36,12 @@
 **** xref:auth/authorization/roles.adoc[]
 **** xref:auth/authorization/where.adoc[]
 *** xref:auth/authentication.adoc[]
+*** xref:auth/subscriptions.adoc[]
+
+** Authentication and Authorization
+*** xref:authentication-and-authorization/configuration.adoc[]
+*** xref:authentication-and-authorization/authentication.adoc[]
+*** xref:authentication-and-authorization/authorization.adoc[]
 
 ** xref:introspector.adoc[Introspector]
 
@@ -43,7 +49,8 @@
 *** xref:migration/index.adoc[Migration from `neo4j-graphql-js`]
 *** xref:migration/v2-migration.adoc[]
 *** xref:migration/v3-migration.adoc[]
-*** xref:migration/v4-migration.adoc[]
+*** xref:migration/v4-migration/index.adoc[]
+**** xref:migration/v4-migration/authorization.adoc[]
 
 ** xref:ogm/index.adoc[]
 *** xref:ogm/installation.adoc[]

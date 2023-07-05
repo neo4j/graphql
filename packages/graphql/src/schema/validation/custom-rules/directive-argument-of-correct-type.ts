@@ -36,8 +36,9 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
 
     return {
         Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
-            const genericDirectiveName = ["authorization", "authentication"].find((applicableDirectiveName) =>
-                directiveNode.name.value.toLowerCase().includes(applicableDirectiveName)
+            const genericDirectiveName = ["subscriptionsAuthorization", "authorization", "authentication"].find(
+                (applicableDirectiveName) =>
+                    directiveNode.name.value.toLowerCase().includes(applicableDirectiveName.toLowerCase())
             );
             // Validate only Authorization/Authentication usage
             if (!genericDirectiveName) {

@@ -26,7 +26,7 @@ import { filterAsyncIterator } from "./filter-async-iterator";
 import type { SubscriptionEventType, SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where/where";
-import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
+import { subscriptionAuthorization } from "./where/authorization";
 import type { GraphQLResolveInfo } from "graphql";
 import { checkAuthentication } from "./authentication/check-authentication";
 import { checkAuthenticationOnSelectionSet } from "./authentication/check-authentication-selection-set";
@@ -61,16 +61,20 @@ export function generateSubscribeMethod({
     ): AsyncIterator<[SubscriptionsEvent]> => {
         checkAuthenticationOnSelectionSet(resolveInfo, node, type, context);
         const entities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
-        if (entities.length) {
-            const concreteEntity = entities[0] as ConcreteEntity;
-            checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
+        const concreteEntity = entities[0];
+
+        if (!concreteEntity) {
+            throw new Error("Could not find entity");
         }
+
+        checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
 
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
         if (["create", "update", "delete"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 return (
                     (data[0] as NodeSubscriptionsEvent).typename === node.name &&
+                    subscriptionAuthorization({ event: data[0], node, entity: concreteEntity, context }) &&
                     subscriptionWhere({ where: args.where, event: data[0], node }) &&
                     updateDiffFilter(data[0])
                 );
@@ -92,6 +96,14 @@ export function generateSubscribeMethod({
 
                 const result =
                     !!relationFieldName &&
+                    subscriptionAuthorization({
+                        event: data[0],
+                        node,
+                        entity: concreteEntity,
+                        nodes,
+                        relationshipFields,
+                        context,
+                    }) &&
                     subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields });
 
                 return result;

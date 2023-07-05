@@ -204,6 +204,7 @@ export const wrapSubscription =
                         const authorization = resolverArgs.authorization;
                         const jwt = await authorization.decodeBearerTokenWithVerify(contextParams.authorization);
                         subscriptionContext.jwt = jwt;
+                        subscriptionContext.jwtPayloadFieldsMap = resolverArgs.jwtPayloadFieldsMap;
                     } catch (e) {
                         if (resolverArgs.authorization.globalAuthentication) {
                             throw e;

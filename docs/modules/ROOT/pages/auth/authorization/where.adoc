@@ -1,6 +1,9 @@
 [[auth-authorization-where]]
 = Where
 
+WARNING: The `@auth` directive has been replaced by `@authentication` and `@authorization`. `@auth` will be removed in version 4.0.0. 
+Please see the xref::guides/v4-migration/authorization.adoc[upgrade guide] for details on how to upgrade.
+
 Use the `where` argument on types to conceptually append predicates to the Cypher `WHERE` clause. Given the current user ID is "123" and the following schema:
 
 [source, graphql, indent=0]

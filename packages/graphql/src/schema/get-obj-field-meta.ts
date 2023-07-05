@@ -191,6 +191,7 @@ function getObjFieldMeta({
                             "jwtClaim",
                             "selectable",
                             "settable",
+                            "subscriptionsAuthorization",
                             "filterable",
                         ].includes(x.name.value)
                 ),
