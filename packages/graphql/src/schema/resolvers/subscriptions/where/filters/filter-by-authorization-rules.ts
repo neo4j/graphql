@@ -122,7 +122,7 @@ export function filterByAuthorizationRules({
             }
 
             const receivedEventRelationshipType = event.relationshipName;
-            const relationships = node.relationFields.filter((f) => f.type === receivedEventRelationshipType);
+            const relationships = node.relationFields.filter((f) => f.typeUnescaped === receivedEventRelationshipType);
             const receivedEventRelationship = relationships[0]; // ONE relationship only possible
             if (!receivedEventRelationship) {
                 return false;
