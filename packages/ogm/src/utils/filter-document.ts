@@ -17,14 +17,30 @@
  * limitations under the License.
  */
 
-import type { DefinitionNode, DocumentNode, FieldDefinitionNode } from "graphql";
+import type { BooleanValueNode, DefinitionNode, DocumentNode, FieldDefinitionNode } from "graphql";
 import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 
-const excludedDirectives = ["auth", "exclude", "private", "readonly", "writeonly"];
+const excludedDirectives = [
+    "auth",
+    "exclude",
+    "private",
+    "readonly",
+    "writeonly",
+    "query",
+    "mutation",
+    "subscription",
+    "filterable",
+    "selectable",
+    "settable",
+];
 
 function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): DocumentNode {
-    const merged = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
+    // hack to keep aggregation enabled for OGM
+    const schemaExtension = "extend schema @query(aggregate: true)";
+    const merged = mergeTypeDefs(
+        Array.isArray(typeDefs) ? (typeDefs as string[]).concat(schemaExtension) : [typeDefs as string, schemaExtension]
+    );
 
     return {
         ...merged,
@@ -47,7 +63,28 @@ function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): Document
                             ...r,
                             {
                                 ...f,
-                                directives: f.directives?.filter((x) => !excludedDirectives.includes(x.name.value)),
+                                directives: f.directives
+                                    ?.filter((x) => !excludedDirectives.includes(x.name.value))
+                                    .map((x) => {
+                                        if (x.name.value === "relationship") {
+                                            return {
+                                                ...x,
+                                                arguments: x.arguments?.map((arg) => {
+                                                    if (arg.name.value === "aggregate") {
+                                                        return {
+                                                            ...arg,
+                                                            value: {
+                                                                ...arg.value,
+                                                                value: true,
+                                                            } as BooleanValueNode, // expect a BooleanValue GraphQL validation already happened
+                                                        };
+                                                    }
+                                                    return arg;
+                                                }),
+                                            };
+                                        }
+                                        return x;
+                                    }),
                             },
                         ],
                         []
