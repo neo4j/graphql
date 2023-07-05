@@ -50,7 +50,7 @@ import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import type { TypeSource } from "@graphql-tools/utils";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
-import type { DocumentNode, GraphQLSchema } from "graphql";
+import { parse, type DocumentNode, type GraphQLSchema } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
@@ -71,8 +71,10 @@ export type ValidationConfig = {
     validateDuplicateRelationshipFields: boolean;
 };
 
+type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
+
 export interface Neo4jGraphQLConstructor {
-    typeDefs: TypeSource;
+    typeDefs: TypeDefinitions;
     resolvers?: IExecutableSchemaDefinition["resolvers"];
     features?: Neo4jFeaturesSettings;
     config?: Neo4jGraphQLConfig;
@@ -87,7 +89,7 @@ export const defaultValidationConfig: ValidationConfig = {
 };
 
 class Neo4jGraphQL {
-    private typeDefs: TypeSource;
+    private typeDefs: TypeDefinitions;
     private resolvers?: IExecutableSchemaDefinition["resolvers"];
 
     private config: Neo4jGraphQLConfig;
@@ -221,7 +223,7 @@ class Neo4jGraphQL {
 
     public neo4jValidateGraphQLDocument(): { isValid: boolean; validationErrors: string[] } {
         try {
-            const initialDocument = this.getDocument(this.typeDefs);
+            const initialDocument = this.normalizeTypeDefinitions(this.typeDefs);
 
             validateDocument({ document: initialDocument, features: this.features });
 
@@ -252,6 +254,34 @@ class Neo4jGraphQL {
         return { isValid: true, validationErrors: [] };
     }
 
+    /**
+     * Normalizes the user's type definitions using the method with the lowest risk of side effects:
+     * - Type definitions of type `string` are parsed using the `parse` function from the reference GraphQL implementation.
+     * - Type definitions of type `DocumentNode` are returned as they are.
+     * - Type definitions in arrays are merged using `mergeTypeDefs` from `@graphql-tools/merge`.
+     * - Callbacks are resolved to a type which can be parsed into a document.
+     *
+     * This method maps to the Type Definition Normalization stage of the Schema Generation lifecycle.
+     *
+     * @param {TypeDefinitions} typeDefinitions - The unnormalized type definitions.
+     * @returns {DocumentNode} The normalized type definitons as a document.
+     */
+    private normalizeTypeDefinitions(typeDefinitions: TypeDefinitions): DocumentNode {
+        if (typeof typeDefinitions === "function") {
+            return this.normalizeTypeDefinitions(typeDefinitions());
+        }
+
+        if (typeof typeDefinitions === "string") {
+            return parse(typeDefinitions);
+        }
+
+        if (Array.isArray(typeDefinitions)) {
+            return mergeTypeDefs(typeDefinitions);
+        }
+
+        return typeDefinitions;
+    }
+
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
         forEachField(schema, (field) => {
             if (!field.resolve) {
@@ -270,10 +300,6 @@ class Neo4jGraphQL {
                 Debug.disable();
             }
         }
-    }
-
-    private getDocument(typeDefs: TypeSource): DocumentNode {
-        return mergeTypeDefs(typeDefs);
     }
 
     private async getNeo4jDatabaseInfo(driver: Driver, driverConfig?: DriverConfig): Promise<Neo4jDatabaseInfo> {
@@ -368,7 +394,7 @@ class Neo4jGraphQL {
 
     private generateExecutableSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
-            const initialDocument = this.getDocument(this.typeDefs);
+            const initialDocument = this.normalizeTypeDefinitions(this.typeDefs);
 
             const validationConfig = this.parseStartupValidationConfig();
 
@@ -411,7 +437,7 @@ class Neo4jGraphQL {
         // Import only when needed to avoid issues if GraphQL 15 being used
         const { Subgraph } = await import("./Subgraph");
 
-        const initialDocument = this.getDocument(this.typeDefs);
+        const initialDocument = this.normalizeTypeDefinitions(this.typeDefs);
         const subgraph = new Subgraph(this.typeDefs);
 
         const { directives, types } = subgraph.getValidationDefinitions();

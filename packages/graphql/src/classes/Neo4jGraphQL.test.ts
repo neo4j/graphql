@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import type { GraphQLSchema } from "graphql";
+import { parse, type GraphQLSchema, print } from "graphql";
 import { getErrorAsync, NoErrorThrownError } from "../../tests/utils/get-error";
 import Neo4jGraphQL from "./Neo4jGraphQL";
+import gql from "graphql-tag";
 
 describe("Neo4jGraphQL", () => {
     test("should construct", () => {
@@ -79,6 +80,191 @@ describe("Neo4jGraphQL", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "@authorization", "filter", 0, "where"]);
                 expect(schema).toBeUndefined();
             });
+        });
+    });
+
+    describe("normalizeTypeDefinitions", () => {
+        test("string", () => {
+            const typeDefs = `
+                type Movie {
+                    title: String!
+                }
+            `;
+
+            // @ts-ignore: testing a private method
+            expect(Neo4jGraphQL.prototype.normalizeTypeDefinitions(typeDefs)).toEqual(parse(typeDefs));
+        });
+
+        test("DocumentNode", () => {
+            const typeDefs = gql`
+                type Movie {
+                    title: String!
+                }
+            `;
+
+            // @ts-ignore: testing a private method
+            expect(Neo4jGraphQL.prototype.normalizeTypeDefinitions(typeDefs)).toEqual(typeDefs);
+        });
+
+        test("string[]", () => {
+            const typeDefs = [
+                `
+                    type Movie {
+                        title: String!
+                    }
+                `,
+                `
+                    type Actor {
+                        name: String!
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+                `,
+            ];
+
+            // @ts-ignore: testing a private method
+            const normalizedString = print(Neo4jGraphQL.prototype.normalizeTypeDefinitions(typeDefs));
+
+            const expected = gql`
+                type Movie {
+                    title: String!
+                }
+
+                type Actor {
+                    name: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+            `;
+
+            expect(normalizedString).toEqual(print(expected));
+        });
+
+        test("DocumentNode[]", () => {
+            const typeDefs = [
+                gql`
+                    type Movie {
+                        title: String!
+                    }
+                `,
+                gql`
+                    type Actor {
+                        name: String!
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+                `,
+            ];
+
+            // @ts-ignore: testing a private method
+            const normalizedString = print(Neo4jGraphQL.prototype.normalizeTypeDefinitions(typeDefs));
+
+            const expected = gql`
+                type Movie {
+                    title: String!
+                }
+
+                type Actor {
+                    name: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+            `;
+
+            expect(normalizedString).toEqual(print(expected));
+        });
+
+        test("(string | DocumentNode)[]", () => {
+            const typeDefs = [
+                `
+                    type Movie {
+                        title: String!
+                    }
+                `,
+                gql`
+                    type Actor {
+                        name: String!
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+                `,
+            ];
+
+            // @ts-ignore: testing a private method
+            const normalizedString = print(Neo4jGraphQL.prototype.normalizeTypeDefinitions(typeDefs));
+
+            const expected = gql`
+                type Movie {
+                    title: String!
+                }
+
+                type Actor {
+                    name: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+            `;
+
+            expect(normalizedString).toEqual(print(expected));
+        });
+
+        test("() => TypeDefinitions", () => {
+            const typeDefs = () => [
+                `
+                    type Movie {
+                        title: String!
+                    }
+                `,
+                gql`
+                    type Actor {
+                        name: String!
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+                `,
+            ];
+
+            // @ts-ignore: testing a private method
+            const normalizedString = print(Neo4jGraphQL.prototype.normalizeTypeDefinitions(typeDefs));
+
+            const expected = gql`
+                type Movie {
+                    title: String!
+                }
+
+                type Actor {
+                    name: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+            `;
+
+            expect(normalizedString).toEqual(print(expected));
+        });
+
+        test("() => (() => TypeDefinitions)", () => {
+            const typeDefs = () => () =>
+                [
+                    `
+                    type Movie {
+                        title: String!
+                    }
+                `,
+                    gql`
+                        type Actor {
+                            name: String!
+                            movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                        }
+                    `,
+                ];
+
+            // @ts-ignore: testing a private method
+            const normalizedString = print(Neo4jGraphQL.prototype.normalizeTypeDefinitions(typeDefs));
+
+            const expected = gql`
+                type Movie {
+                    title: String!
+                }
+
+                type Actor {
+                    name: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+            `;
+
+            expect(normalizedString).toEqual(print(expected));
         });
     });
 });
