@@ -18,9 +18,9 @@
  */
 
 import type { Driver, Session, Transaction } from "neo4j-driver";
-import type { CypherQueryOptions, DriverConfig } from ".";
-import type { JwtPayload } from "./deprecated/auth/jwt-payload";
+import type { CypherQueryOptions, DriverConfig, RequestLike } from ".";
 import type { Neo4jDatabaseInfo } from "../classes";
+import type { JWTPayload } from "jose";
 
 export interface Neo4jGraphQLContext {
     /**
@@ -37,8 +37,18 @@ export interface Neo4jGraphQLContext {
     executionContext?: Driver | Session | Transaction;
     /**
      * A decoded JWT payload which can be provided for use in authentication and authorization.
+     * Takes precedence over {@link token} if both are present in the context.
+     *
+     * @example
+     * ```
+     * {
+     *   sub: "1234567890",
+     *   name: "John Doe",
+     *   iat: 1516239022,
+     * }
+     * ```
      */
-    jwt?: JwtPayload;
+    jwt?: JWTPayload;
     /**
      * @deprecated This property will be removed in 4.0.0.
      */
@@ -48,4 +58,34 @@ export interface Neo4jGraphQLContext {
      * when executing the translated query.
      */
     queryOptions?: CypherQueryOptions;
+    /**
+     * HTTP request object containing authorization header for use in authentication and authorization.
+     * Alias for {@link request}.
+     *
+     * @deprecated Will be removed in 4.0.0 alongside `@auth` - use the {@link token} property to provide the bearer token for the new authorization features.
+     */
+    req?: RequestLike;
+    /**
+     * HTTP request object containing authorization header for use in authentication and authorization.
+     * Alias for {@link req}.
+     *
+     * @deprecated Will be removed in 4.0.0 alongside `@auth` - use the {@link token} property to provide the bearer token for the new authorization features.
+     */
+    request?: RequestLike;
+    /**
+     * The bearer token to be decoded/verified for use in authentication and authorization.
+     * Normally found in the Authorization HTTP header. Can be provided with or without authentication scheme.
+     *
+     * @example
+     * With authentication scheme (standard when used in Authorization header):
+     * ```
+     * Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+     * ```
+     * @example
+     * Without authentication scheme:
+     * ```
+     * eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+     * ```
+     */
+    token?: string;
 }

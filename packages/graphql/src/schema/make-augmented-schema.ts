@@ -106,7 +106,7 @@ function makeAugmentedSchema(
     }: {
         features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
-        validateResolvers: boolean;
+        validateResolvers?: boolean;
         generateSubscriptions?: boolean;
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
@@ -197,7 +197,7 @@ function makeAugmentedSchema(
 
     relationshipProperties.forEach((relationship) => {
         const authDirective = (relationship.directives || []).find((x) =>
-            ["auth", "authorization"].includes(x.name.value)
+            ["auth", "authorization", "authentication"].includes(x.name.value)
         );
         if (authDirective) {
             throw new Error("Cannot have @auth directive on relationship properties interface");
@@ -210,7 +210,7 @@ function makeAugmentedSchema(
                 }
             });
 
-            const forbiddenDirectives = ["auth", "authorization", "relationship", "cypher"];
+            const forbiddenDirectives = ["auth", "authorization", "authentication", "relationship", "cypher"];
             forbiddenDirectives.forEach((directive) => {
                 const found = (field.directives || []).find((x) => x.name.value === directive);
                 if (found) {
@@ -920,7 +920,9 @@ function makeAugmentedSchema(
             description: inter.description?.value,
             fields: objectComposeFields,
             directives: graphqlDirectivesToCompose(
-                (inter.directives || []).filter((x) => !["auth", "authorization", "exclude"].includes(x.name.value))
+                (inter.directives || []).filter(
+                    (x) => !["auth", "authorization", "authentication", "exclude"].includes(x.name.value)
+                )
             ),
         });
     });
@@ -994,7 +996,8 @@ function makeAugmentedSchema(
             loc: schemaExtension.loc,
             operationTypes: schemaExtension.operationTypes,
             directives: schemaExtension.directives?.filter(
-                (schemaDirective) => !["query", "mutation", "subscription"].includes(schemaDirective.name.value)
+                (schemaDirective) =>
+                    !["query", "mutation", "subscription", "authentication"].includes(schemaDirective.name.value)
             ),
         };
     });

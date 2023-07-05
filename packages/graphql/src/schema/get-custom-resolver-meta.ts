@@ -42,7 +42,7 @@ let deprecationWarningShown = false;
 function getCustomResolverMeta(
     field: FieldDefinitionNode,
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    validateResolvers: boolean,
+    validateResolvers?: boolean,
     customResolvers?: IResolvers | IResolvers[],
     interfaceField?: FieldDefinitionNode
 ): CustomResolverMeta | undefined {

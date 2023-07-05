@@ -1,0 +1,136 @@
+= Operations
+
+This reference runs through a number of worked GraphQL queries and how each location in each query triggers the evaluation of different authentication/authorization rules.
+
+Each relevant location has a comment such as `CREATE ON OBJECT Movie`, which means an authentication directive such as the following would be evaluated:
+
+[source, graphql, indent=0]
+----
+type Movie @authentication(operations: [CREATE]) {
+    title: String!
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+}
+----
+
+This also applies if the directive had no arguments, because `operations` defaults to _all_ operations.
+
+The following examples apply to the `@authentication` directive, and also any rules within an `@authorization` directive.
+
+== Examples
+
+=== Query
+
+For a simple query, rules with `READ` in the operations will be evaluated for any type being read:
+
+[source, graphql, indent=0]
+----
+query {
+    movies {     # READ ON OBJECT Movie
+        title    # READ ON FIELD_DEFINITION Movie.title
+        actors { # READ ON OBJECT Actor
+            name # READ ON FIELD_DEFINITION Actor.name
+        }
+    }
+}
+----
+
+=== Mutation
+
+For create Mutations, `CREATE` rules on the object will be evaluated for each node created, as well as field definition rules:
+
+[source, graphql, indent=0]
+----
+mutation {
+    createMovies(input: [
+        {                       # CREATE ON OBJECT Movie
+            title: "The Matrix" # CREATE ON FIELD_DEFINITION Movie.title
+        }
+    ]) {
+        movies {                # READ ON OBJECT Movie       
+            title               # READ ON FIELD_DEFINITION Movie.title
+        }
+    }
+}
+----
+
+For single delete Mutations, rules with `DELETE` on the object will be evaluated:
+
+[source, graphql, indent=0]
+----
+mutation {
+    deleteMovies(where: { title: "The Matrix" }) { # DELETE ON OBJECT Movie
+        nodesDeleted
+    }
+}
+----
+
+For delete Mutations with nested delete operations, rules with operation `DELETE` will be evaluated:
+
+[source, graphql, indent=0]
+----
+mutation {
+    deleteMovies(                                                  # DELETE ON OBJECT Movie
+        where: { title: "The Matrix" }
+        delete: { actors: { where: { node: { name: "Keanu" } } } } # DELETE ON OBJECT Actor
+    ) { 
+        nodesDeleted
+    }
+}
+----
+
+For a complex update Mutation with many effects, a variety of rules will be evaluated, as well as `READ` rules for the selection set:
+
+[source, graphql, indent=0]
+----
+mutation {
+    updateMovies(
+        where: { title: "The Matrix" }
+        connect: { actors: { where: { node: { name: "Keanu" } } } } # CONNECT ON OBJECT Actor and Movie
+        update: {                                                   # UPDATE ON OBJECT Movie
+            title: "Speed"                                          # UPDATE ON FIELD_DEFINITION Movie.title
+        }
+    ) {
+        movies {                                                    # READ ON OBJECT Movie
+            title                                                   # READ ON FIELD_DEFINITION Movie.title
+            actors {                                                # READ ON OBJECT Actor
+                name                                                # READ ON FIELD_DEFINITION Actor.name
+            }
+        }
+    }
+}
+----
+
+=== Subscription
+
+For a simple Subscription to creation events, both `SUBSCRIBE` and `READ` operations trigger rules:
+
+[source, graphql, indent=0]
+----
+subscription {
+    movieCreated {     # SUBSCRIBE ON OBJECT Movie
+        createdMovie { # READ ON OBJECT Movie
+            title      # READ ON FIELD_DEFINITION Movie.title
+        }
+    }
+}
+----
+
+For a more complex Subscription to relationship events, both `SUBSCRIBE` is an operation, as well as `READ` to all relevant types:
+
+[source, graphql, indent=0]
+----
+subscription {
+    movieRelationshipCreated { # SUBSCRIBE ON OBJECT Movie
+        movie {                # READ ON OBJECT Movie
+            title              # READ ON FIELD_DEFINITION Movie.title
+        }
+        createdRelationship {
+            actors {
+                node {         # READ ON OBJECT Actor
+                    name       # READ ON FIELD_DEFINITION Actor.name
+                }
+            }
+        }
+    }
+}
+----

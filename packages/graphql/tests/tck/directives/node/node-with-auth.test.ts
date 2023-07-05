@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("Node Directive", () => {
     const secret = "secret";
@@ -31,13 +30,18 @@ describe("Node Directive", () => {
 
     beforeAll(() => {
         typeDefs = gql`
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
             type Post @node(labels: ["Comment"]) {
                 id: ID
                 content: String
                 creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            extend type Post @auth(rules: [{ operations: [DELETE], roles: ["admin"] }])
+            extend type Post
+                @authorization(validate: [{ operations: [DELETE], where: { jwt: { roles_INCLUDES: "admin" } } }])
 
             type User @node(labels: ["Person"]) {
                 id: ID
@@ -46,16 +50,20 @@ describe("Node Directive", () => {
             }
 
             extend type User
-                @auth(rules: [{ operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT], allow: { id: "$jwt.sub" } }])
+                @authorization(
+                    validate: [
+                        {
+                            operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
+                            when: [BEFORE]
+                            where: { node: { id: "$jwt.sub" } }
+                        }
+                    ]
+                )
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
-            },
+            features: { authorization: { key: secret } },
         });
     });
 
@@ -68,20 +76,28 @@ describe("Node Directive", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
+        const token = createBearerToken("secret", { sub: "id-01", roles: ["admin"] });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Person\`)
-            WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"id-01\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"id-01\\"
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });
@@ -95,36 +111,28 @@ describe("Node Directive", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "id-01", roles: ["admin"] });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { sub: "id-01", roles: ["admin"] });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Comment\`)
             OPTIONAL MATCH (this)<-[:HAS_POST]-(this0:\`Person\`)
             WITH *, count(this0) AS creatorCount
             WITH *
-            WHERE (creatorCount <> 0 AND this0.id = $param0)
-            WITH this
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE ((creatorCount <> 0 AND this0.id = $param0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param2 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"123\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": true,
+                \\"param2\\": \\"admin\\",
+                \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"id-01\\"
-                    }
+                    \\"sub\\": \\"id-01\\"
                 }
             }"
         `);

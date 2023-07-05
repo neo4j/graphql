@@ -176,4 +176,4 @@ You should see the following output:
 🚀 Server ready at http://localhost:4000/
 ----
 
-You can execute the `signUp` Mutation against this GraphQL API to sign up, but when you go to query the user through the same API, the password field will not be available.
+You can execute the `signUp` mutation against this GraphQL API to sign up, but when you go to query the user through the same API, the password field will not be available.

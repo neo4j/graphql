@@ -17,16 +17,20 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1132", () => {
     test("Auth CONNECT rules checked against correct property", async () => {
         const typeDefs = gql`
-            type Source @auth(rules: [{ operations: [CONNECT], allow: { id: "$jwt.sub" } }]) {
+            type Source
+                @authorization(
+                    validate: [
+                        { when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }
+                    ]
+                ) {
                 id: ID!
                 targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
             }
@@ -38,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret: "secret" }) },
+            features: { authorization: { key: "secret" } },
         });
 
         const query = gql`
@@ -51,9 +55,9 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "1" });
+        const token = createBearerToken("secret", { sub: "1" });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -62,9 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_targets0_node:Target)
-            	WHERE this_connect_targets0_node.id = $this_connect_targets0_node_param0
-            	WITH this, this_connect_targets0_node
-            	CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE this_connect_targets0_node.id = $this_connect_targets0_node_param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	CALL {
             		WITH *
             		WITH collect(this_connect_targets0_node) as connectedNodes, collect(this) as parentNodes
@@ -87,7 +89,12 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_connect_targets0_node_param0\\": \\"1\\",
-                \\"thisauth_param0\\": \\"1\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"1\\"
+                },
+                \\"jwtDefault\\": {},
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -95,7 +102,12 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
     test("Auth DISCONNECT rules checked against correct property", async () => {
         const typeDefs = gql`
-            type Source @auth(rules: [{ operations: [DISCONNECT], allow: { id: "$jwt.sub" } }]) {
+            type Source
+                @authorization(
+                    validate: [
+                        { when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { id: "$jwt.sub" } } }
+                    ]
+                ) {
                 id: ID!
                 targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
             }
@@ -107,7 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret: "secret" }) },
+            features: { authorization: { key: "secret" } },
         });
 
         const query = gql`
@@ -120,9 +132,9 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "1" });
+        const token = createBearerToken("secret", { sub: "1" });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -131,9 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_targets0_rel:HAS_TARGET]->(this_disconnect_targets0:Target)
-            WHERE this_disconnect_targets0.id = $updateSources_args_disconnect_targets0_where_Target_this_disconnect_targets0param0
-            WITH this, this_disconnect_targets0, this_disconnect_targets0_rel
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE this_disconnect_targets0.id = $updateSources_args_disconnect_targets0_where_Target_this_disconnect_targets0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             	WITH this_disconnect_targets0, this_disconnect_targets0_rel, this
             	WITH collect(this_disconnect_targets0) as this_disconnect_targets0, this_disconnect_targets0_rel, this
@@ -150,7 +160,12 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"updateSources_args_disconnect_targets0_where_Target_this_disconnect_targets0param0\\": \\"1\\",
-                \\"thisauth_param0\\": \\"1\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"1\\"
+                },
+                \\"jwtDefault\\": {},
                 \\"updateSources\\": {
                     \\"args\\": {
                         \\"disconnect\\": {

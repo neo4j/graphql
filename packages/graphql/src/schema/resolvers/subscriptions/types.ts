@@ -17,14 +17,17 @@
  * limitations under the License.
  */
 
+import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 import type { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
-import type { JwtPayload } from "../../../types/deprecated/auth/jwt-payload";
+import type { JwtPayload } from "../../../types/jwt-payload";
 
 export type SubscriptionEventType = "create" | "update" | "delete" | "create_relationship" | "delete_relationship";
 
 export type SubscriptionContext = {
     plugin: Neo4jGraphQLSubscriptionsPlugin;
     jwt?: JwtPayload;
+    jwtPayloadFieldsMap?: Map<string, string>;
+    schemaModel: Neo4jGraphQLSchemaModel;
 };
 
 export type SubscriptionConnectionContext = {

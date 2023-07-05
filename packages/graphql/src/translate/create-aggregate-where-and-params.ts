@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Node, Relationship } from "../classes";
+import type { Neo4jDatabaseInfo, Node, Relationship } from "../classes";
 import type { RelationField, Context, GraphQLWhereArg, PredicateReturn } from "../types";
 import type { AggregationFieldRegexGroups } from "./where/utils";
 import { aggregationFieldRegEx, whereRegEx } from "./where/utils";
@@ -166,8 +166,8 @@ function createCountPredicateAndProjection(
     const operator = whereRegEx.exec(filterKey)?.groups?.operator || "EQ";
     const operation = createBaseOperation({
         operator,
-        property: count,
-        param: paramName,
+        target: count,
+        value: paramName,
     });
     const operationVar = new Cypher.Variable();
 
@@ -233,14 +233,14 @@ function createEntityOperation(
     if (fieldType === "String" && aggregationOperator) {
         return createBaseOperation({
             operator: logicalOperator || "EQ",
-            property: getAggregateOperation(Cypher.size(target.property(fieldName)), aggregationOperator),
-            param: paramName,
+            target: getAggregateOperation(Cypher.size(target.property(fieldName)), aggregationOperator),
+            value: paramName,
         });
     } else if (aggregationOperator) {
         return createBaseOperation({
             operator: logicalOperator || "EQ",
-            property: getAggregateOperation(target.property(fieldName), aggregationOperator),
-            param: paramName,
+            target: getAggregateOperation(target.property(fieldName), aggregationOperator),
+            value: paramName,
         });
     } else {
         const innerVar = new Cypher.Variable();
@@ -256,7 +256,8 @@ function createEntityOperation(
             param: paramName,
             durationField,
             pointField,
-            neo4jDatabaseInfo: context.neo4jDatabaseInfo,
+            // Casting because this is definitely assigned in the wrapper
+            neo4jDatabaseInfo: context.neo4jDatabaseInfo as Neo4jDatabaseInfo,
         });
         const dbFieldName = mapToDbProperty(refNodeOrRelation, fieldName);
         const collectedProperty =

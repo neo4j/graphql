@@ -21,38 +21,51 @@ import Debug from "debug";
 import type { GraphQLResolveInfo } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
+import { Neo4jError } from "neo4j-driver";
 import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
 import type { Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import { getNeo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
-import { DEBUG_GRAPHQL } from "../../constants";
+import { AUTH_FORBIDDEN_ERROR, DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import type { Context, Neo4jAuthorizationSettings, Neo4jGraphQLPlugins, RequestLike } from "../../types";
+import type { Context, Neo4jGraphQLPlugins } from "../../types";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { IncomingMessage } from "http";
-import { Neo4jGraphQLAuthorization } from "../../classes/authorization/Neo4jGraphQLAuthorization";
+import Cypher from "@neo4j/cypher-builder";
+import type { Neo4jGraphQLAuthorization } from "../../classes/authorization/Neo4jGraphQLAuthorization";
 import { getToken, parseBearerToken } from "../../classes/authorization/parse-request-token";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
-type WrapResolverArguments = {
+export type WrapResolverArguments = {
     driver?: Driver;
     config: Neo4jGraphQLConfig;
     nodes: Node[];
     relationships: Relationship[];
+    jwtPayloadFieldsMap?: Map<string, string>;
     schemaModel: Neo4jGraphQLSchemaModel;
     plugins?: Neo4jGraphQLPlugins;
     dbInfo?: Neo4jDatabaseInfo;
-    authorization?: Neo4jAuthorizationSettings;
+    authorization?: Neo4jGraphQLAuthorization;
 };
 
 let neo4jDatabaseInfo: Neo4jDatabaseInfo;
 
 export const wrapResolver =
-    ({ driver, config, nodes, relationships, schemaModel, plugins, dbInfo, authorization }: WrapResolverArguments) =>
+    ({
+        driver,
+        config,
+        nodes,
+        relationships,
+        jwtPayloadFieldsMap,
+        schemaModel,
+        plugins,
+        dbInfo,
+        authorization,
+    }: WrapResolverArguments) =>
     // TODO: strongly type this, so that context argument accepts "full" context
     (next) =>
     // TODO: type this as Neo4jGraphQLContext
@@ -95,18 +108,34 @@ export const wrapResolver =
         context.callbacks = config.callbacks;
 
         if (!context.jwt) {
-            const req: RequestLike = context instanceof IncomingMessage ? context : context.req || context.request;
             if (authorization) {
-                context.jwt = await new Neo4jGraphQLAuthorization(authorization).decode(req);
-            } else {
-                // TODO: remove this else after migrating to new authorization constructor
-                if (context.plugins.auth) {
-                    // Here we will try to compute the generic Secret or the generic jwksEndpoint
-                    const contextRequest = context.req || context.request;
-                    context.plugins.auth.tryToResolveKeys(
-                        context instanceof IncomingMessage ? context : contextRequest
-                    );
+                try {
+                    const jwt = await authorization.decode(context);
+                    const isAuthenticated = true;
+                    context.authorization = {
+                        isAuthenticated,
+                        jwt,
+                        jwtParam: new Cypher.NamedParam("jwt", jwt),
+                        isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
+                        claims: jwtPayloadFieldsMap,
+                        jwtDefault: new Cypher.NamedParam("jwtDefault", {}),
+                    };
+                } catch (e) {
+                    const isAuthenticated = false;
+                    context.authorization = {
+                        isAuthenticated,
+                        jwtParam: new Cypher.NamedParam("jwt", {}),
+                        isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
+                        jwtDefault: new Cypher.NamedParam("jwtDefault", {}),
+                    };
                 }
+            }
+
+            // TODO: remove this if after migrating to new authorization constructor
+
+            if (context.plugins.auth) {
+                const req = context.req || context.request;
+                context.plugins.auth.tryToResolveKeys(context instanceof IncomingMessage ? context : req);
                 let token: string | undefined = undefined;
                 const bearer = getToken(req);
                 if (bearer) {
@@ -114,11 +143,24 @@ export const wrapResolver =
                 }
                 context.jwt = await decodeToken(token, context.plugins.auth);
             }
+        } else {
+            const isAuthenticated = true;
+            const jwt = context.jwt;
+
+            context.authorization = {
+                isAuthenticated,
+                jwt,
+                jwtParam: new Cypher.NamedParam("jwt", jwt),
+                isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
+                jwtDefault: new Cypher.NamedParam("jwtDefault", {}),
+            };
         }
 
         verifyGlobalAuthentication(context, context.plugins?.auth);
 
-        context.auth = createAuthParam({ context });
+        const authParam = createAuthParam({ context });
+
+        context.auth = authParam;
 
         const executorConstructorParam: ExecutorConstructorParam = {
             executionContext: context.executionContext,
@@ -157,6 +199,7 @@ export const wrapSubscription =
     (next) =>
     async (root: any, args: any, context: SubscriptionConnectionContext | undefined, info: GraphQLResolveInfo) => {
         const plugins = resolverArgs?.plugins || {};
+        const schemaModel = resolverArgs?.schemaModel;
         const contextParams = context?.connectionParams || {};
 
         if (!plugins.subscriptions) {
@@ -166,19 +209,34 @@ export const wrapSubscription =
 
         const subscriptionContext: SubscriptionContext = {
             plugin: plugins.subscriptions,
+            schemaModel,
         };
 
         if (context?.jwt) {
             subscriptionContext.jwt = context.jwt;
-        } else if (!context?.jwt && contextParams.authorization) {
+        } else {
             if (resolverArgs.authorization) {
-                subscriptionContext.jwt = new Neo4jGraphQLAuthorization(resolverArgs.authorization).decodeBearerToken(
-                    contextParams.authorization
-                );
+                if (!contextParams.authorization && resolverArgs.authorization.globalAuthentication) {
+                    throw new Neo4jError("Unauthenticated", AUTH_FORBIDDEN_ERROR);
+                } else {
+                    try {
+                        const authorization = resolverArgs.authorization;
+                        const jwt = await authorization.decodeBearerTokenWithVerify(contextParams.authorization);
+                        subscriptionContext.jwt = jwt;
+                        subscriptionContext.jwtPayloadFieldsMap = resolverArgs.jwtPayloadFieldsMap;
+                    } catch (e) {
+                        if (resolverArgs.authorization.globalAuthentication) {
+                            throw e;
+                        }
+                        subscriptionContext.jwt = undefined;
+                    }
+                }
             } else {
-                // TODO: remove this else after migrating to new authorization constructor
-                const token = parseBearerToken(contextParams.authorization);
-                subscriptionContext.jwt = await decodeToken(token, plugins.auth);
+                if (contextParams.authorization) {
+                    // TODO: remove this else after migrating to new authorization constructor
+                    const token = parseBearerToken(contextParams.authorization);
+                    subscriptionContext.jwt = await decodeToken(token, plugins.auth);
+                }
             }
         }
 

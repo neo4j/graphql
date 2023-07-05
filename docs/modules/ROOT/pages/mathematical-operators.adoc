@@ -6,7 +6,7 @@ Mathematical operators are a handy way to update numerical fields based on their
 Specific operators are available on different numerical types (`Int`, `Float`, xref::type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`]).
 
 
-Mathematical operators are supported in Update Mutations within these entities:
+Mathematical operators are supported in update mutations within these entities:
 
 * `Node`
 * `Nested Nodes`

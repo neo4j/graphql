@@ -24,6 +24,7 @@ import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
+import { Neo4jGraphQLAuthJWTPlugin } from "../../../../plugins/graphql-plugin-auth/src";
 
 describe("413", () => {
     let driver: Driver;
@@ -67,7 +68,10 @@ describe("413", () => {
 
         const secret = "secret";
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: { auth: new Neo4jGraphQLAuthJWTPlugin({ secret }) },
+        });
 
         const query = `
             query {

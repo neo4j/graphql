@@ -1,6 +1,9 @@
 [[auth-global-authentication]]
 = Global Authentication
 
+WARNING: The `@auth` directive has been replaced by `@authentication` and `@authorization`. `@auth` will be removed in version 4.0.0. 
+Please see the xref::guides/v4-migration/authorization.adoc[upgrade guide] for details on how to upgrade.
+
 For some cases the GraphQL API needs to be secured globally to restrict access to _any_ of the top-level GraphQL types without prior authentication. In the Neo4j GraphQL Library this is referred to as global authentication. It is also known as API-wide authorization. 
 
 == Configuration

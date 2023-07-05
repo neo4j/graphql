@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import type { JWKSMock } from "mock-jwks";
@@ -27,8 +26,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import type { Neo4jGraphQLAuthenticationError } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 
-// TODO: fix this file with global auth
-describe("Global authentication - Auth JWKS plugin", () => {
+describe("Global authentication - Authorization JWKS plugin", () => {
     let jwksMock: JWKSMock;
     let driver: Driver;
     let neo4j: Neo4j;
@@ -39,6 +37,7 @@ describe("Global authentication - Auth JWKS plugin", () => {
         type ${testMovie} {
             name: String
         }
+        extend schema @authentication
     `;
 
     const query = `
@@ -71,11 +70,12 @@ describe("Global authentication - Auth JWKS plugin", () => {
         const neoSchema = new Neo4jGraphQL({
             driver,
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
-                    globalAuthentication: true,
-                }),
+            features: {
+                authorization: {
+                    key: {
+                        url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
+                },
             },
         });
 
@@ -98,11 +98,12 @@ describe("Global authentication - Auth JWKS plugin", () => {
         const neoSchema = new Neo4jGraphQL({
             driver,
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
-                    globalAuthentication: true,
-                }),
+            features: {
+                authorization: {
+                    key: {
+                        url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
+                },
             },
         });
 
@@ -110,9 +111,7 @@ describe("Global authentication - Auth JWKS plugin", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             contextValue: neo4j.getContextValues({
-                request: {
-                    headers: { Authorization: `Bearer xxx.invalidtoken.xxxx` },
-                },
+                token: `Bearer xxx.invalidtoken.xxxx`,
             }),
         });
 
@@ -129,17 +128,18 @@ describe("Global authentication - Auth JWKS plugin", () => {
         const neoSchema = new Neo4jGraphQL({
             driver,
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWKSPlugin({
-                    jwksEndpoint: "https://myAuthTest.auth0.com/.well-known/jwks.json",
-                    globalAuthentication: true,
-                }),
+            features: {
+                authorization: {
+                    key: {
+                        url: "https://myAuthTest.auth0.com/.well-known/jwks.json",
+                    },
+                },
             },
         });
 
         jwksMock.start();
 
-        const accessToken = jwksMock.token({
+        const token = jwksMock.token({
             iat: 1600000000,
         });
 
@@ -147,9 +147,7 @@ describe("Global authentication - Auth JWKS plugin", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             contextValue: neo4j.getContextValues({
-                request: {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                },
+                token,
             }),
         });
 
