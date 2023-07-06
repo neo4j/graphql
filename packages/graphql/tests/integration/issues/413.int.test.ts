@@ -43,11 +43,11 @@ describe("413", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = gql`
-            type JWTPayload @jwt @query(aggregate: true){
+            type JWTPayload @jwt {
                 tenant_id: String!
             }
 
-            type JobPlan {
+            type JobPlan @query(aggregate: true) {
                 id: ID! @id
                 tenantID: ID!
                 name: String!
