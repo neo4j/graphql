@@ -65,7 +65,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
-            WHERE (\\"Movie\\" IN labels(this) AND (exists((this)<-[:DIRECTED]-(:\`Person\`)) AND all(auth_this0 IN [(this)<-[:DIRECTED]-(auth_this0:\`Person\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $auth_param0))))
+            WHERE ($param1 IN labels(this) AND (exists((this)<-[:DIRECTED]-(:\`Person\`)) AND all(auth_this0 IN [(this)<-[:DIRECTED]-(auth_this0:\`Person\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $auth_param0))))
             RETURN this { .title } AS this"
         `);
 
@@ -73,6 +73,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             Object {
               "auth_param0": "my-sub",
               "param0": "something AND something",
+              "param1": "Movie",
             }
         `);
     });
@@ -118,14 +119,15 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
-            WHERE (\\"Movie\\" IN labels(this) AND apoc.util.validatePredicate(NOT ((exists((this)<-[:DIRECTED]-(:\`Person\`)) AND any(this0 IN [(this)<-[:DIRECTED]-(this0:\`Person\`) | this0] WHERE (this0.id IS NOT NULL AND this0.id = $param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ((exists((this)<-[:DIRECTED]-(:\`Person\`)) AND any(this0 IN [(this)<-[:DIRECTED]-(this0:\`Person\`) | this0] WHERE (this0.id IS NOT NULL AND this0.id = $param2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             RETURN this { .title } AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
             Object {
               "param0": "something AND something",
-              "param1": "my-sub",
+              "param1": "Movie",
+              "param2": "my-sub",
             }
         `);
     });
