@@ -43,6 +43,7 @@ describe("filterDocument", () => {
                 model: String @selectable
                 type: String @settable
             }
+            extend schema @query(read: false, aggregate: false) @mutation(operations: []) @subscription(operations: [])
         `;
 
         const filtered = filterDocument(initial);
