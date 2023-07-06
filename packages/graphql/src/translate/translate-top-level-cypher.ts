@@ -137,7 +137,7 @@ export function translateTopLevelCypher({
         referencedNodes.forEach((node) => {
             if (node) {
                 const labelsStatements = node.getLabels(context).map((label, index) => {
-                    const param = `this_labels${index}`;
+                    const param = `${node.name}_labels${index}`;
                     params[param] = label;
                     return `$${param} IN labels(this)`;
                 });
