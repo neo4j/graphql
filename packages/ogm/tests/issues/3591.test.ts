@@ -24,7 +24,8 @@ describe("issues/3591", () => {
         const typeDefs = `
           type User @query(aggregate: false) {
             id: ID! @id
-            company: [Company!]! @relationship(type: "WORKS_AT", direction: OUT, aggregate: false)          
+            company: [Company!]! @relationship(type: "WORKS_AT", direction: OUT)
+            favoriteRestaurants: [Restaurant!]! @relationship(type: "FAVORITE_RESTAURANTS", direction: OUT)           
           }
 
           type Company {
@@ -33,12 +34,14 @@ describe("issues/3591", () => {
             field2: String @selectable(onRead: false, onAggregate: false)
             field3: String @settable(onCreate: false, onUpdate: false)
           }
+
+          type Restaurant {
+            name: String
+          }
         `;
 
         const ogm = new OGM({
             typeDefs,
-            // @ts-ignore
-            driver: {},
         });
 
         await expect(
@@ -81,6 +84,9 @@ describe("issues/3591", () => {
               companies: Array<Company>;
               companiesConnection: CompaniesConnection;
               companiesAggregate: CompanyAggregateSelection;
+              restaurants: Array<Restaurant>;
+              restaurantsConnection: RestaurantsConnection;
+              restaurantsAggregate: RestaurantAggregateSelection;
             };
 
             export type QueryUsersArgs = {
@@ -115,6 +121,22 @@ describe("issues/3591", () => {
               where?: InputMaybe<CompanyWhere>;
             };
 
+            export type QueryRestaurantsArgs = {
+              where?: InputMaybe<RestaurantWhere>;
+              options?: InputMaybe<RestaurantOptions>;
+            };
+
+            export type QueryRestaurantsConnectionArgs = {
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              where?: InputMaybe<RestaurantWhere>;
+              sort?: InputMaybe<Array<InputMaybe<RestaurantSort>>>;
+            };
+
+            export type QueryRestaurantsAggregateArgs = {
+              where?: InputMaybe<RestaurantWhere>;
+            };
+
             export type Mutation = {
               __typename?: \\"Mutation\\";
               createUsers: CreateUsersMutationResponse;
@@ -123,6 +145,9 @@ describe("issues/3591", () => {
               createCompanies: CreateCompaniesMutationResponse;
               deleteCompanies: DeleteInfo;
               updateCompanies: UpdateCompaniesMutationResponse;
+              createRestaurants: CreateRestaurantsMutationResponse;
+              deleteRestaurants: DeleteInfo;
+              updateRestaurants: UpdateRestaurantsMutationResponse;
             };
 
             export type MutationCreateUsersArgs = {
@@ -155,6 +180,19 @@ describe("issues/3591", () => {
             export type MutationUpdateCompaniesArgs = {
               where?: InputMaybe<CompanyWhere>;
               update?: InputMaybe<CompanyUpdateInput>;
+            };
+
+            export type MutationCreateRestaurantsArgs = {
+              input: Array<RestaurantCreateInput>;
+            };
+
+            export type MutationDeleteRestaurantsArgs = {
+              where?: InputMaybe<RestaurantWhere>;
+            };
+
+            export type MutationUpdateRestaurantsArgs = {
+              where?: InputMaybe<RestaurantWhere>;
+              update?: InputMaybe<RestaurantUpdateInput>;
             };
 
             export enum SortDirection {
@@ -207,6 +245,12 @@ describe("issues/3591", () => {
               relationshipsCreated: Scalars[\\"Int\\"];
             };
 
+            export type CreateRestaurantsMutationResponse = {
+              __typename?: \\"CreateRestaurantsMutationResponse\\";
+              info: CreateInfo;
+              restaurants: Array<Restaurant>;
+            };
+
             export type CreateUsersMutationResponse = {
               __typename?: \\"CreateUsersMutationResponse\\";
               info: CreateInfo;
@@ -235,6 +279,30 @@ describe("issues/3591", () => {
               endCursor?: Maybe<Scalars[\\"String\\"]>;
             };
 
+            export type Restaurant = {
+              __typename?: \\"Restaurant\\";
+              name?: Maybe<Scalars[\\"String\\"]>;
+            };
+
+            export type RestaurantAggregateSelection = {
+              __typename?: \\"RestaurantAggregateSelection\\";
+              count: Scalars[\\"Int\\"];
+              name: StringAggregateSelectionNullable;
+            };
+
+            export type RestaurantEdge = {
+              __typename?: \\"RestaurantEdge\\";
+              cursor: Scalars[\\"String\\"];
+              node: Restaurant;
+            };
+
+            export type RestaurantsConnection = {
+              __typename?: \\"RestaurantsConnection\\";
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+              edges: Array<RestaurantEdge>;
+            };
+
             export type StringAggregateSelectionNullable = {
               __typename?: \\"StringAggregateSelectionNullable\\";
               shortest?: Maybe<Scalars[\\"String\\"]>;
@@ -256,6 +324,12 @@ describe("issues/3591", () => {
               relationshipsDeleted: Scalars[\\"Int\\"];
             };
 
+            export type UpdateRestaurantsMutationResponse = {
+              __typename?: \\"UpdateRestaurantsMutationResponse\\";
+              info: UpdateInfo;
+              restaurants: Array<Restaurant>;
+            };
+
             export type UpdateUsersMutationResponse = {
               __typename?: \\"UpdateUsersMutationResponse\\";
               info: UpdateInfo;
@@ -267,7 +341,10 @@ describe("issues/3591", () => {
               id: Scalars[\\"ID\\"];
               company: Array<Company>;
               companyAggregate?: Maybe<UserCompanyCompanyAggregationSelection>;
+              favoriteRestaurants: Array<Restaurant>;
+              favoriteRestaurantsAggregate?: Maybe<UserRestaurantFavoriteRestaurantsAggregationSelection>;
               companyConnection: UserCompanyConnection;
+              favoriteRestaurantsConnection: UserFavoriteRestaurantsConnection;
             };
 
             export type UserCompanyArgs = {
@@ -281,12 +358,31 @@ describe("issues/3591", () => {
               directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
             };
 
+            export type UserFavoriteRestaurantsArgs = {
+              where?: InputMaybe<RestaurantWhere>;
+              options?: InputMaybe<RestaurantOptions>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
+            };
+
+            export type UserFavoriteRestaurantsAggregateArgs = {
+              where?: InputMaybe<RestaurantWhere>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
+            };
+
             export type UserCompanyConnectionArgs = {
               where?: InputMaybe<UserCompanyConnectionWhere>;
               first?: InputMaybe<Scalars[\\"Int\\"]>;
               after?: InputMaybe<Scalars[\\"String\\"]>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
               sort?: InputMaybe<Array<UserCompanyConnectionSort>>;
+            };
+
+            export type UserFavoriteRestaurantsConnectionArgs = {
+              where?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
+              first?: InputMaybe<Scalars[\\"Int\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"]>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
+              sort?: InputMaybe<Array<UserFavoriteRestaurantsConnectionSort>>;
             };
 
             export type UserAggregateSelection = {
@@ -326,6 +422,30 @@ describe("issues/3591", () => {
               __typename?: \\"UserEdge\\";
               cursor: Scalars[\\"String\\"];
               node: User;
+            };
+
+            export type UserFavoriteRestaurantsConnection = {
+              __typename?: \\"UserFavoriteRestaurantsConnection\\";
+              edges: Array<UserFavoriteRestaurantsRelationship>;
+              totalCount: Scalars[\\"Int\\"];
+              pageInfo: PageInfo;
+            };
+
+            export type UserFavoriteRestaurantsRelationship = {
+              __typename?: \\"UserFavoriteRestaurantsRelationship\\";
+              cursor: Scalars[\\"String\\"];
+              node: Restaurant;
+            };
+
+            export type UserRestaurantFavoriteRestaurantsAggregationSelection = {
+              __typename?: \\"UserRestaurantFavoriteRestaurantsAggregationSelection\\";
+              count: Scalars[\\"Int\\"];
+              node?: Maybe<UserRestaurantFavoriteRestaurantsNodeAggregateSelection>;
+            };
+
+            export type UserRestaurantFavoriteRestaurantsNodeAggregateSelection = {
+              __typename?: \\"UserRestaurantFavoriteRestaurantsNodeAggregateSelection\\";
+              name: StringAggregateSelectionNullable;
             };
 
             export type UsersConnection = {
@@ -444,6 +564,51 @@ describe("issues/3591", () => {
               field3_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               field3_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+            };
+
+            export type RestaurantConnectWhere = {
+              node: RestaurantWhere;
+            };
+
+            export type RestaurantCreateInput = {
+              name?: InputMaybe<Scalars[\\"String\\"]>;
+            };
+
+            export type RestaurantOptions = {
+              /** Specify one or more RestaurantSort objects to sort Restaurants by. The sorts will be applied in the order in which they are arranged in the array. */
+              sort?: InputMaybe<Array<RestaurantSort>>;
+              limit?: InputMaybe<Scalars[\\"Int\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"]>;
+            };
+
+            /** Fields to sort Restaurants by. The order in which sorts are applied is not guaranteed when specifying many fields in one RestaurantSort object. */
+            export type RestaurantSort = {
+              name?: InputMaybe<SortDirection>;
+            };
+
+            export type RestaurantUpdateInput = {
+              name?: InputMaybe<Scalars[\\"String\\"]>;
+            };
+
+            export type RestaurantWhere = {
+              OR?: InputMaybe<Array<RestaurantWhere>>;
+              AND?: InputMaybe<Array<RestaurantWhere>>;
+              NOT?: InputMaybe<RestaurantWhere>;
+              name?: InputMaybe<Scalars[\\"String\\"]>;
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
+              name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
+              name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
+              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
+              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
+              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
+              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
             };
 
             export type UserCompanyAggregateInput = {
@@ -693,6 +858,9 @@ describe("issues/3591", () => {
 
             export type UserConnectInput = {
               company?: InputMaybe<Array<UserCompanyConnectFieldInput>>;
+              favoriteRestaurants?: InputMaybe<
+                Array<UserFavoriteRestaurantsConnectFieldInput>
+              >;
             };
 
             export type UserConnectOrCreateInput = {
@@ -701,14 +869,143 @@ describe("issues/3591", () => {
 
             export type UserCreateInput = {
               company?: InputMaybe<UserCompanyFieldInput>;
+              favoriteRestaurants?: InputMaybe<UserFavoriteRestaurantsFieldInput>;
             };
 
             export type UserDeleteInput = {
               company?: InputMaybe<Array<UserCompanyDeleteFieldInput>>;
+              favoriteRestaurants?: InputMaybe<
+                Array<UserFavoriteRestaurantsDeleteFieldInput>
+              >;
             };
 
             export type UserDisconnectInput = {
               company?: InputMaybe<Array<UserCompanyDisconnectFieldInput>>;
+              favoriteRestaurants?: InputMaybe<
+                Array<UserFavoriteRestaurantsDisconnectFieldInput>
+              >;
+            };
+
+            export type UserFavoriteRestaurantsAggregateInput = {
+              count?: InputMaybe<Scalars[\\"Int\\"]>;
+              count_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              count_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              count_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              count_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              AND?: InputMaybe<Array<UserFavoriteRestaurantsAggregateInput>>;
+              OR?: InputMaybe<Array<UserFavoriteRestaurantsAggregateInput>>;
+              NOT?: InputMaybe<UserFavoriteRestaurantsAggregateInput>;
+              node?: InputMaybe<UserFavoriteRestaurantsNodeAggregationWhereInput>;
+            };
+
+            export type UserFavoriteRestaurantsConnectFieldInput = {
+              where?: InputMaybe<RestaurantConnectWhere>;
+              /** Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0. */
+              overwrite?: Scalars[\\"Boolean\\"];
+            };
+
+            export type UserFavoriteRestaurantsConnectionSort = {
+              node?: InputMaybe<RestaurantSort>;
+            };
+
+            export type UserFavoriteRestaurantsConnectionWhere = {
+              AND?: InputMaybe<Array<UserFavoriteRestaurantsConnectionWhere>>;
+              OR?: InputMaybe<Array<UserFavoriteRestaurantsConnectionWhere>>;
+              NOT?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
+              node?: InputMaybe<RestaurantWhere>;
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
+              node_NOT?: InputMaybe<RestaurantWhere>;
+            };
+
+            export type UserFavoriteRestaurantsCreateFieldInput = {
+              node: RestaurantCreateInput;
+            };
+
+            export type UserFavoriteRestaurantsDeleteFieldInput = {
+              where?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
+            };
+
+            export type UserFavoriteRestaurantsDisconnectFieldInput = {
+              where?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
+            };
+
+            export type UserFavoriteRestaurantsFieldInput = {
+              create?: InputMaybe<Array<UserFavoriteRestaurantsCreateFieldInput>>;
+              connect?: InputMaybe<Array<UserFavoriteRestaurantsConnectFieldInput>>;
+            };
+
+            export type UserFavoriteRestaurantsNodeAggregationWhereInput = {
+              AND?: InputMaybe<Array<UserFavoriteRestaurantsNodeAggregationWhereInput>>;
+              OR?: InputMaybe<Array<UserFavoriteRestaurantsNodeAggregationWhereInput>>;
+              NOT?: InputMaybe<UserFavoriteRestaurantsNodeAggregationWhereInput>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              name_EQUAL?: InputMaybe<Scalars[\\"String\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              name_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              name_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              name_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
+              name_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
+              name_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+            };
+
+            export type UserFavoriteRestaurantsUpdateConnectionInput = {
+              node?: InputMaybe<RestaurantUpdateInput>;
+            };
+
+            export type UserFavoriteRestaurantsUpdateFieldInput = {
+              where?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
+              create?: InputMaybe<Array<UserFavoriteRestaurantsCreateFieldInput>>;
+              connect?: InputMaybe<Array<UserFavoriteRestaurantsConnectFieldInput>>;
+              update?: InputMaybe<UserFavoriteRestaurantsUpdateConnectionInput>;
+              delete?: InputMaybe<Array<UserFavoriteRestaurantsDeleteFieldInput>>;
+              disconnect?: InputMaybe<Array<UserFavoriteRestaurantsDisconnectFieldInput>>;
             };
 
             export type UserOptions = {
@@ -720,6 +1017,9 @@ describe("issues/3591", () => {
 
             export type UserRelationInput = {
               company?: InputMaybe<Array<UserCompanyCreateFieldInput>>;
+              favoriteRestaurants?: InputMaybe<
+                Array<UserFavoriteRestaurantsCreateFieldInput>
+              >;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
@@ -729,6 +1029,9 @@ describe("issues/3591", () => {
 
             export type UserUpdateInput = {
               company?: InputMaybe<Array<UserCompanyUpdateFieldInput>>;
+              favoriteRestaurants?: InputMaybe<
+                Array<UserFavoriteRestaurantsUpdateFieldInput>
+              >;
             };
 
             export type UserWhere = {
@@ -763,6 +1066,19 @@ describe("issues/3591", () => {
               company_SINGLE?: InputMaybe<CompanyWhere>;
               /** Return Users where some of the related Companies match this filter */
               company_SOME?: InputMaybe<CompanyWhere>;
+              /** @deprecated Use \`favoriteRestaurants_SOME\` instead. */
+              favoriteRestaurants?: InputMaybe<RestaurantWhere>;
+              /** @deprecated Use \`favoriteRestaurants_NONE\` instead. */
+              favoriteRestaurants_NOT?: InputMaybe<RestaurantWhere>;
+              favoriteRestaurantsAggregate?: InputMaybe<UserFavoriteRestaurantsAggregateInput>;
+              /** Return Users where all of the related Restaurants match this filter */
+              favoriteRestaurants_ALL?: InputMaybe<RestaurantWhere>;
+              /** Return Users where none of the related Restaurants match this filter */
+              favoriteRestaurants_NONE?: InputMaybe<RestaurantWhere>;
+              /** Return Users where one of the related Restaurants match this filter */
+              favoriteRestaurants_SINGLE?: InputMaybe<RestaurantWhere>;
+              /** Return Users where some of the related Restaurants match this filter */
+              favoriteRestaurants_SOME?: InputMaybe<RestaurantWhere>;
               /** @deprecated Use \`companyConnection_SOME\` instead. */
               companyConnection?: InputMaybe<UserCompanyConnectionWhere>;
               /** @deprecated Use \`companyConnection_NONE\` instead. */
@@ -775,6 +1091,18 @@ describe("issues/3591", () => {
               companyConnection_SINGLE?: InputMaybe<UserCompanyConnectionWhere>;
               /** Return Users where some of the related UserCompanyConnections match this filter */
               companyConnection_SOME?: InputMaybe<UserCompanyConnectionWhere>;
+              /** @deprecated Use \`favoriteRestaurantsConnection_SOME\` instead. */
+              favoriteRestaurantsConnection?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
+              /** @deprecated Use \`favoriteRestaurantsConnection_NONE\` instead. */
+              favoriteRestaurantsConnection_NOT?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
+              /** Return Users where all of the related UserFavoriteRestaurantsConnections match this filter */
+              favoriteRestaurantsConnection_ALL?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
+              /** Return Users where none of the related UserFavoriteRestaurantsConnections match this filter */
+              favoriteRestaurantsConnection_NONE?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
+              /** Return Users where one of the related UserFavoriteRestaurantsConnections match this filter */
+              favoriteRestaurantsConnection_SINGLE?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
+              /** Return Users where some of the related UserFavoriteRestaurantsConnections match this filter */
+              favoriteRestaurantsConnection_SOME?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
             };
 
             export interface IdAggregateInputNonNullable {
@@ -887,9 +1215,64 @@ describe("issues/3591", () => {
               }): Promise<CompanyAggregateSelection>;
             }
 
+            export interface IdAggregateInputNonNullable {
+              shortest?: boolean;
+              longest?: boolean;
+            }
+            export interface StringAggregateInputNullable {
+              shortest?: boolean;
+              longest?: boolean;
+            }
+            export interface RestaurantAggregateSelectionInput {
+              count?: boolean;
+              name?: StringAggregateInputNullable;
+            }
+
+            export declare class RestaurantModel {
+              public find(args?: {
+                where?: RestaurantWhere;
+
+                options?: RestaurantOptions;
+                selectionSet?: string | DocumentNode | SelectionSetNode;
+                args?: any;
+                context?: any;
+                rootValue?: any;
+              }): Promise<Restaurant[]>;
+              public create(args: {
+                input: RestaurantCreateInput[];
+                selectionSet?: string | DocumentNode | SelectionSetNode;
+                args?: any;
+                context?: any;
+                rootValue?: any;
+              }): Promise<CreateRestaurantsMutationResponse>;
+              public update(args: {
+                where?: RestaurantWhere;
+                update?: RestaurantUpdateInput;
+
+                selectionSet?: string | DocumentNode | SelectionSetNode;
+                args?: any;
+                context?: any;
+                rootValue?: any;
+              }): Promise<UpdateRestaurantsMutationResponse>;
+              public delete(args: {
+                where?: RestaurantWhere;
+
+                context?: any;
+                rootValue?: any;
+              }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
+              public aggregate(args: {
+                where?: RestaurantWhere;
+
+                aggregate: RestaurantAggregateSelectionInput;
+                context?: any;
+                rootValue?: any;
+              }): Promise<RestaurantAggregateSelection>;
+            }
+
             export interface ModelMap {
               User: UserModel;
               Company: CompanyModel;
+              Restaurant: RestaurantModel;
             }
             "
         `);

@@ -17,7 +17,12 @@
  * limitations under the License.
  */
 
-import type { BooleanValueNode, DefinitionNode, DocumentNode, FieldDefinitionNode } from "graphql";
+import {
+    Kind,
+    type DefinitionNode,
+    type DocumentNode,
+    type FieldDefinitionNode,
+} from "graphql";
 import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 
@@ -55,6 +60,18 @@ function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): Document
             if (["Query", "Subscription", "Mutation"].includes(def.name.value)) {
                 return [...res, def];
             }
+            // this is the relationship aggregate argument used to enable aggregation for OGM whatever the user provides it or not
+            const relationshipAggregateArgument = {
+                kind: Kind.ARGUMENT,
+                name: {
+                    kind: Kind.NAME,
+                    value: "aggregate",
+                },
+                value: {
+                    kind: Kind.BOOLEAN,
+                    value: true,
+                },
+            };
 
             return [
                 ...res,
@@ -70,20 +87,13 @@ function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): Document
                                     ?.filter((x) => !excludedDirectives.includes(x.name.value))
                                     .map((x) => {
                                         if (x.name.value === "relationship") {
+                                            const args = (x.arguments ? x.arguments?.filter(
+                                                (arg) => arg.name.value !== "aggregate"
+                                            ) : []) as any[]; // cast to any as this type is changing between GraphQL versions
+                                            args?.push(relationshipAggregateArgument);
                                             return {
                                                 ...x,
-                                                arguments: x.arguments?.map((arg) => {
-                                                    if (arg.name.value === "aggregate") {
-                                                        return {
-                                                            ...arg,
-                                                            value: {
-                                                                ...arg.value,
-                                                                value: true,
-                                                            } as BooleanValueNode, // expect a BooleanValue GraphQL validation already happened
-                                                        };
-                                                    }
-                                                    return arg;
-                                                }),
+                                                arguments: args,
                                             };
                                         }
                                         return x;
