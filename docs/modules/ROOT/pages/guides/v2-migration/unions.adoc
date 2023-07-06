@@ -31,7 +31,7 @@ The structure of input types for union queries and mutations have been changed f
 
 Essentially, field names which were previously of template `<unionFieldName>_<concreteType>` (for example, "actedIn_Movie") are now an object, with the field name at the top, and the member types under it.
 
-For example, a Mutation which would have previously been:
+For example, a mutation which would have previously been:
 
 [source, graphql, indent=0]
 ----

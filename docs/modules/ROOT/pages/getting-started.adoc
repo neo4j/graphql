@@ -147,9 +147,9 @@ image::apollo-server-landing-page.png[title="Apollo Server Landing Page"]
 
 Click "Query your server" which will open the Sandbox.
 
-image::first-mutation.png[title="First Mutation"]
+image::first-mutation.png[title="First mutation"]
 
-At the moment your database is empty! To get some data in there, you can create a movie and an actor in that movie, all in one Mutation. The Mutation in the screenshot above can also be found below:
+At the moment your database is empty! To get some data in there, you can create a movie and an actor in that movie, all in one mutation. The mutation in the screenshot above can also be found below:
 
 [source, graphql, indent=0]
 ----
@@ -172,7 +172,7 @@ mutation {
 }
 ----
 
-Put this Mutation into the Operations panel and hit the blue "Run" button in the top right. When you execute the Mutation, you'll receive the following response, confirmation that the data has been created in the database!
+Put this mutation into the Operations panel and hit the blue "Run" button in the top right. When you execute the mutation, you'll receive the following response, confirmation that the data has been created in the database!
 
 [source, json, indent=0]
 ----
@@ -196,7 +196,7 @@ Put this Mutation into the Operations panel and hit the blue "Run" button in the
 
 You can now go back and query the data which you just added:
 
-image::first-query.png[title="First Query"]
+image::first-query.png[title="First query"]
 
 The query in the screenshot above is querying for all movies and their actors in the database:
 

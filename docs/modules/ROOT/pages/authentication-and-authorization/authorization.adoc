@@ -1,0 +1,83 @@
+= Authorization
+
+Authorization rules concern themselves with specific data which is executed against during a generated Cypher query.
+They are evaluated via predicates in the Cypher generated from a GraphQL query, so they execute within the context of nodes and their properties.
+
+All authorization rules have an implied requirement for authentication, given that the rules are normally evaluated
+against values in the JWT payload.
+
+In the case of explicit authentication, configured using the `@authentication` directive, is only ever evaluated 
+during Cypher translation time, and unauthenticated requests with queries requiring authentication 
+will never reach the database.
+
+== Rules
+
+=== Filter
+
+Filter rules filter out data which users do not have access to, without throwing any errors. These rules
+are evaluated in the database, with the rules translated into filter predicates and evaluated against matched data.
+Filter rules are valuable because they protect your data as well as obfuscate the information on the _existence_ of
+data to unauthorized users.
+
+For instance, to filter out `Post` nodes which don't belong to the current `User`:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID!
+}
+
+type Post @authorization(filter: [
+    { where: { node: { author: { id: "$jwt.sub" } } } }
+]) {
+    title: String!
+    content: String!
+    author: User! @relationship(type: "AUTHORED", direction: IN)
+}
+----
+
+=== Validate
+
+Validate rules throw an error if a query executes against data which users do not have access to. These rules are
+evaluated in the database via filtering predicates containing calls to 
+https://neo4j.com/docs/apoc/current/overview/apoc.util/apoc.util.validatePredicate/[`apoc.util.validatePredicate`].
+
+For instance, to throw an error if a `User` is accessed by anyone but the user themselves or an admin:
+
+[source, graphql, indent=0]
+----
+type JWT @jwt {
+    roles: [String!]!
+}
+
+type User @authorization(validate: [
+    { where: { node: { id: "$jwt.sub" } } }
+    { where: { jwt: { roles_INCLUDES: "admin" } } }
+]) {
+    id: ID!
+}
+----
+
+== Authorization not requiring authentication
+
+Authentication is implicitly required for every authorization check by default, but this can be disabled on a per-rule basis.
+This might be desired perhaps if a node has a property which flags whether the node should be public or not.
+
+For instance, `Post` nodes might be private and belong to a particular `User`, or be public and readable by any user:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID!
+}
+
+type Post @authorization(filter: [
+    { where: { node: { author: { id: "$jwt.sub" } } } }
+    { requireAuthentication: false, operations: [READ], where: { node: { public: true } } }
+]) {
+    title: String!
+    content: String!
+    public: Boolean!
+    author: User! @relationship(type: "AUTHORED", direction: IN)
+}
+----

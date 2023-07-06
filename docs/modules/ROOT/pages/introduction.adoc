@@ -19,7 +19,7 @@ For every query and mutation that is executed against this generated schema, the
 
 The Neo4j GraphQL Library presents a large feature set for interacting with a Neo4j database using GraphQL:
 
-- Automatic generation of xref::queries.adoc[Queries] and xref::mutations/index.adoc[Mutations] for CRUD interactions
+- Automatic generation of xref::queries.adoc[queries] and xref::mutations/index.adoc[mutations] for CRUD interactions
 - Various xref::type-definitions/types.adoc[Types], including temporal and spatial types
 - Support for both node and relationship properties
 - Extensibility through the xref::type-definitions/cypher.adoc[`@cypher` directive] and/or xref::custom-resolvers.adoc[Custom Resolvers]

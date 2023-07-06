@@ -5,13 +5,13 @@ Filtering can only be applied at the root of the Subscription operation.
 
 NOTE: Aggregations are not supported on subscription types, so there is currently no way to apply filter on these fields.
 
-A Subscription can be created to target the changes to a node (Create/Update/Delete) or to a relationship (Create/Delete).  
+A subscription can be created to target the changes to a node (Create/Update/Delete) or to a relationship (Create/Delete).  
 
 While the format slightly differs depending on whether the subscription targets a node or a relationship, providing a `where` argument allows for filtering on the events that are returned to the subscription.
 
 == Operators
 
-When creating a Subscription, a number of operators are available for different types in the `where` argument.
+When creating a subscription, a number of operators are available for different types in the `where` argument.
 
 === Equality operators
 
@@ -195,7 +195,7 @@ subscription {
 
 When subscribing to relationship events, the `where` argument still allows for specifying filters on the top-level properties of the targeted nodes, and also supports specifying filters on the relationship properties (`edge`) and on the top-level properties (`node`) of the nodes at the other end of the relationship. This is done by using the operators described above, and the usage is very similar to the one in xref:subscriptions/filtering.adoc#node-events-usage[Subscribing to node events].
 
-The relationship-related filtering logic is even more powerful, as filters can also express the expected relationship field, or the expected concrete type at the other end of the relationship when having relationships to Abstract Types. Note that each relationship field specified is combined with the others using a xref:subscriptions/filtering.adoc#filter-logical-or[logical `OR`]. Only events matching these relationship field names will be returned in the Subscription.
+The relationship-related filtering logic is even more powerful, as filters can also express the expected relationship field, or the expected concrete type at the other end of the relationship when having relationships to Abstract Types. Note that each relationship field specified is combined with the others using a xref:subscriptions/filtering.adoc#filter-logical-or[logical `OR`]. Only events matching these relationship field names will be returned in the subscription.
 
 You can further filter each relationship field by node and relationship properties. As per usual, these fields are combined in the resulting filter with a xref:subscriptions/filtering.adoc#filter-logical-and[logical `AND`].
 

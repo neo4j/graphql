@@ -23,6 +23,9 @@ import { mergeTypeDefs } from "@graphql-tools/merge";
 
 const excludedDirectives = [
     "auth",
+    "authentication",
+    "authorization",
+    "subscriptionsAuthorization",
     "exclude",
     "private",
     "readonly",

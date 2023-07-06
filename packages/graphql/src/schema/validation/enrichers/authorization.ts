@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { Kind } from "graphql";
 import { createAuthorizationDefinitions } from "../../../graphql/directives/type-dependant-directives/authorization";
 import type { EnricherContext } from "../EnricherContext";

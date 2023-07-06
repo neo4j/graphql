@@ -21,22 +21,28 @@ import type { GraphQLWhereArg } from "../../types";
 
 export const AuthorizationAnnotationArguments = ["filter", "validate"] as const;
 
-export type AuthorizationFilterOperation =
-    | "READ"
-    | "AGGREGATE"
-    | "UPDATE"
-    | "DELETE"
-    | "CREATE_RELATIONSHIP"
-    | "DELETE_RELATIONSHIP";
+export const AuthorizationFilterOperationRule = [
+    "READ",
+    "AGGREGATE",
+    "UPDATE",
+    "DELETE",
+    "CREATE_RELATIONSHIP",
+    "DELETE_RELATIONSHIP",
+] as const;
 
-export type AuthorizationValidateOperation =
-    | "READ"
-    | "AGGREGATE"
-    | "CREATE"
-    | "UPDATE"
-    | "DELETE"
-    | "CREATE_RELATIONSHIP"
-    | "DELETE_RELATIONSHIP";
+export const AuthorizationValidateOperationRule = [
+    "READ",
+    "AGGREGATE",
+    "CREATE",
+    "UPDATE",
+    "DELETE",
+    "CREATE_RELATIONSHIP",
+    "DELETE_RELATIONSHIP",
+] as const;
+
+export type AuthorizationFilterOperation = (typeof AuthorizationFilterOperationRule)[number];
+
+export type AuthorizationValidateOperation = (typeof AuthorizationValidateOperationRule)[number];
 
 export type ValidateWhen = "BEFORE" | "AFTER";
 
@@ -47,25 +53,6 @@ export type AuthorizationWhere = {
     jwt?: GraphQLWhereArg;
     node?: GraphQLWhereArg;
 };
-
-export const AuthorizationFilterOperationRule: ReadonlyArray<AuthorizationFilterOperation> = [
-    "READ",
-    "AGGREGATE",
-    "UPDATE",
-    "DELETE",
-    "CREATE_RELATIONSHIP",
-    "DELETE_RELATIONSHIP",
-];
-
-export const AuthorizationValidateOperationRule: ReadonlyArray<AuthorizationValidateOperation> = [
-    "READ",
-    "AGGREGATE",
-    "CREATE",
-    "UPDATE",
-    "DELETE",
-    "CREATE_RELATIONSHIP",
-    "DELETE_RELATIONSHIP",
-];
 
 export class AuthorizationAnnotation {
     public filter?: AuthorizationFilterRule[];

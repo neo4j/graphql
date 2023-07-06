@@ -54,6 +54,12 @@
 **** xref:auth/authorization/roles.adoc[]
 **** xref:auth/authorization/where.adoc[]
 *** xref:auth/subscriptions.adoc[]
+** Authentication and Authorization
+*** xref:authentication-and-authorization/configuration.adoc[]
+*** xref:authentication-and-authorization/authentication.adoc[]
+*** xref:authentication-and-authorization/authorization.adoc[]
+*** Reference
+**** xref:authentication-and-authorization/reference/operations.adoc[]
 ** xref:directives.adoc[]
 ** xref:api-reference/index.adoc[]
 *** xref:api-reference/neo4jgraphql.adoc[]
@@ -92,6 +98,7 @@
 **** xref:guides/v2-migration/miscellaneous.adoc[]
 *** xref:guides/v3-migration/index.adoc[]
 *** xref:guides/v4-migration/index.adoc[]
+**** xref:guides/v4-migration/authorization.adoc[]
 ** xref:troubleshooting/index.adoc[]
 *** xref:troubleshooting/faqs.adoc[]
 *** xref:troubleshooting/security.adoc[]

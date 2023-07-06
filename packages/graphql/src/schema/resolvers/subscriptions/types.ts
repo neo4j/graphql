@@ -26,6 +26,7 @@ export type SubscriptionEventType = "create" | "update" | "delete" | "create_rel
 export type SubscriptionContext = {
     plugin: Neo4jGraphQLSubscriptionsPlugin;
     jwt?: JwtPayload;
+    jwtPayloadFieldsMap?: Map<string, string>;
     schemaModel: Neo4jGraphQLSchemaModel;
 };
 

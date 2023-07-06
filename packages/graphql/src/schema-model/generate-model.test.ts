@@ -26,6 +26,7 @@ import {
 } from "./annotation/AuthorizationAnnotation";
 import { generateModel } from "./generate-model";
 import type { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
+import { SubscriptionsAuthorizationFilterEventRule } from "./annotation/SubscriptionsAuthorizationAnnotation";
 import { AuthenticationAnnotation } from "./annotation/AuthenticationAnnotation";
 
 describe("Schema model generation", () => {
@@ -64,42 +65,42 @@ describe("Schema model generation", () => {
 });
 
 describe("ConcreteEntity generation", () => {
-    let schemaModel: Neo4jGraphQLSchemaModel;
-
-    beforeAll(() => {
-        const typeDefs = gql`
-            type User
-                @authorization(
-                    validate: [
-                        { when: ["BEFORE"], where: { node: { id: { equals: "$jwt.sub" } } } }
-                        { when: ["AFTER"], where: { node: { id: { equals: "$jwt.sub" } } } }
-                    ]
-                ) {
-                id: ID!
-                name: String!
-            }
-
-            extend type User {
-                password: String! @authorization(filter: [{ where: { node: { id: { equals: "$jwt.sub" } } } }])
-            }
-        `;
-
-        const document = mergeTypeDefs(typeDefs);
-        schemaModel = generateModel(document);
-    });
-
-    test("creates the concrete entity", () => {
-        expect(schemaModel.concreteEntities).toHaveLength(1);
-    });
-
-    test("concrete entity has correct attributes", () => {
-        const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-        expect(userEntity?.attributes.has("id")).toBeTrue();
-        expect(userEntity?.attributes.has("name")).toBeTrue();
-        expect(userEntity?.attributes.has("password")).toBeTrue();
-    });
-
     describe("authorization annotation", () => {
+        let schemaModel: Neo4jGraphQLSchemaModel;
+
+        beforeAll(() => {
+            const typeDefs = gql`
+                type User
+                    @authorization(
+                        validate: [
+                            { when: ["BEFORE"], where: { node: { id: { equals: "$jwt.sub" } } } }
+                            { when: ["AFTER"], where: { node: { id: { equals: "$jwt.sub" } } } }
+                        ]
+                    ) {
+                    id: ID!
+                    name: String!
+                }
+
+                extend type User {
+                    password: String! @authorization(filter: [{ where: { node: { id: { equals: "$jwt.sub" } } } }])
+                }
+            `;
+
+            const document = mergeTypeDefs(typeDefs);
+            schemaModel = generateModel(document);
+        });
+
+        test("creates the concrete entity", () => {
+            expect(schemaModel.concreteEntities).toHaveLength(1);
+        });
+
+        test("concrete entity has correct attributes", () => {
+            const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+            expect(userEntity?.attributes.has("id")).toBeTrue();
+            expect(userEntity?.attributes.has("name")).toBeTrue();
+            expect(userEntity?.attributes.has("password")).toBeTrue();
+        });
+
         test("creates the authorization annotation on User entity", () => {
             const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
             expect(userEntity?.annotations[AnnotationsKey.authorization]).toBeDefined();
@@ -153,6 +154,80 @@ describe("ConcreteEntity generation", () => {
                     },
                 ])
             );
+        });
+    });
+
+    describe("subscriptionsAuthorization annotation", () => {
+        let schemaModel: Neo4jGraphQLSchemaModel;
+
+        beforeAll(() => {
+            const typeDefs = gql`
+                type User @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                    id: ID!
+                    name: String!
+                }
+
+                extend type User {
+                    password: String! @subscriptionsAuthorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                }
+            `;
+
+            const document = mergeTypeDefs(typeDefs);
+            schemaModel = generateModel(document);
+        });
+
+        test("creates the concrete entity", () => {
+            expect(schemaModel.concreteEntities).toHaveLength(1);
+        });
+
+        test("concrete entity has correct attributes", () => {
+            const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+            expect(userEntity?.attributes.has("id")).toBeTrue();
+            expect(userEntity?.attributes.has("name")).toBeTrue();
+            expect(userEntity?.attributes.has("password")).toBeTrue();
+        });
+
+        test("creates the subscriptionsAuthorization annotation on User entity", () => {
+            const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+            expect(userEntity?.annotations[AnnotationsKey.subscriptionsAuthorization]).toBeDefined();
+        });
+
+        test("creates the subscriptionsAuthorization annotation on password field", () => {
+            const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+            expect(userEntity?.attributes.get("password")?.annotations).toHaveProperty(
+                AnnotationsKey.subscriptionsAuthorization
+            );
+            const authAnnotation =
+                userEntity?.attributes.get("password")?.annotations[AnnotationsKey.subscriptionsAuthorization];
+
+            expect(authAnnotation).toBeDefined();
+            expect(authAnnotation?.filter).toHaveLength(1);
+            expect(authAnnotation?.filter).toEqual([
+                {
+                    events: SubscriptionsAuthorizationFilterEventRule,
+                    requireAuthentication: true,
+                    where: {
+                        jwt: undefined,
+                        node: { id: "$jwt.sub" },
+                    },
+                },
+            ]);
+        });
+
+        test("subscriptionsAuthorization annotation is correct on User entity", () => {
+            const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+            const authAnnotation = userEntity?.annotations[AnnotationsKey.subscriptionsAuthorization];
+            expect(authAnnotation).toBeDefined();
+            expect(authAnnotation?.filter).toEqual([
+                {
+                    events: SubscriptionsAuthorizationFilterEventRule,
+                    requireAuthentication: true,
+                    where: {
+                        jwt: undefined,
+                        node: { id: "$jwt.sub" },
+                    },
+                },
+            ]);
         });
     });
 });

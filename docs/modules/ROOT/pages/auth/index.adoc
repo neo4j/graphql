@@ -1,5 +1,8 @@
 [[auth]]
-= Auth
+= Auth (deprecated)
+
+WARNING: The `@auth` directive has been replaced by `@authentication` and `@authorization`. `@auth` will be removed in version 4.0.0. 
+Please see the xref::guides/v4-migration/authorization.adoc[upgrade guide] for details on how to upgrade.
 
 In this chapter you will learn more about how to secure your GraphQL API using the Neo4j GraphQL Library's built-in auth mechanics.
 

@@ -75,7 +75,7 @@ No change. See xref::type-definitions/cypher.adoc[`@cypher` directive] for more 
 
 `@neo4j/graphql` offers two directives for skipping autogeneration for specified types/fields:
 
-* xref::type-definitions/schema-configuration/index.adoc#type-definitions-schema-configuration-exclude[`@exclude`]: Skip generation of specified Query/Mutation fields for an object type
+* xref::type-definitions/schema-configuration/index.adoc#type-definitions-schema-configuration-exclude[`@exclude`]: Skip generation of specified query/mutation fields for an object type
 * xref::custom-resolvers.adoc#custom-resolvers-computed[`@computed`]: Ignore a field, which will need custom logic for resolution
 
 === `@isAuthenticated`, `@hasRole` and `@hasScope`
@@ -142,15 +142,15 @@ Correspondingly, `_Neo4jPointInput` has also been split out into two input types
 * `PointInput`
 * `CartesianPointInput`
 
-Using them in Queries and Mutations should feel remarkably similar.
+Using them in queries and mutations should feel remarkably similar.
 
 === Interface Types
 
-Supported, queryable using inline fragments as per `neo4j-graphql-js`, but can also be created using Nested Mutations. See xref::type-definitions/unions.adoc#type-definitions-interfaces[Interfaces].
+Supported, queryable using inline fragments as per `neo4j-graphql-js`, but can also be created using nested mutations. See xref::type-definitions/unions.adoc#type-definitions-interfaces[Interfaces].
 
 === Union Types
 
-Supported, queryable using inline fragments as per `neo4j-graphql-js`, but can also be created using Nested Mutations. See xref::type-definitions/unions.adoc#type-definitions-unions[Unions].
+Supported, queryable using inline fragments as per `neo4j-graphql-js`, but can also be created using nested mutations. See xref::type-definitions/unions.adoc#type-definitions-unions[Unions].
 
 == Fields
 

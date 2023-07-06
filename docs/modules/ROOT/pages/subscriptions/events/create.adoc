@@ -1,5 +1,5 @@
 [[create]]
-= Create Subscriptions
+= Create subscriptions
 
 Subscriptions to `CREATE` events will listen to newly created nodes. A new event will be triggered for each new node.
 The event will contain the node's properties.

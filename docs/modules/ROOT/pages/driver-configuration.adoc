@@ -262,7 +262,7 @@ You might have a requirement to specify Neo4j bookmarks when executing a query a
 
 You can read more about causal consistency in the https://neo4j.com/docs/operations-manual/current/clustering/introduction/#consistency-explained[clustering chapter of the Neo4j Operations manual], and more about bookmark chaining https://neo4j.com/docs/javascript-manual/current/cypher-workflow/#js-driver-causal-chaining[in the driver manual].
 
-You can ask for the bookmark in the selection set from the `info` object of a Mutation response. For example, for a type `User`:
+You can ask for the bookmark in the selection set from the `info` object of a mutation response. For example, for a type `User`:
 
 [source, graphql, indent=0]
 ----

@@ -30,22 +30,21 @@ describe("filterDocument", () => {
                 password: String @auth @private @readonly @writeonly
             }
 
-
         `;
 
         const filtered = filterDocument(initial);
 
-        expect(print(filtered)).toEqual(
-            print(
-                parse(`
-                    type User {
-                        id: ID
-                        name: String
-                        email: String
-                        password: String
-                    }
-                `)
-            )
+        expect(print(filtered)).toMatchInlineSnapshot(
+            `
+            "type User {
+              id: ID
+              name: String
+              email: String
+              password: String
+            }
+
+            extend schema @query(aggregate: true)"
+        `
         );
     });
 });
