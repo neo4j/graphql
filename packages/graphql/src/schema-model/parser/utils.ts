@@ -26,14 +26,15 @@ export function parseArguments(directive: DirectiveNode): Record<string, unknown
     }, {});
 }
 
-function getArgumentValueByType(argumentValue: ValueNode): unknown {
+export function getArgumentValueByType(argumentValue: ValueNode): unknown {
     switch (argumentValue.kind) {
         case Kind.STRING:
-        case Kind.INT:
-        case Kind.FLOAT:
         case Kind.BOOLEAN:
         case Kind.ENUM:
             return argumentValue.value;
+        case Kind.INT:
+        case Kind.FLOAT:
+            return Number(argumentValue.value);
         case Kind.NULL:
             return null;
         case Kind.LIST:
