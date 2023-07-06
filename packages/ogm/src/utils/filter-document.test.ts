@@ -32,7 +32,7 @@ describe("filterDocument", () => {
                 bikes: [Car!]! @relationship(type: "HAS_CAR", direction: OUT)  
             }
 
-            type Car {
+            type Car @query(read: false, aggregate: false) @mutation(operations: []), @subscription(operations: []) {
                 name: String @filterable(byValue: false, byAggregate: false)
                 engine: String @selectable(onRead: false, onAggregate: false)
             }
@@ -69,7 +69,7 @@ describe("filterDocument", () => {
               type: String
             }
 
-            extend schema @query(aggregate: true)"
+            extend schema @query(read: true, aggregate: true) @mutation(operations: [CREATE, UPDATE, DELETE]) @subscription(operations: [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])"
         `);
     });
 });

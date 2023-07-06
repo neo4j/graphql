@@ -45,7 +45,10 @@ const excludedDirectives = [
 
 function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): DocumentNode {
     // hack to keep aggregation enabled for OGM
-    const schemaExtension = "extend schema @query(aggregate: true)";
+    const schemaExtension = `
+    extend schema @query(read: true, aggregate: true) 
+        @mutation(operations: [CREATE, UPDATE, DELETE]) 
+        @subscription(operations: [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])`;
     const merged = mergeTypeDefs(
         Array.isArray(typeDefs) ? (typeDefs as string[]).concat(schemaExtension) : [typeDefs as string, schemaExtension]
     );
