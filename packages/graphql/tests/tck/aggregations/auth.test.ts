@@ -55,7 +55,6 @@ describe("Cypher Aggregations with Auth", () => {
                     @authorization(
                         validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]
                     )
->>>>>>> 4.0.0
             }
 
             extend type User
