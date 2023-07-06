@@ -21,7 +21,16 @@ import type { DefinitionNode, DocumentNode, FieldDefinitionNode } from "graphql"
 import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 
-const excludedDirectives = ["auth", "exclude", "private", "readonly", "writeonly"];
+const excludedDirectives = [
+    "auth",
+    "authentication",
+    "authorization",
+    "subscriptionsAuthorization",
+    "exclude",
+    "private",
+    "readonly",
+    "writeonly",
+];
 
 function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): DocumentNode {
     const merged = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
