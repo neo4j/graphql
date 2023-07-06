@@ -86,7 +86,7 @@ export function createMatchClause({
         matchClause = Cypher.db.index.fulltext.queryNodes(indexName, phraseParam).yield(["node", matchNode]);
 
         whereOperators = node.getLabels(context).map((label) => {
-            return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));
+            return Cypher.in(new Cypher.Param(label), Cypher.labels(matchNode));
         });
     } else if (context.fulltextIndex) {
         ({ matchClause, whereOperators } = createFulltextMatchClause(matchNode, where, node, context));

@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 3.23.1
+
+### Patch Changes
+
+-   [#3603](https://github.com/neo4j/graphql/pull/3603) [`0a5e91bb2`](https://github.com/neo4j/graphql/commit/0a5e91bb2d7db61802ffe31517f60949884f4be5) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Ensure that label checks are done against parameters.
+
 ## 3.23.0
 
 ### Minor Changes
