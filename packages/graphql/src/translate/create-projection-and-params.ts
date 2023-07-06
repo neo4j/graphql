@@ -22,7 +22,6 @@ import { mergeDeep } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import type { GraphQLOptionsArg, GraphQLWhereArg, Context, GraphQLSortArg, CypherFieldReferenceMap } from "../types";
-import { createAuthPredicates } from "./create-auth-predicates";
 import { createDatetimeExpression } from "./projection/elements/create-datetime-element";
 import { createPointExpression } from "./projection/elements/create-point-element";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -35,27 +34,26 @@ import { createProjectionSubquery } from "./projection/subquery/create-projectio
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
+import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
+import { checkAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
 
 interface Res {
     projection: Cypher.Expr[];
     params: any;
-    meta: ProjectionMeta;
     subqueries: Array<Cypher.Clause>;
     subqueriesBeforeSort: Array<Cypher.Clause>;
-}
-
-export interface ProjectionMeta {
-    authValidatePredicates?: Cypher.Predicate[];
+    predicates: Cypher.Predicate[];
 }
 
 export type ProjectionResult = {
     params: Record<string, any>;
-    meta: ProjectionMeta;
     // Subqueries required for sorting on fields before the projection
     subqueriesBeforeSort: Array<Cypher.Clause>;
     // Subqueries required for fields in the projection
     subqueries: Array<Cypher.Clause>;
+    // Predicates for filtering data before projection
+    predicates: Cypher.Predicate[];
     // The map representing the fields being returned in the projection
     projection: Cypher.Expr;
 };
@@ -77,8 +75,13 @@ export default function createProjectionAndParams({
     resolveType?: boolean;
     cypherFieldAliasMap: CypherFieldReferenceMap;
 }): ProjectionResult {
+    checkAuthentication({ context, node, targetOperations: ["READ"] });
+
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
+
+        // if not aggregation/ connection
+        checkAuthentication({ context, node, targetOperations: ["READ"], field: field.name });
 
         const whereInput = field.args.where as GraphQLWhereArg;
         const optionsInput = (field.args.options || {}) as GraphQLOptionsArg;
@@ -90,22 +93,27 @@ export default function createProjectionAndParams({
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
 
         if (authableField) {
-            // TODO: move this to translate-top-level
-            if (authableField.auth) {
-                const allowAndParams = createAuthPredicates({
-                    entity: authableField,
-                    operations: "READ",
-                    context,
-                    allow: {
+            const authorizationPredicateReturn = createAuthorizationBeforePredicate({
+                context,
+                nodes: [
+                    {
+                        variable: varName,
                         node,
-                        varName,
+                        fieldName: authableField.fieldName,
                     },
-                });
-                if (allowAndParams) {
-                    if (!res.meta.authValidatePredicates) {
-                        res.meta.authValidatePredicates = [];
-                    }
-                    res.meta.authValidatePredicates?.push(allowAndParams);
+                ],
+                operations: ["READ"],
+            });
+
+            if (authorizationPredicateReturn) {
+                const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
+
+                if (predicate) {
+                    res.predicates.push(predicate);
+                }
+
+                if (preComputedSubqueries && !preComputedSubqueries.empty) {
+                    res.subqueries.push(preComputedSubqueries);
                 }
             }
         }
@@ -191,9 +199,10 @@ export default function createProjectionAndParams({
                         // The nested projection will be surrounded by brackets, so we want to remove
                         // any linebreaks, and then the first opening and the last closing bracket of the line,
                         // as well as any surrounding whitespace.
-                        const nestedProj = (recurse.projection as any)
-                            .getCypher(env)
-                            .replaceAll(/(^\s*{\s*)|(\s*}\s*$)/g, "");
+                        const nestedProj = compileCypher(recurse.projection, env).replaceAll(
+                            /(^\s*{\s*)|(\s*}\s*$)/g,
+                            ""
+                        );
 
                         return `{ __resolveType: "${refNode.name}", __id: id(${compileCypher(varName, env)})${
                             nestedProj && `, ${nestedProj}`
@@ -212,9 +221,9 @@ export default function createProjectionAndParams({
                         relationField,
                         relationshipDirection: direction,
                         optionsInput,
-                        authValidatePredicates: recurse.meta?.authValidatePredicates,
                         addSkipAndLimit: false,
                         collect: false,
+                        nestedPredicates: recurse.predicates,
                     });
 
                     const unionWith = new Cypher.With("*");
@@ -267,7 +276,7 @@ export default function createProjectionAndParams({
                 relationField,
                 relationshipDirection: direction,
                 optionsInput,
-                authValidatePredicates: recurse.meta?.authValidatePredicates,
+                nestedPredicates: recurse.predicates,
             });
             res.subqueries.push(new Cypher.Call(subquery).innerWith(varName));
             res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${compileCypher(subqueryReturnAlias, env)}`));
@@ -396,27 +405,30 @@ export default function createProjectionAndParams({
         ...generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
     ]);
 
-    const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(mergedFields).reduce(reducer, {
-        projection: resolveType
-            ? [
-                  new Cypher.RawCypher(`__resolveType: "${node.name}"`),
-                  new Cypher.RawCypher((env) => `__id: id(${compileCypher(varName, env)})`),
-              ]
-            : [],
-        params: {},
-        meta: {},
-        subqueries: [],
-        subqueriesBeforeSort: [],
-    });
+    const { params, subqueriesBeforeSort, subqueries, predicates, projection } = Object.values(mergedFields).reduce(
+        reducer,
+        {
+            projection: resolveType
+                ? [
+                      new Cypher.RawCypher(`__resolveType: "${node.name}"`),
+                      new Cypher.RawCypher((env) => `__id: id(${compileCypher(varName, env)})`),
+                  ]
+                : [],
+            params: {},
+            subqueries: [],
+            subqueriesBeforeSort: [],
+            predicates: [],
+        }
+    );
     const projectionCypher = new Cypher.RawCypher((env) => {
         return `{ ${projection.map((proj) => compileCypher(proj, env)).join(", ")} }`;
     });
     return {
-        projection: projectionCypher,
         params,
-        meta,
-        subqueries,
         subqueriesBeforeSort,
+        subqueries,
+        predicates,
+        projection: projectionCypher,
     };
 }
 
@@ -482,9 +494,9 @@ function createFulltextProjection({
         return {
             projection: new Cypher.Map(),
             params: {},
-            meta: {},
             subqueries: [],
             subqueriesBeforeSort: [],
+            predicates: [],
         };
     }
 

@@ -19,13 +19,14 @@
 
 import type { Node, Relationship } from "../classes";
 import type { RelationField, Context } from "../types";
-import { createAuthAndParams } from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
+import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
+import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 interface Res {
     disconnects: string[];
@@ -57,11 +58,15 @@ function createDisconnectAndParams({
     parameterPrefix: string;
     isFirstLevel?: boolean;
 }): [string, any] {
+    checkAuthentication({ context, node: parentNode, targetOperations: ["DELETE_RELATIONSHIP"] });
+
     function createSubqueryContents(
         relatedNode: Node,
         disconnect: any,
         index: number
     ): { subquery: string; params: Record<string, any> } {
+        checkAuthentication({ context, node: relatedNode, targetOperations: ["DELETE_RELATIONSHIP"] });
+
         const variableName = `${varName}${index}`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
@@ -110,16 +115,23 @@ function createDisconnectAndParams({
             }
         }
 
-        if (relatedNode.auth) {
-            const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
-                operations: "DISCONNECT",
-                entity: relatedNode,
-                context,
-                where: { varName: variableName, node: relatedNode },
-            });
-            if (authWhereCypher) {
-                whereStrs.push(authWhereCypher);
-                params = { ...params, ...authWhereParams };
+        const authorizationBeforeAndParams = createAuthorizationBeforeAndParams({
+            context,
+            nodes: [
+                { node: parentNode, variable: parentVar },
+                { node: relatedNode, variable: variableName },
+            ],
+            operations: ["DELETE_RELATIONSHIP"],
+        });
+
+        if (authorizationBeforeAndParams) {
+            const { cypher, params: authWhereParams, subqueries } = authorizationBeforeAndParams;
+
+            whereStrs.push(cypher);
+            params = { ...params, ...authWhereParams };
+
+            if (subqueries) {
+                subquery.push(subqueries);
             }
         }
 
@@ -133,44 +145,6 @@ function createDisconnectAndParams({
             } else {
                 subquery.push(`WHERE ${predicate}`);
             }
-        }
-
-        const nodeMatrix: { node: Node; name: string }[] = [
-            { node: parentNode, name: parentVar },
-            { node: relatedNode, name: variableName },
-        ];
-
-        const preAuth = nodeMatrix.reduce(
-            (result: Res, { node, name }) => {
-                if (!node.auth) {
-                    return result;
-                }
-
-                const { cypher, params } = createAuthAndParams({
-                    entity: node,
-                    operations: "DISCONNECT",
-                    context,
-                    allow: { node, varName: name },
-                });
-
-                if (!cypher) {
-                    return result;
-                }
-
-                result.disconnects.push(cypher);
-                result.params = { ...result.params, ...params };
-
-                return result;
-            },
-            { disconnects: [], params: {} }
-        );
-
-        if (preAuth.disconnects.length) {
-            subquery.push(`WITH ${[...withVars, variableName, relVarName].join(", ")}`);
-            subquery.push(
-                `CALL apoc.util.validate(NOT (${preAuth.disconnects.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-            );
-            params = { ...params, ...preAuth.params };
         }
 
         subquery.push("CALL {");
@@ -338,39 +312,30 @@ function createDisconnectAndParams({
             });
         }
 
-        const postAuth = [parentNode, relatedNode].reduce(
-            (result: Res, node) => {
-                if (!node.auth) {
-                    return result;
+        const authorizationAfterAndParams = createAuthorizationAfterAndParams({
+            context,
+            nodes: [
+                { node: parentNode, variable: parentVar },
+                { node: relatedNode, variable: variableName },
+            ],
+            operations: ["DELETE_RELATIONSHIP"],
+        });
+
+        if (authorizationAfterAndParams) {
+            const { cypher, params: authWhereParams, subqueries } = authorizationAfterAndParams;
+
+            if (cypher) {
+                if (subqueries) {
+                    subquery.push(`WITH *`);
+                    subquery.push(`${subqueries}`);
+                    subquery.push(`WITH *`);
+                } else {
+                    subquery.push(`WITH ${[...withVars, variableName].join(", ")}`);
                 }
 
-                const { cypher, params } = createAuthAndParams({
-                    entity: node,
-                    operations: "DISCONNECT",
-                    context,
-                    skipRoles: true,
-                    skipIsAuthenticated: true,
-                    bind: { node, varName: variableName },
-                });
-
-                if (!cypher) {
-                    return result;
-                }
-
-                result.disconnects.push(cypher);
-                result.params = { ...result.params, ...params };
-
-                return result;
-            },
-            { disconnects: [], params: {} }
-        );
-
-        if (postAuth.disconnects.length) {
-            subquery.push(`WITH ${[...withVars, variableName].join(", ")}`);
-            subquery.push(
-                `CALL apoc.util.validate(NOT (${postAuth.disconnects.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-            );
-            params = { ...params, ...postAuth.params };
+                subquery.push(`WHERE ${cypher}`);
+                params = { ...params, ...authWhereParams };
+            }
         }
 
         if (context.subscriptionsEnabled) {
@@ -384,20 +349,6 @@ function createDisconnectAndParams({
     }
 
     function reducer(res: Res, disconnect: { where: any; disconnect: any }, index: number): Res {
-        if (parentNode.auth) {
-            const { cypher: authCypher, params: authParams } = createAuthAndParams({
-                operations: "DISCONNECT",
-                entity: parentNode,
-                context,
-                where: { varName: parentVar, node: parentNode },
-            });
-            if (authCypher) {
-                res.disconnects.push(`WITH ${withVars.join(", ")}`);
-                res.disconnects.push(`WHERE ${authCypher}`);
-                res.params = { ...res.params, ...authParams };
-            }
-        }
-
         if (isFirstLevel) {
             res.disconnects.push(`WITH ${withVars.join(", ")}`);
         }

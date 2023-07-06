@@ -21,16 +21,14 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConnectionField, ConnectionWhereArg, Context, CypherFieldReferenceMap } from "../../types";
 import type { Node } from "../../classes";
 import type Relationship from "../../classes/Relationship";
-import { createAuthPredicates } from "../create-auth-predicates";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionWherePropertyOperation } from "../where/property-operations/create-connection-operation";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
-
 import { createEdgeProjection } from "./connection-projection";
 import { getEdgeSortFieldKeys } from "./get-sort-fields";
-import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
 import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
+import { createAuthorizationBeforePredicate } from "../authorization/create-authorization-before-predicate";
 
 /** Create the match, filtering and projection of the edge and the nested node */
 export function createEdgeSubquery({
@@ -89,25 +87,30 @@ export function createEdgeSubquery({
         if (wherePredicate) predicates.push(wherePredicate);
         preComputedSubqueries = tempPreComputedSubqueries;
     }
-    const authPredicate = createAuthPredicates({
-        operations: "READ",
-        entity: relatedNode,
+
+    const authorizationPredicateReturn = createAuthorizationBeforePredicate({
         context,
-        where: { varName: relatedNodeRef, node: relatedNode },
-    });
-    if (authPredicate) predicates.push(authPredicate);
-    const authAllowPredicate = createAuthPredicates({
-        operations: "READ",
-        entity: relatedNode,
-        context,
-        allow: {
-            node: relatedNode,
-            varName: relatedNodeRef,
-        },
+        nodes: [
+            {
+                variable: relatedNodeRef,
+                node: relatedNode,
+            },
+        ],
+        operations: ["READ"],
     });
 
-    if (authAllowPredicate)
-        predicates.push(Cypher.apoc.util.validatePredicate(Cypher.not(authAllowPredicate), AUTH_FORBIDDEN_ERROR));
+    if (authorizationPredicateReturn) {
+        const { predicate: authorizationPredicate, preComputedSubqueries: authorizationSubqueries } =
+            authorizationPredicateReturn;
+
+        if (authorizationPredicate) {
+            predicates.push(authorizationPredicate);
+        }
+
+        if (authorizationSubqueries && !authorizationSubqueries.empty) {
+            preComputedSubqueries = Cypher.concat(preComputedSubqueries, authorizationSubqueries);
+        }
+    }
 
     const projection = createEdgeProjection({
         resolveTree,
@@ -121,7 +124,11 @@ export function createEdgeSubquery({
         cypherFieldAliasMap,
     });
 
-    const withReturn = new Cypher.With([projection.projection, returnVariable]);
+    let withReturn = new Cypher.With([projection.projection, returnVariable]);
+
+    if (projection.predicates.length) {
+        withReturn = withReturn.where(Cypher.and(...projection.predicates));
+    }
 
     let withSortClause: Cypher.Clause | undefined;
     if (!ignoreSort) {

@@ -24,7 +24,7 @@ import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { toGlobalId } from "../../src/utils/global-ids";
 import { UniqueType } from "../utils/graphql-types";
-import { createJwtRequest } from "../utils/create-jwt-request";
+import { createBearerToken } from "../utils/create-bearer-token";
 
 describe("Global node resolution", () => {
     let driver: Driver;
@@ -456,7 +456,7 @@ describe("Global node resolution", () => {
             creator: ${typeUser.name}! @relationship(type: "CREATED", direction: IN)
           }
 
-          extend type ${typeFilm.name} @auth(rules: [{ allow: { creator: { dbId: "$jwt.sub" } } }])
+          extend type ${typeFilm.name} @authorization(validate: [{ when: [BEFORE], where: { node: { creator: { dbId: "$jwt.sub" } } } }])
         `;
 
         const query = `
@@ -490,12 +490,12 @@ describe("Global node resolution", () => {
             // const dbId = record.this.dbId;
             const filmTitle = record?.this.film.properties.title;
 
-            const req = createJwtRequest(secret, { sub: "invalid" });
+            const token = createBearerToken(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
                 variableValues: { id: toGlobalId({ typeName: typeFilm.name, field: "title", id: filmTitle }) },
             });
 
@@ -513,7 +513,7 @@ describe("Global node resolution", () => {
             name: String!
           }
 
-          extend type ${typeUser.name} @auth(rules: [{ allow: { dbId: "$jwt.sub" } }])
+          extend type ${typeUser.name} @authorization(validate: [{ when: [BEFORE], where: { node: { dbId: "$jwt.sub" } } }])
       `;
 
         const query = `
@@ -544,12 +544,12 @@ describe("Global node resolution", () => {
             const userId = record?.this.properties.id;
             const relayId = toGlobalId({ typeName: typeUser.name, field: "dbId", id: userId });
 
-            const req = createJwtRequest(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
                 variableValues: { id: relayId },
             });
 
@@ -564,14 +564,16 @@ describe("Global node resolution", () => {
         const session = await neo4j.getSession();
         const typeDefs = `
 
+        type JWTPayload @jwt {
+          roles: [String!]!
+        }
+
         type ${typeUser.name} {
           dbId: ID! @id(global: true) @alias(property: "id")
           name: String!
         }
 
-        extend type ${typeUser.name} @auth(rules: [
-          { allow: { OR: [{ roles: ["admin"] }, { dbId: "$jwt.sub" } ] } }
-        ])
+        extend type ${typeUser.name} @authorization(validate: [{ when: [BEFORE], where: { OR: [{ jwt: { roles_INCLUDES: "admin" } }, { node: { dbId: "$jwt.sub" } }] } }])
     `;
 
         const query = `
@@ -602,12 +604,12 @@ describe("Global node resolution", () => {
             const userId = record?.this.properties.id;
             const relayId = toGlobalId({ typeName: typeUser.name, field: "dbId", id: userId });
 
-            const req = createJwtRequest(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValues({ req }),
+                contextValue: neo4j.getContextValues({ token }),
                 variableValues: { id: relayId },
             });
 

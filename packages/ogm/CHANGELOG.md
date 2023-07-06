@@ -1,5 +1,53 @@
 # @neo4j/graphql-ogm
 
+## 3.23.0
+
+### Minor Changes
+
+-   [#3581](https://github.com/neo4j/graphql/pull/3581) [`775fdea1d`](https://github.com/neo4j/graphql/commit/775fdea1d7af274094a7dd56018e75fb2b2596e2) Thanks [@ID!](https://github.com/ID!)! - This release includes the addition of three new directives for authentication and authorization:
+
+    The `@authentication` directive is used to configure authentication checks at either the schema, object or field level:
+
+    ```graphql
+    type Post @authentication(operations: [CREATE]) {
+        content: String!
+    }
+    ```
+
+    The `@authorization` directive is used to configure fine-grained authorization against node properties:
+
+    ```graphql
+    type User @authorization(validate: [{ where: { node: { id: "$jwt.sub" } } }]) {
+        id: ID!
+    }
+    ```
+
+    The `@subscriptionsAuthorization` directive is used to configure fine-grained authorization specifically for Subscriptions events:
+
+    ```graphql
+    type Post @subscriptionsAuthorization(filter: [{ where: { node: { author: "$jwt.sub" } } }]) {
+        likes: Int!
+    }
+    ```
+
+    These three directives supersede the `@auth` directive, which will be removed in version 4.0.0 of the Neo4j GraphQL Library.
+
+### Patch Changes
+
+-   Updated dependencies [[`775fdea1d`](https://github.com/neo4j/graphql/commit/775fdea1d7af274094a7dd56018e75fb2b2596e2)]:
+    -   @neo4j/graphql@3.23.0
+
+## 3.22.0
+
+### Patch Changes
+
+-   [#3117](https://github.com/neo4j/graphql/pull/3117) [`c30569a97`](https://github.com/neo4j/graphql/commit/c30569a976f0f6a436ce11016845be47852a54cd) Thanks [@g10](https://github.com/g10)! - feat: expose `assertIndexesAndConstraints` on OGM
+
+-   [#3556](https://github.com/neo4j/graphql/pull/3556) [`4f221fdb2`](https://github.com/neo4j/graphql/commit/4f221fdb2d416f41c77a35bd6c7779f16927d246) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Preserve library generated casing when generating TypeScript types using the OGM.
+
+-   Updated dependencies [[`f779a0061`](https://github.com/neo4j/graphql/commit/f779a00612adc4e0c42a3696435cbf6072dcfe31), [`cc201e6fc`](https://github.com/neo4j/graphql/commit/cc201e6fc6f0146f0cf80aad2bcaf086a215554c), [`56a733023`](https://github.com/neo4j/graphql/commit/56a733023f6f300b92c8811e37bf6884dc661133)]:
+    -   @neo4j/graphql@3.22.0
+
 ## 3.21.0
 
 ### Patch Changes

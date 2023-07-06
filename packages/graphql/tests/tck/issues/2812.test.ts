@@ -20,21 +20,31 @@
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
-import { createJwtRequest } from "../../utils/create-jwt-request";
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/2812", () => {
     const secret = "secret";
-    const typeDefs = `
-        type Actor @auth(rules: [{ allow: { nodeCreatedBy: "$jwt.sub" } }]) {
+    const typeDefs = gql`
+        type JWT @jwt {
+            roles: [String!]!
+        }
+
+        type Actor @authorization(validate: [{ when: [BEFORE], where: { node: { nodeCreatedBy: "$jwt.sub" } } }]) {
             id: ID! @id
             name: String
             nodeCreatedBy: String
-            fieldA: String @auth(rules: [{ operations: [CREATE, UPDATE], roles: ["role-A"] }])
-            fieldB: String @auth(rules: [{ operations: [CREATE, UPDATE], roles: ["role-B"] }])
+            fieldA: String
+                @authorization(
+                    validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "role-A" } } }]
+                )
+            fieldB: String
+                @authorization(
+                    validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "role-B" } } }]
+                )
             movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
         }
-        type Movie @auth(rules: [{ operations: [CREATE, UPDATE], roles: ["admin"] }]) {
+        type Movie
+            @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
             id: ID
             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
         }
@@ -42,11 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
 
     const neoSchema = new Neo4jGraphQL({
         typeDefs,
-        plugins: {
-            auth: new Neo4jGraphQLAuthJWTPlugin({
-                secret,
-            }),
-        },
+        features: { authorization: { key: secret } },
     });
 
     test("auth fields partially included in the input", async () => {
@@ -70,11 +76,11 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-        const req = createJwtRequest(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
-        const result = await translateQuery(neoSchema, query, { req });
+        const token = createBearerToken(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param1 AS create_var4
+            "UNWIND $create_param3 AS create_var4
             CALL {
                 WITH create_var4
                 CREATE (create_this0:\`Movie\`)
@@ -94,17 +100,17 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                         create_this8.id = randomUUID()
                     MERGE (create_this0)<-[create_this9:\`ACTED_IN\`]-(create_this8)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ((create_var6.fieldA IS NULL OR any(create_var11 IN [\\"role-A\\"] WHERE any(create_var10 IN $auth.roles WHERE create_var10 = create_var11))) AND (create_var6.fieldB IS NULL OR any(create_var13 IN [\\"role-B\\"] WHERE any(create_var12 IN $auth.roles WHERE create_var12 = create_var13)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    RETURN collect(NULL) AS create_var14
+                    WHERE (apoc.util.validatePredicate((create_var6.fieldA IS NOT NULL AND NOT ($isAuthenticated = true AND $create_param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate((create_var6.fieldB IS NOT NULL AND NOT ($isAuthenticated = true AND $create_param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    RETURN collect(NULL) AS create_var10
                 }
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT (any(create_var16 IN [\\"admin\\"] WHERE any(create_var15 IN $auth.roles WHERE create_var15 = create_var16))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $create_param6 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this0
             }
             CALL {
                 WITH create_this0
                 MATCH (create_this0)<-[create_this1:\`ACTED_IN\`]-(create_this2:\`Actor\`)
-                WHERE apoc.util.validatePredicate(NOT ((create_this2.nodeCreatedBy IS NOT NULL AND create_this2.nodeCreatedBy = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this2.nodeCreatedBy = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this2 { .name } AS create_this2
                 RETURN collect(create_this2) AS create_var3
             }
@@ -113,8 +119,17 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"User\\",
-                \\"create_param1\\": [
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"role-A\\",
+                        \\"role-B\\",
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"User\\"
+                },
+                \\"jwtDefault\\": {},
+                \\"create_param3\\": [
                     {
                         \\"id\\": \\"1\\",
                         \\"actors\\": {
@@ -143,23 +158,10 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                         }
                     }
                 ],
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"role-A\\",
-                        \\"role-B\\",
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"role-A\\",
-                            \\"role-B\\",
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"User\\"
-                    }
-                }
+                \\"create_param4\\": \\"role-A\\",
+                \\"create_param5\\": \\"role-B\\",
+                \\"create_param6\\": \\"admin\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -187,11 +189,11 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 }
             }
         `;
-        const req = createJwtRequest(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
-        const result = await translateQuery(neoSchema, query, { req });
+        const token = createBearerToken(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param1 AS create_var4
+            "UNWIND $create_param3 AS create_var4
             CALL {
                 WITH create_var4
                 CREATE (create_this0:\`Movie\`)
@@ -211,17 +213,17 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                         create_this8.id = randomUUID()
                     MERGE (create_this0)<-[create_this9:\`ACTED_IN\`]-(create_this8)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ((create_var6.fieldA IS NULL OR any(create_var11 IN [\\"role-A\\"] WHERE any(create_var10 IN $auth.roles WHERE create_var10 = create_var11))) AND (create_var6.fieldB IS NULL OR any(create_var13 IN [\\"role-B\\"] WHERE any(create_var12 IN $auth.roles WHERE create_var12 = create_var13)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    RETURN collect(NULL) AS create_var14
+                    WHERE (apoc.util.validatePredicate((create_var6.fieldA IS NOT NULL AND NOT ($isAuthenticated = true AND $create_param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate((create_var6.fieldB IS NOT NULL AND NOT ($isAuthenticated = true AND $create_param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    RETURN collect(NULL) AS create_var10
                 }
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT (any(create_var16 IN [\\"admin\\"] WHERE any(create_var15 IN $auth.roles WHERE create_var15 = create_var16))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $create_param6 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this0
             }
             CALL {
                 WITH create_this0
                 MATCH (create_this0)<-[create_this1:\`ACTED_IN\`]-(create_this2:\`Actor\`)
-                WHERE apoc.util.validatePredicate(NOT ((create_this2.nodeCreatedBy IS NOT NULL AND create_this2.nodeCreatedBy = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this2.nodeCreatedBy = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this2 { .name } AS create_this2
                 RETURN collect(create_this2) AS create_var3
             }
@@ -230,8 +232,17 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"User\\",
-                \\"create_param1\\": [
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"role-A\\",
+                        \\"role-B\\",
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"User\\"
+                },
+                \\"jwtDefault\\": {},
+                \\"create_param3\\": [
                     {
                         \\"id\\": \\"1\\",
                         \\"actors\\": {
@@ -262,23 +273,10 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                         }
                     }
                 ],
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"role-A\\",
-                        \\"role-B\\",
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"role-A\\",
-                            \\"role-B\\",
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"User\\"
-                    }
-                }
+                \\"create_param4\\": \\"role-A\\",
+                \\"create_param5\\": \\"role-B\\",
+                \\"create_param6\\": \\"admin\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -302,11 +300,11 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
             }
         `;
 
-        const req = createJwtRequest(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
-        const result = await translateQuery(neoSchema, query, { req });
+        const token = createBearerToken(secret, { roles: ["role-A", "role-B", "admin"], sub: "User" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param1 AS create_var4
+            "UNWIND $create_param3 AS create_var4
             CALL {
                 WITH create_var4
                 CREATE (create_this0:\`Movie\`)
@@ -326,13 +324,13 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                     RETURN collect(NULL) AS create_var10
                 }
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT (any(create_var12 IN [\\"admin\\"] WHERE any(create_var11 IN $auth.roles WHERE create_var11 = create_var12))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $create_param4 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this0
             }
             CALL {
                 WITH create_this0
                 MATCH (create_this0)<-[create_this1:\`ACTED_IN\`]-(create_this2:\`Actor\`)
-                WHERE apoc.util.validatePredicate(NOT ((create_this2.nodeCreatedBy IS NOT NULL AND create_this2.nodeCreatedBy = $create_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this2.nodeCreatedBy = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this2 { .name } AS create_this2
                 RETURN collect(create_this2) AS create_var3
             }
@@ -341,8 +339,17 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"User\\",
-                \\"create_param1\\": [
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"role-A\\",
+                        \\"role-B\\",
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"User\\"
+                },
+                \\"jwtDefault\\": {},
+                \\"create_param3\\": [
                     {
                         \\"id\\": \\"1\\",
                         \\"actors\\": {
@@ -369,23 +376,8 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                         }
                     }
                 ],
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [
-                        \\"role-A\\",
-                        \\"role-B\\",
-                        \\"admin\\"
-                    ],
-                    \\"jwt\\": {
-                        \\"roles\\": [
-                            \\"role-A\\",
-                            \\"role-B\\",
-                            \\"admin\\"
-                        ],
-                        \\"sub\\": \\"User\\"
-                    }
-                }
+                \\"create_param4\\": \\"admin\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -19,7 +19,7 @@
 
 import type { Context, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
-import type { GraphElement } from "../../../classes";
+import type { GraphElement, Neo4jDatabaseInfo } from "../../../classes";
 import { Node } from "../../../classes";
 import type { WhereRegexGroups } from "../utils";
 import { whereRegEx } from "../utils";
@@ -41,12 +41,14 @@ export function createPropertyWhere({
     element,
     targetElement,
     context,
+    useExistExpr = true,
 }: {
     key: string;
     value: any;
     element: GraphElement;
     targetElement: Cypher.Variable;
     context: Context;
+    useExistExpr?: boolean;
 }): PredicateReturn {
     const match = whereRegEx.exec(key);
     if (!match) {
@@ -123,6 +125,7 @@ export function createPropertyWhere({
                 operator,
                 value,
                 isNot,
+                useExistExpr,
             });
         }
 
@@ -134,6 +137,7 @@ export function createPropertyWhere({
                 context,
                 parentNode: targetElement as Cypher.Node,
                 operator,
+                useExistExpr,
             });
         }
 
@@ -155,11 +159,17 @@ export function createPropertyWhere({
 
     const comparisonOp = createComparisonOperation({
         propertyRefOrCoalesce: propertyRef,
-        param: new Cypher.Param(value),
+        // When dealing with authorization input, references to JWT will already be a param
+        // TODO: Pre-parse all where input in a manner similar to populateWhereParams, which substitutes all values for params
+        param:
+            value instanceof Cypher.Param || value instanceof Cypher.Property || value instanceof Cypher.Function
+                ? value
+                : new Cypher.Param(value),
         operator,
         durationField,
         pointField,
-        neo4jDatabaseInfo: context.neo4jDatabaseInfo,
+        // Casting because this is definitely assigned in the wrapper
+        neo4jDatabaseInfo: context.neo4jDatabaseInfo as Neo4jDatabaseInfo,
     });
     if (isNot) {
         return {

@@ -55,7 +55,7 @@ export function getCustomResolverMeta({
     field: FieldDefinitionNode;
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
-    validateResolvers: boolean;
+    validateResolvers: boolean | undefined;
     interfaces: InterfaceTypeDefinitionNode[];
     unions: UnionTypeDefinitionNode[];
     customResolvers?: IResolvers | IResolvers[];

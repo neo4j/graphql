@@ -179,7 +179,7 @@ mutation CreateActor {
 
 Note the selection of the `actorsConnection` field in order to query the `roles` relationship property.
 
-As you can see, these nested mutations are very powerful, and in the second Mutation you ran, you were able to return the entire graph which was created in this example. In fact, these mutations can actually be compressed down into a single Mutation which inserts all of the data needed:
+As you can see, these nested mutations are very powerful, and in the second mutation you ran, you were able to return the entire graph which was created in this example. In fact, these mutations can actually be compressed down into a single mutation which inserts all of the data needed:
 
 [source, graphql, indent=0]
 ----
@@ -232,7 +232,7 @@ mutation CreateMovieDirectorAndActor {
 }
 ----
 
-Once you get your head around this, you'll be creating giant sub-graphs in one Mutation in no time!
+Once you get your head around this, you'll be creating giant sub-graphs in one mutation in no time!
 
 == Fetching your data
 

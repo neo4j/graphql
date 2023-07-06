@@ -24,7 +24,7 @@ import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import { META_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
@@ -424,13 +424,12 @@ export default async function translateUpdate({
         projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
-        if (projection.meta?.authValidatePredicates?.length) {
-            projAuth = new Cypher.With("*").where(
-                Cypher.apoc.util.validatePredicate(
-                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                    AUTH_FORBIDDEN_ERROR
-                )
-            );
+        const predicates: Cypher.Predicate[] = [];
+
+        predicates.push(...projection.predicates);
+
+        if (predicates.length) {
+            projAuth = new Cypher.With("*").where(Cypher.and(...predicates));
         }
     }
 

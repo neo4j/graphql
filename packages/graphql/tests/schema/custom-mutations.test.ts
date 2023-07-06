@@ -35,12 +35,13 @@ describe("Custom-mutations", () => {
 
             type Query {
                 testQuery(input: ExampleInput): String
-                testCypherQuery(input: ExampleInput): String @cypher(statement: "", columnName: "")
+                testCypherQuery(input: ExampleInput): String @cypher(statement: "RETURN 'hello' AS h", columnName: "h")
             }
 
             type Mutation {
                 testMutation(input: ExampleInput): String
-                testCypherMutation(input: ExampleInput): String @cypher(statement: "", columnName: "")
+                testCypherMutation(input: ExampleInput): String
+                    @cypher(statement: "RETURN 'hello' AS h", columnName: "h")
             }
 
             type Subscription {

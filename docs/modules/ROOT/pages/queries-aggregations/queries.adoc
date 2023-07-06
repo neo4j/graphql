@@ -1,7 +1,7 @@
 [[queries]]
 = Queries
 
-Each node defined in type definitions will have two Query fields generated for it:
+Each node defined in type definitions will have two query fields generated for it:
 
 1. One for querying data
 2. One for aggregating data
@@ -29,7 +29,7 @@ interface PostedAt @relationshipProperties {
 }
 ----
 
-For which the following Query fields will be generated:
+For which the following query fields will be generated:
 
 [source, graphql, indent=0]
 ----
@@ -51,7 +51,7 @@ Each field for querying data accepts two arguments:
 
 === Querying for all User nodes
 
-The following Query will return all User nodes, returning their ID and name.
+The following query will return all User nodes, returning their ID and name.
 
 [source, graphql, indent=0]
 ----
@@ -65,7 +65,7 @@ query {
 
 === Query for user with name "Jane Smith" and their posts
 
-The following Query will return all Users, returning the content which they have posted.
+The following query will return all Users, returning the content which they have posted.
 
 [source, graphql, indent=0]
 ----
@@ -80,7 +80,7 @@ query {
 }
 ----
 
-=== Undirected Queries
+=== Undirected queries
 
 All xref:reference/type-definitions/relationships.adoc[relationships] are created with a _direction_ from one **node** to another.
 By default, all queries follow the direction defined in the relationship, however, in some cases we may need to query for
@@ -162,7 +162,7 @@ Aggregation queries accepts a `where` argument for xref::queries-aggregations/fi
 
 === Counting Using aggregation
 
-The following Query will count all User nodes:
+The following query will count all User nodes:
 
 [source, graphql, indent=0]
 ----

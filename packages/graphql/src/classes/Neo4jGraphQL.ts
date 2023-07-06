@@ -17,13 +17,6 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import type { DocumentNode, GraphQLSchema } from "graphql";
-import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
-import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
-import { composeResolvers } from "@graphql-tools/resolvers-composition";
-import type { TypeSource } from "@graphql-tools/utils";
-import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
@@ -41,8 +34,8 @@ import type Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
 import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
 import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
-import type { WrapResolverArguments } from "../schema/resolvers/wrapper";
 import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
+import type { WrapResolverArguments } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
@@ -52,10 +45,18 @@ import type { ExecutorConstructorParam } from "./Executor";
 import { Executor } from "./Executor";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import { composeResolvers } from "@graphql-tools/resolvers-composition";
+import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
+import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
+import type { TypeSource } from "@graphql-tools/utils";
+import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
+import type { DocumentNode, GraphQLSchema } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
+import { makeDocumentToAugment } from "../schema/make-document-to-augment";
+import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
 import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
-import { makeSchemaToAugment } from "../schema/make-schema-to-augment";
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
@@ -97,6 +98,8 @@ class Neo4jGraphQL {
     private _relationships?: Relationship[];
     private plugins?: Neo4jGraphQLPlugins;
 
+    private jwtFieldsMap?: Map<string, string>;
+
     private schemaModel?: Neo4jGraphQLSchemaModel;
 
     private executableSchema?: Promise<GraphQLSchema>;
@@ -106,6 +109,8 @@ class Neo4jGraphQL {
     private subscriptionInit?: Promise<void>;
 
     private dbInfo?: Neo4jDatabaseInfo;
+
+    private authorization?: Neo4jGraphQLAuthorization;
 
     constructor(input: Neo4jGraphQLConstructor) {
         const { config = {}, driver, plugins, features, typeDefs, resolvers } = input;
@@ -119,6 +124,12 @@ class Neo4jGraphQL {
         this.resolvers = resolvers;
 
         this.checkEnableDebug();
+
+        if (this.features?.authorization) {
+            const authorizationSettings = this.features?.authorization;
+
+            this.authorization = new Neo4jGraphQLAuthorization(authorizationSettings);
+        }
     }
 
     public get nodes(): Node[] {
@@ -212,10 +223,10 @@ class Neo4jGraphQL {
         try {
             const initialDocument = this.getDocument(this.typeDefs);
 
-            validateDocument({ document: initialDocument });
+            validateDocument({ document: initialDocument, features: this.features });
 
-            const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
-            const { jwtPayload } = typesExcludedFromGeneration;
+            const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
+            const { jwt } = typesExcludedFromGeneration;
 
             const { typeDefs } = makeAugmentedSchema(document, {
                 features: this.features,
@@ -225,8 +236,13 @@ class Neo4jGraphQL {
                 userCustomResolvers: undefined,
             });
 
-            validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwtPayload });
+            validateUserDefinition({
+                userDocument: document,
+                augmentedDocument: typeDefs,
+                jwt: jwt?.type,
+            });
         } catch (error) {
+            // TODO: include path here
             if (error instanceof Error) {
                 const validationErrors = error.message.split("\n\n");
                 return { isValid: false, validationErrors };
@@ -294,6 +310,8 @@ class Neo4jGraphQL {
             schemaModel: this.schemaModel,
             plugins: this.plugins,
             features: this.features,
+            authorization: this.authorization,
+            jwtPayloadFieldsMap: this.jwtFieldsMap,
         };
 
         const resolversComposition = {
@@ -355,15 +373,16 @@ class Neo4jGraphQL {
             const validationConfig = this.parseStartupValidationConfig();
 
             if (validationConfig.validateTypeDefs) {
-                validateDocument({ document: initialDocument, validationConfig });
+                validateDocument({ document: initialDocument, validationConfig, features: this.features });
             }
 
-            const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
-            const { jwtPayload } = typesExcludedFromGeneration;
-
-            if (!this.schemaModel) {
-                this.schemaModel = generateModel(document);
+            const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
+            const { jwt } = typesExcludedFromGeneration;
+            if (jwt) {
+                this.jwtFieldsMap = jwt.jwtFieldsMap;
             }
+
+            this.generateSchemaModel(document);
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
@@ -373,7 +392,7 @@ class Neo4jGraphQL {
             });
 
             if (validationConfig.validateTypeDefs) {
-                validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwtPayload });
+                validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwt: jwt?.type });
             }
 
             this._nodes = nodes;
@@ -403,17 +422,19 @@ class Neo4jGraphQL {
             validateDocument({
                 document: initialDocument,
                 validationConfig,
+                features: this.features,
                 additionalDirectives: directives,
                 additionalTypes: types,
             });
         }
 
-        const { document, typesExcludedFromGeneration } = makeSchemaToAugment(initialDocument);
-        const { jwtPayload } = typesExcludedFromGeneration;
-
-        if (!this.schemaModel) {
-            this.schemaModel = generateModel(document);
+        const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
+        const { jwt } = typesExcludedFromGeneration;
+        if (jwt) {
+            this.jwtFieldsMap = jwt.jwtFieldsMap;
         }
+
+        const schemaModel = this.generateSchemaModel(document);
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
@@ -431,7 +452,7 @@ class Neo4jGraphQL {
                 augmentedDocument: typeDefs,
                 additionalDirectives: directives,
                 additionalTypes: types,
-                jwtPayload,
+                jwt: jwt?.type,
             });
         }
 
@@ -439,7 +460,7 @@ class Neo4jGraphQL {
         this._relationships = relationships;
 
         // TODO: Move into makeAugmentedSchema, add resolvers alongside other resolvers
-        const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, this.schemaModel);
+        const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, schemaModel);
 
         const schema = subgraph.buildSchema({
             typeDefs,

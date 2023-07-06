@@ -27,6 +27,7 @@ import { hasExplicitNodeInInterfaceWhere } from "../where/property-operations/cr
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
 import { createEdgeSubquery } from "./create-edge-subquery";
+import { checkAuthentication } from "../authorization/check-authentication";
 
 export function createConnectionClause({
     resolveTree,
@@ -57,8 +58,10 @@ export function createConnectionClause({
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
     const firstArg = resolveTree.args.first as Integer | number | undefined;
     const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
-    const edgeItem = new Cypher.NamedVariable("edge");
 
+    checkAuthentication({ context, node: relatedNode, targetOperations: ["READ"] });
+
+    const edgeItem = new Cypher.NamedVariable("edge");
     const edgeSubquery = createEdgeSubquery({
         resolveTree,
         field,

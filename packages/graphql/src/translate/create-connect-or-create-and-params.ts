@@ -17,12 +17,10 @@
  * limitations under the License.
  */
 
-import type { RelationField, Context, PrimitiveField } from "../types";
+import type { RelationField, Context, PrimitiveField, PredicateReturn } from "../types";
 import type { Node, Relationship } from "../classes";
 import { Neo4jGraphQLError } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
-import { createAuthAndParams } from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { asArray, omitFields } from "../utils/utils";
 import Cypher from "@neo4j/cypher-builder";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
@@ -30,6 +28,9 @@ import { findConflictingProperties } from "../utils/is-property-clash";
 import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
+import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
+import { createAuthorizationAfterPredicate } from "./authorization/create-authorization-after-predicate";
+import { checkAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
 
 type CreateOrConnectInput = {
@@ -77,6 +78,10 @@ export function createConnectOrCreateAndParams({
         }
     });
 
+    // todo: add create
+    checkAuthentication({ context, node, targetOperations: ["CREATE", "CREATE_RELATIONSHIP"] });
+    checkAuthentication({ context, node: refNode, targetOperations: ["CREATE", "CREATE_RELATIONSHIP"] });
+
     const withVarsVariables = withVars.map((name) => new Cypher.NamedVariable(name));
 
     const statements = asArray(input).map((inputItem, index) => {
@@ -96,17 +101,15 @@ export function createConnectOrCreateAndParams({
     });
 
     const wrappedQueries = statements.map((statement) => {
-        let subquery: Cypher.Clause = statement;
-
-        if (context.subscriptionsEnabled) {
-            const susbcriptionsMeta = new Cypher.RawCypher("meta as update_meta");
-            const returnStatement = new Cypher.Return(susbcriptionsMeta);
-            subquery = Cypher.concat(statement, returnStatement);
-        }
+        const returnStatement = context.subscriptionsEnabled
+            ? new Cypher.Return([new Cypher.NamedVariable("meta"), "update_meta"])
+            : new Cypher.Return([Cypher.count(new Cypher.RawCypher("*")), "_"]);
 
         const withStatement = new Cypher.With(...withVarsVariables);
 
-        const callStatement = new Cypher.Call(subquery).innerWith(...withVarsVariables);
+        const callStatement = new Cypher.Call(Cypher.concat(statement, returnStatement)).innerWith(
+            ...withVarsVariables
+        );
         const subqueryClause = Cypher.concat(withStatement, callStatement);
         if (context.subscriptionsEnabled) {
             const afterCallWithStatement = new Cypher.With("*", [new Cypher.NamedVariable("update_meta"), "meta"]);
@@ -142,7 +145,33 @@ function createConnectOrCreatePartialStatement({
     callbackBucket: CallbackBucket;
     withVars: string[];
 }): Cypher.Clause {
-    const mergeQuery = mergeStatement({
+    let mergeQuery: Cypher.CompositeClause | undefined;
+
+    // TODO: connectOrCreate currently doesn't honour field-level authorization - this should be fixed
+    const authorizationBeforePredicateReturn = createAuthorizationBeforeConnectOrCreate({
+        context,
+        sourceNode: node,
+        sourceName: parentVar,
+        targetNode: refNode,
+        targetName: baseName,
+    });
+
+    if (authorizationBeforePredicateReturn.predicate) {
+        if (authorizationBeforePredicateReturn.preComputedSubqueries) {
+            mergeQuery = Cypher.concat(
+                mergeQuery,
+                new Cypher.With("*"),
+                authorizationBeforePredicateReturn.preComputedSubqueries
+            );
+        }
+
+        mergeQuery = Cypher.concat(
+            mergeQuery,
+            new Cypher.With("*").where(authorizationBeforePredicateReturn.predicate)
+        );
+    }
+
+    const mergeCypher = mergeStatement({
         input,
         refNode,
         parentRefNode: node,
@@ -154,15 +183,28 @@ function createConnectOrCreatePartialStatement({
         withVars,
     });
 
-    const authQuery = createAuthStatement({
-        node: refNode,
+    mergeQuery = Cypher.concat(mergeQuery, mergeCypher);
+
+    const authorizationAfterPredicateReturn = createAuthorizationAfterConnectOrCreate({
         context,
-        nodeName: baseName,
+        sourceNode: node,
+        sourceName: parentVar,
+        targetNode: refNode,
+        targetName: baseName,
     });
 
-    if (authQuery) {
-        return Cypher.concat(mergeQuery, new Cypher.With("*"), authQuery);
+    if (authorizationAfterPredicateReturn.predicate) {
+        if (authorizationAfterPredicateReturn.preComputedSubqueries) {
+            mergeQuery = Cypher.concat(
+                mergeQuery,
+                new Cypher.With("*"),
+                authorizationAfterPredicateReturn.preComputedSubqueries
+            );
+        }
+
+        mergeQuery = Cypher.concat(mergeQuery, new Cypher.With("*").where(authorizationAfterPredicateReturn.predicate));
     }
+
     return mergeQuery;
 }
 
@@ -271,34 +313,115 @@ function mergeStatement({
     return Cypher.concat(merge, relationshipMerge, withClause);
 }
 
-function createAuthStatement({
-    node,
+function createAuthorizationBeforeConnectOrCreate({
     context,
-    nodeName,
+    sourceNode,
+    sourceName,
 }: {
-    node: Node;
     context: Context;
-    nodeName: string;
-}): Cypher.Clause | undefined {
-    if (!node.auth) return undefined;
+    sourceNode: Node;
+    sourceName: string;
+    targetNode: Node;
+    targetName: string;
+}): PredicateReturn {
+    const predicates: Cypher.Predicate[] = [];
+    let subqueries: Cypher.CompositeClause | undefined;
 
-    const { cypher, params } = createAuthAndParams({
-        entity: node,
-        operations: ["CONNECT", "CREATE"],
+    const sourceAuthorizationBefore = createAuthorizationBeforePredicate({
         context,
-        allow: { node, varName: nodeName },
+        nodes: [
+            {
+                node: sourceNode,
+                variable: new Cypher.NamedNode(sourceName),
+            },
+        ],
+        operations: ["CREATE_RELATIONSHIP"],
     });
 
-    if (!cypher) return undefined;
+    if (sourceAuthorizationBefore) {
+        const { predicate, preComputedSubqueries } = sourceAuthorizationBefore;
 
-    return new Cypher.RawCypher(() => {
-        const predicate = `NOT (${cypher})`;
-        const message = AUTH_FORBIDDEN_ERROR;
+        if (predicate) {
+            predicates.push(predicate);
+        }
 
-        const cypherStr = `CALL apoc.util.validate(${predicate}, "${message}", [0])`;
+        if (preComputedSubqueries) {
+            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+        }
+    }
 
-        return [cypherStr, params];
+    return {
+        predicate: Cypher.and(...predicates),
+        preComputedSubqueries: subqueries,
+    };
+}
+
+function createAuthorizationAfterConnectOrCreate({
+    context,
+    sourceNode,
+    sourceName,
+    targetNode,
+    targetName,
+}: {
+    context: Context;
+    sourceNode: Node;
+    sourceName: string;
+    targetNode: Node;
+    targetName: string;
+}): PredicateReturn {
+    const predicates: Cypher.Predicate[] = [];
+    let subqueries: Cypher.CompositeClause | undefined;
+
+    const sourceAuthorizationAfter = createAuthorizationAfterPredicate({
+        context,
+        nodes: [
+            {
+                node: sourceNode,
+                variable: new Cypher.NamedNode(sourceName),
+            },
+        ],
+        operations: ["CREATE_RELATIONSHIP"],
     });
+
+    const targetAuthorizationAfter = createAuthorizationAfterPredicate({
+        context,
+        nodes: [
+            {
+                node: targetNode,
+                variable: new Cypher.NamedNode(targetName),
+            },
+        ],
+        operations: ["CREATE_RELATIONSHIP", "CREATE"],
+    });
+
+    if (sourceAuthorizationAfter) {
+        const { predicate, preComputedSubqueries } = sourceAuthorizationAfter;
+
+        if (predicate) {
+            predicates.push(predicate);
+        }
+
+        if (preComputedSubqueries) {
+            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+        }
+    }
+
+    if (targetAuthorizationAfter) {
+        const { predicate, preComputedSubqueries } = targetAuthorizationAfter;
+
+        if (predicate) {
+            predicates.push(predicate);
+        }
+
+        if (preComputedSubqueries) {
+            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+        }
+    }
+
+    return {
+        predicate: Cypher.and(...predicates),
+        preComputedSubqueries: subqueries,
+    };
 }
 
 function getCallbackFields(node: Node | Relationship): PrimitiveField[] {

@@ -84,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
             WHERE this.title = $param0
             WITH *
             CALL {
-            WITH this
+            WITH *
             OPTIONAL MATCH (this)-[this_admins0_relationship:\`HAS_ADMINISTRATOR\`]->(this_admins0:Admin)
             CALL {
                 WITH this_admins0

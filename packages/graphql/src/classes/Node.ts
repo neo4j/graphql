@@ -35,7 +35,6 @@ import type {
     TemporalField,
     UnionField,
 } from "../types";
-import type { Auth } from "../types/deprecated/auth/auth";
 import type { DecodedGlobalId } from "../utils/global-ids";
 import { fromGlobalId, toGlobalId } from "../utils/global-ids";
 import { upperFirst } from "../utils/upper-first";
@@ -44,7 +43,6 @@ import type { GraphElementConstructor } from "./GraphElement";
 import { GraphElement } from "./GraphElement";
 import type { NodeDirective } from "./NodeDirective";
 import type { QueryOptionsDirective } from "./QueryOptionsDirective";
-import { NodeAuth } from "./deprecated/NodeAuth";
 import type { SchemaConfiguration } from "../schema/schema-configuration";
 
 export interface NodeConstructor extends GraphElementConstructor {
@@ -64,7 +62,6 @@ export interface NodeConstructor extends GraphElementConstructor {
     temporalFields: TemporalField[];
     pointFields: PointField[];
     plural?: string;
-    auth?: Auth;
     fulltextDirective?: FullText;
     exclude?: Exclude;
     schemaConfiguration?: SchemaConfiguration;
@@ -151,7 +148,6 @@ class Node extends GraphElement {
     public schemaConfiguration?: SchemaConfiguration;
     public nodeDirective?: NodeDirective;
     public fulltextDirective?: FullText;
-    public auth?: NodeAuth;
     public description?: string;
     public queryOptions?: QueryOptionsDirective;
     public singular: string;
@@ -175,7 +171,6 @@ class Node extends GraphElement {
         this.schemaConfiguration = input.schemaConfiguration;
         this.nodeDirective = input.nodeDirective;
         this.fulltextDirective = input.fulltextDirective;
-        this.auth = input.auth ? new NodeAuth(input.auth) : undefined;
         this.queryOptions = input.queryOptionsDirective;
         this.isGlobalNode = input.isGlobalNode;
         this._idField = input.globalIdField;

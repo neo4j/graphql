@@ -1,0 +1,96 @@
+= Authentication
+
+Explicit authentication, configured using the `@authentication` directive, is only ever evaluated 
+during Cypher translation time, and unauthenticated requests with queries requiring authentication 
+will never reach the database.
+
+== Configuration
+
+Authentication can be configured for an entire type, for example, the type `User`:
+
+[source, graphql, indent=0]
+----
+type User @authentication {
+    id: ID!
+    name: String!
+    password: String!
+}
+----
+
+Authentication will thus be validated when any of the following operations are _attempted_:
+
+* *Create*: `createUsers` mutation, `create`, or `connectOrCreate` nested operation via a related type.
+* *Read*: `users`, `usersConnection`, `usersAggregate` query, or access via related type.
+* *Update*: `updateUsers` mutation or `update` nested operation via a related type.
+* *Delete*: `deleteUsers` mutation or `delete` nested operation via a related type.
+* *Create relationship*: `connect` or `connectOrCreate` nested operation via a related type.
+* *Delete relationship*: `disconnect` nested operation via a related type.
+* *Subscribe*: all subscription operations related to type `User`.
+
+Additionally, the directive can be configured on a per-field basis, for example:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID!
+    name: String!
+    password: String! @authentication
+}
+----
+
+This will only be evaluated in the following circumstances:
+
+* The `password` field is set on either `create` or `update`.
+* The `password` field is present in a selection set.
+
+=== Operations
+
+Authentication can be configured to only be validated on certain operations:
+
+* `CREATE`
+* `READ`
+* `UPDATE`
+* `DELETE`
+* `CREATE_RELATIONSHIP`
+* `DELETE_RELATIONSHIP`
+* `SUBSCRIBE`
+
+
+For instance, to only require authentication for the update or deletion of a user:
+
+[source, graphql, indent=0]
+----
+type User @authentication(operations: [UPDATE, DELETE]) {
+    id: ID!
+    name: String!
+    password: String!
+}
+----
+
+=== Additional verification
+
+Additional checks against JWT claims can be performed together with authentication. 
+For instance, if it was a requirement that only users with the `admin` role can delete users:
+
+[source, graphql, indent=0]
+----
+type User @authentication(operations: [DELETE], jwt: { roles_INCLUDES: "admin" }) {
+    id: ID!
+    name: String!
+    password: String!
+}
+----
+
+== Global authentication
+
+Additionally, authentication can be applied to the entire schema.
+This ensures authentication is checked for every matching request.
+
+This is done via extending the schema:
+
+[source, graphql, indent=0]
+----
+extend schema @authentication
+----
+
+The `operations` and `jwt` arguments can also be used when the directive is applied to a schema extension.

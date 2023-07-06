@@ -21,32 +21,11 @@ import type { DocumentNode, GraphQLArgs } from "graphql";
 import { graphql } from "graphql";
 import type { IncomingMessage } from "http";
 import { Neo4jError } from "neo4j-driver";
-import createAuthParam from "../../../src/translate/create-auth-param";
 import type { Neo4jGraphQL } from "../../../src";
 import { DriverBuilder } from "../../utils/builders/driver-builder";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
 import Neo4j from "../../integration/neo4j";
-
-export function compareParams({
-    params,
-    expected,
-    cypher,
-    context,
-}: {
-    params: Record<string, any>;
-    expected: Record<string, any>;
-    cypher: string;
-    context: any;
-}): void {
-    const receivedParams = params;
-
-    if (cypher.includes("$auth.") || cypher.includes("auth: $auth") || cypher.includes("auth:$auth")) {
-        receivedParams.auth = createAuthParam({ context });
-    }
-
-    expect(receivedParams).toEqual(expected);
-}
 
 export function setTestEnvVars(envVars: string | undefined): void {
     if (envVars) {
@@ -79,6 +58,7 @@ export async function translateQuery(
     query: DocumentNode,
     options?: {
         req?: IncomingMessage;
+        token?: string;
         variableValues?: Record<string, any>;
         neo4jVersion?: string;
         contextValues?: Record<string, any>;
@@ -90,6 +70,10 @@ export async function translateQuery(
 
     if (options?.req) {
         contextValue.req = options.req;
+    }
+
+    if (options?.token) {
+        contextValue.token = options.token;
     }
 
     if (options?.contextValues) {

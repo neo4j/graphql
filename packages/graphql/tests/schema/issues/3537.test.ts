@@ -528,12 +528,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             extend schema @subscription(operations: [UPDATE])
         `;
 
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            features: {
-                subscriptions: plugin,
-            },
-        });
+        const subscriptionPlugin = new TestSubscriptionsMechanism();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`

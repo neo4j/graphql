@@ -105,8 +105,12 @@ export class ApolloTestServer implements TestGraphQLServer {
             cors(),
             bodyParser.json(),
             expressMiddleware(server, {
-                // eslint-disable-next-line @typescript-eslint/require-await
-                context: this.customContext ? this.customContext : async ({ req }) => ({ req }),
+                context: this.customContext
+                    ? this.customContext
+                    : // eslint-disable-next-line @typescript-eslint/require-await
+                      async ({ req }) => {
+                          return { req, token: req.headers.authorization };
+                      },
             })
         );
 

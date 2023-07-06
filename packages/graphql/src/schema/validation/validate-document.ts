@@ -43,8 +43,9 @@ import { isRootType } from "../../utils/is-root-type";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import type { ValidationConfig } from "../../classes/Neo4jGraphQL";
 import { defaultValidationConfig } from "../../classes/Neo4jGraphQL";
+import type { Neo4jFeaturesSettings } from "../../types";
 
-function filterDocument(document: DocumentNode): DocumentNode {
+function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
         .filter((definition) => {
             if (
@@ -83,7 +84,9 @@ function filterDocument(document: DocumentNode): DocumentNode {
         return type.name.value;
     };
 
-    const filterInputTypes = (fields: readonly InputValueDefinitionNode[] | undefined) => {
+    const filterInputTypes = (
+        fields: readonly InputValueDefinitionNode[] | undefined
+    ): InputValueDefinitionNode[] | undefined => {
         return fields?.filter((f) => {
             const type = getArgumentType(f.type);
 
@@ -101,10 +104,13 @@ function filterDocument(document: DocumentNode): DocumentNode {
         });
     };
 
-    const filterFields = (fields: readonly FieldDefinitionNode[] | undefined) => {
+    const filterFields = (
+        fields: readonly FieldDefinitionNode[] | undefined,
+        features: Neo4jFeaturesSettings | undefined
+    ): FieldDefinitionNode[] | undefined => {
         return fields
-            ?.filter((f) => {
-                const type = getArgumentType(f.type);
+            ?.filter((field) => {
+                const type = getArgumentType(field.type);
                 const match = /(?:Create|Update)(?<nodeName>.+)MutationResponse/gm.exec(type);
                 if (match?.groups?.nodeName) {
                     if (nodeNames.map((nodeName) => pluralize(nodeName)).includes(match.groups.nodeName)) {
@@ -113,11 +119,29 @@ function filterDocument(document: DocumentNode): DocumentNode {
                 }
                 return true;
             })
-            .map((f) => ({
-                ...f,
-                arguments: filterInputTypes(f.arguments),
-                directives: f.directives?.filter((x) => !["auth", "authorization"].includes(x.name.value)),
-            }));
+            .map((field) => {
+                if (
+                    field.directives?.some((directive) =>
+                        ["authentication", "authorization", "subscriptionsAuthorization"].includes(directive.name.value)
+                    ) &&
+                    !features?.authorization
+                ) {
+                    console.warn(
+                        "@authentication and/or @authorization detected - please ensure that you either specify authorization settings in features.authorization, or pass a decoded JWT into context.jwt on each request"
+                    );
+                }
+
+                return {
+                    ...field,
+                    arguments: filterInputTypes(field.arguments),
+                    directives: field.directives?.filter(
+                        (directive) =>
+                            !["auth", "authentication", "authorization", "subscriptionsAuthorization"].includes(
+                                directive.name.value
+                            )
+                    ),
+                };
+            });
     };
 
     return {
@@ -140,18 +164,51 @@ function filterDocument(document: DocumentNode): DocumentNode {
             }
 
             if (def.kind === "ObjectTypeDefinition" || def.kind === "InterfaceTypeDefinition") {
-                const fields = filterFields(def.fields);
+                const fields = filterFields(def.fields, features);
 
                 if (!fields?.length) {
                     return res;
+                }
+
+                if (
+                    def.directives?.some((x) => ["authentication", "authorization"].includes(x.name.value)) &&
+                    !features?.authorization
+                ) {
+                    console.warn(
+                        "@authentication and/or @authorization detected - please ensure that you either specify authorization settings in features.authorization, or pass a decoded JWT into context.jwt on each request"
+                    );
                 }
 
                 return [
                     ...res,
                     {
                         ...def,
-                        directives: def.directives?.filter((x) => !["auth", "authorization"].includes(x.name.value)),
+                        directives: def.directives?.filter(
+                            (x) =>
+                                !["auth", "authentication", "authorization", "subscriptionsAuthorization"].includes(
+                                    x.name.value
+                                )
+                        ),
                         fields,
+                    },
+                ];
+            }
+
+            if (def.kind === "SchemaExtension") {
+                if (
+                    def.directives?.some((x) => ["authentication"].includes(x.name.value)) &&
+                    !features?.authorization
+                ) {
+                    console.warn(
+                        "@authentication and/or @authorization detected - please ensure that you either specify authorization settings in features.authorization, or pass a decoded JWT into context.jwt on each request"
+                    );
+                }
+
+                return [
+                    ...res,
+                    {
+                        ...def,
+                        directives: def.directives?.filter((x) => !["authentication"].includes(x.name.value)),
                     },
                 ];
             }
@@ -164,15 +221,17 @@ function filterDocument(document: DocumentNode): DocumentNode {
 function getBaseSchema({
     document,
     validateTypeDefs = true,
+    features,
     additionalDirectives = [],
     additionalTypes = [],
 }: {
     document: DocumentNode;
     validateTypeDefs: boolean;
+    features: Neo4jFeaturesSettings | undefined;
     additionalDirectives: Array<GraphQLDirective>;
     additionalTypes: Array<GraphQLNamedType>;
 }): GraphQLSchema {
-    const doc = filterDocument(document);
+    const doc = filterDocument(document, features);
 
     const schemaToExtend = new GraphQLSchema({
         directives: [...Object.values(directives), ...specifiedDirectives, ...additionalDirectives],
@@ -195,16 +254,19 @@ function getBaseSchema({
 function validateDocument({
     document,
     validationConfig = defaultValidationConfig,
+    features,
     additionalDirectives = [],
     additionalTypes = [],
 }: {
     document: DocumentNode;
     validationConfig?: ValidationConfig;
+    features: Neo4jFeaturesSettings | undefined;
     additionalDirectives?: Array<GraphQLDirective>;
     additionalTypes?: Array<GraphQLNamedType>;
 }): void {
     const schema = getBaseSchema({
         document,
+        features,
         validateTypeDefs: validationConfig.validateTypeDefs,
         additionalDirectives,
         additionalTypes,

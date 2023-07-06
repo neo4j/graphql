@@ -1,5 +1,57 @@
 # @neo4j/graphql
 
+## 3.23.0
+
+### Minor Changes
+
+-   [#3581](https://github.com/neo4j/graphql/pull/3581) [`775fdea1d`](https://github.com/neo4j/graphql/commit/775fdea1d7af274094a7dd56018e75fb2b2596e2) Thanks [@ID!](https://github.com/ID!)! - This release includes the addition of three new directives for authentication and authorization:
+
+    The `@authentication` directive is used to configure authentication checks at either the schema, object or field level:
+
+    ```graphql
+    type Post @authentication(operations: [CREATE]) {
+        content: String!
+    }
+    ```
+
+    The `@authorization` directive is used to configure fine-grained authorization against node properties:
+
+    ```graphql
+    type User @authorization(validate: [{ where: { node: { id: "$jwt.sub" } } }]) {
+        id: ID!
+    }
+    ```
+
+    The `@subscriptionsAuthorization` directive is used to configure fine-grained authorization specifically for Subscriptions events:
+
+    ```graphql
+    type Post @subscriptionsAuthorization(filter: [{ where: { node: { author: "$jwt.sub" } } }]) {
+        likes: Int!
+    }
+    ```
+
+    These three directives supersede the `@auth` directive, which will be removed in version 4.0.0 of the Neo4j GraphQL Library.
+
+## 3.22.0
+
+### Minor Changes
+
+-   [#3509](https://github.com/neo4j/graphql/pull/3509) [`cc201e6fc`](https://github.com/neo4j/graphql/commit/cc201e6fc6f0146f0cf80aad2bcaf086a215554c) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Introduced schema configuration directive: `@filterable`.
+
+    Usage:
+
+    ```graphql
+    type User {
+        name: String @filterable(byValue: true, byAggregate: true)
+    }
+    ```
+
+### Patch Changes
+
+-   [#3542](https://github.com/neo4j/graphql/pull/3542) [`f779a0061`](https://github.com/neo4j/graphql/commit/f779a00612adc4e0c42a3696435cbf6072dcfe31) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #3541 which caused an error when using `@key` and other directives on the same type
+
+-   [#3538](https://github.com/neo4j/graphql/pull/3538) [`56a733023`](https://github.com/neo4j/graphql/commit/56a733023f6f300b92c8811e37bf6884dc661133) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fixed #3537 which prevented extending the schema with `@neo4j/graphql` directives when calling `getSubgraphSchema()`
+
 ## 3.21.0
 
 ### Minor Changes

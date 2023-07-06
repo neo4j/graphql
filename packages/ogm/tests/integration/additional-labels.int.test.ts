@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { OGM } from "../../src";
-import { UniqueType, createJwtRequest } from "../utils/utils";
+import { UniqueType } from "../utils/utils";
 import neo4j from "./neo4j";
+import { createBearerToken } from "../utils/create-bearer-token";
 
 describe("Additional Labels", () => {
     const secret = "secret";
@@ -68,20 +68,16 @@ describe("Additional Labels", () => {
         const ogm = new OGM({
             typeDefs,
             driver,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
-            },
+            features: { authorization: { key: secret } },
         });
 
         await ogm.init();
 
-        const req = createJwtRequest(secret, { tenant_id: tenantID });
+        const token = createBearerToken(secret, { tenant_id: tenantID });
 
         const Task = ogm.model(taskType.name);
         const tasks = await Task.find({
-            context: { req },
+            context: { token },
         });
         expect(tasks).toHaveLength(1);
         expect(tasks[0].id).toEqual(expectedId);
@@ -91,11 +87,7 @@ describe("Additional Labels", () => {
         const ogm = new OGM({
             typeDefs,
             driver,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
-            },
+            features: { authorization: { key: secret } },
         });
 
         await ogm.init();

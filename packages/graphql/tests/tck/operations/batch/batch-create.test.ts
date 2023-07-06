@@ -614,6 +614,7 @@ describe("Batch Create", () => {
                 ON CREATE SET
                     this4_actors_connectOrCreate0.name = $this4_actors_connectOrCreate_param1
                 MERGE (this4)<-[this4_actors_connectOrCreate_this0:\`ACTED_IN\`]-(this4_actors_connectOrCreate0)
+                RETURN count(*) AS _
             }
             WITH this4
             CALL {

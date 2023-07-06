@@ -109,8 +109,8 @@ describe("Subscriptions metadata on delete", () => {
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH *
             CALL {
-            WITH this
-            WITH this, []  AS meta
+            WITH *
+            WITH *, []  AS meta
             OPTIONAL MATCH (this)<-[this_actors0_relationship:\`ACTED_IN\`]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
             WITH this, meta, this_actors0_relationship, collect(DISTINCT this_actors0) AS this_actors0_to_delete
@@ -185,20 +185,20 @@ describe("Subscriptions metadata on delete", () => {
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH *
             CALL {
-            WITH this
-            WITH this, []  AS meta
+            WITH *
+            WITH *, []  AS meta
             OPTIONAL MATCH (this)<-[this_actors0_relationship:\`ACTED_IN\`]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
             WITH *
             CALL {
-            WITH this, this_actors0, this_actors0_relationship
-            WITH this, this_actors0, this_actors0_relationship, []  AS meta
+            WITH *
+            WITH *, []  AS meta
             OPTIONAL MATCH (this_actors0)-[this_actors0_movies0_relationship:\`ACTED_IN\`]->(this_actors0_movies0:Movie)
             WHERE this_actors0_movies0.id = $this_deleteMovies_args_delete_actors0_delete_movies0_where_this_actors0_movies0param0
             WITH *
             CALL {
-            WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship
-            WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, []  AS meta
+            WITH *
+            WITH *, []  AS meta
             OPTIONAL MATCH (this_actors0_movies0)<-[this_actors0_movies0_actors0_relationship:\`ACTED_IN\`]-(this_actors0_movies0_actors0:Actor)
             WHERE this_actors0_movies0_actors0.name = $this_deleteMovies_args_delete_actors0_delete_movies0_delete_actors0_where_this_actors0_movies0_actors0param0
             WITH this, this_actors0, this_actors0_relationship, this_actors0_movies0, this_actors0_movies0_relationship, meta, this_actors0_movies0_actors0_relationship, collect(DISTINCT this_actors0_movies0_actors0) AS this_actors0_movies0_actors0_to_delete

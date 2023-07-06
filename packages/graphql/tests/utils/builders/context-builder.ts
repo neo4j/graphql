@@ -24,10 +24,12 @@ import { GraphQLSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
 import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
 import type { Context } from "../../../src/types";
-import type { AuthContext } from "../../../src/types/deprecated/auth/auth-context";
 import { Builder } from "./builder";
 import { Executor } from "../../../src/classes/Executor";
 import { Neo4jGraphQLSchemaModel } from "../../../src/schema-model/Neo4jGraphQLSchemaModel";
+import Cypher from "@neo4j/cypher-builder";
+import type { ConcreteEntity } from "../../../src/schema-model/entity/ConcreteEntity";
+import type { CompositeEntity } from "../../../src/schema-model/entity/CompositeEntity";
 
 export class ContextBuilder extends Builder<Context, Context> {
     constructor(newOptions: Partial<Context> = {}) {
@@ -39,14 +41,25 @@ export class ContextBuilder extends Builder<Context, Context> {
             }),
             nodes: [],
             relationships: [],
-            schemaModel: new Neo4jGraphQLSchemaModel({ concreteEntities: [], compositeEntities: [] }),
+            schemaModel: new Neo4jGraphQLSchemaModel({
+                concreteEntities: [] as ConcreteEntity[],
+                compositeEntities: [] as CompositeEntity[],
+                operations: {},
+                annotations: [],
+            }),
             schema: new GraphQLSchema({}),
             subscriptionsEnabled: false,
             executionContext: {} as neo4j.Driver,
-            executor: new Executor({ executionContext: {} as neo4j.Driver, auth: {} as AuthContext }),
+            executor: new Executor({ executionContext: {} as neo4j.Driver }),
             neo4jDatabaseInfo: {} as Neo4jDatabaseInfo,
             info: {} as GraphQLResolveInfo,
             features: {},
+            authorization: {
+                jwtParam: new Cypher.Param({}),
+                isAuthenticated: true,
+                isAuthenticatedParam: new Cypher.Param(true),
+                jwtDefault: new Cypher.Param({}),
+            },
             ...newOptions,
         });
     }

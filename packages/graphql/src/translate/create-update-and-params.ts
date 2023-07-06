@@ -26,7 +26,6 @@ import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
-import { createAuthAndParams } from "./create-auth-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -43,17 +42,24 @@ import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
 import { findConflictingProperties } from "../utils/is-property-clash";
 import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
+import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
+import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 interface Res {
     strs: string[];
     params: any;
-    meta?: UpdateMeta;
+    meta: UpdateMeta;
 }
 
 interface UpdateMeta {
     preArrayMethodValidationStrs: [string, string][];
     preAuthStrs: string[];
     postAuthStrs: string[];
+    authorizationBeforeSubqueries: string[];
+    authorizationBeforePredicates: string[];
+    authorizationAfterSubqueries: string[];
+    authorizationAfterPredicates: string[];
 }
 
 export default function createUpdateAndParams({
@@ -89,6 +95,8 @@ export default function createUpdateAndParams({
             }`
         );
     }
+
+    checkAuthentication({ context, node, targetOperations: ["UPDATE"] });
 
     function reducer(res: Res, [key, value]: [string, any]) {
         let param: string;
@@ -224,18 +232,23 @@ export default function createUpdateAndParams({
                         );
                         innerUpdate.push(...delayedSubquery);
 
-                        if (node.auth) {
-                            const { cypher: authWhereCypher, params: authWhereParams } = createAuthAndParams({
-                                operations: "UPDATE",
-                                entity: refNode,
-                                context,
-                                where: { varName: variableName, node: refNode },
-                            });
-                            if (authWhereCypher) {
-                                whereStrs.push(authWhereCypher);
-                                res.params = { ...res.params, ...authWhereParams };
+                        const authorizationBeforeAndParams = createAuthorizationBeforeAndParams({
+                            context,
+                            nodes: [{ node: refNode, variable: variableName }],
+                            operations: ["UPDATE"],
+                        });
+
+                        if (authorizationBeforeAndParams) {
+                            const { cypher, params: authWhereParams, subqueries } = authorizationBeforeAndParams;
+
+                            whereStrs.push(cypher);
+                            res.params = { ...res.params, ...authWhereParams };
+
+                            if (subqueries) {
+                                innerUpdate.push(subqueries);
                             }
                         }
+
                         if (whereStrs.length) {
                             const predicate = `${whereStrs.join(" AND ")}`;
                             if (aggregationWhere) {
@@ -558,35 +571,40 @@ export default function createUpdateAndParams({
         }
 
         if (authableField) {
-            if (authableField.auth) {
-                const { cypher: preAuthCypher, params: preAuthParams } = createAuthAndParams({
-                    entity: authableField,
-                    operations: "UPDATE",
-                    context,
-                    allow: { varName, node },
-                });
-                const { cypher: postAuthCypher, params: postAuthParams } = createAuthAndParams({
-                    entity: authableField,
-                    operations: "UPDATE",
-                    skipRoles: true,
-                    skipIsAuthenticated: true,
-                    context,
-                    bind: { node, varName },
-                });
+            const authorizationBeforeAndParams = createAuthorizationBeforeAndParams({
+                context,
+                nodes: [{ node: node, variable: varName, fieldName: authableField.fieldName }],
+                operations: ["UPDATE"],
+            });
 
-                if (!res.meta) {
-                    res.meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] };
+            if (authorizationBeforeAndParams) {
+                const { cypher, params: authWhereParams, subqueries } = authorizationBeforeAndParams;
+
+                res.meta.authorizationBeforePredicates.push(cypher);
+
+                if (subqueries) {
+                    res.meta.authorizationBeforeSubqueries.push(subqueries);
                 }
 
-                if (preAuthCypher) {
-                    res.meta.preAuthStrs.push(preAuthCypher);
-                    res.params = { ...res.params, ...preAuthParams };
+                res.params = { ...res.params, ...authWhereParams };
+            }
+
+            const authorizationAfterAndParams = createAuthorizationAfterAndParams({
+                context,
+                nodes: [{ node: node, variable: varName, fieldName: authableField.fieldName }],
+                operations: ["UPDATE"],
+            });
+
+            if (authorizationAfterAndParams) {
+                const { cypher, params: authWhereParams, subqueries } = authorizationAfterAndParams;
+
+                res.meta.authorizationAfterPredicates.push(cypher);
+
+                if (subqueries) {
+                    res.meta.authorizationAfterSubqueries.push(subqueries);
                 }
 
-                if (postAuthCypher) {
-                    res.meta.postAuthStrs.push(postAuthCypher);
-                    res.params = { ...res.params, ...postAuthParams };
-                }
+                res.params = { ...res.params, ...authWhereParams };
             }
         }
 
@@ -600,6 +618,7 @@ export default function createUpdateAndParams({
             }
 
             validateNonNullProperty(res, varName, pushField);
+            checkAuthentication({ context, node, targetOperations: ["UPDATE"], field: pushField.fieldName });
 
             const pointArrayField = node.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
             if (pointArrayField) {
@@ -625,6 +644,7 @@ export default function createUpdateAndParams({
             }
 
             validateNonNullProperty(res, varName, popField);
+            checkAuthentication({ context, node, targetOperations: ["UPDATE"], field: popField.fieldName });
 
             res.strs.push(
                 `SET ${varName}.${popField.dbPropertyName} = ${varName}.${popField.dbPropertyName}[0..-$${param}]`
@@ -633,42 +653,56 @@ export default function createUpdateAndParams({
             res.params[param] = value;
         }
 
+        if (!pushField && !popField) {
+            checkAuthentication({ context, node, targetOperations: ["UPDATE"], field: key });
+        }
+
         return res;
     }
 
     const reducedUpdate = Object.entries(updateInput as Record<string, unknown>).reduce(reducer, {
         strs: [],
+        meta: {
+            preArrayMethodValidationStrs: [],
+            preAuthStrs: [],
+            postAuthStrs: [],
+            authorizationBeforeSubqueries: [],
+            authorizationBeforePredicates: [],
+            authorizationAfterSubqueries: [],
+            authorizationAfterPredicates: [],
+        },
         params: {},
     });
-    const { strs, meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
+    const { strs, meta } = reducedUpdate;
     let params = reducedUpdate.params;
 
     let preAuthStrs: string[] = [];
     let postAuthStrs: string[] = [];
+
+    const authorizationBeforeStrs = meta.authorizationBeforePredicates;
+    const authorizationBeforeSubqueries = meta.authorizationBeforeSubqueries;
+    const authorizationAfterStrs = meta.authorizationAfterPredicates;
+    const authorizationAfterSubqueries = meta.authorizationAfterSubqueries;
+
     const withStr = `WITH ${withVars.join(", ")}`;
 
-    const { cypher: preAuthCypher, params: preAuthParams } = createAuthAndParams({
-        entity: node,
+    const authorizationAfterAndParams = createAuthorizationAfterAndParams({
         context,
-        allow: { node, varName },
-        operations: "UPDATE",
+        nodes: [{ node, variable: varName }],
+        operations: ["UPDATE"],
     });
-    if (preAuthCypher) {
-        preAuthStrs.push(preAuthCypher);
-        params = { ...params, ...preAuthParams };
-    }
 
-    const { cypher: postAuthCypher, params: postAuthParams } = createAuthAndParams({
-        entity: node,
-        context,
-        skipIsAuthenticated: true,
-        skipRoles: true,
-        operations: "UPDATE",
-        bind: { node, varName },
-    });
-    if (postAuthCypher) {
-        postAuthStrs.push(postAuthCypher);
-        params = { ...params, ...postAuthParams };
+    if (authorizationAfterAndParams) {
+        const { cypher, params: authWhereParams, subqueries } = authorizationAfterAndParams;
+
+        if (cypher) {
+            if (subqueries) {
+                authorizationAfterSubqueries.push(subqueries);
+            }
+
+            authorizationAfterStrs.push(cypher);
+            params = { ...params, ...authWhereParams };
+        }
     }
 
     if (meta) {
@@ -707,6 +741,29 @@ export default function createUpdateAndParams({
         postAuthStr = `${withStr}\n${apocStr}`;
     }
 
+    let authorizationBeforeStr = "";
+    let authorizationAfterStr = "";
+
+    if (authorizationBeforeStrs.length) {
+        if (authorizationBeforeSubqueries.length) {
+            authorizationBeforeStr = `${withStr}\n${authorizationBeforeSubqueries.join(
+                "\n"
+            )}\nWITH *\nWHERE ${authorizationBeforeStrs.join(" AND ")}`;
+        } else {
+            authorizationBeforeStr = `${withStr}\nWHERE ${authorizationBeforeStrs.join(" AND ")}`;
+        }
+    }
+
+    if (authorizationAfterStrs.length) {
+        if (authorizationAfterSubqueries.length) {
+            authorizationAfterStr = `${withStr}\n${authorizationAfterSubqueries.join(
+                "\n"
+            )}\nWITH *\nWHERE ${authorizationAfterStrs.join(" AND ")}`;
+        } else {
+            authorizationAfterStr = `${withStr}\nWHERE ${authorizationAfterStrs.join(" AND ")}`;
+        }
+    }
+
     let statements = strs;
     if (context.subscriptionsEnabled) {
         statements = wrapInSubscriptionsMetaCall({
@@ -718,9 +775,11 @@ export default function createUpdateAndParams({
     }
     return [
         [
+            authorizationBeforeStr,
             preAuthStr,
             preArrayMethodValidationStr,
             ...statements,
+            authorizationAfterStr,
             postAuthStr,
             ...(relationshipValidationStr ? [withStr, relationshipValidationStr] : []),
         ].join("\n"),
@@ -729,10 +788,6 @@ export default function createUpdateAndParams({
 }
 
 function validateNonNullProperty(res: Res, varName: string, field: BaseField) {
-    if (!res.meta) {
-        res.meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] };
-    }
-
     res.meta.preArrayMethodValidationStrs.push([`${varName}.${field.dbPropertyName}`, `${field.dbPropertyName}`]);
 }
 

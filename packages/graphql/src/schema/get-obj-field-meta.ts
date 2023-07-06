@@ -35,7 +35,6 @@ import type {
     DirectiveNode,
 } from "graphql";
 import { Kind } from "graphql";
-import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
 import { getCypherMeta } from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
@@ -101,13 +100,13 @@ function getObjFieldMeta({
     unions: UnionTypeDefinitionNode[];
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
-    validateResolvers: boolean;
+    validateResolvers?: boolean;
     callbacks?: Neo4jGraphQLCallbacks;
     customResolvers?: IResolvers | Array<IResolvers>;
 }): ObjectFields {
     const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
     const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
-    const objIsJwtPayload = (obj.directives || []).find((d) => d.name.value === "jwtPayload");
+    const objIsJwtPayload = (obj.directives || []).find((d) => d.name.value === "jwt");
 
     return obj?.fields?.reduce(
         (res: ObjectFields, field) => {
@@ -142,7 +141,6 @@ function getObjFieldMeta({
                 interfaceField,
             });
             const typeMeta = getFieldTypeMeta(field.type);
-            const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
             const defaultDirective = directives.find((x) => x.name.value === "default");
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
@@ -160,7 +158,7 @@ function getObjFieldMeta({
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
             const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
             const fieldObject = objects.find((x) => x.name.value === typeMeta.name);
-    
+
             const selectableOptions = parseSelectableDirective(selectableDirective);
             const settableOptions = parseSettableDirective(settableDirective);
             const filterableOptions = parseFilterableDirective(filterableDirective);
@@ -178,8 +176,8 @@ function getObjFieldMeta({
                             "relationship",
                             "cypher",
                             "id",
-                            "auth",
                             "authorization",
+                            "authentication",
                             "readonly",
                             "writeonly",
                             "customResolver",
@@ -193,11 +191,11 @@ function getObjFieldMeta({
                             "jwtClaim",
                             "selectable",
                             "settable",
+                            "subscriptionsAuthorization",
                             "filterable",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
-                ...(authDirective ? { auth: getAuth(authDirective) } : {}),
                 description: field.description?.value,
                 readonly:
                     directives.some((d) => d.name.value === "readonly") ||
@@ -218,9 +216,7 @@ function getObjFieldMeta({
 
             if (jwtClaimDirective) {
                 if (!objIsJwtPayload) {
-                    throw new Error(
-                        "@jwtClaim directive can only be used on fields within a type annotated with @jwtPayload"
-                    );
+                    throw new Error("@jwtClaim directive can only be used on fields within a type annotated with @jwt");
                 }
                 if ((field.directives as DirectiveNode[]).length > 1) {
                     throw new Error("@jwtClaim directive cannot be combined with other directives.");
@@ -228,10 +224,6 @@ function getObjFieldMeta({
             }
 
             if (relationshipMeta) {
-                if (authDirective) {
-                    throw new Error("cannot have auth directive on a relationship");
-                }
-
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
                 }

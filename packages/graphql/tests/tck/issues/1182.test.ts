@@ -92,6 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
                     this0_actors_connectOrCreate0.homeAddress = $this0_actors_connectOrCreate_param2,
                     this0_actors_connectOrCreate0.dob = $this0_actors_connectOrCreate_param3
                 MERGE (this0)<-[this0_actors_connectOrCreate_this0:\`ACTED_IN\`]-(this0_actors_connectOrCreate0)
+                RETURN count(*) AS _
             }
             RETURN this0
             }
