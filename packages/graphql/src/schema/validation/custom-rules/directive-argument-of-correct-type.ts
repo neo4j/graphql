@@ -27,42 +27,51 @@ import type {
     FieldDefinitionNode,
 } from "graphql";
 import { GraphQLError, coerceInputValue, valueFromASTUntyped, buildASTSchema } from "graphql";
-
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { VALIDATION_ERROR_CODES } from "../utils/validation-error-codes";
 
 export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): ASTVisitor {
+    // TODO: find a way to scope this schema instead of creating the whole document
+    // should only contain dynamic directives and their associated types
+    // or create a duplicate rule that does not make this schema for the initial document validation.
+    // either way, Refactor this to only create the schema if needed.
     const schema = buildASTSchema(context.getDocument(), { assumeValid: true, assumeValidSDL: true });
 
     return {
         Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
-            const genericDirectiveName = ["authorization", "authentication"].find((applicableDirectiveName) =>
+            const genericDirectiveName = [
+                "authorization",
+                "authentication",
+                "fulltext",
+                "relationship",
+                "node",
+                "customresolver",
+                "cypher",
+            ].find((applicableDirectiveName) =>
                 directiveNode.name.value.toLowerCase().includes(applicableDirectiveName)
             );
+
             // Validate only Authorization/Authentication usage
             if (!genericDirectiveName) {
                 return;
             }
-            console.log("continue with", directiveNode.name.value);
 
             const directiveDefinitionFromDocument = schema.getDirective(directiveNode.name.value);
-            // console.log("def", directiveDefinitionFromDocument);
             const directiveDefinitionFromSchema = context.getSchema()?.getDirective(directiveNode.name.value);
-            // console.log("def2", directiveDefinitionFromSchema);
 
-            const directiveDefinition = directiveDefinitionFromDocument || directiveDefinitionFromSchema;
+            const directiveDefinition = directiveDefinitionFromSchema || directiveDefinitionFromDocument;
 
             if (!directiveDefinition) {
                 // Do not report, delegate this report to KnownDirectivesRule
                 return;
             }
-            const pathToHere = [...getPathToDirectiveNode(path, ancenstors), `@${genericDirectiveName}`];
-
+            const pathToHere = [...getPathToDirectiveNode(path, ancenstors), `@${directiveNode.name.value}`];
             directiveNode.arguments?.forEach((argument) => {
                 const argumentDefinition = findArgumentDefinitionNodeByName(
                     directiveDefinition.args,
                     argument.name.value
                 );
+                console.log("arg", argument.name.value, argumentDefinition);
                 if (!argumentDefinition) {
                     return;
                 }
@@ -114,6 +123,7 @@ function getPathToDirectiveNode(
     const pathToHere: string[] = [traversedDefinition?.name?.value];
     const getNextDefinition = parsePath(path, traversedDefinition);
     for (const definition of getNextDefinition()) {
+        console.log("d:", definition);
         pathToHere.push(definition.name.value);
     }
     return pathToHere;
