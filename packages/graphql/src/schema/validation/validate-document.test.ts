@@ -17,12 +17,20 @@
  * limitations under the License.
  */
 
+import type {
+    EnumTypeDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
+    UnionTypeDefinitionNode,
+} from "graphql";
 import { gql } from "graphql-tag";
+import { getError, NoErrorThrownError } from "../../../tests/utils/get-error";
 import { RESERVED_TYPE_NAMES } from "../../constants";
+import type { Neo4jGraphQLCallback } from "../../types";
 import validateDocument from "./validate-document";
 
 describe("validation2.0", () => {
-    describe("Directive Argument", () => {
+    describe("Directive Argument (existence)", () => {
         // TODO: @exclude?
         describe("@cypher", () => {
             test("@cypher columnName required", () => {
@@ -146,17 +154,6 @@ describe("validation2.0", () => {
                     'Directive "@fulltext" argument "indexes" of type "[FullTextInput]!" is required, but it was not provided.'
                 );
             });
-            test.skip("@fulltext.indexes property required", () => {
-                const doc = gql`
-                    type User @fulltext(indexes: [{ name: "something" }]) {
-                        name: String
-                    }
-                `;
-                // TODO: fix this, no error thrown bc nested property
-                expect(() => validateDocument({ document: doc })).toThrow(
-                    'Directive "@fulltext" argument "indexes" of type "ScalarOrEnum!" is required, but it was not provided.'
-                );
-            });
             test("@fulltext ok", () => {
                 const doc = gql`
                     type User @fulltext(indexes: [{ fields: ["name"] }]) {
@@ -190,17 +187,6 @@ describe("validation2.0", () => {
             });
         });
         describe("@node", () => {
-            test.skip("@node.labels required", () => {
-                const doc = gql`
-                    type User @node(labels: []) {
-                        name: String
-                    }
-                `;
-                // TODO: fix this, no error thrown bc nested property
-                expect(() => validateDocument({ document: doc })).toThrow(
-                    'Directive "@node" argument "labels" of type "String!" is required, but it was not provided.'
-                );
-            });
             test("@node ok", () => {
                 const doc = gql`
                     type User @node(labels: ["awesome"]) {
@@ -251,7 +237,12 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc })).not.toThrow();
+                expect(() =>
+                    validateDocument({
+                        document: doc,
+                        callbacks: { myCallback: () => "hello" },
+                    })
+                ).not.toThrow();
             });
         });
         describe("@relationship", () => {
@@ -305,6 +296,1586 @@ describe("validation2.0", () => {
                 `;
 
                 expect(() => validateDocument({ document: doc })).not.toThrow();
+            });
+        });
+    });
+
+    // TODO: broken until DirectiveOfArgumentType is fixed.
+    describe("Directive Argument Type", () => {
+        test("@fulltext.indexes property required", () => {
+            const doc = gql`
+                type User @fulltext(indexes: [{ name: "something" }]) {
+                    name: String
+                }
+            `;
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                'Invalid argument: indexes, error: Field "fields" of required type "[String]!" was not provided.'
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "@fulltext", "indexes", 0]);
+        });
+
+        test("@relationship.direction property must be enum value", () => {
+            const doc = gql`
+                type User {
+                    post: Post @relationship(direction: "EVERYWHERE", type: "HAS_NAME")
+                }
+                type Post {
+                    title: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                'Invalid argument: direction, error: Value "EVERYWHERE" does not exist in "RelationshipDirection" enum.'
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "post", "@relationship", "direction"]);
+        });
+
+        test("@relationship.type property must be string", () => {
+            const doc = gql`
+                type User {
+                    post: Post @relationship(type: 42, direction: IN)
+                }
+                type Post {
+                    title: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid argument: type, error: String cannot represent a non string value: 42"
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "post", "@relationship", "type"]);
+        });
+
+        test("@customResolver.required property must be string", () => {
+            const doc = gql`
+                type Query {
+                    myStuff: String @customResolver(requires: 42)
+                }
+            `;
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid argument: requires, error: SelectionSet cannot represent non string value: 42"
+            );
+            expect(errors[0]).toHaveProperty("path", ["Query", "myStuff", "@customResolver", "requires"]);
+        });
+
+        test("@cypher.columnName property must be string", () => {
+            const doc = gql`
+                type User {
+                    name: String @cypher(statement: 42, columnName: "x")
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid argument: statement, error: String cannot represent a non string value: 42"
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "name", "@cypher", "statement"]);
+        });
+        test("@cypher.statement property must be string", () => {
+            const doc = gql`
+                type User {
+                    name: String
+                        @cypher(
+                            statement: """
+                            MATCH (n) RETURN n
+                            """
+                            columnName: 1
+                        )
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid argument: columnName, error: String cannot represent a non string value: 1"
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "name", "@cypher", "columnName"]);
+        });
+
+        test("@node.labels property required", () => {
+            const doc = gql`
+                type User @node(labels: [null]) {
+                    name: String
+                }
+            `;
+            // TODO: fix this, no error thrown bc nested property
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            console.log(errors.message);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                'Invalid argument: labels, error: Expected non-nullable type "String!" not to be null.'
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "@node", "labels", 0]);
+        });
+    });
+
+    describe("Directive Argument Value", () => {
+        describe("@default", () => {
+            test("@default on datetime must be valid datetime", () => {
+                const doc = gql`
+                    #scalar DateTime
+                    type User {
+                        updatedAt: DateTime @default(value: "dummy")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value is not a valid DateTime"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default", "value"]);
+            });
+
+            test("@default on datetime must be valid datetime correct", () => {
+                const doc = gql`
+                    #scalar DateTime
+                    type User {
+                        updatedAt: DateTime @default(value: "2023-07-06T09:45:11.336Z")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@default on enum must be enum", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User {
+                        status: Status @default(value: "dummy")
+                    }
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on Status fields must be of type Status"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "status", "@default", "value"]);
+            });
+
+            test("@default on enum must be enum correct", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User {
+                        status: Status @default(value: REGISTERED)
+                    }
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@default on enum list must be list", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User {
+                        statuses: [Status] @default(value: "dummy")
+                    }
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on Status list fields must be a list of Status values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@default", "value"]);
+            });
+
+            test("@default on enum list must be list of enum values", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User {
+                        statuses: [Status] @default(value: ["dummy"])
+                    }
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on Status list fields must be a list of Status values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@default", "value"]);
+            });
+
+            test("@default on enum list must be list of enum values correct", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User {
+                        statuses: [Status] @default(value: [PENDING])
+                    }
+                `;
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@default on int must be int", () => {
+                const doc = gql`
+                    type User {
+                        age: Int @default(value: "dummy")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on Int fields must be of type Int"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "age", "@default", "value"]);
+            });
+
+            test("@default on int must be int correct", () => {
+                const doc = gql`
+                    type User {
+                        age: Int @default(value: 23)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@default on int list must be list of int values", () => {
+                const doc = gql`
+                    type User {
+                        ages: [Int] @default(value: ["dummy"])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on Int list fields must be a list of Int values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "ages", "@default", "value"]);
+            });
+
+            test("@default on int list must be list of int values correct", () => {
+                const doc = gql`
+                    type User {
+                        ages: [Int] @default(value: [12])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@default on float must be float", () => {
+                const doc = gql`
+                    type User {
+                        avg: Float @default(value: 2)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on Float fields must be of type Float"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "avg", "@default", "value"]);
+            });
+
+            test("@default on float must be float correct", () => {
+                const doc = gql`
+                    type User {
+                        avg: Float @default(value: 2.3)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@default on float list must be list of float values", () => {
+                const doc = gql`
+                    type User {
+                        avgs: [Float] @default(value: [1])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on Float list fields must be a list of Float values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "avgs", "@default", "value"]);
+            });
+
+            test("@default on float list must be list of float values correct", () => {
+                const doc = gql`
+                    type User {
+                        avgs: [Float] @default(value: [1.2])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@default on boolean must be boolean", () => {
+                const doc = gql`
+                    type User {
+                        registered: Boolean @default(value: 2)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on Boolean fields must be of type Boolean"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "registered", "@default", "value"]);
+            });
+
+            test("@default on boolean must be boolean correct", () => {
+                const doc = gql`
+                    type User {
+                        registered: Boolean @default(value: false)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@default on boolean list must be list of boolean values", () => {
+                const doc = gql`
+                    type User {
+                        statuses: [Boolean] @default(value: [2])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on Boolean list fields must be a list of Boolean values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@default", "value"]);
+            });
+
+            test("@default on boolean list must be list of boolean values correct", () => {
+                const doc = gql`
+                    type User {
+                        statuses: [Boolean] @default(value: [true])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@default on string must be string", () => {
+                const doc = gql`
+                    type User {
+                        name: String @default(value: 2)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on String fields must be of type String"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "name", "@default", "value"]);
+            });
+
+            test("@default on string must be string correct", () => {
+                const doc = gql`
+                    type User {
+                        registered: String @default(value: "Bob")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@default on string list must be list of string values", () => {
+                const doc = gql`
+                    type User {
+                        names: [String] @default(value: [2])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on String list fields must be a list of String values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "names", "@default", "value"]);
+            });
+
+            test("@default on string list must be list of string values correct", () => {
+                const doc = gql`
+                    type User {
+                        names: [String] @default(value: ["Bob"])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@default on ID must be ID", () => {
+                const doc = gql`
+                    type User {
+                        uid: ID @default(value: 2)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on ID fields must be of type ID"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "uid", "@default", "value"]);
+            });
+
+            test("@default on ID list must be list of ID values", () => {
+                const doc = gql`
+                    type User {
+                        ids: [ID] @default(value: [2])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @default.value on ID list fields must be a list of ID values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "ids", "@default", "value"]);
+            });
+
+            // todo: fix this comparison expectedType: ID,  fromValueKind(): string
+            test.skip("@default on ID list must be list of ID values correct", () => {
+                const doc = gql`
+                    type User {
+                        ids: [ID] @default(value: ["123-223"])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test.skip("@default on ID must be ID correct", () => {
+                const doc = gql`
+                    type User {
+                        uid: ID @default(value: "234-432")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+        });
+
+        describe("@coalesce", () => {
+            test("@coalesce on enum must be enum", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User {
+                        status: Status @coalesce(value: "dummy")
+                    }
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on Status fields must be of type Status"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "status", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on enum must be enum correct", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User {
+                        status: Status @default(value: REGISTERED)
+                    }
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@coalesce on enum list must be list", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User {
+                        statuses: [Status] @coalesce(value: "dummy")
+                    }
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on Status list fields must be a list of Status values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on enum list must be list of enum values", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User {
+                        statuses: [Status] @coalesce(value: ["dummy"])
+                    }
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on Status list fields must be a list of Status values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on enum list must be list of enum values correct", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User {
+                        statuses: [Status] @coalesce(value: [PENDING])
+                    }
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@coalesce on int must be int", () => {
+                const doc = gql`
+                    type User {
+                        age: Int @coalesce(value: "dummy")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on Int fields must be of type Int"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "age", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on int must be int correct", () => {
+                const doc = gql`
+                    type User {
+                        age: Int @coalesce(value: 23)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@coalesce on int list must be list of int values", () => {
+                const doc = gql`
+                    type User {
+                        ages: [Int] @coalesce(value: ["dummy"])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on Int list fields must be a list of Int values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "ages", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on int list must be list of int values correct", () => {
+                const doc = gql`
+                    type User {
+                        ages: [Int] @coalesce(value: [12])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@coalesce on float must be float", () => {
+                const doc = gql`
+                    type User {
+                        avg: Float @coalesce(value: 2)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on Float fields must be of type Float"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "avg", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on float must be float correct", () => {
+                const doc = gql`
+                    type User {
+                        avg: Float @coalesce(value: 2.3)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@coalesce on float list must be list of float values", () => {
+                const doc = gql`
+                    type User {
+                        avgs: [Float] @coalesce(value: [1])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on Float list fields must be a list of Float values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "avgs", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on float list must be list of float values correct", () => {
+                const doc = gql`
+                    type User {
+                        avgs: [Float] @coalesce(value: [1.2])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@coalesce on boolean must be boolean", () => {
+                const doc = gql`
+                    type User {
+                        registered: Boolean @coalesce(value: 2)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on Boolean fields must be of type Boolean"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "registered", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on boolean must be boolean correct", () => {
+                const doc = gql`
+                    type User {
+                        registered: Boolean @coalesce(value: false)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@coalesce on boolean list must be list of boolean values", () => {
+                const doc = gql`
+                    type User {
+                        statuses: [Boolean] @coalesce(value: [2])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on Boolean list fields must be a list of Boolean values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on boolean list must be list of boolean values correct", () => {
+                const doc = gql`
+                    type User {
+                        statuses: [Boolean] @coalesce(value: [true])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@coalesce on string must be string", () => {
+                const doc = gql`
+                    type User {
+                        name: String @coalesce(value: 2)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on String fields must be of type String"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "name", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on string must be string correct", () => {
+                const doc = gql`
+                    type User {
+                        registered: String @coalesce(value: "Bob")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@coalesce on string list must be list of string values", () => {
+                const doc = gql`
+                    type User {
+                        names: [String] @coalesce(value: [2])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on String list fields must be a list of String values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "names", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on string list must be list of string values correct", () => {
+                const doc = gql`
+                    type User {
+                        names: [String] @coalesce(value: ["Bob"])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@coalesce on ID must be ID", () => {
+                const doc = gql`
+                    type User {
+                        uid: ID @coalesce(value: 2)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on ID fields must be of type ID"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "uid", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on ID list must be list of ID values", () => {
+                const doc = gql`
+                    type User {
+                        ids: [ID] @coalesce(value: [2])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: value, error: @coalesce.value on ID list fields must be a list of ID values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "ids", "@coalesce", "value"]);
+            });
+
+            // todo: fix this comparison expectedType: ID,  fromValueKind(): string
+            test.skip("@coalesce on ID list must be list of ID values correct", () => {
+                const doc = gql`
+                    type User {
+                        ids: [ID] @coalesce(value: ["123-223"])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test.skip("@coalesce on ID must be ID correct", () => {
+                const doc = gql`
+                    type User {
+                        uid: ID @coalesce(value: "234-432")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+        });
+
+        describe("@queryOptions", () => {
+            test("@queryOptions default must be > 0", () => {
+                const doc = gql`
+                    type User @queryOptions(limit: { default: -1 }) {
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: limit, error: @queryOptions.limit.default invalid value: -1. Must be greater than 0."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "@queryOptions", "limit"]);
+            });
+
+            test("@queryOptions max must be > 0", () => {
+                const doc = gql`
+                    type User @queryOptions(limit: { max: -1 }) {
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: limit, error: @queryOptions.limit.max invalid value: -1. Must be greater than 0."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "@queryOptions", "limit"]);
+            });
+
+            test("@queryOptions default must be < max", () => {
+                const doc = gql`
+                    type User @queryOptions(limit: { default: 10, max: 9 }) {
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: limit, error: @queryOptions.limit.max invalid value: 9. Must be greater than limit.default: 10."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "@queryOptions", "limit"]);
+            });
+
+            test("@queryOptions empty limit argument is correct", () => {
+                const doc = gql`
+                    type User @queryOptions(limit: {}) {
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@queryOptions correct", () => {
+                const doc = gql`
+                    type User @queryOptions(limit: { default: 1, max: 2 }) {
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+        });
+
+        describe("@fulltext", () => {
+            test("@fulltext duplicate index names", () => {
+                const doc = gql`
+                    type User
+                        @fulltext(indexes: [{ indexName: "a", fields: ["name"] }, { indexName: "a", fields: ["id"] }]) {
+                        name: String
+                        id: ID
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: indexes, error: @fulltext.indexes invalid value for: a. Duplicate name."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "@fulltext", "indexes"]);
+            });
+
+            test("@fulltext index on type not String or ID", () => {
+                const doc = gql`
+                    type User @fulltext(indexes: [{ indexName: "a", fields: ["age"] }]) {
+                        age: Int
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: indexes, error: @fulltext.indexes invalid value for: a. Field age is not of type String or ID."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "@fulltext", "indexes"]);
+            });
+
+            test("@fulltext correct usage", () => {
+                const doc = gql`
+                    type User
+                        @fulltext(indexes: [{ indexName: "a", fields: ["name"] }, { indexName: "b", fields: ["id"] }]) {
+                        id: ID
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+        });
+
+        describe("@relationship", () => {
+            test("@relationship duplicate [type, direction, fieldType] combination", () => {
+                const doc = gql`
+                    type User {
+                        name: String
+                        posts: [Post!] @relationship(type: "HAS_POST", direction: OUT)
+                        liked: [Post!] @relationship(type: "HAS_POST", direction: IN)
+                        archivedPosts: [Post!] @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "error: @relationship invalid. Multiple fields of the same type cannot have a relationship with the same direction and type combination."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "archivedPosts", "@relationship"]);
+            });
+
+            test("@relationship no relationshipProperties interface found", () => {
+                const doc = gql`
+                    type User {
+                        name: String
+                        posts: [Post!] @relationship(type: "HAS_POST", direction: OUT, properties: "Poster")
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "error: @relationship.properties invalid. Cannot find interface to represent the relationship properties: Poster."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship"]);
+            });
+
+            test("@relationship two relationshipProperties interface found", () => {
+                const interfaceDoc = gql`
+                    interface Poster @relationshipProperties {
+                        createdAt: String
+                    }
+                    interface Poster {
+                        updatedAt: String
+                    }
+                `;
+                const doc = gql`
+                    type User {
+                        name: String
+                        posts: [Post!] @relationship(type: "HAS_POST", direction: OUT, properties: "Poster")
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "error: @relationship.properties invalid. Cannot have more than 1 interface represent the relationship properties."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship"]);
+            });
+
+            test("@relationship relationshipProperties interface not annotated with @relationshipProperties", () => {
+                const interfaceDoc = gql`
+                    interface Poster {
+                        createdAt: String
+                    }
+                `;
+                const doc = gql`
+                    type User {
+                        name: String
+                        posts: [Post!] @relationship(type: "HAS_POST", direction: OUT, properties: "Poster")
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "error: @relationship.properties invalid. Properties interface Poster must use directive `@relationshipProperties`."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship"]);
+            });
+
+            test("@relationship correct usage", () => {
+                const interfaceDoc = gql`
+                    interface Poster @relationshipProperties {
+                        createdAt: String
+                    }
+                `;
+                const doc = gql`
+                    type User {
+                        name: String
+                        posts: [Post!] @relationship(type: "HAS_POST", direction: OUT, properties: "Poster")
+                        archived: [Post!] @relationship(type: "HAS_ARCHIVED_POST", direction: OUT, properties: "Poster")
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).not.toThrow();
+            });
+        });
+
+        describe("@populatedBy", () => {
+            test("@populatedBy callback not provided", () => {
+                const doc = gql`
+                    type User {
+                        name: String @populatedBy(operations: [CREATE], callback: "getUName")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: callback, error: @populatedBy.callback needs to be provided in features option."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "name", "@populatedBy", "callback"]);
+            });
+
+            test("@populatedBy callback not a function", () => {
+                const doc = gql`
+                    type User {
+                        name: String @populatedBy(operations: [CREATE], callback: "getUName")
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        callbacks: { getUName: "i should really be a Function.." as unknown as Neo4jGraphQLCallback },
+                    });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid argument: callback, error: @populatedBy.callback `getUName` must be of type Function."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "name", "@populatedBy", "callback"]);
+            });
+
+            test("@populatedBy correct usage", () => {
+                const doc = gql`
+                    type User {
+                        name: String @populatedBy(operations: [CREATE], callback: "getUName")
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        callbacks: { getUName: () => "myUserName" },
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+        });
+
+        // TODO: validate custom resolver
+        // needs a schema for graphql validation but then not running validators anymore for the logical validation
+        // validate-custom-resolver-requires -> graphql validation
+        // get-custom-resolver-meta -> logical validation
+        describe("@customResolver", () => {
+            test("@customResolver resolver not provided", () => {
+                const doc = gql`
+                    type User {
+                        name: String @customResolver
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "error: @customResolver needs a resolver for field `name` to be provided."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "name", "@customResolver"]);
+            });
+
+            test("@customResolver.requires not a string", () => {
+                const doc = gql`
+                    type User {
+                        name: String @customResolver(requires: 1)
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({ document: doc, userCustomResolvers: { User: { name: () => "sweet" } } });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "error: @customResolver.requires is invalid. Expected a String."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "name", "@customResolver"]);
+            });
+
+            // TODO: validation for selection set needs a schema
+            test.skip("@customResolver not possible on Interface", () => {
+                const interfaceDoc = gql`
+                    interface Employee {
+                        id: ID
+                        name: String @customResolver(requires: "id")
+                    }
+                `;
+                const doc = gql`
+                    type User {
+                        name: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        userCustomResolvers: { Employee: { name: () => "sweet" } },
+                        extra: { enums, interfaces, unions, objects },
+                    });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "error: @customResolver.requires is invalid. Expected a String."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "name", "@customResolver"]);
+            });
+
+            test.skip("@customResolver.requires invalid selection set", () => {
+                const doc = gql`
+                    type User {
+                        name: String @customResolver(requires: " doesNotExist ")
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        userCustomResolvers: { User: { name: () => "sweet" } },
+                        extra: { enums, interfaces, unions, objects },
+                    });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "error: @customResolver.requires is invalid. Expected a String."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "name", "@customResolver"]);
+            });
+
+            test("@customResolver.requires selection set correct", () => {
+                const doc = gql`
+                    type User {
+                        id: ID
+                        name: String @customResolver(requires: " id ")
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        userCustomResolvers: { User: { name: () => "sweet" } },
+                        extra: { enums, interfaces, unions, objects },
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@customResolver resolver provided correct", () => {
+                const doc = gql`
+                    type User {
+                        name: String @customResolver
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({ document: doc, userCustomResolvers: { User: { name: () => "sweet" } } });
+                expect(executeValidate).not.toThrow();
             });
         });
     });

@@ -17,7 +17,16 @@
  * limitations under the License.
  */
 
-import { GraphQLSchema, extendSchema, validateSchema, specifiedDirectives, Kind } from "graphql";
+import {
+    GraphQLSchema,
+    extendSchema,
+    validateSchema,
+    specifiedDirectives,
+    Kind,
+    EnumTypeDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    UnionTypeDefinitionNode,
+} from "graphql";
 import type {
     DefinitionNode,
     DocumentNode,
@@ -43,10 +52,12 @@ import { isRootType } from "../../utils/is-root-type";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import type { ValidationConfig } from "../../classes/Neo4jGraphQL";
 import { defaultValidationConfig } from "../../classes/Neo4jGraphQL";
-import type { Neo4jFeaturesSettings } from "../../types";
+import type { Neo4jFeaturesSettings, Neo4jGraphQLCallbacks } from "../../types";
 import { validateSDL } from "./validate-sdl";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
+import { DirectiveArgumentValueValid } from "./custom-rules/directive-argument-value-is-valid";
+import type { IResolvers } from "@graphql-tools/utils";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
@@ -221,12 +232,25 @@ function getBaseSchema({
     features,
     additionalDirectives = [],
     additionalTypes = [],
+    extra,
+    callbacks,
+    validateResolvers = true,
+    userCustomResolvers,
 }: {
     document: DocumentNode;
     validateTypeDefs: boolean;
     features: Neo4jFeaturesSettings | undefined;
     additionalDirectives: Array<GraphQLDirective>;
     additionalTypes: Array<GraphQLNamedType>;
+    extra?: {
+        enums: EnumTypeDefinitionNode[];
+        interfaces: InterfaceTypeDefinitionNode[];
+        unions: UnionTypeDefinitionNode[];
+        objects: ObjectTypeDefinitionNode[];
+    };
+    callbacks?: Neo4jGraphQLCallbacks;
+    validateResolvers?: boolean;
+    userCustomResolvers?: IResolvers | IResolvers[];
 }): GraphQLSchema {
     const doc = filterDocument(document, features);
 
@@ -246,11 +270,17 @@ function getBaseSchema({
     });
 
     // ==================== for rules testing ====
-    const errors = validateSDL(doc, [...specifiedSDLRules, DirectiveArgumentOfCorrectType], schemaToExtend);
+    // TODO: fix error on DirectiveArgumentOfCorrectType to add it back
+    const errors = validateSDL(
+        doc,
+        [...specifiedSDLRules, DirectiveArgumentValueValid(userCustomResolvers, extra, callbacks, validateResolvers)],
+        // DirectiveArgumentOfCorrectType],
+        schemaToExtend
+    );
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {
         console.log("Validate Document: END with ERRORS");
-        throw new Error(filteredErrors.join("\n"));
+        throw filteredErrors;
     }
     // ===========================================
     return extendSchema(schemaToExtend, doc, { assumeValid: !validateTypeDefs });
@@ -262,12 +292,25 @@ function validateDocument({
     features,
     additionalDirectives = [],
     additionalTypes = [],
+    extra,
+    callbacks,
+    validateResolvers = true,
+    userCustomResolvers,
 }: {
     document: DocumentNode;
     validationConfig?: ValidationConfig;
     features?: Neo4jFeaturesSettings | undefined;
     additionalDirectives?: Array<GraphQLDirective>;
     additionalTypes?: Array<GraphQLNamedType>;
+    extra?: {
+        enums: EnumTypeDefinitionNode[];
+        interfaces: InterfaceTypeDefinitionNode[];
+        unions: UnionTypeDefinitionNode[];
+        objects: ObjectTypeDefinitionNode[];
+    };
+    callbacks?: Neo4jGraphQLCallbacks;
+    validateResolvers?: boolean;
+    userCustomResolvers?: IResolvers | IResolvers[];
 }): void {
     const schema = getBaseSchema({
         document,
@@ -275,6 +318,10 @@ function validateDocument({
         validateTypeDefs: validationConfig.validateTypeDefs,
         additionalDirectives,
         additionalTypes,
+        extra,
+        callbacks,
+        validateResolvers,
+        userCustomResolvers,
     });
     if (validationConfig.validateTypeDefs) {
         const errors = validateSchema(schema);
@@ -283,6 +330,8 @@ function validateDocument({
             throw new Error(filteredErrors.join("\n"));
         }
     }
+    // TODO: how to improve this??
+    // validates `@customResolver`
     validateSchemaCustomizations({ document, schema, validationConfig });
 }
 
