@@ -59,19 +59,9 @@ describe("Date", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
             type Movie {
               date: Date
               id: ID
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -152,7 +142,6 @@ describe("Date", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 

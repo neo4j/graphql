@@ -57,28 +57,10 @@ describe("Arrays", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
-            }
-
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
             type Movie {
               averageRating: Float!
               id: ID!
               ratings: [Float!]!
-            }
-
-            type MovieAggregateSelection {
-              averageRating: FloatAggregateSelectionNonNullable!
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
             }
 
             input MovieCreateInput {
@@ -171,7 +153,6 @@ describe("Arrays", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 

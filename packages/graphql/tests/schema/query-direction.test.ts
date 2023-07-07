@@ -73,7 +73,6 @@ describe("Query Direction", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -82,11 +81,6 @@ describe("Query Direction", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {
@@ -104,14 +98,8 @@ describe("Query Direction", () => {
 
             type User {
               friends(directed: Boolean = false, options: UserOptions, where: UserWhere): [User!]!
-              friendsAggregate(directed: Boolean = false, where: UserWhere): UserUserFriendsAggregationSelection
               friendsConnection(after: String, directed: Boolean = false, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input UserConnectInput {
@@ -280,15 +268,6 @@ describe("Query Direction", () => {
             input UserUpdateInput {
               friends: [UserFriendsUpdateFieldInput!]
               name: String
-            }
-
-            type UserUserFriendsAggregationSelection {
-              count: Int!
-              node: UserUserFriendsNodeAggregateSelection
-            }
-
-            type UserUserFriendsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input UserWhere {
@@ -393,7 +372,6 @@ describe("Query Direction", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -402,11 +380,6 @@ describe("Query Direction", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {
@@ -424,14 +397,8 @@ describe("Query Direction", () => {
 
             type User {
               friends(options: UserOptions, where: UserWhere): [User!]!
-              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
               friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input UserConnectInput {
@@ -600,15 +567,6 @@ describe("Query Direction", () => {
             input UserUpdateInput {
               friends: [UserFriendsUpdateFieldInput!]
               name: String
-            }
-
-            type UserUserFriendsAggregationSelection {
-              count: Int!
-              node: UserUserFriendsNodeAggregateSelection
-            }
-
-            type UserUserFriendsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input UserWhere {
@@ -713,7 +671,6 @@ describe("Query Direction", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -722,11 +679,6 @@ describe("Query Direction", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {
@@ -744,14 +696,8 @@ describe("Query Direction", () => {
 
             type User {
               friends(options: UserOptions, where: UserWhere): [User!]!
-              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
               friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input UserConnectInput {
@@ -920,15 +866,6 @@ describe("Query Direction", () => {
             input UserUpdateInput {
               friends: [UserFriendsUpdateFieldInput!]
               name: String
-            }
-
-            type UserUserFriendsAggregationSelection {
-              count: Int!
-              node: UserUserFriendsNodeAggregateSelection
-            }
-
-            type UserUserFriendsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input UserWhere {

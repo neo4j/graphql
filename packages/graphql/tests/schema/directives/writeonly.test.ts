@@ -72,7 +72,6 @@ describe("@writeonly directive", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -81,11 +80,6 @@ describe("@writeonly directive", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {
@@ -103,12 +97,6 @@ describe("@writeonly directive", () => {
 
             type User {
               username: String!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              password: StringAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {
@@ -231,7 +219,6 @@ describe("@writeonly directive", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -240,11 +227,6 @@ describe("@writeonly directive", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {
@@ -262,12 +244,6 @@ describe("@writeonly directive", () => {
 
             type User implements UserInterface {
               username: String!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              password: StringAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {
@@ -364,11 +340,6 @@ describe("@writeonly directive", () => {
               name: String
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNullable!
-            }
-
             input ActorConnectWhere {
               node: ActorWhere!
             }
@@ -444,11 +415,6 @@ describe("@writeonly directive", () => {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
             }
 
             type Movie {
@@ -552,11 +518,6 @@ describe("@writeonly directive", () => {
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
               where: MovieActorsConnectionWhere
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -676,10 +637,8 @@ describe("@writeonly directive", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -688,11 +647,6 @@ describe("@writeonly directive", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateActorsMutationResponse {

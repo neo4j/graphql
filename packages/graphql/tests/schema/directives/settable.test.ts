@@ -593,7 +593,6 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-                  actedInAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -766,16 +765,6 @@ describe("@settable", () => {
                 type ActorEdge {
                   cursor: String!
                   node: Actor!
-                }
-
-                type ActorMovieActedInAggregationSelection {
-                  count: Int!
-                  node: ActorMovieActedInNodeAggregateSelection
-                }
-
-                type ActorMovieActedInNodeAggregateSelection {
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
                 }
 
                 input ActorOptions {
@@ -1042,7 +1031,6 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-                  actedInAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -1208,16 +1196,6 @@ describe("@settable", () => {
                 type ActorEdge {
                   cursor: String!
                   node: Actor!
-                }
-
-                type ActorMovieActedInAggregationSelection {
-                  count: Int!
-                  node: ActorMovieActedInNodeAggregateSelection
-                }
-
-                type ActorMovieActedInNodeAggregateSelection {
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
                 }
 
                 input ActorOptions {
@@ -1482,7 +1460,6 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-                  actedInAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -1657,16 +1634,6 @@ describe("@settable", () => {
                   node: Actor!
                 }
 
-                type ActorMovieActedInAggregationSelection {
-                  count: Int!
-                  node: ActorMovieActedInNodeAggregateSelection
-                }
-
-                type ActorMovieActedInNodeAggregateSelection {
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
-                }
-
                 input ActorOptions {
                   limit: Int
                   offset: Int
@@ -1766,19 +1733,9 @@ describe("@settable", () => {
 
                 type Movie {
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   description: String
                   title: String!
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
                 }
 
                 input MovieActorsAggregateInput {
@@ -2105,7 +2062,6 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-                  actedInAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -2287,16 +2243,6 @@ describe("@settable", () => {
                   node: Actor!
                 }
 
-                type ActorMovieActedInAggregationSelection {
-                  count: Int!
-                  node: ActorMovieActedInNodeAggregateSelection
-                }
-
-                type ActorMovieActedInNodeAggregateSelection {
-                  description: StringAggregateSelectionNullable!
-                  title: StringAggregateSelectionNonNullable!
-                }
-
                 input ActorOptions {
                   limit: Int
                   offset: Int
@@ -2397,19 +2343,9 @@ describe("@settable", () => {
 
                 type Movie {
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   description: String
                   title: String!
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
                 }
 
                 input MovieActorsAggregateInput {
@@ -3982,19 +3918,9 @@ describe("@settable", () => {
 
                 type Movie {
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   description: String
                   title: String!
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
                 }
 
                 input MovieActorsAggregateInput {
@@ -4676,19 +4602,9 @@ describe("@settable", () => {
 
                 type Movie {
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   description: String
                   title: String!
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
                 }
 
                 input MovieActorsAggregateInput {
@@ -6293,19 +6209,9 @@ describe("@settable", () => {
 
                 type Movie implements Production {
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
                   description: String
                   title: String!
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
                 }
 
                 input MovieActorsAggregateInput {
@@ -6750,19 +6656,9 @@ describe("@settable", () => {
 
                 type Series implements Production {
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
                   description: String
                   title: String!
-                }
-
-                type SeriesActorActorsAggregationSelection {
-                  count: Int!
-                  node: SeriesActorActorsNodeAggregateSelection
-                }
-
-                type SeriesActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
                 }
 
                 input SeriesActorsAggregateInput {
@@ -7195,19 +7091,9 @@ describe("@settable", () => {
 
                 type Movie implements Production {
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
                   description: String
                   title: String!
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
                 }
 
                 input MovieActorsAggregateInput {
@@ -7664,19 +7550,9 @@ describe("@settable", () => {
 
                 type Series implements Production {
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
                   description: String
                   title: String!
-                }
-
-                type SeriesActorActorsAggregationSelection {
-                  count: Int!
-                  node: SeriesActorActorsNodeAggregateSelection
-                }
-
-                type SeriesActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNonNullable!
                 }
 
                 input SeriesActorsAggregateInput {

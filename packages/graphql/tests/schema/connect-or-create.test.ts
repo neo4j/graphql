@@ -46,14 +46,8 @@ describe("Connect Or Create", () => {
 
             type Actor {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectInput {
@@ -80,16 +74,6 @@ describe("Connect Or Create", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
-            }
-
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
-            type ActorMovieMoviesNodeAggregateSelection {
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input ActorMoviesAggregateInput {
@@ -355,12 +339,6 @@ describe("Connect Or Create", () => {
               title: String!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
-            }
-
             input MovieConnectOrCreateWhere {
               node: MovieUniqueWhere!
             }
@@ -461,10 +439,8 @@ describe("Connect Or Create", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -473,11 +449,6 @@ describe("Connect Or Create", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -574,14 +545,8 @@ describe("Connect Or Create", () => {
 
             type Actor {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectInput {
@@ -608,22 +573,6 @@ describe("Connect Or Create", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
-            }
-
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
-              edge: ActorMovieMoviesEdgeAggregateSelection
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
-            type ActorMovieMoviesEdgeAggregateSelection {
-              characterName: StringAggregateSelectionNullable!
-              screentime: IntAggregateSelectionNonNullable!
-            }
-
-            type ActorMovieMoviesNodeAggregateSelection {
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input ActorMoviesAggregateInput {
@@ -960,22 +909,9 @@ describe("Connect Or Create", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
             type Movie {
               isan: String!
               title: String!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectOrCreateWhere {
@@ -1078,10 +1014,8 @@ describe("Connect Or Create", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -1090,16 +1024,6 @@ describe("Connect Or Create", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateActorsMutationResponse {

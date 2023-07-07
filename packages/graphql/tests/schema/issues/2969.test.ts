@@ -67,11 +67,6 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
             type Mutation {
               createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
@@ -91,14 +86,8 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
 
             type Post {
               author(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
-              authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               content: String!
-            }
-
-            type PostAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
-              count: Int!
             }
 
             input PostAuthorAggregateInput {
@@ -270,16 +259,6 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               content: String
             }
 
-            type PostUserAuthorAggregationSelection {
-              count: Int!
-              node: PostUserAuthorNodeAggregateSelection
-            }
-
-            type PostUserAuthorNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input PostWhere {
               AND: [PostWhere!]
               NOT: PostWhere
@@ -309,10 +288,8 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
 
             type Query {
               posts(options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -321,11 +298,6 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {
@@ -350,14 +322,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               id: ID!
               name: String!
               posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(directed: Boolean = true, where: PostWhere): UserPostPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input UserConnectInput {
@@ -394,15 +359,6 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [UserSort!]
-            }
-
-            type UserPostPostsAggregationSelection {
-              count: Int!
-              node: UserPostPostsNodeAggregateSelection
-            }
-
-            type UserPostPostsNodeAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
             }
 
             input UserPostsAggregateInput {

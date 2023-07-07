@@ -55,27 +55,9 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
             type Movie {
               id: ID
               viewers: Int!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: IntAggregateSelectionNonNullable!
             }
 
             input MovieCreateInput {
@@ -158,7 +140,6 @@ describe("Algebraic", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -204,13 +185,6 @@ describe("Algebraic", () => {
             \\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregateSelectionNonNullable {
-              average: BigInt!
-              max: BigInt!
-              min: BigInt!
-              sum: BigInt!
-            }
-
             type CreateInfo {
               bookmark: String
               nodesCreated: Int!
@@ -228,20 +202,9 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
             type Movie {
               id: ID
               viewers: BigInt!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: BigIntAggregateSelectionNonNullable!
             }
 
             input MovieCreateInput {
@@ -324,7 +287,6 @@ describe("Algebraic", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -383,27 +345,9 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
-            }
-
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
             type Movie {
               id: ID
               viewers: Float!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: FloatAggregateSelectionNonNullable!
             }
 
             input MovieCreateInput {
@@ -488,7 +432,6 @@ describe("Algebraic", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -559,14 +502,8 @@ describe("Algebraic", () => {
 
             type Director {
               directs(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              directsAggregate(directed: Boolean = true, where: MovieWhere): DirectorMovieDirectsAggregationSelection
               directsConnection(after: String, directed: Boolean = true, first: Int, sort: [DirectorDirectsConnectionSort!], where: DirectorDirectsConnectionWhere): DirectorDirectsConnection!
               lastName: String!
-            }
-
-            type DirectorAggregateSelection {
-              count: Int!
-              lastName: StringAggregateSelectionNonNullable!
             }
 
             input DirectorConnectInput {
@@ -703,16 +640,6 @@ describe("Algebraic", () => {
               node: Director!
             }
 
-            type DirectorMovieDirectsAggregationSelection {
-              count: Int!
-              node: DirectorMovieDirectsNodeAggregateSelection
-            }
-
-            type DirectorMovieDirectsNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
-              viewers: IntAggregateSelectionNonNullable!
-            }
-
             input DirectorOptions {
               limit: Int
               offset: Int
@@ -789,30 +716,11 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
             type Movie {
               directedBy(directed: Boolean = true, options: DirectorOptions, where: DirectorWhere): Director
-              directedByAggregate(directed: Boolean = true, where: DirectorWhere): MovieDirectorDirectedByAggregationSelection
               directedByConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieDirectedByConnectionSort!], where: MovieDirectedByConnectionWhere): MovieDirectedByConnection!
               id: ID
               viewers: Int!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: IntAggregateSelectionNonNullable!
             }
 
             input MovieConnectInput {
@@ -950,15 +858,6 @@ describe("Algebraic", () => {
               where: MovieDirectedByConnectionWhere
             }
 
-            type MovieDirectorDirectedByAggregationSelection {
-              count: Int!
-              node: MovieDirectorDirectedByNodeAggregateSelection
-            }
-
-            type MovieDirectorDirectedByNodeAggregateSelection {
-              lastName: StringAggregateSelectionNonNullable!
-            }
-
             input MovieDisconnectInput {
               directedBy: MovieDirectedByDisconnectFieldInput
             }
@@ -1051,10 +950,8 @@ describe("Algebraic", () => {
 
             type Query {
               directors(options: DirectorOptions, where: DirectorWhere): [Director!]!
-              directorsAggregate(where: DirectorWhere): DirectorAggregateSelection!
               directorsConnection(after: String, first: Int, sort: [DirectorSort], where: DirectorWhere): DirectorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -1063,11 +960,6 @@ describe("Algebraic", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateDirectorsMutationResponse {
@@ -1137,30 +1029,11 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
             type Movie implements Production {
               id: ID
               viewers: Int!
               workers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
-              workersAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonWorkersAggregationSelection
               workersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieWorkersConnectionSort!], where: MovieWorkersConnectionWhere): MovieWorkersConnection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
-              viewers: IntAggregateSelectionNonNullable!
             }
 
             input MovieConnectInput {
@@ -1193,15 +1066,6 @@ describe("Algebraic", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            type MoviePersonWorkersAggregationSelection {
-              count: Int!
-              node: MoviePersonWorkersNodeAggregateSelection
-            }
-
-            type MoviePersonWorkersNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieRelationInput {
@@ -1427,11 +1291,6 @@ describe("Algebraic", () => {
               name: String!
               worksInProduction(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
               worksInProductionConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonWorksInProductionConnectionSort!], where: PersonWorksInProductionConnectionWhere): PersonWorksInProductionConnection!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input PersonConnectInput {
@@ -1660,10 +1519,8 @@ describe("Algebraic", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
             }
 
@@ -1672,11 +1529,6 @@ describe("Algebraic", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {
@@ -1791,16 +1643,8 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNullable {
-              average: Float
-              max: Float
-              min: Float
-              sum: Float
-            }
-
             type Movie {
               actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
-              actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
@@ -1962,11 +1806,6 @@ describe("Algebraic", () => {
               where: MovieActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNonNullable!
-            }
-
             input MovieConnectInput {
               actors: [MovieActorsConnectFieldInput!]
             }
@@ -2000,20 +1839,6 @@ describe("Algebraic", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            type MoviePersonActorsAggregationSelection {
-              count: Int!
-              edge: MoviePersonActorsEdgeAggregateSelection
-              node: MoviePersonActorsNodeAggregateSelection
-            }
-
-            type MoviePersonActorsEdgeAggregateSelection {
-              pay: FloatAggregateSelectionNullable!
-            }
-
-            type MoviePersonActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieRelationInput {
@@ -2108,7 +1933,6 @@ describe("Algebraic", () => {
 
             type Person {
               actedInMovies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              actedInMoviesAggregate(directed: Boolean = true, where: MovieWhere): PersonMovieActedInMoviesAggregationSelection
               actedInMoviesConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonActedInMoviesConnectionSort!], where: PersonActedInMoviesConnectionWhere): PersonActedInMoviesConnection!
               name: String!
             }
@@ -2270,11 +2094,6 @@ describe("Algebraic", () => {
               where: PersonActedInMoviesConnectionWhere
             }
 
-            type PersonAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input PersonConnectInput {
               actedInMovies: [PersonActedInMoviesConnectFieldInput!]
             }
@@ -2299,20 +2118,6 @@ describe("Algebraic", () => {
             type PersonEdge {
               cursor: String!
               node: Person!
-            }
-
-            type PersonMovieActedInMoviesAggregationSelection {
-              count: Int!
-              edge: PersonMovieActedInMoviesEdgeAggregateSelection
-              node: PersonMovieActedInMoviesNodeAggregateSelection
-            }
-
-            type PersonMovieActedInMoviesEdgeAggregateSelection {
-              pay: FloatAggregateSelectionNullable!
-            }
-
-            type PersonMovieActedInMoviesNodeAggregateSelection {
-              title: StringAggregateSelectionNonNullable!
             }
 
             input PersonOptions {
@@ -2387,10 +2192,8 @@ describe("Algebraic", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
             }
 
@@ -2399,11 +2202,6 @@ describe("Algebraic", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {

@@ -342,12 +342,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               username: String!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              password: StringAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
-            }
-
             type ActorEdge {
               cursor: String!
               node: Actor!
@@ -406,11 +400,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               title: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNullable!
-            }
-
             type MovieEdge {
               cursor: String!
               node: Movie!
@@ -465,10 +454,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             type Query {
               _service: _Service!
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -477,16 +464,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable @shareable {
-              longest: String
-              shortest: String
             }
 
             scalar _Any
@@ -562,12 +539,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             type Actor {
               password: String!
               username: String!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
-              password: StringAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
             }
 
             input ActorCreateInput {
@@ -706,11 +677,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               title: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNullable!
-            }
-
             input MovieCreateInput {
               title: String
             }
@@ -809,10 +775,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             type Query {
               _service: _Service!
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -821,16 +785,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
-            }
-
-            type StringAggregateSelectionNullable @shareable {
-              longest: String
-              shortest: String
             }
 
             type Subscription {

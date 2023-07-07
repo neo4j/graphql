@@ -78,23 +78,12 @@ describe("Interfaces", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): MovieMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
               nodes: [MovieNode]
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -121,15 +110,6 @@ describe("Interfaces", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            type MovieMovieMoviesAggregationSelection {
-              count: Int!
-              node: MovieMovieMoviesNodeAggregateSelection
-            }
-
-            type MovieMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieMoviesAggregateInput {
@@ -314,7 +294,6 @@ describe("Interfaces", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 

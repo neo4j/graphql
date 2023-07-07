@@ -98,20 +98,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
-            }
-
             type DeleteInfo {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
             }
 
             type Mutation {
@@ -136,7 +126,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type Query {
               resources(options: ResourceOptions, where: ResourceWhere): [Resource!]!
-              resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection!
               resourcesConnection(after: String, first: Int, sort: [ResourceSort], where: ResourceWhere): ResourcesConnection!
             }
 
@@ -145,7 +134,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               Resources encapsulating the given resource (e.g., a github org contains a repo)
               \\"\\"\\"
               containedBy(directed: Boolean = true, options: ResourceOptions, where: ResourceWhere): [Resource!]!
-              containedByAggregate(directed: Boolean = true, where: ResourceWhere): ResourceResourceContainedByAggregationSelection
               containedByConnection(after: String, directed: Boolean = true, first: Int, sort: [ResourceContainedByConnectionSort!], where: ResourceContainedByConnectionWhere): ResourceContainedByConnection!
               createdAt: DateTime!
               externalIds: [ID!]
@@ -156,14 +144,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               tags: [Tag!]
               type: ResourceType!
               updatedAt: DateTime!
-            }
-
-            type ResourceAggregateSelection {
-              count: Int!
-              createdAt: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-              updatedAt: DateTimeAggregateSelectionNonNullable!
             }
 
             input ResourceConnectInput {
@@ -396,18 +376,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               containedBy: [ResourceContainedByCreateFieldInput!]
             }
 
-            type ResourceResourceContainedByAggregationSelection {
-              count: Int!
-              node: ResourceResourceContainedByNodeAggregateSelection
-            }
-
-            type ResourceResourceContainedByNodeAggregateSelection {
-              createdAt: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-              updatedAt: DateTimeAggregateSelectionNonNullable!
-            }
-
             \\"\\"\\"
             Fields to sort Resources by. The order in which sorts are applied is not guaranteed when specifying many fields in one ResourceSort object.
             \\"\\"\\"
@@ -539,11 +507,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             enum Tag {

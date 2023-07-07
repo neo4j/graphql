@@ -77,13 +77,7 @@ describe("Sort", () => {
             type Node1 {
               property: String!
               relatedTo(directed: Boolean = true, options: Node2Options, where: Node2Where): [Node2!]!
-              relatedToAggregate(directed: Boolean = true, where: Node2Where): Node1Node2RelatedToAggregationSelection
               relatedToConnection(after: String, directed: Boolean = true, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
-            }
-
-            type Node1AggregateSelection {
-              count: Int!
-              property: StringAggregateSelectionNonNullable!
             }
 
             input Node1ConnectInput {
@@ -110,10 +104,6 @@ describe("Sort", () => {
             type Node1Edge {
               cursor: String!
               node: Node1!
-            }
-
-            type Node1Node2RelatedToAggregationSelection {
-              count: Int!
             }
 
             input Node1Options {
@@ -265,12 +255,7 @@ describe("Sort", () => {
 
             type Node2 {
               relatedTo(directed: Boolean = true, options: Node1Options, where: Node1Where): [Node1!]!
-              relatedToAggregate(directed: Boolean = true, where: Node1Where): Node2Node1RelatedToAggregationSelection
               relatedToConnection(after: String, directed: Boolean = true, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
-            }
-
-            type Node2AggregateSelection {
-              count: Int!
             }
 
             input Node2ConnectInput {
@@ -296,15 +281,6 @@ describe("Sort", () => {
             type Node2Edge {
               cursor: String!
               node: Node2!
-            }
-
-            type Node2Node1RelatedToAggregationSelection {
-              count: Int!
-              node: Node2Node1RelatedToNodeAggregateSelection
-            }
-
-            type Node2Node1RelatedToNodeAggregateSelection {
-              property: StringAggregateSelectionNonNullable!
             }
 
             input Node2Options {
@@ -488,10 +464,8 @@ describe("Sort", () => {
 
             type Query {
               node1s(options: Node1Options, where: Node1Where): [Node1!]!
-              node1sAggregate(where: Node1Where): Node1AggregateSelection!
               node1sConnection(after: String, first: Int, sort: [Node1Sort], where: Node1Where): Node1sConnection!
               node2s(options: Node2Options, where: Node2Where): [Node2!]!
-              node2sAggregate(where: Node2Where): Node2AggregateSelection!
               node2sConnection(after: String, first: Int, where: Node2Where): Node2sConnection!
             }
 
@@ -500,11 +474,6 @@ describe("Sort", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {

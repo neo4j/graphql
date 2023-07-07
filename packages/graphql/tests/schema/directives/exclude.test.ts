@@ -96,11 +96,6 @@ describe("@exclude directive", () => {
               title: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNullable!
-            }
-
             input MovieCreateInput {
               title: String
             }
@@ -171,7 +166,6 @@ describe("@exclude directive", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -180,11 +174,6 @@ describe("@exclude directive", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateActorsMutationResponse {
@@ -370,11 +359,6 @@ describe("@exclude directive", () => {
               title: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNullable!
-            }
-
             input MovieCreateInput {
               title: String
             }
@@ -442,7 +426,6 @@ describe("@exclude directive", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -451,11 +434,6 @@ describe("@exclude directive", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateInfo {
@@ -519,11 +497,6 @@ describe("@exclude directive", () => {
 
             type Movie {
               title: String
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -594,7 +567,6 @@ describe("@exclude directive", () => {
             type Query {
               customActorQuery: Actor
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -603,11 +575,6 @@ describe("@exclude directive", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateInfo {
@@ -712,18 +679,8 @@ describe("@exclude directive", () => {
 
             type Movie {
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -840,11 +797,6 @@ describe("@exclude directive", () => {
               where: MovieActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNullable!
-            }
-
             input MovieConnectInput {
               actors: [MovieActorsConnectFieldInput!]
             }
@@ -959,7 +911,6 @@ describe("@exclude directive", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -968,11 +919,6 @@ describe("@exclude directive", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateInfo {

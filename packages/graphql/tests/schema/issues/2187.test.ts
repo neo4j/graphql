@@ -70,23 +70,10 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNullable {
-              average: Float
-              max: Float
-              min: Float
-              sum: Float
-            }
-
             type Genre {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): GenreMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreMoviesConnectionSort!], where: GenreMoviesConnectionWhere): GenreMoviesConnection!
               name: String
-            }
-
-            type GenreAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNullable!
             }
 
             input GenreConnectInput {
@@ -113,17 +100,6 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             type GenreEdge {
               cursor: String!
               node: Genre!
-            }
-
-            type GenreMovieMoviesAggregationSelection {
-              count: Int!
-              node: GenreMovieMoviesNodeAggregateSelection
-            }
-
-            type GenreMovieMoviesNodeAggregateSelection {
-              imdbRating: FloatAggregateSelectionNullable!
-              title: StringAggregateSelectionNullable!
-              year: IntAggregateSelectionNullable!
             }
 
             input GenreMoviesAggregateInput {
@@ -369,27 +345,12 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               totalCount: Int!
             }
 
-            type IntAggregateSelectionNullable {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             type Movie {
               genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]! @deprecated(reason: \\"Do not use genre\\")
-              genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Do not use genre\\")
               genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection! @deprecated(reason: \\"Do not use genre\\")
               imdbRating: Float
               title: String @deprecated(reason: \\"Do not use title\\")
               year: Int
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              imdbRating: FloatAggregateSelectionNullable!
-              title: StringAggregateSelectionNullable!
-              year: IntAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -418,15 +379,6 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            type MovieGenreGenresAggregationSelection {
-              count: Int!
-              node: MovieGenreGenresNodeAggregateSelection
-            }
-
-            type MovieGenreGenresNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
             }
 
             input MovieGenresAggregateInput {
@@ -667,10 +619,8 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type Query {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -679,11 +629,6 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateGenresMutationResponse {

@@ -63,11 +63,6 @@ describe("Subscriptions", () => {
               name: String!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input ActorConnectWhere {
               node: ActorWhere!
             }
@@ -192,42 +187,13 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
-              average: Float
-              max: Float
-              min: Float
-              sum: Float
-            }
-
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
-            type IntAggregateSelectionNullable {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             type Movie {
               actorCount: Int
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               averageRating: Float
               id: ID
               isActive: Boolean
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -350,13 +316,6 @@ describe("Subscriptions", () => {
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
               where: MovieActorsConnectionWhere
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -609,10 +568,8 @@ describe("Subscriptions", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -621,11 +578,6 @@ describe("Subscriptions", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type Subscription {
@@ -692,12 +644,7 @@ describe("Subscriptions", () => {
 
             type Actor {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
             }
 
             input ActorConnectInput {
@@ -737,17 +684,6 @@ describe("Subscriptions", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
-            }
-
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
-            type ActorMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
             }
 
             input ActorMoviesAggregateInput {
@@ -1010,37 +946,13 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
-              average: Float
-              max: Float
-              min: Float
-              sum: Float
-            }
-
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
-            type IntAggregateSelectionNullable {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             type Movie {
               actorCount: Int
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
               averageRating: Float
               id: ID
               isActive: Boolean
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
             }
 
             input MovieActorsAggregateInput {
@@ -1112,13 +1024,6 @@ describe("Subscriptions", () => {
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
               where: MovieActorsConnectionWhere
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -1363,10 +1268,8 @@ describe("Subscriptions", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -1486,25 +1389,6 @@ describe("Subscriptions", () => {
               DELETE
               DELETE_RELATIONSHIP
               UPDATE
-            }
-
-            type FloatAggregateSelectionNullable {
-              average: Float
-              max: Float
-              min: Float
-              sum: Float
-            }
-
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
-            type IntAggregateSelectionNullable {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
             }
 
             type Movie {
@@ -1650,13 +1534,6 @@ describe("Subscriptions", () => {
             input MovieActorsUpdateInput {
               Person: [MovieActorsPersonUpdateFieldInput!]
               Star: [MovieActorsStarUpdateFieldInput!]
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -1899,12 +1776,7 @@ describe("Subscriptions", () => {
 
             type Person {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): PersonMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
             }
 
             input PersonConnectInput {
@@ -1944,17 +1816,6 @@ describe("Subscriptions", () => {
             type PersonEdge {
               cursor: String!
               node: Person!
-            }
-
-            type PersonMovieMoviesAggregationSelection {
-              count: Int!
-              node: PersonMovieMoviesNodeAggregateSelection
-            }
-
-            type PersonMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
             }
 
             input PersonMoviesAggregateInput {
@@ -2183,13 +2044,10 @@ describe("Subscriptions", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
               stars(options: StarOptions, where: StarWhere): [Star!]!
-              starsAggregate(where: StarWhere): StarAggregateSelection!
               starsConnection(after: String, first: Int, where: StarWhere): StarsConnection!
             }
 
@@ -2207,12 +2065,7 @@ describe("Subscriptions", () => {
 
             type Star {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): StarMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [StarMoviesConnectionSort!], where: StarMoviesConnectionWhere): StarMoviesConnection!
-            }
-
-            type StarAggregateSelection {
-              count: Int!
             }
 
             input StarConnectInput {
@@ -2252,17 +2105,6 @@ describe("Subscriptions", () => {
             type StarEdge {
               cursor: String!
               node: Star!
-            }
-
-            type StarMovieMoviesAggregationSelection {
-              count: Int!
-              node: StarMovieMoviesNodeAggregateSelection
-            }
-
-            type StarMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
             }
 
             input StarMoviesAggregateInput {
@@ -2621,12 +2463,7 @@ describe("Subscriptions", () => {
 
             type Actor {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
             }
 
             input ActorConnectInput {
@@ -2666,17 +2503,6 @@ describe("Subscriptions", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
-            }
-
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
-            type ActorMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
             }
 
             input ActorMoviesAggregateInput {
@@ -2939,49 +2765,13 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
-              average: Float
-              max: Float
-              min: Float
-              sum: Float
-            }
-
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
-            type IntAggregateSelectionNullable {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             type Movie {
               actorCount: Int
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               averageRating: Float
               id: ID
               isActive: Boolean
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              edge: MovieActorActorsEdgeAggregateSelection
-            }
-
-            type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -3103,13 +2893,6 @@ describe("Subscriptions", () => {
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
               where: MovieActorsConnectionWhere
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -3366,10 +3149,8 @@ describe("Subscriptions", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -3444,11 +3225,6 @@ describe("Subscriptions", () => {
 
             type Actor {
               name: String!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectWhere {
@@ -3597,20 +3373,10 @@ describe("Subscriptions", () => {
             type Movie {
               actorCount: Int
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               averageRating: Float
               id: ID
               isActive: Boolean
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -3884,7 +3650,6 @@ describe("Subscriptions", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -3896,11 +3661,6 @@ describe("Subscriptions", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type Subscription {
@@ -3960,14 +3720,7 @@ describe("Subscriptions", () => {
               id: Int!
               name: String
               owner(directed: Boolean = true, options: UserOptions, where: UserWhere): User
-              ownerAggregate(directed: Boolean = true, where: UserWhere): AgreementUserOwnerAggregationSelection
               ownerConnection(after: String, directed: Boolean = true, first: Int, sort: [AgreementOwnerConnectionSort!], where: AgreementOwnerConnectionWhere): AgreementOwnerConnection!
-            }
-
-            type AgreementAggregateSelection {
-              count: Int!
-              id: IntAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
             }
 
             input AgreementConnectInput {
@@ -4247,16 +4000,6 @@ describe("Subscriptions", () => {
               updatedAgreement: AgreementEventPayload!
             }
 
-            type AgreementUserOwnerAggregationSelection {
-              count: Int!
-              node: AgreementUserOwnerNodeAggregateSelection
-            }
-
-            type AgreementUserOwnerNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
-              username: StringAggregateSelectionNonNullable!
-            }
-
             input AgreementWhere {
               AND: [AgreementWhere!]
               NOT: AgreementWhere
@@ -4317,13 +4060,6 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
             type Mutation {
               createAgreements(input: [AgreementCreateInput!]!): CreateAgreementsMutationResponse!
               deleteAgreements(delete: AgreementDeleteInput, where: AgreementWhere): DeleteInfo!
@@ -4340,7 +4076,6 @@ describe("Subscriptions", () => {
 
             type Query {
               agreements(options: AgreementOptions, where: AgreementWhere): [Agreement!]!
-              agreementsAggregate(where: AgreementWhere): AgreementAggregateSelection!
               agreementsConnection(after: String, first: Int, sort: [AgreementSort], where: AgreementWhere): AgreementsConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
@@ -4544,25 +4279,6 @@ describe("Subscriptions", () => {
               UPDATE
             }
 
-            type FloatAggregateSelectionNullable {
-              average: Float
-              max: Float
-              min: Float
-              sum: Float
-            }
-
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
-            type IntAggregateSelectionNullable {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             type Movie {
               actorCount: Int
               actors(directed: Boolean = true, options: QueryOptions, where: ActorWhere): [Actor!]!
@@ -4706,13 +4422,6 @@ describe("Subscriptions", () => {
             input MovieActorsUpdateInput {
               Person: [MovieActorsPersonUpdateFieldInput!]
               Star: [MovieActorsStarUpdateFieldInput!]
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -4955,12 +4664,7 @@ describe("Subscriptions", () => {
 
             type Person {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): PersonMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
             }
 
             input PersonConnectInput {
@@ -5000,17 +4704,6 @@ describe("Subscriptions", () => {
             type PersonEdge {
               cursor: String!
               node: Person!
-            }
-
-            type PersonMovieMoviesAggregationSelection {
-              count: Int!
-              node: PersonMovieMoviesNodeAggregateSelection
-            }
-
-            type PersonMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
             }
 
             input PersonMoviesAggregateInput {
@@ -5239,10 +4932,8 @@ describe("Subscriptions", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
               stars(options: StarOptions, where: StarWhere): [Star!]!
               starsAggregate(where: StarWhere): StarAggregateSelection!
@@ -5263,7 +4954,6 @@ describe("Subscriptions", () => {
 
             type Star {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): StarMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [StarMoviesConnectionSort!], where: StarMoviesConnectionWhere): StarMoviesConnection!
             }
 
@@ -5294,17 +4984,6 @@ describe("Subscriptions", () => {
             type StarEdge {
               cursor: String!
               node: Star!
-            }
-
-            type StarMovieMoviesAggregationSelection {
-              count: Int!
-              node: StarMovieMoviesNodeAggregateSelection
-            }
-
-            type StarMovieMoviesNodeAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              id: IDAggregateSelectionNullable!
             }
 
             input StarMoviesAggregateInput {
@@ -5751,13 +5430,6 @@ describe("Subscriptions", () => {
               shortest: ID
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
             type Movie implements Production {
               director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
               directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
@@ -5916,10 +5588,6 @@ describe("Subscriptions", () => {
             type Person implements Creature {
               movies(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): Production!
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
             }
 
             input PersonConnectInput {
@@ -6244,10 +5912,8 @@ describe("Subscriptions", () => {
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
@@ -6257,13 +5923,6 @@ describe("Subscriptions", () => {
               episode: Int!
               id: ID
               title: String!
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
-              episode: IntAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input SeriesConnectInput {

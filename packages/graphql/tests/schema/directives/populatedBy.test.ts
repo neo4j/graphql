@@ -131,24 +131,11 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
-                  longest: ID
-                  shortest: ID
-                }
-
                 type Movie {
                   callback1: String!
                   callback2: String!
                   callback3: String!
                   id: ID
-                }
-
-                type MovieAggregateSelection {
-                  callback1: StringAggregateSelectionNonNullable!
-                  callback2: StringAggregateSelectionNonNullable!
-                  callback3: StringAggregateSelectionNonNullable!
-                  count: Int!
-                  id: IDAggregateSelectionNullable!
                 }
 
                 input MovieCreateInput {
@@ -251,7 +238,6 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
@@ -260,11 +246,6 @@ describe("@populatedBy tests", () => {
                   ASC
                   \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
                   DESC
-                }
-
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
                 }
 
                 type UpdateInfo {
@@ -334,31 +315,11 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
-                  longest: ID
-                  shortest: ID
-                }
-
-                type IntAggregateSelectionNonNullable {
-                  average: Float!
-                  max: Int!
-                  min: Int!
-                  sum: Int!
-                }
-
                 type Movie {
                   callback1: Int!
                   callback2: Int!
                   callback3: Int!
                   id: ID
-                }
-
-                type MovieAggregateSelection {
-                  callback1: IntAggregateSelectionNonNullable!
-                  callback2: IntAggregateSelectionNonNullable!
-                  callback3: IntAggregateSelectionNonNullable!
-                  count: Int!
-                  id: IDAggregateSelectionNullable!
                 }
 
                 input MovieCreateInput {
@@ -455,7 +416,6 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
@@ -633,11 +593,6 @@ describe("@populatedBy tests", () => {
                   id: ID!
                 }
 
-                type GenreAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelectionNonNullable!
-                }
-
                 input GenreConnectWhere {
                   node: GenreWhere!
                 }
@@ -693,26 +648,10 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelectionNonNullable {
-                  longest: ID!
-                  shortest: ID!
-                }
-
-                type IDAggregateSelectionNullable {
-                  longest: ID
-                  shortest: ID
-                }
-
                 type Movie {
                   genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]!
-                  genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection
                   genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
                   id: ID
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelectionNullable!
                 }
 
                 input MovieConnectInput {
@@ -735,23 +674,6 @@ describe("@populatedBy tests", () => {
                 type MovieEdge {
                   cursor: String!
                   node: Movie!
-                }
-
-                type MovieGenreGenresAggregationSelection {
-                  count: Int!
-                  edge: MovieGenreGenresEdgeAggregateSelection
-                  node: MovieGenreGenresNodeAggregateSelection
-                }
-
-                type MovieGenreGenresEdgeAggregateSelection {
-                  callback1: StringAggregateSelectionNonNullable!
-                  callback2: StringAggregateSelectionNonNullable!
-                  callback3: StringAggregateSelectionNonNullable!
-                  id: IDAggregateSelectionNonNullable!
-                }
-
-                type MovieGenreGenresNodeAggregateSelection {
-                  id: IDAggregateSelectionNonNullable!
                 }
 
                 input MovieGenresAggregateInput {
@@ -1052,10 +974,8 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   genres(options: GenreOptions, where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): GenreAggregateSelection!
                   genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1132,11 +1052,6 @@ describe("@populatedBy tests", () => {
                   ASC
                   \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
                   DESC
-                }
-
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
                 }
 
                 type UpdateGenresMutationResponse {
@@ -1229,11 +1144,6 @@ describe("@populatedBy tests", () => {
                   id: ID!
                 }
 
-                type GenreAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelectionNonNullable!
-                }
-
                 input GenreConnectWhere {
                   node: GenreWhere!
                 }
@@ -1289,33 +1199,10 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelectionNonNullable {
-                  longest: ID!
-                  shortest: ID!
-                }
-
-                type IDAggregateSelectionNullable {
-                  longest: ID
-                  shortest: ID
-                }
-
-                type IntAggregateSelectionNonNullable {
-                  average: Float!
-                  max: Int!
-                  min: Int!
-                  sum: Int!
-                }
-
                 type Movie {
                   genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]!
-                  genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection
                   genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
                   id: ID
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelectionNullable!
                 }
 
                 input MovieConnectInput {
@@ -1338,23 +1225,6 @@ describe("@populatedBy tests", () => {
                 type MovieEdge {
                   cursor: String!
                   node: Movie!
-                }
-
-                type MovieGenreGenresAggregationSelection {
-                  count: Int!
-                  edge: MovieGenreGenresEdgeAggregateSelection
-                  node: MovieGenreGenresNodeAggregateSelection
-                }
-
-                type MovieGenreGenresEdgeAggregateSelection {
-                  callback1: IntAggregateSelectionNonNullable!
-                  callback2: IntAggregateSelectionNonNullable!
-                  callback3: IntAggregateSelectionNonNullable!
-                  id: IDAggregateSelectionNonNullable!
-                }
-
-                type MovieGenreGenresNodeAggregateSelection {
-                  id: IDAggregateSelectionNonNullable!
                 }
 
                 input MovieGenresAggregateInput {
@@ -1625,10 +1495,8 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   genres(options: GenreOptions, where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): GenreAggregateSelection!
                   genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 

@@ -75,7 +75,6 @@ describe("Plural option", () => {
 
             type Query {
               techs(options: TechOptions, where: TechWhere): [Tech!]!
-              techsAggregate(where: TechWhere): TechAggregateSelection!
               techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
             }
 
@@ -86,20 +85,9 @@ describe("Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
-            }
-
             type Tech {
               name: String
               value: String
-            }
-
-            type TechAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNullable!
-              value: StringAggregateSelectionNullable!
             }
 
             input TechCreateInput {
@@ -233,7 +221,6 @@ describe("Plural option", () => {
 
             type Query {
               techs(options: TechOptions, where: TechWhere): [Tech!]!
-              techsAggregate(where: TechWhere): TechAggregateSelection!
               techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
             }
 
@@ -244,20 +231,9 @@ describe("Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
-            }
-
             type Tech {
               name: String
               value: String
-            }
-
-            type TechAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNullable!
-              value: StringAggregateSelectionNullable!
             }
 
             input TechCreateInput {
@@ -391,7 +367,6 @@ describe("Plural option", () => {
 
             type Query {
               technologies(options: TechOptions, where: TechWhere): [Tech!]!
-              technologiesAggregate(where: TechWhere): TechAggregateSelection!
               technologiesConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechnologiesConnection!
             }
 
@@ -402,20 +377,9 @@ describe("Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
-            }
-
             type Tech {
               name: String
               value: String
-            }
-
-            type TechAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNullable!
-              value: StringAggregateSelectionNullable!
             }
 
             input TechCreateInput {
@@ -549,7 +513,6 @@ describe("Plural option", () => {
 
             type Query {
               techs(options: TechsOptions, where: TechsWhere): [Techs!]!
-              techsAggregate(where: TechsWhere): TechsAggregateSelection!
               techsConnection(after: String, first: Int, sort: [TechsSort], where: TechsWhere): TechsConnection!
             }
 
@@ -560,18 +523,8 @@ describe("Plural option", () => {
               DESC
             }
 
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
-            }
-
             type Techs {
               value: String
-            }
-
-            type TechsAggregateSelection {
-              count: Int!
-              value: StringAggregateSelectionNullable!
             }
 
             type TechsConnection {
@@ -692,7 +645,6 @@ describe("Plural option", () => {
 
             type Query {
               techs(options: UserOptions, where: UserWhere): [User!]!
-              techsAggregate(where: UserWhere): UserAggregateSelection!
               techsConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): TechsConnection!
             }
 
@@ -701,11 +653,6 @@ describe("Plural option", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type TechsConnection {
@@ -729,11 +676,6 @@ describe("Plural option", () => {
 
             type User {
               value: String
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              value: StringAggregateSelectionNullable!
             }
 
             input UserCreateInput {
@@ -835,7 +777,6 @@ describe("Plural option", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -844,11 +785,6 @@ describe("Plural option", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateInfo {
@@ -866,11 +802,6 @@ describe("Plural option", () => {
 
             type User {
               value: String
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              value: StringAggregateSelectionNullable!
             }
 
             input UserCreateInput {
@@ -978,7 +909,6 @@ describe("Plural option", () => {
 
             type Query {
               users(options: UsersOptions, where: UsersWhere): [Users!]!
-              usersAggregate(where: UsersWhere): UsersAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UsersSort], where: UsersWhere): UsersConnection!
             }
 
@@ -987,11 +917,6 @@ describe("Plural option", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateInfo {
@@ -1009,11 +934,6 @@ describe("Plural option", () => {
 
             type Users {
               value: String
-            }
-
-            type UsersAggregateSelection {
-              count: Int!
-              value: StringAggregateSelectionNullable!
             }
 
             type UsersConnection {

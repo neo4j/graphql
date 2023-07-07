@@ -69,11 +69,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               name: String!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             type ActorEdge {
               cursor: String!
               node: Actor!
@@ -119,18 +114,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type Movie @key(fields: \\"title\\") @shareable {
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -207,11 +192,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             type MovieActorsRelationship {
               cursor: String!
               node: Actor!
-            }
-
-            type MovieAggregateSelection @shareable {
-              count: Int!
-              title: StringAggregateSelectionNonNullable!
             }
 
             type MovieEdge @shareable {
@@ -298,10 +278,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               _entities(representations: [_Any!]!): [_Entity]!
               _service: _Service!
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]! @shareable
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @shareable
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection! @shareable
             }
 
@@ -310,11 +288,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
             }
 
             scalar _Any
@@ -388,11 +361,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type Actor {
               name: String!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectWhere {
@@ -474,19 +442,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type Movie @key(fields: \\"title\\") @key(fields: \\"id\\") @shareable {
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID!
               title: String!
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -707,7 +665,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               _entities(representations: [_Any!]!): [_Entity]!
               _service: _Service!
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
             }
 
@@ -716,11 +673,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

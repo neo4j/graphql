@@ -84,10 +84,8 @@ describe("Pluralize consistency", () => {
 
             type Query {
               superFriends(options: super_friendOptions, where: super_friendWhere): [super_friend!]!
-              superFriendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
               superFriendsConnection(after: String, first: Int, sort: [super_friendSort], where: super_friendWhere): SuperFriendsConnection!
               superUsers(options: super_userOptions, where: super_userWhere): [super_user!]!
-              superUsersAggregate(where: super_userWhere): super_userAggregateSelection!
               superUsersConnection(after: String, first: Int, sort: [super_userSort], where: super_userWhere): SuperUsersConnection!
             }
 
@@ -96,11 +94,6 @@ describe("Pluralize consistency", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type SuperFriendsConnection {
@@ -135,11 +128,6 @@ describe("Pluralize consistency", () => {
 
             type super_friend {
               name: String!
-            }
-
-            type super_friendAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input super_friendConnectWhere {
@@ -193,14 +181,8 @@ describe("Pluralize consistency", () => {
 
             type super_user {
               my_friend(directed: Boolean = true, options: super_friendOptions, where: super_friendWhere): [super_friend!]!
-              my_friendAggregate(directed: Boolean = true, where: super_friendWhere): super_usersuper_friendMy_friendAggregationSelection
               my_friendConnection(after: String, directed: Boolean = true, first: Int, sort: [super_userMy_friendConnectionSort!], where: super_userMy_friendConnectionWhere): super_userMy_friendConnection!
               name: String!
-            }
-
-            type super_userAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input super_userConnectInput {
@@ -415,15 +397,6 @@ describe("Pluralize consistency", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
-            }
-
-            type super_usersuper_friendMy_friendAggregationSelection {
-              count: Int!
-              node: super_usersuper_friendMy_friendNodeAggregateSelection
-            }
-
-            type super_usersuper_friendMy_friendNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }"
         `);
     });

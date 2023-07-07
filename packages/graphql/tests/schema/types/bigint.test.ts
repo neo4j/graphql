@@ -44,13 +44,6 @@ describe("Bigint", () => {
             \\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregateSelectionNonNullable {
-              average: BigInt!
-              max: BigInt!
-              min: BigInt!
-              sum: BigInt!
-            }
-
             type CreateFilesMutationResponse {
               files: [File!]!
               info: CreateInfo!
@@ -71,12 +64,6 @@ describe("Bigint", () => {
             type File {
               name: String!
               size: BigInt!
-            }
-
-            type FileAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
-              size: BigIntAggregateSelectionNonNullable!
             }
 
             input FileCreateInput {
@@ -159,7 +146,6 @@ describe("Bigint", () => {
 
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
-              filesAggregate(where: FileWhere): FileAggregateSelection!
               filesConnection(after: String, first: Int, sort: [FileSort], where: FileWhere): FilesConnection!
             }
 
@@ -168,11 +154,6 @@ describe("Bigint", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateFilesMutationResponse {

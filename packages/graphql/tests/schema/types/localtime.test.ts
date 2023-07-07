@@ -56,30 +56,14 @@ describe("Localtime", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"
             A local time, represented as a time string without timezone information
             \\"\\"\\"
             scalar LocalTime
 
-            type LocalTimeAggregateSelectionNullable {
-              max: LocalTime
-              min: LocalTime
-            }
-
             type Movie {
               id: ID
               time: LocalTime
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
-              time: LocalTimeAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -160,7 +144,6 @@ describe("Localtime", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 

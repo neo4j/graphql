@@ -54,13 +54,6 @@ describe("200", () => {
               name: String!
             }
 
-            type CategoryAggregateSelection {
-              categoryId: IDAggregateSelectionNonNullable!
-              count: Int!
-              description: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input CategoryCreateInput {
               description: String! = \\"\\"
               exampleImageLocations: [String!]
@@ -155,11 +148,6 @@ describe("200", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
             type Mutation {
               createCategories(input: [CategoryCreateInput!]!): CreateCategoriesMutationResponse!
               deleteCategories(where: CategoryWhere): DeleteInfo!
@@ -176,7 +164,6 @@ describe("200", () => {
 
             type Query {
               categories(options: CategoryOptions, where: CategoryWhere): [Category!]!
-              categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
               categoriesConnection(after: String, first: Int, sort: [CategorySort], where: CategoryWhere): CategoriesConnection!
             }
 
@@ -185,11 +172,6 @@ describe("200", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateCategoriesMutationResponse {

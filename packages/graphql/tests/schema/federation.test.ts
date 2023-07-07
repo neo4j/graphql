@@ -110,14 +110,8 @@ describe("Apollo Federation", () => {
 
             type Post {
               author: User!
-              authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               content: String!
-            }
-
-            type PostAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
-              count: Int!
             }
 
             input PostAuthorAggregateInput {
@@ -288,15 +282,6 @@ describe("Apollo Federation", () => {
               content: String
             }
 
-            type PostUserAuthorAggregationSelection {
-              count: Int!
-              node: PostUserAuthorNodeAggregateSelection
-            }
-
-            type PostUserAuthorNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input PostWhere {
               AND: [PostWhere!]
               NOT: PostWhere
@@ -327,10 +312,8 @@ describe("Apollo Federation", () => {
             type Query {
               _service: _Service!
               posts(options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
               users(options: UserOptions, where: UserWhere): [User!]! @shareable
-              usersAggregate(where: UserWhere): UserAggregateSelection! @shareable
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection! @shareable
             }
 
@@ -339,11 +322,6 @@ describe("Apollo Federation", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable @shareable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo @shareable {
@@ -367,13 +345,7 @@ describe("Apollo Federation", () => {
             type User @shareable {
               name: String!
               posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(directed: Boolean = true, where: PostWhere): UserPostPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
-            }
-
-            type UserAggregateSelection @shareable {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input UserConnectInput {
@@ -409,15 +381,6 @@ describe("Apollo Federation", () => {
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [UserSort!]
-            }
-
-            type UserPostPostsAggregationSelection {
-              count: Int!
-              node: UserPostPostsNodeAggregateSelection
-            }
-
-            type UserPostPostsNodeAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
             }
 
             input UserPostsAggregateInput {
@@ -713,14 +676,8 @@ describe("Apollo Federation", () => {
 
             type Post {
               author: User!
-              authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               content: String!
-            }
-
-            type PostAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
-              count: Int!
             }
 
             input PostAuthorAggregateInput {
@@ -884,15 +841,6 @@ describe("Apollo Federation", () => {
               content: String
             }
 
-            type PostUserAuthorAggregationSelection {
-              count: Int!
-              node: PostUserAuthorNodeAggregateSelection
-            }
-
-            type PostUserAuthorNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input PostWhere {
               AND: [PostWhere!]
               NOT: PostWhere
@@ -924,10 +872,8 @@ describe("Apollo Federation", () => {
               _entities(representations: [_Any!]!): [_Entity]!
               _service: _Service!
               posts(options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -936,11 +882,6 @@ describe("Apollo Federation", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable @federation__shareable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo @federation__shareable {
@@ -963,11 +904,6 @@ describe("Apollo Federation", () => {
 
             type User @key(fields: \\"name\\", resolvable: false) {
               name: String!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input UserConnectWhere {

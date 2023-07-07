@@ -60,11 +60,6 @@ describe("Node Interface Types", () => {
               title: String!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNonNullable!
-            }
-
             input MovieCreateInput {
               title: String!
             }
@@ -139,7 +134,6 @@ describe("Node Interface Types", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               \\"\\"\\"Fetches an object given its ID\\"\\"\\"
               node(
@@ -153,11 +147,6 @@ describe("Node Interface Types", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {

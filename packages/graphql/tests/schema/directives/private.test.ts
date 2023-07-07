@@ -62,11 +62,6 @@ describe("@private directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
@@ -83,7 +78,6 @@ describe("@private directive", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -109,11 +103,6 @@ describe("@private directive", () => {
 
             type User implements UserInterface {
               id: ID
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input UserCreateInput {

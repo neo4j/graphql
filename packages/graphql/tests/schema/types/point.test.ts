@@ -59,10 +59,6 @@ describe("Point", () => {
               filmedAt: Point!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-            }
-
             input MovieCreateInput {
               filmedAt: PointInput!
             }
@@ -149,7 +145,6 @@ describe("Point", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -230,10 +225,6 @@ describe("Point", () => {
               partLocation: CartesianPoint!
             }
 
-            type MachineAggregateSelection {
-              count: Int!
-            }
-
             input MachineCreateInput {
               partLocation: CartesianPointInput!
             }
@@ -300,7 +291,6 @@ describe("Point", () => {
 
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
               machinesConnection(after: String, first: Int, sort: [MachineSort], where: MachineWhere): MachinesConnection!
             }
 
@@ -360,10 +350,6 @@ describe("Point", () => {
 
             type Movie {
               filmedAt: [Point!]!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
             }
 
             input MovieCreateInput {
@@ -432,7 +418,6 @@ describe("Point", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
@@ -501,10 +486,6 @@ describe("Point", () => {
               partLocations: [CartesianPoint!]!
             }
 
-            type MachineAggregateSelection {
-              count: Int!
-            }
-
             input MachineCreateInput {
               partLocations: [CartesianPointInput!]!
             }
@@ -557,7 +538,6 @@ describe("Point", () => {
 
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
               machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
             }
 

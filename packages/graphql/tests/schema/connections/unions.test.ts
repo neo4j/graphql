@@ -61,11 +61,6 @@ describe("Unions", () => {
               publicationsConnection(after: String, directed: Boolean = true, first: Int, sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
-            type AuthorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input AuthorConnectInput {
               publications: AuthorPublicationsConnectInput
             }
@@ -310,14 +305,8 @@ describe("Unions", () => {
 
             type Book {
               author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
-              authorAggregate(directed: Boolean = true, where: AuthorWhere): BookAuthorAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
               title: String!
-            }
-
-            type BookAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input BookAuthorAggregateInput {
@@ -331,20 +320,6 @@ describe("Unions", () => {
               count_LTE: Int
               edge: BookAuthorEdgeAggregationWhereInput
               node: BookAuthorNodeAggregationWhereInput
-            }
-
-            type BookAuthorAuthorAggregationSelection {
-              count: Int!
-              edge: BookAuthorAuthorEdgeAggregateSelection
-              node: BookAuthorAuthorNodeAggregateSelection
-            }
-
-            type BookAuthorAuthorEdgeAggregateSelection {
-              words: IntAggregateSelectionNonNullable!
-            }
-
-            type BookAuthorAuthorNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input BookAuthorConnectFieldInput {
@@ -619,23 +594,10 @@ describe("Unions", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
             type Journal {
               author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
-              authorAggregate(directed: Boolean = true, where: AuthorWhere): JournalAuthorAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
               subject: String!
-            }
-
-            type JournalAggregateSelection {
-              count: Int!
-              subject: StringAggregateSelectionNonNullable!
             }
 
             input JournalAuthorAggregateInput {
@@ -649,20 +611,6 @@ describe("Unions", () => {
               count_LTE: Int
               edge: JournalAuthorEdgeAggregationWhereInput
               node: JournalAuthorNodeAggregationWhereInput
-            }
-
-            type JournalAuthorAuthorAggregationSelection {
-              count: Int!
-              edge: JournalAuthorAuthorEdgeAggregateSelection
-              node: JournalAuthorAuthorNodeAggregateSelection
-            }
-
-            type JournalAuthorAuthorEdgeAggregateSelection {
-              words: IntAggregateSelectionNonNullable!
-            }
-
-            type JournalAuthorAuthorNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input JournalAuthorConnectFieldInput {
@@ -939,13 +887,10 @@ describe("Unions", () => {
 
             type Query {
               authors(options: AuthorOptions, where: AuthorWhere): [Author!]!
-              authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
               authorsConnection(after: String, first: Int, sort: [AuthorSort], where: AuthorWhere): AuthorsConnection!
               books(options: BookOptions, where: BookWhere): [Book!]!
-              booksAggregate(where: BookWhere): BookAggregateSelection!
               booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): BooksConnection!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
-              journalsAggregate(where: JournalWhere): JournalAggregateSelection!
               journalsConnection(after: String, first: Int, sort: [JournalSort], where: JournalWhere): JournalsConnection!
             }
 
@@ -959,11 +904,6 @@ describe("Unions", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateAuthorsMutationResponse {

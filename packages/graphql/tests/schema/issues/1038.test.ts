@@ -49,12 +49,6 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               code: String
             }
 
-            type AWSAccountAggregateSelection {
-              accountName: StringAggregateSelectionNullable!
-              code: StringAggregateSelectionNullable!
-              count: Int!
-            }
-
             input AWSAccountCreateInput {
               accountName: String
               code: String
@@ -138,12 +132,6 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             type DNSZone {
               awsId: String
               zoneType: String
-            }
-
-            type DNSZoneAggregateSelection {
-              awsId: StringAggregateSelectionNullable!
-              count: Int!
-              zoneType: StringAggregateSelectionNullable!
             }
 
             input DNSZoneCreateInput {
@@ -235,10 +223,8 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
 
             type Query {
               awsAccounts(options: AWSAccountOptions, where: AWSAccountWhere): [AWSAccount!]!
-              awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection!
               awsAccountsConnection(after: String, first: Int, sort: [AWSAccountSort], where: AWSAccountWhere): AwsAccountsConnection!
               dnsZones(options: DNSZoneOptions, where: DNSZoneWhere): [DNSZone!]!
-              dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection!
               dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort], where: DNSZoneWhere): DnsZonesConnection!
             }
 
@@ -247,11 +233,6 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateAwsAccountsMutationResponse {

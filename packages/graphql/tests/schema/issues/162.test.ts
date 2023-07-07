@@ -75,18 +75,6 @@ describe("162", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
-            type IntAggregateSelectionNullable {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             type Mutation {
               createTigerJawLevel2Part1s(input: [TigerJawLevel2Part1CreateInput!]!): CreateTigerJawLevel2Part1sMutationResponse!
               createTigerJawLevel2s(input: [TigerJawLevel2CreateInput!]!): CreateTigerJawLevel2sMutationResponse!
@@ -109,13 +97,10 @@ describe("162", () => {
 
             type Query {
               tigerJawLevel2Part1s(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
-              tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection!
               tigerJawLevel2Part1sConnection(after: String, first: Int, sort: [TigerJawLevel2Part1Sort], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1sConnection!
               tigerJawLevel2s(options: TigerJawLevel2Options, where: TigerJawLevel2Where): [TigerJawLevel2!]!
-              tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection!
               tigerJawLevel2sConnection(after: String, first: Int, sort: [TigerJawLevel2Sort], where: TigerJawLevel2Where): TigerJawLevel2sConnection!
               tigers(options: TigerOptions, where: TigerWhere): [Tiger!]!
-              tigersAggregate(where: TigerWhere): TigerAggregateSelection!
               tigersConnection(after: String, first: Int, sort: [TigerSort], where: TigerWhere): TigersConnection!
             }
 
@@ -128,11 +113,6 @@ describe("162", () => {
 
             type Tiger {
               x: Int
-            }
-
-            type TigerAggregateSelection {
-              count: Int!
-              x: IntAggregateSelectionNullable!
             }
 
             input TigerConnectWhere {
@@ -151,13 +131,7 @@ describe("162", () => {
             type TigerJawLevel2 {
               id: ID
               part1(directed: Boolean = true, options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1!
-              part1Aggregate(directed: Boolean = true, where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
               part1Connection(after: String, directed: Boolean = true, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
-            }
-
-            type TigerJawLevel2AggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input TigerJawLevel2ConnectInput {
@@ -194,7 +168,6 @@ describe("162", () => {
             type TigerJawLevel2Part1 {
               id: ID
               tiger(directed: Boolean = true, options: TigerOptions, where: TigerWhere): Tiger!
-              tigerAggregate(directed: Boolean = true, where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
               tigerConnection(after: String, directed: Boolean = true, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
             }
 
@@ -208,11 +181,6 @@ describe("162", () => {
               count_LT: Int
               count_LTE: Int
               node: TigerJawLevel2Part1NodeAggregationWhereInput
-            }
-
-            type TigerJawLevel2Part1AggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input TigerJawLevel2Part1ConnectFieldInput {
@@ -410,15 +378,6 @@ describe("162", () => {
               node: Tiger!
             }
 
-            type TigerJawLevel2Part1TigerTigerAggregationSelection {
-              count: Int!
-              node: TigerJawLevel2Part1TigerTigerNodeAggregateSelection
-            }
-
-            type TigerJawLevel2Part1TigerTigerNodeAggregateSelection {
-              x: IntAggregateSelectionNullable!
-            }
-
             input TigerJawLevel2Part1TigerUpdateConnectionInput {
               node: TigerUpdateInput
             }
@@ -486,15 +445,6 @@ describe("162", () => {
             \\"\\"\\"
             input TigerJawLevel2Sort {
               id: SortDirection
-            }
-
-            type TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection {
-              count: Int!
-              node: TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection
-            }
-
-            type TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection {
-              id: IDAggregateSelectionNullable!
             }
 
             input TigerJawLevel2UpdateInput {

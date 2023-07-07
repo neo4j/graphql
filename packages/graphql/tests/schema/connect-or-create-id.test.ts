@@ -46,14 +46,8 @@ describe("connect or create with id", () => {
 
             type Actor {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input ActorConnectInput {
@@ -80,16 +74,6 @@ describe("connect or create with id", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
-            }
-
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
-            type ActorMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input ActorMoviesAggregateInput {
@@ -316,20 +300,9 @@ describe("connect or create with id", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
             type Movie {
               id: ID!
               title: String!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectOrCreateWhere {
@@ -429,10 +402,8 @@ describe("connect or create with id", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -441,11 +412,6 @@ describe("connect or create with id", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -511,20 +477,10 @@ describe("connect or create with id", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
-            }
-
             type DeleteInfo {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
             }
 
             type Mutation {
@@ -548,16 +504,8 @@ describe("connect or create with id", () => {
               content: String!
               createdAt: DateTime!
               creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
-              creatorAggregate(directed: Boolean = true, where: UserWhere): PostUserCreatorAggregationSelection
               creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostCreatorConnectionSort!], where: PostCreatorConnectionWhere): PostCreatorConnection!
               id: ID!
-            }
-
-            type PostAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
-              count: Int!
-              createdAt: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
             }
 
             input PostConnectInput {
@@ -764,16 +712,6 @@ describe("connect or create with id", () => {
               id: ID
             }
 
-            type PostUserCreatorAggregationSelection {
-              count: Int!
-              node: PostUserCreatorNodeAggregateSelection
-            }
-
-            type PostUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input PostWhere {
               AND: [PostWhere!]
               NOT: PostWhere
@@ -821,10 +759,8 @@ describe("connect or create with id", () => {
 
             type Query {
               posts(options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -833,11 +769,6 @@ describe("connect or create with id", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {
@@ -862,14 +793,7 @@ describe("connect or create with id", () => {
               id: ID!
               name: String!
               posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(directed: Boolean = true, where: PostWhere): UserPostPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input UserConnectInput {
@@ -917,17 +841,6 @@ describe("connect or create with id", () => {
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [UserSort!]
-            }
-
-            type UserPostPostsAggregationSelection {
-              count: Int!
-              node: UserPostPostsNodeAggregateSelection
-            }
-
-            type UserPostPostsNodeAggregateSelection {
-              content: StringAggregateSelectionNonNullable!
-              createdAt: DateTimeAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
             }
 
             input UserPostsAggregateInput {

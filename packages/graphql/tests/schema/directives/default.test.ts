@@ -71,34 +71,10 @@ describe("@default directive", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
-            }
-
             type DeleteInfo {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
-            }
-
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
             }
 
             enum Location {
@@ -123,7 +99,6 @@ describe("@default directive", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -132,11 +107,6 @@ describe("@default directive", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {
@@ -162,17 +132,6 @@ describe("@default directive", () => {
               toBeOverridden: String!
               verified: Boolean!
               verifiedDate: DateTime!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              fromInterface: StringAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
-              numberOfFriends: IntAggregateSelectionNonNullable!
-              rating: FloatAggregateSelectionNonNullable!
-              toBeOverridden: StringAggregateSelectionNonNullable!
-              verifiedDate: DateTimeAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {

@@ -92,11 +92,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               since_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
@@ -204,7 +199,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -213,11 +207,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {
@@ -238,12 +227,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               followingConnection(after: String, directed: Boolean = true, first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
               id: ID!
               userName: String!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              userName: StringAggregateSelectionNonNullable!
             }
 
             input UserConnectInput {

@@ -69,11 +69,6 @@ describe("Authorization", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
             type Mutation {
               createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
@@ -93,16 +88,9 @@ describe("Authorization", () => {
 
             type Post {
               author(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
-              authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               id: ID!
               name: String!
-            }
-
-            type PostAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input PostAuthorAggregateInput {
@@ -273,16 +261,6 @@ describe("Authorization", () => {
               name: String
             }
 
-            type PostUserAuthorAggregationSelection {
-              count: Int!
-              node: PostUserAuthorNodeAggregateSelection
-            }
-
-            type PostUserAuthorNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input PostWhere {
               AND: [PostWhere!]
               NOT: PostWhere
@@ -322,10 +300,8 @@ describe("Authorization", () => {
 
             type Query {
               posts(options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -334,11 +310,6 @@ describe("Authorization", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {
@@ -363,14 +334,7 @@ describe("Authorization", () => {
               id: ID!
               name: String!
               posts(directed: Boolean = true, options: UserOptions, where: UserWhere): [User!]!
-              postsAggregate(directed: Boolean = true, where: UserWhere): UserUserPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input UserConnectInput {
@@ -543,16 +507,6 @@ describe("Authorization", () => {
               id: ID
               name: String
               posts: [UserPostsUpdateFieldInput!]
-            }
-
-            type UserUserPostsAggregationSelection {
-              count: Int!
-              node: UserUserPostsNodeAggregateSelection
-            }
-
-            type UserUserPostsNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input UserWhere {

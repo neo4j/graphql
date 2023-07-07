@@ -267,11 +267,6 @@ describe("Connect Or Create", () => {
               Series: [ActorActedInSeriesUpdateFieldInput!]
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input ActorConnectInput {
               actedIn: ActorActedInConnectInput
             }
@@ -395,12 +390,6 @@ describe("Connect Or Create", () => {
               title: String!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
-            }
-
             input MovieConnectOrCreateWhere {
               node: MovieUniqueWhere!
             }
@@ -511,13 +500,10 @@ describe("Connect Or Create", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
@@ -529,12 +515,6 @@ describe("Connect Or Create", () => {
             type Series {
               isan: String!
               title: String!
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
-              isan: StringAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input SeriesConnectOrCreateWhere {
@@ -623,11 +603,6 @@ describe("Connect Or Create", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

@@ -79,18 +79,8 @@ describe("Custom-mutations", () => {
               id: ID
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
             type Movie {
               id: ID
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -162,7 +152,6 @@ describe("Custom-mutations", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               testCypherQuery(input: ExampleInput): String
               testQuery(input: ExampleInput): String

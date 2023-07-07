@@ -71,11 +71,6 @@ describe("String Comparators", () => {
               title: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNullable!
-            }
-
             input MovieCreateInput {
               title: String
             }
@@ -147,7 +142,6 @@ describe("String Comparators", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -156,11 +150,6 @@ describe("String Comparators", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateInfo {
@@ -214,11 +203,6 @@ describe("String Comparators", () => {
 
             type Movie {
               title: String
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -288,7 +272,6 @@ describe("String Comparators", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -297,11 +280,6 @@ describe("String Comparators", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateInfo {
@@ -364,11 +342,6 @@ describe("String Comparators", () => {
 
             type Movie {
               title: String
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -440,7 +413,6 @@ describe("String Comparators", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -449,11 +421,6 @@ describe("String Comparators", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateInfo {
@@ -547,7 +514,6 @@ describe("String Comparators", () => {
 
             type Actor {
               actedIn(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              actedInAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieActedInAggregationSelection
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String
             }
@@ -718,11 +684,6 @@ describe("String Comparators", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNullable!
-            }
-
             input ActorConnectInput {
               actedIn: [ActorActedInConnectFieldInput!]
             }
@@ -747,20 +708,6 @@ describe("String Comparators", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
-            }
-
-            type ActorMovieActedInAggregationSelection {
-              count: Int!
-              edge: ActorMovieActedInEdgeAggregateSelection
-              node: ActorMovieActedInNodeAggregateSelection
-            }
-
-            type ActorMovieActedInEdgeAggregateSelection {
-              screenTime: StringAggregateSelectionNullable!
-            }
-
-            type ActorMovieActedInNodeAggregateSelection {
-              title: StringAggregateSelectionNullable!
             }
 
             input ActorOptions {
@@ -867,23 +814,8 @@ describe("String Comparators", () => {
 
             type Movie {
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              edge: MovieActorActorsEdgeAggregateSelection
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsEdgeAggregateSelection {
-              screenTime: StringAggregateSelectionNullable!
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -1052,11 +984,6 @@ describe("String Comparators", () => {
               where: MovieActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNullable!
-            }
-
             input MovieConnectInput {
               actors: [MovieActorsConnectFieldInput!]
             }
@@ -1182,10 +1109,8 @@ describe("String Comparators", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -1194,11 +1119,6 @@ describe("String Comparators", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateActorsMutationResponse {

@@ -59,11 +59,6 @@ describe("609", () => {
               deprecatedField: String @deprecated
             }
 
-            type DeprecatedAggregateSelection {
-              count: Int!
-              deprecatedField: StringAggregateSelectionNullable!
-            }
-
             input DeprecatedCreateInput {
               deprecatedField: String @deprecated
             }
@@ -131,7 +126,6 @@ describe("609", () => {
 
             type Query {
               deprecateds(options: DeprecatedOptions, where: DeprecatedWhere): [Deprecated!]!
-              deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
               deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort], where: DeprecatedWhere): DeprecatedsConnection!
             }
 
@@ -140,11 +134,6 @@ describe("609", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateDeprecatedsMutationResponse {

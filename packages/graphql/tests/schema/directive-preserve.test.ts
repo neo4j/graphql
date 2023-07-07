@@ -62,18 +62,8 @@ describe("Directive-preserve", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
             type Movie @preservedTopLevel {
               id: ID @preservedFieldLevel(string: \\"str\\", int: 12, float: 1.2, boolean: true)
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -143,7 +133,6 @@ describe("Directive-preserve", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -214,23 +203,10 @@ describe("Directive-preserve", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNullable {
-              average: Float
-              max: Float
-              min: Float
-              sum: Float
-            }
-
             type Genre {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): GenreMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreMoviesConnectionSort!], where: GenreMoviesConnectionWhere): GenreMoviesConnection!
               name: String
-            }
-
-            type GenreAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNullable!
             }
 
             input GenreConnectInput {
@@ -257,17 +233,6 @@ describe("Directive-preserve", () => {
             type GenreEdge {
               cursor: String!
               node: Genre!
-            }
-
-            type GenreMovieMoviesAggregationSelection {
-              count: Int!
-              node: GenreMovieMoviesNodeAggregateSelection
-            }
-
-            type GenreMovieMoviesNodeAggregateSelection {
-              imdbRating: FloatAggregateSelectionNullable!
-              title: StringAggregateSelectionNullable!
-              year: IntAggregateSelectionNullable!
             }
 
             input GenreMoviesAggregateInput {
@@ -513,27 +478,12 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
-            type IntAggregateSelectionNullable {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             type Movie {
               genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]! @deprecated(reason: \\"Do not use\\")
-              genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Do not use\\")
               genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection! @deprecated(reason: \\"Do not use\\")
               imdbRating: Float
               title: String
               year: Int
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              imdbRating: FloatAggregateSelectionNullable!
-              title: StringAggregateSelectionNullable!
-              year: IntAggregateSelectionNullable!
             }
 
             input MovieConnectInput {
@@ -562,15 +512,6 @@ describe("Directive-preserve", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            type MovieGenreGenresAggregationSelection {
-              count: Int!
-              node: MovieGenreGenresNodeAggregateSelection
-            }
-
-            type MovieGenreGenresNodeAggregateSelection {
-              name: StringAggregateSelectionNullable!
             }
 
             input MovieGenresAggregateInput {
@@ -811,10 +752,8 @@ describe("Directive-preserve", () => {
 
             type Query {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -823,11 +762,6 @@ describe("Directive-preserve", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateGenresMutationResponse {
@@ -994,11 +928,6 @@ describe("Directive-preserve", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input ActorConnectInput {
               actedIn: [ActorActedInConnectFieldInput!]
             }
@@ -1117,33 +1046,11 @@ describe("Directive-preserve", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
             type Movie implements Production {
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Do not use\\")
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection! @deprecated(reason: \\"Do not use\\")
               runtime: Int!
               title: String!
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              edge: MovieActorActorsEdgeAggregateSelection
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsEdgeAggregateSelection {
-              role: StringAggregateSelectionNonNullable!
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -1239,12 +1146,6 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LENGTH_LTE: Int
               name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectInput {
@@ -1537,36 +1438,18 @@ describe("Directive-preserve", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodes: Int!
               title: String!
-            }
-
-            type SeriesActorActorsAggregationSelection {
-              count: Int!
-              edge: SeriesActorActorsEdgeAggregateSelection
-              node: SeriesActorActorsNodeAggregateSelection
-            }
-
-            type SeriesActorActorsEdgeAggregateSelection {
-              role: StringAggregateSelectionNonNullable!
-            }
-
-            type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input SeriesActorsAggregateInput {
@@ -1662,12 +1545,6 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LENGTH_LTE: Int
               name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
-              episodes: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input SeriesConnectInput {
@@ -1786,11 +1663,6 @@ describe("Directive-preserve", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -1960,11 +1832,6 @@ describe("Directive-preserve", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input ActorConnectInput {
               actedIn: [ActorActedInConnectFieldInput!]
             }
@@ -2083,33 +1950,11 @@ describe("Directive-preserve", () => {
               relationshipsDeleted: Int!
             }
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
             type Movie implements Production {
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Do not use\\")
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection! @deprecated(reason: \\"Do not use\\")
               runtime: Int!
               title: String!
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              edge: MovieActorActorsEdgeAggregateSelection
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsEdgeAggregateSelection {
-              role: StringAggregateSelectionNonNullable!
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieActorsAggregateInput {
@@ -2205,12 +2050,6 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LENGTH_LTE: Int
               name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectInput {
@@ -2503,36 +2342,18 @@ describe("Directive-preserve", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection @deprecated(reason: \\"Do not use\\")
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection! @deprecated(reason: \\"Do not use\\")
               episodes: Int!
               title: String!
-            }
-
-            type SeriesActorActorsAggregationSelection {
-              count: Int!
-              edge: SeriesActorActorsEdgeAggregateSelection
-              node: SeriesActorActorsNodeAggregateSelection
-            }
-
-            type SeriesActorActorsEdgeAggregateSelection {
-              role: StringAggregateSelectionNonNullable!
-            }
-
-            type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }
 
             input SeriesActorsAggregateInput {
@@ -2628,12 +2449,6 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LENGTH_LTE: Int
               name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
-              episodes: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input SeriesConnectInput {
@@ -2754,11 +2569,6 @@ describe("Directive-preserve", () => {
               DESC
             }
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
-
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
               info: UpdateInfo!
@@ -2815,14 +2625,8 @@ describe("Directive-preserve", () => {
 
             type Blog {
               posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(directed: Boolean = true, where: PostWhere): BlogPostPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [BlogPostsConnectionSort!], where: BlogPostsConnectionWhere): BlogPostsConnection!
               title: String
-            }
-
-            type BlogAggregateSelection {
-              count: Int!
-              title: StringAggregateSelectionNullable!
             }
 
             input BlogConnectInput {
@@ -2858,15 +2662,6 @@ describe("Directive-preserve", () => {
               Specify one or more BlogSort objects to sort Blogs by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [BlogSort!]
-            }
-
-            type BlogPostPostsAggregationSelection {
-              count: Int!
-              node: BlogPostPostsNodeAggregateSelection
-            }
-
-            type BlogPostPostsNodeAggregateSelection {
-              content: StringAggregateSelectionNullable!
             }
 
             input BlogPostsAggregateInput {
@@ -3108,11 +2903,6 @@ describe("Directive-preserve", () => {
               content: String @deprecated(reason: \\"Do not use post.content\\")
             }
 
-            type PostAggregateSelection {
-              content: StringAggregateSelectionNullable!
-              count: Int!
-            }
-
             input PostConnectWhere {
               node: PostWhere!
             }
@@ -3170,13 +2960,10 @@ describe("Directive-preserve", () => {
 
             type Query {
               blogs(options: BlogOptions, where: BlogWhere): [Blog!]!
-              blogsAggregate(where: BlogWhere): BlogAggregateSelection!
               blogsConnection(after: String, first: Int, sort: [BlogSort], where: BlogWhere): BlogsConnection!
               posts(options: PostOptions, where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -3190,11 +2977,6 @@ describe("Directive-preserve", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateBlogsMutationResponse {
@@ -3224,11 +3006,6 @@ describe("Directive-preserve", () => {
               content(directed: Boolean = true, options: QueryOptions, where: ContentWhere): [Content!]! @deprecated(reason: \\"Do not use user.content\\")
               contentConnection(after: String, directed: Boolean = true, first: Int, where: UserContentConnectionWhere): UserContentConnection! @deprecated(reason: \\"Do not use user.content\\")
               name: String
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNullable!
             }
 
             input UserConnectInput {

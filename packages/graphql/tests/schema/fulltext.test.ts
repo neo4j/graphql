@@ -74,12 +74,6 @@ describe("@fulltext schema", () => {
               title: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              description: StringAggregateSelectionNullable!
-              title: StringAggregateSelectionNullable!
-            }
-
             input MovieCreateInput {
               description: String
               title: String
@@ -191,7 +185,6 @@ describe("@fulltext schema", () => {
 
             type Query {
               movies(fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in future versions of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\"), options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in future versions of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\"), where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in future versions of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\"), sort: [MovieSort], where: MovieWhere): MoviesConnection!
               moviesFulltextMovieDescription(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]!
               moviesFulltextMovieTitle(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]!
@@ -202,11 +195,6 @@ describe("@fulltext schema", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateInfo {

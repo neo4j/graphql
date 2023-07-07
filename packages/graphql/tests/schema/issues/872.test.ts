@@ -51,21 +51,14 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             type Actor {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
 
             type Actor2 {
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true, where: MovieWhere): Actor2MovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [Actor2MoviesConnectionSort!], where: Actor2MoviesConnectionWhere): Actor2MoviesConnection!
               name: String!
-            }
-
-            type Actor2AggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input Actor2ConnectInput {
@@ -92,16 +85,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             type Actor2Edge {
               cursor: String!
               node: Actor2!
-            }
-
-            type Actor2MovieMoviesAggregationSelection {
-              count: Int!
-              node: Actor2MovieMoviesNodeAggregateSelection
-            }
-
-            type Actor2MovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input Actor2MoviesAggregateInput {
@@ -306,11 +289,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               totalCount: Int!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input ActorConnectInput {
               movies: [ActorMoviesConnectFieldInput!]
             }
@@ -335,16 +313,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
-            }
-
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
-            type ActorMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input ActorMoviesAggregateInput {
@@ -576,20 +544,9 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
             type Movie {
               id: ID!
               title: String!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectOrCreateWhere {
@@ -692,13 +649,10 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             type Query {
               actor2s(options: Actor2Options, where: Actor2Where): [Actor2!]!
-              actor2sAggregate(where: Actor2Where): Actor2AggregateSelection!
               actor2sConnection(after: String, first: Int, sort: [Actor2Sort], where: Actor2Where): Actor2sConnection!
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -707,11 +661,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateActor2sMutationResponse {

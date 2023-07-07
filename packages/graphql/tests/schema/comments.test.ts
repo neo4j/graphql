@@ -85,30 +85,11 @@ describe("Comments", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregateSelectionNullable {
-              average: Float
-              max: Float
-              min: Float
-              sum: Float
-            }
-
             \\"\\"\\"An enumeration of movie genres.\\"\\"\\"
             enum Genre {
               ACTION
               DRAMA
               ROMANCE
-            }
-
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
-            type IntAggregateSelectionNullable {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
             }
 
             \\"\\"\\"A type describing a movie.\\"\\"\\"
@@ -126,13 +107,6 @@ describe("Comments", () => {
               This is measured based on annual profit.
               \\"\\"\\"
               isActive: Boolean
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelectionNullable!
-              averageRating: FloatAggregateSelectionNullable!
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -249,7 +223,6 @@ describe("Comments", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
@@ -299,11 +272,6 @@ describe("Comments", () => {
 
                 type Actor {
                   name: String
-                }
-
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelectionNullable!
                 }
 
                 input ActorConnectWhere {
@@ -383,26 +351,11 @@ describe("Comments", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelectionNullable {
-                  longest: ID
-                  shortest: ID
-                }
-
                 type Movie {
                   \\"\\"\\"Actors in Movie\\"\\"\\"
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelectionNullable!
                 }
 
                 input MovieActorsAggregateInput {
@@ -517,11 +470,6 @@ describe("Comments", () => {
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
                   where: MovieActorsConnectionWhere
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelectionNullable!
                 }
 
                 input MovieConnectInput {
@@ -641,10 +589,8 @@ describe("Comments", () => {
 
                 type Query {
                   actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
@@ -653,11 +599,6 @@ describe("Comments", () => {
                   ASC
                   \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
                   DESC
-                }
-
-                type StringAggregateSelectionNullable {
-                  longest: String
-                  shortest: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -818,11 +759,6 @@ describe("Comments", () => {
                   where: ActorActedInConnectionWhere
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelectionNonNullable!
-                }
-
                 input ActorConnectInput {
                   actedIn: [ActorActedInConnectFieldInput!]
                 }
@@ -937,22 +873,9 @@ describe("Comments", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IntAggregateSelectionNonNullable {
-                  average: Float!
-                  max: Int!
-                  min: Int!
-                  sum: Int!
-                }
-
                 type Movie implements Production {
                   runtime: Int!
                   title: String!
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  runtime: IntAggregateSelectionNonNullable!
-                  title: StringAggregateSelectionNonNullable!
                 }
 
                 input MovieCreateInput {
@@ -1099,25 +1022,16 @@ describe("Comments", () => {
 
                 type Query {
                   actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
                 }
 
                 type Series implements Production {
                   episodes: Int!
                   title: String!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
-                  episodes: IntAggregateSelectionNonNullable!
-                  title: StringAggregateSelectionNonNullable!
                 }
 
                 type SeriesConnection {
@@ -1189,11 +1103,6 @@ describe("Comments", () => {
                   ASC
                   \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
                   DESC
-                }
-
-                type StringAggregateSelectionNonNullable {
-                  longest: String!
-                  shortest: String!
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1270,11 +1179,6 @@ describe("Comments", () => {
                   id: ID
                 }
 
-                type GenreAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelectionNullable!
-                }
-
                 input GenreConnectWhere {
                   node: GenreWhere!
                 }
@@ -1330,21 +1234,11 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelectionNullable {
-                  longest: ID
-                  shortest: ID
-                }
-
                 type Movie {
                   id: ID
                   search(directed: Boolean = true, options: QueryOptions, where: SearchWhere): [Search!]!
                   searchConnection(after: String, directed: Boolean = true, first: Int, where: MovieSearchConnectionWhere): MovieSearchConnection!
                   searchNoDirective: Search
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelectionNullable!
                 }
 
                 input MovieConnectInput {
@@ -1590,10 +1484,8 @@ describe("Comments", () => {
 
                 type Query {
                   genres(options: GenreOptions, where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): GenreAggregateSelection!
                   genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 

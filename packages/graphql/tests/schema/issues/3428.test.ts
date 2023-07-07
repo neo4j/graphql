@@ -66,19 +66,8 @@ describe("Relationship nested operations", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
             type Movie {
               actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
-              actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
             }
@@ -160,11 +149,6 @@ describe("Relationship nested operations", () => {
               node: Person!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
-            }
-
             input MovieCreateInput {
               id: ID
             }
@@ -181,16 +165,6 @@ describe("Relationship nested operations", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
-            }
-
-            type MoviePersonActorsAggregationSelection {
-              count: Int!
-              node: MoviePersonActorsNodeAggregateSelection
-            }
-
-            type MoviePersonActorsNodeAggregateSelection {
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
             }
 
             \\"\\"\\"
@@ -283,12 +257,6 @@ describe("Relationship nested operations", () => {
               name: String
             }
 
-            type PersonAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNullable!
-            }
-
             input PersonCreateInput {
               name: String
             }
@@ -347,10 +315,8 @@ describe("Relationship nested operations", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
             }
 
@@ -359,11 +325,6 @@ describe("Relationship nested operations", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateInfo {
@@ -439,11 +400,6 @@ describe("Relationship nested operations", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNullable {
-              longest: ID
-              shortest: ID
-            }
-
             type Movie {
               actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
               actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -480,11 +436,6 @@ describe("Relationship nested operations", () => {
             type MovieActorsRelationship {
               cursor: String!
               node: Person!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNullable!
             }
 
             input MovieCreateInput {
@@ -582,11 +533,6 @@ describe("Relationship nested operations", () => {
               name: String
             }
 
-            type PersonOneAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNullable!
-            }
-
             input PersonOneCreateInput {
               name: String
             }
@@ -640,11 +586,6 @@ describe("Relationship nested operations", () => {
 
             type PersonTwo {
               nameTwo: String
-            }
-
-            type PersonTwoAggregateSelection {
-              count: Int!
-              nameTwo: StringAggregateSelectionNullable!
             }
 
             input PersonTwoCreateInput {
@@ -705,13 +646,10 @@ describe("Relationship nested operations", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
-              personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
               personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
               personTwos(options: PersonTwoOptions, where: PersonTwoWhere): [PersonTwo!]!
-              personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
               personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
             }
 
@@ -725,11 +663,6 @@ describe("Relationship nested operations", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
             }
 
             type UpdateInfo {

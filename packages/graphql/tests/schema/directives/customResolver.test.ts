@@ -71,11 +71,6 @@ describe("@customResolver directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
-
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
@@ -92,7 +87,6 @@ describe("@customResolver directive", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
@@ -101,11 +95,6 @@ describe("@customResolver directive", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateInfo {
@@ -127,13 +116,6 @@ describe("@customResolver directive", () => {
               nickname: String!
               password: String!
               username: String!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              password: StringAggregateSelectionNonNullable!
-              username: StringAggregateSelectionNonNullable!
             }
 
             input UserCreateInput {

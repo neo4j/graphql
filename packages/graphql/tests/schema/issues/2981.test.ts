@@ -59,12 +59,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               translatedTitleConnection(after: String, directed: Boolean = true, first: Int, where: BookTranslatedTitleConnectionWhere): BookTranslatedTitleConnection!
             }
 
-            type BookAggregateSelection {
-              count: Int!
-              isbn: StringAggregateSelectionNonNullable!
-              originalTitle: StringAggregateSelectionNonNullable!
-            }
-
             input BookConnectInput {
               translatedTitle: BookTranslatedTitleConnectInput
             }
@@ -134,14 +128,8 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type BookTitle_EN {
               book(directed: Boolean = true, options: BookOptions, where: BookWhere): Book!
-              bookAggregate(directed: Boolean = true, where: BookWhere): BookTitle_ENBookBookAggregationSelection
               bookConnection(after: String, directed: Boolean = true, first: Int, sort: [BookTitle_ENBookConnectionSort!], where: BookTitle_ENBookConnectionWhere): BookTitle_ENBookConnection!
               value: String!
-            }
-
-            type BookTitle_ENAggregateSelection {
-              count: Int!
-              value: StringAggregateSelectionNonNullable!
             }
 
             input BookTitle_ENBookAggregateInput {
@@ -154,16 +142,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               count_LT: Int
               count_LTE: Int
               node: BookTitle_ENBookNodeAggregationWhereInput
-            }
-
-            type BookTitle_ENBookBookAggregationSelection {
-              count: Int!
-              node: BookTitle_ENBookBookNodeAggregateSelection
-            }
-
-            type BookTitle_ENBookBookNodeAggregateSelection {
-              isbn: StringAggregateSelectionNonNullable!
-              originalTitle: StringAggregateSelectionNonNullable!
             }
 
             input BookTitle_ENBookConnectFieldInput {
@@ -380,14 +358,8 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type BookTitle_SV {
               book(directed: Boolean = true, options: BookOptions, where: BookWhere): Book!
-              bookAggregate(directed: Boolean = true, where: BookWhere): BookTitle_SVBookBookAggregationSelection
               bookConnection(after: String, directed: Boolean = true, first: Int, sort: [BookTitle_SVBookConnectionSort!], where: BookTitle_SVBookConnectionWhere): BookTitle_SVBookConnection!
               value: String!
-            }
-
-            type BookTitle_SVAggregateSelection {
-              count: Int!
-              value: StringAggregateSelectionNonNullable!
             }
 
             input BookTitle_SVBookAggregateInput {
@@ -400,16 +372,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               count_LT: Int
               count_LTE: Int
               node: BookTitle_SVBookNodeAggregationWhereInput
-            }
-
-            type BookTitle_SVBookBookAggregationSelection {
-              count: Int!
-              node: BookTitle_SVBookBookNodeAggregateSelection
-            }
-
-            type BookTitle_SVBookBookNodeAggregateSelection {
-              isbn: StringAggregateSelectionNonNullable!
-              originalTitle: StringAggregateSelectionNonNullable!
             }
 
             input BookTitle_SVBookConnectFieldInput {
@@ -849,13 +811,10 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type Query {
               bookTitleEns(options: BookTitle_ENOptions, where: BookTitle_ENWhere): [BookTitle_EN!]!
-              bookTitleEnsAggregate(where: BookTitle_ENWhere): BookTitle_ENAggregateSelection!
               bookTitleEnsConnection(after: String, first: Int, sort: [BookTitle_ENSort], where: BookTitle_ENWhere): BookTitleEnsConnection!
               bookTitleSvs(options: BookTitle_SVOptions, where: BookTitle_SVWhere): [BookTitle_SV!]!
-              bookTitleSvsAggregate(where: BookTitle_SVWhere): BookTitle_SVAggregateSelection!
               bookTitleSvsConnection(after: String, first: Int, sort: [BookTitle_SVSort], where: BookTitle_SVWhere): BookTitleSvsConnection!
               books(options: BookOptions, where: BookWhere): [Book!]!
-              booksAggregate(where: BookWhere): BookAggregateSelection!
               booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): BooksConnection!
             }
 
@@ -869,11 +828,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type UpdateBookTitleEnsMutationResponse {
