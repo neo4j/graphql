@@ -59,7 +59,7 @@
         "@types/jest": "29.5.2",
         "@types/jsonwebtoken": "9.0.2",
         "@types/node": "18.15.1",
-        "@types/pluralize": "0.0.29",
+        "@types/pluralize": "0.0.30",
         "@types/randomstring": "1.1.8",
         "@types/semver": "7.5.0",
         "@types/supertest": "2.0.12",
