@@ -26,6 +26,18 @@ import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { compileCypher } from "../utils/compile-cypher";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
+
+function testQueryAST({ context, node }: { context: Context; node: Node }): Cypher.CypherResult {
+    const { resolveTree } = context;
+    const factory = new QueryASTFactory(context.schemaModel);
+    const entity = context.schemaModel.getEntity(node.name);
+    if (!entity) throw new Error("Entity not found");
+    const queryAST = factory.createQueryAST(resolveTree, entity as ConcreteEntity);
+    const clause = queryAST.transpile();
+    return clause.build();
+}
 
 export function translateRead(
     {
@@ -41,6 +53,10 @@ export function translateRead(
 ): Cypher.CypherResult {
     const { resolveTree } = context;
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
+
+    if (!isRootConnectionField) {
+        return testQueryAST({ context, node });
+    }
 
     const cypherFieldAliasMap: CypherFieldReferenceMap = {};
 
