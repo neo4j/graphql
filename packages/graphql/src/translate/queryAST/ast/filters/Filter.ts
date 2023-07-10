@@ -38,6 +38,8 @@ export type WhereOperator =
     | `NOT_${ArrayWhereOperator}`
     | RelationshipWhereOperator;
 
+export type LogicalOperators = "NOT" | "AND" | "OR";
+
 export abstract class Filter extends QueryASTNode {
     abstract getPredicate(target: Cypher.Variable): Cypher.Predicate;
 }

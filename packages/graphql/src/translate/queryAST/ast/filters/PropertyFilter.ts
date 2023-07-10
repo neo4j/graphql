@@ -49,6 +49,84 @@ export class PropertyFilter extends Filter {
     public getPredicate(target: Cypher.Variable): Cypher.Predicate {
         const prop = target.property(this.attribute.name);
 
-        return Cypher.eq(prop, new Cypher.Param(this.comparisonValue));
+        if (this.comparisonValue === null) {
+            return this.getNullPredicate(prop);
+        }
+
+        // let baseOperation: Cypher.Predicate;
+        // if (this.attribute.type === AttributeType.Point) {
+        //     baseOperation = this.createPointOperation({
+        //         operator: this.operator || "EQ",
+        //         property: nodeProperty,
+        //         param: new Cypher.Param(this.comparisonValue),
+        //         attribute: this.attribute,
+        //     });
+        // } else if (this.attribute.type === AttributeType.Duration && this.operator) {
+        //     baseOperation = this.createDurationOperation({
+        //         operator: this.operator,
+        //         property: nodeProperty,
+        //         param: new Cypher.Param(this.comparisonValue),
+        //     });
+        // } else {
+        const baseOperation = this.createBaseOperation({
+            operator: this.operator || "EQ",
+            property: prop,
+            param: new Cypher.Param(this.comparisonValue),
+        });
+        // }
+
+        return this.wrapInNotIfNeeded(baseOperation);
+
+        // return Cypher.eq(prop, new Cypher.Param(this.comparisonValue));
+    }
+
+    private getNullPredicate(propertyRef: Cypher.Property): Cypher.Predicate {
+        if (this.isNot) {
+            return Cypher.isNotNull(propertyRef);
+        } else {
+            return Cypher.isNull(propertyRef);
+        }
+    }
+
+    private wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
+        if (this.isNot) return Cypher.not(predicate);
+        else return predicate;
+    }
+
+    private createBaseOperation({
+        operator,
+        property,
+        param,
+    }: {
+        operator: WhereOperator | "EQ";
+        property: Cypher.Expr;
+        param: Cypher.Expr;
+    }): Cypher.ComparisonOp {
+        switch (operator) {
+            case "LT":
+                return Cypher.lt(property, param);
+            case "LTE":
+                return Cypher.lte(property, param);
+            case "GT":
+                return Cypher.gt(property, param);
+            case "GTE":
+                return Cypher.gte(property, param);
+            case "ENDS_WITH":
+                return Cypher.endsWith(property, param);
+            case "STARTS_WITH":
+                return Cypher.startsWith(property, param);
+            case "MATCHES":
+                return Cypher.matches(property, param);
+            case "CONTAINS":
+                return Cypher.contains(property, param);
+            case "IN":
+                return Cypher.in(property, param);
+            case "INCLUDES":
+                return Cypher.in(param, property);
+            case "EQ":
+                return Cypher.eq(property, param);
+            default:
+                throw new Error(`Invalid operator ${operator}`);
+        }
     }
 }

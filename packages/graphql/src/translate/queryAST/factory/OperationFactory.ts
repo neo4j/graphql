@@ -40,7 +40,7 @@ export class OperationsFactory {
 
     public createReadOperationAST(entity: ConcreteEntity, resolveTree: ResolveTree): ReadOperation {
         const projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
-        const whereArgs = resolveTree.args.where as Record<string, unknown>;
+        const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
 
         const operation = new ReadOperation(entity);
         const fields = this.fieldFactory.createFields(entity, projectionFields);
@@ -51,7 +51,7 @@ export class OperationsFactory {
     }
 
     public createConnectionOperationAST(relationship: Relationship, resolveTree: ResolveTree): ConnectionReadOperation {
-        const whereArgs = resolveTree.args.where as Record<string, any>;
+        const whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
         const nodeWhere = whereArgs.node || {};
 
         const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };

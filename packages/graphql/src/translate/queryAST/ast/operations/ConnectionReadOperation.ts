@@ -24,7 +24,8 @@ import { getRelationshipDirection } from "../../utils/get-relationship-direction
 import type { Field } from "../fields/Field";
 import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
-import { Operation, OperationTranspileOptions } from "./operations";
+import type { OperationTranspileOptions } from "./operations";
+import { Operation } from "./operations";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: Relationship;
@@ -71,6 +72,14 @@ export class ConnectionReadOperation extends Operation {
                     // TODO
                 }
             });
+
+        if (nodeProjectionMap.size === 0) {
+            const targetNodeName = this.relationship.target.name;
+            nodeProjectionMap.set({
+                __resolveType: new Cypher.Literal(targetNodeName),
+                __id: Cypher.id(node),
+            });
+        }
 
         const edgeVar = new Cypher.NamedVariable("edge");
         const edgesVar = new Cypher.NamedVariable("edges");

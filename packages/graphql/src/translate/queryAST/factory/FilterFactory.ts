@@ -23,6 +23,7 @@ import { PropertyFilter } from "../ast/filters/PropertyFilter";
 import type { Filter } from "../ast/filters/Filter";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import { parseWhereField } from "./parsers/parse-where-field";
 
 export class FilterFactory {
     private queryASTFactory: QueryASTFactory;
@@ -32,14 +33,19 @@ export class FilterFactory {
     }
 
     public createFilters(entity: ConcreteEntity | Relationship, where: Record<string, unknown>): Filter[] {
+        console.log(where);
         return Object.entries(where).map(([key, value]) => {
-            const attr = entity.findAttribute(key);
+            const { fieldName, operator, isNot, isConnection } = parseWhereField(key);
+
+            console.log(fieldName, operator, isNot, isConnection);
+            const attr = entity.findAttribute(fieldName);
             if (!attr) throw new Error("No attribute found");
+
             return new PropertyFilter({
                 attribute: attr,
                 comparisonValue: value,
-                isNot: false,
-                operator: undefined,
+                isNot,
+                operator,
             });
         });
     }
