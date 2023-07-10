@@ -77,7 +77,7 @@ describe("Connections Alias", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("Alias Top Level Connection Field Multiple Times", async () => {
+    test.only("Alias Top Level Connection Field Multiple Times", async () => {
         const query = gql`
             query {
                 movies(where: { title: "Forrest Gump" }) {

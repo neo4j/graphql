@@ -17,74 +17,16 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
-import type { Relationship } from "../../../schema-model/relationship/Relationship";
-import { filterTruthy } from "../../../utils/utils";
-import { createNodeFromEntity } from "../utils/create-node-from-entity";
-import { getRelationshipDirection } from "../utils/get-relationship-direction";
-import type { Field } from "./fields/Field";
-import type { Filter } from "./filters/Filter";
-import { QueryASTNode } from "./QueryASTNode";
+import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
+import type { Relationship } from "../../../../schema-model/relationship/Relationship";
+import { createNodeFromEntity } from "../../utils/create-node-from-entity";
+import { getRelationshipDirection } from "../../utils/get-relationship-direction";
+import type { Field } from "../fields/Field";
+import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
+import { Operation, OperationTranspileOptions } from "./operations";
 
-export type Operation = ReadOperation | ConnectionReadOperation;
-
-export class ReadOperation extends QueryASTNode {
-    public readonly entity: ConcreteEntity; // TODO: normal entities
-
-    public fields: Field[] = [];
-    private filters: Filter[] = [];
-
-    constructor(entity: ConcreteEntity) {
-        super();
-        this.entity = entity;
-    }
-
-    public setFields(fields: Field[]) {
-        this.fields = fields;
-    }
-
-    public setFilters(filters: Filter[]) {
-        this.filters = filters;
-    }
-
-    public transpile(returnValue: Cypher.Variable, parentNode?: Cypher.Node, alias?: string): Cypher.Clause {
-        const node = createNodeFromEntity(this.entity, alias);
-        const clause = new Cypher.Match(node);
-
-        const filterPredicates = Cypher.and(...this.filters.map((f) => f.getPredicate(node)));
-
-        const projectionFields = this.fields.map((f) => f.getProjectionField());
-        const fieldSubqueries = filterTruthy(
-            this.fields.map((f) => {
-                return f.getSubquery(node);
-            })
-        ).map((sq) => {
-            return new Cypher.Call(sq).innerWith(node);
-        });
-
-        const stringFields: string[] = [];
-        let otherFields: Record<string, Cypher.Expr> = {};
-        for (const field of projectionFields) {
-            if (typeof field === "string") stringFields.push(field);
-            else {
-                otherFields = { ...otherFields, ...field };
-            }
-        }
-
-        const projection = new Cypher.MapProjection(node, stringFields, otherFields);
-
-        const subqueries = Cypher.concat(...fieldSubqueries);
-
-        const clauseWhere = clause.where(filterPredicates);
-
-        const ret = new Cypher.Return([projection, returnValue]);
-
-        return Cypher.concat(clauseWhere, subqueries, ret);
-    }
-}
-
-export class ConnectionReadOperation extends QueryASTNode {
+export class ConnectionReadOperation extends Operation {
     public readonly relationship: Relationship;
 
     public nodeFields: Field[] = [];
@@ -108,9 +50,10 @@ export class ConnectionReadOperation extends QueryASTNode {
         this.edgeFields = fields;
     }
 
-    public transpile(returnValue: Cypher.Variable, parentNode: Cypher.Node): Cypher.Clause {
+    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause {
+        if (!parentNode) throw new Error();
         const node = createNodeFromEntity(this.relationship.target as ConcreteEntity);
-        const relationship = new Cypher.Relationship({ type: this.relationship.type });
+        const relationship = new Cypher.Relationship({ type: `\`${this.relationship.type}\`` }); // TODO: remove custom escaping
         const relDirection = getRelationshipDirection(this.relationship);
         const clause = new Cypher.Match(
             new Cypher.Pattern(parentNode).withoutLabels().related(relationship).withDirection(relDirection).to(node)
@@ -157,7 +100,7 @@ export class ConnectionReadOperation extends QueryASTNode {
                     edges: edgesVar,
                     totalCount: totalCount,
                 }),
-                returnValue,
+                returnVariable,
             ]);
     }
 }

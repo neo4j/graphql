@@ -23,6 +23,8 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import { QueryAST } from "../ast/QueryAST";
 import { OperationsFactory } from "./OperationFactory";
 
+const TOP_LEVEL_NODE_NAME = "this";
+
 export class QueryASTFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
     public operationsFactory: OperationsFactory;
@@ -34,6 +36,7 @@ export class QueryASTFactory {
 
     public createQueryAST(resolveTree: ResolveTree, entity: ConcreteEntity) {
         const operation = this.operationsFactory.createReadOperationAST(entity, resolveTree);
+        operation.nodeAlias = TOP_LEVEL_NODE_NAME;
         return new QueryAST(operation);
     }
 }

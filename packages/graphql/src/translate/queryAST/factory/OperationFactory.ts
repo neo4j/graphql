@@ -17,16 +17,15 @@
  * limitations under the License.
  */
 
-import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
-import { ConnectionReadOperation, Operation } from "../ast/operations";
-import { ReadOperation } from "../ast/operations";
 
 import { FilterFactory } from "./FilterFactory";
 import { FieldFactory } from "./FieldFactory";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
+import { ReadOperation } from "../ast/operations/ReadOperation";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -41,7 +40,7 @@ export class OperationsFactory {
 
     public createReadOperationAST(entity: ConcreteEntity, resolveTree: ResolveTree): ReadOperation {
         const projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
-        const whereArgs = resolveTree.args.where as Record<string, any>;
+        const whereArgs = resolveTree.args.where as Record<string, unknown>;
 
         const operation = new ReadOperation(entity);
         const fields = this.fieldFactory.createFields(entity, projectionFields);
@@ -52,13 +51,11 @@ export class OperationsFactory {
     }
 
     public createConnectionOperationAST(relationship: Relationship, resolveTree: ResolveTree): ConnectionReadOperation {
-        // const projectionFields = { ...resolveTree.fieldsByTypeName[relationship.name] };
         const whereArgs = resolveTree.args.where as Record<string, any>;
         const nodeWhere = whereArgs.node || {};
 
         const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
         const edgeRawFields = { ...connectionFields.edges?.fieldsByTypeName[relationship.relationshipFieldTypename] };
-        console.log(edgeRawFields);
         const nodeRawFields = { ...edgeRawFields.node?.fieldsByTypeName[relationship.target.name] };
 
         delete edgeRawFields.node;
@@ -71,10 +68,5 @@ export class OperationsFactory {
         operation.setNodeFilters(nodeFilters);
         operation.setEdgeFields(edgeFields);
         return operation;
-        // const fields = this.fieldFactory.createFields(entity, projectionFields);
-        // const filters = this.filterFactory.createFilters(entity, whereArgs);
-        // operation.setFields(fields);
-        // operation.setFilters(filters);
-        // return operation;
     }
 }

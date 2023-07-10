@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { ConnectionReadOperation } from "../operations";
+import type { ConnectionReadOperation } from "../operations/ConnectionReadOperation";
 import { Field } from "./Field";
 import Cypher from "@neo4j/cypher-builder";
 
@@ -38,6 +38,6 @@ export class ConnectionField extends Field {
     }
 
     public getSubquery(node: Cypher.Node): Cypher.Clause {
-        return this.operation.transpile(this.projectionVariable, node);
+        return this.operation.transpile({ returnVariable: this.projectionVariable, parentNode: node });
     }
 }

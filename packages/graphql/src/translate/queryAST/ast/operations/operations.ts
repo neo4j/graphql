@@ -17,17 +17,14 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
-import type { ReadOperation } from "./operations/ReadOperation";
+import type Cypher from "@neo4j/cypher-builder";
+import { QueryASTNode } from "../QueryASTNode";
 
-export class QueryAST {
-    private operation: ReadOperation;
+export type OperationTranspileOptions = {
+    parentNode?: Cypher.Node;
+    returnVariable: Cypher.Variable;
+};
 
-    constructor(operation: ReadOperation) {
-        this.operation = operation;
-    }
-
-    public transpile(): Cypher.Clause {
-        return this.operation.transpile({ returnVariable: new Cypher.NamedVariable("this") });
-    }
+export abstract class Operation extends QueryASTNode {
+    abstract transpile(options: OperationTranspileOptions): Cypher.Clause;
 }
