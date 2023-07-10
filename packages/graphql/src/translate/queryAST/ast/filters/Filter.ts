@@ -21,6 +21,8 @@ import type Cypher from "@neo4j/cypher-builder";
 import { QueryASTNode } from "../QueryASTNode";
 import type { PropertyFilter } from "./PropertyFilter";
 import type { RelationshipFilter } from "./RelationshipFilter";
+import type { LogicalFilter } from "./LogicalFilter";
+import { ConnectionFilter } from "./connection/ConnectionFilter";
 
 export type NumericalWhereOperator = "GT" | "GTE" | "LT" | "LTE";
 export type SpatialWhereOperator = "DISTANCE";
@@ -46,7 +48,7 @@ export type LogicalOperators = "NOT" | "AND" | "OR";
 //     abstract getPredicate(target: Cypher.Variable): Cypher.Predicate;
 // }
 
-export type Filter = PropertyFilter | RelationshipFilter;
+export type Filter = PropertyFilter | RelationshipFilter | LogicalFilter | ConnectionFilter;
 
 const RELATIONSHIP_OPERATORS = ["ALL", "NONE", "SINGLE", "SOME"] as const;
 export function isRelationshipOperator(operator: string): operator is RelationshipWhereOperator {
