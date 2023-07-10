@@ -62,7 +62,7 @@ export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
     enableDebug?: boolean;
     startupValidation?: StartupValidationConfig;
-    queryOptions?: CypherQueryOptions;
+    cypherQueryOptions?: CypherQueryOptions;
 }
 
 export type ValidationConfig = {

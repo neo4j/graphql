@@ -24,6 +24,11 @@ import type { JWTPayload } from "jose";
 
 export interface Neo4jGraphQLContext {
     /**
+     * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options}
+     * when executing the translated query.
+     */
+    cypherQueryOptions?: CypherQueryOptions;
+    /**
      * @deprecated Use the {@link executionContext} property instead.
      */
     driver?: Driver;
@@ -53,11 +58,6 @@ export interface Neo4jGraphQLContext {
      * @deprecated This property will be removed in 4.0.0.
      */
     neo4jDatabaseInfo?: Neo4jDatabaseInfo;
-    /**
-     * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options}
-     * when executing the translated query.
-     */
-    queryOptions?: CypherQueryOptions;
     /**
      * HTTP request object containing authorization header for use in authentication and authorization.
      * Alias for {@link request}.

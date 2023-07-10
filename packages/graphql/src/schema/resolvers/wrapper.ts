@@ -147,9 +147,7 @@ export const wrapResolver =
             executionContext: context.executionContext,
         };
 
-        if (config.queryOptions) {
-            executorConstructorParam.queryOptions = config.queryOptions;
-        }
+        executorConstructorParam.cypherQueryOptions = context.cypherQueryOptions || config.cypherQueryOptions;
 
         if (context.driverConfig?.database) {
             executorConstructorParam.database = context.driverConfig?.database;
