@@ -21,9 +21,13 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 
 import { PropertyFilter } from "../ast/filters/PropertyFilter";
 import type { Filter } from "../ast/filters/Filter";
+import { isRelationshipOperator } from "../ast/filters/Filter";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import { parseWhereField } from "./parsers/parse-where-field";
+import type { GraphQLWhereArg } from "../../../types";
+import { RelationshipFilter } from "../ast/filters/RelationshipFilter";
+import type { RelationshipWhereOperator } from "../../where/types";
 
 export class FilterFactory {
     private queryASTFactory: QueryASTFactory;
@@ -32,12 +36,21 @@ export class FilterFactory {
         this.queryASTFactory = queryASTFactory;
     }
 
-    public createFilters(entity: ConcreteEntity | Relationship, where: Record<string, unknown>): Filter[] {
-        console.log(where);
+    public createFilters(entity: ConcreteEntity, where: Record<string, unknown>): Array<Filter> {
         return Object.entries(where).map(([key, value]) => {
             const { fieldName, operator, isNot, isConnection } = parseWhereField(key);
+            const relationship = entity.findRelationship(fieldName);
+            if (relationship) {
+                if (operator && !isRelationshipOperator(operator)) {
+                    throw new Error(`Invalid operator ${operator} for relationship`);
+                }
 
-            console.log(fieldName, operator, isNot, isConnection);
+                return this.createRelationshipFilter(value as GraphQLWhereArg, relationship, {
+                    isNot,
+                    operator,
+                });
+            }
+
             const attr = entity.findAttribute(fieldName);
             if (!attr) throw new Error("No attribute found");
 
@@ -48,5 +61,24 @@ export class FilterFactory {
                 operator,
             });
         });
+    }
+
+    private createRelationshipFilter(
+        where: GraphQLWhereArg,
+        relationship: Relationship,
+        filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
+    ): RelationshipFilter {
+        const relationshipFilter = new RelationshipFilter({
+            relationship: relationship,
+            isNot: filterOps.isNot,
+            operator: filterOps.operator,
+        });
+
+        const targetNode = relationship.target as ConcreteEntity; // TODO: accept entities
+        const targetNodeFilters = this.createFilters(targetNode, where);
+
+        relationshipFilter.addTargetNodeFilter(...targetNodeFilters);
+
+        return relationshipFilter;
     }
 }

@@ -20,9 +20,9 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
 import type { WhereOperator } from "./Filter";
-import { Filter } from "./Filter";
+import { QueryASTNode } from "../QueryASTNode";
 
-export class PropertyFilter extends Filter {
+export class PropertyFilter extends QueryASTNode {
     private attribute: Attribute;
     private comparisonValue: unknown;
     private operator: WhereOperator | undefined;

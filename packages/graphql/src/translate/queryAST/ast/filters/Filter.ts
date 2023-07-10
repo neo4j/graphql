@@ -19,6 +19,8 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import { QueryASTNode } from "../QueryASTNode";
+import type { PropertyFilter } from "./PropertyFilter";
+import type { RelationshipFilter } from "./RelationshipFilter";
 
 export type NumericalWhereOperator = "GT" | "GTE" | "LT" | "LTE";
 export type SpatialWhereOperator = "DISTANCE";
@@ -40,6 +42,13 @@ export type WhereOperator =
 
 export type LogicalOperators = "NOT" | "AND" | "OR";
 
-export abstract class Filter extends QueryASTNode {
-    abstract getPredicate(target: Cypher.Variable): Cypher.Predicate;
+// export abstract class Filter extends QueryASTNode {
+//     abstract getPredicate(target: Cypher.Variable): Cypher.Predicate;
+// }
+
+export type Filter = PropertyFilter | RelationshipFilter;
+
+const RELATIONSHIP_OPERATORS = ["ALL", "NONE", "SINGLE", "SOME"] as const;
+export function isRelationshipOperator(operator: string): operator is RelationshipWhereOperator {
+    return RELATIONSHIP_OPERATORS.includes(operator as any);
 }

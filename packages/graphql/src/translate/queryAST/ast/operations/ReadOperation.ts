@@ -55,7 +55,10 @@ export class ReadOperation extends Operation {
 
         const projection = this.getProjectionMap(node, projectionFields);
 
-        const matchClause = new Cypher.Match(node).where(filterPredicates);
+        const matchClause = new Cypher.Match(node);
+        if (filterPredicates) {
+            matchClause.where(filterPredicates);
+        }
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(node));
         const ret = new Cypher.Return([projection, returnVariable]);
 

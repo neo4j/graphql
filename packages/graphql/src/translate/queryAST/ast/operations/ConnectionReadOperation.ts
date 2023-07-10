@@ -98,9 +98,10 @@ export class ConnectionReadOperation extends Operation {
             });
 
         edgeProjectionMap.set("node", nodeProjectionMap);
-
+        if (filterPredicates) {
+            clause.where(filterPredicates);
+        }
         return clause
-            .where(filterPredicates)
             .with([edgeProjectionMap, edgeVar])
             .with([Cypher.collect(edgeVar), edgesVar])
             .with(edgesVar, [Cypher.size(edgesVar), totalCount])
