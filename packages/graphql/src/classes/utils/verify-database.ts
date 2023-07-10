@@ -18,39 +18,24 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import type { DriverConfig } from "../../types";
 import type { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
 import { verifyFunctions } from "./verify-functions";
 import { verifyProcedures } from "./verify-procedures";
 import { verifyVersion } from "./verify-version";
+import type { Neo4jGraphQLSessionConfig } from "../Executor";
 
 async function checkNeo4jCompat({
     driver,
-    driverConfig,
+    sessionConfig,
     dbInfo,
 }: {
     driver: Driver;
-    driverConfig?: DriverConfig;
+    sessionConfig?: Neo4jGraphQLSessionConfig;
     dbInfo: Neo4jDatabaseInfo;
 }): Promise<void> {
     await driver.verifyConnectivity();
 
-    const sessionParams: {
-        bookmarks?: string | string[];
-        database?: string;
-    } = {};
-
-    if (driverConfig) {
-        if (driverConfig.database) {
-            sessionParams.database = driverConfig.database;
-        }
-
-        if (driverConfig.bookmarks) {
-            sessionParams.bookmarks = driverConfig.bookmarks;
-        }
-    }
-
-    const sessionFactory = () => driver.session(sessionParams);
+    const sessionFactory = () => driver.session(sessionConfig);
 
     const errors: string[] = [];
 

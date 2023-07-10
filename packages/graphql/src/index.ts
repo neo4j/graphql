@@ -39,7 +39,6 @@ export {
     CypherRuntime,
     CypherUpdateStrategy,
     DeleteInfo,
-    DriverConfig,
     EventMeta,
     GraphQLOptionsArg,
     GraphQLSortArg,

@@ -33,11 +33,6 @@ import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
 
 export { Node } from "../classes";
 
-export type DriverConfig = {
-    database?: string;
-    bookmarks?: string | string[];
-};
-
 type AuthorizationContext = {
     jwt?: JwtPayload;
     jwtParam: Cypher.Param;

@@ -20,7 +20,6 @@
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
-    DriverConfig,
     CypherQueryOptions,
     Neo4jGraphQLPlugins,
     Neo4jFeaturesSettings,
@@ -41,7 +40,7 @@ import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
 import type { Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
 import { getNeo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
-import type { ExecutorConstructorParam } from "./Executor";
+import type { ExecutorConstructorParam, Neo4jGraphQLSessionConfig } from "./Executor";
 import { Executor } from "./Executor";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
@@ -59,7 +58,6 @@ import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthoriza
 import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
 
 export interface Neo4jGraphQLConfig {
-    driverConfig?: DriverConfig;
     enableDebug?: boolean;
     startupValidation?: StartupValidationConfig;
     queryOptions?: CypherQueryOptions;
@@ -176,23 +174,29 @@ class Neo4jGraphQL {
         return this.subgraphSchema;
     }
 
-    public async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
+    public async checkNeo4jCompat(
+        input: { driver?: Driver; sessionConfig?: Neo4jGraphQLSessionConfig } = {}
+    ): Promise<void> {
         const driver = input.driver || this.driver;
-        const driverConfig = input.driverConfig || this.config?.driverConfig;
+        const sessionConfig = input.sessionConfig;
 
         if (!driver) {
             throw new Error("neo4j-driver Driver missing");
         }
 
         if (!this.dbInfo) {
-            this.dbInfo = await this.getNeo4jDatabaseInfo(driver, driverConfig);
+            this.dbInfo = await this.getNeo4jDatabaseInfo(driver, sessionConfig);
         }
 
-        return checkNeo4jCompat({ driver, driverConfig, dbInfo: this.dbInfo });
+        return checkNeo4jCompat({ driver, sessionConfig, dbInfo: this.dbInfo });
     }
 
     public async assertIndexesAndConstraints(
-        input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
+        input: {
+            driver?: Driver;
+            sessionConfig?: Neo4jGraphQLSessionConfig;
+            options?: AssertIndexesAndConstraintsOptions;
+        } = {}
     ): Promise<void> {
         if (!(this.executableSchema || this.subgraphSchema)) {
             throw new Error("You must await `.getSchema()` before `.assertIndexesAndConstraints()`");
@@ -201,19 +205,19 @@ class Neo4jGraphQL {
         await (this.executableSchema || this.subgraphSchema);
 
         const driver = input.driver || this.driver;
-        const driverConfig = input.driverConfig || this.config?.driverConfig;
+        const sessionConfig = input.sessionConfig;
 
         if (!driver) {
             throw new Error("neo4j-driver Driver missing");
         }
 
         if (!this.dbInfo) {
-            this.dbInfo = await this.getNeo4jDatabaseInfo(driver, driverConfig);
+            this.dbInfo = await this.getNeo4jDatabaseInfo(driver, sessionConfig);
         }
 
         await assertIndexesAndConstraints({
             driver,
-            driverConfig,
+            sessionConfig,
             nodes: this.nodes,
             options: input.options,
         });
@@ -276,18 +280,13 @@ class Neo4jGraphQL {
         return mergeTypeDefs(typeDefs);
     }
 
-    private async getNeo4jDatabaseInfo(driver: Driver, driverConfig?: DriverConfig): Promise<Neo4jDatabaseInfo> {
+    private async getNeo4jDatabaseInfo(
+        driver: Driver,
+        sessionConfig?: Neo4jGraphQLSessionConfig
+    ): Promise<Neo4jDatabaseInfo> {
         const executorConstructorParam: ExecutorConstructorParam = {
-            executionContext: driver,
+            executionContext: sessionConfig ? { driver, sessionConfig } : driver,
         };
-
-        if (driverConfig?.database) {
-            executorConstructorParam.database = driverConfig?.database;
-        }
-
-        if (driverConfig?.bookmarks) {
-            executorConstructorParam.bookmarks = driverConfig?.bookmarks;
-        }
 
         return getNeo4jDatabaseInfo(new Executor(executorConstructorParam));
     }

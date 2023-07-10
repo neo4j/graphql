@@ -68,7 +68,6 @@ export const wrapResolver =
     (next) =>
     // TODO: type this as Neo4jGraphQLContext
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
-        const { driverConfig } = config;
         const callbacks = features.populatedBy?.callbacks;
 
         if (debug.enabled) {
@@ -81,23 +80,15 @@ export const wrapResolver =
         }
 
         if (!context?.executionContext) {
-            if (context?.driver) {
-                context.executionContext = context.driver;
-            } else {
-                if (!driver) {
-                    throw new Error(
-                        "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or a driver, session or transaction passed as context.executionContext in each request."
-                    );
-                }
-                context.executionContext = driver;
+            if (!driver) {
+                throw new Error(
+                    "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or a driver, session or transaction passed as context.executionContext in each request."
+                );
             }
+            context.executionContext = driver;
         }
 
         context.info = info;
-
-        if (!context?.driverConfig) {
-            context.driverConfig = driverConfig;
-        }
 
         context.nodes = nodes;
         context.relationships = relationships;
@@ -148,15 +139,7 @@ export const wrapResolver =
         };
 
         if (config.queryOptions) {
-            executorConstructorParam.queryOptions = config.queryOptions;
-        }
-
-        if (context.driverConfig?.database) {
-            executorConstructorParam.database = context.driverConfig?.database;
-        }
-
-        if (context.driverConfig?.bookmarks) {
-            executorConstructorParam.bookmarks = context.driverConfig?.bookmarks;
+            executorConstructorParam.cypherQueryOptions = config.queryOptions;
         }
 
         context.executor = new Executor(executorConstructorParam);
@@ -178,7 +161,6 @@ export const wrapSubscription =
     (resolverArgs: WrapResolverArguments) =>
     (next) =>
     async (root: any, args: any, context: SubscriptionConnectionContext | undefined, info: GraphQLResolveInfo) => {
-        const plugins = resolverArgs?.plugins || {};
         const subscriptionsConfig = resolverArgs?.features.subscriptions;
         const schemaModel = resolverArgs?.schemaModel;
         const contextParams = context?.connectionParams || {};

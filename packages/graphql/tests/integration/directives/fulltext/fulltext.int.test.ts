@@ -154,7 +154,7 @@ describe("@fulltext directive", () => {
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
@@ -201,8 +201,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -245,8 +244,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -289,8 +287,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -319,8 +316,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -350,8 +346,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -391,8 +386,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -421,8 +415,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -453,8 +446,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -488,8 +480,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -518,8 +509,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -550,8 +540,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -581,8 +570,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -616,8 +604,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -670,8 +657,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -716,8 +702,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -751,8 +736,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -787,8 +771,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -818,8 +801,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -856,8 +838,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -891,8 +872,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -963,16 +943,14 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query1,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
             const gqlResult2 = await graphql({
                 schema: generatedSchema,
                 source: query2,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -1046,16 +1024,14 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query1,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
             const gqlResult2 = await graphql({
                 schema: generatedSchema,
                 source: query2,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -1095,8 +1071,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -1164,8 +1139,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -1199,8 +1173,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -1229,8 +1202,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -1264,8 +1236,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -1295,8 +1266,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -1338,8 +1308,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -1369,8 +1338,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -1400,8 +1368,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -1455,7 +1422,7 @@ describe("@fulltext directive", () => {
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
@@ -1478,7 +1445,7 @@ describe("@fulltext directive", () => {
                 contextValue: {
                     token,
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1525,7 +1492,7 @@ describe("@fulltext directive", () => {
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
@@ -1548,7 +1515,7 @@ describe("@fulltext directive", () => {
                 contextValue: {
                     token,
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1595,7 +1562,7 @@ describe("@fulltext directive", () => {
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
@@ -1618,7 +1585,7 @@ describe("@fulltext directive", () => {
                 contextValue: {
                     token,
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1680,7 +1647,7 @@ describe("@fulltext directive", () => {
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
@@ -1703,7 +1670,7 @@ describe("@fulltext directive", () => {
                 contextValue: {
                     token,
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1745,7 +1712,7 @@ describe("@fulltext directive", () => {
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
@@ -1768,7 +1735,7 @@ describe("@fulltext directive", () => {
                 contextValue: {
                     token,
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1813,7 +1780,7 @@ describe("@fulltext directive", () => {
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
@@ -1836,7 +1803,7 @@ describe("@fulltext directive", () => {
                 contextValue: {
                     token,
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1882,7 +1849,7 @@ describe("@fulltext directive", () => {
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
@@ -1905,7 +1872,7 @@ describe("@fulltext directive", () => {
                 contextValue: {
                     token,
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1943,7 +1910,7 @@ describe("@fulltext directive", () => {
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
@@ -1962,8 +1929,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -2024,7 +1990,7 @@ describe("@fulltext directive", () => {
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
@@ -2042,8 +2008,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -2089,7 +2054,7 @@ describe("@fulltext directive", () => {
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
@@ -2108,8 +2073,7 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -2172,7 +2136,7 @@ describe("@fulltext directive", () => {
             generatedSchema = await neoSchema.getSchema();
             await neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             });
 
@@ -2200,16 +2164,14 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query1,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
             const gqlResult2 = await graphql({
                 schema: generatedSchema,
                 source: query2,
                 contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+                    executionContext: { driver, sessionConfig: { database: databaseName } },
                 },
             });
 
@@ -2315,7 +2277,7 @@ describe("@fulltext directive", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).resolves.not.toThrow();
@@ -2357,7 +2319,7 @@ describe("@fulltext directive", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).resolves.not.toThrow();
@@ -2405,7 +2367,7 @@ describe("@fulltext directive", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).resolves.not.toThrow();
@@ -2446,7 +2408,7 @@ describe("@fulltext directive", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).resolves.not.toThrow();
@@ -2487,7 +2449,7 @@ describe("@fulltext directive", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                 })
             ).rejects.toThrow(`Missing @fulltext index '${indexName1}' on Node '${type.name}'`);
         });
@@ -2526,7 +2488,7 @@ describe("@fulltext directive", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                 })
             ).rejects.toThrow(`@fulltext index '${indexName1}' on Node '${type.name}' is missing field 'description'`);
         });
@@ -2565,7 +2527,7 @@ describe("@fulltext directive", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                 })
             ).rejects.toThrow(
                 `@fulltext index '${indexName1}' on Node '${type.name}' is missing field 'description' aliased to field '${aliasName}'`
@@ -2591,7 +2553,7 @@ describe("@fulltext directive", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).resolves.not.toThrow();
@@ -2599,7 +2561,7 @@ describe("@fulltext directive", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                 })
             ).resolves.not.toThrow();
         });
@@ -2638,7 +2600,7 @@ describe("@fulltext directive", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).rejects.toThrow(
@@ -2665,7 +2627,7 @@ describe("@fulltext directive", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).resolves.not.toThrow();
@@ -2719,7 +2681,7 @@ describe("@fulltext directive", () => {
                 await expect(
                     neoSchema.assertIndexesAndConstraints({
                         driver,
-                        driverConfig: { database: databaseName },
+                        sessionConfig: { database: databaseName },
                     })
                 ).resolves.not.toThrow();
             } finally {
@@ -2759,7 +2721,7 @@ describe("@fulltext directive", () => {
                 await expect(
                     neoSchema.assertIndexesAndConstraints({
                         driver,
-                        driverConfig: { database: databaseName },
+                        sessionConfig: { database: databaseName },
                         options: { create: true },
                     })
                 ).resolves.not.toThrow();

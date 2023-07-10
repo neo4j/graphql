@@ -17,24 +17,16 @@
  * limitations under the License.
  */
 
-import type { Driver, Session, Transaction } from "neo4j-driver";
-import type { CypherQueryOptions, DriverConfig, RequestLike } from ".";
+import type { CypherQueryOptions, RequestLike } from ".";
 import type { Neo4jDatabaseInfo } from "../classes";
 import type { JWTPayload } from "jose";
+import type { ExecutionContext } from "../classes/Executor";
 
 export interface Neo4jGraphQLContext {
     /**
-     * @deprecated Use the {@link executionContext} property instead.
-     */
-    driver?: Driver;
-    /**
-     * If using a driver, configures the database and bookmarks to be used when acquiring a session.
-     */
-    driverConfig?: DriverConfig;
-    /**
      * The Neo4j driver, session or transaction which will be used to execute the translated query.
      */
-    executionContext?: Driver | Session | Transaction;
+    executionContext?: ExecutionContext;
     /**
      * A decoded JWT payload which can be provided for use in authentication and authorization.
      * Takes precedence over {@link token} if both are present in the context.

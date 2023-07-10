@@ -20,8 +20,8 @@
 import type { Driver, Session } from "neo4j-driver";
 import Debug from "debug";
 import type Node from "../Node";
-import type { DriverConfig } from "../..";
 import { DEBUG_EXECUTE } from "../../constants";
+import type { Neo4jGraphQLSessionConfig } from "../Executor";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -265,33 +265,18 @@ async function getMissingConstraints({
 
 async function assertIndexesAndConstraints({
     driver,
-    driverConfig,
+    sessionConfig,
     nodes,
     options,
 }: {
     driver: Driver;
-    driverConfig?: DriverConfig;
+    sessionConfig?: Neo4jGraphQLSessionConfig;
     nodes: Node[];
     options?: AssertIndexesAndConstraintsOptions;
 }): Promise<void> {
     await driver.verifyConnectivity();
 
-    const sessionParams: {
-        bookmarks?: string | string[];
-        database?: string;
-    } = {};
-
-    if (driverConfig) {
-        if (driverConfig.database) {
-            sessionParams.database = driverConfig.database;
-        }
-
-        if (driverConfig.bookmarks) {
-            sessionParams.bookmarks = driverConfig.bookmarks;
-        }
-    }
-
-    const session = driver.session(sessionParams);
+    const session = driver.session(sessionConfig);
 
     try {
         if (options?.create) {
