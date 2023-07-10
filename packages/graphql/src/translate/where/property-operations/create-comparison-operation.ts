@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { Neo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
 import type { PointField, PrimitiveField } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { createPointComparisonOperation } from "./create-point-comparison-operation";
@@ -29,14 +28,12 @@ export function createComparisonOperation({
     param,
     durationField,
     pointField,
-    neo4jDatabaseInfo,
 }: {
     operator: string | undefined;
     propertyRefOrCoalesce: Cypher.Property | Cypher.Function | Cypher.Variable;
     param: Cypher.Param | Cypher.Property | Cypher.Function;
     durationField: PrimitiveField | undefined;
     pointField: PointField | undefined;
-    neo4jDatabaseInfo: Neo4jDatabaseInfo;
 }): Cypher.ComparisonOp {
     // TODO: consider if this conditional is the correct solution - should we make the function compatible?
     if (!(param instanceof Cypher.Function) && pointField) {
@@ -45,7 +42,6 @@ export function createComparisonOperation({
             propertyRefOrCoalesce,
             param,
             pointField,
-            neo4jDatabaseInfo,
         });
     }
 

@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Neo4jDatabaseInfo, Node, Relationship } from "../classes";
+import type { Node, Relationship } from "../classes";
 import type { RelationField, Context, GraphQLWhereArg, PredicateReturn } from "../types";
 import type { AggregationFieldRegexGroups } from "./where/utils";
 import { aggregationFieldRegEx, whereRegEx } from "./where/utils";
@@ -256,8 +256,6 @@ function createEntityOperation(
             param: paramName,
             durationField,
             pointField,
-            // Casting because this is definitely assigned in the wrapper
-            neo4jDatabaseInfo: context.neo4jDatabaseInfo as Neo4jDatabaseInfo,
         });
         const dbFieldName = mapToDbProperty(refNodeOrRelation, fieldName);
         const collectedProperty =
