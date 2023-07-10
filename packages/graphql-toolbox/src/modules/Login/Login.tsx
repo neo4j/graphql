@@ -19,7 +19,6 @@
 
 import { useCallback, useContext, useState } from "react";
 
-import { tokens } from "@neo4j-ndl/base";
 import { Banner, Button, Tooltip } from "@neo4j-ndl/react";
 import { ExclamationTriangleIconOutline } from "@neo4j-ndl/react/icons";
 
@@ -172,7 +171,6 @@ export const Login = () => {
                     <Button
                         data-test-login-button
                         className="w-60 mt-8"
-                        style={{ backgroundColor: tokens.colors.primary[50] }}
                         fill="filled"
                         type="submit"
                         size="large"
