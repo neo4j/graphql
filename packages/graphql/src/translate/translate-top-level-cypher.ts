@@ -136,7 +136,11 @@ export function translateTopLevelCypher({
 
         referencedNodes.forEach((node) => {
             if (node) {
-                const labelsStatements = node.getLabels(context).map((label) => `"${label}" IN labels(this)`);
+                const labelsStatements = node.getLabels(context).map((label, index) => {
+                    const param = `${node.name}_labels${index}`;
+                    params[param] = label;
+                    return `$${param} IN labels(this)`;
+                });
                 unionWhere.push(`(${labelsStatements.join("AND")})`);
 
                 // TODO Migrate to CypherBuilder
