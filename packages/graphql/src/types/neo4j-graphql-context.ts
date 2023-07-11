@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver, Session, SessionConfig, Transaction } from "neo4j-driver";
+import type { Driver, Session, Transaction } from "neo4j-driver";
 import type { CypherQueryOptions, DriverConfig, RequestLike } from ".";
 import type { Neo4jDatabaseInfo } from "../classes";
 import type { JWTPayload } from "jose";
