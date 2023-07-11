@@ -171,7 +171,8 @@ export const wrapResolver =
             executorConstructorParam.queryOptions = config.queryOptions;
         }
 
-        executorConstructorParam.sessionConfig = context.driverConfig || context.sessionConfig;
+        executorConstructorParam.sessionConfig =
+            context.sessionConfig || context.driverConfig || config.sessionConfig || config.driverConfig;
 
         context.executor = new Executor(executorConstructorParam);
 
