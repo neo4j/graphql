@@ -233,7 +233,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
         }
     `);
 
-    const formattedContent = prettier.format(content.join("\n"), { parser: "typescript" });
+    const formattedContent = await prettier.format(content.join("\n"), { parser: "typescript" });
 
     if (options.noWrite) {
         return formattedContent;
