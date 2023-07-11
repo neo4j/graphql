@@ -102,7 +102,7 @@
         "graphql-relay": "^0.10.0",
         "jose": "^4.13.1",
         "pluralize": "^8.0.0",
-        "semver": "^7.3.7",
+        "semver": "7.5.4",
         "uuid": "^9.0.0"
     },
     "peerDependencies": {
