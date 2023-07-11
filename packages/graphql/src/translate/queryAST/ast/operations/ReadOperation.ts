@@ -51,6 +51,10 @@ export class ReadOperation extends Operation {
         this.sortFields.push(...sort);
     }
 
+    public addPagination(pagination: Pagination): void {
+        this.pagination = pagination;
+    }
+
     public setFilters(filters: Filter[]) {
         this.filters = filters;
     }
@@ -75,7 +79,7 @@ export class ReadOperation extends Operation {
         const ret = new Cypher.Return([projection, returnVariable]);
 
         let sortClause: Cypher.With | undefined;
-        if (this.sortFields.length > 0) {
+        if (this.sortFields.length > 0 || this.pagination) {
             sortClause = new Cypher.With("*");
             this.addSortToClause(node, sortClause);
         }
@@ -111,14 +115,14 @@ export class ReadOperation extends Operation {
 
     private addSortToClause(node: Cypher.Node, clause: Cypher.With | Cypher.Return): void {
         const orderByFields = this.sortFields.flatMap((f) => f.getSortFields(node));
-        // const pagination = this.pagination ? this.pagination.getPagination() : undefined;
+        const pagination = this.pagination ? this.pagination.getPagination() : undefined;
         clause.orderBy(...orderByFields);
 
-        // if (pagination?.skip) {
-        //     clause.skip(pagination.skip);
-        // }
-        // if (pagination?.limit) {
-        //     clause.limit(pagination.limit);
-        // }
+        if (pagination?.skip) {
+            clause.skip(pagination.skip as any);
+        }
+        if (pagination?.limit) {
+            clause.limit(pagination.limit as any);
+        }
     }
 }

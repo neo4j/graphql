@@ -39,7 +39,7 @@ describe("Cypher pagination tests", () => {
         });
     });
 
-    test.only("Skipping", async () => {
+    test("Skipping", async () => {
         const query = gql`
             {
                 movies(options: { offset: 1 }) {

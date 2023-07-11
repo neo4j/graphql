@@ -57,10 +57,10 @@ export class OperationsFactory {
             const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
             operation.addSort(...sort);
 
-            // const pagination = this.sortAndPaginationFactory.createPagination(options);
-            // if (pagination) {
-            //     ast.addPagination(pagination);
-            // }
+            const pagination = this.sortAndPaginationFactory.createPagination(options);
+            if (pagination) {
+                operation.addPagination(pagination);
+            }
         }
 
         return operation;
