@@ -19,16 +19,6 @@
 
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../classes";
-import {
-    CypherConnectComponentsPlanner,
-    CypherExpressionEngine,
-    CypherInterpretedPipesFallback,
-    CypherOperatorEngine,
-    CypherPlanner,
-    CypherReplanning,
-    CypherRuntime,
-    CypherUpdateStrategy,
-} from "../types";
 import execute from "./execute";
 import { trimmer } from ".";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
@@ -176,7 +166,7 @@ describe("execute", () => {
                         executionContext: driver,
                         database,
                         bookmarks,
-                        queryOptions: {},
+                        cypherQueryOptions: {},
                     }),
                     info: undefined,
                 }).instance(),
@@ -255,15 +245,15 @@ describe("execute", () => {
                         executionContext: driver,
                         database,
                         bookmarks,
-                        queryOptions: {
-                            runtime: CypherRuntime.INTERPRETED,
-                            planner: CypherPlanner.COST,
-                            connectComponentsPlanner: CypherConnectComponentsPlanner.GREEDY,
-                            updateStrategy: CypherUpdateStrategy.DEFAULT,
-                            expressionEngine: CypherExpressionEngine.COMPILED,
-                            operatorEngine: CypherOperatorEngine.COMPILED,
-                            interpretedPipesFallback: CypherInterpretedPipesFallback.ALL,
-                            replan: CypherReplanning.DEFAULT,
+                        cypherQueryOptions: {
+                            runtime: "interpreted",
+                            planner: "cost",
+                            connectComponentsPlanner: "greedy",
+                            updateStrategy: "default",
+                            expressionEngine: "compiled",
+                            operatorEngine: "compiled",
+                            interpretedPipesFallback: "all",
+                            replan: "default",
                         },
                     }),
                     info: undefined,

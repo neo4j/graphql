@@ -23,6 +23,11 @@ import type { JWTPayload } from "jose";
 
 export interface Neo4jGraphQLContext {
     /**
+     * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options}
+     * when executing the translated query.
+     */
+    cypherQueryOptions?: CypherQueryOptions;
+    /**
      * @deprecated Use the {@link executionContext} property instead.
      */
     driver?: Driver;
@@ -48,11 +53,6 @@ export interface Neo4jGraphQLContext {
      * ```
      */
     jwt?: JWTPayload;
-    /**
-     * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options}
-     * when executing the translated query.
-     */
-    queryOptions?: CypherQueryOptions;
     /**
      * The bearer token to be decoded/verified for use in authentication and authorization.
      * Normally found in the Authorization HTTP header. Can be provided with or without authentication scheme.
