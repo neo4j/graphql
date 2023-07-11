@@ -62,7 +62,7 @@ describe("Subscription global authentication", () => {
                 typeDefs,
                 driver,
                 config: {
-                    driverConfig: {
+                    sessionConfig: {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
@@ -138,7 +138,7 @@ describe("Subscription global authentication", () => {
                 typeDefs,
                 driver,
                 config: {
-                    driverConfig: {
+                    sessionConfig: {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
@@ -214,7 +214,7 @@ describe("Subscription global authentication", () => {
                 typeDefs,
                 driver,
                 config: {
-                    driverConfig: {
+                    sessionConfig: {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },

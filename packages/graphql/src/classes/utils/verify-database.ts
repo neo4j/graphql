@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import type { DriverConfig } from "../../types";
+import type { Driver, SessionConfig } from "neo4j-driver";
 import type { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
 import { verifyFunctions } from "./verify-functions";
 import { verifyProcedures } from "./verify-procedures";
@@ -26,31 +25,16 @@ import { verifyVersion } from "./verify-version";
 
 async function checkNeo4jCompat({
     driver,
-    driverConfig,
+    sessionConfig,
     dbInfo,
 }: {
     driver: Driver;
-    driverConfig?: DriverConfig;
+    sessionConfig?: SessionConfig;
     dbInfo: Neo4jDatabaseInfo;
 }): Promise<void> {
     await driver.verifyConnectivity();
 
-    const sessionParams: {
-        bookmarks?: string | string[];
-        database?: string;
-    } = {};
-
-    if (driverConfig) {
-        if (driverConfig.database) {
-            sessionParams.database = driverConfig.database;
-        }
-
-        if (driverConfig.bookmarks) {
-            sessionParams.bookmarks = driverConfig.bookmarks;
-        }
-    }
-
-    const sessionFactory = () => driver.session(sessionParams);
+    const sessionFactory = () => driver.session(sessionConfig);
 
     const errors: string[] = [];
 

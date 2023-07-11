@@ -69,7 +69,7 @@ describe("OGM", () => {
             }
         `;
 
-        const ogm = new OGM({ typeDefs, driver, config: { driverConfig: { database: "another-random-db" } } });
+        const ogm = new OGM({ typeDefs, driver, config: { sessionConfig: { database: "another-random-db" } } });
 
         await ogm.init();
 

@@ -101,8 +101,10 @@ describe("execute", () => {
                         executor: new Executor({
                             executionContext: driver,
                             auth: {} as AuthContext,
-                            database,
-                            bookmarks,
+                            sessionConfig: {
+                                database,
+                                bookmarks,
+                            },
                         }),
                         info: undefined,
                     }).instance(),
@@ -177,8 +179,10 @@ describe("execute", () => {
                     executor: new Executor({
                         executionContext: driver,
                         auth: {} as AuthContext,
-                        database,
-                        bookmarks,
+                        sessionConfig: {
+                            database,
+                            bookmarks,
+                        },
                         queryOptions: {},
                     }),
                     info: undefined,
@@ -257,8 +261,10 @@ describe("execute", () => {
                     executor: new Executor({
                         executionContext: driver,
                         auth: {} as AuthContext,
-                        database,
-                        bookmarks,
+                        sessionConfig: {
+                            database,
+                            bookmarks,
+                        },
                         queryOptions: {
                             runtime: CypherRuntime.INTERPRETED,
                             planner: CypherPlanner.COST,
