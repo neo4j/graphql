@@ -26,6 +26,8 @@ import { filterTruthy } from "../../../utils/utils";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { ConnectionField } from "../ast/fields/ConnectionField";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import { AttributeType } from "../../../schema-model/attribute/Attribute";
+import { PointAttributeField } from "../ast/fields/PointAttributeField";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -43,6 +45,15 @@ export class FieldFactory {
                 const attribute = entity.findAttribute(fieldName);
                 if (!attribute) throw new Error("attribute not found");
 
+                if (attribute.type === AttributeType.Point) {
+                    const { crs } = field.fieldsByTypeName[attribute.type] as any;
+                    return new PointAttributeField({
+                        attribute,
+                        alias: field.alias,
+                        crs: Boolean(crs),
+                    });
+                }
+
                 const attr = new AttributeField(attribute);
                 attr.alias = field.alias;
                 return attr;
@@ -57,7 +68,15 @@ export class FieldFactory {
 
                 const attribute = entity.findAttribute(fieldName);
                 if (!attribute) throw new Error("attribute not found");
-
+                if (attribute.type === AttributeType.Point) {
+                    // Dupe from createFields
+                    const { crs } = field.fieldsByTypeName[attribute.type] as any;
+                    return new PointAttributeField({
+                        attribute,
+                        alias: field.alias,
+                        crs: Boolean(crs),
+                    });
+                }
                 const attr = new AttributeField(attribute);
                 attr.alias = field.alias;
                 return attr;

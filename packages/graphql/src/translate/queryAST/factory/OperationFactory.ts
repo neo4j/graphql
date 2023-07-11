@@ -28,7 +28,7 @@ import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperati
 import { ReadOperation } from "../ast/operations/ReadOperation";
 import type { GraphQLOptionsArg } from "../../../types";
 import { SortAndPaginationFactory } from "./SortAndPagintationFactory";
-import { Integer } from "neo4j-driver";
+import type { Integer } from "neo4j-driver";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -46,7 +46,6 @@ export class OperationsFactory {
     public createReadOperationAST(entity: ConcreteEntity, resolveTree: ResolveTree): ReadOperation {
         const projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
         const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
-
         const operation = new ReadOperation(entity);
         const fields = this.fieldFactory.createFields(entity, projectionFields);
         const filters = this.filterFactory.createFilters(entity, whereArgs);
@@ -70,12 +69,16 @@ export class OperationsFactory {
     public createConnectionOperationAST(relationship: Relationship, resolveTree: ResolveTree): ConnectionReadOperation {
         const whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
         const nodeWhere = whereArgs.node || {};
+        const edgeWhere = whereArgs.edge || {}; // In nested operations
 
         const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
-        const edgeRawFields = { ...connectionFields.edges?.fieldsByTypeName[relationship.relationshipFieldTypename] };
+        const edgeRawFields = {
+            ...connectionFields.edges?.fieldsByTypeName[relationship.relationshipFieldTypename],
+        };
         const nodeRawFields = { ...edgeRawFields.node?.fieldsByTypeName[relationship.target.name] };
 
         delete edgeRawFields.node;
+        delete edgeRawFields.edge;
 
         const operation = new ConnectionReadOperation(relationship);
         const first = resolveTree.args.first as number | Integer | undefined;
@@ -91,8 +94,10 @@ export class OperationsFactory {
         const nodeFields = this.fieldFactory.createFields(relationship.target as ConcreteEntity, nodeRawFields);
         const edgeFields = this.fieldFactory.createRelationshipFields(relationship, edgeRawFields);
         const nodeFilters = this.filterFactory.createFilters(relationship.target as ConcreteEntity, nodeWhere);
+        const edgeFilters = this.filterFactory.createRelationshipFilters(relationship, edgeWhere);
         operation.setNodeFields(nodeFields);
         operation.setNodeFilters(nodeFilters);
+        operation.setEdgeFilters(edgeFilters);
         operation.setEdgeFields(edgeFields);
         return operation;
     }

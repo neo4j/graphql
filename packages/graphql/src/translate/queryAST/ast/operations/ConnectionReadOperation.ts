@@ -36,6 +36,7 @@ export class ConnectionReadOperation extends Operation {
     public edgeFields: Field[] = [];
 
     private nodeFilters: Filter[] = [];
+    private edgeFilters: Filter[] = [];
 
     private pagination: Pagination | undefined;
     private sortFields: Sort[] = [];
@@ -50,6 +51,10 @@ export class ConnectionReadOperation extends Operation {
     }
     public setNodeFilters(filters: Filter[]) {
         this.nodeFilters = filters;
+    }
+
+    public setEdgeFilters(filters: Filter[]) {
+        this.edgeFilters = filters;
     }
 
     public setEdgeFields(fields: Field[]) {
@@ -74,6 +79,7 @@ export class ConnectionReadOperation extends Operation {
         );
 
         const filterPredicates = Cypher.and(...this.nodeFilters.map((f) => f.getPredicate(node)));
+        const edgeFilterPredicates = Cypher.and(...this.edgeFilters.map((f) => (f as any).getPredicate(relationship))); // Any because of relationship predicates
 
         const nodeProjectionMap = new Cypher.Map();
         this.nodeFields
@@ -82,7 +88,7 @@ export class ConnectionReadOperation extends Operation {
                 if (typeof p === "string") {
                     nodeProjectionMap.set(p, node.property(p));
                 } else {
-                    // TODO
+                    nodeProjectionMap.set(p);
                 }
             });
 
@@ -101,16 +107,19 @@ export class ConnectionReadOperation extends Operation {
         const edgeProjectionMap = new Cypher.Map();
 
         this.edgeFields
-            .map((f) => f.getProjectionField(edgeVar))
+            .map((f) => f.getProjectionField(relationship))
             .forEach((p) => {
                 if (typeof p === "string") {
                     edgeProjectionMap.set(p, relationship.property(p));
                 } else {
-                    // TODO
+                    edgeProjectionMap.set(p);
                 }
             });
 
         edgeProjectionMap.set("node", nodeProjectionMap);
+        if (edgeFilterPredicates) {
+            clause.where(edgeFilterPredicates);
+        }
         if (filterPredicates) {
             clause.where(filterPredicates);
         }

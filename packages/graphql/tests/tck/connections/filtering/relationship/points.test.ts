@@ -49,7 +49,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
         });
     });
 
-    test("DISTANCE", async () => {
+    test.only("DISTANCE", async () => {
         let verifyTCK;
 
         if (process.env.VERIFY_TCK) {

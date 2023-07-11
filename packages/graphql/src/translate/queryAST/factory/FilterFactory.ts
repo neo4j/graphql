@@ -41,6 +41,24 @@ export class FilterFactory {
         this.queryASTFactory = queryASTFactory;
     }
 
+    public createRelationshipFilters(relationship: Relationship, where: Record<string, unknown>): Array<Filter> {
+        return Object.entries(where).map(([key, value]): Filter => {
+            if (["NOT", "OR", "AND"].includes(key)) {
+                return this.createEdgeLogicalFilter(key as "NOT" | "OR" | "AND", value as any, relationship);
+            }
+            const { fieldName, operator, isNot, isConnection } = parseWhereField(key);
+            const attr = relationship.findAttribute(fieldName);
+            if (!attr) throw new Error("No attribute found");
+
+            return new PropertyFilter({
+                attribute: attr,
+                comparisonValue: value,
+                isNot,
+                operator,
+            });
+        });
+    }
+
     public createFilters(entity: ConcreteEntity, where: Record<string, unknown>): Array<Filter> {
         return Object.entries(where).map(([key, value]): Filter => {
             if (["NOT", "OR", "AND"].includes(key)) {
@@ -50,6 +68,7 @@ export class FilterFactory {
             const relationship = entity.findRelationship(fieldName);
 
             if (isConnection) {
+                console.log("IS CONNECTION!");
                 if (!relationship) throw new Error(`Relationship not found for connection ${fieldName}`);
                 if (operator && !isRelationshipOperator(operator)) {
                     throw new Error(`Invalid operator ${operator} for relationship`);
@@ -131,7 +150,9 @@ export class FilterFactory {
         const targetNode = relationship.target as ConcreteEntity; // TODO: accept entities
 
         const edgeFilters: Array<LogicalFilter | PropertyFilter> = [];
+        console.log("WHere", where);
         Object.entries(where).forEach(([key, value]: [string, GraphQLWhereArg | GraphQLWhereArg[]]) => {
+            console.log(key);
             const connectionWhereField = parseConnectionWhereFields(key);
             if (connectionWhereField.fieldName === "edge") {
                 console.log(connectionWhereField.fieldName, value);

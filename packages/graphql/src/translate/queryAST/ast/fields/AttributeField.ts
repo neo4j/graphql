@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Attribute } from "../../../../schema-model/attribute/Attribute";
+import { AttributeType, type Attribute } from "../../../../schema-model/attribute/Attribute";
 import { Field } from "./Field";
-import type Cypher from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 
 export class AttributeField extends Field {
-    private attribute: Attribute;
+    protected attribute: Attribute;
 
     constructor(attribute: Attribute) {
         super();
@@ -30,9 +30,30 @@ export class AttributeField extends Field {
     }
 
     public getProjectionField(variable: Cypher.Variable): string | Record<string, Cypher.Expr> {
+        if (this.attribute.type === AttributeType.DateTime) {
+            const nodeProperty = this.createDateTimeProjection(variable);
+            return { [this.alias || this.attribute.name]: nodeProperty };
+        }
+
         if (this.alias && this.alias !== this.attribute.name) {
             return { [this.alias]: variable.property(this.attribute.name) };
         }
         return this.attribute.name;
+    }
+
+    private createDateTimeProjection(variable: Cypher.Variable): Cypher.Expr {
+        const fieldProperty = variable.property(this.attribute.name);
+
+        if (this.attribute.isArray) {
+            const comprehensionVariable = new Cypher.Variable();
+            const apocFormat = this.createApocConvertFormat(comprehensionVariable);
+
+            return new Cypher.ListComprehension(comprehensionVariable).in(fieldProperty).map(apocFormat);
+        }
+        return this.createApocConvertFormat(fieldProperty);
+    }
+
+    private createApocConvertFormat(variableOrProperty: Cypher.Variable | Cypher.Property): Cypher.Expr {
+        return Cypher.apoc.date.convertFormat(variableOrProperty, "iso_zoned_date_time", "iso_offset_date_time");
     }
 }
