@@ -24,7 +24,7 @@ import type { Directive } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
 import type { Integer } from "neo4j-driver";
-import type { Node, Relationship } from "../classes";
+import type { Neo4jDatabaseInfo, Node, Relationship } from "../classes";
 import type { Executor } from "../classes/Executor";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
@@ -61,6 +61,7 @@ export interface Context extends Neo4jGraphQLContext {
     executor: Executor;
     extensions?: Record<string, any>;
     authorization: AuthorizationContext;
+    neo4jDatabaseInfo?: Neo4jDatabaseInfo;
     [k: string]: any;
 }
 

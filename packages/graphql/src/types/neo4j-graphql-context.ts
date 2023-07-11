@@ -19,7 +19,6 @@
 
 import type { Driver, Session, Transaction } from "neo4j-driver";
 import type { CypherQueryOptions, DriverConfig, RequestLike } from ".";
-import type { Neo4jDatabaseInfo } from "../classes";
 import type { JWTPayload } from "jose";
 
 export interface Neo4jGraphQLContext {
@@ -49,10 +48,6 @@ export interface Neo4jGraphQLContext {
      * ```
      */
     jwt?: JWTPayload;
-    /**
-     * @deprecated This property will be removed in 4.0.0.
-     */
-    neo4jDatabaseInfo?: Neo4jDatabaseInfo;
     /**
      * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options}
      * when executing the translated query.
