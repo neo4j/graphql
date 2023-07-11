@@ -19,7 +19,6 @@
 
 import type { Driver, Session, Transaction } from "neo4j-driver";
 import type { CypherQueryOptions, DriverConfig, RequestLike } from ".";
-import type { Neo4jDatabaseInfo } from "../classes";
 import type { JWTPayload } from "jose";
 
 export interface Neo4jGraphQLContext {
@@ -54,24 +53,6 @@ export interface Neo4jGraphQLContext {
      * ```
      */
     jwt?: JWTPayload;
-    /**
-     * @deprecated This property will be removed in 4.0.0.
-     */
-    neo4jDatabaseInfo?: Neo4jDatabaseInfo;
-    /**
-     * HTTP request object containing authorization header for use in authentication and authorization.
-     * Alias for {@link request}.
-     *
-     * @deprecated Will be removed in 4.0.0 alongside `@auth` - use the {@link token} property to provide the bearer token for the new authorization features.
-     */
-    req?: RequestLike;
-    /**
-     * HTTP request object containing authorization header for use in authentication and authorization.
-     * Alias for {@link req}.
-     *
-     * @deprecated Will be removed in 4.0.0 alongside `@auth` - use the {@link token} property to provide the bearer token for the new authorization features.
-     */
-    request?: RequestLike;
     /**
      * The bearer token to be decoded/verified for use in authentication and authorization.
      * Normally found in the Authorization HTTP header. Can be provided with or without authentication scheme.

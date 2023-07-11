@@ -21,7 +21,6 @@ import { CartesianPoint } from "./graphql/objects/CartesianPoint";
 import { Point } from "./graphql/objects/Point";
 
 export {
-    Neo4jDatabaseInfo,
     Neo4jGraphQL,
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLConstructor,
