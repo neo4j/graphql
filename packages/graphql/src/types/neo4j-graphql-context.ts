@@ -76,7 +76,7 @@ export interface Neo4jGraphQLContext {
      */
     request?: RequestLike;
     /**
-     * Configuration that will be used during session construction if a driver was passed into the library on construction or {@link executionContext} is an instance of a driver.
+     * Configuration that will be used during session construction if a driver was passed into the library on construction or if {@link executionContext} is an instance of a driver.
      */
     sessionConfig?: Neo4jGraphQLSessionConfig;
     /**
