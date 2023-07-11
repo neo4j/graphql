@@ -28,6 +28,7 @@ import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperati
 import { ReadOperation } from "../ast/operations/ReadOperation";
 import type { GraphQLOptionsArg } from "../../../types";
 import { SortAndPaginationFactory } from "./SortAndPagintationFactory";
+import { Integer } from "neo4j-driver";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -77,6 +78,16 @@ export class OperationsFactory {
         delete edgeRawFields.node;
 
         const operation = new ConnectionReadOperation(relationship);
+        const first = resolveTree.args.first as number | Integer | undefined;
+        if (first) {
+            const pagination = this.sortAndPaginationFactory.createPagination({
+                limit: first,
+            });
+            if (pagination) {
+                operation.addPagination(pagination);
+            }
+        }
+
         const nodeFields = this.fieldFactory.createFields(relationship.target as ConcreteEntity, nodeRawFields);
         const edgeFields = this.fieldFactory.createRelationshipFields(relationship, edgeRawFields);
         const nodeFilters = this.filterFactory.createFilters(relationship.target as ConcreteEntity, nodeWhere);

@@ -26,6 +26,8 @@ import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
 import type { OperationTranspileOptions } from "./operations";
 import { Operation } from "./operations";
+import type { Pagination, PaginationField } from "../pagination/Pagination";
+import type { Sort } from "../sort/PropertySort";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: Relationship;
@@ -34,6 +36,9 @@ export class ConnectionReadOperation extends Operation {
     public edgeFields: Field[] = [];
 
     private nodeFilters: Filter[] = [];
+
+    private pagination: Pagination | undefined;
+    private sortFields: Sort[] = [];
 
     constructor(relationship: Relationship) {
         super();
@@ -49,6 +54,14 @@ export class ConnectionReadOperation extends Operation {
 
     public setEdgeFields(fields: Field[]) {
         this.edgeFields = fields;
+    }
+
+    public addSort(...sort: Sort[]): void {
+        this.sortFields.push(...sort);
+    }
+
+    public addPagination(pagination: Pagination): void {
+        this.pagination = pagination;
     }
 
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause {
@@ -101,16 +114,42 @@ export class ConnectionReadOperation extends Operation {
         if (filterPredicates) {
             clause.where(filterPredicates);
         }
-        return clause
+
+        let sortSubquery: Cypher.With | undefined;
+        if (this.pagination) {
+            const paginationField = this.pagination.getPagination();
+            if (paginationField) {
+                sortSubquery = this.getPaginationSubquery(edgesVar, paginationField);
+                sortSubquery.addColumns(totalCount);
+            }
+        }
+
+        clause
             .with([edgeProjectionMap, edgeVar])
             .with([Cypher.collect(edgeVar), edgesVar])
-            .with(edgesVar, [Cypher.size(edgesVar), totalCount])
-            .return([
-                new Cypher.Map({
-                    edges: edgesVar,
-                    totalCount: totalCount,
-                }),
-                returnVariable,
-            ]);
+            .with(edgesVar, [Cypher.size(edgesVar), totalCount]);
+
+        const returnClause = new Cypher.Return([
+            new Cypher.Map({
+                edges: edgesVar,
+                totalCount: totalCount,
+            }),
+            returnVariable,
+        ]);
+        return Cypher.concat(clause, sortSubquery, returnClause);
+    }
+
+    private getPaginationSubquery(edgesVar: Cypher.Variable, paginationField: PaginationField): Cypher.With {
+        const edgeVar = new Cypher.NamedVariable("edge");
+
+        const subquery = new Cypher.Unwind([edgesVar, edgeVar]).with(edgeVar);
+        if (paginationField.limit) {
+            subquery.limit(paginationField.limit as any);
+        }
+
+        const returnVar = new Cypher.Variable();
+        subquery.return([Cypher.collect(edgeVar), returnVar]);
+
+        return new Cypher.Call(subquery).innerWith(edgesVar).with([returnVar, edgesVar]);
     }
 }
