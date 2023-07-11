@@ -25,12 +25,16 @@ import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
 import type { OperationTranspileOptions } from "./operations";
 import { Operation } from "./operations";
+import type { Pagination } from "../pagination/Pagination";
+import type { Sort } from "../sort/PropertySort";
 
 export class ReadOperation extends Operation {
     public readonly entity: ConcreteEntity; // TODO: normal entities
 
     public fields: Field[] = [];
     private filters: Filter[] = [];
+    private pagination: Pagination | undefined;
+    private sortFields: Sort[] = [];
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
@@ -43,6 +47,10 @@ export class ReadOperation extends Operation {
         this.fields = fields;
     }
 
+    public addSort(...sort: Sort[]): void {
+        this.sortFields.push(...sort);
+    }
+
     public setFilters(filters: Filter[]) {
         this.filters = filters;
     }
@@ -51,9 +59,13 @@ export class ReadOperation extends Operation {
         const node = createNodeFromEntity(this.entity, this.nodeAlias);
 
         const filterPredicates = Cypher.and(...this.filters.map((f) => f.getPredicate(node)));
-        const projectionFields = this.fields.map((f) => f.getProjectionField());
+        const projectionFields = this.fields.map((f) => f.getProjectionField(node));
+        const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField());
 
-        const projection = this.getProjectionMap(node, projectionFields);
+        const projection = this.getProjectionMap(
+            node,
+            Array.from(new Set([...projectionFields, ...sortProjectionFields])) // TO remove duplicates
+        );
 
         const matchClause = new Cypher.Match(node);
         if (filterPredicates) {
@@ -62,7 +74,12 @@ export class ReadOperation extends Operation {
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(node));
         const ret = new Cypher.Return([projection, returnVariable]);
 
-        return Cypher.concat(matchClause, subqueries, ret);
+        let sortClause: Cypher.With | undefined;
+        if (this.sortFields.length > 0) {
+            sortClause = new Cypher.With("*");
+            this.addSortToClause(node, sortClause);
+        }
+        return Cypher.concat(matchClause, subqueries, sortClause, ret);
     }
 
     private getFieldsSubqueries(node: Cypher.Node): Cypher.Clause[] {
@@ -90,5 +107,18 @@ export class ReadOperation extends Operation {
         }
 
         return new Cypher.MapProjection(node, stringFields, otherFields);
+    }
+
+    private addSortToClause(node: Cypher.Node, clause: Cypher.With | Cypher.Return): void {
+        const orderByFields = this.sortFields.flatMap((f) => f.getSortFields(node));
+        // const pagination = this.pagination ? this.pagination.getPagination() : undefined;
+        clause.orderBy(...orderByFields);
+
+        // if (pagination?.skip) {
+        //     clause.skip(pagination.skip);
+        // }
+        // if (pagination?.limit) {
+        //     clause.limit(pagination.limit);
+        // }
     }
 }

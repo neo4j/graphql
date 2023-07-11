@@ -17,22 +17,30 @@
  * limitations under the License.
  */
 
-import type { Attribute } from "../../../../schema-model/attribute/Attribute";
-import { Field } from "./Field";
 import type Cypher from "@neo4j/cypher-builder";
+import type { Attribute } from "../../../../schema-model/attribute/Attribute";
+import { QueryASTNode } from "../QueryASTNode";
 
-export class AttributeField extends Field {
+export type Sort = PropertySort;
+
+export type SortField = [Cypher.Expr, Cypher.Order] | Cypher.Expr | [Cypher.Expr];
+
+export class PropertySort extends QueryASTNode {
     private attribute: Attribute;
+    private direction: Cypher.Order;
 
-    constructor(attribute: Attribute) {
+    constructor({ attribute, direction }: { attribute: Attribute; direction: Cypher.Order }) {
         super();
         this.attribute = attribute;
+        this.direction = direction;
     }
 
-    public getProjectionField(variable: Cypher.Variable): string | Record<string, Cypher.Expr> {
-        if (this.alias && this.alias !== this.attribute.name) {
-            return { [this.alias]: variable.property(this.attribute.name) };
-        }
+    public getSortFields(variable: Cypher.Variable): SortField[] {
+        const nodeProperty = variable.property(this.attribute.name); // getDBName?
+        return [[nodeProperty, this.direction]];
+    }
+
+    public getProjectionField(): string | Record<string, Cypher.Expr> {
         return this.attribute.name;
     }
 }

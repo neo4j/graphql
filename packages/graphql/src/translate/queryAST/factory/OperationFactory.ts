@@ -26,16 +26,20 @@ import type { QueryASTFactory } from "./QueryASTFactory";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
+import type { GraphQLOptionsArg } from "../../../types";
+import { SortAndPaginationFactory } from "./SortAndPagintationFactory";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
     private fieldFactory: FieldFactory;
+    private sortAndPaginationFactory: SortAndPaginationFactory;
     private queryASTFactory: QueryASTFactory;
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.queryASTFactory = queryASTFactory;
         this.filterFactory = new FilterFactory(queryASTFactory);
         this.fieldFactory = new FieldFactory(queryASTFactory);
+        this.sortAndPaginationFactory = new SortAndPaginationFactory();
     }
 
     public createReadOperationAST(entity: ConcreteEntity, resolveTree: ResolveTree): ReadOperation {
@@ -47,6 +51,18 @@ export class OperationsFactory {
         const filters = this.filterFactory.createFilters(entity, whereArgs);
         operation.setFields(fields);
         operation.setFilters(filters);
+
+        const options = resolveTree.args.options as GraphQLOptionsArg | undefined;
+        if (options) {
+            const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
+            operation.addSort(...sort);
+
+            // const pagination = this.sortAndPaginationFactory.createPagination(options);
+            // if (pagination) {
+            //     ast.addPagination(pagination);
+            // }
+        }
+
         return operation;
     }
 

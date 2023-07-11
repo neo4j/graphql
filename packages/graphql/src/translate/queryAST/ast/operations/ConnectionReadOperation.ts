@@ -64,7 +64,7 @@ export class ConnectionReadOperation extends Operation {
 
         const nodeProjectionMap = new Cypher.Map();
         this.nodeFields
-            .map((f) => f.getProjectionField())
+            .map((f) => f.getProjectionField(node))
             .forEach((p) => {
                 if (typeof p === "string") {
                     nodeProjectionMap.set(p, node.property(p));
@@ -88,7 +88,7 @@ export class ConnectionReadOperation extends Operation {
         const edgeProjectionMap = new Cypher.Map();
 
         this.edgeFields
-            .map((f) => f.getProjectionField())
+            .map((f) => f.getProjectionField(edgeVar))
             .forEach((p) => {
                 if (typeof p === "string") {
                     edgeProjectionMap.set(p, relationship.property(p));

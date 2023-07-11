@@ -23,7 +23,7 @@ import { QueryASTNode } from "../QueryASTNode";
 export abstract class Field extends QueryASTNode {
     public alias: string | undefined;
 
-    public abstract getProjectionField(): string | Record<string, Cypher.Expr>;
+    public abstract getProjectionField(variable: Cypher.Variable): string | Record<string, Cypher.Expr>;
     public getSubquery(node: Cypher.Node): Cypher.Clause | undefined {
         return undefined;
     }
