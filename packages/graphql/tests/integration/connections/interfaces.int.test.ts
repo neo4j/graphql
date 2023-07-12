@@ -27,7 +27,6 @@ import { UniqueType } from "../../utils/graphql-types";
 describe("Connections -> Interfaces", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let bookmarks: string[];
 
     const typeMovie = new UniqueType("Movie");
     const typeSeries = new UniqueType("Series");
@@ -98,7 +97,6 @@ describe("Connections -> Interfaces", () => {
                     movie2ScreenTime,
                 }
             );
-            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }

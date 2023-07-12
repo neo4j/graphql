@@ -26,7 +26,6 @@ import { Neo4jGraphQL } from "../../../src/classes";
 describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Query Converted to Float", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let bookmarks: string[];
     const typeDefs = gql`
         type Movie {
             title: String
@@ -65,7 +64,6 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
                     CREATE (m1)-[:HAS]->(t2)
                 `
             );
-            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }

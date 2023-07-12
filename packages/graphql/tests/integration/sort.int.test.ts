@@ -33,7 +33,6 @@ describe("sort", () => {
     let neo4j: Neo4j;
     let schema: GraphQLSchema;
     let session: Session;
-    let bookmarks: string[];
 
     const movieType = new UniqueType("Movie");
     const seriesType = new UniqueType("Series");
@@ -146,8 +145,6 @@ describe("sort", () => {
                 `,
             { movies, series, actors }
         );
-
-        bookmarks = session2.lastBookmark();
 
         await session2.close();
     });

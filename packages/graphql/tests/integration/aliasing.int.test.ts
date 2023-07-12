@@ -29,7 +29,6 @@ const testLabel = generate({ charset: "alphabetic" });
 describe("Aliasing", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let bookmarks: string[];
     let schema: GraphQLSchema;
 
     const typeDefs = `
@@ -65,7 +64,6 @@ describe("Aliasing", () => {
                     },
                 }
             );
-            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }

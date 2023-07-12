@@ -26,7 +26,6 @@ import { Neo4jGraphQL } from "../../../src/classes";
 describe("https://github.com/neo4j/graphql/issues/190", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let bookmarks: string[];
     const typeDefs = gql`
         type User {
             client_id: String
@@ -59,7 +58,6 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
                     CREATE (user2)-[:HAS_DEMOGRAPHIC]->(state)
                 `
             );
-            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }

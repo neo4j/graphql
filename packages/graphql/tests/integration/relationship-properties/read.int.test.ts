@@ -32,7 +32,6 @@ import { cleanNodes } from "../../utils/clean-nodes";
 describe("Relationship properties - read", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let bookmarks: string[];
 
     let typeMovie: UniqueType;
     let typeActor: UniqueType;

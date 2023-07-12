@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         return graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValues()
+            contextValue: neo4j.getContextValues(),
         });
     }
 
@@ -143,9 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         const createProgrammeItemsResults = await graphqlQuery(createProgrammeItems);
         expect(createProgrammeItemsResults.errors).toBeUndefined();
 
-        const updateProgrammeItemsResults = await graphqlQuery(
-            updateProgrammeItems,
-        );
+        const updateProgrammeItemsResults = await graphqlQuery(updateProgrammeItems);
         expect(updateProgrammeItemsResults.errors).toBeUndefined();
 
         const query = `
@@ -160,9 +158,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 }
             }
         `;
-        const queryResults = await graphqlQuery(
-            query,
-        );
+        const queryResults = await graphqlQuery(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data as any).toEqual({
             [testProgrammeItem.plural]: expect.toIncludeSameMembers([

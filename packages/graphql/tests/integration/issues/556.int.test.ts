@@ -26,7 +26,6 @@ import { Neo4jGraphQL } from "../../../src/classes";
 describe("https://github.com/neo4j/graphql/issues/556 - Input Object type ArticleCreateInput must define one or more fields", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let bookmarks: string[];
     const typeDefs = gql`
         type User556 {
             name: String!

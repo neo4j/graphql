@@ -32,7 +32,6 @@ describe("583", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let schema: GraphQLSchema;
-    let bookmarks: string[];
 
     const typeDefs = gql`
         interface Show {
@@ -111,7 +110,6 @@ describe("583", () => {
                 shortFilm,
             }
         );
-        bookmarks = session.lastBookmark();
         await session.close();
     });
 

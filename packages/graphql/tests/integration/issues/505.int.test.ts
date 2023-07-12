@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
@@ -107,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         await driver.close();
     });
 
-    async function queryTest(neoSchema: Neo4jGraphQL, variableValues: any, userId: string, session: Session) {
+    async function queryTest(neoSchema: Neo4jGraphQL, variableValues: any, userId: string) {
         async function graphqlQuery(query: string) {
             return graphql({
                 schema: await neoSchema.getSchema(),
@@ -204,8 +204,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userId,
-                session
+                userId
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -278,8 +277,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userId,
-                session
+                userId
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -362,8 +360,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userIds[1],
-                session
+                userIds[1]
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -445,8 +442,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userIds[1],
-                session
+                userIds[1]
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -528,8 +524,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userIds[1],
-                session
+                userIds[1]
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -611,8 +606,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userIds[1],
-                session
+                userIds[1]
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -693,8 +687,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userIds[1],
-                session
+                userIds[1]
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -776,8 +769,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userIds[1],
-                session
+                userIds[1]
             );
 
             expect(usersResult?.errors).toBeFalsy();

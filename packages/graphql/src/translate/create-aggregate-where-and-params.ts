@@ -221,8 +221,7 @@ function createEntityOperation(
     refNodeOrRelation: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship,
     aggregationInputField: string,
-    aggregationInputValue: any,
-    context: Context
+    aggregationInputValue: any
 ): Cypher.Predicate {
     const paramName = new Cypher.Param(aggregationInputValue);
     const regexResult = aggregationFieldRegEx.exec(aggregationInputField)?.groups as AggregationFieldRegexGroups;

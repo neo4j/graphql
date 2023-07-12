@@ -19,7 +19,6 @@
 
 import type { DocumentNode, GraphQLArgs } from "graphql";
 import { graphql } from "graphql";
-import type { IncomingMessage } from "http";
 import { Neo4jError } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../../../src";
 import { DriverBuilder } from "../../utils/builders/driver-builder";
