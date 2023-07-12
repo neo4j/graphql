@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
+import type { Driver, Session, SessionConfig } from "neo4j-driver";
 import checkNeo4jCompat from "./verify-database";
 import { REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES, MIN_NEO4J_VERSION } from "../../constants";
-import type { DriverConfig } from "../../types";
 import { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
 
 describe("checkNeo4jCompat", () => {
@@ -46,16 +45,15 @@ describe("checkNeo4jCompat", () => {
             close: () => undefined,
         };
 
-        const driverConfig: DriverConfig = {
+        const sessionConfig: SessionConfig = {
             database: "darrellanddan",
-            bookmarks: ["darrell", "dan"],
         };
 
         // @ts-ignore
         const fakeDriver: Driver = {
             // @ts-ignore
             session: (config) => {
-                expect(config).toEqual(driverConfig);
+                expect(config).toEqual(sessionConfig);
                 return fakeSession;
             },
             // @ts-ignore
@@ -63,7 +61,11 @@ describe("checkNeo4jCompat", () => {
         };
 
         await expect(
-            checkNeo4jCompat({ driver: fakeDriver, driverConfig, dbInfo: new Neo4jDatabaseInfo(minVersion) })
+            checkNeo4jCompat({
+                driver: fakeDriver,
+                sessionConfig,
+                dbInfo: new Neo4jDatabaseInfo(minVersion),
+            })
         ).resolves.not.toThrow();
     });
 

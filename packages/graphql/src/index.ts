@@ -21,7 +21,6 @@ import { CartesianPoint } from "./graphql/objects/CartesianPoint";
 import { Point } from "./graphql/objects/Point";
 
 export {
-    Neo4jDatabaseInfo,
     Neo4jGraphQL,
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLConstructor,
@@ -30,14 +29,6 @@ export {
 export * as directives from "./graphql/directives";
 export * as scalars from "./graphql/scalars";
 export {
-    CypherConnectComponentsPlanner,
-    CypherExpressionEngine,
-    CypherInterpretedPipesFallback,
-    CypherOperatorEngine,
-    CypherPlanner,
-    CypherReplanning,
-    CypherRuntime,
-    CypherUpdateStrategy,
     DeleteInfo,
     DriverConfig,
     EventMeta,

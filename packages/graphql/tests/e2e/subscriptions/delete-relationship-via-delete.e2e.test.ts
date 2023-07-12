@@ -98,7 +98,7 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
             typeDefs,
             driver,
             config: {
-                driverConfig: {
+                sessionConfig: {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },
