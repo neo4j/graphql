@@ -50,7 +50,7 @@ import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schem
 import type { TypeSource } from "@graphql-tools/utils";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import type { DocumentNode, GraphQLSchema } from "graphql";
-import type { Driver } from "neo4j-driver";
+import type { Driver, SessionConfig } from "neo4j-driver";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
 import { makeDocumentToAugment } from "../schema/make-document-to-augment";
@@ -58,9 +58,15 @@ import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthoriza
 import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
 
 export interface Neo4jGraphQLConfig {
+    /**
+     * Configuration that will be used when constructing a session on each request.
+     * At this entrypoint, only allows for the specification of a non-default database.
+     * The context property has a broader definition.
+     */
+    sessionConfig?: Pick<SessionConfig, "database">;
     enableDebug?: boolean;
     startupValidation?: StartupValidationConfig;
-    queryOptions?: CypherQueryOptions;
+    cypherQueryOptions?: CypherQueryOptions;
 }
 
 export type ValidationConfig = {
@@ -174,52 +180,60 @@ class Neo4jGraphQL {
         return this.subgraphSchema;
     }
 
-    public async checkNeo4jCompat(
-        input: { driver?: Driver; sessionConfig?: Neo4jGraphQLSessionConfig } = {}
-    ): Promise<void> {
-        const driver = input.driver || this.driver;
-        const sessionConfig = input.sessionConfig;
+    public async checkNeo4jCompat({
+        driver,
+        sessionConfig,
+    }: {
+        driver?: Driver;
+        sessionConfig?: Neo4jGraphQLSessionConfig;
+    } = {}): Promise<void> {
+        const neo4jDriver = driver || this.driver;
 
-        if (!driver) {
+        if (!neo4jDriver) {
             throw new Error("neo4j-driver Driver missing");
         }
 
         if (!this.dbInfo) {
-            this.dbInfo = await this.getNeo4jDatabaseInfo(driver, sessionConfig);
+            this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig || this.config?.sessionConfig);
         }
 
-        return checkNeo4jCompat({ driver, sessionConfig, dbInfo: this.dbInfo });
+        return checkNeo4jCompat({
+            driver: neo4jDriver,
+            sessionConfig: sessionConfig || this.config?.sessionConfig,
+            dbInfo: this.dbInfo,
+        });
     }
 
-    public async assertIndexesAndConstraints(
-        input: {
-            driver?: Driver;
-            sessionConfig?: Neo4jGraphQLSessionConfig;
-            options?: AssertIndexesAndConstraintsOptions;
-        } = {}
-    ): Promise<void> {
+    public async assertIndexesAndConstraints({
+        driver,
+        sessionConfig,
+        options,
+    }: {
+        driver?: Driver;
+        sessionConfig?: Neo4jGraphQLSessionConfig;
+        options?: AssertIndexesAndConstraintsOptions;
+    } = {}): Promise<void> {
         if (!(this.executableSchema || this.subgraphSchema)) {
             throw new Error("You must await `.getSchema()` before `.assertIndexesAndConstraints()`");
         }
 
         await (this.executableSchema || this.subgraphSchema);
 
-        const driver = input.driver || this.driver;
-        const sessionConfig = input.sessionConfig;
+        const neo4jDriver = driver || this.driver;
 
-        if (!driver) {
+        if (!neo4jDriver) {
             throw new Error("neo4j-driver Driver missing");
         }
 
         if (!this.dbInfo) {
-            this.dbInfo = await this.getNeo4jDatabaseInfo(driver, sessionConfig);
+            this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig || this.config?.sessionConfig);
         }
 
         await assertIndexesAndConstraints({
-            driver,
-            sessionConfig,
+            driver: neo4jDriver,
+            sessionConfig: sessionConfig || this.config?.sessionConfig,
             nodes: this.nodes,
-            options: input.options,
+            options: options,
         });
     }
 
@@ -280,12 +294,10 @@ class Neo4jGraphQL {
         return mergeTypeDefs(typeDefs);
     }
 
-    private async getNeo4jDatabaseInfo(
-        driver: Driver,
-        sessionConfig?: Neo4jGraphQLSessionConfig
-    ): Promise<Neo4jDatabaseInfo> {
+    private async getNeo4jDatabaseInfo(driver: Driver, sessionConfig?: SessionConfig): Promise<Neo4jDatabaseInfo> {
         const executorConstructorParam: ExecutorConstructorParam = {
-            executionContext: sessionConfig ? { driver, sessionConfig } : driver,
+            executionContext: driver,
+            sessionConfig,
         };
 
         return getNeo4jDatabaseInfo(new Executor(executorConstructorParam));

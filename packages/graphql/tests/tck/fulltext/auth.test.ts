@@ -387,7 +387,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                   "isAuthenticated": true,
                   "param0": "something AND something",
                   "param1": "Movie",
-                  "param3": "2020",
+                  "param3": 2020,
                 }
             `);
         });
@@ -447,7 +447,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                   "isAuthenticated": true,
                   "param0": "something AND something",
                   "param1": "Movie",
-                  "param3": "2020",
+                  "param3": 2020,
                 }
             `);
         });
@@ -826,7 +826,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                   "isAuthenticated": true,
                   "param0": "something AND something",
                   "param1": "Movie",
-                  "param3": "2020",
+                  "param3": 2020,
                 }
             `);
         });
@@ -892,7 +892,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                   "isAuthenticated": true,
                   "param0": "something AND something",
                   "param1": "Movie",
-                  "param3": "2020",
+                  "param3": 2020,
                 }
             `);
         });

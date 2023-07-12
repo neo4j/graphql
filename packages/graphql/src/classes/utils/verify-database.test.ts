@@ -62,7 +62,11 @@ describe("checkNeo4jCompat", () => {
         };
 
         await expect(
-            checkNeo4jCompat({ driver: fakeDriver, sessionConfig, dbInfo: new Neo4jDatabaseInfo(minVersion) })
+            checkNeo4jCompat({
+                driver: fakeDriver,
+                sessionConfig,
+                dbInfo: new Neo4jDatabaseInfo(minVersion),
+            })
         ).resolves.not.toThrow();
     });
 

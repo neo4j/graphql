@@ -19,13 +19,13 @@
 
 import type {
     Driver,
-    ManagedTransaction,
     QueryResult,
-    Result,
     Session,
-    SessionConfig,
     SessionMode,
     Transaction,
+    SessionConfig,
+    ManagedTransaction,
+    Result,
 } from "neo4j-driver";
 import { Neo4jError } from "neo4j-driver";
 import Debug from "debug";
@@ -80,8 +80,6 @@ type TransactionConfig = {
     };
 };
 
-export type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
-
 type DriverWithSessionConfig = {
     driver: Driver;
     sessionConfig: Neo4jGraphQLSessionConfig;
@@ -92,7 +90,10 @@ export type ExecutionContext = Driver | Session | Transaction | DriverWithSessio
 export type ExecutorConstructorParam = {
     executionContext: ExecutionContext;
     cypherQueryOptions?: CypherQueryOptions;
+    sessionConfig?: SessionConfig;
 };
+
+export type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
 
 export class Executor {
     private executionContext: ExecutionContext;
@@ -104,10 +105,14 @@ export class Executor {
 
     private cypherQueryOptions: CypherQueryOptions | undefined;
 
-    constructor({ executionContext, cypherQueryOptions }: ExecutorConstructorParam) {
+    private sessionConfig: SessionConfig | undefined;
+
+    constructor({ executionContext, cypherQueryOptions, sessionConfig }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.cypherQueryOptions = cypherQueryOptions;
         this.lastBookmark = null;
+        this.cypherQueryOptions = cypherQueryOptions;
+        this.sessionConfig = sessionConfig;
     }
 
     public async execute(
@@ -183,6 +188,11 @@ export class Executor {
         }
 
         return query;
+    }
+
+    private getSessionConfig(sessionMode: SessionMode): SessionConfig {
+        // Always specify a default database to avoid requests for routing table
+        return { defaultAccessMode: sessionMode, database: "neo4j", ...this.sessionConfig };
     }
 
     private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {

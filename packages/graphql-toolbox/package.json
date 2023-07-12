@@ -50,8 +50,8 @@
         "@dnd-kit/modifiers": "6.0.1",
         "@dnd-kit/sortable": "7.0.2",
         "@graphiql/react": "0.18.0",
-        "@neo4j-ndl/base": "1.8.2",
-        "@neo4j-ndl/react": "1.8.6",
+        "@neo4j-ndl/base": "1.8.5",
+        "@neo4j-ndl/react": "1.8.9",
         "@neo4j/graphql": "3.23.1",
         "@neo4j/introspector": "1.0.3",
         "classnames": "2.3.2",
@@ -71,7 +71,7 @@
         "zustand": "4.3.9"
     },
     "devDependencies": {
-        "@playwright/test": "1.35.1",
+        "@playwright/test": "1.36.0",
         "@tsconfig/create-react-app": "2.0.0",
         "@types/codemirror": "5.60.8",
         "@types/lodash.debounce": "4.0.7",
@@ -102,7 +102,7 @@
         "ts-jest": "29.1.1",
         "ts-loader": "9.4.4",
         "ts-node": "10.9.1",
-        "tsconfig-paths-webpack-plugin": "4.0.1",
+        "tsconfig-paths-webpack-plugin": "4.1.0",
         "typescript": "5.1.6",
         "webpack": "5.88.1",
         "webpack-cli": "5.1.4",

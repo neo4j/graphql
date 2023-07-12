@@ -201,7 +201,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -244,7 +245,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -287,7 +289,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -316,7 +319,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -346,7 +350,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -386,7 +391,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -415,7 +421,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -446,7 +453,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -480,7 +488,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -509,7 +518,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -540,7 +550,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -570,7 +581,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -604,7 +616,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -657,7 +670,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -702,7 +716,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -736,7 +751,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -771,7 +787,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -801,7 +818,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -838,7 +856,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -872,7 +891,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -943,14 +963,16 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query1,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
             const gqlResult2 = await graphql({
                 schema: generatedSchema,
                 source: query2,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1024,14 +1046,16 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query1,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
             const gqlResult2 = await graphql({
                 schema: generatedSchema,
                 source: query2,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1071,7 +1095,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1139,7 +1164,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1173,7 +1199,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1202,7 +1229,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1236,7 +1264,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1266,7 +1295,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1308,7 +1338,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1338,7 +1369,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1368,7 +1400,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -1444,7 +1477,7 @@ describe("@fulltext directive", () => {
                 source: query,
                 contextValue: {
                     token,
-                    driver,
+                    executionContext: driver,
                     sessionConfig: { database: databaseName },
                 },
             });
@@ -1514,7 +1547,7 @@ describe("@fulltext directive", () => {
                 source: query,
                 contextValue: {
                     token,
-                    driver,
+                    executionContext: driver,
                     sessionConfig: { database: databaseName },
                 },
             });
@@ -1584,7 +1617,7 @@ describe("@fulltext directive", () => {
                 source: query,
                 contextValue: {
                     token,
-                    driver,
+                    executionContext: driver,
                     sessionConfig: { database: databaseName },
                 },
             });
@@ -1669,7 +1702,7 @@ describe("@fulltext directive", () => {
                 source: query,
                 contextValue: {
                     token,
-                    driver,
+                    executionContext: driver,
                     sessionConfig: { database: databaseName },
                 },
             });
@@ -1734,7 +1767,7 @@ describe("@fulltext directive", () => {
                 source: query,
                 contextValue: {
                     token,
-                    driver,
+                    executionContext: driver,
                     sessionConfig: { database: databaseName },
                 },
             });
@@ -1802,7 +1835,7 @@ describe("@fulltext directive", () => {
                 source: query,
                 contextValue: {
                     token,
-                    driver,
+                    executionContext: driver,
                     sessionConfig: { database: databaseName },
                 },
             });
@@ -1871,7 +1904,7 @@ describe("@fulltext directive", () => {
                 source: query,
                 contextValue: {
                     token,
-                    driver,
+                    executionContext: driver,
                     sessionConfig: { database: databaseName },
                 },
             });
@@ -1929,7 +1962,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -2008,7 +2042,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -2073,7 +2108,8 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 
@@ -2164,14 +2200,16 @@ describe("@fulltext directive", () => {
                 schema: generatedSchema,
                 source: query1,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
             const gqlResult2 = await graphql({
                 schema: generatedSchema,
                 source: query2,
                 contextValue: {
-                    executionContext: { driver, sessionConfig: { database: databaseName } },
+                    executionContext: driver,
+                    sessionConfig: { database: databaseName },
                 },
             });
 

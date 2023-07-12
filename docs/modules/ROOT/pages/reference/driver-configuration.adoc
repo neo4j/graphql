@@ -174,7 +174,7 @@ const server = new ApolloServer({
 });
 
 await startStandaloneServer(server, {
-    context: async ({ req }) => ({ req, driverConfig: { database: "my-database" }}),
+    context: async ({ req }) => ({ req, sessionConfig: { database: "my-database" }}),
 });
 ----
 
@@ -202,7 +202,7 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
     config: {
-        driverConfig: {
+        sessionConfig: {
             database: "my-database",
         },
     },
@@ -215,43 +215,6 @@ const server = new ApolloServer({
 
 await startStandaloneServer(server, {
     context: async ({ req }) => ({ req }),
-});
-----
-
-== Specifying Neo4j version
-
-When a connection is established, the library automatically detect the version of the Neo4j instance connected.
-The version will be then stored and used for the following queries.
-It is also possible to specify manually the Neo4j version in the Context.
-
-=== Context
-
-[source, javascript, indent=0]
-----
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
-import { Neo4jDatabaseInfo, Neo4jGraphQL } from "@neo4j/graphql";
-import neo4j from "neo4j-driver";
-
-const typeDefs = `#graphql
-    type User {
-        name: String
-    }
-`;
-
-const driver = neo4j.driver(
-    "bolt://localhost:7687",
-    neo4j.auth.basic("neo4j", "password")
-);
-
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
-const server = new ApolloServer({
-    schema: await neoSchema.getSchema(),
-});
-
-await startStandaloneServer(server, {
-    context: async ({ req }) => ({ req, neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4") }),
 });
 ----
 

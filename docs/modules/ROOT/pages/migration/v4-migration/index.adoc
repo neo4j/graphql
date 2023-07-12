@@ -778,3 +778,88 @@ type Actor @query(aggregate: true) {
 }
 ----
 
+=== Cypher query options
+
+If you had a need to pass in Cypher query options for query tuning, this interface has been changed.
+
+The config option `queryOptions` has now become `cypherQueryOptions`, and it now accepts simple strings instead of enums.
+
+The following is an example before the change:
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL, CypherRuntime } = require("@neo4j/graphql");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String!
+    }
+`;
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        queryOptions: {
+            runtime: CypherRuntime.INTERPRETED,
+        },
+    },
+});
+----
+
+This is what is required after the change:
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String!
+    }
+`;
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        cypherQueryOptions: {
+            runtime: "interpreted",
+        },
+    },
+});
+----
+
+=== Session configuration
+
+Session configuration is now available in the constructor and in the context under the `sessionConfig` key.
+
+This was previously `driverConfig`:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        driverConfig: {
+            database: "different-db"
+        },
+    },
+})
+----
+
+The above example is now:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        sessionConfig: {
+            database: "different-db"
+        },
+    },
+})
+----
+
+The `bookmarks` key has been removed because it is no longer needed with the bookmark manager of the newer driver.
