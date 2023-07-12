@@ -107,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
                     },
                 },
             },
-            contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -143,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
                     },
                 },
             },
-            contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

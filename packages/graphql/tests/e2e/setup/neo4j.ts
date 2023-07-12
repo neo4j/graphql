@@ -100,15 +100,6 @@ class Neo4j {
             sessionConfig: { database },
         };
     }
-
-    public getContextValuesWithBookmarks(bookmarks: string[], options?: Record<string, unknown>): Neo4jGraphQLContext {
-        const database = this.hasIntegrationTestDb ? INT_TEST_DB_NAME : "neo4j";
-        return {
-            ...(options || {}),
-            executionContext: this.driver,
-            driverConfig: { database, bookmarks },
-        };
-    }
 }
 
 export default Neo4j;

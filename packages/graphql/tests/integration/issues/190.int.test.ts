@@ -103,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -153,7 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();

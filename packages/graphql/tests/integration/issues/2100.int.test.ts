@@ -163,7 +163,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks, { token }),
+                contextValue: neo4j.getContextValues( { token }),
             });
 
             expect(result.errors).toBeFalsy();
@@ -217,7 +217,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 variableValues: {
                     id: 1,
                 },
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks, { token }),
+                contextValue: neo4j.getContextValues( { token }),
             });
 
             expect(result.errors).toBeFalsy();

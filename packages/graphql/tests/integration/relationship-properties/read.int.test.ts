@@ -120,7 +120,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -190,7 +190,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -251,7 +251,7 @@ describe("Relationship properties - read", () => {
             const ascResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { nameSort: "ASC" },
             });
 
@@ -292,7 +292,7 @@ describe("Relationship properties - read", () => {
             const descResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { nameSort: "DESC" },
             });
 
@@ -386,7 +386,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -427,7 +427,7 @@ describe("Relationship properties - read", () => {
             const reverseResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: queryReverse,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(reverseResult.errors).toBeFalsy();
@@ -503,7 +503,7 @@ describe("Relationship properties - read", () => {
             const ascResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { nameSort: "ASC" },
             });
 
@@ -538,7 +538,7 @@ describe("Relationship properties - read", () => {
             const descResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { nameSort: "DESC" },
             });
 
@@ -604,7 +604,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -668,7 +668,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();

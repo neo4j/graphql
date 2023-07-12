@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();

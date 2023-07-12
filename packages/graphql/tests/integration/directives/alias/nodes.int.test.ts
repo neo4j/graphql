@@ -98,7 +98,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -123,7 +123,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -149,7 +149,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -175,7 +175,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -214,7 +214,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -259,7 +259,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -311,7 +311,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -359,7 +359,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -385,7 +385,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -410,7 +410,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -446,7 +446,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -483,7 +483,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -518,7 +518,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -568,7 +568,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -620,7 +620,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -668,7 +668,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -737,7 +737,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -762,7 +762,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();

@@ -96,7 +96,7 @@ describe("Relationship properties - create", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { movieTitle, actorName, screenTime },
         });
         expect(result.errors).toBeFalsy();
@@ -181,7 +181,7 @@ describe("Relationship properties - create", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { movieTitle, actorName, words },
         });
         expect(result.errors).toBeFalsy();

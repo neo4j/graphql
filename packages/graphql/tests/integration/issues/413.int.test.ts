@@ -99,7 +99,7 @@ describe("413", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(result.errors).toBeFalsy();
