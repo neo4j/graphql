@@ -79,7 +79,7 @@ export type ExecutionContext = Driver | Session | Transaction;
 
 export type ExecutorConstructorParam = {
     executionContext: ExecutionContext;
-    queryOptions?: CypherQueryOptions;
+    cypherQueryOptions?: CypherQueryOptions;
     database?: string;
     bookmarks?: string | string[];
     measureTime?: boolean;
@@ -94,15 +94,15 @@ export class Executor {
 
     public lastBookmark: string | null;
 
-    private queryOptions: CypherQueryOptions | undefined;
+    private cypherQueryOptions: CypherQueryOptions | undefined;
 
     private database: string | undefined;
     private bookmarks: string | string[] | undefined;
 
-    constructor({ executionContext, queryOptions, database, bookmarks }: ExecutorConstructorParam) {
+    constructor({ executionContext, cypherQueryOptions, database, bookmarks }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
-        this.queryOptions = queryOptions;
+        this.cypherQueryOptions = cypherQueryOptions;
         this.database = database;
         this.bookmarks = bookmarks;
     }
@@ -157,12 +157,12 @@ export class Executor {
     }
 
     private generateQuery(query: string): string {
-        if (this.queryOptions && Object.keys(this.queryOptions).length) {
-            const queryOptions = `CYPHER ${Object.entries(this.queryOptions)
+        if (this.cypherQueryOptions && Object.keys(this.cypherQueryOptions).length) {
+            const cypherQueryOptions = `CYPHER ${Object.entries(this.cypherQueryOptions)
                 .map(([key, value]) => `${key}=${value}`)
                 .join(" ")}`;
 
-            return `${queryOptions}\n${query}`;
+            return `${cypherQueryOptions}\n${query}`;
         }
 
         return query;
