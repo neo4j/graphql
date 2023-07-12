@@ -533,3 +533,36 @@ type Actor @query(aggregate: true) {
 }
 ----
 
+=== Session configuration
+
+Session configuration is now available in the constructor and in the context under the `sessionConfig` key.
+
+This was previously `driverConfig`:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        driverConfig: {
+            database: "different-db"
+        },
+    },
+})
+----
+
+The above example is now:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        sessionConfig: {
+            database: "different-db"
+        },
+    },
+})
+----
+
+The `bookmarks` key has been removed because it is no longer needed with the bookmark manager of the newer driver.
