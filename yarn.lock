@@ -4156,21 +4156,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.8.4, @neo4j-ndl/base@npm:^1.8.4":
-  version: 1.8.4
-  resolution: "@neo4j-ndl/base@npm:1.8.4"
-  checksum: 4c8217eb3d4643225757a7e7c2b67e2a176a2347ad9318af4440f40ac186f2abaa648fe6a03daff71917f5e8fd8b4f1f0db856370f04457e4d91374887878e68
+"@neo4j-ndl/base@npm:1.8.5, @neo4j-ndl/base@npm:^1.8.5":
+  version: 1.8.5
+  resolution: "@neo4j-ndl/base@npm:1.8.5"
+  checksum: 671d5821aec669d57c03e7016c56d0ce560a6a348bbc7d48ab0ef6ccf718939314c2e37e4d2473c60d34865b5260bd79bc67631d1dc2e2d3ffa49b9ee94a274f
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.8.8":
-  version: 1.8.8
-  resolution: "@neo4j-ndl/react@npm:1.8.8"
+"@neo4j-ndl/react@npm:1.8.9":
+  version: 1.8.9
+  resolution: "@neo4j-ndl/react@npm:1.8.9"
   dependencies:
     "@floating-ui/react": ^0.24.2
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^1.8.4
+    "@neo4j-ndl/base": ^1.8.5
     "@tanstack/react-table": ^8.9.3
     classnames: ^2.3.1
     detect-browser: ^5.3.0
@@ -4186,7 +4186,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: ">=16.8.0"
-  checksum: 1a43ac8b7b622f392ec95032a92f4cae7d539041a2508e8481b8dfa0751048d111d4a7ada7bc446ed2c1ed1b41f98f76de9abed0f45dd90daa6773c763a3c0d4
+  checksum: 0f7e48cc36b7c001be735f73a5f6571b578b1ee8d042c4555f7bc431966607023aff9c384403abea550e6bed2bbc9b3dc5dd29dfdbb568859be04c8f3e7f25e0
   languageName: node
   linkType: hard
 
@@ -4286,11 +4286,11 @@ __metadata:
     "@dnd-kit/modifiers": 6.0.1
     "@dnd-kit/sortable": 7.0.2
     "@graphiql/react": 0.18.0
-    "@neo4j-ndl/base": 1.8.4
-    "@neo4j-ndl/react": 1.8.8
+    "@neo4j-ndl/base": 1.8.5
+    "@neo4j-ndl/react": 1.8.9
     "@neo4j/graphql": 3.23.1
     "@neo4j/introspector": 1.0.3
-    "@playwright/test": 1.35.1
+    "@playwright/test": 1.36.0
     "@tsconfig/create-react-app": 2.0.0
     "@types/codemirror": 5.60.8
     "@types/lodash.debounce": 4.0.7
@@ -4335,7 +4335,7 @@ __metadata:
     ts-jest: 29.1.1
     ts-loader: 9.4.4
     ts-node: 10.9.1
-    tsconfig-paths-webpack-plugin: 4.0.1
+    tsconfig-paths-webpack-plugin: 4.1.0
     typescript: 5.1.6
     webpack: 5.88.1
     webpack-cli: 5.1.4
@@ -4371,7 +4371,7 @@ __metadata:
     "@types/ws": 8.5.5
     camelcase: ^6.3.0
     debug: ^4.3.4
-    dedent: 0.7.0
+    dedent: 1.0.1
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
     graphql-compose: ^9.0.8
@@ -5301,19 +5301,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.35.1":
-  version: 1.35.1
-  resolution: "@playwright/test@npm:1.35.1"
+"@playwright/test@npm:1.36.0":
+  version: 1.36.0
+  resolution: "@playwright/test@npm:1.36.0"
   dependencies:
     "@types/node": "*"
     fsevents: 2.3.2
-    playwright-core: 1.35.1
+    playwright-core: 1.36.0
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 3509d2f2c7397f9b0d4f49088cab8625f17d186f7e9b3389ddebf7c52ee8aae6407eab48f66b300b7bf6a33f6e3533fd5951e72bfdb001b68838af98596d5a53
+  checksum: 6748fd7777617fc14aaf472c85a2d29bdcca7c63e88d06bd8c4f37af3bc35ae7af9c317ed966bc005e37038a27193be486fb5361634a0e9a79f527b6cbdd2f52
   languageName: node
   linkType: hard
 
@@ -9530,7 +9530,7 @@ __metadata:
     graphql-tag: ^2.12.6
     neo4j-driver: ^5.5.0
     ts-loader: 9.4.4
-    tsconfig-paths-webpack-plugin: 4.0.1
+    tsconfig-paths-webpack-plugin: 4.1.0
     typescript: 5.1.6
     webpack: 5.88.1
   languageName: unknown
@@ -13103,7 +13103,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dedent@npm:0.7.0, dedent@npm:^0.7.0":
+"dedent@npm:1.0.1":
+  version: 1.0.1
+  resolution: "dedent@npm:1.0.1"
+  dependencies:
+    babel-plugin-macros: ^3.1.0
+  checksum: 8a76235a8aae8b9e36bc9b29bf9c920729f3e8366f5389fc8b45afce978a246be5ec5d0041b7d3d83d1930eb8b61519827f45ed1dbab33ee6332ed87e41063f1
+  languageName: node
+  linkType: hard
+
+"dedent@npm:^0.7.0":
   version: 0.7.0
   resolution: "dedent@npm:0.7.0"
   checksum: 87de191050d9a40dd70cad01159a0bcf05ecb59750951242070b6abf9569088684880d00ba92a955b4058804f16eeaf91d604f283929b4f614d181cd7ae633d2
@@ -23715,12 +23724,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.35.1":
-  version: 1.35.1
-  resolution: "playwright-core@npm:1.35.1"
+"playwright-core@npm:1.36.0":
+  version: 1.36.0
+  resolution: "playwright-core@npm:1.36.0"
   bin:
     playwright-core: cli.js
-  checksum: 179abc0051f00474e528935b507fa8cedc986b2803b020d7679878ba28cdd7036ad5a779792aad2ad281f8dc625eb1d2fb77663cb8de0d20c7ffbda7c18febdd
+  checksum: d6b5fed5ae95238dc36a1be3e2cfd250221810e6a2d20592c29d7044a2d1f96e8e6cfff83d937605b6e26d7c3058231d16784e17979fbb11208880829e406e85
   languageName: node
   linkType: hard
 
@@ -28439,14 +28448,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths-webpack-plugin@npm:4.0.1":
-  version: 4.0.1
-  resolution: "tsconfig-paths-webpack-plugin@npm:4.0.1"
+"tsconfig-paths-webpack-plugin@npm:4.1.0":
+  version: 4.1.0
+  resolution: "tsconfig-paths-webpack-plugin@npm:4.1.0"
   dependencies:
     chalk: ^4.1.0
     enhanced-resolve: ^5.7.0
     tsconfig-paths: ^4.1.2
-  checksum: a09e765c4939379fa060f78bbc906d0a7be541b9b49d3ad4744e99a2e87f28aa30d549a549196159bc5a50f420fdb1391b8eed360f47ee8ce40e15dcb800b5aa
+  checksum: f6e9a8a407e1a405b0f2531184296d9f033cb4fe5837282b757ab4a2f4cd82a3117e62c4b86d56c7d47749c7f1345aa438ec6417dbf64a0ec74a292fe9eae44d
   languageName: node
   linkType: hard
 

@@ -20,7 +20,7 @@
 import type { ArgumentNode, DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import type { FullText, FulltextIndex } from "../../types";
 import type { ObjectFields } from "../get-obj-field-meta";
-import parseValueNode from "../parse-value-node";
+import parseValueNode from "../../schema-model/parser/parse-value-node";
 
 const deprecationWarning =
     "The @fulltext name argument has been deprecated and will be removed in 4.0.0. " +
