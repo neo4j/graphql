@@ -64,10 +64,6 @@ function isSessionLike(executionContext: any): executionContext is SessionLike {
     return typeof executionContext.beginTransaction === "function";
 }
 
-function isDriverWithSessionConfig(executionContext: any): executionContext is DriverWithSessionConfig {
-    return executionContext.driver;
-}
-
 type TransactionConfig = {
     metadata: {
         app: string;
@@ -80,12 +76,7 @@ type TransactionConfig = {
     };
 };
 
-type DriverWithSessionConfig = {
-    driver: Driver;
-    sessionConfig: Neo4jGraphQLSessionConfig;
-};
-
-export type ExecutionContext = Driver | Session | Transaction | DriverWithSessionConfig;
+export type ExecutionContext = Driver | Session | Transaction;
 
 export type ExecutorConstructorParam = {
     executionContext: ExecutionContext;
@@ -122,17 +113,6 @@ export class Executor {
         info?: GraphQLResolveInfo
     ): Promise<QueryResult> {
         try {
-            if (isDriverWithSessionConfig(this.executionContext)) {
-                return this.driverRun({
-                    query,
-                    parameters,
-                    driver: this.executionContext.driver,
-                    sessionMode,
-                    info,
-                    sessionConfig: this.executionContext.sessionConfig,
-                });
-            }
-
             if (isDriverLike(this.executionContext)) {
                 return this.driverRun({
                     query,
@@ -190,11 +170,6 @@ export class Executor {
         return query;
     }
 
-    private getSessionConfig(sessionMode: SessionMode): SessionConfig {
-        // Always specify a default database to avoid requests for routing table
-        return { defaultAccessMode: sessionMode, database: "neo4j", ...this.sessionConfig };
-    }
-
     private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {
         const app = `${environment.NPM_PACKAGE_NAME}@${environment.NPM_PACKAGE_VERSION}`;
 
@@ -224,17 +199,17 @@ export class Executor {
         driver,
         sessionMode,
         info,
-        sessionConfig,
     }: {
         query: string;
         parameters: unknown;
         driver: Driver;
         sessionMode: SessionMode;
         info?: GraphQLResolveInfo;
-        sessionConfig?: Neo4jGraphQLSessionConfig;
     }): Promise<QueryResult> {
         const session = driver.session({
-            ...sessionConfig,
+            // Always specify a default database to avoid requests for routing table
+            database: "neo4j",
+            ...this.sessionConfig,
             bookmarkManager: driver.executeQueryBookmarkManager,
             defaultAccessMode: sessionMode,
         });
