@@ -144,8 +144,17 @@ describe("execute", () => {
                             // @ts-ignore
                             return fn(tx);
                         },
-                        lastBookmark: () => "bookmark",
+                        executeRead: (fn) => {
+                            // @ts-ignore
+                            return fn(tx);
+                        },
+                        executeWrite: (fn) => {
+                            // @ts-ignore
+                            return fn(tx);
+                        },
                         close: () => true,
+                        lastBookmark: () => [],
+                        lastBookmarks: () => [],
                     };
                 },
                 // @ts-ignore
@@ -225,8 +234,17 @@ describe("execute", () => {
                             // @ts-ignore
                             return fn(tx);
                         },
-                        lastBookmark: () => "bookmark",
+                        executeRead: (fn) => {
+                            // @ts-ignore
+                            return fn(tx);
+                        },
+                        executeWrite: (fn) => {
+                            // @ts-ignore
+                            return fn(tx);
+                        },
                         close: () => true,
+                        lastBookmark: () => [],
+                        lastBookmarks: () => [],
                     };
                 },
                 // @ts-ignore

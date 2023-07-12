@@ -98,7 +98,7 @@ describe("@fulltext directive", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             })
         ).resolves.not.toThrow();
@@ -158,8 +158,8 @@ describe("@fulltext directive", () => {
             schema,
             source: query,
             contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
+                executionContext: driver,
+                sessionConfig: { database: databaseName },
             },
         });
 
@@ -195,7 +195,7 @@ describe("@fulltext directive", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             })
         ).resolves.not.toThrow();
@@ -212,8 +212,8 @@ describe("@fulltext directive", () => {
             schema,
             source: query,
             contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
+                executionContext: driver,
+                sessionConfig: { database: databaseName },
             },
         });
 
@@ -245,7 +245,7 @@ describe("@fulltext directive", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             })
         ).resolves.not.toThrow();
@@ -305,8 +305,8 @@ describe("@fulltext directive", () => {
             schema,
             source: query,
             contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
+                executionContext: driver,
+                sessionConfig: { database: databaseName },
             },
         });
 
@@ -342,7 +342,7 @@ describe("@fulltext directive", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             })
         ).resolves.not.toThrow();
@@ -402,8 +402,8 @@ describe("@fulltext directive", () => {
             schema,
             source: query,
             contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
+                executionContext: driver,
+                sessionConfig: { database: databaseName },
             },
         });
 
@@ -436,7 +436,7 @@ describe("@fulltext directive", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
             })
         ).rejects.toThrow(`Missing @fulltext index '${indexName}' on Node '${type.name}'`);
     });
@@ -476,7 +476,7 @@ describe("@fulltext directive", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
             })
         ).rejects.toThrow(`@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description'`);
     });
@@ -519,7 +519,7 @@ describe("@fulltext directive", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
             })
         ).rejects.toThrow(
             `@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description' aliased to field '${alias}'`
@@ -549,7 +549,7 @@ describe("@fulltext directive", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             })
         ).resolves.not.toThrow();
@@ -558,7 +558,7 @@ describe("@fulltext directive", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             })
         ).resolves.not.toThrow();
@@ -642,7 +642,7 @@ describe("@fulltext directive", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             })
         ).rejects.toThrow(
@@ -673,7 +673,7 @@ describe("@fulltext directive", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             })
         ).resolves.not.toThrow();
@@ -733,8 +733,8 @@ describe("@fulltext directive", () => {
             schema,
             source: query,
             contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
+                executionContext: driver,
+                sessionConfig: { database: databaseName },
             },
         });
 

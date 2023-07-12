@@ -46,7 +46,7 @@ class OGM<ModelMap = unknown> {
         this.checkNeo4jCompat = function checkNeo4jCompat() {
             return this.neoSchema.checkNeo4jCompat({
                 driver: rest.driver,
-                sessionConfig: rest.config?.sessionConfig || rest.config?.driverConfig,
+                sessionConfig: rest.config?.sessionConfig ,
             });
         };
 
@@ -59,7 +59,7 @@ class OGM<ModelMap = unknown> {
                 await this.neoSchema.assertIndexesAndConstraints({
                     ...input,
                     driver: rest.driver,
-                    sessionConfig: rest.config?.sessionConfig || rest.config?.driverConfig,
+                    sessionConfig: rest.config?.sessionConfig,
                 });
             } catch (e: unknown) {
                 if (

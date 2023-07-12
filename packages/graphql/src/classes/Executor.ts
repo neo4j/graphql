@@ -114,7 +114,7 @@ export class Executor {
     ): Promise<QueryResult> {
         try {
             if (isDriverLike(this.executionContext)) {
-                return this.driverRun({
+                return await this.driverRun({
                     query,
                     parameters,
                     driver: this.executionContext,
@@ -124,10 +124,10 @@ export class Executor {
             }
 
             if (isSessionLike(this.executionContext)) {
-                return this.sessionRun({ query, parameters, sessionMode, session: this.executionContext, info });
+                return await this.sessionRun({ query, parameters, sessionMode, session: this.executionContext, info });
             }
 
-            return this.transactionRun(query, parameters, this.executionContext);
+            return await this.transactionRun(query, parameters, this.executionContext);
         } catch (error) {
             throw this.formatError(error);
         }
@@ -213,9 +213,13 @@ export class Executor {
             bookmarkManager: driver.executeQueryBookmarkManager,
             defaultAccessMode: sessionMode,
         });
-        const result = await this.sessionRun({ query, parameters, info, session, sessionMode });
-        await session.close();
-        return result;
+
+        try {
+            const result = await this.sessionRun({ query, parameters, info, session, sessionMode });
+            return result;
+        } finally {
+            await session.close();
+        }
     }
 
     private async sessionRun({
