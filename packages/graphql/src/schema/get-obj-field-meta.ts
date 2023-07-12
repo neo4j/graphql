@@ -251,13 +251,13 @@ function getObjFieldMeta({
 
                 const msg = `List type relationship fields must be non-nullable and have non-nullable entries, please change type of ${obj.name.value}.${field.name.value} to [${baseField.typeMeta.name}!]!`;
 
-                if (typeMeta.originalType?.kind === "NonNullType") {
-                    if (typeMeta.originalType?.type.kind === "ListType") {
-                        if (typeMeta.originalType?.type.type.kind !== "NonNullType") {
+                if (typeMeta.originalType?.kind === Kind.NON_NULL_TYPE) {
+                    if (typeMeta.originalType?.type.kind === Kind.LIST_TYPE) {
+                        if (typeMeta.originalType?.type.type.kind !== Kind.NON_NULL_TYPE) {
                             throw new Error(msg);
                         }
                     }
-                } else if (typeMeta.originalType?.kind === "ListType") {
+                } else if (typeMeta.originalType?.kind === Kind.LIST_TYPE) {
                     throw new Error(msg);
                 }
 
@@ -572,7 +572,7 @@ function getObjFieldMeta({
                     if (defaultDirective) {
                         const value = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                        const checkKind = (kind: string) => {
+                        const checkKind = (kind: Kind) => {
                             if (value?.kind !== kind) {
                                 throw new Error(
                                     `Default value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
@@ -608,7 +608,7 @@ function getObjFieldMeta({
                     if (coalesceDirective) {
                         const value = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                        const checkKind = (kind: string) => {
+                        const checkKind = (kind: Kind) => {
                             if (value?.kind !== kind) {
                                 throw new Error(
                                     `coalesce() value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`

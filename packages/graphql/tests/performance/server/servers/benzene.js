@@ -20,7 +20,7 @@
 "use strict"
 
 import neo4j from "neo4j-driver";
-// eslint-disable-next-line import/no-unresolved
+ 
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { createServer } from "http";
 import { Benzene, makeHandler, parseGraphQLBody } from "@benzene/http";

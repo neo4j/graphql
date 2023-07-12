@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode, FieldDefinitionNode } from "graphql";
+import { Kind, type DirectiveNode, type FieldDefinitionNode } from "graphql";
 
 type CypherMeta = {
     statement: string;
@@ -46,7 +46,7 @@ function parseStatementFlag(directive: DirectiveNode): string {
     if (!stmtArg) {
         throw new Error("@cypher statement required");
     }
-    if (stmtArg.value.kind !== "StringValue") {
+    if (stmtArg.value.kind !== Kind.STRING) {
         throw new Error("@cypher statement is not a string");
     }
 
@@ -58,7 +58,7 @@ function parseColumnNameFlag(directive: DirectiveNode): string | undefined {
     if (!stmtArg) {
         return undefined;
     }
-    if (stmtArg.value.kind !== "StringValue") {
+    if (stmtArg.value.kind !== Kind.STRING) {
         throw new Error("@cypher columnName is not a string");
     }
 

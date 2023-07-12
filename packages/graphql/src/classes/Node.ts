@@ -81,9 +81,9 @@ type MutableField =
     | CustomScalarField
     | CustomEnumField
     | UnionField
-    | ObjectField
+     
     | TemporalField
-    | PointField
+     
     | CypherField;
 
 type AuthableField =
@@ -91,12 +91,12 @@ type AuthableField =
     | CustomScalarField
     | CustomEnumField
     | UnionField
-    | ObjectField
+     
     | TemporalField
-    | PointField
+     
     | CypherField;
 
-type ConstrainableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | PointField;
+type ConstrainableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField  ;
 
 export type RootTypeFieldNames = {
     create: string;

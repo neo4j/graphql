@@ -71,7 +71,7 @@ export const parseDuration = (
         hours: hourUnit = 0,
         minutes: minuteUnit = 0,
         seconds: secondUnit = 0,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+         
     } = match.groups!;
 
     const years = +yearUnit;
