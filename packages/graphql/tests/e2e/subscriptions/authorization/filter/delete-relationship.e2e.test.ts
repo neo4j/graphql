@@ -66,7 +66,7 @@ describe("Subscriptions authorization with relationship deletion events", () => 
             typeDefs,
             driver,
             config: {
-                driverConfig: {
+                sessionConfig: {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },

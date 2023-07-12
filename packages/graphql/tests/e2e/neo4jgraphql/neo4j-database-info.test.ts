@@ -49,7 +49,7 @@ describe("Create with specific neo4jDatabaseInfo set correctly", () => {
             typeDefs,
             driver,
             config: {
-                driverConfig: {
+                sessionConfig: {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },
@@ -118,7 +118,7 @@ describe("Create with specific neo4jDatabaseInfo set incorrectly", () => {
             typeDefs,
             driver,
             config: {
-                driverConfig: {
+                sessionConfig: {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },

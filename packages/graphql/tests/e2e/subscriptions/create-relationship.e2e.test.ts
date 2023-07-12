@@ -104,7 +104,7 @@ describe("Create Relationship Subscription", () => {
             typeDefs,
             driver,
             config: {
-                driverConfig: {
+                sessionConfig: {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },

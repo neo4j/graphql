@@ -20,6 +20,7 @@
 import type { Driver, Session, Transaction } from "neo4j-driver";
 import type { CypherQueryOptions, DriverConfig, RequestLike } from ".";
 import type { JWTPayload } from "jose";
+import type { Neo4jGraphQLSessionConfig } from "../classes/Executor";
 
 export interface Neo4jGraphQLContext {
     /**
@@ -33,6 +34,8 @@ export interface Neo4jGraphQLContext {
     driver?: Driver;
     /**
      * If using a driver, configures the database and bookmarks to be used when acquiring a session.
+     *
+     * @deprecated Use the {@link sessionConfig} property instead. Bookmarks are no longer supported as the library migrates over to using bookmark manager.
      */
     driverConfig?: DriverConfig;
     /**
@@ -53,6 +56,10 @@ export interface Neo4jGraphQLContext {
      * ```
      */
     jwt?: JWTPayload;
+    /**
+     * Configuration that will be used during session construction if a driver was passed into the library on construction or if {@link executionContext} is an instance of a driver.
+     */
+    sessionConfig?: Neo4jGraphQLSessionConfig;
     /**
      * The bearer token to be decoded/verified for use in authentication and authorization.
      * Normally found in the Authorization HTTP header. Can be provided with or without authentication scheme.

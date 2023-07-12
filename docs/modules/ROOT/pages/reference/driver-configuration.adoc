@@ -174,7 +174,7 @@ const server = new ApolloServer({
 });
 
 await startStandaloneServer(server, {
-    context: async ({ req }) => ({ req, driverConfig: { database: "my-database" }}),
+    context: async ({ req }) => ({ req, sessionConfig: { database: "my-database" }}),
 });
 ----
 
@@ -202,7 +202,7 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
     config: {
-        driverConfig: {
+        sessionConfig: {
             database: "my-database",
         },
     },

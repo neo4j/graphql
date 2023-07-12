@@ -89,8 +89,10 @@ describe("execute", () => {
                         neoSchema,
                         executor: new Executor({
                             executionContext: driver,
-                            database,
-                            bookmarks,
+                            sessionConfig: {
+                                database,
+                                bookmarks,
+                            },
                         }),
                         info: undefined,
                     }).instance(),
@@ -164,8 +166,10 @@ describe("execute", () => {
                     neoSchema,
                     executor: new Executor({
                         executionContext: driver,
-                        database,
-                        bookmarks,
+                        sessionConfig: {
+                            database,
+                            bookmarks,
+                        },
                         cypherQueryOptions: {},
                     }),
                     info: undefined,
@@ -243,8 +247,10 @@ describe("execute", () => {
                     neoSchema,
                     executor: new Executor({
                         executionContext: driver,
-                        database,
-                        bookmarks,
+                        sessionConfig: {
+                            database,
+                            bookmarks,
+                        },
                         cypherQueryOptions: {
                             runtime: "interpreted",
                             planner: "cost",

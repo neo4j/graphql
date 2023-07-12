@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver, QueryResult, Session, SessionMode, Transaction } from "neo4j-driver";
+import type { Driver, QueryResult, Session, SessionMode, Transaction, SessionConfig } from "neo4j-driver";
 import { Neo4jError } from "neo4j-driver";
 import Debug from "debug";
 import environment from "../environment";
@@ -55,14 +55,6 @@ function isSessionLike(executionContext: any): executionContext is SessionLike {
     return typeof executionContext.beginTransaction === "function";
 }
 
-type SessionParam = {
-    defaultAccessMode?: SessionMode;
-    bookmarks?: string | string[];
-    database?: string;
-    impersonatedUser?: string;
-    fetchSize?: number;
-};
-
 type TransactionConfig = {
     metadata: {
         app: string;
@@ -80,14 +72,14 @@ export type ExecutionContext = Driver | Session | Transaction;
 export type ExecutorConstructorParam = {
     executionContext: ExecutionContext;
     cypherQueryOptions?: CypherQueryOptions;
-    database?: string;
-    bookmarks?: string | string[];
-    measureTime?: boolean;
+    sessionConfig?: SessionConfig;
 };
 
 export type ExecutorResult = {
     result: QueryResult;
 };
+
+export type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
 
 export class Executor {
     private executionContext: Driver | Session | Transaction;
@@ -96,15 +88,13 @@ export class Executor {
 
     private cypherQueryOptions: CypherQueryOptions | undefined;
 
-    private database: string | undefined;
-    private bookmarks: string | string[] | undefined;
+    private sessionConfig: SessionConfig | undefined;
 
-    constructor({ executionContext, cypherQueryOptions, database, bookmarks }: ExecutorConstructorParam) {
+    constructor({ executionContext, cypherQueryOptions, sessionConfig }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
         this.cypherQueryOptions = cypherQueryOptions;
-        this.database = database;
-        this.bookmarks = bookmarks;
+        this.sessionConfig = sessionConfig;
     }
 
     public async execute(
@@ -115,7 +105,7 @@ export class Executor {
     ): Promise<ExecutorResult> {
         try {
             if (isDriverLike(this.executionContext)) {
-                const session = this.executionContext.session(this.getSessionParam(defaultAccessMode));
+                const session = this.executionContext.session(this.getSessionConfig(defaultAccessMode));
                 const result = await this.sessionRun(query, parameters, defaultAccessMode, session, info);
                 await session.close();
                 return result;
@@ -168,19 +158,9 @@ export class Executor {
         return query;
     }
 
-    private getSessionParam(defaultAccessMode: SessionMode): SessionParam {
+    private getSessionConfig(sessionMode: SessionMode): SessionConfig {
         // Always specify a default database to avoid requests for routing table
-        const sessionParam: SessionParam = { defaultAccessMode, database: "neo4j" };
-
-        if (this.database) {
-            sessionParam.database = this.database;
-        }
-
-        if (this.bookmarks) {
-            sessionParam.bookmarks = this.bookmarks;
-        }
-
-        return sessionParam;
+        return { defaultAccessMode: sessionMode, database: "neo4j", ...this.sessionConfig };
     }
 
     private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {
