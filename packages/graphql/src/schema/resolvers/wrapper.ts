@@ -171,13 +171,8 @@ export const wrapResolver =
             executorConstructorParam.queryOptions = config.queryOptions;
         }
 
-        if (context.driverConfig?.database) {
-            executorConstructorParam.database = context.driverConfig?.database;
-        }
-
-        if (context.driverConfig?.bookmarks) {
-            executorConstructorParam.bookmarks = context.driverConfig?.bookmarks;
-        }
+        executorConstructorParam.sessionConfig =
+            context.sessionConfig || context.driverConfig || config.sessionConfig || config.driverConfig;
 
         context.executor = new Executor(executorConstructorParam);
 

@@ -60,7 +60,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
             typeDefs,
             driver,
             config: {
-                driverConfig: {
+                sessionConfig: {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },

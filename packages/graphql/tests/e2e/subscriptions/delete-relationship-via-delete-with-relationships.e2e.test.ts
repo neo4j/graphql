@@ -98,7 +98,7 @@ describe("Delete Subscriptions when relationships are targeted- with interfaces,
             typeDefs,
             driver,
             config: {
-                driverConfig: {
+                sessionConfig: {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },

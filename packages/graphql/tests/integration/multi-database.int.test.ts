@@ -102,7 +102,7 @@ describe("multi-database", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
-            contextValue: { driver, driverConfig: { database: "non-existing-db" } },
+            contextValue: { executionContext: driver, sessionConfig: { database: "non-existing-db" } },
         });
         expect((result.errors as any)[0].message).toBeTruthy();
     });
@@ -133,7 +133,7 @@ describe("multi-database", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
-            contextValue: { driver, driverConfig: { database: dbName } },
+            contextValue: { executionContext: driver, sessionConfig: { database: dbName } },
         });
         expect((result.data as any).movies[0].id).toBe(id);
     });
@@ -154,7 +154,6 @@ describe("multi-database", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: { driverConfig: { database: "non-existing-db" } },
         });
 
         const query = `
@@ -169,7 +168,7 @@ describe("multi-database", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
-            contextValue: {}, // This is needed, otherwise the context in resolvers will be undefined
+            contextValue: { sessionConfig: { database: "non-existing-db" } }, // This is needed, otherwise the context in resolvers will be undefined
         });
 
         expect([
@@ -193,7 +192,6 @@ describe("multi-database", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: { driverConfig: { database: dbName } },
         });
 
         const query = `
@@ -208,7 +206,7 @@ describe("multi-database", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id },
-            contextValue: {}, // This is needed, otherwise the context in resolvers will be undefined
+            contextValue: { sessionConfig: { database: dbName } }, // This is needed, otherwise the context in resolvers will be undefined
         });
         expect((result.data as any).movies[0].id).toBe(id);
     });

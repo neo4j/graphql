@@ -27,7 +27,7 @@ export type OGMConstructor = Neo4jGraphQLConstructor;
 
 class OGM<ModelMap = unknown> {
     public checkNeo4jCompat: () => Promise<void>;
-    public assertIndexesAndConstraints: (input?: { options?: { create?: boolean; } }) => Promise<void>;
+    public assertIndexesAndConstraints: (input?: { options?: { create?: boolean } }) => Promise<void>;
     private models: Model[];
     private neoSchema: Neo4jGraphQL;
     private _schema?: GraphQLSchema;
@@ -46,7 +46,7 @@ class OGM<ModelMap = unknown> {
         this.checkNeo4jCompat = function checkNeo4jCompat() {
             return this.neoSchema.checkNeo4jCompat({
                 driver: rest.driver,
-                ...(rest.config?.driverConfig ? { driverConfig: rest.config.driverConfig } : {}),
+                sessionConfig: rest.config?.sessionConfig || rest.config?.driverConfig,
             });
         };
 
@@ -59,7 +59,7 @@ class OGM<ModelMap = unknown> {
                 await this.neoSchema.assertIndexesAndConstraints({
                     ...input,
                     driver: rest.driver,
-                    ...(rest.config?.driverConfig ? { driverConfig: rest.config.driverConfig } : {}),
+                    sessionConfig: rest.config?.sessionConfig || rest.config?.driverConfig,
                 });
             } catch (e: unknown) {
                 if (

@@ -22,7 +22,6 @@ import type { Context, Node } from "../../../types";
 import type { AuthorizationOperation } from "../../../types/authorization";
 import { createAuthorizationBeforePredicate } from "../create-authorization-before-predicate";
 import type { NodeMap } from "../types/node-map";
-import { compileCypher } from "../../../utils/compile-cypher";
 import { compilePredicateReturn } from "./compile-predicate-return";
 
 export type AuthorizationBeforeAndParams = {
