@@ -23,8 +23,7 @@ import type { ExecutionContext, Neo4jGraphQLSessionConfig } from "../classes/Exe
 
 export interface Neo4jGraphQLContext {
     /**
-     * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options}
-     * when executing the translated query.
+     * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options} to use when executing the translated query.
      */
     cypherQueryOptions?: CypherQueryOptions;
     /**
