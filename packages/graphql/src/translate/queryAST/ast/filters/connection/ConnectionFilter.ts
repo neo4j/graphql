@@ -43,7 +43,7 @@ export class ConnectionFilter extends QueryASTNode {
             labels: relatedEntity.labels,
         });
         const relationshipVar = new Cypher.Relationship({
-            type: `\`${this.relationship.type}\``, // TODO: Remove this escaping
+            type: this.relationship.type,
         });
 
         const pattern = new Cypher.Pattern(parentNode)

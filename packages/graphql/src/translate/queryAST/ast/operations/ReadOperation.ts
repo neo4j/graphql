@@ -68,7 +68,7 @@ export class ReadOperation extends Operation {
 
         const projection = this.getProjectionMap(
             node,
-            Array.from(new Set([...projectionFields, ...sortProjectionFields])) // TO remove duplicates
+            Array.from(new Set([...projectionFields, ...sortProjectionFields])) // TODO remove duplicates
         );
 
         const matchClause = new Cypher.Match(node);

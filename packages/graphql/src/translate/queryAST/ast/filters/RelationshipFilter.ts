@@ -56,13 +56,12 @@ export class RelationshipFilter extends QueryASTNode {
         const relatedNode = new Cypher.Node({
             labels: relatedEntity.labels,
         });
-        const relationshipType = `\`${this.relationship.type}\``; // TODO: remove extra escaping
 
         const pattern = new Cypher.Pattern(parentNode)
             .withoutLabels()
             .related(
                 new Cypher.Relationship({
-                    type: relationshipType,
+                    type: this.relationship.type,
                 })
             )
             .withDirection(getRelationshipDirection(this.relationship))

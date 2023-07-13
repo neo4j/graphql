@@ -72,7 +72,7 @@ export class ConnectionReadOperation extends Operation {
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause {
         if (!parentNode) throw new Error();
         const node = createNodeFromEntity(this.relationship.target as ConcreteEntity);
-        const relationship = new Cypher.Relationship({ type: `\`${this.relationship.type}\`` }); // TODO: remove custom escaping
+        const relationship = new Cypher.Relationship({ type: this.relationship.type });
         const relDirection = getRelationshipDirection(this.relationship);
         const clause = new Cypher.Match(
             new Cypher.Pattern(parentNode).withoutLabels().related(relationship).withDirection(relDirection).to(node)

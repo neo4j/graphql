@@ -17,12 +17,10 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
-import { QueryASTNode } from "../QueryASTNode";
 import type { PropertyFilter } from "./PropertyFilter";
 import type { RelationshipFilter } from "./RelationshipFilter";
 import type { LogicalFilter } from "./LogicalFilter";
-import { ConnectionFilter } from "./connection/ConnectionFilter";
+import type { ConnectionFilter } from "./connection/ConnectionFilter";
 
 export type NumericalWhereOperator = "GT" | "GTE" | "LT" | "LTE";
 export type SpatialWhereOperator = "DISTANCE";
