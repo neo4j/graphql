@@ -1,0 +1,47 @@
+= OGM
+
+== Specifying which database to use when using the OGM
+
+The method to specify the database that the OGM should use has been changed.
+
+This was previously configured using the `driverConfig` option:
+
+[source, javascript, indent=0]
+----
+import { OGM } from "@neo4j/graphql-ogm";
+import neo4j from "neo4j-driver";
+
+const typeDefs = `#graphql
+    type User {
+        name: String
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const ogm = new OGM({ typeDefs, driver, driverConfig: { database: "some-other-database" } });
+----
+
+This has now been raised to the top-level:
+
+[source, javascript, indent=0]
+----
+import { OGM } from "@neo4j/graphql-ogm";
+import neo4j from "neo4j-driver";
+
+const typeDefs = `#graphql
+    type User {
+        name: String
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const ogm = new OGM({ typeDefs, driver, database: "some-other-database" });
+----
