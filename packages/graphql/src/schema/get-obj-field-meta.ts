@@ -21,9 +21,7 @@ import type { IResolvers } from "@graphql-tools/utils";
 import type {
     BooleanValueNode,
     EnumTypeDefinitionNode,
-    FloatValueNode,
     InterfaceTypeDefinitionNode,
-    IntValueNode,
     ListValueNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
@@ -33,7 +31,6 @@ import type {
     UnionTypeDefinitionNode,
     ValueNode,
     DirectiveNode,
-    KindEnum,
 } from "graphql";
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
