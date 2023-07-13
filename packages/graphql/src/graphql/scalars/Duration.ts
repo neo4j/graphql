@@ -71,7 +71,6 @@ export const parseDuration = (
         hours: hourUnit = 0,
         minutes: minuteUnit = 0,
         seconds: secondUnit = 0,
-         
     } = match.groups!;
 
     const years = +yearUnit;

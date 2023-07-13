@@ -21,6 +21,5 @@ import type { DocumentNode, Source } from "graphql";
 
 /** Returns a valid source for graphql from a gql query */
 export function getQuerySource(query: DocumentNode): Source {
-     
     return query.loc!.source;
 }

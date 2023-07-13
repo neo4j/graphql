@@ -29,11 +29,9 @@ export function filterAsyncIterator<T>(
             return getNextPromise(asyncIterator, filterFn);
         },
         return() {
-             
             return asyncIterator.return!();
         },
         throw(error) {
-             
             return asyncIterator.throw!(error);
         },
         [Symbol.asyncIterator]() {
