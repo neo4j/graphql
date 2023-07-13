@@ -2444,9 +2444,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphiql/react@npm:0.18.0":
-  version: 0.18.0
-  resolution: "@graphiql/react@npm:0.18.0"
+"@graphiql/react@npm:0.19.0":
+  version: 0.19.0
+  resolution: "@graphiql/react@npm:0.19.0"
   dependencies:
     "@graphiql/toolkit": ^0.8.4
     "@headlessui/react": ^1.7.15
@@ -2467,7 +2467,7 @@ __metadata:
     graphql: ^15.5.0 || ^16.0.0
     react: ^16.8.0 || ^17 || ^18
     react-dom: ^16.8.0 || ^17 || ^18
-  checksum: a12e8ac3cecdcceaa3a333218ad5f6a1a0ddfb267dcaabb7bd60ed417d517344ceef20083b3fba471d0bb3199c8e93e2cfb99b70451084563ae6ce19d3258d92
+  checksum: 5e2310109acbad1d38f01775678fdeb34d8b4b1136f9ba937e3d02c6a02d9b5c9b95e14fc6f82caa8fff6b439b9627b1a7ac778440a22a9e07f0d7ffc269255b
   languageName: node
   linkType: hard
 
@@ -3703,21 +3703,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.8.5, @neo4j-ndl/base@npm:^1.8.5":
-  version: 1.8.5
-  resolution: "@neo4j-ndl/base@npm:1.8.5"
-  checksum: 671d5821aec669d57c03e7016c56d0ce560a6a348bbc7d48ab0ef6ccf718939314c2e37e4d2473c60d34865b5260bd79bc67631d1dc2e2d3ffa49b9ee94a274f
+"@neo4j-ndl/base@npm:1.8.8, @neo4j-ndl/base@npm:^1.8.8":
+  version: 1.8.8
+  resolution: "@neo4j-ndl/base@npm:1.8.8"
+  checksum: 0c9e9e83017356ba1651bf80cece7117fd1d455e37350f885afb6f88cafad6e86aa6e1eac5e342eac814516e64ca906cb3cae960f5e3458b483d49a5f2c8b6da
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.8.9":
-  version: 1.8.9
-  resolution: "@neo4j-ndl/react@npm:1.8.9"
+"@neo4j-ndl/react@npm:1.8.13":
+  version: 1.8.13
+  resolution: "@neo4j-ndl/react@npm:1.8.13"
   dependencies:
     "@floating-ui/react": ^0.24.2
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^1.8.5
+    "@neo4j-ndl/base": ^1.8.8
     "@tanstack/react-table": ^8.9.3
     classnames: ^2.3.1
     detect-browser: ^5.3.0
@@ -3733,14 +3733,14 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: ">=16.8.0"
-  checksum: 0f7e48cc36b7c001be735f73a5f6571b578b1ee8d042c4555f7bc431966607023aff9c384403abea550e6bed2bbc9b3dc5dd29dfdbb568859be04c8f3e7f25e0
+  checksum: 17fe04f0fcd5374706fcb5dade3eb4fa2c64e234a91ee8e6a31ca3fcb29166362a3f64f19fe835f3c942c05545aa7043629a7e0acfdef81f954e3f21258ad631
   languageName: node
   linkType: hard
 
-"@neo4j/cypher-builder@npm:~0.6.0":
-  version: 0.6.0
-  resolution: "@neo4j/cypher-builder@npm:0.6.0"
-  checksum: a0a335fce133a10b095da8ef309517fd8c7f028e360416991edaf2c4ad4715ab1c097b2a34803fd9bb54f81ea1a10f2b7f68cca8b40ddbe7b787e4a8e5a41e23
+"@neo4j/cypher-builder@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@neo4j/cypher-builder@npm:1.0.0"
+  checksum: 735efc31fcd195a478bb7f357afb49a262ad45f239875639454a9b3ca2e77e0a1f3a3ac0d5859e73c98c2529b240632fb9893f199c9ff61d1164c67c34823e4d
   languageName: node
   linkType: hard
 
@@ -3832,9 +3832,9 @@ __metadata:
     "@dnd-kit/core": 6.0.8
     "@dnd-kit/modifiers": 6.0.1
     "@dnd-kit/sortable": 7.0.2
-    "@graphiql/react": 0.18.0
-    "@neo4j-ndl/base": 1.8.5
-    "@neo4j-ndl/react": 1.8.9
+    "@graphiql/react": 0.19.0
+    "@neo4j-ndl/base": 1.8.8
+    "@neo4j-ndl/react": 1.8.13
     "@neo4j/graphql": 3.23.1
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.36.0
@@ -3843,7 +3843,7 @@ __metadata:
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 12.2.3
     "@types/prettier": 2.7.3
-    "@types/react-dom": 18.2.6
+    "@types/react-dom": 18.2.7
     "@types/webpack": 5.28.1
     autoprefixer: 10.4.14
     classnames: 2.3.2
@@ -3904,7 +3904,7 @@ __metadata:
     "@graphql-tools/resolvers-composition": ^7.0.0
     "@graphql-tools/schema": 10.0.0
     "@graphql-tools/utils": ^10.0.0
-    "@neo4j/cypher-builder": ~0.6.0
+    "@neo4j/cypher-builder": ^1.0.0
     "@neo4j/graphql-plugin-auth": ^2.2.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
@@ -7840,12 +7840,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.6":
-  version: 18.2.6
-  resolution: "@types/react-dom@npm:18.2.6"
+"@types/react-dom@npm:18.2.7":
+  version: 18.2.7
+  resolution: "@types/react-dom@npm:18.2.7"
   dependencies:
     "@types/react": "*"
-  checksum: b56e42efab121a3a8013d2eb8c1688e6028a25ea6d33c4362d2846f0af3760b164b4d7c34846614024cfb8956cca70dd1743487f152e32ff89a00fe6fbd2be54
+  checksum: e02ea908289a7ad26053308248d2b87f6aeafd73d0e2de2a3d435947bcea0422599016ffd1c3e38ff36c42f5e1c87c7417f05b0a157e48649e4a02f21727d54f
   languageName: node
   linkType: hard
 

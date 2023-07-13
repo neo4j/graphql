@@ -83,7 +83,7 @@ describe("#387", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Place\`)
+            "MATCH (this:Place)
             CALL {
                 WITH this
                 CALL {

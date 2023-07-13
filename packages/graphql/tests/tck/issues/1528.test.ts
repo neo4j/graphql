@@ -70,10 +70,10 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Genre\`)
+            "MATCH (this:Genre)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`IS_GENRE\`]-(this1:\`Movie\`)
+                MATCH (this)<-[this0:IS_GENRE]-(this1:Movie)
                 WITH this0, this1
                 ORDER BY this1.actorsCount DESC
                 CALL {

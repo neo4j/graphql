@@ -52,7 +52,7 @@ describe("Cypher Arrays", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE $param0 IN this.ratings
             RETURN this { .title, .ratings } AS this"
         `);
@@ -77,7 +77,7 @@ describe("Cypher Arrays", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE NOT ($param0 IN this.ratings)
             RETURN this { .title, .ratings } AS this"
         `);

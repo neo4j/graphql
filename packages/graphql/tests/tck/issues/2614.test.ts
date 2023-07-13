@@ -72,12 +72,12 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:\`ACTED_IN\`]->(this1:\`Film\`)
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Film)
                     WHERE this1.title = $param0
                     WITH this1 { __resolveType: \\"Movie\\", __id: id(this), .title } AS this1
                     RETURN this1 AS var2

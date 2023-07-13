@@ -51,7 +51,7 @@ describe("Cypher Date", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.date = $param0
             RETURN this { .date } AS this"
         `);
@@ -79,7 +79,7 @@ describe("Cypher Date", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.date >= $param0
             RETURN this { .date } AS this"
         `);
@@ -112,7 +112,7 @@ describe("Cypher Date", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Movie\`)
+                CREATE (create_this1:Movie)
                 SET
                     create_this1.date = create_var0.date
                 RETURN create_this1
@@ -151,7 +151,7 @@ describe("Cypher Date", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             SET this.date = $this_update_date
             RETURN collect(DISTINCT this { .id, .date }) AS data"
         `);

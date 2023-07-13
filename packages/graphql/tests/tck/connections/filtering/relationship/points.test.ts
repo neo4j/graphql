@@ -84,10 +84,10 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE point.distance(this0.location, point($param0.point)) = $param0.distance
                 WITH { screenTime: this0.screenTime, location: CASE
                     WHEN this0.location IS NOT NULL THEN { point: this0.location }
