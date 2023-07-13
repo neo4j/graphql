@@ -1,7 +1,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import { QueryASTNode } from "../../QueryASTNode";
 import type { LogicalFilter } from "../LogicalFilter";
-import type { PropertyFilter } from "../PropertyFilter";
+import type { PropertyFilter } from "../property-filters/PropertyFilter";
 
 export class ConnectionEdgeFilter extends QueryASTNode {
     private filters: Array<LogicalFilter | PropertyFilter> = [];

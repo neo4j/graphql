@@ -36,7 +36,7 @@ export class ConnectionFilter extends QueryASTNode {
         this.targetNodeFilters.push(nodeFilter);
     }
 
-    public getPredicate(parentNode: Cypher.Node): Cypher.Predicate | undefined {
+    public getPredicate(parentNode: Cypher.Variable): Cypher.Predicate | undefined {
         //TODO: not concrete entities
         const relatedEntity = this.relationship.target as ConcreteEntity;
         const relatedNode = new Cypher.Node({
@@ -46,7 +46,7 @@ export class ConnectionFilter extends QueryASTNode {
             type: this.relationship.type,
         });
 
-        const pattern = new Cypher.Pattern(parentNode)
+        const pattern = new Cypher.Pattern(parentNode as Cypher.Node)
             .withoutLabels()
             .related(relationshipVar)
             .withDirection(getRelationshipDirection(this.relationship))

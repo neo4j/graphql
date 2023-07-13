@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { PropertyFilter } from "./PropertyFilter";
+import type { PropertyFilter } from "./property-filters/PropertyFilter";
 import type { RelationshipFilter } from "./RelationshipFilter";
 import type { LogicalFilter } from "./LogicalFilter";
 import type { ConnectionFilter } from "./connection/ConnectionFilter";
@@ -42,13 +42,10 @@ export type WhereOperator =
 
 export type LogicalOperators = "NOT" | "AND" | "OR";
 
-// export abstract class Filter extends QueryASTNode {
-//     abstract getPredicate(target: Cypher.Variable): Cypher.Predicate;
-// }
-
 export type Filter = PropertyFilter | RelationshipFilter | LogicalFilter | ConnectionFilter;
 
 const RELATIONSHIP_OPERATORS = ["ALL", "NONE", "SINGLE", "SOME"] as const;
+
 export function isRelationshipOperator(operator: string): operator is RelationshipWhereOperator {
     return RELATIONSHIP_OPERATORS.includes(operator as any);
 }

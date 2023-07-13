@@ -32,9 +32,8 @@ export class LogicalFilter extends QueryASTNode {
         this.children = filters;
     }
 
-    // VisitPredicate
-    public getPredicate(node: Cypher.Node | Cypher.Relationship | any): Cypher.Predicate | undefined {
-        const predicates = filterTruthy(this.children.map((f) => f.getPredicate(node))); // TODO: fix relationship vs node predicates
+    public getPredicate(target: Cypher.Node | Cypher.Relationship): Cypher.Predicate | undefined {
+        const predicates = filterTruthy(this.children.map((f) => f.getPredicate(target)));
 
         switch (this.operation) {
             case "NOT": {
