@@ -33,6 +33,7 @@ import type {
     UnionTypeDefinitionNode,
     ValueNode,
     DirectiveNode,
+    KindEnum,
 } from "graphql";
 import { Kind } from "graphql";
 import getAuth from "./get-auth";
@@ -572,31 +573,33 @@ function getObjFieldMeta({
                     if (defaultDirective) {
                         const value = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                        const checkKind = (kind: Kind) => {
-                            if (value?.kind !== kind) {
-                                throw new Error(
-                                    `Default value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
-                                );
-                            }
-                        };
+                        const typeError = `Default value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`;
 
                         switch (baseField.typeMeta.name) {
                             case "ID":
                             case "String":
-                                checkKind(Kind.STRING);
-                                primitiveField.defaultValue = (value as StringValueNode).value;
+                                if (value?.kind !== Kind.STRING) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = value.value;
                                 break;
                             case "Boolean":
-                                checkKind(Kind.BOOLEAN);
-                                primitiveField.defaultValue = (value as BooleanValueNode).value;
+                                if (value?.kind !== Kind.BOOLEAN) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = value.value;
                                 break;
                             case "Int":
-                                checkKind(Kind.INT);
-                                primitiveField.defaultValue = parseInt((value as IntValueNode).value, 10);
+                                if (value?.kind !== Kind.INT) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = parseInt(value.value, 10);
                                 break;
                             case "Float":
-                                checkKind(Kind.FLOAT);
-                                primitiveField.defaultValue = parseFloat((value as FloatValueNode).value);
+                                if (value?.kind !== Kind.FLOAT) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = parseFloat(value.value);
                                 break;
                             default:
                                 throw new Error(
@@ -608,31 +611,33 @@ function getObjFieldMeta({
                     if (coalesceDirective) {
                         const value = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                        const checkKind = (kind: Kind) => {
-                            if (value?.kind !== kind) {
-                                throw new Error(
-                                    `coalesce() value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
-                                );
-                            }
-                        };
+                        const typeError = `coalesce() value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`;
 
                         switch (baseField.typeMeta.name) {
                             case "ID":
                             case "String":
-                                checkKind(Kind.STRING);
-                                primitiveField.coalesceValue = `"${(value as StringValueNode).value}"`;
+                                if (value?.kind !== Kind.STRING) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.coalesceValue = `"${value.value}"`;
                                 break;
                             case "Boolean":
-                                checkKind(Kind.BOOLEAN);
-                                primitiveField.coalesceValue = (value as BooleanValueNode).value;
+                                if (value?.kind !== Kind.BOOLEAN) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.coalesceValue = value.value;
                                 break;
                             case "Int":
-                                checkKind(Kind.INT);
-                                primitiveField.coalesceValue = parseInt((value as IntValueNode).value, 10);
+                                if (value?.kind !== Kind.INT) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.coalesceValue = parseInt(value.value, 10);
                                 break;
                             case "Float":
-                                checkKind(Kind.FLOAT);
-                                primitiveField.coalesceValue = parseFloat((value as FloatValueNode).value);
+                                if (value?.kind !== Kind.FLOAT) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.coalesceValue = parseFloat(value.value);
                                 break;
                             default:
                                 throw new Error(
