@@ -76,27 +76,11 @@ export interface NodeConstructor extends GraphElementConstructor {
     globalIdFieldIsInt?: boolean;
 }
 
-type MutableField =
-    | PrimitiveField
-    | CustomScalarField
-    | CustomEnumField
-    | UnionField
-     
-    | TemporalField
-     
-    | CypherField;
+type MutableField = PrimitiveField | CustomScalarField | CustomEnumField | UnionField | TemporalField | CypherField;
 
-type AuthableField =
-    | PrimitiveField
-    | CustomScalarField
-    | CustomEnumField
-    | UnionField
-     
-    | TemporalField
-     
-    | CypherField;
+type AuthableField = PrimitiveField | CustomScalarField | CustomEnumField | UnionField | TemporalField | CypherField;
 
-type ConstrainableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField  ;
+type ConstrainableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField;
 
 export type RootTypeFieldNames = {
     create: string;
