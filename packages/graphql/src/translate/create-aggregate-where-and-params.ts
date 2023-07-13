@@ -204,7 +204,7 @@ function aggregateEntityWhere(
                 predicates.push(logicalPredicate);
             }
         } else {
-            const operation = createEntityOperation(refNodeOrRelation, target, key, value, context);
+            const operation = createEntityOperation(refNodeOrRelation, target, key, value);
             const operationVar = new Cypher.Variable();
             returnProjections.push([operation, operationVar]);
             predicates.push(Cypher.eq(operationVar, new Cypher.Literal(true)));
