@@ -17,28 +17,24 @@
  * limitations under the License.
  */
 
+import camelcase from "camelcase";
+import pluralize from "pluralize";
 
+export function singular(name: string): string {
+    const singular = camelcase(name);
 
-export interface Entity {
-    readonly name: string;
-
-    // attributes
-    // relationships
-    // annotations
+    return `${leadingUnderscores(name)}${singular}`;
 }
 
-export abstract class AbstractEntity {
-/*     protected readonly listAttributes: Attribute[] = [];
-    protected readonly listRelationships: Attribute[] = []; */
+// TODO this has to be tested as is different from Node.generatePlural
+export function plural(name: string): string {
+    const plural = pluralize(camelcase(name));
 
-    public readonly name: string;
-    public readonly labels: Set<string>;
+    return `${leadingUnderscores(name)}${plural}`;
+}
 
-    constructor({ name, labels }: { name: string; labels: string[] }) {
-        this.name = name;
-        this.labels = new Set(labels);
-    }
-
-    
-
+export function leadingUnderscores(name: string): string {
+    const re = /^(_+).+/;
+    const match = re.exec(name);
+    return match?.[1] || "";
 }

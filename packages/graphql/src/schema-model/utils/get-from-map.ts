@@ -17,28 +17,15 @@
  * limitations under the License.
  */
 
-
-
-export interface Entity {
-    readonly name: string;
-
-    // attributes
-    // relationships
-    // annotations
-}
-
-export abstract class AbstractEntity {
-/*     protected readonly listAttributes: Attribute[] = [];
-    protected readonly listRelationships: Attribute[] = []; */
-
-    public readonly name: string;
-    public readonly labels: Set<string>;
-
-    constructor({ name, labels }: { name: string; labels: string[] }) {
-        this.name = name;
-        this.labels = new Set(labels);
+/**
+ * Utility function to ensure that the key exists in the map and avoid unnecessary type casting.
+ * Get the value from a map, if the key does not exist throw an error.
+ *
+ * */
+export function getFromMap<K extends keyof any, V>(map: Map<K, V>, key: K): V {
+    const item = map.get(key);
+    if (item === undefined) {
+        throw new Error(`Key "${String(key)}" does not exist in the map.`);
     }
-
-    
-
+    return item;
 }

@@ -18,7 +18,7 @@
  */
 
 import { CompositeEntity } from "./entity/CompositeEntity";
-import { ConcreteEntity } from "./entity/ConcreteEntity";
+import { ConcreteEntity } from "./entity/ConcreteEntity"; 
 import type { Entity } from "./entity/Entity";
 
 /** Represents the internal model for the Neo4jGraphQL schema */
