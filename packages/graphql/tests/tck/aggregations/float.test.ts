@@ -52,7 +52,7 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             RETURN { actorCount: { min: min(this.actorCount) } }"
         `);
 
@@ -73,7 +73,7 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             RETURN { actorCount: { max: max(this.actorCount) } }"
         `);
 
@@ -94,7 +94,7 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             RETURN { actorCount: { average: avg(this.actorCount) } }"
         `);
 
@@ -115,7 +115,7 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             RETURN { actorCount: { sum: sum(this.actorCount) } }"
         `);
 
@@ -139,7 +139,7 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             RETURN { actorCount: { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } }"
         `);
 

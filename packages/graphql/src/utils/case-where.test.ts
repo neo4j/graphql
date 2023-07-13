@@ -27,8 +27,8 @@ describe("caseWhere", () => {
         const { cypher } = clause.build("myPrefix");
         expect(cypher).toMatchInlineSnapshot(`
             "WITH *, CASE true = true
-                WHEN true THEN [ myPrefixvar0, myPrefixvar1 ]
-                ELSE [ NULL, NULL ]
+                WHEN true THEN [myPrefixvar0, myPrefixvar1]
+                ELSE [NULL, NULL]
             END AS myPrefixvar2
             WITH *, myPrefixvar2[0] AS myPrefixvar0, myPrefixvar2[1] AS myPrefixvar1"
         `);
