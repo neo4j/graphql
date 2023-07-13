@@ -52,7 +52,7 @@ describe("Cypher Aggregations Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             RETURN { screenTime: { min: min(this.screenTime) } }"
         `);
 
@@ -73,7 +73,7 @@ describe("Cypher Aggregations Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             RETURN { screenTime: { max: max(this.screenTime) } }"
         `);
 
@@ -95,7 +95,7 @@ describe("Cypher Aggregations Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             RETURN { screenTime: { min: min(this.screenTime), max: max(this.screenTime) } }"
         `);
 

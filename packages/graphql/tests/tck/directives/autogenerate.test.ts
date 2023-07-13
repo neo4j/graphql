@@ -57,7 +57,7 @@ describe("Cypher autogenerate directive", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Movie\`)
+                CREATE (create_this1:Movie)
                 SET
                     create_this1.name = create_var0.name,
                     create_this1.id = randomUUID()
@@ -93,7 +93,7 @@ describe("Cypher autogenerate directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             SET this.name = $this_update_name
             RETURN collect(DISTINCT this { .id, .name }) AS data"
         `);
