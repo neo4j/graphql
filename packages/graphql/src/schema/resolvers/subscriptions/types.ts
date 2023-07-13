@@ -39,7 +39,7 @@ export type SubscriptionConnectionContext = {
 
 export type StandardType = Record<string, Record<string, unknown>>;
 export type UnionType = Record<string, StandardType>;
-export type InterfaceType = Record<string, unknown | InterfaceSpecificType>;
+export type InterfaceType = Record<string, unknown>;
 export type InterfaceSpecificType = Record<string, Record<string, unknown>>;
 export type RecordType = Record<string, unknown>;
 export type RelationshipType = Record<string, Record<string, UnionType | InterfaceType | StandardType>>;

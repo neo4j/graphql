@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { FieldNode, GraphQLResolveInfo } from "graphql";
+import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
 import type { Node } from "../../../classes";
 import { translateUpdate } from "../../../translate";
@@ -41,7 +41,7 @@ export function updateResolver({ node, composer }: { node: Node; composer: Schem
         publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);
 
         const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === node.plural
+            (selection) => selection.kind === Kind.FIELD && selection.name.value === node.plural
         ) as FieldNode;
 
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
