@@ -65,7 +65,7 @@ export {};
 declare global {
     interface Window {
         neo4jDesktopApi: {
-            getContext: () => Promise<Record<string, unknown> | unknown>;
+            getContext: () => Promise<unknown>;
         };
         Canny: any;
         CannyIsLoaded: boolean;

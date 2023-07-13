@@ -18,7 +18,7 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import { valueFromASTUntyped } from "graphql";
+import { Kind, valueFromASTUntyped } from "graphql";
 import type { AuthOperations } from "../types/deprecated/auth/auth-operations";
 import type { AuthRule } from "../types/deprecated/auth/auth-rule";
 import type { Auth } from "../types/deprecated/auth/auth";
@@ -45,12 +45,12 @@ function getAuth(directive: DirectiveNode): Auth {
         throw new Error("auth rules required");
     }
 
-    if (rules.value.kind !== "ListValue") {
+    if (rules.value.kind !== Kind.LIST) {
         throw new Error("auth rules must be a ListValue");
     }
 
     rules.value.values.forEach((rule) => {
-        if (rule.kind !== "ObjectValue") {
+        if (rule.kind !== Kind.OBJECT) {
             throw new Error("auth rules rule should be a Object Value");
         }
 
@@ -63,12 +63,12 @@ function getAuth(directive: DirectiveNode): Auth {
                 return;
             }
 
-            if (field.value.kind !== "ListValue") {
+            if (field.value.kind !== Kind.LIST) {
                 throw new Error("auth rules rule operations should be a ListValue");
             }
 
             field.value.values.forEach((value) => {
-                if (value.kind !== "EnumValue") {
+                if (value.kind !== Kind.ENUM) {
                     throw new Error("auth rules rule operations operation should be a EnumValue");
                 }
 

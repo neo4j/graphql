@@ -80,7 +80,7 @@ function createAggregationInput({
     typeName: string;
     aggregateSelections?: Record<string, any>;
     input: string;
-}) {
+}): [string, Record<string, any>] {
     const interfaceStrs = [`export interface ${typeName} {`];
 
     const [, start] = input.split(basedOnSearch);

@@ -18,12 +18,13 @@
  */
 
 import camelCase from "camelcase";
-import type {
-    ObjectTypeDefinitionNode,
-    NamedTypeNode,
-    ListTypeNode,
-    NonNullTypeNode,
-    InputObjectTypeDefinitionNode,
+import {
+    type ObjectTypeDefinitionNode,
+    type NamedTypeNode,
+    type ListTypeNode,
+    type NonNullTypeNode,
+    type InputObjectTypeDefinitionNode,
+    Kind,
 } from "graphql";
 import { pluralize } from "graphql-compose";
 import { gql } from "graphql-tag";
@@ -52,14 +53,14 @@ describe("makeAugmentedSchema", () => {
         const neoSchema = makeAugmentedSchema(typeDefs);
         const document = neoSchema.typeDefs;
         const queryObject = document.definitions.find(
-            (x) => x.kind === "ObjectTypeDefinition" && x.name.value === "Query"
+            (x) => x.kind === Kind.OBJECT_TYPE_DEFINITION && x.name.value === "Query"
         ) as ObjectTypeDefinitionNode;
 
         ["Actor", "Movie"].forEach((type) => {
             const node = neoSchema.nodes.find((x) => x.name === type);
             expect(node).toBeInstanceOf(Node);
             const nodeObject = document.definitions.find(
-                (x) => x.kind === "ObjectTypeDefinition" && x.name.value === type
+                (x) => x.kind === Kind.OBJECT_TYPE_DEFINITION && x.name.value === type
             );
             expect(nodeObject).toBeTruthy();
 
@@ -72,19 +73,19 @@ describe("makeAugmentedSchema", () => {
 
             // Options
             const options = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Options`
+                (x) => x.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION && x.name.value === `${type}Options`
             );
             expect(options).toBeTruthy();
 
             // Where
             const where = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Where`
+                (x) => x.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION && x.name.value === `${type}Where`
             );
             expect(where).toBeTruthy();
 
             // SORT
             const sort = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Sort`
+                (x) => x.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION && x.name.value === `${type}Sort`
             );
             expect(sort).toBeTruthy();
         });
@@ -143,7 +144,7 @@ describe("makeAugmentedSchema", () => {
             const document = neoSchema.typeDefs;
 
             const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "MovieWhere"
+                (x) => x.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION && x.name.value === "MovieWhere"
             ) as InputObjectTypeDefinitionNode;
 
             const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
@@ -166,7 +167,7 @@ describe("makeAugmentedSchema", () => {
             const document = neoSchema.typeDefs;
 
             const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
+                (x) => x.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION && x.name.value === "UserWhere"
             ) as InputObjectTypeDefinitionNode;
 
             const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
@@ -195,7 +196,7 @@ describe("makeAugmentedSchema", () => {
             const document = neoSchema.typeDefs;
 
             const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
+                (x) => x.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION && x.name.value === "UserWhere"
             ) as InputObjectTypeDefinitionNode;
 
             const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("name_MATCHES"));
@@ -225,7 +226,7 @@ describe("makeAugmentedSchema", () => {
             const document = neoSchema.typeDefs;
 
             const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
+                (x) => x.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION && x.name.value === "UserWhere"
             ) as InputObjectTypeDefinitionNode;
 
             const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("id_MATCHES"));
@@ -258,7 +259,7 @@ describe("makeAugmentedSchema", () => {
             const document = neoSchema.typeDefs;
 
             const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
+                (x) => x.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION && x.name.value === "UserWhere"
             ) as InputObjectTypeDefinitionNode;
 
             const nameMatchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("name_MATCHES"));
@@ -295,7 +296,7 @@ describe("makeAugmentedSchema", () => {
             const document = neoSchema.typeDefs;
 
             const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
+                (x) => x.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION && x.name.value === "UserWhere"
             ) as InputObjectTypeDefinitionNode;
 
             const nameMatchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("name_MATCHES"));
