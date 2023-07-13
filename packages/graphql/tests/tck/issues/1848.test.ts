@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Community\`:\`UNIVERSAL\`)
+            "MATCH (this:Community:UNIVERSAL)
             CALL {
                 WITH this
                 CALL {
@@ -98,10 +98,10 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
                 }
                 WITH pag AS this0
                 WITH *
-                WHERE ((this0:\`ContentPiece\` AND this0:\`UNIVERSAL\`) OR (this0:\`Project\` AND this0:\`UNIVERSAL\`))
+                WHERE ((this0:ContentPiece AND this0:UNIVERSAL) OR (this0:Project AND this0:UNIVERSAL))
                 RETURN collect(CASE
-                    WHEN (this0:\`ContentPiece\` AND this0:\`UNIVERSAL\`) THEN this0 { __resolveType: \\"ContentPiece\\",  .id }
-                    WHEN (this0:\`Project\` AND this0:\`UNIVERSAL\`) THEN this0 { __resolveType: \\"Project\\",  .id }
+                    WHEN (this0:ContentPiece AND this0:UNIVERSAL) THEN this0 { __resolveType: \\"ContentPiece\\",  .id }
+                    WHEN (this0:Project AND this0:UNIVERSAL) THEN this0 { __resolveType: \\"Project\\",  .id }
                 END) AS this0
             }
             RETURN this { .id, hasFeedItems: this0 } AS this"
