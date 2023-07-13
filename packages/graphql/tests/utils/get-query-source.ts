@@ -21,6 +21,5 @@ import type { DocumentNode, Source } from "graphql";
 
 /** Returns a valid source for graphql from a gql query */
 export function getQuerySource(query: DocumentNode): Source {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return query.loc!.source;
 }
