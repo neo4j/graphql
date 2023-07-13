@@ -18,7 +18,7 @@
  */
 
 import type { Driver, Session, Transaction } from "neo4j-driver";
-import type { CypherQueryOptions, DriverConfig, RequestLike } from ".";
+import type { CypherQueryOptions, DriverConfig } from ".";
 import type { JWTPayload } from "jose";
 import type { Neo4jGraphQLSessionConfig } from "../classes/Executor";
 
