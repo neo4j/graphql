@@ -23,18 +23,16 @@ import Cypher from "@neo4j/cypher-builder";
 
 export class ConnectionField extends Field {
     private operation: ConnectionReadOperation;
-    private fieldName: string;
 
     private projectionVariable = new Cypher.Variable();
 
     constructor({ operation, alias }: { operation: ConnectionReadOperation; alias: string }) {
-        super();
+        super(alias);
         this.operation = operation;
-        this.fieldName = alias;
     }
 
     public getProjectionField(): Record<string, Cypher.Expr> {
-        return { [this.fieldName]: this.projectionVariable };
+        return { [this.alias]: this.projectionVariable };
     }
 
     public getSubquery(node: Cypher.Node): Cypher.Clause {

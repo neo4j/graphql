@@ -19,15 +19,15 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
-import { AttributeField } from "../ast/fields/AttributeField";
 import type { Field } from "../ast/fields/Field";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import { filterTruthy } from "../../../utils/utils";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { ConnectionField } from "../ast/fields/ConnectionField";
-import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import { Relationship } from "../../../schema-model/relationship/Relationship";
 import { AttributeType } from "../../../schema-model/attribute/Attribute";
-import { PointAttributeField } from "../ast/fields/PointAttributeField";
+import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
+import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
+import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -35,58 +35,58 @@ export class FieldFactory {
         this.queryASTFactory = queryASTFactory;
     }
 
-    public createFields(entity: ConcreteEntity, rawFields: Record<string, ResolveTree>): Field[] {
-        return filterTruthy(
-            Object.values(rawFields).map((field: ResolveTree) => {
-                const { fieldName, isConnection } = parseSelectionSetField(field.name);
-                if (isConnection) {
-                    return this.createConnectionField(entity, fieldName, field);
-                }
-                const attribute = entity.findAttribute(fieldName);
-                if (!attribute) throw new Error("attribute not found");
-
-                if (attribute.type === AttributeType.Point) {
-                    const { crs } = field.fieldsByTypeName[attribute.type] as any;
-                    return new PointAttributeField({
-                        attribute,
-                        alias: field.alias,
-                        crs: Boolean(crs),
-                    });
-                }
-
-                const attr = new AttributeField(attribute);
-                attr.alias = field.alias;
-                return attr;
-            })
-        );
+    public createFields(entity: ConcreteEntity | Relationship, rawFields: Record<string, ResolveTree>): Field[] {
+        return Object.values(rawFields).map((field: ResolveTree) => {
+            const { fieldName, isConnection } = parseSelectionSetField(field.name);
+            if (isConnection) {
+                if (entity instanceof Relationship) throw new Error("Cannot create connection field of relationship");
+                return this.createConnectionField(entity, fieldName, field);
+            }
+            return this.createAttributeField({
+                entity,
+                fieldName,
+                field,
+            });
+        });
     }
 
-    public createRelationshipFields(entity: Relationship, rawFields: Record<string, ResolveTree>): Field[] {
-        return filterTruthy(
-            Object.values(rawFields).map((field: ResolveTree) => {
-                const { fieldName } = parseSelectionSetField(field.name);
+    private createAttributeField({
+        entity,
+        fieldName,
+        field,
+    }: {
+        entity: ConcreteEntity | Relationship;
+        fieldName: string;
+        field: ResolveTree;
+    }): AttributeField {
+        const attribute = entity.findAttribute(fieldName);
+        if (!attribute) throw new Error("attribute not found");
 
-                const attribute = entity.findAttribute(fieldName);
-                if (!attribute) throw new Error("attribute not found");
-                if (attribute.type === AttributeType.Point) {
-                    // Dupe from createFields
-                    const { crs } = field.fieldsByTypeName[attribute.type] as any;
-                    return new PointAttributeField({
-                        attribute,
-                        alias: field.alias,
-                        crs: Boolean(crs),
-                    });
-                }
-                const attr = new AttributeField(attribute);
-                attr.alias = field.alias;
-                return attr;
-            })
-        );
+        switch (attribute.type) {
+            case AttributeType.Point: {
+                const { crs } = field.fieldsByTypeName[attribute.type] as any;
+                return new PointAttributeField({
+                    attribute,
+                    alias: field.alias,
+                    crs: Boolean(crs),
+                });
+            }
+
+            case AttributeType.DateTime: {
+                return new DateTimeField({
+                    attribute,
+                    alias: field.alias,
+                });
+            }
+            default: {
+                return new AttributeField({ alias: field.alias, attribute });
+            }
+        }
     }
 
     private createConnectionField(entity: ConcreteEntity, fieldName: string, field: ResolveTree): ConnectionField {
         const relationship = entity.findRelationship(fieldName);
-        if (!relationship) throw new Error(`relationship  ${fieldName} not found`);
+        if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
         const connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST(relationship, field);
 
         return new ConnectionField({

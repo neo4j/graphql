@@ -92,7 +92,7 @@ export class OperationsFactory {
         }
 
         const nodeFields = this.fieldFactory.createFields(relationship.target as ConcreteEntity, nodeRawFields);
-        const edgeFields = this.fieldFactory.createRelationshipFields(relationship, edgeRawFields);
+        const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields);
         const nodeFilters = this.filterFactory.createFilters(relationship.target as ConcreteEntity, nodeWhere);
         const edgeFilters = this.filterFactory.createRelationshipFilters(relationship, edgeWhere);
         operation.setNodeFields(nodeFields);

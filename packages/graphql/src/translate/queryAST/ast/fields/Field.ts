@@ -21,10 +21,15 @@ import type Cypher from "@neo4j/cypher-builder";
 import { QueryASTNode } from "../QueryASTNode";
 
 export abstract class Field extends QueryASTNode {
-    public alias: string | undefined;
+    protected alias: string;
+
+    constructor(alias: string) {
+        super();
+        this.alias = alias;
+    }
 
     public abstract getProjectionField(variable: Cypher.Variable): string | Record<string, Cypher.Expr>;
-    public getSubquery(node: Cypher.Node): Cypher.Clause | undefined {
+    public getSubquery(_node: Cypher.Node): Cypher.Clause | undefined {
         return undefined;
     }
 }
