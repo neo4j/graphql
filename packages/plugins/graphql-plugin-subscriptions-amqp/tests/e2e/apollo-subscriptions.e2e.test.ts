@@ -62,13 +62,7 @@ describe("Apollo and RabbitMQ Subscription", () => {
             },
         });
 
-        // eslint-disable-next-line @typescript-eslint/require-await
-        server = new ApolloTestServer(neoSchema, async ({ req }) => ({
-            sessionConfig: {
-                database: neo4j.getIntegrationDatabaseName(),
-            },
-            token: req.headers.authorization,
-        }));
+        server = new ApolloTestServer(neoSchema);
         await server.start();
         wsClient = new WebSocketTestClient(server.wsPath);
     });
