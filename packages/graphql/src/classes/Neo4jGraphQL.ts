@@ -188,12 +188,12 @@ class Neo4jGraphQL {
         }
 
         if (!this.dbInfo) {
-            this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig || this.config?.sessionConfig);
+            this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig);
         }
 
         return checkNeo4jCompat({
             driver: neo4jDriver,
-            sessionConfig: sessionConfig || this.config?.sessionConfig,
+            sessionConfig,
             dbInfo: this.dbInfo,
         });
     }
@@ -220,12 +220,12 @@ class Neo4jGraphQL {
         }
 
         if (!this.dbInfo) {
-            this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig || this.config?.sessionConfig);
+            this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig);
         }
 
         await assertIndexesAndConstraints({
             driver: neo4jDriver,
-            sessionConfig: sessionConfig || this.config?.sessionConfig,
+            sessionConfig,
             nodes: this.nodes,
             options: options,
         });
