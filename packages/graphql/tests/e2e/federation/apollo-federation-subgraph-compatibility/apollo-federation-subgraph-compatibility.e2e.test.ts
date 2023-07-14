@@ -25,7 +25,7 @@ import { SubgraphServer } from "../setup/subgraph-server";
 import { Neo4j } from "../setup/neo4j";
 import { schema as inventory } from "./subgraphs/inventory";
 import { schema as users } from "./subgraphs/users";
-import { productsRequest, routerRequest } from "./utils/client";
+import { graphqlRequest } from "./utils/client";
 import { stripIgnoredCharacters } from "graphql";
 
 describe("Tests copied from https://github.com/apollographql/apollo-federation-subgraph-compatibility", () => {
@@ -36,6 +36,9 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
     let gatewayServer: Server;
 
     let neo4j: Neo4j;
+
+    let productsUrl: string;
+    let gatewayUrl: string;
 
     beforeAll(async () => {
         const products = gql`
@@ -122,8 +125,8 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
         neo4j = new Neo4j();
         await neo4j.init();
 
-        inventoryServer = new SubgraphServer(inventory, 4010);
-        usersServer = new SubgraphServer(users, 4012);
+        inventoryServer = new SubgraphServer(inventory);
+        usersServer = new SubgraphServer(users);
 
         const productsSubgraph = new TestSubgraph({
             typeDefs: products,
@@ -142,24 +145,18 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
 
         const productsSchema = await productsSubgraph.getSchema();
 
-        productsServer = new SubgraphServer(productsSchema, 4011);
+        productsServer = new SubgraphServer(productsSchema);
 
-        const [inventoryUrl, productsUrl, usersUrl] = await Promise.all([
-            inventoryServer.start(),
-            productsServer.start(),
-            usersServer.start(),
+        productsUrl = await productsServer.start();
+        const [inventoryUrl, usersUrl] = await Promise.all([inventoryServer.start(), usersServer.start()]);
+
+        gatewayServer = new GatewayServer([
+            { name: "inventory", url: inventoryUrl },
+            { name: "products", url: productsUrl },
+            { name: "users", url: usersUrl },
         ]);
 
-        gatewayServer = new GatewayServer(
-            [
-                { name: "inventory", url: inventoryUrl },
-                { name: "products", url: productsUrl },
-                { name: "users", url: usersUrl },
-            ],
-            4013
-        );
-
-        await gatewayServer.start();
+        gatewayUrl = await gatewayServer.start();
 
         await neo4j.executeWrite(
             `
@@ -203,7 +200,8 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
     });
 
     test("ftv1", async () => {
-        const resp = await productsRequest(
+        const resp = await graphqlRequest(
+            productsUrl,
             {
                 query: `query { __typename }`,
             },
@@ -222,7 +220,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
 
     describe("@inaccessible", () => {
         it("should return @inaccessible directives in _service sdl", async () => {
-            const response = await productsRequest({
+            const response = await graphqlRequest(productsUrl, {
                 query: "query { _service { sdl } }",
             });
 
@@ -233,7 +231,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
         });
 
         it("should be able to query @inaccessible fields via the products schema directly", async () => {
-            const resp = await productsRequest({
+            const resp = await graphqlRequest(productsUrl, {
                 query: `
             query GetProduct($id: ID!) {
               product(id: $id) {
@@ -261,7 +259,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
 
     describe("@key single", () => {
         test("applies single field @key on User", async () => {
-            const serviceSDLQuery = await productsRequest({
+            const serviceSDLQuery = await graphqlRequest(productsUrl, {
                 query: "query { _service { sdl } }",
             });
 
@@ -273,7 +271,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
         });
 
         test("resolves single field @key on User", async () => {
-            const resp = await productsRequest({
+            const resp = await graphqlRequest(productsUrl, {
                 query: `#graphql
           query ($representations: [_Any!]!) {
             _entities(representations: $representations) {
@@ -302,7 +300,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
 
     describe("@key multiple", () => {
         test("applies multiple field @key on DeprecatedProduct", async () => {
-            const serviceSDLQuery = await productsRequest({
+            const serviceSDLQuery = await graphqlRequest(productsUrl, {
                 query: "query { _service { sdl } }",
             });
 
@@ -312,7 +310,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
         });
 
         test("resolves multiple field @key on DeprecatedProduct", async () => {
-            const resp = await productsRequest({
+            const resp = await graphqlRequest(productsUrl, {
                 query: `#graphql
           query ($representations: [_Any!]!) {
             _entities(representations: $representations) {
@@ -348,7 +346,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
 
     describe("@key composite", () => {
         test("applies composite object @key on ProductResearch", async () => {
-            const serviceSDLQuery = await productsRequest({
+            const serviceSDLQuery = await graphqlRequest(productsUrl, {
                 query: "query { _service { sdl } }",
             });
 
@@ -358,7 +356,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
         });
 
         test("resolves composite object @key on ProductResearch", async () => {
-            const resp = await productsRequest({
+            const resp = await graphqlRequest(productsUrl, {
                 query: `#graphql
           query ($representations: [_Any!]!) {
             _entities(representations: $representations) {
@@ -396,7 +394,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
 
     describe("repeatable @key", () => {
         test("applies repeatable @key directive on Product", async () => {
-            const serviceSDLQuery = await productsRequest({
+            const serviceSDLQuery = await graphqlRequest(productsUrl, {
                 query: "query { _service { sdl } }",
             });
 
@@ -415,7 +413,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
         });
 
         test("resolves multiple @key directives on Product", async () => {
-            const entitiesQuery = await productsRequest({
+            const entitiesQuery = await graphqlRequest(productsUrl, {
                 query: `#graphql
           query ($representations: [_Any!]!) {
             _entities(representations: $representations) {
@@ -466,7 +464,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
     });
 
     test("@link", async () => {
-        const response = await productsRequest({
+        const response = await graphqlRequest(productsUrl, {
             query: "query { _service { sdl } }",
         });
 
@@ -544,7 +542,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
 
     describe("@override", () => {
         it("should return @override directives in _service sdl", async () => {
-            const response = await productsRequest({
+            const response = await graphqlRequest(productsUrl, {
                 query: "query { _service { sdl } }",
             });
 
@@ -553,7 +551,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
         });
 
         it("should return overridden user name", async () => {
-            const resp = await routerRequest({
+            const resp = await graphqlRequest(gatewayUrl, {
                 query: `
             query GetProduct($id: ID!) {
               product(id: $id) {
@@ -580,7 +578,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
     });
 
     test("@provides", async () => {
-        const resp = await productsRequest({
+        const resp = await graphqlRequest(productsUrl, {
             query: `#graphql
           query ($id: ID!) {
             product(id: $id) {
@@ -607,7 +605,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
     });
 
     test("@requires", async () => {
-        const resp = await routerRequest({
+        const resp = await graphqlRequest(gatewayUrl, {
             query: `#graphql
           query ($id: ID!) {
             product(id: $id) { createdBy { averageProductsCreatedPerYear email } }
@@ -630,7 +628,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
 
     describe("@shareable", () => {
         it("should return @shareable directives in _service sdl", async () => {
-            const response = await productsRequest({
+            const response = await graphqlRequest(productsUrl, {
                 query: "query { _service { sdl } }",
             });
 
@@ -639,7 +637,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
         });
 
         it("should be able to resolve @shareable ProductDimension types", async () => {
-            const resp = await routerRequest({
+            const resp = await graphqlRequest(gatewayUrl, {
                 query: `
             query GetProduct($id: ID!) {
               product(id: $id) {
@@ -668,7 +666,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
     });
 
     test("@tag", async () => {
-        const response = await productsRequest({
+        const response = await graphqlRequest(productsUrl, {
             query: "query { _service { sdl } }",
         });
 

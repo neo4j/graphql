@@ -77,18 +77,15 @@ describe("Federation 2 Authorization", () => {
             reviewsSubgraph.getSchema(),
         ]);
 
-        usersServer = new SubgraphServer(productsSchema, 4008);
-        reviewsServer = new SubgraphServer(reviewsSchema, 4009);
+        usersServer = new SubgraphServer(productsSchema);
+        reviewsServer = new SubgraphServer(reviewsSchema);
 
         const [productsUrl, reviewsUrl] = await Promise.all([usersServer.start(), reviewsServer.start()]);
 
-        gatewayServer = new GatewayServer(
-            [
-                { name: "products", url: productsUrl },
-                { name: "reviews", url: reviewsUrl },
-            ],
-            4010
-        );
+        gatewayServer = new GatewayServer([
+            { name: "products", url: productsUrl },
+            { name: "reviews", url: reviewsUrl },
+        ]);
 
         gatewayUrl = await gatewayServer.start();
 

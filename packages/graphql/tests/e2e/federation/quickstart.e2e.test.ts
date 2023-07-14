@@ -88,18 +88,15 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
             reviewsSubgraph.getSchema(),
         ]);
 
-        locationsServer = new SubgraphServer(locationsSchema, 4006);
-        reviewsServer = new SubgraphServer(reviewsSchema, 4007);
+        locationsServer = new SubgraphServer(locationsSchema);
+        reviewsServer = new SubgraphServer(reviewsSchema);
 
         const [locationsUrl, reviewsUrl] = await Promise.all([locationsServer.start(), reviewsServer.start()]);
 
-        gatewayServer = new GatewayServer(
-            [
-                { name: "locations", url: locationsUrl },
-                { name: "reviews", url: reviewsUrl },
-            ],
-            4008
-        );
+        gatewayServer = new GatewayServer([
+            { name: "locations", url: locationsUrl },
+            { name: "reviews", url: reviewsUrl },
+        ]);
 
         gatewayUrl = await gatewayServer.start();
 

@@ -21,7 +21,6 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { ApolloGateway, IntrospectAndCompose, RemoteGraphQLDataSource } from "@apollo/gateway";
 import type { Server } from "./server";
-import { getPort } from "./port";
 
 type Subgraph = {
     name: string;
@@ -29,11 +28,10 @@ type Subgraph = {
 };
 
 export class GatewayServer implements Server {
-    port: number;
     server: ApolloServer;
     url?: string;
 
-    constructor(subgraphs: Subgraph[], port?: number) {
+    constructor(subgraphs: Subgraph[]) {
         class AuthenticatedDataSource extends RemoteGraphQLDataSource {
             willSendRequest({ request, context }) {
                 request.http.headers.set("authorization", context.token);
@@ -52,15 +50,14 @@ export class GatewayServer implements Server {
         this.server = new ApolloServer({
             gateway,
         });
-
-        this.port = port || getPort();
     }
 
     public async start(): Promise<string> {
         const { url } = await startStandaloneServer(this.server, {
             // eslint-disable-next-line @typescript-eslint/require-await
             context: async ({ req }) => ({ token: req.headers.authorization }),
-            listen: { port: this.port },
+            // assign a random unused port
+            listen: { port: 0 },
         });
         this.url = url;
         return url;
