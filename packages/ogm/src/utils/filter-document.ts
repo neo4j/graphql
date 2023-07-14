@@ -56,7 +56,7 @@ function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): Document
     return {
         ...merged,
         definitions: merged.definitions.reduce((res: DefinitionNode[], def) => {
-            if (def.kind !== "ObjectTypeDefinition" && def.kind !== "InterfaceTypeDefinition") {
+            if (def.kind !== Kind.OBJECT_TYPE_DEFINITION && def.kind !== Kind.INTERFACE_TYPE_DEFINITION) {
                 return [...res, def];
             }
 

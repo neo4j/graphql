@@ -34,6 +34,7 @@ import { translateResolveReference } from "../translate/translate-resolve-refere
 import type { Context, Node } from "../types";
 import { execute } from "../utils";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
+import { isInArray } from "../utils/is-in-array";
 
 // TODO fetch the directive names from the spec
 const federationDirectiveNames = [
@@ -48,22 +49,14 @@ const federationDirectiveNames = [
     "tag",
     "composeDirective",
     "interfaceObject",
-];
+] as const;
 
 type FederationDirectiveName = (typeof federationDirectiveNames)[number];
 
-type FullyQualifiedFederationDirectiveName = `federation__${FederationDirectiveName}`;
-
 type ReferenceResolver = (reference, context: Context, info: GraphQLResolveInfo) => Promise<unknown>;
 
-const isFederationDirectiveName = (name: string): name is FederationDirectiveName =>
-    federationDirectiveNames.includes(name);
-
 export class Subgraph {
-    private importArgument: Map<
-        FederationDirectiveName,
-        FederationDirectiveName | FullyQualifiedFederationDirectiveName | string
-    >;
+    private importArgument: Map<FederationDirectiveName, string>;
     private typeDefs: TypeSource;
     private linkExtension: SchemaExtensionNode;
 
@@ -96,7 +89,6 @@ export class Subgraph {
     }
 
     public getFullyQualifiedDirectiveName(name: FederationDirectiveName): string {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.importArgument.get(name)!;
     }
 
@@ -225,7 +217,7 @@ export class Subgraph {
                     if (value.kind === Kind.STRING) {
                         const trimmedName = this.trimDirectiveName(value.value);
 
-                        if (!isFederationDirectiveName(trimmedName)) {
+                        if (!isInArray(federationDirectiveNames, trimmedName)) {
                             throw new Error(`Encountered unknown Apollo Federation directive ${value.value}`);
                         }
 
@@ -239,7 +231,7 @@ export class Subgraph {
                         if (name?.value.kind === Kind.STRING) {
                             const trimmedName = this.trimDirectiveName(name.value.value);
 
-                            if (!isFederationDirectiveName(trimmedName)) {
+                            if (!isInArray(federationDirectiveNames, trimmedName)) {
                                 throw new Error(`Encountered unknown Apollo Federation directive ${name.value.value}`);
                             }
 

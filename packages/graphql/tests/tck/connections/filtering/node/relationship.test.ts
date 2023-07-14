@@ -63,12 +63,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE EXISTS {
-                    MATCH (this1)-[:\`ACTED_IN\`]->(this2:\`Movie\`)
+                    MATCH (this1)-[:ACTED_IN]->(this2:Movie)
                     WHERE this2.title = $param0
                 }
                 WITH { node: { name: this1.name } } AS edge

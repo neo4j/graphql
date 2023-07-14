@@ -58,12 +58,6 @@ import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthoriza
 import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
 
 export interface Neo4jGraphQLConfig {
-    /**
-     * Configuration that will be used when constructing a session on each request.
-     * At this entrypoint, only allows for the specification of a non-default database.
-     * The context property has a broader definition.
-     */
-    sessionConfig?: Pick<SessionConfig, "database">;
     enableDebug?: boolean;
     startupValidation?: StartupValidationConfig;
     cypherQueryOptions?: CypherQueryOptions;

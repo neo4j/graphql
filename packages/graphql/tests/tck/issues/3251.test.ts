@@ -64,7 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Movie\`)
+                "MATCH (this:Movie)
                 WHERE this.name = $param0
                 SET this.name = $this_update_name
                 WITH this
@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
                 			WITH connectedNodes, parentNodes
                 			UNWIND parentNodes as this
                 			UNWIND connectedNodes as this_connect_genre0_node
-                			MERGE (this)-[:\`HAS_GENRE\`]->(this_connect_genre0_node)
+                			MERGE (this)-[:HAS_GENRE]->(this_connect_genre0_node)
                 		}
                 	}
                 WITH this, this_connect_genre0_node
@@ -88,14 +88,14 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
                 WITH *
                 CALL {
                     WITH this
-                    MATCH (this)-[update_this0:\`HAS_GENRE\`]->(update_this1:\`Genre\`)
+                    MATCH (this)-[update_this0:HAS_GENRE]->(update_this1:Genre)
                     WITH update_this1 { .name } AS update_this1
                     RETURN head(collect(update_this1)) AS update_var2
                 }
                 WITH *
                 CALL {
                 	WITH this
-                	MATCH (this)-[this_genre_Genre_unique:\`HAS_GENRE\`]->(:Genre)
+                	MATCH (this)-[this_genre_Genre_unique:HAS_GENRE]->(:Genre)
                 	WITH count(this_genre_Genre_unique) as c
                 	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.genre required exactly once', [0])
                 	RETURN c AS this_genre_Genre_unique_ignored

@@ -27,13 +27,12 @@ import {
     createComparisonOperation,
 } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
-import type { LogicalOperator } from "./utils/logical-operators";
 import { isLogicalOperator, getLogicalPredicate } from "./utils/logical-operators";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { asArray } from "../utils/utils";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 
-type WhereFilter = Record<string | LogicalOperator, any>;
+type WhereFilter = Record<string, any>;
 
 export type AggregateWhereInput = {
     count: number;
@@ -205,7 +204,7 @@ function aggregateEntityWhere(
                 predicates.push(logicalPredicate);
             }
         } else {
-            const operation = createEntityOperation(refNodeOrRelation, target, key, value, context);
+            const operation = createEntityOperation(refNodeOrRelation, target, key, value);
             const operationVar = new Cypher.Variable();
             returnProjections.push([operation, operationVar]);
             predicates.push(Cypher.eq(operationVar, new Cypher.Literal(true)));

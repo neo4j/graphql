@@ -140,7 +140,7 @@ export const wrapResolver =
 
         executorConstructorParam.cypherQueryOptions = context.cypherQueryOptions || config.cypherQueryOptions;
 
-        executorConstructorParam.sessionConfig = context.sessionConfig || config.sessionConfig;
+        executorConstructorParam.sessionConfig = context.sessionConfig
 
         context.executor = new Executor(executorConstructorParam);
 

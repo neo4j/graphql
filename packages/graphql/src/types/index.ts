@@ -216,13 +216,7 @@ export interface TemporalField extends PrimitiveField {
 
 export type PointField = BaseField;
 
-export type SortableField =
-    | PrimitiveField
-    | CustomScalarField
-    | CustomEnumField
-    | TemporalField
-    | PointField
-    | CypherField;
+export type SortableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | CypherField;
 
 export type SortDirection = "ASC" | "DESC";
 
@@ -261,7 +255,7 @@ export interface GraphQLOptionsArg {
  * passed to resolvers.
  */
 export interface GraphQLWhereArg {
-    [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
+    [k: string]: any;
     AND?: GraphQLWhereArg[];
     OR?: GraphQLWhereArg[];
     NOT?: GraphQLWhereArg;
@@ -279,7 +273,7 @@ export interface ConnectionWhereArg {
 
 export interface InterfaceWhereArg {
     _on?: GraphQLWhereArg[];
-    [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
+    [k: string]: any;
 }
 
 /**

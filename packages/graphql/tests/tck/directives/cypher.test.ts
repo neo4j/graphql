@@ -134,7 +134,7 @@ describe("Cypher directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -164,7 +164,7 @@ describe("Cypher directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -193,7 +193,7 @@ describe("Cypher directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH *
             LIMIT $param0
             CALL {
@@ -231,7 +231,7 @@ describe("Cypher directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -276,7 +276,7 @@ describe("Cypher directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -333,7 +333,7 @@ describe("Cypher directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -407,7 +407,7 @@ describe("Cypher directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -471,7 +471,7 @@ describe("Cypher directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -483,7 +483,7 @@ describe("Cypher directive", () => {
                 }
                 WITH n AS this0
                 WITH *
-                WHERE (this0:\`Movie\` OR this0:\`TVShow\`)
+                WHERE (this0:Movie OR this0:TVShow)
                 WITH *, this0 AS this1
                 CALL {
                     WITH this1
@@ -520,8 +520,8 @@ describe("Cypher directive", () => {
                     RETURN head(collect(this5 { .name })) AS this5
                 }
                 RETURN collect(CASE
-                    WHEN this0:\`Movie\` THEN this0 { __resolveType: \\"Movie\\",  .id, .title, topActor: this2, actors: this3 }
-                    WHEN this0:\`TVShow\` THEN this0 { __resolveType: \\"TVShow\\",  .id, .title, topActor: this5 }
+                    WHEN this0:Movie THEN this0 { __resolveType: \\"Movie\\",  .id, .title, topActor: this2, actors: this3 }
+                    WHEN this0:TVShow THEN this0 { __resolveType: \\"TVShow\\",  .id, .title, topActor: this5 }
                 END) AS this0
             }
             RETURN this { movieOrTVShow: this0 } AS this"
@@ -548,7 +548,7 @@ describe("Cypher directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -560,10 +560,10 @@ describe("Cypher directive", () => {
                 }
                 WITH n AS this0
                 WITH *
-                WHERE (this0:\`Movie\` OR this0:\`TVShow\`)
+                WHERE (this0:Movie OR this0:TVShow)
                 RETURN collect(CASE
-                    WHEN this0:\`Movie\` THEN this0 { __resolveType: \\"Movie\\" }
-                    WHEN this0:\`TVShow\` THEN this0 { __resolveType: \\"TVShow\\" }
+                    WHEN this0:Movie THEN this0 { __resolveType: \\"Movie\\" }
+                    WHEN this0:TVShow THEN this0 { __resolveType: \\"TVShow\\" }
                 END) AS this0
             }
             RETURN this { movieOrTVShow: this0 } AS this"
@@ -624,7 +624,7 @@ describe("Cypher directive", () => {
                 WITH m as this
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                     WITH this1 { .name } AS this1
                     RETURN collect(this1) AS var2
                 }
@@ -685,7 +685,7 @@ describe("Cypher directive", () => {
                 WITH m as this
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                     WITH this1 { .name } AS this1
                     RETURN collect(this1) AS var2
                 }
@@ -738,7 +738,7 @@ describe("Cypher directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Movie\`)
+                "MATCH (this:Movie)
                 CALL {
                     WITH this
                     CALL {
@@ -750,7 +750,7 @@ describe("Cypher directive", () => {
                     WITH m AS this0
                     CALL {
                         WITH this0
-                        MATCH (this0)<-[this1:\`ACTED_IN\`]-(this2:\`Actor\`)
+                        MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                         WITH this2 { .name } AS this2
                         RETURN collect(this2) AS var3
                     }

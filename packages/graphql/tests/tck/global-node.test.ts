@@ -59,7 +59,7 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             RETURN this { .title } AS this"
         `);
@@ -97,7 +97,7 @@ describe("Global nodes", () => {
             variableValues: { id: toGlobalId({ typeName: "Actor", field: "dbId", id: "123455" }) },
         });
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.id = $param0
             RETURN this { .name, dbId: this.id } AS this"
         `);
@@ -142,7 +142,7 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.id = $param0
             RETURN this { .name } AS this"
         `);
@@ -185,7 +185,7 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.dbId = $param0
             RETURN this { .dbId, .name } AS this"
         `);

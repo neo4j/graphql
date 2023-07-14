@@ -180,6 +180,8 @@ await startStandaloneServer(server, {
 
 === `Neo4jGraphQL` constructor
 
+WARNING: This solution is deprecated, and will be removed in 4.0.0. Please pass into the context as in the example directly above.
+
 [source, javascript, indent=0]
 ----
 import { ApolloServer } from '@apollo/server';
@@ -202,7 +204,7 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
     config: {
-        sessionConfig: {
+        driverConfig: {
             database: "my-database",
         },
     },

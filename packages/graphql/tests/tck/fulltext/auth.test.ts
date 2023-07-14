@@ -77,7 +77,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
-                WHERE ($param1 IN labels(this) AND ($isAuthenticated = true AND size([(this)<-[:\`DIRECTED\`]-(this0:\`Person\`) WHERE this0.id = coalesce($jwt.sub, $jwtDefault) | 1]) > 0))
+                WHERE ($param1 IN labels(this) AND ($isAuthenticated = true AND size([(this)<-[:DIRECTED]-(this0:Person) WHERE this0.id = coalesce($jwt.sub, $jwtDefault) | 1]) > 0))
                 RETURN this { .title } AS this"
             `);
 
@@ -133,7 +133,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
-                WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[:\`DIRECTED\`]-(this0:\`Person\`) WHERE this0.id = coalesce($jwt.sub, $jwtDefault) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[:DIRECTED]-(this0:Person) WHERE this0.id = coalesce($jwt.sub, $jwtDefault) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN this { .title } AS this"
             `);
 
@@ -191,7 +191,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
-                WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[:\`DIRECTED\`]-(this0:\`Person\`) WHERE NOT (this0.id = coalesce($jwt.sub, $jwtDefault)) | 1]) = 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[:DIRECTED]-(this0:Person) WHERE NOT (this0.id = coalesce($jwt.sub, $jwtDefault)) | 1]) = 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN this { .title } AS this"
             `);
 
@@ -251,7 +251,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
-                WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[this1:\`DIRECTED\`]-(this0:\`Person\`) WHERE this0.id = coalesce($jwt.sub, $jwtDefault) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[this1:DIRECTED]-(this0:Person) WHERE this0.id = coalesce($jwt.sub, $jwtDefault) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN this { .title } AS this"
             `);
 
@@ -314,7 +314,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
-                WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[this1:\`DIRECTED\`]-(this0:\`Person\`) WHERE NOT (this0.id = coalesce($jwt.sub, $jwtDefault)) | 1]) = 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[this1:DIRECTED]-(this0:Person) WHERE NOT (this0.id = coalesce($jwt.sub, $jwtDefault)) | 1]) = 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN this { .title } AS this"
             `);
 
@@ -378,7 +378,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
-                WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[this0:\`DIRECTED\`]-(this1:\`Person\`) WHERE this0.year = $param3 | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[this0:DIRECTED]-(this1:Person) WHERE this0.year = $param3 | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN this { .title } AS this"
             `);
 
@@ -438,7 +438,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
-                WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[this0:\`DIRECTED\`]-(this1:\`Person\`) WHERE NOT (this0.year = $param3) | 1]) = 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[this0:DIRECTED]-(this1:Person) WHERE NOT (this0.year = $param3) | 1]) = 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN this { .title } AS this"
             `);
 
@@ -493,7 +493,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
                 WHERE ($param1 IN labels(this) AND ($isAuthenticated = true AND EXISTS {
-                    MATCH (this)<-[:\`DIRECTED\`]-(this0:\`Person\`)
+                    MATCH (this)<-[:DIRECTED]-(this0:Person)
                     WHERE this0.id = coalesce($jwt.sub, $jwtDefault)
                 }))
                 RETURN this { .title } AS this"
@@ -552,7 +552,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
                 WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this)<-[:\`DIRECTED\`]-(this0:\`Person\`)
+                    MATCH (this)<-[:DIRECTED]-(this0:Person)
                     WHERE this0.id = coalesce($jwt.sub, $jwtDefault)
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN this { .title } AS this"
@@ -613,10 +613,10 @@ describe("Cypher -> fulltext -> Auth", () => {
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
                 WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
-                    MATCH (this)<-[:\`DIRECTED\`]-(this0:\`Person\`)
+                    MATCH (this)<-[:DIRECTED]-(this0:Person)
                     WHERE this0.id = coalesce($jwt.sub, $jwtDefault)
                 } AND NOT (EXISTS {
-                    MATCH (this)<-[:\`DIRECTED\`]-(this0:\`Person\`)
+                    MATCH (this)<-[:DIRECTED]-(this0:Person)
                     WHERE NOT (this0.id = coalesce($jwt.sub, $jwtDefault))
                 }))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN this { .title } AS this"
@@ -679,7 +679,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
                 WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this)<-[this0:\`DIRECTED\`]-(this1:\`Person\`)
+                    MATCH (this)<-[this0:DIRECTED]-(this1:Person)
                     WHERE this1.id = coalesce($jwt.sub, $jwtDefault)
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN this { .title } AS this"
@@ -745,10 +745,10 @@ describe("Cypher -> fulltext -> Auth", () => {
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
                 WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
-                    MATCH (this)<-[this0:\`DIRECTED\`]-(this1:\`Person\`)
+                    MATCH (this)<-[this0:DIRECTED]-(this1:Person)
                     WHERE this1.id = coalesce($jwt.sub, $jwtDefault)
                 } AND NOT (EXISTS {
-                    MATCH (this)<-[this0:\`DIRECTED\`]-(this1:\`Person\`)
+                    MATCH (this)<-[this0:DIRECTED]-(this1:Person)
                     WHERE NOT (this1.id = coalesce($jwt.sub, $jwtDefault))
                 }))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN this { .title } AS this"
@@ -815,7 +815,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
                 WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this)<-[this0:\`DIRECTED\`]-(this1:\`Person\`)
+                    MATCH (this)<-[this0:DIRECTED]-(this1:Person)
                     WHERE this0.year = $param3
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN this { .title } AS this"
@@ -878,10 +878,10 @@ describe("Cypher -> fulltext -> Auth", () => {
                 "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
                 WITH *
                 WHERE ($param1 IN labels(this) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
-                    MATCH (this)<-[this0:\`DIRECTED\`]-(this1:\`Person\`)
+                    MATCH (this)<-[this0:DIRECTED]-(this1:Person)
                     WHERE this0.year = $param3
                 } AND NOT (EXISTS {
-                    MATCH (this)<-[this0:\`DIRECTED\`]-(this1:\`Person\`)
+                    MATCH (this)<-[this0:DIRECTED]-(this1:Person)
                     WHERE NOT (this0.year = $param3)
                 }))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 RETURN this { .title } AS this"

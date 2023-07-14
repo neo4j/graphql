@@ -137,7 +137,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
     });
 
     test("should not throw a different error if noVerify and global authentication are both enabled", async () => {
-        let initError: Error | null | unknown;
+        let initError: unknown;
         try {
             const neoSchema = new Neo4jGraphQL({
                 driver,
@@ -165,7 +165,7 @@ describe("Global authentication - Authorization JWT plugin", () => {
     });
 
     test("should not fail if noVerify is false and global authentication is true", async () => {
-        let initError: Error | null | unknown;
+        let initError: unknown;
         try {
             const neoSchema = new Neo4jGraphQL({
                 driver,

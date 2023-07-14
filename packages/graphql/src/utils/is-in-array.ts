@@ -17,26 +17,7 @@
  * limitations under the License.
  */
 
-type PointInput = { latitude: number; longitude: number; height?: number };
-type CartesianPointInput = { x: number; y: number };
-type SingleOrArray<T> = T | T[];
-type Values =
-    | SingleOrArray<string>
-    | SingleOrArray<number>
-    | SingleOrArray<boolean>
-    | SingleOrArray<Date>
-    | SingleOrArray<PointInput>
-    | SingleOrArray<CartesianPointInput>;
-
-export type ArrayPushTest = {
-    description: string;
-    inputType: string;
-    inputValue: Values;
-    expectedOutputValue: Values;
-};
-
-export type ArrayPopTest = {
-    initialValue: Values;
-    inputType: string;
-    expectedOutputValue: Values;
-};
+/** Checks if element is in array, and checks its type */
+export function isInArray<T>(arr: Array<T> | ReadonlyArray<T>, element: unknown): element is T {
+    return arr.includes(element as any);
+}

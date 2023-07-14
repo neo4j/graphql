@@ -22,44 +22,69 @@ import { Neo4jGraphQL } from "@neo4j/graphql";
 import type { GraphQLSchema } from "graphql";
 import Model from "./Model";
 import { filterDocument } from "../utils";
+import type { Driver, SessionConfig } from "neo4j-driver";
 
-export type OGMConstructor = Neo4jGraphQLConstructor;
+export interface OGMConstructor extends Neo4jGraphQLConstructor {
+    database?: string;
+}
+
+type AssertIndexesAndConstraintsOptions = {
+    create?: boolean;
+};
+
+type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
 
 class OGM<ModelMap = unknown> {
-    public checkNeo4jCompat: () => Promise<void>;
-    public assertIndexesAndConstraints: (input?: { options?: { create?: boolean } }) => Promise<void>;
+    public checkNeo4jCompat: (input?: { driver?: Driver; sessionConfig?: Neo4jGraphQLSessionConfig }) => Promise<void>;
+    public assertIndexesAndConstraints: (input?: {
+        driver?: Driver;
+        sessionConfig?: Neo4jGraphQLSessionConfig;
+        options?: AssertIndexesAndConstraintsOptions;
+    }) => Promise<void>;
     private models: Model[];
     private neoSchema: Neo4jGraphQL;
     private _schema?: GraphQLSchema;
     private initializer?: Promise<void>;
+    private database?: string;
 
     constructor(input: OGMConstructor) {
-        const { typeDefs, ...rest } = input;
+        const { typeDefs, database, ...rest } = input;
 
         this.models = [];
+        this.database = database;
 
         this.neoSchema = new Neo4jGraphQL({
             ...rest,
             typeDefs: filterDocument(typeDefs),
         });
 
-        this.checkNeo4jCompat = function checkNeo4jCompat() {
+        this.checkNeo4jCompat = function checkNeo4jCompat({
+            driver,
+            sessionConfig,
+        }: {
+            driver?: Driver;
+            sessionConfig?: Neo4jGraphQLSessionConfig;
+        } = {}) {
             return this.neoSchema.checkNeo4jCompat({
-                driver: rest.driver,
-                sessionConfig: rest.config?.sessionConfig ,
+                driver: driver || rest.driver,
+                sessionConfig: sessionConfig || (database && { database }) || undefined,
             });
         };
 
-        this.assertIndexesAndConstraints = async (
-            input: {
-                options?: { create?: boolean };
-            } = {}
-        ): Promise<void> => {
+        this.assertIndexesAndConstraints = async ({
+            driver,
+            sessionConfig,
+            options,
+        }: {
+            driver?: Driver;
+            sessionConfig?: Neo4jGraphQLSessionConfig;
+            options?: AssertIndexesAndConstraintsOptions;
+        } = {}): Promise<void> => {
             try {
                 await this.neoSchema.assertIndexesAndConstraints({
-                    ...input,
-                    driver: rest.driver,
-                    sessionConfig: rest.config?.sessionConfig,
+                    options,
+                    driver: driver || rest.driver,
+                    sessionConfig: sessionConfig || (database && { database }) || undefined,
                 });
             } catch (e: unknown) {
                 if (
@@ -106,7 +131,7 @@ class OGM<ModelMap = unknown> {
             return model as M;
         }
 
-        model = new Model(name as string);
+        model = new Model(name as string, this.database);
 
         if (this._schema) {
             this.initModel(model);

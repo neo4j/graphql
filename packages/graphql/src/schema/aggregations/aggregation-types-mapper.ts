@@ -82,7 +82,7 @@ export class AggregationTypesMapper {
 
         const aggregationSelectionTypeMatrix: Array<{
             name: string;
-            fields?: Record<string, any | string>;
+            fields?: Record<string, any>;
             directives?: string[];
         }> = [
             {

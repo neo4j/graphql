@@ -55,7 +55,7 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`PointContainer\`)
+            "MATCH (this:PointContainer)
             WHERE this.points = [var0 IN $param0 | point(var0)]
             RETURN this { points: CASE
                 WHEN this.points IS NOT NULL THEN [var1 IN this.points | { point: var1, crs: var1.crs }]
@@ -90,7 +90,7 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`PointContainer\`)
+            "MATCH (this:PointContainer)
             WHERE NOT (this.points = [var0 IN $param0 | point(var0)])
             RETURN this { points: CASE
                 WHEN this.points IS NOT NULL THEN [var1 IN this.points | { point: var1 }]
@@ -126,7 +126,7 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`PointContainer\`)
+            "MATCH (this:PointContainer)
             WHERE point($param0) IN this.points
             RETURN this { points: CASE
                 WHEN this.points IS NOT NULL THEN [var0 IN this.points | { point: var0, crs: var0.crs }]
@@ -160,7 +160,7 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`PointContainer\`)
+            "MATCH (this:PointContainer)
             WHERE NOT (point($param0) IN this.points)
             RETURN this { points: CASE
                 WHEN this.points IS NOT NULL THEN [var0 IN this.points | { point: var0, crs: var0.crs }]
@@ -199,7 +199,7 @@ describe("Cypher Points", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`PointContainer\`)
+                CREATE (create_this1:PointContainer)
                 SET
                     create_this1.points = [create_var2 IN create_var0.points | point(create_var2)]
                 RETURN create_this1
@@ -245,7 +245,7 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`PointContainer\`)
+            "MATCH (this:PointContainer)
             WHERE this.id = $param0
             SET this.points = [p in $this_update_points | point(p)]
             RETURN collect(DISTINCT this { points: CASE

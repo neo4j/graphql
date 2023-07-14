@@ -61,7 +61,7 @@ describe("Cypher Create", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Movie\`)
+                CREATE (create_this1:Movie)
                 SET
                     create_this1.id = create_var0.id
                 RETURN create_this1
@@ -98,7 +98,7 @@ describe("Cypher Create", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Movie\`)
+                CREATE (create_this1:Movie)
                 SET
                     create_this1.id = create_var0.id
                 RETURN create_this1
@@ -143,7 +143,7 @@ describe("Cypher Create", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Movie\`)
+                CREATE (create_this1:Movie)
                 SET
                     create_this1.id = create_var0.id
                 WITH create_this1, create_var0
@@ -151,10 +151,10 @@ describe("Cypher Create", () => {
                     WITH create_this1, create_var0
                     UNWIND create_var0.actors.create AS create_var2
                     WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:\`Actor\`)
+                    CREATE (create_this5:Actor)
                     SET
                         create_this5.name = create_var3.name
-                    MERGE (create_this1)<-[create_this6:\`ACTED_IN\`]-(create_this5)
+                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
                     RETURN collect(NULL) AS create_var7
                 }
                 RETURN create_this1
@@ -227,7 +227,7 @@ describe("Cypher Create", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Movie\`)
+                CREATE (create_this1:Movie)
                 SET
                     create_this1.id = create_var0.id
                 WITH create_this1, create_var0
@@ -235,19 +235,19 @@ describe("Cypher Create", () => {
                     WITH create_this1, create_var0
                     UNWIND create_var0.actors.create AS create_var2
                     WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:\`Actor\`)
+                    CREATE (create_this5:Actor)
                     SET
                         create_this5.name = create_var3.name
-                    MERGE (create_this1)<-[create_this6:\`ACTED_IN\`]-(create_this5)
+                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
                     WITH create_this5, create_var3
                     CALL {
                         WITH create_this5, create_var3
                         UNWIND create_var3.movies.create AS create_var7
                         WITH create_var7.node AS create_var8, create_var7.edge AS create_var9, create_this5
-                        CREATE (create_this10:\`Movie\`)
+                        CREATE (create_this10:Movie)
                         SET
                             create_this10.id = create_var8.id
-                        MERGE (create_this5)-[create_this11:\`ACTED_IN\`]->(create_this10)
+                        MERGE (create_this5)-[create_this11:ACTED_IN]->(create_this10)
                         RETURN collect(NULL) AS create_var12
                     }
                     RETURN collect(NULL) AS create_var13
@@ -337,7 +337,7 @@ describe("Cypher Create", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
-            			MERGE (this0)<-[:\`ACTED_IN\`]-(this0_actors_connect0_node)
+            			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
             		}
             	}
             WITH this0, this0_actors_connect0_node
@@ -345,7 +345,7 @@ describe("Cypher Create", () => {
             }
             RETURN this0
             }
-            RETURN [ this0 { .id } ] AS data"
+            RETURN [this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -396,7 +396,7 @@ describe("Cypher Create", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_movies_connect0_node
-            			MERGE (this0)-[:\`ACTED_IN\`]->(this0_movies_connect0_node)
+            			MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
             		}
             	}
             WITH this0, this0_movies_connect0_node
@@ -406,10 +406,10 @@ describe("Cypher Create", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)-[create_this0:\`ACTED_IN\`]->(create_this1:\`Movie\`)
+                MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:Movie)
                 CALL {
                     WITH create_this1
-                    MATCH (create_this1:\`Movie\`)<-[create_this2:\`ACTED_IN\`]-(create_this3:\`Actor\`)
+                    MATCH (create_this1:Movie)<-[create_this2:ACTED_IN]-(create_this3:Actor)
                     WHERE create_this3.name = $create_param0
                     WITH { node: { name: create_this3.name } } AS edge
                     WITH collect(edge) AS edges
@@ -419,7 +419,7 @@ describe("Cypher Create", () => {
                 WITH create_this1 { actorsConnection: create_var4 } AS create_this1
                 RETURN collect(create_this1) AS create_var5
             }
-            RETURN [ this0 { .name, movies: create_var5 } ] AS data"
+            RETURN [this0 { .name, movies: create_var5 }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

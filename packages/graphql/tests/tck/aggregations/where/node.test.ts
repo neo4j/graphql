@@ -55,10 +55,10 @@ describe("Cypher Where Aggregations with @node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`_Post\`:\`additionalPost\`)
+            "MATCH (this:_Post:additionalPost)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`_User\`:\`additionalUser\`)
+                MATCH (this)<-[this0:LIKES]-(this1:_User:additionalUser)
                 RETURN any(var2 IN collect(size(this1.someName)) WHERE var2 > $param0) AS var3
             }
             WITH *
