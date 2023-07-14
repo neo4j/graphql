@@ -35,18 +35,8 @@ type AssertIndexesAndConstraintsOptions = {
 type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
 
 class OGM<ModelMap = unknown> {
-    public checkNeo4jCompat: ({
-        driver,
-        sessionConfig,
-    }?: {
-        driver?: Driver;
-        sessionConfig?: Neo4jGraphQLSessionConfig;
-    }) => Promise<void>;
-    public assertIndexesAndConstraints: ({
-        driver,
-        sessionConfig,
-        options,
-    }?: {
+    public checkNeo4jCompat: (input?: { driver?: Driver; sessionConfig?: Neo4jGraphQLSessionConfig }) => Promise<void>;
+    public assertIndexesAndConstraints: (input?: {
         driver?: Driver;
         sessionConfig?: Neo4jGraphQLSessionConfig;
         options?: AssertIndexesAndConstraintsOptions;
