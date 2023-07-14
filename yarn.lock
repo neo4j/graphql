@@ -2656,9 +2656,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphiql/react@npm:0.18.0":
-  version: 0.18.0
-  resolution: "@graphiql/react@npm:0.18.0"
+"@graphiql/react@npm:0.19.0":
+  version: 0.19.0
+  resolution: "@graphiql/react@npm:0.19.0"
   dependencies:
     "@graphiql/toolkit": ^0.8.4
     "@headlessui/react": ^1.7.15
@@ -2679,7 +2679,7 @@ __metadata:
     graphql: ^15.5.0 || ^16.0.0
     react: ^16.8.0 || ^17 || ^18
     react-dom: ^16.8.0 || ^17 || ^18
-  checksum: a12e8ac3cecdcceaa3a333218ad5f6a1a0ddfb267dcaabb7bd60ed417d517344ceef20083b3fba471d0bb3199c8e93e2cfb99b70451084563ae6ce19d3258d92
+  checksum: 5e2310109acbad1d38f01775678fdeb34d8b4b1136f9ba937e3d02c6a02d9b5c9b95e14fc6f82caa8fff6b439b9627b1a7ac778440a22a9e07f0d7ffc269255b
   languageName: node
   linkType: hard
 
@@ -4156,21 +4156,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.8.5, @neo4j-ndl/base@npm:^1.8.5":
-  version: 1.8.5
-  resolution: "@neo4j-ndl/base@npm:1.8.5"
-  checksum: 671d5821aec669d57c03e7016c56d0ce560a6a348bbc7d48ab0ef6ccf718939314c2e37e4d2473c60d34865b5260bd79bc67631d1dc2e2d3ffa49b9ee94a274f
+"@neo4j-ndl/base@npm:1.8.9, @neo4j-ndl/base@npm:^1.8.9":
+  version: 1.8.9
+  resolution: "@neo4j-ndl/base@npm:1.8.9"
+  checksum: 016299e55531f5921bfb5e7508dc63f160f0d714333dd908b01d48d671165c8dc3dd5825586eb0ea0caa7471aecaea7ad11ac3d603f0142ee7efdf5d744094bf
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.8.9":
-  version: 1.8.9
-  resolution: "@neo4j-ndl/react@npm:1.8.9"
+"@neo4j-ndl/react@npm:1.8.14":
+  version: 1.8.14
+  resolution: "@neo4j-ndl/react@npm:1.8.14"
   dependencies:
     "@floating-ui/react": ^0.24.2
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^1.8.5
+    "@neo4j-ndl/base": ^1.8.9
     "@tanstack/react-table": ^8.9.3
     classnames: ^2.3.1
     detect-browser: ^5.3.0
@@ -4186,7 +4186,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: ">=16.8.0"
-  checksum: 0f7e48cc36b7c001be735f73a5f6571b578b1ee8d042c4555f7bc431966607023aff9c384403abea550e6bed2bbc9b3dc5dd29dfdbb568859be04c8f3e7f25e0
+  checksum: 5ee7f0e4b8cc0c01d99a105f50b7c90f8ceb2418fe8bac26e95a4217cacddc8b772cae804113d49e2825c24d5b500f03298767327e59732979baebbe58d95e8c
   languageName: node
   linkType: hard
 
@@ -4285,9 +4285,9 @@ __metadata:
     "@dnd-kit/core": 6.0.8
     "@dnd-kit/modifiers": 6.0.1
     "@dnd-kit/sortable": 7.0.2
-    "@graphiql/react": 0.18.0
-    "@neo4j-ndl/base": 1.8.5
-    "@neo4j-ndl/react": 1.8.9
+    "@graphiql/react": 0.19.0
+    "@neo4j-ndl/base": 1.8.9
+    "@neo4j-ndl/react": 1.8.14
     "@neo4j/graphql": 3.23.1
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.36.0
@@ -4296,7 +4296,7 @@ __metadata:
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 12.2.3
     "@types/prettier": 2.7.3
-    "@types/react-dom": 18.2.6
+    "@types/react-dom": 18.2.7
     "@types/webpack": 5.28.1
     autoprefixer: 10.4.14
     classnames: 2.3.2
@@ -4321,7 +4321,7 @@ __metadata:
     neo4j-driver: 5.10.0
     node-polyfill-webpack-plugin: 2.0.1
     parse5: 7.1.2
-    postcss: 8.4.25
+    postcss: 8.4.26
     postcss-loader: 7.3.3
     prettier: 3.0.0
     process: 0.11.10
@@ -4329,7 +4329,7 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     style-loader: 3.3.3
-    tailwindcss: 3.3.2
+    tailwindcss: 3.3.3
     terser-webpack-plugin: 5.3.9
     thememirror: 2.0.1
     ts-jest: 29.1.1
@@ -4389,12 +4389,12 @@ __metadata:
     koa-router: 12.0.0
     libnpmsearch: 6.0.2
     mock-jwks: 1.0.10
-    nock: 13.3.1
+    nock: 13.3.2
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
     randomstring: 1.3.0
     rimraf: 5.0.1
-    semver: ^7.3.7
+    semver: ^7.5.4
     supertest: 6.3.3
     ts-jest: 29.1.1
     ts-node: 10.9.1
@@ -8239,12 +8239,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.6":
-  version: 18.2.6
-  resolution: "@types/react-dom@npm:18.2.6"
+"@types/react-dom@npm:18.2.7":
+  version: 18.2.7
+  resolution: "@types/react-dom@npm:18.2.7"
   dependencies:
     "@types/react": "*"
-  checksum: b56e42efab121a3a8013d2eb8c1688e6028a25ea6d33c4362d2846f0af3760b164b4d7c34846614024cfb8956cca70dd1743487f152e32ff89a00fe6fbd2be54
+  checksum: e02ea908289a7ad26053308248d2b87f6aeafd73d0e2de2a3d435947bcea0422599016ffd1c3e38ff36c42f5e1c87c7417f05b0a157e48649e4a02f21727d54f
   languageName: node
   linkType: hard
 
@@ -14391,13 +14391,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:27.2.2":
-  version: 27.2.2
-  resolution: "eslint-plugin-jest@npm:27.2.2"
+"eslint-plugin-jest@npm:27.2.3":
+  version: 27.2.3
+  resolution: "eslint-plugin-jest@npm:27.2.3"
   dependencies:
     "@typescript-eslint/utils": ^5.10.0
   peerDependencies:
-    "@typescript-eslint/eslint-plugin": ^5.0.0
+    "@typescript-eslint/eslint-plugin": ^5.0.0 || ^6.0.0
     eslint: ^7.0.0 || ^8.0.0
     jest: "*"
   peerDependenciesMeta:
@@ -14405,7 +14405,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 98b63252d985f5dedf36ce9587dd4a0d24daf71ca8a997258343402c0d33ddd5070502378dafd9ac7fc0ef2e0d557b5c77f18e09ad73c71a52de8061db88293f
+  checksum: 4c7e07f52f17749ac6fd0ff5fcd5ce30b88983ba31eeee322e4d48859f55eaa112f06172e586ad2031c00ff28bb2dfdc3d35c83895251b9c0e860fa47dfc5ff4
   languageName: node
   linkType: hard
 
@@ -22022,7 +22022,7 @@ __metadata:
     eslint-import-resolver-typescript: 3.5.5
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.27.5
-    eslint-plugin-jest: 27.2.2
+    eslint-plugin-jest: 27.2.3
     eslint-plugin-jsx-a11y: 6.7.1
     eslint-plugin-react: 7.32.2
     eslint-plugin-simple-import-sort: 10.0.0
@@ -22088,15 +22088,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nock@npm:13.3.1":
-  version: 13.3.1
-  resolution: "nock@npm:13.3.1"
+"nock@npm:13.3.2":
+  version: 13.3.2
+  resolution: "nock@npm:13.3.2"
   dependencies:
     debug: ^4.1.0
     json-stringify-safe: ^5.0.1
     lodash: ^4.17.21
     propagate: ^2.0.0
-  checksum: 0f2a73e8432f6b5650656c53eef99f9e5bbde3df538dc2f07057edc4438cfc61a394c9d06dd82e60f6e86d42433f20f3c04364a1f088beee7bf03a24e3f0fdd0
+  checksum: 1d7d5fda1816a3a0d2cb47f10283db139fcd15be6975db6f9b260efa781d5f0eeadf9bd7aab6db61191c519dd99bcd4c5c061e77880341be60abc39cd6163c1f
   languageName: node
   linkType: hard
 
@@ -24306,14 +24306,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.4.25":
-  version: 8.4.25
-  resolution: "postcss@npm:8.4.25"
+"postcss@npm:8.4.26":
+  version: 8.4.26
+  resolution: "postcss@npm:8.4.26"
   dependencies:
     nanoid: ^3.3.6
     picocolors: ^1.0.0
     source-map-js: ^1.0.2
-  checksum: 9ed3ab8af43ad5210c28f56f916fd9b8c9f94fbeaebbf645dcf579bc28bdd8056c2a7ecc934668d399b81fedb6128f0c4b299f931e50454964bc911c25a3a0a2
+  checksum: 1cf08ee10d58cbe98f94bf12ac49a5e5ed1588507d333d2642aacc24369ca987274e1f60ff4cbf0081f70d2ab18a5cd3a4a273f188d835b8e7f3ba381b184e57
   languageName: node
   linkType: hard
 
@@ -26197,7 +26197,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.5.4, semver@npm:^7.5.0":
+"semver@npm:7.5.4, semver@npm:^7.5.0, semver@npm:^7.5.4":
   version: 7.5.4
   resolution: "semver@npm:7.5.4"
   dependencies:
@@ -27743,9 +27743,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:3.3.2":
-  version: 3.3.2
-  resolution: "tailwindcss@npm:3.3.2"
+"tailwindcss@npm:3.3.3":
+  version: 3.3.3
+  resolution: "tailwindcss@npm:3.3.3"
   dependencies:
     "@alloc/quick-lru": ^5.2.0
     arg: ^5.0.2
@@ -27767,13 +27767,12 @@ __metadata:
     postcss-load-config: ^4.0.1
     postcss-nested: ^6.0.1
     postcss-selector-parser: ^6.0.11
-    postcss-value-parser: ^4.2.0
     resolve: ^1.22.2
     sucrase: ^3.32.0
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: 4897c70e671c885e151f57434d87ccb806f468a11900f028245b351ffbca5245ff0c10ca5dbb6eb4c7c4df3de8a15a05fe08c2aea4b152cb07bee9bb1d8a14a8
+  checksum: 0195c7a3ebb0de5e391d2a883d777c78a4749f0c532d204ee8aea9129f2ed8e701d8c0c276aa5f7338d07176a3c2a7682c1d0ab9c8a6c2abe6d9325c2954eb50
   languageName: node
   linkType: hard
 

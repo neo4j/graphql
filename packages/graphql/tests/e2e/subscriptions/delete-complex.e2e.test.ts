@@ -98,7 +98,7 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             typeDefs,
             driver,
             config: {
-                driverConfig: {
+                sessionConfig: {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },

@@ -55,7 +55,7 @@ describe("Delete Subscription", () => {
             typeDefs,
             driver,
             config: {
-                driverConfig: {
+                sessionConfig: {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },

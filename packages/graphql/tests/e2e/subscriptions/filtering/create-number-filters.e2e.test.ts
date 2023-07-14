@@ -56,7 +56,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             typeDefs,
             driver,
             config: {
-                driverConfig: {
+                sessionConfig: {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },
