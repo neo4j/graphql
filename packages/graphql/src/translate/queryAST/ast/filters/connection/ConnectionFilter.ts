@@ -2,12 +2,13 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../../../schema-model/relationship/Relationship";
 import type { RelationshipWhereOperator } from "../../../../where/types";
-import { QueryASTNode } from "../../QueryASTNode";
 import type { ConnectionEdgeFilter } from "./ConnectionEdgeFilter";
 import type { ConnectionNodeFilter } from "./ConnectionNodeFilter";
 import { getRelationshipDirection } from "../../../utils/get-relationship-direction";
+import { Filter } from "../Filter";
+import type { QueryASTNode } from "../../QueryASTNode";
 
-export class ConnectionFilter extends QueryASTNode {
+export class ConnectionFilter extends Filter {
     private targetNodeFilters: ConnectionNodeFilter[] = [];
 
     private relationshipFilters: ConnectionEdgeFilter[] = [];
@@ -30,6 +31,10 @@ export class ConnectionFilter extends QueryASTNode {
         this.relationship = relationship;
         this.isNot = isNot;
         this.operator = operator || "SOME";
+    }
+
+    public get children(): QueryASTNode[] {
+        return [...this.targetNodeFilters, ...this.relationshipFilters];
     }
 
     public addConnectionNodeFilter(nodeFilter: ConnectionNodeFilter): void {

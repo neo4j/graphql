@@ -1,9 +1,10 @@
 import Cypher from "@neo4j/cypher-builder";
-import { QueryASTNode } from "../../QueryASTNode";
+import type { QueryASTNode } from "../../QueryASTNode";
 import type { LogicalFilter } from "../LogicalFilter";
 import type { PropertyFilter } from "../property-filters/PropertyFilter";
+import { Filter } from "../Filter";
 
-export class ConnectionEdgeFilter extends QueryASTNode {
+export class ConnectionEdgeFilter extends Filter {
     private filters: Array<LogicalFilter | PropertyFilter> = [];
     private isNot: boolean;
 
@@ -11,6 +12,10 @@ export class ConnectionEdgeFilter extends QueryASTNode {
         super();
         this.isNot = isNot;
         this.filters = filters;
+    }
+
+    public get children(): QueryASTNode[] {
+        return [];
     }
 
     public getPredicate(relationship: Cypher.Relationship): Cypher.Predicate | undefined {

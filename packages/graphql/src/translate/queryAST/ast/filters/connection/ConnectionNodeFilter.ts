@@ -1,8 +1,8 @@
 import Cypher from "@neo4j/cypher-builder";
-import { QueryASTNode } from "../../QueryASTNode";
-import type { Filter } from "../Filter";
+import { Filter } from "../Filter";
+import type { QueryASTNode } from "../../QueryASTNode";
 
-export class ConnectionNodeFilter extends QueryASTNode {
+export class ConnectionNodeFilter extends Filter {
     private filters: Filter[] = [];
     private isNot: boolean;
 
@@ -10,6 +10,10 @@ export class ConnectionNodeFilter extends QueryASTNode {
         super();
         this.isNot = isNot;
         this.filters = filters;
+    }
+
+    public get children(): QueryASTNode[] {
+        return [];
     }
 
     public getPredicate(node: Cypher.Node): Cypher.Predicate | undefined {

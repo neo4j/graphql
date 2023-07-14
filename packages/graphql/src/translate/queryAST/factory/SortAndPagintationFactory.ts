@@ -26,18 +26,7 @@ import { PropertySort } from "../ast/sort/PropertySort";
 
 export class SortAndPaginationFactory {
     public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntity | Relationship): PropertySort[] {
-        return (options.sort || [])
-            ?.flatMap((s) => Object.entries(s))
-            .map(([fieldName, sortDir]) => {
-                // TODO: use createPropertySort
-                const attribute = entity.findAttribute(fieldName);
-                if (!attribute) throw new Error(`no filter attribute ${fieldName}`);
-
-                return new PropertySort({
-                    direction: sortDir,
-                    attribute,
-                });
-            });
+        return (options.sort || [])?.flatMap((s) => this.createPropertySort(s, entity));
     }
 
     public createConnectionSortFields(options: ConnectionSortArg, relationship: Relationship): ConnectionSort {

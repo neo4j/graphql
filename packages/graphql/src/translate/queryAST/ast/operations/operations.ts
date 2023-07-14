@@ -19,6 +19,7 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import { QueryASTNode } from "../QueryASTNode";
+import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
 
 export type OperationTranspileOptions = {
     parentNode?: Cypher.Node;
@@ -27,4 +28,8 @@ export type OperationTranspileOptions = {
 
 export abstract class Operation extends QueryASTNode {
     abstract transpile(options: OperationTranspileOptions): Cypher.Clause;
+
+    public accept(v: QueryASTVisitor): void {
+        return v.visitOperation(this);
+    }
 }

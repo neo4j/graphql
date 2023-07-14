@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import type { PropertyFilter } from "./property-filters/PropertyFilter";
-import type { RelationshipFilter } from "./RelationshipFilter";
-import type { LogicalFilter } from "./LogicalFilter";
-import type { ConnectionFilter } from "./connection/ConnectionFilter";
+import { QueryASTNode } from "../QueryASTNode";
+import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
+import type Cypher from "@neo4j/cypher-builder";
 
 export type NumericalWhereOperator = "GT" | "GTE" | "LT" | "LTE";
 export type SpatialWhereOperator = "DISTANCE";
@@ -42,10 +41,16 @@ export type WhereOperator =
 
 export type LogicalOperators = "NOT" | "AND" | "OR";
 
-export type Filter = PropertyFilter | RelationshipFilter | LogicalFilter | ConnectionFilter;
-
 const RELATIONSHIP_OPERATORS = ["ALL", "NONE", "SINGLE", "SOME"] as const;
 
 export function isRelationshipOperator(operator: string): operator is RelationshipWhereOperator {
     return RELATIONSHIP_OPERATORS.includes(operator as any);
+}
+
+export abstract class Filter extends QueryASTNode {
+    public accept(v: QueryASTVisitor): void {
+        return v.visitFilter(this);
+    }
+
+    public abstract getPredicate(variable: Cypher.Variable): Cypher.Predicate | undefined;
 }

@@ -18,6 +18,7 @@
  */
 
 import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
+import type { QueryASTNode } from "../../QueryASTNode";
 import { Field } from "../Field";
 import type Cypher from "@neo4j/cypher-builder";
 
@@ -27,6 +28,10 @@ export class AttributeField extends Field {
     constructor({ alias, attribute }: { alias: string; attribute: Attribute }) {
         super(alias);
         this.attribute = attribute;
+    }
+
+    public get children(): QueryASTNode[] {
+        return [];
     }
 
     public getProjectionField(variable: Cypher.Variable): string | Record<string, Cypher.Expr> {

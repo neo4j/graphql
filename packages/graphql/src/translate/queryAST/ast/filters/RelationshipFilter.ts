@@ -20,12 +20,12 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Relationship } from "../../../../schema-model/relationship/Relationship";
 import type { RelationshipWhereOperator } from "../../../where/types";
-import type { Filter } from "./Filter";
+import { Filter } from "./Filter";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
-import { QueryASTNode } from "../QueryASTNode";
+import type { QueryASTNode } from "../QueryASTNode";
 
-export class RelationshipFilter extends QueryASTNode {
+export class RelationshipFilter extends Filter {
     private targetNodeFilters: Filter[] = [];
     private relationship: Relationship;
     private operator: RelationshipWhereOperator;
@@ -44,6 +44,10 @@ export class RelationshipFilter extends QueryASTNode {
         this.relationship = relationship;
         this.isNot = isNot;
         this.operator = operator;
+    }
+
+    public get children(): QueryASTNode[] {
+        return this.targetNodeFilters;
     }
 
     public addTargetNodeFilter(...filter: Filter[]): void {

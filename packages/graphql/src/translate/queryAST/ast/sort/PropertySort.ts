@@ -22,6 +22,7 @@ import type { Attribute } from "../../../../schema-model/attribute/Attribute";
 import type { QueryASTContext, QueryASTResult } from "../QueryASTNode";
 import { QueryASTNode } from "../QueryASTNode";
 import type { ConnectionSort } from "./ConnectionSort";
+import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
 
 export type Sort = PropertySort | ConnectionSort;
 
@@ -35,6 +36,14 @@ export class PropertySort extends QueryASTNode {
         super();
         this.attribute = attribute;
         this.direction = direction;
+    }
+
+    public get children(): QueryASTNode[] {
+        return [];
+    }
+
+    public accept(v: QueryASTVisitor): void {
+        v.visitSort(this);
     }
 
     public transpile(ctx: QueryASTContext): QueryASTResult {

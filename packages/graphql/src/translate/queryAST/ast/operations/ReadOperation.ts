@@ -27,6 +27,7 @@ import type { OperationTranspileOptions } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
 import type { PropertySort } from "../sort/PropertySort";
+import type { QueryASTNode } from "../QueryASTNode";
 
 export class ReadOperation extends Operation {
     public readonly entity: ConcreteEntity; // TODO: normal entities
@@ -41,6 +42,10 @@ export class ReadOperation extends Operation {
     constructor(entity: ConcreteEntity) {
         super();
         this.entity = entity;
+    }
+
+    public get children(): QueryASTNode[] {
+        return filterTruthy([...this.fields, ...this.filters, ...this.sortFields, this.pagination]);
     }
 
     public setFields(fields: Field[]) {
@@ -59,7 +64,7 @@ export class ReadOperation extends Operation {
         this.filters = filters;
     }
 
-    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause {
+    public transpile({ returnVariable }: OperationTranspileOptions): Cypher.Clause {
         const node = createNodeFromEntity(this.entity, this.nodeAlias);
 
         const filterPredicates = Cypher.and(...this.filters.map((f) => f.getPredicate(node)));

@@ -19,12 +19,12 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
-import type { WhereOperator } from "../Filter";
-import { QueryASTNode } from "../../QueryASTNode";
+import { Filter, type WhereOperator } from "../Filter";
+import type { QueryASTNode } from "../../QueryASTNode";
 
 type FilterOperator = WhereOperator | "EQ";
 
-export class PropertyFilter extends QueryASTNode {
+export class PropertyFilter extends Filter {
     protected attribute: Attribute;
     protected comparisonValue: unknown;
     protected operator: FilterOperator;
@@ -46,6 +46,10 @@ export class PropertyFilter extends QueryASTNode {
         this.comparisonValue = comparisonValue;
         this.operator = operator;
         this.isNot = isNot;
+    }
+
+    public get children(): QueryASTNode[] {
+        return [];
     }
 
     public getPredicate(target: Cypher.Variable): Cypher.Predicate {

@@ -19,12 +19,12 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { filterTruthy } from "../../../../utils/utils";
-import { QueryASTNode } from "../QueryASTNode";
-import type { Filter, LogicalOperators } from "./Filter";
+import type { LogicalOperators } from "./Filter";
+import { Filter } from "./Filter";
 
-export class LogicalFilter extends QueryASTNode {
+export class LogicalFilter extends Filter {
     private operation: LogicalOperators;
-    protected children: Filter[];
+    public children: Filter[];
 
     constructor({ operation, filters }: { operation: LogicalOperators; filters: Filter[] }) {
         super();
@@ -32,7 +32,8 @@ export class LogicalFilter extends QueryASTNode {
         this.children = filters;
     }
 
-    public getPredicate(target: Cypher.Node | Cypher.Relationship): Cypher.Predicate | undefined {
+    // public getPredicate(target: Cypher.Node | Cypher.Relationship): Cypher.Predicate | undefined {
+    public getPredicate(target: Cypher.Variable): Cypher.Predicate | undefined {
         const predicates = filterTruthy(this.children.map((f) => f.getPredicate(target)));
 
         switch (this.operation) {

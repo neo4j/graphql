@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { QueryASTNode } from "../QueryASTNode";
 import type { ConnectionReadOperation } from "../operations/ConnectionReadOperation";
 import { Field } from "./Field";
 import Cypher from "@neo4j/cypher-builder";
@@ -29,6 +30,10 @@ export class ConnectionField extends Field {
     constructor({ operation, alias }: { operation: ConnectionReadOperation; alias: string }) {
         super(alias);
         this.operation = operation;
+    }
+
+    public get children(): QueryASTNode[] {
+        return [this.operation];
     }
 
     public getProjectionField(): Record<string, Cypher.Expr> {

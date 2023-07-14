@@ -28,7 +28,9 @@ import type { OperationTranspileOptions } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination, PaginationField } from "../pagination/Pagination";
 import type { ConnectionSort } from "../sort/ConnectionSort";
-import { QueryASTContext, SortField } from "../QueryASTNode";
+import type { QueryASTNode } from "../QueryASTNode";
+import { QueryASTContext } from "../QueryASTNode";
+import { filterTruthy } from "../../../../utils/utils";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: Relationship;
@@ -45,6 +47,17 @@ export class ConnectionReadOperation extends Operation {
     constructor(relationship: Relationship) {
         super();
         this.relationship = relationship;
+    }
+
+    public get children(): QueryASTNode[] {
+        return filterTruthy([
+            ...this.nodeFields,
+            ...this.edgeFields,
+            ...this.nodeFilters,
+            ...this.edgeFilters,
+            this.pagination,
+            this.sortFields,
+        ]);
     }
 
     public setNodeFields(fields: Field[]) {

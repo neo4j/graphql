@@ -19,6 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ReadOperation } from "./operations/ReadOperation";
+import { QueryASTVisitor } from "../visitors/QueryASTVIsitor";
 
 export class QueryAST {
     private operation: ReadOperation;
@@ -28,6 +29,8 @@ export class QueryAST {
     }
 
     public transpile(): Cypher.Clause {
+        // const visitor = new QueryASTVisitor();
+        // visitor.visit(this.operation);
         return this.operation.transpile({ returnVariable: new Cypher.NamedVariable("this") });
     }
 }

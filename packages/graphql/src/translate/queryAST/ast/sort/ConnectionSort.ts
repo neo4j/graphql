@@ -21,6 +21,7 @@ import type Cypher from "@neo4j/cypher-builder";
 import type { QueryASTContext, QueryASTResult } from "../QueryASTNode";
 import { QueryASTNode } from "../QueryASTNode";
 import type { PropertySort, SortField } from "./PropertySort";
+import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
 
 export class ConnectionSort extends QueryASTNode {
     private nodeSort: PropertySort[] = [];
@@ -32,11 +33,13 @@ export class ConnectionSort extends QueryASTNode {
         this.edgeSort = edgeSort;
     }
 
-    // constructor({ attribute, direction }: { attribute: Attribute; direction: Cypher.Order }) {
-    //     super();
-    //     this.attribute = attribute;
-    //     this.direction = direction;
-    // }
+    public get children(): QueryASTNode[] {
+        return [...this.nodeSort, ...this.edgeSort];
+    }
+
+    public accept(v: QueryASTVisitor): void {
+        v.visitSort(this);
+    }
 
     public transpile(ctx: QueryASTContext): QueryASTResult {
         const nodeSort = this.nodeSort.map((s) => s.transpile(ctx.push(ctx.varMap.targetNode)));
