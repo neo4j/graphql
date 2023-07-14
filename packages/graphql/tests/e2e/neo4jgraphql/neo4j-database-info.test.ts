@@ -48,11 +48,6 @@ describe("Create with specific neo4jDatabaseInfo set correctly", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: {
-                sessionConfig: {
-                    database: neo4j.getIntegrationDatabaseName(),
-                },
-            },
         });
 
         // eslint-disable-next-line @typescript-eslint/require-await
@@ -117,11 +112,6 @@ describe("Create with specific neo4jDatabaseInfo set incorrectly", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: {
-                sessionConfig: {
-                    database: neo4j.getIntegrationDatabaseName(),
-                },
-            },
         });
 
         // eslint-disable-next-line @typescript-eslint/require-await

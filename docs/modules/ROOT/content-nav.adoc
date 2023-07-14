@@ -51,6 +51,7 @@
 *** xref:migration/v3-migration.adoc[]
 *** xref:migration/v4-migration/index.adoc[]
 **** xref:migration/v4-migration/authorization.adoc[]
+**** xref:migration/v4-migration/ogm.adoc[]
 
 ** xref:ogm/index.adoc[]
 *** xref:ogm/installation.adoc[]
