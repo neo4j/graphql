@@ -67,7 +67,16 @@ describe("execute", () => {
                                 // @ts-ignore
                                 return fn(tx);
                             },
+                            executeRead: (fn) => {
+                                // @ts-ignore
+                                return fn(tx);
+                            },
+                            executeWrite: (fn) => {
+                                // @ts-ignore
+                                return fn(tx);
+                            },
                             lastBookmark: () => "bookmark",
+                            lastBookmarks: () => "bookmark",
                             close: () => true,
                         };
                     },
