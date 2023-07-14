@@ -41,7 +41,8 @@ export class ConnectionReadOperation extends Operation {
     private edgeFilters: Filter[] = [];
 
     private pagination: Pagination | undefined;
-    private sortFields: { edge: Sort[]; node: Sort[] } | undefined;
+
+    private sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
 
     constructor(relationship: Relationship) {
         super();
@@ -55,8 +56,8 @@ export class ConnectionReadOperation extends Operation {
             ...this.nodeFilters,
             ...this.edgeFilters,
             this.pagination,
-            ...(this.sortFields?.edge || []),
-            ...(this.sortFields?.node || []),
+            // ...(this.sortFields?.edge || []), // TODO: add sort fields
+            // ...(this.sortFields?.node || []),
         ]);
     }
 
@@ -75,11 +76,8 @@ export class ConnectionReadOperation extends Operation {
         this.edgeFields = fields;
     }
 
-    public addSort(nodeSort: Sort[], edgeSort: Sort[]): void {
-        this.sortFields = {
-            edge: edgeSort,
-            node: nodeSort,
-        };
+    public addSort(sortElement: { node: Sort[]; edge: Sort[] }): void {
+        this.sortFields.push(sortElement);
     }
 
     public addPagination(pagination: Pagination): void {
@@ -142,7 +140,7 @@ export class ConnectionReadOperation extends Operation {
         }
 
         let sortSubquery: Cypher.With | undefined;
-        if (this.pagination || this.sortFields) {
+        if (this.pagination || this.sortFields.length > 0) {
             const paginationField = this.pagination && this.pagination.getPagination();
 
             // if (paginationField) {
@@ -152,7 +150,7 @@ export class ConnectionReadOperation extends Operation {
         }
 
         let extraWithOrder: Cypher.Clause | undefined;
-        if (this.sortFields) {
+        if (this.sortFields.length > 0) {
             const sortFields = this.getSortFields(node, relationship);
 
             extraWithOrder = new Cypher.With(relationship, node).orderBy(...sortFields);
@@ -179,7 +177,7 @@ export class ConnectionReadOperation extends Operation {
         const edgeVar = new Cypher.NamedVariable("edge");
 
         const subquery = new Cypher.Unwind([edgesVar, edgeVar]).with(edgeVar);
-        if (this.sortFields) {
+        if (this.sortFields.length > 0) {
             const sortFields = this.getSortFields(edgeVar.property("node"), edgeVar);
             subquery.orderBy(...sortFields);
         }
@@ -197,9 +195,11 @@ export class ConnectionReadOperation extends Operation {
         nodeVar: Cypher.Variable | Cypher.Property,
         edgeVar: Cypher.Variable | Cypher.Property
     ): SortField[] {
-        const sortEdgeFields = this.sortFields!.edge.flatMap((sf) => sf.getSortFields(edgeVar));
-        const sortNodeFields = this.sortFields!.node.flatMap((sf) => sf.getSortFields(nodeVar));
+        return this.sortFields.flatMap(({ node, edge }) => {
+            const nodeFields = node.flatMap((s) => s.getSortFields(nodeVar));
+            const edgeFields = edge.flatMap((s) => s.getSortFields(edgeVar));
 
-        return [...sortEdgeFields, ...sortNodeFields]; // TODO: keep the correct sorting order
+            return [...nodeFields, ...edgeFields];
+        });
     }
 }

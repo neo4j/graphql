@@ -93,12 +93,10 @@ export class OperationsFactory {
         }
 
         if (sort) {
-            // TODO: check why it is an array
-            const sortOptions = sort.reduce((acc, r) => {
-                return { ...acc, ...r };
-            }, {});
-            const sortFields = this.sortAndPaginationFactory.createConnectionSortFields(sortOptions, relationship);
-            operation.addSort(sortFields.node, sortFields.edge);
+            sort.forEach((options) => {
+                const sort = this.sortAndPaginationFactory.createConnectionSortFields(options, relationship);
+                operation.addSort(sort);
+            });
         }
 
         const nodeFields = this.fieldFactory.createFields(relationship.target as ConcreteEntity, nodeRawFields);
