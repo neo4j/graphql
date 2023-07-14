@@ -29,14 +29,6 @@ export {
 export * as directives from "./graphql/directives";
 export * as scalars from "./graphql/scalars";
 export {
-    CypherConnectComponentsPlanner,
-    CypherExpressionEngine,
-    CypherInterpretedPipesFallback,
-    CypherOperatorEngine,
-    CypherPlanner,
-    CypherReplanning,
-    CypherRuntime,
-    CypherUpdateStrategy,
     DeleteInfo,
     DriverConfig,
     EventMeta,

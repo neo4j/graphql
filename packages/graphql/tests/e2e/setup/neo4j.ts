@@ -19,23 +19,15 @@
 
 import * as neo4j from "neo4j-driver";
 import * as util from "util";
+import type { Neo4jGraphQLContext } from "../../../src";
 
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 
-type DriverContext = {
-    driver: neo4j.Driver | null;
-    driverConfig: {
-        database: string;
-        bookmarks?: string[];
-    };
-};
-
 class Neo4j {
-    private driver: neo4j.Driver | null;
+    private driver: neo4j.Driver | undefined;
     private hasIntegrationTestDb: boolean;
 
     constructor() {
-        this.driver = null;
         this.hasIntegrationTestDb = false;
     }
 
@@ -100,20 +92,20 @@ class Neo4j {
         return this.driver.session(appliedOptions);
     }
 
-    public getContextValues(options?: Record<string, unknown>): DriverContext {
+    public getContextValues(options?: Record<string, unknown>): Neo4jGraphQLContext {
         const database = this.hasIntegrationTestDb ? INT_TEST_DB_NAME : "neo4j";
         return {
             ...(options || {}),
-            driver: this.driver,
-            driverConfig: { database },
+            executionContext: this.driver,
+            sessionConfig: { database },
         };
     }
 
-    public getContextValuesWithBookmarks(bookmarks: string[], options?: Record<string, unknown>): DriverContext {
+    public getContextValuesWithBookmarks(bookmarks: string[], options?: Record<string, unknown>): Neo4jGraphQLContext {
         const database = this.hasIntegrationTestDb ? INT_TEST_DB_NAME : "neo4j";
         return {
             ...(options || {}),
-            driver: this.driver,
+            executionContext: this.driver,
             driverConfig: { database, bookmarks },
         };
     }

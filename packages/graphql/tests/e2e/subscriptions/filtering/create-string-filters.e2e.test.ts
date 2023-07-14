@@ -56,7 +56,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             typeDefs,
             driver,
             config: {
-                driverConfig: {
+                sessionConfig: {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },

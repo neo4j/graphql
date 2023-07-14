@@ -65,7 +65,7 @@ describe("Subscriptions authorization with create events", () => {
             typeDefs,
             driver,
             config: {
-                driverConfig: {
+                sessionConfig: {
                     database: neo4j.getIntegrationDatabaseName(),
                 },
             },

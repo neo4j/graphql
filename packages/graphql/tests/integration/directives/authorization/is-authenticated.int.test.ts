@@ -4046,11 +4046,6 @@ describe("auth/is-authenticated", () => {
                 neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     driver,
-                    config: {
-                        driverConfig: {
-                            database: neo4j.getIntegrationDatabaseName(),
-                        },
-                    },
                     features: {
                         authorization: {
                             key: secret,
@@ -4135,11 +4130,6 @@ describe("auth/is-authenticated", () => {
                 neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     driver,
-                    config: {
-                        driverConfig: {
-                            database: neo4j.getIntegrationDatabaseName(),
-                        },
-                    },
                     features: {
                         authorization: {
                             key: secret,
@@ -4228,11 +4218,6 @@ describe("auth/is-authenticated", () => {
                 neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     driver,
-                    config: {
-                        driverConfig: {
-                            database: neo4j.getIntegrationDatabaseName(),
-                        },
-                    },
                     features: {
                         authorization: {
                             key: secret,
@@ -4690,11 +4675,6 @@ describe("auth/is-authenticated", () => {
                 neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     driver,
-                    config: {
-                        driverConfig: {
-                            database: neo4j.getIntegrationDatabaseName(),
-                        },
-                    },
                     features: {
                         authorization: {
                             key: secret,
@@ -4782,11 +4762,6 @@ describe("auth/is-authenticated", () => {
                 neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     driver,
-                    config: {
-                        driverConfig: {
-                            database: neo4j.getIntegrationDatabaseName(),
-                        },
-                    },
                     features: {
                         authorization: {
                             key: secret,

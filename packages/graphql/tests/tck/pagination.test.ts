@@ -51,7 +51,7 @@ describe("Cypher pagination tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WITH *
             SKIP $param0
             RETURN this { .title } AS this"
@@ -79,7 +79,7 @@ describe("Cypher pagination tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WITH *
             LIMIT $param0
             RETURN this { .title } AS this"
@@ -107,7 +107,7 @@ describe("Cypher pagination tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WITH *
             SKIP $param0
             LIMIT $param1
@@ -142,7 +142,7 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WITH *
             SKIP $param0
             LIMIT $param1
@@ -177,7 +177,7 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
             SKIP $param1

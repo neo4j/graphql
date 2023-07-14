@@ -17,7 +17,12 @@
  * limitations under the License.
  */
 
-import type { DefinitionNode, DocumentNode, FieldDefinitionNode } from "graphql";
+import {
+    Kind,
+    type DefinitionNode,
+    type DocumentNode,
+    type FieldDefinitionNode,
+} from "graphql";
 import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 
@@ -30,21 +35,46 @@ const excludedDirectives = [
     "private",
     "readonly",
     "writeonly",
+    "query",
+    "mutation",
+    "subscription",
+    "filterable",
+    "selectable",
+    "settable",
 ];
 
 function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): DocumentNode {
-    const merged = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
+    // hack to keep aggregation enabled for OGM
+    const schemaExtension = `
+    extend schema @query(read: true, aggregate: true) 
+        @mutation(operations: [CREATE, UPDATE, DELETE]) 
+        @subscription(operations: [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])`;
+    const merged = mergeTypeDefs(
+        Array.isArray(typeDefs) ? (typeDefs as string[]).concat(schemaExtension) : [typeDefs as string, schemaExtension]
+    );
 
     return {
         ...merged,
         definitions: merged.definitions.reduce((res: DefinitionNode[], def) => {
-            if (def.kind !== "ObjectTypeDefinition" && def.kind !== "InterfaceTypeDefinition") {
+            if (def.kind !== Kind.OBJECT_TYPE_DEFINITION && def.kind !== Kind.INTERFACE_TYPE_DEFINITION) {
                 return [...res, def];
             }
 
             if (["Query", "Subscription", "Mutation"].includes(def.name.value)) {
                 return [...res, def];
             }
+            // this is the relationship aggregate argument used to enable aggregation for OGM whatever the user provides it or not
+            const relationshipAggregateArgument = {
+                kind: Kind.ARGUMENT,
+                name: {
+                    kind: Kind.NAME,
+                    value: "aggregate",
+                },
+                value: {
+                    kind: Kind.BOOLEAN,
+                    value: true,
+                },
+            };
 
             return [
                 ...res,
@@ -56,7 +86,21 @@ function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): Document
                             ...r,
                             {
                                 ...f,
-                                directives: f.directives?.filter((x) => !excludedDirectives.includes(x.name.value)),
+                                directives: f.directives
+                                    ?.filter((x) => !excludedDirectives.includes(x.name.value))
+                                    .map((x) => {
+                                        if (x.name.value === "relationship") {
+                                            const args = (x.arguments ? x.arguments?.filter(
+                                                (arg) => arg.name.value !== "aggregate"
+                                            ) : []) as any[]; // cast to any as this type is changing between GraphQL versions
+                                            args?.push(relationshipAggregateArgument);
+                                            return {
+                                                ...x,
+                                                arguments: args,
+                                            };
+                                        }
+                                        return x;
+                                    }),
                             },
                         ],
                         []

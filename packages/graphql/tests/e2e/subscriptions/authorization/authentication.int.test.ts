@@ -63,7 +63,7 @@ describe("Subscription authentication", () => {
                 typeDefs,
                 driver,
                 config: {
-                    driverConfig: {
+                    sessionConfig: {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
@@ -186,7 +186,7 @@ describe("Subscription authentication", () => {
                 typeDefs,
                 driver,
                 config: {
-                    driverConfig: {
+                    sessionConfig: {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
@@ -277,7 +277,7 @@ describe("Subscription authentication", () => {
                 typeDefs,
                 driver,
                 config: {
-                    driverConfig: {
+                    sessionConfig: {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
@@ -390,7 +390,7 @@ describe("Subscription authentication", () => {
                 typeDefs,
                 driver,
                 config: {
-                    driverConfig: {
+                    sessionConfig: {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
@@ -499,7 +499,7 @@ describe("Subscription authentication", () => {
                     typeDefs,
                     driver,
                     config: {
-                        driverConfig: {
+                        sessionConfig: {
                             database: neo4j.getIntegrationDatabaseName(),
                         },
                     },
@@ -587,7 +587,7 @@ describe("Subscription authentication", () => {
                     typeDefs,
                     driver,
                     config: {
-                        driverConfig: {
+                        sessionConfig: {
                             database: neo4j.getIntegrationDatabaseName(),
                         },
                     },
@@ -728,7 +728,7 @@ describe("Subscription authentication", () => {
                 typeDefs,
                 driver,
                 config: {
-                    driverConfig: {
+                    sessionConfig: {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
@@ -5144,7 +5144,7 @@ describe("Subscription authentication", () => {
                 typeDefs,
                 driver,
                 config: {
-                    driverConfig: {
+                    sessionConfig: {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
@@ -5489,7 +5489,7 @@ describe("Subscription authentication", () => {
                 typeDefs,
                 driver,
                 config: {
-                    driverConfig: {
+                    sessionConfig: {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },
@@ -5579,7 +5579,7 @@ describe("Subscription authentication", () => {
                 typeDefs,
                 driver,
                 config: {
-                    driverConfig: {
+                    sessionConfig: {
                         database: neo4j.getIntegrationDatabaseName(),
                     },
                 },

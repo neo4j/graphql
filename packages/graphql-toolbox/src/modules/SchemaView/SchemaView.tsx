@@ -124,7 +124,7 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                     features,
                     config: {
                         enableDebug: useStore.getState().enableDebug,
-                        driverConfig: {
+                        sessionConfig: {
                             database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
                         },
                     },
@@ -193,7 +193,7 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
 
     const onSubmit = () => {
         if (!editorView) return;
-        const value = editorView?.state.doc.toString();
+        const value = Array.from(editorView?.state.doc).toString();
         if (value) {
             buildSchema(value).catch(() => null);
         }

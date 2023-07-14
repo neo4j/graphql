@@ -34,10 +34,10 @@
     },
     "author": "Neo4j Inc.",
     "dependencies": {
-        "@graphql-codegen/core": "^3.0.0",
-        "@graphql-codegen/plugin-helpers": "^4.0.0",
-        "@graphql-codegen/typescript": "^3.0.0",
-        "@graphql-tools/merge": "^8.3.3",
+        "@graphql-codegen/core": "^4.0.0",
+        "@graphql-codegen/plugin-helpers": "^5.0.0",
+        "@graphql-codegen/typescript": "^4.0.0",
+        "@graphql-tools/merge": "^9.0.0",
         "@neo4j/graphql": "^3.23.1",
         "prettier": "^2.7.1"
     },
@@ -47,7 +47,7 @@
     },
     "devDependencies": {
         "@neo4j/graphql-plugin-auth": "^2.2.0",
-        "@types/jest": "29.5.2",
+        "@types/jest": "29.5.3",
         "@types/node": "18.15.1",
         "camelcase": "6.3.0",
         "graphql-tag": "2.12.6",

@@ -69,10 +69,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name IN $param0
                 WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
@@ -112,10 +112,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE NOT (this1.name IN $param0)
                 WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
@@ -156,10 +156,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE $param0 IN this1.favouriteColours
                 WITH { screenTime: this0.screenTime, node: { name: this1.name, favouriteColours: this1.favouriteColours } } AS edge
                 WITH collect(edge) AS edges
@@ -197,10 +197,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE NOT ($param0 IN this1.favouriteColours)
                 WITH { screenTime: this0.screenTime, node: { name: this1.name, favouriteColours: this1.favouriteColours } } AS edge
                 WITH collect(edge) AS edges
