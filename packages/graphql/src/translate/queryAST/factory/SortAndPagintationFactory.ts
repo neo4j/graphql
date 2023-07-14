@@ -21,18 +21,24 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
 import { Pagination } from "../ast/pagination/Pagination";
-import { ConnectionSort } from "../ast/sort/ConnectionSort";
 import { PropertySort } from "../ast/sort/PropertySort";
+import type { Sort } from "../ast/sort/Sort";
 
 export class SortAndPaginationFactory {
     public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntity | Relationship): PropertySort[] {
         return (options.sort || [])?.flatMap((s) => this.createPropertySort(s, entity));
     }
 
-    public createConnectionSortFields(options: ConnectionSortArg, relationship: Relationship): ConnectionSort {
+    public createConnectionSortFields(
+        options: ConnectionSortArg,
+        relationship: Relationship
+    ): { edge: Sort[]; node: Sort[] } {
         const nodeSortFields = this.createPropertySort(options.node || {}, relationship.target as ConcreteEntity);
         const edgeSortFields = this.createPropertySort(options.edge || {}, relationship);
-        return new ConnectionSort(nodeSortFields, edgeSortFields);
+        return {
+            edge: edgeSortFields,
+            node: nodeSortFields,
+        };
     }
 
     public createPagination(options: GraphQLOptionsArg): Pagination | undefined {

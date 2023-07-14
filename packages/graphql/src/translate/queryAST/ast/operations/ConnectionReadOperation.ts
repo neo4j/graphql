@@ -27,10 +27,9 @@ import Cypher from "@neo4j/cypher-builder";
 import type { OperationTranspileOptions } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination, PaginationField } from "../pagination/Pagination";
-import type { ConnectionSort } from "../sort/ConnectionSort";
 import type { QueryASTNode } from "../QueryASTNode";
-import { QueryASTContext } from "../QueryASTNode";
 import { filterTruthy } from "../../../../utils/utils";
+import type { Sort, SortField } from "../sort/Sort";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: Relationship;
@@ -42,7 +41,7 @@ export class ConnectionReadOperation extends Operation {
     private edgeFilters: Filter[] = [];
 
     private pagination: Pagination | undefined;
-    private sortFields: ConnectionSort | undefined;
+    private sortFields: { edge: Sort[]; node: Sort[] } | undefined;
 
     constructor(relationship: Relationship) {
         super();
@@ -56,7 +55,8 @@ export class ConnectionReadOperation extends Operation {
             ...this.nodeFilters,
             ...this.edgeFilters,
             this.pagination,
-            this.sortFields,
+            ...(this.sortFields?.edge || []),
+            ...(this.sortFields?.node || []),
         ]);
     }
 
@@ -75,8 +75,11 @@ export class ConnectionReadOperation extends Operation {
         this.edgeFields = fields;
     }
 
-    public addSort(sort: ConnectionSort): void {
-        this.sortFields = sort;
+    public addSort(nodeSort: Sort[], edgeSort: Sort[]): void {
+        this.sortFields = {
+            edge: edgeSort,
+            node: nodeSort,
+        };
     }
 
     public addPagination(pagination: Pagination): void {
@@ -143,29 +146,15 @@ export class ConnectionReadOperation extends Operation {
             const paginationField = this.pagination && this.pagination.getPagination();
 
             // if (paginationField) {
-            sortSubquery = this.getPaginationSubquery(
-                edgesVar,
-                paginationField,
-                new QueryASTContext({
-                    parentNode,
-                    targetNode: node,
-                    edge: relationship,
-                })
-            );
+            sortSubquery = this.getPaginationSubquery(edgesVar, paginationField);
             sortSubquery.addColumns(totalCount);
             // }
         }
 
         let extraWithOrder: Cypher.Clause | undefined;
         if (this.sortFields) {
-            const sortFields =
-                this.sortFields?.transpile(
-                    new QueryASTContext({
-                        parentNode,
-                        targetNode: node,
-                        edge: relationship,
-                    })
-                ).sortFields || [];
+            const sortFields = this.getSortFields(node, relationship);
+
             extraWithOrder = new Cypher.With(relationship, node).orderBy(...sortFields);
         }
 
@@ -185,23 +174,15 @@ export class ConnectionReadOperation extends Operation {
 
     private getPaginationSubquery(
         edgesVar: Cypher.Variable,
-        paginationField: PaginationField | undefined,
-        ctx: QueryASTContext
+        paginationField: PaginationField | undefined
     ): Cypher.With {
         const edgeVar = new Cypher.NamedVariable("edge");
 
-        const sortFields =
-            this.sortFields?.transpile(
-                ctx.push({
-                    parentNode: ctx.varMap.parentNode,
-                    targetNode: edgeVar.property("node") as any,
-                    edge: edgeVar as any,
-                })
-            ).sortFields || [];
-
         const subquery = new Cypher.Unwind([edgesVar, edgeVar]).with(edgeVar);
-
-        subquery.orderBy(...sortFields);
+        if (this.sortFields) {
+            const sortFields = this.getSortFields(edgeVar.property("node"), edgeVar);
+            subquery.orderBy(...sortFields);
+        }
         if (paginationField && paginationField.limit) {
             subquery.limit(paginationField.limit as any);
         }
@@ -210,5 +191,15 @@ export class ConnectionReadOperation extends Operation {
         subquery.return([Cypher.collect(edgeVar), returnVar]);
 
         return new Cypher.Call(subquery).innerWith(edgesVar).with([returnVar, edgesVar]);
+    }
+
+    private getSortFields(
+        nodeVar: Cypher.Variable | Cypher.Property,
+        edgeVar: Cypher.Variable | Cypher.Property
+    ): SortField[] {
+        const sortEdgeFields = this.sortFields!.edge.flatMap((sf) => sf.getSortFields(edgeVar));
+        const sortNodeFields = this.sortFields!.node.flatMap((sf) => sf.getSortFields(nodeVar));
+
+        return [...sortEdgeFields, ...sortNodeFields]; // TODO: keep the correct sorting order
     }
 }

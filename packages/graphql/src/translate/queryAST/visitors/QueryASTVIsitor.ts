@@ -22,8 +22,7 @@ import type { Field } from "../ast/fields/Field";
 import type { Filter } from "../ast/filters/Filter";
 import type { Operation } from "../ast/operations/operations";
 import type { Pagination } from "../ast/pagination/Pagination";
-import type { ConnectionSort } from "../ast/sort/ConnectionSort";
-import type { PropertySort } from "../ast/sort/PropertySort";
+import type { Sort } from "../ast/sort/Sort";
 
 export class QueryASTVisitor {
     public visit(node: QueryASTNode) {
@@ -31,7 +30,7 @@ export class QueryASTVisitor {
         node.children.forEach((s) => this.visit(s));
     }
 
-    public visitSort(_element: PropertySort | ConnectionSort) {
+    public visitSort(_element: Sort) {
         console.log("visitSort");
         //throw new Error("Method not implemented.");
     }

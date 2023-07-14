@@ -30,47 +30,46 @@ export abstract class QueryASTNode {
 
 export type SortField = [Cypher.Expr, Cypher.Order] | [Cypher.Expr];
 
-type VarMap = {
-    parentNode?: Cypher.Node;
+type RelationshipVars = {
+    parentNode: Cypher.Node;
     targetNode: Cypher.Node;
-    edge?: Cypher.Relationship;
+    edge: Cypher.Relationship;
 };
 
-export class QueryASTContext {
-    public readonly varMap: VarMap;
+export class QueryASTContext<T extends Cypher.Variable | RelationshipVars = Cypher.Variable | RelationshipVars> {
+    public readonly target: T;
     public readonly parent?: QueryASTContext;
-    public readonly target?: Cypher.Variable | Cypher.Property;
 
-    constructor(varMap: VarMap, target?: Cypher.Variable | Cypher.Property, parent?: QueryASTContext) {
-        this.varMap = varMap;
-        this.parent = parent;
+    constructor(target: T, parent?: QueryASTContext) {
         this.target = target;
+        this.parent = parent;
     }
 
-    public push(target: Relationship | Cypher.Variable | Cypher.Property | VarMap): QueryASTContext {
-        // Traverse the graph
-        if (target instanceof Relationship) {
-            return new QueryASTContext(
-                {
-                    parentNode: this.varMap.targetNode,
-                    targetNode: new Cypher.Node({ labels: (target.target as ConcreteEntity).labels }),
-                    edge: new Cypher.Relationship({ type: target.type }),
-                },
-                undefined,
-                this
-            );
-        } else if (target instanceof Cypher.Variable || target instanceof Cypher.Property) {
-            return new QueryASTContext(this.varMap, target, this); // Defines a target
+    public push(target?: Cypher.Variable | Relationship): QueryASTContext {
+        let newTarget: Cypher.Variable | RelationshipVars;
+        if (!target) newTarget = new Cypher.Variable();
+        else if (target instanceof Relationship) {
+            newTarget = {
+                parentNode: this.getParentNode(),
+                targetNode: new Cypher.Node({ labels: (target.target as ConcreteEntity).labels }),
+                edge: new Cypher.Relationship({ type: target.type }),
+            };
+        } else {
+            newTarget = target;
         }
-        return new QueryASTContext(target, undefined, this);
+
+        return new QueryASTContext(newTarget, this);
+    }
+
+    private getParentNode(): Cypher.Node {
+        if (this.target instanceof Cypher.Variable) return this.target as Cypher.Node;
+        return this.target.targetNode;
     }
 }
 
 export function createContext(rootEntity: ConcreteEntity): QueryASTContext {
     const node = new Cypher.Node({ labels: rootEntity.labels });
-    return new QueryASTContext({
-        targetNode: node,
-    });
+    return new QueryASTContext(node);
 }
 
 export type QueryASTResult = {

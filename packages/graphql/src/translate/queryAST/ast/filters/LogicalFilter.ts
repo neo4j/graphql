@@ -32,7 +32,6 @@ export class LogicalFilter extends Filter {
         this.children = filters;
     }
 
-    // public getPredicate(target: Cypher.Node | Cypher.Relationship): Cypher.Predicate | undefined {
     public getPredicate(target: Cypher.Variable): Cypher.Predicate | undefined {
         const predicates = filterTruthy(this.children.map((f) => f.getPredicate(target)));
 

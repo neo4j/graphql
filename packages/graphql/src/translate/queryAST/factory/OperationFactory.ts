@@ -19,7 +19,6 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
-
 import { FilterFactory } from "./FilterFactory";
 import { FieldFactory } from "./FieldFactory";
 import type { QueryASTFactory } from "./QueryASTFactory";
@@ -99,7 +98,7 @@ export class OperationsFactory {
                 return { ...acc, ...r };
             }, {});
             const sortFields = this.sortAndPaginationFactory.createConnectionSortFields(sortOptions, relationship);
-            operation.addSort(sortFields);
+            operation.addSort(sortFields.node, sortFields.edge);
         }
 
         const nodeFields = this.fieldFactory.createFields(relationship.target as ConcreteEntity, nodeRawFields);
