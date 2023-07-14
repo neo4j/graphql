@@ -60,7 +60,7 @@ describe("Federation and authorization", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WITH *
             WHERE (this.id = $param0 AND ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)))
             RETURN this { .id, .name } AS this"
@@ -118,7 +118,7 @@ describe("Federation and authorization", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             WITH *
             WHERE ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault))
@@ -183,10 +183,10 @@ describe("Federation and authorization", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`AUTHORED\`]-(this1:\`User\`)
+                MATCH (this)<-[this0:AUTHORED]-(this1:User)
                 RETURN count(this1) > $param0 AS var2
             }
             WITH *
@@ -196,7 +196,7 @@ describe("Federation and authorization", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"2\\",
+                \\"param0\\": 2,
                 \\"param1\\": \\"1\\",
                 \\"isAuthenticated\\": true
             }"
