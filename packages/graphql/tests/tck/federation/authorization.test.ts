@@ -21,9 +21,15 @@ import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { versionInfo } from "graphql";
 
 describe("Federation and authorization", () => {
     test("type level", async () => {
+        if (versionInfo.major < 16) {
+            console.log("GraphQL version is <16, skipping Federation tests");
+            return;
+        }
+
         const typeDefs = gql`
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key"])
 
@@ -80,6 +86,11 @@ describe("Federation and authorization", () => {
     });
 
     test("field level", async () => {
+        if (versionInfo.major < 16) {
+            console.log("GraphQL version is <16, skipping Federation tests");
+            return;
+        }
+
         const typeDefs = gql`
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key"])
 
@@ -139,6 +150,11 @@ describe("Federation and authorization", () => {
     });
 
     test("with filter requiring subquery", async () => {
+        if (versionInfo.major < 16) {
+            console.log("GraphQL version is <16, skipping Federation tests");
+            return;
+        }
+
         const typeDefs = gql`
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key"])
 
