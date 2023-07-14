@@ -26,7 +26,7 @@ import type { QueryASTFactory } from "./QueryASTFactory";
 import type { Relationship } from "../../../schema-model/relationship/Relationship";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
-import type { GraphQLOptionsArg } from "../../../types";
+import type { ConnectionSortArg, GraphQLOptionsArg } from "../../../types";
 import { SortAndPaginationFactory } from "./SortAndPagintationFactory";
 import type { Integer } from "neo4j-driver";
 
@@ -82,6 +82,8 @@ export class OperationsFactory {
 
         const operation = new ConnectionReadOperation(relationship);
         const first = resolveTree.args.first as number | Integer | undefined;
+        const sort = resolveTree.args.sort as ConnectionSortArg[];
+
         if (first) {
             const pagination = this.sortAndPaginationFactory.createPagination({
                 limit: first,
@@ -89,6 +91,15 @@ export class OperationsFactory {
             if (pagination) {
                 operation.addPagination(pagination);
             }
+        }
+
+        if (sort) {
+            // TODO: check why it is an array
+            const sortOptions = sort.reduce((acc, r) => {
+                return { ...acc, ...r };
+            }, {});
+            const sortFields = this.sortAndPaginationFactory.createConnectionSortFields(sortOptions, relationship);
+            operation.addSort(sortFields);
         }
 
         const nodeFields = this.fieldFactory.createFields(relationship.target as ConcreteEntity, nodeRawFields);

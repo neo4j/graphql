@@ -27,7 +27,8 @@ import Cypher from "@neo4j/cypher-builder";
 import type { OperationTranspileOptions } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination, PaginationField } from "../pagination/Pagination";
-import type { Sort } from "../sort/PropertySort";
+import type { ConnectionSort } from "../sort/ConnectionSort";
+import { QueryASTContext, SortField } from "../QueryASTNode";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: Relationship;
@@ -39,7 +40,7 @@ export class ConnectionReadOperation extends Operation {
     private edgeFilters: Filter[] = [];
 
     private pagination: Pagination | undefined;
-    private sortFields: Sort[] = [];
+    private sortFields: ConnectionSort | undefined;
 
     constructor(relationship: Relationship) {
         super();
@@ -61,8 +62,8 @@ export class ConnectionReadOperation extends Operation {
         this.edgeFields = fields;
     }
 
-    public addSort(...sort: Sort[]): void {
-        this.sortFields.push(...sort);
+    public addSort(sort: ConnectionSort): void {
+        this.sortFields = sort;
     }
 
     public addPagination(pagination: Pagination): void {
@@ -125,16 +126,37 @@ export class ConnectionReadOperation extends Operation {
         }
 
         let sortSubquery: Cypher.With | undefined;
-        if (this.pagination) {
-            const paginationField = this.pagination.getPagination();
-            if (paginationField) {
-                sortSubquery = this.getPaginationSubquery(edgesVar, paginationField);
-                sortSubquery.addColumns(totalCount);
-            }
+        if (this.pagination || this.sortFields) {
+            const paginationField = this.pagination && this.pagination.getPagination();
+
+            // if (paginationField) {
+            sortSubquery = this.getPaginationSubquery(
+                edgesVar,
+                paginationField,
+                new QueryASTContext({
+                    parentNode,
+                    targetNode: node,
+                    edge: relationship,
+                })
+            );
+            sortSubquery.addColumns(totalCount);
+            // }
         }
 
-        clause
-            .with([edgeProjectionMap, edgeVar])
+        let extraWithOrder: Cypher.Clause | undefined;
+        if (this.sortFields) {
+            const sortFields =
+                this.sortFields?.transpile(
+                    new QueryASTContext({
+                        parentNode,
+                        targetNode: node,
+                        edge: relationship,
+                    })
+                ).sortFields || [];
+            extraWithOrder = new Cypher.With(relationship, node).orderBy(...sortFields);
+        }
+
+        const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar])
             .with([Cypher.collect(edgeVar), edgesVar])
             .with(edgesVar, [Cypher.size(edgesVar), totalCount]);
 
@@ -145,14 +167,29 @@ export class ConnectionReadOperation extends Operation {
             }),
             returnVariable,
         ]);
-        return Cypher.concat(clause, sortSubquery, returnClause);
+        return Cypher.concat(clause, extraWithOrder, projectionClauses, sortSubquery, returnClause);
     }
 
-    private getPaginationSubquery(edgesVar: Cypher.Variable, paginationField: PaginationField): Cypher.With {
+    private getPaginationSubquery(
+        edgesVar: Cypher.Variable,
+        paginationField: PaginationField | undefined,
+        ctx: QueryASTContext
+    ): Cypher.With {
         const edgeVar = new Cypher.NamedVariable("edge");
 
+        const sortFields =
+            this.sortFields?.transpile(
+                ctx.push({
+                    parentNode: ctx.varMap.parentNode,
+                    targetNode: edgeVar.property("node") as any,
+                    edge: edgeVar as any,
+                })
+            ).sortFields || [];
+
         const subquery = new Cypher.Unwind([edgesVar, edgeVar]).with(edgeVar);
-        if (paginationField.limit) {
+
+        subquery.orderBy(...sortFields);
+        if (paginationField && paginationField.limit) {
             subquery.limit(paginationField.limit as any);
         }
 

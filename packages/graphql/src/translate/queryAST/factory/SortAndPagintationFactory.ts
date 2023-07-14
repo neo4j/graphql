@@ -18,16 +18,18 @@
  */
 
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
-import type { GraphQLOptionsArg } from "../../../types";
+import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
 import { Pagination } from "../ast/pagination/Pagination";
-import type { Sort } from "../ast/sort/PropertySort";
+import { ConnectionSort } from "../ast/sort/ConnectionSort";
 import { PropertySort } from "../ast/sort/PropertySort";
 
 export class SortAndPaginationFactory {
-    public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntity): Sort[] {
+    public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntity | Relationship): PropertySort[] {
         return (options.sort || [])
             ?.flatMap((s) => Object.entries(s))
             .map(([fieldName, sortDir]) => {
+                // TODO: use createPropertySort
                 const attribute = entity.findAttribute(fieldName);
                 if (!attribute) throw new Error(`no filter attribute ${fieldName}`);
 
@@ -38,6 +40,12 @@ export class SortAndPaginationFactory {
             });
     }
 
+    public createConnectionSortFields(options: ConnectionSortArg, relationship: Relationship): ConnectionSort {
+        const nodeSortFields = this.createPropertySort(options.node || {}, relationship.target as ConcreteEntity);
+        const edgeSortFields = this.createPropertySort(options.edge || {}, relationship);
+        return new ConnectionSort(nodeSortFields, edgeSortFields);
+    }
+
     public createPagination(options: GraphQLOptionsArg): Pagination | undefined {
         if (options.limit || options.offset) {
             return new Pagination({
@@ -45,5 +53,17 @@ export class SortAndPaginationFactory {
                 limit: options.limit,
             });
         }
+    }
+
+    private createPropertySort(optionArg: GraphQLSortArg, entity: ConcreteEntity | Relationship): PropertySort[] {
+        return Object.entries(optionArg).map(([fieldName, sortDir]) => {
+            const attribute = entity.findAttribute(fieldName);
+            if (!attribute) throw new Error(`no filter attribute ${fieldName}`);
+
+            return new PropertySort({
+                direction: sortDir,
+                attribute,
+            });
+        });
     }
 }

@@ -26,7 +26,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { OperationTranspileOptions } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
-import type { Sort } from "../sort/PropertySort";
+import type { PropertySort } from "../sort/PropertySort";
 
 export class ReadOperation extends Operation {
     public readonly entity: ConcreteEntity; // TODO: normal entities
@@ -34,7 +34,7 @@ export class ReadOperation extends Operation {
     public fields: Field[] = [];
     private filters: Filter[] = [];
     private pagination: Pagination | undefined;
-    private sortFields: Sort[] = [];
+    private sortFields: PropertySort[] = [];
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
@@ -47,7 +47,7 @@ export class ReadOperation extends Operation {
         this.fields = fields;
     }
 
-    public addSort(...sort: Sort[]): void {
+    public addSort(...sort: PropertySort[]): void {
         this.sortFields.push(...sort);
     }
 

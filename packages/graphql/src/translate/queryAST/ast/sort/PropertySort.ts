@@ -19,11 +19,13 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
+import type { QueryASTContext, QueryASTResult } from "../QueryASTNode";
 import { QueryASTNode } from "../QueryASTNode";
+import type { ConnectionSort } from "./ConnectionSort";
 
-export type Sort = PropertySort;
+export type Sort = PropertySort | ConnectionSort;
 
-export type SortField = [Cypher.Expr, Cypher.Order] | Cypher.Expr | [Cypher.Expr];
+export type SortField = [Cypher.Expr, Cypher.Order] | [Cypher.Expr];
 
 export class PropertySort extends QueryASTNode {
     private attribute: Attribute;
@@ -35,7 +37,15 @@ export class PropertySort extends QueryASTNode {
         this.direction = direction;
     }
 
-    public getSortFields(variable: Cypher.Variable): SortField[] {
+    public transpile(ctx: QueryASTContext): QueryASTResult {
+        if (!ctx.target) throw new Error("Target not found");
+        const sortFields = this.getSortFields(ctx.target);
+        return {
+            sortFields: sortFields,
+        };
+    }
+
+    public getSortFields(variable: Cypher.Variable | Cypher.Property): SortField[] {
         const nodeProperty = variable.property(this.attribute.name); // getDBName?
         return [[nodeProperty, this.direction]];
     }

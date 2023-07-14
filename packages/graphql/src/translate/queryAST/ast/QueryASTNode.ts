@@ -17,4 +17,58 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
+import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
+import { Relationship } from "../../../schema-model/relationship/Relationship";
+
 export abstract class QueryASTNode {}
+
+export type SortField = [Cypher.Expr, Cypher.Order] | [Cypher.Expr];
+
+type VarMap = {
+    parentNode?: Cypher.Node;
+    targetNode: Cypher.Node;
+    edge?: Cypher.Relationship;
+};
+
+export class QueryASTContext {
+    public readonly varMap: VarMap;
+    public readonly parent?: QueryASTContext;
+    public readonly target?: Cypher.Variable | Cypher.Property;
+
+    constructor(varMap: VarMap, target?: Cypher.Variable | Cypher.Property, parent?: QueryASTContext) {
+        this.varMap = varMap;
+        this.parent = parent;
+        this.target = target;
+    }
+
+    public push(target: Relationship | Cypher.Variable | Cypher.Property | VarMap): QueryASTContext {
+        // Traverse the graph
+        if (target instanceof Relationship) {
+            return new QueryASTContext(
+                {
+                    parentNode: this.varMap.targetNode,
+                    targetNode: new Cypher.Node({ labels: (target.target as ConcreteEntity).labels }),
+                    edge: new Cypher.Relationship({ type: target.type }),
+                },
+                undefined,
+                this
+            );
+        } else if (target instanceof Cypher.Variable || target instanceof Cypher.Property) {
+            return new QueryASTContext(this.varMap, target, this); // Defines a target
+        }
+        return new QueryASTContext(target, undefined, this);
+    }
+}
+
+export function createContext(rootEntity: ConcreteEntity): QueryASTContext {
+    const node = new Cypher.Node({ labels: rootEntity.labels });
+    return new QueryASTContext({
+        targetNode: node,
+    });
+}
+
+export type QueryASTResult = {
+    subqueries?: Cypher.Clause[];
+    sortFields?: SortField[];
+};
