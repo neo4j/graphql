@@ -38,6 +38,8 @@ export class SubgraphServer implements Server {
 
     public async start(): Promise<string> {
         const { url } = await startStandaloneServer(this.server, {
+            // eslint-disable-next-line @typescript-eslint/require-await
+            context: async ({ req }) => ({ token: req.headers.authorization }),
             listen: { port: this.port },
         });
         this.url = url;

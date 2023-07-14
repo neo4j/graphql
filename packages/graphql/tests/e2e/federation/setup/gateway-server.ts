@@ -19,7 +19,7 @@
 
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { ApolloGateway, IntrospectAndCompose } from "@apollo/gateway";
+import { ApolloGateway, IntrospectAndCompose, RemoteGraphQLDataSource } from "@apollo/gateway";
 import type { Server } from "./server";
 import { getPort } from "./port";
 
@@ -34,10 +34,19 @@ export class GatewayServer implements Server {
     url?: string;
 
     constructor(subgraphs: Subgraph[], port?: number) {
+        class AuthenticatedDataSource extends RemoteGraphQLDataSource {
+            willSendRequest({ request, context }) {
+                request.http.headers.set("authorization", context.token);
+            }
+        }
+
         const gateway = new ApolloGateway({
             supergraphSdl: new IntrospectAndCompose({
                 subgraphs,
             }),
+            buildService({ url }) {
+                return new AuthenticatedDataSource({ url });
+            },
         });
 
         this.server = new ApolloServer({
@@ -48,7 +57,11 @@ export class GatewayServer implements Server {
     }
 
     public async start(): Promise<string> {
-        const { url } = await startStandaloneServer(this.server, { listen: { port: this.port } });
+        const { url } = await startStandaloneServer(this.server, {
+            // eslint-disable-next-line @typescript-eslint/require-await
+            context: async ({ req }) => ({ token: req.headers.authorization }),
+            listen: { port: this.port },
+        });
         this.url = url;
         return url;
     }
