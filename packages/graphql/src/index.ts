@@ -36,8 +36,6 @@ export {
     GraphQLWhereArg,
     Neo4jGraphQLAuthPlugin,
     Neo4jGraphQLSubscriptionsMechanism,
-    Node,
-    RelationField,
     SubscriptionsEvent,
 } from "./types";
 

@@ -18,7 +18,7 @@
  */
 
 import { print } from "graphql";
-import filterDocument from "./filter-document";
+import { filterDocument } from "./filter-document";
 
 describe("filterDocument", () => {
     test("should remove all directives", () => {
