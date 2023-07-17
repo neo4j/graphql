@@ -2442,11 +2442,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphiql/react@npm:0.19.0":
-  version: 0.19.0
-  resolution: "@graphiql/react@npm:0.19.0"
+"@graphiql/react@npm:0.19.1":
+  version: 0.19.1
+  resolution: "@graphiql/react@npm:0.19.1"
   dependencies:
-    "@graphiql/toolkit": ^0.8.4
+    "@graphiql/toolkit": ^0.9.0
     "@headlessui/react": ^1.7.15
     "@radix-ui/react-dialog": ^1.0.4
     "@radix-ui/react-dropdown-menu": ^2.0.5
@@ -2465,13 +2465,13 @@ __metadata:
     graphql: ^15.5.0 || ^16.0.0
     react: ^16.8.0 || ^17 || ^18
     react-dom: ^16.8.0 || ^17 || ^18
-  checksum: 5e2310109acbad1d38f01775678fdeb34d8b4b1136f9ba937e3d02c6a02d9b5c9b95e14fc6f82caa8fff6b439b9627b1a7ac778440a22a9e07f0d7ffc269255b
+  checksum: c2703c0225f13e17e280ddb07df1093c10f21c337f951acb416a288f8b40e8db85d57854a8c2f852f281f5edcaae1615b749b2f9070661b266d2dabec52f6821
   languageName: node
   linkType: hard
 
-"@graphiql/toolkit@npm:^0.8.4":
-  version: 0.8.4
-  resolution: "@graphiql/toolkit@npm:0.8.4"
+"@graphiql/toolkit@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@graphiql/toolkit@npm:0.9.0"
   dependencies:
     "@n1ru4l/push-pull-async-iterable-iterator": ^3.1.0
     meros: ^1.1.4
@@ -2481,7 +2481,7 @@ __metadata:
   peerDependenciesMeta:
     graphql-ws:
       optional: true
-  checksum: 3587521ef64d867930375d746e28ab8373f3f034c6878a99d67e262074d28bf1102b9207db3cb34ae7b80cee8aa4b139fe865dae22a3bcc58f5909294d4a20b3
+  checksum: 3ff3221d32231f1dc97ffe432f7de44e268c985d0904adb90e52d5aef5da4c82e9779c379470a50316912b244750820624f0d5b41e9f22bc15f867728da15ec4
   languageName: node
   linkType: hard
 
@@ -3812,13 +3812,13 @@ __metadata:
     "@dnd-kit/core": 6.0.8
     "@dnd-kit/modifiers": 6.0.1
     "@dnd-kit/sortable": 7.0.2
-    "@graphiql/react": 0.19.0
+    "@graphiql/react": 0.19.1
     "@neo4j-ndl/base": 1.8.9
     "@neo4j-ndl/react": 1.8.14
     "@neo4j/graphql": 3.23.1
     "@neo4j/introspector": 1.0.3
-    "@playwright/test": 1.36.0
-    "@tsconfig/create-react-app": 2.0.0
+    "@playwright/test": 1.36.1
+    "@tsconfig/create-react-app": 2.0.1
     "@types/codemirror": 5.60.8
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 12.2.3
@@ -3897,7 +3897,7 @@ __metadata:
     "@types/ws": 8.5.5
     camelcase: ^6.3.0
     debug: ^4.3.4
-    dedent: 1.0.1
+    dedent: 1.0.2
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
     graphql-compose: ^9.0.8
@@ -4909,19 +4909,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.36.0":
-  version: 1.36.0
-  resolution: "@playwright/test@npm:1.36.0"
+"@playwright/test@npm:1.36.1":
+  version: 1.36.1
+  resolution: "@playwright/test@npm:1.36.1"
   dependencies:
     "@types/node": "*"
     fsevents: 2.3.2
-    playwright-core: 1.36.0
+    playwright-core: 1.36.1
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 6748fd7777617fc14aaf472c85a2d29bdcca7c63e88d06bd8c4f37af3bc35ae7af9c317ed966bc005e37038a27193be486fb5361634a0e9a79f527b6cbdd2f52
+  checksum: a0127e0dccc458e7feb1b5742c90f79db0b895288b135310d056be5e3c6bb2c47c4503d5b7a584db2b1ef518f87020dafa0016c198c98fd3df719d66cd2ab7b7
   languageName: node
   linkType: hard
 
@@ -7266,10 +7266,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/create-react-app@npm:2.0.0":
-  version: 2.0.0
-  resolution: "@tsconfig/create-react-app@npm:2.0.0"
-  checksum: b572e6519e54b8f37fabf8e0e1175c2900b44f1cfc20eeda22410e586f0da0ce7e88747c2eb9af2f47d35e85495760a5d4120a33ec410d63333fabeba2acb392
+"@tsconfig/create-react-app@npm:2.0.1":
+  version: 2.0.1
+  resolution: "@tsconfig/create-react-app@npm:2.0.1"
+  checksum: ae06caa4845591a963d0870c627553344aa647ff63e05f6b9589db0a499e71e2a2b2a5b510b0f706c011a7375ccf67cddfebaa1a3303ef288102c29e8a76eecf
   languageName: node
   linkType: hard
 
@@ -12459,12 +12459,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dedent@npm:1.0.1":
-  version: 1.0.1
-  resolution: "dedent@npm:1.0.1"
+"dedent@npm:1.0.2":
+  version: 1.0.2
+  resolution: "dedent@npm:1.0.2"
   dependencies:
     babel-plugin-macros: ^3.1.0
-  checksum: 8a76235a8aae8b9e36bc9b29bf9c920729f3e8366f5389fc8b45afce978a246be5ec5d0041b7d3d83d1930eb8b61519827f45ed1dbab33ee6332ed87e41063f1
+  checksum: fa51be386f9ddc37d05a30dc5433c683873425c1e445ba4c35c310bbf2c17dcaae7174e65a11cdbde344a56f6c9e19c0410f2f3a8d2b5bf2c7b88525498d9637
   languageName: node
   linkType: hard
 
@@ -13866,9 +13866,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:8.44.0":
-  version: 8.44.0
-  resolution: "eslint@npm:8.44.0"
+"eslint@npm:8.45.0":
+  version: 8.45.0
+  resolution: "eslint@npm:8.45.0"
   dependencies:
     "@eslint-community/eslint-utils": ^4.2.0
     "@eslint-community/regexpp": ^4.4.0
@@ -13895,7 +13895,6 @@ __metadata:
     globals: ^13.19.0
     graphemer: ^1.4.0
     ignore: ^5.2.0
-    import-fresh: ^3.0.0
     imurmurhash: ^0.1.4
     is-glob: ^4.0.0
     is-path-inside: ^3.0.3
@@ -13907,11 +13906,10 @@ __metadata:
     natural-compare: ^1.4.0
     optionator: ^0.9.3
     strip-ansi: ^6.0.1
-    strip-json-comments: ^3.1.0
     text-table: ^0.2.0
   bin:
     eslint: bin/eslint.js
-  checksum: d06309ce4aafb9d27d558c8e5e5aa5cba3bbec3ce8ceccbc7d4b7a35f2b67fd40189159155553270e2e6febeb69bd8a3b60d6241c8f5ddc2ef1702ccbd328501
+  checksum: 3e6dcce5cc43c5e301662db88ee26d1d188b22c177b9f104d7eefd1191236980bd953b3670fe2fac287114b26d7c5420ab48407d7ea1c3a446d6313c000009da
   languageName: node
   linkType: hard
 
@@ -16611,7 +16609,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"import-fresh@npm:^3.0.0, import-fresh@npm:^3.2.1":
+"import-fresh@npm:^3.2.1":
   version: 3.3.0
   resolution: "import-fresh@npm:3.3.0"
   dependencies:
@@ -20753,7 +20751,7 @@ __metadata:
     "@typescript-eslint/parser": 6.0.0
     concurrently: 8.2.0
     dotenv: 16.3.1
-    eslint: 8.44.0
+    eslint: 8.45.0
     eslint-config-prettier: 8.8.0
     eslint-formatter-summary: 1.1.0
     eslint-import-resolver-typescript: 3.5.5
@@ -22425,12 +22423,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.36.0":
-  version: 1.36.0
-  resolution: "playwright-core@npm:1.36.0"
+"playwright-core@npm:1.36.1":
+  version: 1.36.1
+  resolution: "playwright-core@npm:1.36.1"
   bin:
     playwright-core: cli.js
-  checksum: d6b5fed5ae95238dc36a1be3e2cfd250221810e6a2d20592c29d7044a2d1f96e8e6cfff83d937605b6e26d7c3058231d16784e17979fbb11208880829e406e85
+  checksum: bbde807294053b50f0dbbc81f0dacc43fe525830ce1526e6ca74012582dd1645eae2391719cfb020051abea90704057cfabcbfe45ca530b37becc491e9459790
   languageName: node
   linkType: hard
 
@@ -26023,7 +26021,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-json-comments@npm:^3.1.0, strip-json-comments@npm:^3.1.1":
+"strip-json-comments@npm:^3.1.1":
   version: 3.1.1
   resolution: "strip-json-comments@npm:3.1.1"
   checksum: 492f73e27268f9b1c122733f28ecb0e7e8d8a531a6662efbd08e22cccb3f9475e90a1b82cab06a392f6afae6d2de636f977e231296400d0ec5304ba70f166443
