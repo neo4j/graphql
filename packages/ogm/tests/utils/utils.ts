@@ -17,29 +17,9 @@
  * limitations under the License.
  */
 
-import { Socket } from "net";
-import { IncomingMessage } from "http";
-import jsonwebtoken from "jsonwebtoken";
 import { generate } from "randomstring";
 import camelcase from "camelcase";
 import pluralize from "pluralize";
-
-/** Creates a JWT valid request with the given secret and the extraData in the JWT token */
-
-export function createJwtRequest(secret: string, extraData: Record<string, any> = {}): IncomingMessage {
-    const token = jsonwebtoken.sign(
-        {
-            roles: [],
-            ...extraData,
-        },
-        secret,
-        { noTimestamp: true }
-    );
-    const socket = new Socket({ readable: true });
-    const req = new IncomingMessage(socket);
-    req.headers.authorization = `Bearer ${token}`;
-    return req;
-}
 
 export class UniqueType {
     public readonly name: string;

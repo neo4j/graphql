@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { DocumentNode, ObjectTypeDefinitionNode } from "graphql";
+import { Kind, type DocumentNode, type ObjectTypeDefinitionNode } from "graphql";
 import { isRootType } from "../utils/is-root-type";
 
 interface CustomResolvers {
@@ -30,7 +30,7 @@ interface CustomResolvers {
 
 function getCustomResolvers(document: DocumentNode): CustomResolvers {
     const customResolvers = (document.definitions || []).reduce((res: CustomResolvers, definition) => {
-        if (definition.kind !== "ObjectTypeDefinition") {
+        if (definition.kind !== Kind.OBJECT_TYPE_DEFINITION) {
             return res;
         }
 

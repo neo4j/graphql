@@ -18,7 +18,7 @@ type User {
 }
 ----
 
-The following create Mutations and response types will be generated for the above type definitions:
+The following create mutations and response types will be generated for the above type definitions:
 
 [source, graphql, indent=0]
 ----

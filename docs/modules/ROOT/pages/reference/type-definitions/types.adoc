@@ -154,7 +154,7 @@ type Point {
 }
 ----
 
-==== Queries and Mutations
+==== Queries and mutations
 
 Due to the fact that `Point` is an object type, it has an additional type for input in queries and mutations. However, this input type has the same shape as the object type:
 
@@ -267,7 +267,7 @@ type CartesianPoint {
 }
 ----
 
-==== Queries and Mutations
+==== Queries and mutations
 
 Due to the fact that `CartesianPoint` is an object type, it has an additional type for input in queries and mutations. However, this input type has the same shape as the object type:
 

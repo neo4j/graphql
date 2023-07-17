@@ -103,7 +103,7 @@ function makeAugmentedSchema(
         subgraph,
     }: {
         features?: Neo4jFeaturesSettings;
-        validateResolvers: boolean;
+        validateResolvers?: boolean;
         generateSubscriptions?: boolean;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
         subgraph?: Subgraph;

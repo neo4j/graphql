@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Source\`)
+            "MATCH (this:Source)
             WITH this
             CALL {
             	WITH this
@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_targets0_node
-            			MERGE (this)-[:\`HAS_TARGET\`]->(this_connect_targets0_node)
+            			MERGE (this)-[:HAS_TARGET]->(this_connect_targets0_node)
             		}
             	}
             WITH this, this_connect_targets0_node
@@ -136,11 +136,11 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Source\`)
+            "MATCH (this:Source)
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_targets0_rel:\`HAS_TARGET\`]->(this_disconnect_targets0:Target)
+            OPTIONAL MATCH (this)-[this_disconnect_targets0_rel:HAS_TARGET]->(this_disconnect_targets0:Target)
             WHERE this_disconnect_targets0.id = $updateSources_args_disconnect_targets0_where_Target_this_disconnect_targets0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             	WITH this_disconnect_targets0, this_disconnect_targets0_rel, this

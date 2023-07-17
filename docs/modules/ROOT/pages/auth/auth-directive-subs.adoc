@@ -3,6 +3,9 @@
 
 == `@auth` directive
 
+WARNING: The `@auth` directive has been replaced by `@authentication` and `@authorization`. `@auth` will be removed in version 4.0.0. 
+Please see the xref::guides/v4-migration/authorization.adoc[upgrade guide] for details on how to upgrade.
+
 The `@auth` directive definition is dynamically generated on runtime based on user type definitions.
 
 === `rules`
@@ -32,7 +35,7 @@ You can have many rules for many operations. Each rule is fallen through until a
 
 NOTE: Note that the absence of an `operations` argument will imply _all_ operations.
 
-Many different operations can be called at once, for example in the following Mutation:
+Many different operations can be called at once, for example in the following mutation:
 
 [source, graphql, indent=0]
 ----

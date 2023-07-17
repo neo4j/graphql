@@ -3,7 +3,7 @@
 
 == Operators
 
-When querying for data, a number of operators are available for different types in the `where` argument of a Query or Mutation.
+When querying for data, a number of operators are available for different types in the `where` argument of a query or mutation.
 
 === Equality operators
 
@@ -129,6 +129,7 @@ const neoSchema = new Neo4jGraphQL({ features, typeDefs, driver });
 
 > The nature of RegEx matching means that on an unprotected API, this could potentially be used to execute a ReDoS attack (https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) against the backing Neo4j database.
 
+[[array-operators]]
 === Array comparison
 
 The following two comparison operators are available on non-array fields, and accept an array argument:
@@ -149,9 +150,9 @@ These are stand-alone operators - that is, they are used as such and not appende
 
 Using the type definitions from xref::queries-aggregations/queries.adoc[Queries], below are some example of how filtering can be applied when querying for data.
 
-=== At the root of a Query
+=== At the root of a query
 
-By using the `where` argument on the Query field in question, you can return a User with a particular ID:
+By using the `where` argument on the query field in question, you can return a User with a particular ID:
 
 [source, graphql, indent=0]
 ----

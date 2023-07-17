@@ -42,11 +42,11 @@ export function subscriptionWhere({
     }
 
     if (event.event === "create") {
-        return filterByProperties(node, where, event.properties.new);
+        return filterByProperties({ node, whereProperties: where, receivedProperties: event.properties.new });
     }
 
     if (event.event === "update" || event.event === "delete") {
-        return filterByProperties(node, where, event.properties.old);
+        return filterByProperties({ node, whereProperties: where, receivedProperties: event.properties.old });
     }
 
     if (event.event === "create_relationship" || event.event === "delete_relationship") {

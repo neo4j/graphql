@@ -21,14 +21,21 @@ import { AuthenticationAnnotation } from "./AuthenticationAnnotation";
 import { AuthorizationAnnotation } from "./AuthorizationAnnotation";
 import { CypherAnnotation } from "./CypherAnnotation";
 import { KeyAnnotation } from "./KeyAnnotation";
+import { SubscriptionsAuthorizationAnnotation } from "./SubscriptionsAuthorizationAnnotation";
 
-export type Annotation = CypherAnnotation | AuthorizationAnnotation | AuthenticationAnnotation | KeyAnnotation;
+export type Annotation =
+    | CypherAnnotation
+    | AuthorizationAnnotation
+    | AuthenticationAnnotation
+    | KeyAnnotation
+    | SubscriptionsAuthorizationAnnotation;
 
 export enum AnnotationsKey {
     cypher = "cypher",
     authorization = "authorization",
     authentication = "authentication",
     key = "key",
+    subscriptionsAuthorization = "subscriptionsAuthorization",
 }
 
 export type Annotations = {
@@ -36,6 +43,7 @@ export type Annotations = {
     [AnnotationsKey.authorization]: AuthorizationAnnotation;
     [AnnotationsKey.authentication]: AuthenticationAnnotation;
     [AnnotationsKey.key]: KeyAnnotation;
+    [AnnotationsKey.subscriptionsAuthorization]: SubscriptionsAuthorizationAnnotation;
 };
 
 export function annotationToKey(ann: Annotation): keyof Annotations {
@@ -43,5 +51,6 @@ export function annotationToKey(ann: Annotation): keyof Annotations {
     if (ann instanceof AuthorizationAnnotation) return AnnotationsKey.authorization;
     if (ann instanceof AuthenticationAnnotation) return AnnotationsKey.authentication;
     if (ann instanceof KeyAnnotation) return AnnotationsKey.key;
+    if (ann instanceof SubscriptionsAuthorizationAnnotation) return AnnotationsKey.subscriptionsAuthorization;
     throw new Error("annotation not known");
 }

@@ -64,13 +64,13 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH *
@@ -79,10 +79,10 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this6:\`IN_GENRE\`]-(this7:\`Movie\`)
+                    MATCH (this1)<-[this6:IN_GENRE]-(this7:Movie)
                     RETURN count(this7) = $param1 AS var8
                 }
                 WITH *

@@ -21,13 +21,12 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import gql from "graphql-tag";
 import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQLAuthJWTPlugin } from "../../../../plugins/graphql-plugin-auth/src";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { INVALID_REQUIRED_FIELD_ERROR } from "../../../src/schema/get-custom-resolver-meta";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("@customResolver directive", () => {
     let driver: Driver;
@@ -1140,7 +1139,7 @@ describe("Related Fields", () => {
             await session.close();
         }
 
-        const typeDefs = gql`
+        const typeDefs = gql` 
             type ${City} {
                 name: String!
                 population: Int @alias(property: "cityPopulation")
@@ -1249,8 +1248,12 @@ describe("Related Fields", () => {
         }
 
         const typeDefs = gql`
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
             type ${City} {
-                name: String! @auth(rules: [{ roles: ["admin"] }])
+                name: String! @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
                 population: Int
             }
 
@@ -1261,7 +1264,7 @@ describe("Related Fields", () => {
 
             type ${User} {
                 id: ID!
-                firstName: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+                firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
                 lastName: String!
                 address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
@@ -1284,6 +1287,7 @@ describe("Related Fields", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers,
+            features: { authorization: { key: "secret" } },
         });
 
         const query = `
@@ -1304,7 +1308,7 @@ describe("Related Fields", () => {
             contextValue: neo4j.getContextValues(),
         });
 
-        expect((result.errors as any[])[0].message).toBe("Unauthenticated");
+        expect((result.errors as any[])[0].message).toBe("Forbidden");
     });
 
     test("should prevent access to top-level @auth fields when rules are not met", async () => {
@@ -1331,8 +1335,12 @@ describe("Related Fields", () => {
         }
 
         const typeDefs = gql`
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
             type ${City} {
-                name: String! @auth(rules: [{ roles: ["admin"] }])
+                name: String! @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
                 population: Int
             }
 
@@ -1343,7 +1351,7 @@ describe("Related Fields", () => {
 
             type ${User} {
                 id: ID!
-                firstName: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+                firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
                 lastName: String!
                 address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
@@ -1366,11 +1374,7 @@ describe("Related Fields", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
-            },
+            features: { authorization: { key: "secret" } },
         });
 
         const query = `
@@ -1385,12 +1389,12 @@ describe("Related Fields", () => {
             }
         `;
 
-        const req = createJwtRequest(secret, { sub: "not 1", roles: ["admin"] });
+        const token = createBearerToken(secret, { sub: "not 1", roles: ["admin"] });
 
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect((result.errors as any[])[0].message).toBe("Forbidden");
@@ -1420,8 +1424,12 @@ describe("Related Fields", () => {
         }
 
         const typeDefs = gql`
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
             type ${City} {
-                name: String! @auth(rules: [{ roles: ["admin"] }])
+                name: String! @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
                 population: Int
             }
 
@@ -1432,7 +1440,7 @@ describe("Related Fields", () => {
 
             type ${User} {
                 id: ID!
-                firstName: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+                firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
                 lastName: String!
                 address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
@@ -1455,11 +1463,7 @@ describe("Related Fields", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
-            },
+            features: { authorization: { key: "secret" } },
         });
 
         const query = `
@@ -1474,12 +1478,12 @@ describe("Related Fields", () => {
             }
         `;
 
-        const req = createJwtRequest(secret, { sub: "1", roles: ["not-admin"] });
+        const token = createBearerToken(secret, { sub: "1", roles: ["not-admin"] });
 
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect((result.errors as any[])[0].message).toBe("Forbidden");
@@ -1509,8 +1513,12 @@ describe("Related Fields", () => {
         }
 
         const typeDefs = gql`
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
             type ${City} {
-                name: String! @auth(rules: [{ roles: ["admin"] }])
+                name: String! @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
                 population: Int
             }
 
@@ -1521,7 +1529,7 @@ describe("Related Fields", () => {
 
             type ${User} {
                 id: ID!
-                firstName: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+                firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
                 lastName: String!
                 address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
@@ -1544,11 +1552,7 @@ describe("Related Fields", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
-            },
+            features: { authorization: { key: "secret" } },
         });
 
         const query = `
@@ -1563,12 +1567,12 @@ describe("Related Fields", () => {
             }
         `;
 
-        const req = createJwtRequest(secret, { sub: "1", roles: ["admin"] });
+        const token = createBearerToken(secret, { sub: "1", roles: ["admin"] });
 
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValues({ req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(result.errors).toBeFalsy();

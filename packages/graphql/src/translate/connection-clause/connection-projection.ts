@@ -25,7 +25,6 @@ import type { Node } from "../../classes";
 import createProjectionAndParams from "../create-projection-and-params";
 import type Relationship from "../../classes/Relationship";
 import { createRelationshipPropertyValue } from "../projection/elements/create-relationship-property-element";
-import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
 import Cypher from "@neo4j/cypher-builder";
 
@@ -163,21 +162,10 @@ function createConnectionNodeProjection({
         cypherFieldAliasMap,
     });
 
-    const projectionMeta = nodeProjectionAndParams.meta;
     const projectionSubqueries = [
         ...nodeProjectionAndParams.subqueriesBeforeSort,
         ...nodeProjectionAndParams.subqueries,
     ];
-
-    if (projectionMeta?.authValidatePredicates?.length) {
-        const projectionAuth = Cypher.apoc.util.validate(
-            Cypher.not(Cypher.and(...projectionMeta.authValidatePredicates)),
-            AUTH_FORBIDDEN_ERROR,
-            new Cypher.Literal([0])
-        );
-
-        projectionSubqueries.push(projectionAuth);
-    }
 
     return {
         subqueries: projectionSubqueries,

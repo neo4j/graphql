@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../src";
 describe("Interfaces", () => {
     test("Interfaces", async () => {
         const typeDefs = gql`
-            interface MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
+            interface MovieNode {
                 id: ID
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
@@ -38,7 +38,7 @@ describe("Interfaces", () => {
                     )
             }
 
-            type Movie implements MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
+            type Movie implements MovieNode {
                 id: ID
                 nodes: [MovieNode]
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)

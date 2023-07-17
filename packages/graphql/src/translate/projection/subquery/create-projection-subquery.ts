@@ -22,8 +22,6 @@ import type { Context, GraphQLOptionsArg, GraphQLWhereArg, RelationField } from 
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../../where/create-where-predicate";
 import type { CypherRelationshipDirection } from "../../../utils/get-relationship-direction";
-import { createAuthPredicates } from "../../create-auth-predicates";
-import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
 import { createAuthorizationBeforePredicate } from "../../authorization/create-authorization-before-predicate";
 import { compileCypher } from "../../../utils/compile-cypher";
@@ -40,9 +38,7 @@ export function createProjectionSubquery({
     relationField,
     relationshipDirection,
     optionsInput,
-    authValidatePredicates,
-    authorizationPredicates,
-    authorizationSubqueries,
+    nestedPredicates = [],
     addSkipAndLimit = true,
     collect = true,
 }: {
@@ -57,9 +53,7 @@ export function createProjectionSubquery({
     relationField: RelationField;
     relationshipDirection: CypherRelationshipDirection;
     optionsInput: GraphQLOptionsArg;
-    authValidatePredicates: Cypher.Predicate[] | undefined;
-    authorizationPredicates: Cypher.Predicate[];
-    authorizationSubqueries: Cypher.CompositeClause | undefined;
+    nestedPredicates?: Cypher.Predicate[];
     addSkipAndLimit?: boolean;
     collect?: boolean;
 }): Cypher.Clause {
@@ -75,7 +69,7 @@ export function createProjectionSubquery({
         .to(targetNode);
 
     const subqueryMatch = new Cypher.Match(pattern);
-    const predicates: Cypher.Predicate[] = [];
+    const predicates = nestedPredicates;
 
     const projection = new Cypher.RawCypher((env) => {
         // TODO: use MapProjection
@@ -120,53 +114,6 @@ export function createProjectionSubquery({
                 authorizationBeforeSubqueries
             );
         }
-    } else {
-        // TODO: Authorization - delete for 4.0.0
-        const whereAuth = createAuthPredicates({
-            entity: node,
-            operations: "READ",
-            context,
-            where: {
-                varName: targetNode,
-                node,
-            },
-        });
-
-        if (whereAuth) {
-            predicates.push(whereAuth);
-        }
-
-        const preAuth = createAuthPredicates({
-            entity: node,
-            operations: "READ",
-            context,
-            allow: {
-                node,
-                varName: targetNode,
-            },
-        });
-
-        if (preAuth) {
-            const allowAuth = Cypher.apoc.util.validatePredicate(Cypher.not(preAuth), AUTH_FORBIDDEN_ERROR);
-            predicates.push(allowAuth);
-        }
-    }
-
-    predicates.push(...authorizationPredicates);
-    if (authorizationSubqueries) {
-        preComputedWhereFieldSubqueries = Cypher.concat(preComputedWhereFieldSubqueries, authorizationSubqueries);
-    }
-
-    // TODO: Authorization - delete for 4.0.0
-    if (authValidatePredicates?.length) {
-        const authValidatePredicate = Cypher.and(...authValidatePredicates);
-
-        const authStatement = Cypher.apoc.util.validatePredicate(
-            Cypher.not(authValidatePredicate),
-            AUTH_FORBIDDEN_ERROR
-        );
-
-        predicates.push(authStatement);
     }
 
     const withStatement: Cypher.With = new Cypher.With([projection, targetNode]); // This only works if nestedProjection is a map

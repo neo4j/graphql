@@ -18,7 +18,7 @@ type User {
 }
 ----
 
-The following delete Mutations and response type will be generated for the above type definitions:
+The following delete mutations and response type will be generated for the above type definitions:
 
 [source, graphql, indent=0]
 ----
@@ -33,7 +33,7 @@ type Mutation {
 }
 ----
 
-Note that the `DeleteInfo` type is the common return type for all delete Mutations.
+Note that the `DeleteInfo` type is the common return type for all delete mutations.
 
 == Single Delete
 

@@ -19,17 +19,6 @@
 
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../classes";
-import type { AuthContext } from "../types/deprecated/auth/auth-context";
-import {
-    CypherConnectComponentsPlanner,
-    CypherExpressionEngine,
-    CypherInterpretedPipesFallback,
-    CypherOperatorEngine,
-    CypherPlanner,
-    CypherReplanning,
-    CypherRuntime,
-    CypherUpdateStrategy,
-} from "../types";
 import execute from "./execute";
 import { trimmer } from ".";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
@@ -100,9 +89,10 @@ describe("execute", () => {
                         neoSchema,
                         executor: new Executor({
                             executionContext: driver,
-                            auth: {} as AuthContext,
-                            database,
-                            bookmarks,
+                            sessionConfig: {
+                                database,
+                                bookmarks,
+                            },
                         }),
                         info: undefined,
                     }).instance(),
@@ -176,10 +166,11 @@ describe("execute", () => {
                     neoSchema,
                     executor: new Executor({
                         executionContext: driver,
-                        auth: {} as AuthContext,
-                        database,
-                        bookmarks,
-                        queryOptions: {},
+                        sessionConfig: {
+                            database,
+                            bookmarks,
+                        },
+                        cypherQueryOptions: {},
                     }),
                     info: undefined,
                 }).instance(),
@@ -256,18 +247,19 @@ describe("execute", () => {
                     neoSchema,
                     executor: new Executor({
                         executionContext: driver,
-                        auth: {} as AuthContext,
-                        database,
-                        bookmarks,
-                        queryOptions: {
-                            runtime: CypherRuntime.INTERPRETED,
-                            planner: CypherPlanner.COST,
-                            connectComponentsPlanner: CypherConnectComponentsPlanner.GREEDY,
-                            updateStrategy: CypherUpdateStrategy.DEFAULT,
-                            expressionEngine: CypherExpressionEngine.COMPILED,
-                            operatorEngine: CypherOperatorEngine.COMPILED,
-                            interpretedPipesFallback: CypherInterpretedPipesFallback.ALL,
-                            replan: CypherReplanning.DEFAULT,
+                        sessionConfig: {
+                            database,
+                            bookmarks,
+                        },
+                        cypherQueryOptions: {
+                            runtime: "interpreted",
+                            planner: "cost",
+                            connectComponentsPlanner: "greedy",
+                            updateStrategy: "default",
+                            expressionEngine: "compiled",
+                            operatorEngine: "compiled",
+                            interpretedPipesFallback: "all",
+                            replan: "default",
                         },
                     }),
                     info: undefined,

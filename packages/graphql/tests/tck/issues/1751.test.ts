@@ -80,20 +80,20 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
         const result = await translateQuery(neoSchema, query, { variableValues });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Organization\`)
+            "MATCH (this:Organization)
             WHERE this.title = $param0
             WITH *
             CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_admins0_relationship:\`HAS_ADMINISTRATOR\`]->(this_admins0:Admin)
+            WITH *
+            OPTIONAL MATCH (this)-[this_admins0_relationship:HAS_ADMINISTRATOR]->(this_admins0:Admin)
             CALL {
                 WITH this_admins0
-                MATCH (this_admins0)<-[this_deleteOrganizations_args_delete_admins0_where_this_admins0this1:\`HAS_ADMINISTRATOR\`]-(this_deleteOrganizations_args_delete_admins0_where_this_admins0this2:\`Organization\`)
+                MATCH (this_admins0)<-[this_deleteOrganizations_args_delete_admins0_where_this_admins0this1:HAS_ADMINISTRATOR]-(this_deleteOrganizations_args_delete_admins0_where_this_admins0this2:Organization)
                 RETURN count(this_deleteOrganizations_args_delete_admins0_where_this_admins0this2) = $this_deleteOrganizations_args_delete_admins0_where_this_admins0param0 AS this_deleteOrganizations_args_delete_admins0_where_this_admins0var0
             }
             WITH *, CASE this_deleteOrganizations_args_delete_admins0_where_this_admins0var0 = true
-                WHEN true THEN [ this_admins0_relationship, this_admins0 ]
-                ELSE [ NULL, NULL ]
+                WHEN true THEN [this_admins0_relationship, this_admins0]
+                ELSE [NULL, NULL]
             END AS aggregateWhereFiltervar0
             WITH *, aggregateWhereFiltervar0[0] AS this_admins0_relationship, aggregateWhereFiltervar0[1] AS this_admins0
             WITH this_admins0_relationship, collect(DISTINCT this_admins0) AS this_admins0_to_delete

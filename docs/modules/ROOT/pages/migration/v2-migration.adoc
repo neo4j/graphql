@@ -39,7 +39,7 @@ The theme that you will notice during this section is that as a general rule of 
 [[v2-migration-mutations-create]]
 === Create
 
-Focussing on the `createMovies` Mutation, notice that the definition of the `createMovies` Mutation is unchanged:
+Focussing on the `createMovies` mutation, notice that the definition of the `createMovies` mutation is unchanged:
 
 [source, graphql, indent=0]
 ----
@@ -55,7 +55,7 @@ type Mutation {
 
 There are no changes to any of the arguments or types at this level. However, within its nested operations, type modifications have taken place to allow for relationship properties.
 
-In practice, take a Mutation that creates the film "The Dark Knight" and then:
+In practice, take a mutation that creates the film "The Dark Knight" and then:
 
 * Creates a new actor "Heath Ledger"
 * Connects to the existing actor "Christian Bale"
@@ -130,11 +130,11 @@ mutation {
 }
 ----
 
-Note the additional level "node" before specifying the actor name for the create operation and in the connect where. This additional level allows for the setting of relationship properties for the new relationship, and filtering on existing relationship properties when looking for the node to connect to. See the page xref::mutations/index.adoc[Mutations] for details on this.
+Note the additional level "node" before specifying the actor name for the create operation and in the connect where. This additional level allows for the setting of relationship properties for the new relationship, and filtering on existing relationship properties when looking for the node to connect to. See the page xref::mutations/index.adoc[mutations] for details on this.
 
 === Update
 
-Focussing on the `updateMovies` Mutation, notice that the definition of the `updateMovies` Mutation is unchanged:
+Focussing on the `updateMovies` mutation, notice that the definition of the `updateMovies` mutation is unchanged:
 
 [source, graphql, indent=0]
 ----
@@ -150,9 +150,9 @@ type Mutation {
 }
 ----
 
-The `create` and `connect` nested operations are primarily the same as in the `createMovies` Mutation, so please see the <<v2-migration-mutations-create>> section for the difference for these operations.
+The `create` and `connect` nested operations are primarily the same as in the `createMovies` mutation, so please see the <<v2-migration-mutations-create>> section for the difference for these operations.
 
-The `delete` nested operation is primarily the same as in the `deleteMovies` Mutation, so please see the <<v2-migration-mutations-delete>> section for that.
+The `delete` nested operation is primarily the same as in the `deleteMovies` mutation, so please see the <<v2-migration-mutations-delete>> section for that.
 
 ==== Update
 
@@ -291,7 +291,7 @@ mutation {
 [[v2-migration-mutations-delete]]
 === Delete
 
-Focussing on the `deleteMovies` Mutation, notice that the definition of the `deleteMovies` Mutation is unchanged:
+Focussing on the `deleteMovies` mutation, notice that the definition of the `deleteMovies` mutation is unchanged:
 
 [source, graphql, indent=0]
 ----
@@ -328,7 +328,7 @@ input MovieActorsDeleteFieldInput {
 
 This means that not only can you filter on node properties, but also relationship properties, in order to find and delete `Actor` nodes.
 
-In practice, a Mutation that deletes the film "The Dark Knight" and the related actor "Christian Bale" would have previously looked like this:
+In practice, a mutation that deletes the film "The Dark Knight" and the related actor "Christian Bale" would have previously looked like this:
 
 [source, graphql, indent=0]
 ----

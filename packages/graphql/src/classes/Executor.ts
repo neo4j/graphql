@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver, QueryResult, Session, SessionMode, Transaction } from "neo4j-driver";
+import type { Driver, QueryResult, Session, SessionMode, Transaction, SessionConfig } from "neo4j-driver";
 import { Neo4jError } from "neo4j-driver";
 import Debug from "debug";
 import environment from "../environment";
@@ -34,8 +34,6 @@ import {
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
 import type { CypherQueryOptions } from "../types";
-import type { AuthContext } from "../types/deprecated/auth/auth-context";
-import createAuthParam from "../translate/create-auth-param";
 import type { GraphQLResolveInfo } from "graphql";
 import { print } from "graphql";
 
@@ -57,14 +55,6 @@ function isSessionLike(executionContext: any): executionContext is SessionLike {
     return typeof executionContext.beginTransaction === "function";
 }
 
-type SessionParam = {
-    defaultAccessMode?: SessionMode;
-    bookmarks?: string | string[];
-    database?: string;
-    impersonatedUser?: string;
-    fetchSize?: number;
-};
-
 type TransactionConfig = {
     metadata: {
         app: string;
@@ -81,39 +71,30 @@ export type ExecutionContext = Driver | Session | Transaction;
 
 export type ExecutorConstructorParam = {
     executionContext: ExecutionContext;
-    auth?: AuthContext;
-    queryOptions?: CypherQueryOptions;
-    database?: string;
-    bookmarks?: string | string[];
-    measureTime?: boolean;
+    cypherQueryOptions?: CypherQueryOptions;
+    sessionConfig?: SessionConfig;
 };
 
 export type ExecutorResult = {
     result: QueryResult;
 };
 
+export type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
+
 export class Executor {
     private executionContext: Driver | Session | Transaction;
 
     public lastBookmark: string | null;
 
-    private queryOptions: CypherQueryOptions | undefined;
-    private auth: AuthContext;
+    private cypherQueryOptions: CypherQueryOptions | undefined;
 
-    private database: string | undefined;
-    private bookmarks: string | string[] | undefined;
+    private sessionConfig: SessionConfig | undefined;
 
-    constructor({ executionContext, auth, queryOptions, database, bookmarks }: ExecutorConstructorParam) {
+    constructor({ executionContext, cypherQueryOptions, sessionConfig }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
-        this.queryOptions = queryOptions;
-        if (auth) {
-            this.auth = auth;
-        } else {
-            this.auth = createAuthParam({ context: {} });
-        }
-        this.database = database;
-        this.bookmarks = bookmarks;
+        this.cypherQueryOptions = cypherQueryOptions;
+        this.sessionConfig = sessionConfig;
     }
 
     public async execute(
@@ -124,7 +105,7 @@ export class Executor {
     ): Promise<ExecutorResult> {
         try {
             if (isDriverLike(this.executionContext)) {
-                const session = this.executionContext.session(this.getSessionParam(defaultAccessMode));
+                const session = this.executionContext.session(this.getSessionConfig(defaultAccessMode));
                 const result = await this.sessionRun(query, parameters, defaultAccessMode, session, info);
                 await session.close();
                 return result;
@@ -166,38 +147,20 @@ export class Executor {
     }
 
     private generateQuery(query: string): string {
-        if (this.queryOptions && Object.keys(this.queryOptions).length) {
-            const queryOptions = `CYPHER ${Object.entries(this.queryOptions)
+        if (this.cypherQueryOptions && Object.keys(this.cypherQueryOptions).length) {
+            const cypherQueryOptions = `CYPHER ${Object.entries(this.cypherQueryOptions)
                 .map(([key, value]) => `${key}=${value}`)
                 .join(" ")}`;
 
-            return `${queryOptions}\n${query}`;
+            return `${cypherQueryOptions}\n${query}`;
         }
 
         return query;
     }
 
-    private generateParameters(query: string, parameters: any): Record<string, any> {
-        if (query.includes("$auth.") || query.includes("auth: $auth") || query.includes("auth:$auth")) {
-            return { ...parameters, auth: this.auth };
-        }
-
-        return parameters;
-    }
-
-    private getSessionParam(defaultAccessMode: SessionMode): SessionParam {
+    private getSessionConfig(sessionMode: SessionMode): SessionConfig {
         // Always specify a default database to avoid requests for routing table
-        const sessionParam: SessionParam = { defaultAccessMode, database: "neo4j" };
-
-        if (this.database) {
-            sessionParam.database = this.database;
-        }
-
-        if (this.bookmarks) {
-            sessionParam.bookmarks = this.bookmarks;
-        }
-
-        return sessionParam;
+        return { defaultAccessMode: sessionMode, database: "neo4j", ...this.sessionConfig };
     }
 
     private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {
@@ -243,14 +206,13 @@ export class Executor {
 
     private async transactionRun(query: string, parameters, transaction: Transaction): Promise<ExecutorResult> {
         const queryToRun = this.generateQuery(query);
-        const parametersToRun = this.generateParameters(query, parameters);
 
         debug(
             "%s",
-            `About to execute Cypher:\nCypher:\n${queryToRun}\nParams:\n${JSON.stringify(parametersToRun, null, 2)}`
+            `About to execute Cypher:\nCypher:\n${queryToRun}\nParams:\n${JSON.stringify(parameters, null, 2)}`
         );
 
-        const result = await transaction.run(queryToRun, parametersToRun);
+        const result = await transaction.run(queryToRun, parameters);
 
         return { result };
     }

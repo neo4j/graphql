@@ -78,7 +78,6 @@ export function createFieldAggregation({
         node: referenceNode,
         context,
         subqueryNodeAlias: targetRef,
-        nodeFields: aggregationFields.node,
     });
 
     if (authData) {

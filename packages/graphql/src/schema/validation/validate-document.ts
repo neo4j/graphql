@@ -63,12 +63,12 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
     const nodeNames = document.definitions
         .filter((definition) => {
             if (
-                definition.kind === "ObjectTypeDefinition" ||
-                definition.kind === "ScalarTypeDefinition" ||
-                definition.kind === "InterfaceTypeDefinition" ||
-                definition.kind === "UnionTypeDefinition" ||
-                definition.kind === "EnumTypeDefinition" ||
-                definition.kind === "InputObjectTypeDefinition"
+                definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
+                definition.kind === Kind.SCALAR_TYPE_DEFINITION ||
+                definition.kind === Kind.INTERFACE_TYPE_DEFINITION ||
+                definition.kind === Kind.UNION_TYPE_DEFINITION ||
+                definition.kind === Kind.ENUM_TYPE_DEFINITION ||
+                definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION
             ) {
                 RESERVED_TYPE_NAMES.forEach((reservedName) => {
                     if (reservedName.regex.test(definition.name.value)) {
@@ -77,7 +77,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                 });
             }
 
-            if (definition.kind === "ObjectTypeDefinition") {
+            if (definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
                 if (!isRootType(definition)) {
                     return true;
                 }
@@ -136,7 +136,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
             .map((field) => {
                 if (
                     field.directives?.some((directive) =>
-                        ["authentication", "authorization"].includes(directive.name.value)
+                        ["authentication", "authorization", "subscriptionsAuthorization"].includes(directive.name.value)
                     ) &&
                     !features?.authorization
                 ) {
@@ -149,7 +149,10 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                     ...field,
                     arguments: filterInputTypes(field.arguments),
                     directives: field.directives?.filter(
-                        (directive) => !["auth", "authentication", "authorization"].includes(directive.name.value)
+                        (directive) =>
+                            !["auth", "authentication", "authorization", "subscriptionsAuthorization"].includes(
+                                directive.name.value
+                            )
                     ),
                 };
             });
@@ -158,7 +161,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
     return {
         ...document,
         definitions: document.definitions.reduce((res: DefinitionNode[], def) => {
-            if (def.kind === "InputObjectTypeDefinition") {
+            if (def.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION) {
                 const fields = filterInputTypes(def.fields);
 
                 if (!fields?.length) {
@@ -174,7 +177,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                 ];
             }
 
-            if (def.kind === "ObjectTypeDefinition" || def.kind === "InterfaceTypeDefinition") {
+            if (def.kind === Kind.OBJECT_TYPE_DEFINITION || def.kind === Kind.INTERFACE_TYPE_DEFINITION) {
                 const fields = filterFields(def.fields, features);
 
                 if (!fields?.length) {
@@ -195,14 +198,17 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                     {
                         ...def,
                         directives: def.directives?.filter(
-                            (x) => !["auth", "authentication", "authorization"].includes(x.name.value)
+                            (x) =>
+                                !["auth", "authentication", "authorization", "subscriptionsAuthorization"].includes(
+                                    x.name.value
+                                )
                         ),
                         fields,
                     },
                 ];
             }
 
-            if (def.kind === "SchemaExtension") {
+            if (def.kind === Kind.SCHEMA_EXTENSION) {
                 if (
                     def.directives?.some((x) => ["authentication"].includes(x.name.value)) &&
                     !features?.authorization

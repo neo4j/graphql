@@ -21,7 +21,7 @@ import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import type { Context } from "../types";
-import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import { META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
@@ -143,15 +143,6 @@ export default async function translateCreate({
 
             if (projection.predicates.length) {
                 authPredicates.push(Cypher.and(...projection.predicates));
-            }
-
-            if (projection.meta?.authValidatePredicates?.length) {
-                authPredicates.push(
-                    Cypher.apoc.util.validatePredicate(
-                        Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                        AUTH_FORBIDDEN_ERROR
-                    )
-                );
             }
 
             if (authPredicates.length) {

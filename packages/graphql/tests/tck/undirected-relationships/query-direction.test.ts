@@ -55,16 +55,16 @@ describe("QueryDirection in relationships", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`FRIENDS_WITH\`]-(this1:\`User\`)
+                MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[this3:\`FRIENDS_WITH\`]->(this4:\`User\`)
+                MATCH (this)-[this3:FRIENDS_WITH]->(this4:User)
                 WITH this4 { .name } AS this4
                 RETURN collect(this4) AS var5
             }
@@ -102,16 +102,16 @@ describe("QueryDirection in relationships", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`FRIENDS_WITH\`]->(this1:\`User\`)
+                MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[this3:\`FRIENDS_WITH\`]-(this4:\`User\`)
+                MATCH (this)-[this3:FRIENDS_WITH]-(this4:User)
                 WITH this4 { .name } AS this4
                 RETURN collect(this4) AS var5
             }
@@ -146,10 +146,10 @@ describe("QueryDirection in relationships", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`FRIENDS_WITH\`]->(this1:\`User\`)
+                MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }
@@ -183,10 +183,10 @@ describe("QueryDirection in relationships", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`FRIENDS_WITH\`]-(this1:\`User\`)
+                MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }

@@ -47,14 +47,15 @@ describe("Create", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: {
-                driverConfig: {
-                    database: neo4j.getIntegrationDatabaseName(),
-                },
-            },
         });
 
-        server = new ApolloTestServer(neoSchema);
+        // eslint-disable-next-line @typescript-eslint/require-await
+        server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+            sessionConfig: {
+                database: neo4j.getIntegrationDatabaseName(),
+            },
+            token: req.headers.authorization,
+        }));
         await server.start();
     });
 

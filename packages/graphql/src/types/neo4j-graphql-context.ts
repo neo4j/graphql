@@ -18,17 +18,24 @@
  */
 
 import type { Driver, Session, Transaction } from "neo4j-driver";
-import type { CypherQueryOptions, DriverConfig, RequestLike } from ".";
-import type { Neo4jDatabaseInfo } from "../classes";
+import type { CypherQueryOptions, DriverConfig } from ".";
 import type { JWTPayload } from "jose";
+import type { Neo4jGraphQLSessionConfig } from "../classes/Executor";
 
 export interface Neo4jGraphQLContext {
+    /**
+     * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options}
+     * when executing the translated query.
+     */
+    cypherQueryOptions?: CypherQueryOptions;
     /**
      * @deprecated Use the {@link executionContext} property instead.
      */
     driver?: Driver;
     /**
      * If using a driver, configures the database and bookmarks to be used when acquiring a session.
+     *
+     * @deprecated Use the {@link sessionConfig} property instead. Bookmarks are no longer supported as the library migrates over to using bookmark manager.
      */
     driverConfig?: DriverConfig;
     /**
@@ -50,28 +57,9 @@ export interface Neo4jGraphQLContext {
      */
     jwt?: JWTPayload;
     /**
-     * @deprecated This property will be removed in 4.0.0.
+     * Configuration that will be used during session construction if a driver was passed into the library on construction or if {@link executionContext} is an instance of a driver.
      */
-    neo4jDatabaseInfo?: Neo4jDatabaseInfo;
-    /**
-     * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options}
-     * when executing the translated query.
-     */
-    queryOptions?: CypherQueryOptions;
-    /**
-     * HTTP request object containing authorization header for use in authentication and authorization.
-     * Alias for {@link request}.
-     *
-     * @deprecated Will be removed in 4.0.0 alongside `@auth` - use the {@link token} property to provide the bearer token for the new authorization features.
-     */
-    req?: RequestLike;
-    /**
-     * HTTP request object containing authorization header for use in authentication and authorization.
-     * Alias for {@link req}.
-     *
-     * @deprecated Will be removed in 4.0.0 alongside `@auth` - use the {@link token} property to provide the bearer token for the new authorization features.
-     */
-    request?: RequestLike;
+    sessionConfig?: Neo4jGraphQLSessionConfig;
     /**
      * The bearer token to be decoded/verified for use in authentication and authorization.
      * Normally found in the Authorization HTTP header. Can be provided with or without authentication scheme.

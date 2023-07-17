@@ -21,8 +21,6 @@ import type { RelationField, Context, PrimitiveField, PredicateReturn } from "..
 import type { Node, Relationship } from "../classes";
 import { Neo4jGraphQLError } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
-import { createAuthAndParams } from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { asArray, omitFields } from "../utils/utils";
 import Cypher from "@neo4j/cypher-builder";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
@@ -103,17 +101,15 @@ export function createConnectOrCreateAndParams({
     });
 
     const wrappedQueries = statements.map((statement) => {
-        let subquery: Cypher.Clause = statement;
-
-        if (context.subscriptionsEnabled) {
-            const susbcriptionsMeta = new Cypher.RawCypher("meta as update_meta");
-            const returnStatement = new Cypher.Return(susbcriptionsMeta);
-            subquery = Cypher.concat(statement, returnStatement);
-        }
+        const returnStatement = context.subscriptionsEnabled
+            ? new Cypher.Return([new Cypher.NamedVariable("meta"), "update_meta"])
+            : new Cypher.Return([Cypher.count(new Cypher.RawCypher("*")), "_"]);
 
         const withStatement = new Cypher.With(...withVarsVariables);
 
-        const callStatement = new Cypher.Call(subquery).innerWith(...withVarsVariables);
+        const callStatement = new Cypher.Call(Cypher.concat(statement, returnStatement)).innerWith(
+            ...withVarsVariables
+        );
         const subqueryClause = Cypher.concat(withStatement, callStatement);
         if (context.subscriptionsEnabled) {
             const afterCallWithStatement = new Cypher.With("*", [new Cypher.NamedVariable("update_meta"), "meta"]);
@@ -188,16 +184,6 @@ function createConnectOrCreatePartialStatement({
     });
 
     mergeQuery = Cypher.concat(mergeQuery, mergeCypher);
-
-    const authQuery = createAuthStatement({
-        node: refNode,
-        context,
-        nodeName: baseName,
-    });
-
-    if (authQuery) {
-        mergeQuery = Cypher.concat(mergeQuery, new Cypher.With("*"), authQuery);
-    }
 
     const authorizationAfterPredicateReturn = createAuthorizationAfterConnectOrCreate({
         context,
@@ -325,36 +311,6 @@ function mergeStatement({
     }
 
     return Cypher.concat(merge, relationshipMerge, withClause);
-}
-
-function createAuthStatement({
-    node,
-    context,
-    nodeName,
-}: {
-    node: Node;
-    context: Context;
-    nodeName: string;
-}): Cypher.Clause | undefined {
-    if (!node.auth) return undefined;
-
-    const { cypher, params } = createAuthAndParams({
-        entity: node,
-        operations: ["CONNECT", "CREATE"],
-        context,
-        allow: { node, varName: nodeName },
-    });
-
-    if (!cypher) return undefined;
-
-    return new Cypher.RawCypher(() => {
-        const predicate = `NOT (${cypher})`;
-        const message = AUTH_FORBIDDEN_ERROR;
-
-        const cypherStr = `CALL apoc.util.validate(${predicate}, "${message}", [0])`;
-
-        return [cypherStr, params];
-    });
 }
 
 function createAuthorizationBeforeConnectOrCreate({
