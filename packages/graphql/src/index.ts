@@ -48,7 +48,7 @@ export { directives, scalars, objects };
 /**
  * Exports for usage by the OGM.
  */
-export { DeleteInfo, GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Node };
+export { DeleteInfo, GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg };
 
 /**
  * Allows for the implementation of custom subscriptions mechanisms.
