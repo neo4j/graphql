@@ -54,7 +54,7 @@ export function translateRead(
     const { resolveTree } = context;
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
 
-    if (!isRootConnectionField) {
+    if (!isRootConnectionField && !resolveTree.args.fulltext) {
         return testQueryAST({ context, node });
     }
 

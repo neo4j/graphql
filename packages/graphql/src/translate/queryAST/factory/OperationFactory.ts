@@ -79,7 +79,9 @@ export class OperationsFactory {
         delete edgeRawFields.node;
         delete edgeRawFields.edge;
 
-        const operation = new ConnectionReadOperation(relationship);
+        const directed = Boolean(resolveTree.args.directed) ?? true;
+
+        const operation = new ConnectionReadOperation({ relationship, directed });
         const first = resolveTree.args.first as number | Integer | undefined;
         const sort = resolveTree.args.sort as ConnectionSortArg[];
 

@@ -33,6 +33,7 @@ import type { Sort, SortField } from "../sort/Sort";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: Relationship;
+    private directed: boolean;
 
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = [];
@@ -44,9 +45,10 @@ export class ConnectionReadOperation extends Operation {
 
     private sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
 
-    constructor(relationship: Relationship) {
+    constructor({ relationship, directed }: { relationship: Relationship; directed: boolean }) {
         super();
         this.relationship = relationship;
+        this.directed = directed;
     }
 
     public get children(): QueryASTNode[] {
@@ -88,7 +90,8 @@ export class ConnectionReadOperation extends Operation {
         if (!parentNode) throw new Error();
         const node = createNodeFromEntity(this.relationship.target as ConcreteEntity);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
-        const relDirection = getRelationshipDirection(this.relationship);
+        const relDirection = getRelationshipDirection(this.relationship, this.directed);
+
         const clause = new Cypher.Match(
             new Cypher.Pattern(parentNode).withoutLabels().related(relationship).withDirection(relDirection).to(node)
         );
