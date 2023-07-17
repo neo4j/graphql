@@ -21,11 +21,11 @@ import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4j from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import { delay } from "../../../src/utils/utils";
-import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
+import Neo4j from "../../neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import { UniqueType } from "../../../utils/graphql-types";
+import { delay } from "../../../../src/utils/utils";
+import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
 
 describe("@fulltext directive", () => {
     let driver: Driver;
