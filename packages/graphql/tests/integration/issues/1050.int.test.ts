@@ -153,7 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
         const result = await graphql({
             schema,
             source: getQuerySource(query),
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+            contextValue: neo4j.getContextValues({
                 token: createBearerToken("secret"),
                 user: {
                     id: "abc",

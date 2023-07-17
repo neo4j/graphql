@@ -20,9 +20,7 @@
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
-    DriverConfig,
     CypherQueryOptions,
-    Neo4jGraphQLPlugins,
     Neo4jFeaturesSettings,
     StartupValidationConfig,
     ContextFeatures,
@@ -59,17 +57,6 @@ import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthoriza
 import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
 
 export interface Neo4jGraphQLConfig {
-    /**
-     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
-     * Use {@link sessionConfig} instead. `sessionConfig` is also available in the context for specifying per-request options.
-     */
-    driverConfig?: DriverConfig;
-    /**
-     * Configuration that will be used when constructing a session on each request.
-     * At this entrypoint, only allows for the specification of a non-default database.
-     * The context property has a broader definition.
-     */
-    sessionConfig?: Pick<SessionConfig, "database">;
     enableDebug?: boolean;
     startupValidation?: StartupValidationConfig;
     cypherQueryOptions?: CypherQueryOptions;
@@ -87,7 +74,6 @@ export interface Neo4jGraphQLConstructor {
     features?: Neo4jFeaturesSettings;
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
-    plugins?: Neo4jGraphQLPlugins;
 }
 
 export const defaultValidationConfig: ValidationConfig = {
@@ -106,7 +92,6 @@ class Neo4jGraphQL {
 
     private _nodes?: Node[];
     private _relationships?: Relationship[];
-    private plugins?: Neo4jGraphQLPlugins;
 
     private jwtFieldsMap?: Map<string, string>;
 
@@ -123,11 +108,10 @@ class Neo4jGraphQL {
     private authorization?: Neo4jGraphQLAuthorization;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, plugins, features, typeDefs, resolvers } = input;
+        const { config = {}, driver, features, typeDefs, resolvers } = input;
 
         this.driver = driver;
         this.config = config;
-        this.plugins = plugins;
         this.features = this.parseNeo4jFeatures(features);
 
         this.typeDefs = typeDefs;
@@ -188,11 +172,9 @@ class Neo4jGraphQL {
 
     public async checkNeo4jCompat({
         driver,
-        driverConfig,
         sessionConfig,
     }: {
         driver?: Driver;
-        driverConfig?: DriverConfig;
         sessionConfig?: Neo4jGraphQLSessionConfig;
     } = {}): Promise<void> {
         const neo4jDriver = driver || this.driver;
@@ -202,30 +184,22 @@ class Neo4jGraphQL {
         }
 
         if (!this.dbInfo) {
-            this.dbInfo = await this.getNeo4jDatabaseInfo(
-                neo4jDriver,
-                sessionConfig || driverConfig || this.config?.driverConfig
-            );
+            this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig);
         }
 
         return checkNeo4jCompat({
             driver: neo4jDriver,
-            sessionConfig: sessionConfig || driverConfig || this.config?.driverConfig,
+            sessionConfig,
             dbInfo: this.dbInfo,
         });
     }
 
     public async assertIndexesAndConstraints({
         driver,
-        driverConfig,
         sessionConfig,
         options,
     }: {
         driver?: Driver;
-        /**
-         * @deprecated
-         */
-        driverConfig?: DriverConfig;
         sessionConfig?: Neo4jGraphQLSessionConfig;
         options?: AssertIndexesAndConstraintsOptions;
     } = {}): Promise<void> {
@@ -242,15 +216,12 @@ class Neo4jGraphQL {
         }
 
         if (!this.dbInfo) {
-            this.dbInfo = await this.getNeo4jDatabaseInfo(
-                neo4jDriver,
-                sessionConfig || driverConfig || this.config?.driverConfig
-            );
+            this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig);
         }
 
         await assertIndexesAndConstraints({
             driver: neo4jDriver,
-            sessionConfig: sessionConfig || driverConfig || this.config?.driverConfig,
+            sessionConfig,
             nodes: this.nodes,
             options: options,
         });
@@ -338,7 +309,6 @@ class Neo4jGraphQL {
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: this.schemaModel,
-            plugins: this.plugins,
             features: this.features,
             authorization: this.authorization,
             jwtPayloadFieldsMap: this.jwtFieldsMap,

@@ -89,7 +89,7 @@ describe("Subscriptions delete", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

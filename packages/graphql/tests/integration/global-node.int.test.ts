@@ -71,7 +71,7 @@ describe("Global node resolution", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: [{ title: "2001: A Space Odyssey" }] },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             })) as {
                 data: Record<string, { [key: string]: { id: string; dbId: string }[] }>;
                 errors: any;
@@ -116,7 +116,7 @@ describe("Global node resolution", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: [{ title: "2001: A Space Odyssey" }] },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(mutationResult.errors).toBeUndefined();
@@ -166,13 +166,13 @@ describe("Global node resolution", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: [{ title: "2001: A Space Odyssey" }] },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -385,7 +385,7 @@ describe("Global node resolution", () => {
         await graphql({
             schema: await neoSchema.getSchema(),
             variableValues: { input: [{ title: film.title, website: film.website }] },
-            contextValue: neo4j.getContextValuesWithBookmarks([]),
+            contextValue: neo4j.getContextValues(),
             source: `
                   mutation($input: [${typeFilm.name}CreateInput!]!) {
                     ${typeFilm.operations.create}(input: $input) {
@@ -405,7 +405,7 @@ describe("Global node resolution", () => {
         await graphql({
             schema: await neoSchema.getSchema(),
             variableValues: { input: [{ name: actor.name, hairColor: actor.hairColor }] },
-            contextValue: neo4j.getContextValuesWithBookmarks([]),
+            contextValue: neo4j.getContextValues(),
             source: `
                   mutation($input: [FilmActorCreateInput!]!) {
                     createFilmActors(input: $input) {
@@ -420,7 +420,7 @@ describe("Global node resolution", () => {
         const filmQueryResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks([]),
+            contextValue: neo4j.getContextValues(),
             variableValues: { id: film.id },
         });
 
@@ -432,7 +432,7 @@ describe("Global node resolution", () => {
         const actorQueryResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks([]),
+            contextValue: neo4j.getContextValues(),
             variableValues: { id: actor.id },
         });
 

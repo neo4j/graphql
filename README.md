@@ -41,7 +41,6 @@ visit the [Contributing Guide](./CONTRIBUTING.md).
 2. [`@neo4j/graphql-ogm`](./packages/ogm) - Use GraphQL Type Definitions to drive
    interactions with the database
 3. [`@neo4j/introspector`](./packages/introspector) - Introspect schema from an existing Neo4j database
-4. [`@neo4j/graphql-plugin-auth`](./packages/graphql-plugin-auth) - Auth decode plugins for @neo4j/graphql
 5. [`@neo4j/graphql-toolbox`](./packages/graphql-toolbox) - Experiment with your Neo4j GraphQL API on Neo4j Desktop.
 
 ## Media

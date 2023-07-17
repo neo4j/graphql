@@ -144,7 +144,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type CreateInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -155,7 +155,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type DeleteInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -253,7 +253,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type UpdateInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -673,7 +673,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type CreateInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -684,7 +684,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type DeleteInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -839,7 +839,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type UpdateInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

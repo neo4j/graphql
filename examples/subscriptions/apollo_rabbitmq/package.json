@@ -16,7 +16,7 @@
         "amqplib": "^0.10.3",
         "express": "^4.17.3",
         "graphql-ws": "^5.7.0",
-        "neo4j-driver": "^5.0.0",
+        "neo4j-driver": "^5.8.0",
         "ws": "^8.5.0"
     }
 }

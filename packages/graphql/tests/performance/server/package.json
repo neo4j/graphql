@@ -24,7 +24,7 @@
         "fastify": "^4.17.0",
         "graphql-yoga": "^3.9.1",
         "mercurius": "^13.0.0",
-        "neo4j-driver": "^5.7.0"
+        "neo4j-driver": "^5.8.0"
     },
     "dependencies": {
         "@neo4j/graphql": "link:../../.."

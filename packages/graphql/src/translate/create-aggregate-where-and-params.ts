@@ -204,7 +204,7 @@ function aggregateEntityWhere(
                 predicates.push(logicalPredicate);
             }
         } else {
-            const operation = createEntityOperation(refNodeOrRelation, target, key, value, context);
+            const operation = createEntityOperation(refNodeOrRelation, target, key, value);
             const operationVar = new Cypher.Variable();
             returnProjections.push([operation, operationVar]);
             predicates.push(Cypher.eq(operationVar, new Cypher.Literal(true)));
@@ -220,8 +220,7 @@ function createEntityOperation(
     refNodeOrRelation: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship,
     aggregationInputField: string,
-    aggregationInputValue: any,
-    context: Context
+    aggregationInputValue: any
 ): Cypher.Predicate {
     const paramName = new Cypher.Param(aggregationInputValue);
     const regexResult = aggregationFieldRegEx.exec(aggregationInputField)?.groups as AggregationFieldRegexGroups;

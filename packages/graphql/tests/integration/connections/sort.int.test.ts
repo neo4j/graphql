@@ -33,7 +33,6 @@ describe("connections sort", () => {
     let neo4j: Neo4j;
     let schema: GraphQLSchema;
     let session: Session;
-    let bookmarks: string[];
 
     const Movie = new UniqueType("Movie");
     const Series = new UniqueType("Series");
@@ -153,8 +152,6 @@ describe("connections sort", () => {
             { movies, series, actors }
         );
 
-        bookmarks = session2.lastBookmark();
-
         await session2.close();
     });
 
@@ -194,7 +191,7 @@ describe("connections sort", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeUndefined();
@@ -235,7 +232,7 @@ describe("connections sort", () => {
         const secondResult = await graphql({
             schema,
             source: secondQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
         expect(secondResult.errors).toBeUndefined();
         expect(secondResult.data as any).toEqual({
@@ -285,7 +282,7 @@ describe("connections sort", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeUndefined();
@@ -323,7 +320,7 @@ describe("connections sort", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeUndefined();
@@ -357,7 +354,7 @@ describe("connections sort", () => {
             graphql({
                 schema,
                 source,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { actorId: actors[0]?.id, direction },
             });
         describe("node", () => {

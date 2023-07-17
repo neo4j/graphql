@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/3351", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, name: updatedName },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();

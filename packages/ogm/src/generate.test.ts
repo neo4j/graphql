@@ -135,6 +135,7 @@ describe("generate", () => {
 
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsCreated: Scalars[\\"Int\\"][\\"output\\"];
@@ -148,6 +149,7 @@ describe("generate", () => {
 
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsDeleted: Scalars[\\"Int\\"][\\"output\\"];
@@ -170,6 +172,7 @@ describe("generate", () => {
 
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
               nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
@@ -362,6 +365,7 @@ describe("generate", () => {
 
             export type Query = {
               __typename?: \\"Query\\";
+              /** Query a full-text index. This query returns the query score, but does not allow for aggregations. Use the \`fulltext\` argument under other queries for this functionality. */
               usersFulltextUserName: Array<UserFulltextResult>;
               users: Array<User>;
               usersConnection: UsersConnection;
@@ -424,6 +428,7 @@ describe("generate", () => {
 
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsCreated: Scalars[\\"Int\\"][\\"output\\"];
@@ -437,6 +442,7 @@ describe("generate", () => {
 
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsDeleted: Scalars[\\"Int\\"][\\"output\\"];
@@ -459,6 +465,7 @@ describe("generate", () => {
 
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
               nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
@@ -742,6 +749,7 @@ describe("generate", () => {
 
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsCreated: Scalars[\\"Int\\"][\\"output\\"];
@@ -755,6 +763,7 @@ describe("generate", () => {
 
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsDeleted: Scalars[\\"Int\\"][\\"output\\"];
@@ -777,6 +786,7 @@ describe("generate", () => {
 
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
               nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
@@ -1068,6 +1078,7 @@ describe("generate", () => {
 
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsCreated: Scalars[\\"Int\\"][\\"output\\"];
@@ -1087,6 +1098,7 @@ describe("generate", () => {
 
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsDeleted: Scalars[\\"Int\\"][\\"output\\"];
@@ -1218,6 +1230,7 @@ describe("generate", () => {
 
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
               nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
@@ -1877,6 +1890,7 @@ describe("generate", () => {
 
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsCreated: Scalars[\\"Int\\"][\\"output\\"];
@@ -1884,6 +1898,7 @@ describe("generate", () => {
 
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
               relationshipsDeleted: Scalars[\\"Int\\"][\\"output\\"];
@@ -2096,6 +2111,7 @@ describe("generate", () => {
 
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
               bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
               nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
               nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
