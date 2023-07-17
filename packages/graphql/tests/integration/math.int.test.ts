@@ -618,7 +618,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: increment },
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ executionContext: session }),
         });
 
         expect(gqlResult.errors).toBeDefined();
