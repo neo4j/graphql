@@ -8,7 +8,6 @@ const { useServer } = require("graphql-ws/lib/use/ws");
 const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
 const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
-const { Neo4jGraphQLAuthJWTPlugin } = require("@neo4j/graphql-plugin-auth");
 
 const setupMap = require("./map-setup");
 const { getDriver } = require("./get-driver");
@@ -25,11 +24,9 @@ async function main() {
     const neoSchema = new Neo4jGraphQL({
         typeDefs: typeDefs,
         driver: driver,
-        plugins: {
-            subscriptions: plugin,
-            auth: new Neo4jGraphQLAuthJWTPlugin({
-                secret: "super-secret42",
-            }),
+        features: {
+            authorization: { key: "super-secret42" },
+            subscriptions: plugin
         },
     });
 
@@ -64,7 +61,7 @@ async function main() {
 
     const server = new ApolloServer({
         schema,
-        context: ({ req }) => ({ req }),
+        context: ({ req }) => ({ token: req.headers.authorization }),
         plugins: [
             ApolloServerPluginDrainHttpServer({
                 httpServer,

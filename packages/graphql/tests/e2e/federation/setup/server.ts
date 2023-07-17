@@ -20,7 +20,6 @@
 import type { ApolloServer } from "@apollo/server";
 
 export interface Server {
-    port: number;
     server: ApolloServer;
     start(): Promise<string>;
     stop(): Promise<void>;

@@ -60,6 +60,7 @@ export async function translateQuery(
         variableValues?: Record<string, any>;
         neo4jVersion?: string;
         contextValues?: Record<string, any>;
+        subgraph?: boolean;
     }
 ): Promise<{ cypher: string; params: Record<string, any> }> {
     const driverBuilder = new DriverBuilder();
@@ -75,7 +76,7 @@ export async function translateQuery(
     }
 
     const graphqlArgs: GraphQLArgs = {
-        schema: await neoSchema.getSchema(),
+        schema: await (options?.subgraph ? neoSchema.getSubgraphSchema() : neoSchema.getSchema()),
         source: getQuerySource(query),
         contextValue,
     };
