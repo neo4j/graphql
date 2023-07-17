@@ -59,7 +59,6 @@ import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscri
 export interface Neo4jGraphQLConfig {
     enableDebug?: boolean;
     startupValidation?: StartupValidationConfig;
-    cypherQueryOptions?: CypherQueryOptions;
 }
 
 export type ValidationConfig = {

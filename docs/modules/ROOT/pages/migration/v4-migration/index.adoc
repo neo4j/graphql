@@ -782,7 +782,7 @@ type Actor @query(aggregate: true) {
 
 If you had a need to pass in Cypher query options for query tuning, this interface has been changed.
 
-The config option `queryOptions` has now become `cypherQueryOptions`, and it now accepts simple strings instead of enums.
+The config option `queryOptions` has now become `cypherQueryOptions` inside the context function, and it now accepts simple strings instead of enums.
 
 The following is an example before the change:
 
@@ -822,13 +822,18 @@ const typeDefs = `
 
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
-    config: {
-        cypherQueryOptions: {
-            runtime: "interpreted",
-        },
-    },
+});
+
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
+});
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ cypherQueryOptions: { runtime: "interpreted" }}),
 });
 ----
+
+This reflects the fact that the Cypher query options are set on a per-request basis.
 
 === Session configuration
 
