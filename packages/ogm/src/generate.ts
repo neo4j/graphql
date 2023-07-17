@@ -24,7 +24,6 @@ import * as fs from "fs";
 import * as graphql from "graphql";
 import prettier from "prettier";
 import type { OGM } from "./index";
-import { getReferenceNode } from "./utils";
 import { upperFirst } from "./utils/upper-first";
 
 export interface IGenerateOptions {
@@ -123,7 +122,7 @@ function createAggregationInput({
 
 function hasConnectOrCreate(node: any, ogm: OGM): boolean {
     for (const relation of node.relationFields) {
-        const refNode = getReferenceNode(ogm, relation);
+        const refNode = ogm.nodes.find((x) => x.name === relation.typeMeta.name);
         if (refNode && refNode.uniqueFields.length > 0) {
             return true;
         }

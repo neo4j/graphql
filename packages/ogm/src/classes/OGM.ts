@@ -21,7 +21,7 @@ import type { Neo4jGraphQLConstructor, Node } from "@neo4j/graphql";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import type { GraphQLSchema } from "graphql";
 import Model from "./Model";
-import { filterDocument } from "../utils";
+import { filterDocument } from "../utils/filter-document";
 import type { Driver, SessionConfig } from "neo4j-driver";
 
 export interface OGMConstructor extends Neo4jGraphQLConstructor {
