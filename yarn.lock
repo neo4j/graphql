@@ -3751,7 +3751,6 @@ __metadata:
     "@graphql-codegen/typescript": ^4.0.0
     "@graphql-tools/merge": ^9.0.0
     "@neo4j/graphql": ^3.23.1
-    "@neo4j/graphql-plugin-auth": ^2.2.0
     "@types/jest": 29.5.3
     "@types/node": 18.15.1
     camelcase: 6.3.0
@@ -3769,23 +3768,6 @@ __metadata:
   peerDependencies:
     graphql: ^16.0.0
     neo4j-driver: ^4.1.0 || ^5.0.0
-  languageName: unknown
-  linkType: soft
-
-"@neo4j/graphql-plugin-auth@^2.1.0, @neo4j/graphql-plugin-auth@^2.2.0, @neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth":
-  version: 0.0.0-use.local
-  resolution: "@neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth"
-  dependencies:
-    "@types/debug": 4.1.8
-    "@types/jest": 29.5.3
-    "@types/jsonwebtoken": 9.0.2
-    "@types/node": 18.15.1
-    debug: ^4.3.4
-    jest: 29.6.1
-    jsonwebtoken: ^9.0.0
-    jwks-rsa: ^3.0.0
-    ts-jest: 29.1.1
-    typescript: 5.1.6
   languageName: unknown
   linkType: soft
 
@@ -3903,7 +3885,6 @@ __metadata:
     "@graphql-tools/schema": 10.0.0
     "@graphql-tools/utils": ^10.0.0
     "@neo4j/cypher-builder": ^1.0.0
-    "@neo4j/graphql-plugin-auth": ^2.2.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
     "@types/jest": 29.5.3
@@ -3929,6 +3910,7 @@ __metadata:
     jest: 29.6.1
     jest-extended: 4.0.0
     jose: ^4.13.1
+    jwks-rsa: ^3.0.1
     koa: 2.14.2
     koa-jwt: 4.0.4
     koa-router: 12.0.0
@@ -18598,7 +18580,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwks-rsa@npm:^3.0.0":
+"jwks-rsa@npm:^3.0.1":
   version: 3.0.1
   resolution: "jwks-rsa@npm:3.0.1"
   dependencies:
@@ -20716,7 +20698,6 @@ __metadata:
   dependencies:
     "@apollo/server": ^4.7.0
     "@neo4j/graphql": ^3.15.0
-    "@neo4j/graphql-plugin-auth": ^2.1.0
     "@neo4j/graphql-plugin-subscriptions-amqp": ^2.0.0
     concurrently: 8.2.0
     dotenv: ^16.0.3
