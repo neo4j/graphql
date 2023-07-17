@@ -35,28 +35,6 @@ export async function graphqlRequest(
     return resp.text();
 }
 
-export function productsRequest(
-    req: {
-        query: string;
-        variables?: { [key: string]: any };
-        operationName?: string;
-    },
-    headers?: { [key: string]: any }
-) {
-    return graphqlRequest(PRODUCTS_URL, req, headers);
-}
-
-export function routerRequest(
-    req: {
-        query: string;
-        variables?: { [key: string]: any };
-        operationName?: string;
-    },
-    headers?: { [key: string]: any }
-) {
-    return graphqlRequest(ROUTER_URL, req, headers);
-}
-
 export async function healthcheckAll(libraryName: string): Promise<boolean> {
     const routerUp = await healthcheckRouter();
     if (!routerUp) {
