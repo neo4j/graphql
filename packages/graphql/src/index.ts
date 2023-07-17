@@ -36,22 +36,22 @@ import {
     SubscriptionsEvent,
 } from "./types";
 
-/*
+/**
  * Core library functionality.
  */
 export { Neo4jGraphQL, Neo4jGraphQLConstructor, Neo4jGraphQLContext };
 
-/*
+/**
  * Library built-in GraphQL types.
  */
 export { directives, scalars, objects };
 
-/*
+/**
  * Exports for usage by the OGM.
  */
 export { DeleteInfo, GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Node };
 
-/*
+/**
  * Allows for the implementation of custom subscriptions mechanisms.
  */
 export { Neo4jGraphQLSubscriptionsMechanism, SubscriptionsEvent };
