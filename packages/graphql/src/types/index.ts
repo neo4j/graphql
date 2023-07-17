@@ -50,7 +50,6 @@ export interface Context extends Neo4jGraphQLContext {
     schemaModel: Neo4jGraphQLSchemaModel;
     schema: GraphQLSchema;
     callbacks?: Neo4jGraphQLCallbacks;
-    plugins?: Neo4jGraphQLPlugins;
     features: ContextFeatures;
     subscriptionsEnabled: boolean;
     executor: Executor;
@@ -318,20 +317,6 @@ export type StartupValidationConfig = StartupValidationOptions | boolean;
 /** Input field for graphql-compose */
 export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
 
-export interface Neo4jGraphQLAuthPlugin {
-    rolesPath?: string;
-    isGlobalAuthenticationEnabled?: boolean;
-    bindPredicate?: "all" | "any";
-
-    decode<T>(token: string): Promise<T | undefined>;
-    /**
-     * This function tries to resolve public or secret keys.
-     * The implementation on how to resolve the keys by the `JWKSEndpoint` or by the `Secret` is set on when the plugin is being initiated.
-     * @param req
-     */
-    tryToResolveKeys(req: unknown): void;
-}
-
 /** Raw event metadata returned from queries */
 export type NodeSubscriptionMeta = {
     event: "create" | "update" | "delete";
@@ -442,10 +427,6 @@ export interface Neo4jGraphQLSubscriptionsMechanism {
 
     /** To be called, if needed, in getSchema */
     init?(): Promise<void>;
-}
-
-export interface Neo4jGraphQLPlugins {
-    auth?: Neo4jGraphQLAuthPlugin;
 }
 
 export type CallbackReturnValue = string | number | boolean | undefined | null;

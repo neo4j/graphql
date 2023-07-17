@@ -21,7 +21,6 @@ import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
     CypherQueryOptions,
-    Neo4jGraphQLPlugins,
     Neo4jFeaturesSettings,
     StartupValidationConfig,
     ContextFeatures,
@@ -75,7 +74,6 @@ export interface Neo4jGraphQLConstructor {
     features?: Neo4jFeaturesSettings;
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
-    plugins?: Neo4jGraphQLPlugins;
 }
 
 export const defaultValidationConfig: ValidationConfig = {
@@ -94,7 +92,6 @@ class Neo4jGraphQL {
 
     private _nodes?: Node[];
     private _relationships?: Relationship[];
-    private plugins?: Neo4jGraphQLPlugins;
 
     private jwtFieldsMap?: Map<string, string>;
 
@@ -111,11 +108,10 @@ class Neo4jGraphQL {
     private authorization?: Neo4jGraphQLAuthorization;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, plugins, features, typeDefs, resolvers } = input;
+        const { config = {}, driver, features, typeDefs, resolvers } = input;
 
         this.driver = driver;
         this.config = config;
-        this.plugins = plugins;
         this.features = this.parseNeo4jFeatures(features);
 
         this.typeDefs = typeDefs;
@@ -313,7 +309,6 @@ class Neo4jGraphQL {
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: this.schemaModel,
-            plugins: this.plugins,
             features: this.features,
             authorization: this.authorization,
             jwtPayloadFieldsMap: this.jwtFieldsMap,

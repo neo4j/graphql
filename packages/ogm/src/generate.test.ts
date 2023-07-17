@@ -365,6 +365,7 @@ describe("generate", () => {
 
             export type Query = {
               __typename?: \\"Query\\";
+              /** Query a full-text index. This query returns the query score, but does not allow for aggregations. Use the \`fulltext\` argument under other queries for this functionality. */
               usersFulltextUserName: Array<UserFulltextResult>;
               users: Array<User>;
               usersConnection: UsersConnection;
