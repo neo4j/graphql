@@ -19,7 +19,7 @@
 
 import type { Driver, Session } from "neo4j-driver";
 import checkNeo4jCompat from "./verify-database";
-import { REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES, MIN_NEO4J_VERSION } from "../../constants";
+import { REQUIRED_APOC_FUNCTIONS, MIN_NEO4J_VERSION } from "../../constants";
 import { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
 import type { Neo4jGraphQLSessionConfig } from "../Executor";
 
@@ -37,7 +37,6 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: minVersion,
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES,
                         }),
                     },
                 ],
@@ -82,7 +81,6 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: invalidVersion,
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES,
                         }),
                     },
                 ],
@@ -118,7 +116,6 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: invalidVersion,
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES,
                         }),
                     },
                 ],
@@ -152,7 +149,6 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: "4.0-aura",
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES,
                         }),
                     },
                 ],
@@ -185,7 +181,6 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: minVersion,
                             functions: [],
-                            procedures: REQUIRED_APOC_PROCEDURES,
                         }),
                     },
                 ],
@@ -211,44 +206,6 @@ describe("checkNeo4jCompat", () => {
         );
     });
 
-    test("should throw missing APOC procedures", async () => {
-        const minVersion = MIN_NEO4J_VERSION;
-
-        // @ts-ignore
-        const fakeSession: Session = {
-            // @ts-ignore
-            run: () => ({
-                records: [
-                    {
-                        toObject: () => ({
-                            version: minVersion,
-                            functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: [],
-                        }),
-                    },
-                ],
-            }),
-            // @ts-ignore
-            close: () => undefined,
-        };
-
-        // @ts-ignore
-        const fakeDriver: Driver = {
-            // @ts-ignore
-            session: () => fakeSession,
-            // @ts-ignore
-            verifyConnectivity: () => undefined,
-        };
-
-        await expect(
-            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(minVersion) })
-        ).rejects.toThrow(
-            `Encountered the following DBMS compatiblility issues:\nMissing APOC procedures: [ ${REQUIRED_APOC_PROCEDURES.join(
-                ", "
-            )} ]`
-        );
-    });
-
     test("should throw no errors with valid DB", async () => {
         const minVersion = MIN_NEO4J_VERSION;
 
@@ -261,7 +218,6 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: minVersion,
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES,
                         }),
                     },
                 ],
@@ -293,7 +249,6 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: "20.1.1",
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES,
                         }),
                     },
                 ],
@@ -325,7 +280,6 @@ describe("checkNeo4jCompat", () => {
                         toObject: () => ({
                             version: "4.1.10",
                             functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES,
                         }),
                     },
                 ],
