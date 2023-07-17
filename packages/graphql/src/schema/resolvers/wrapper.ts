@@ -68,7 +68,6 @@ export const wrapResolver =
     (next) =>
     // TODO: type this as Neo4jGraphQLContext
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
-        const { driverConfig } = config;
         const callbacks = features.populatedBy?.callbacks;
 
         if (debug.enabled) {
@@ -81,23 +80,15 @@ export const wrapResolver =
         }
 
         if (!context?.executionContext) {
-            if (context?.driver) {
-                context.executionContext = context.driver;
-            } else {
-                if (!driver) {
-                    throw new Error(
-                        "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or a driver, session or transaction passed as context.executionContext in each request."
-                    );
-                }
-                context.executionContext = driver;
+            if (!driver) {
+                throw new Error(
+                    "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or a driver, session or transaction passed as context.executionContext in each request."
+                );
             }
+            context.executionContext = driver;
         }
 
         context.info = info;
-
-        if (!context?.driverConfig) {
-            context.driverConfig = driverConfig;
-        }
 
         context.nodes = nodes;
         context.relationships = relationships;
@@ -149,7 +140,7 @@ export const wrapResolver =
 
         executorConstructorParam.cypherQueryOptions = context.cypherQueryOptions || config.cypherQueryOptions;
 
-        executorConstructorParam.sessionConfig = context.sessionConfig || context.driverConfig || config.driverConfig;
+        executorConstructorParam.sessionConfig = context.sessionConfig
 
         context.executor = new Executor(executorConstructorParam);
 

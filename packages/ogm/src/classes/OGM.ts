@@ -67,7 +67,7 @@ class OGM<ModelMap = unknown> {
         } = {}) {
             return this.neoSchema.checkNeo4jCompat({
                 driver: driver || rest.driver,
-                sessionConfig: sessionConfig || rest.config?.driverConfig,
+                sessionConfig: sessionConfig || (database && { database }) || undefined,
             });
         };
 
@@ -84,7 +84,7 @@ class OGM<ModelMap = unknown> {
                 await this.neoSchema.assertIndexesAndConstraints({
                     options,
                     driver: driver || rest.driver,
-                    sessionConfig: sessionConfig || rest.config?.driverConfig,
+                    sessionConfig: sessionConfig || (database && { database }) || undefined,
                 });
             } catch (e: unknown) {
                 if (

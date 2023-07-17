@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import type { Driver, Session, SessionConfig } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import checkNeo4jCompat from "./verify-database";
 import { REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES, MIN_NEO4J_VERSION } from "../../constants";
 import { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
+import type { Neo4jGraphQLSessionConfig } from "../Executor";
 
 describe("checkNeo4jCompat", () => {
     test("should add driver config to session", async () => {
@@ -45,7 +46,7 @@ describe("checkNeo4jCompat", () => {
             close: () => undefined,
         };
 
-        const sessionConfig: SessionConfig = {
+        const sessionConfig: Neo4jGraphQLSessionConfig = {
             database: "darrellanddan",
         };
 

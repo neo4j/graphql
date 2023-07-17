@@ -153,7 +153,7 @@ describe("Subscriptions update", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { movieId1, actorName1, movieId2 },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();

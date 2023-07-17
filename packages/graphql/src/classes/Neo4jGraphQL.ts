@@ -20,7 +20,6 @@
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
-    DriverConfig,
     CypherQueryOptions,
     Neo4jGraphQLPlugins,
     Neo4jFeaturesSettings,
@@ -59,11 +58,6 @@ import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthoriza
 import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
 
 export interface Neo4jGraphQLConfig {
-    /**
-     * @deprecated This argument has been deprecated and will be removed in v4.0.0.
-     * Use the `sessionConfig` context property instead.
-     */
-    driverConfig?: DriverConfig;
     enableDebug?: boolean;
     startupValidation?: StartupValidationConfig;
     cypherQueryOptions?: CypherQueryOptions;
@@ -182,11 +176,9 @@ class Neo4jGraphQL {
 
     public async checkNeo4jCompat({
         driver,
-        driverConfig,
         sessionConfig,
     }: {
         driver?: Driver;
-        driverConfig?: DriverConfig;
         sessionConfig?: Neo4jGraphQLSessionConfig;
     } = {}): Promise<void> {
         const neo4jDriver = driver || this.driver;
@@ -196,30 +188,22 @@ class Neo4jGraphQL {
         }
 
         if (!this.dbInfo) {
-            this.dbInfo = await this.getNeo4jDatabaseInfo(
-                neo4jDriver,
-                sessionConfig || driverConfig || this.config?.driverConfig
-            );
+            this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig);
         }
 
         return checkNeo4jCompat({
             driver: neo4jDriver,
-            sessionConfig: sessionConfig || driverConfig || this.config?.driverConfig,
+            sessionConfig,
             dbInfo: this.dbInfo,
         });
     }
 
     public async assertIndexesAndConstraints({
         driver,
-        driverConfig,
         sessionConfig,
         options,
     }: {
         driver?: Driver;
-        /**
-         * @deprecated
-         */
-        driverConfig?: DriverConfig;
         sessionConfig?: Neo4jGraphQLSessionConfig;
         options?: AssertIndexesAndConstraintsOptions;
     } = {}): Promise<void> {
@@ -236,15 +220,12 @@ class Neo4jGraphQL {
         }
 
         if (!this.dbInfo) {
-            this.dbInfo = await this.getNeo4jDatabaseInfo(
-                neo4jDriver,
-                sessionConfig || driverConfig || this.config?.driverConfig
-            );
+            this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig);
         }
 
         await assertIndexesAndConstraints({
             driver: neo4jDriver,
-            sessionConfig: sessionConfig || driverConfig || this.config?.driverConfig,
+            sessionConfig,
             nodes: this.nodes,
             options: options,
         });

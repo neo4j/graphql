@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, SessionConfig } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import type { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
 import { verifyFunctions } from "./verify-functions";
 import { verifyProcedures } from "./verify-procedures";
 import { verifyVersion } from "./verify-version";
+import type { Neo4jGraphQLSessionConfig } from "../Executor";
 
 async function checkNeo4jCompat({
     driver,
@@ -29,7 +30,7 @@ async function checkNeo4jCompat({
     dbInfo,
 }: {
     driver: Driver;
-    sessionConfig?: SessionConfig;
+    sessionConfig?: Neo4jGraphQLSessionConfig;
     dbInfo: Neo4jDatabaseInfo;
 }): Promise<void> {
     await driver.verifyConnectivity();

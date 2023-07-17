@@ -93,7 +93,7 @@ describe("Point", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { id, size, longitude, latitude },
         });
 
@@ -160,7 +160,7 @@ describe("Point", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { id, size, longitude, latitude, height },
         });
 
@@ -233,7 +233,7 @@ describe("Point", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { id, longitude, latitude: newLatitude },
         });
 
@@ -307,7 +307,7 @@ describe("Point", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { id, longitude, latitude: newLatitude, height },
         });
 
@@ -376,7 +376,7 @@ describe("Point", () => {
         const equalsResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: photographsEqualsQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { longitude, latitude },
         });
 
@@ -411,7 +411,7 @@ describe("Point", () => {
         const inResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: photographsInQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 locations: [
                     { longitude, latitude },
@@ -454,7 +454,7 @@ describe("Point", () => {
         const notInResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: photographsNotInQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 locations: [
                     {
@@ -502,7 +502,7 @@ describe("Point", () => {
         const lessThanResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: photographsLessThanQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { longitude, latitude: latitude + 1 },
         });
 
@@ -539,7 +539,7 @@ describe("Point", () => {
         const greaterThanResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: photographsGreaterThanQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { longitude, latitude: latitude + 1 },
         });
 
@@ -598,7 +598,7 @@ describe("Point", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: photographsQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { longitude, latitude, height },
         });
 

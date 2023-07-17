@@ -111,7 +111,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { title: movieTitle },
                     });
 
@@ -182,7 +182,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -265,7 +265,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -345,7 +345,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
                     });
 
@@ -453,7 +453,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { title },
                     });
 
@@ -543,7 +543,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { title: movieTitle },
                     });
 
@@ -614,7 +614,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { title: movieTitle },
                     });
 
@@ -689,7 +689,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { title: movieTitle },
                     });
 

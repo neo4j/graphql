@@ -132,7 +132,7 @@ describe("connectOrCreate", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: getQuerySource(queryUpdate),
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -145,7 +145,7 @@ describe("connectOrCreate", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: getQuerySource(queryUpdate),
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(gqlResult.errors).toBeUndefined();
 
@@ -162,7 +162,7 @@ describe("connectOrCreate", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: getQuerySource(queryCreate),
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(gqlResult.errors).toBeUndefined();
 
@@ -278,7 +278,7 @@ describe("connectOrCreate", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: getQuerySource(queryUpdate),
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -291,7 +291,7 @@ describe("connectOrCreate", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: getQuerySource(queryUpdate),
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(gqlResult.errors).toBeUndefined();
 
@@ -308,7 +308,7 @@ describe("connectOrCreate", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: getQuerySource(queryCreate),
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
             expect(gqlResult.errors).toBeUndefined();
 

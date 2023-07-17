@@ -78,7 +78,7 @@ describe("root-connections", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -128,14 +128,14 @@ describe("root-connections", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: dummyAircrafts },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -205,14 +205,14 @@ describe("root-connections", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: dummyAircrafts },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -284,14 +284,14 @@ describe("root-connections", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: dummyAircrafts },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { first: 10 },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();

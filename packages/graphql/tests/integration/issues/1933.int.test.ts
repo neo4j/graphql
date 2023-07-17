@@ -111,7 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             schema,
             source: query,
             variableValues: {},
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();
@@ -144,7 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             schema,
             source: query,
             variableValues: {},
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();
@@ -185,7 +185,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             schema,
             source: query,
             variableValues: {},
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();

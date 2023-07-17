@@ -30,7 +30,6 @@ export * as directives from "./graphql/directives";
 export * as scalars from "./graphql/scalars";
 export {
     DeleteInfo,
-    DriverConfig,
     EventMeta,
     GraphQLOptionsArg,
     GraphQLSortArg,

@@ -3767,7 +3767,7 @@ __metadata:
     typescript: 5.1.6
   peerDependencies:
     graphql: ^16.0.0
-    neo4j-driver: ^4.1.0 || ^5.0.0
+    neo4j-driver: ^5.8.0
   languageName: unknown
   linkType: soft
 
@@ -3930,7 +3930,7 @@ __metadata:
     ws: 8.13.0
   peerDependencies:
     graphql: ^16.0.0
-    neo4j-driver: ^4.1.0 || ^5.0.0
+    neo4j-driver: ^5.8.0
   languageName: unknown
   linkType: soft
 
@@ -3955,7 +3955,7 @@ __metadata:
     ts-jest: 29.1.1
     typescript: 5.1.6
   peerDependencies:
-    neo4j-driver: ^4.1.0 || ^5.0.0
+    neo4j-driver: ^5.8.0
   languageName: unknown
   linkType: soft
 
@@ -8907,7 +8907,7 @@ __metadata:
     fork-ts-checker-webpack-plugin: 8.0.0
     graphql: 16.7.1
     graphql-tag: ^2.12.6
-    neo4j-driver: ^5.5.0
+    neo4j-driver: ^5.8.0
     ts-loader: 9.4.4
     tsconfig-paths-webpack-plugin: 4.1.0
     typescript: 5.1.6
@@ -8925,7 +8925,7 @@ __metadata:
     amqplib: ^0.10.3
     express: ^4.17.3
     graphql-ws: ^5.7.0
-    neo4j-driver: ^5.0.0
+    neo4j-driver: ^5.8.0
     ws: ^8.5.0
   languageName: unknown
   linkType: soft
@@ -20704,7 +20704,7 @@ __metadata:
     express: ^4.18.2
     graphql: ^16.6.0
     graphql-ws: ^5.11.2
-    neo4j-driver: ^5.4.0
+    neo4j-driver: ^5.8.0
     parcel: 2.9.3
     rimraf: ^5.0.0
     urql: ^4.0.0
@@ -20731,7 +20731,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:5.10.0, neo4j-driver@npm:^5.0.0, neo4j-driver@npm:^5.4.0, neo4j-driver@npm:^5.5.0, neo4j-driver@npm:^5.7.0":
+"neo4j-driver@npm:5.10.0, neo4j-driver@npm:^5.8.0":
   version: 5.10.0
   resolution: "neo4j-driver@npm:5.10.0"
   dependencies:
@@ -24876,7 +24876,7 @@ __metadata:
     fastify: ^4.17.0
     graphql-yoga: ^3.9.1
     mercurius: ^13.0.0
-    neo4j-driver: ^5.7.0
+    neo4j-driver: ^5.8.0
   languageName: unknown
   linkType: soft
 
@@ -29027,7 +29027,7 @@ __metadata:
     "@neo4j/graphql": ^3.13.0
     graphql: ^16.6.0
     graphql-yoga: ^3.1.1
-    neo4j-driver: ^5.4.0
+    neo4j-driver: ^5.8.0
   languageName: unknown
   linkType: soft
 

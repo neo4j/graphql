@@ -61,11 +61,6 @@ describe("Default single instance Subscription", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: {
-                driverConfig: {
-                    database: neo4j.getIntegrationDatabaseName(),
-                },
-            },
             features: {
                 subscriptions: true,
             },

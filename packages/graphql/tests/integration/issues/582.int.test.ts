@@ -26,7 +26,6 @@ import Neo4j from "../neo4j";
 describe("https://github.com/neo4j/graphql/issues/582", () => {
     let driver: Driver;
     let type: UniqueType;
-    let bookmarks: string[];
     let typeDefs: string;
     let query: string;
     let neo4j: Neo4j;
@@ -64,7 +63,6 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
                     CREATE (:${type.name} { type: "Cat" })-[:EDGE]->(:${type.name} { type: "Dog" })<-[:EDGE]-(:${type.name} { type: "Bird" })-[:EDGE]->(:${type.name} { type: "Fish" })
             `
             );
-            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }
@@ -107,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
                     },
                 },
             },
-            contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -143,7 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
                     },
                 },
             },
-            contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

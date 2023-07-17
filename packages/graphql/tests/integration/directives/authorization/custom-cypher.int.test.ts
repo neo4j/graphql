@@ -74,7 +74,7 @@ describe("should inject the auth into cypher directive", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query as string,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -169,7 +169,7 @@ describe("should inject the auth into cypher directive", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query as string,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -271,7 +271,7 @@ describe("should inject the auth into cypher directive", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
