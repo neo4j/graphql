@@ -28,7 +28,6 @@ import type { Context } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { isNeoInt } from "../../../utils/utils";
 import { createConnectionWithEdgeProperties } from "../../pagination";
-import { fulltextArgDeprecationMessage } from "../../../schema/augment/fulltext";
 import { graphqlDirectivesToCompose } from "../../to-compose";
 
 export function rootConnectionResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
@@ -120,14 +119,8 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
                 ? {
                       fulltext: {
                           type: `${node.name}Fulltext`,
-                          directives: [
-                              {
-                                  name: "deprecated",
-                                  args: {
-                                      reason: fulltextArgDeprecationMessage,
-                                  },
-                              },
-                          ],
+                          description:
+                              "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
                       },
                   }
                 : {}),

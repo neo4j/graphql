@@ -44,6 +44,8 @@ export function fulltextResolver(
 
     return {
         type: `[${node.fulltextTypeNames.result}!]!`,
+        description:
+            "Query a full-text index. This query returns the query score, but does not allow for aggregations. Use the `fulltext` argument under other queries for this functionality.",
         resolve,
         args: {
             phrase: "String!",
