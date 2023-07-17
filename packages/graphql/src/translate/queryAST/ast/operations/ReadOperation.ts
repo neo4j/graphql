@@ -19,7 +19,7 @@
 
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { filterTruthy } from "../../../../utils/utils";
-import { createNodeFromEntity } from "../../utils/create-node-from-entity";
+import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
 import type { Field } from "../fields/Field";
 import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
@@ -28,9 +28,13 @@ import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
 import type { PropertySort } from "../sort/PropertySort";
 import type { QueryASTNode } from "../QueryASTNode";
+import { Relationship } from "../../../../schema-model/relationship/Relationship";
+import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 
 export class ReadOperation extends Operation {
-    public readonly entity: ConcreteEntity; // TODO: normal entities
+    // TODO: Relationship
+    public readonly entity: ConcreteEntity | Relationship; // TODO: normal entities
+    private directed: boolean;
 
     public fields: Field[] = [];
     private filters: Filter[] = [];
@@ -39,9 +43,10 @@ export class ReadOperation extends Operation {
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
-    constructor(entity: ConcreteEntity) {
+    constructor(entity: ConcreteEntity | Relationship, directed = true) {
         super();
         this.entity = entity;
+        this.directed = directed;
     }
 
     public get children(): QueryASTNode[] {
@@ -64,10 +69,58 @@ export class ReadOperation extends Operation {
         this.filters = filters;
     }
 
-    public transpile({ returnVariable }: OperationTranspileOptions): Cypher.Clause {
+    private transpileNestedRelationship(
+        entity: Relationship,
+        { returnVariable, parentNode }: OperationTranspileOptions
+    ): Cypher.Clause {
+        console.log(entity);
+        //TODO: dupe from transpile
+        if (!parentNode) throw new Error("No parent node found!");
+        const relVar = createRelationshipFromEntity(entity);
+        const targetNode = createNodeFromEntity(entity.target as ConcreteEntity);
+        const relDirection = getRelationshipDirection(entity, this.directed);
+
+        const pattern = new Cypher.Pattern(parentNode)
+            .withoutLabels()
+            .related(relVar)
+            .withDirection(relDirection)
+            .to(targetNode);
+
+        const matchClause = new Cypher.Match(pattern);
+        const filterPredicates = this.getPredicates(targetNode);
+        const projectionFields = this.fields.map((f) => f.getProjectionField(targetNode));
+        const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField());
+
+        const projection = this.getProjectionMap(
+            targetNode,
+            Array.from(new Set([...projectionFields, ...sortProjectionFields])) // TODO remove duplicates
+        );
+
+        if (filterPredicates) {
+            matchClause.where(filterPredicates);
+        }
+        const subqueries = Cypher.concat(...this.getFieldsSubqueries(targetNode));
+        const ret = new Cypher.With([projection, targetNode]).return([Cypher.collect(targetNode), returnVariable]);
+
+        let sortClause: Cypher.With | undefined;
+        if (this.sortFields.length > 0 || this.pagination) {
+            sortClause = new Cypher.With("*");
+            this.addSortToClause(targetNode, sortClause);
+        }
+        return Cypher.concat(matchClause, subqueries, sortClause, ret);
+    }
+
+    private getPredicates(target: Cypher.Node): Cypher.Predicate | undefined {
+        return Cypher.and(...this.filters.map((f) => f.getPredicate(target)));
+    }
+
+    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause {
+        if (this.entity instanceof Relationship) {
+            return this.transpileNestedRelationship(this.entity, { returnVariable, parentNode });
+        }
         const node = createNodeFromEntity(this.entity, this.nodeAlias);
 
-        const filterPredicates = Cypher.and(...this.filters.map((f) => f.getPredicate(node)));
+        const filterPredicates = this.getPredicates(node);
         const projectionFields = this.fields.map((f) => f.getProjectionField(node));
         const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField());
 

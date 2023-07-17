@@ -22,7 +22,7 @@ import type { ReadOperation } from "../operations/ReadOperation";
 import { Field } from "./Field";
 import Cypher from "@neo4j/cypher-builder";
 
-export class ConnectionField extends Field {
+export class RelationshipField extends Field {
     private operation: ReadOperation;
 
     private projectionVariable = new Cypher.Variable();

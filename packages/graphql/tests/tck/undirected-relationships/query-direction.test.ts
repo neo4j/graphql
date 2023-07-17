@@ -26,7 +26,7 @@ describe("QueryDirection in relationships", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
-    test.only("query with directed and undirected relationships with DEFAULT_UNDIRECTED", async () => {
+    test("query with directed and undirected relationships with DEFAULT_UNDIRECTED", async () => {
         typeDefs = gql`
             type User {
                 name: String!

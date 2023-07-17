@@ -19,6 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
+import type { Relationship } from "../../../schema-model/relationship/Relationship";
 
 export function createNodeFromEntity(entity: ConcreteEntity, name?: string): Cypher.Node {
     if (name) {
@@ -26,5 +27,13 @@ export function createNodeFromEntity(entity: ConcreteEntity, name?: string): Cyp
     }
     return new Cypher.Node({
         labels: entity.labels,
+    });
+}
+export function createRelationshipFromEntity(rel: Relationship, name?: string): Cypher.Relationship {
+    if (name) {
+        return new Cypher.NamedRelationship(name, { type: rel.type });
+    }
+    return new Cypher.Relationship({
+        type: rel.type,
     });
 }

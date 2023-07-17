@@ -22,12 +22,13 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import { FilterFactory } from "./FilterFactory";
 import { FieldFactory } from "./FieldFactory";
 import type { QueryASTFactory } from "./QueryASTFactory";
-import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import { Relationship } from "../../../schema-model/relationship/Relationship";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
 import type { ConnectionSortArg, GraphQLOptionsArg } from "../../../types";
 import { SortAndPaginationFactory } from "./SortAndPagintationFactory";
 import type { Integer } from "neo4j-driver";
+import { Filter } from "../ast/filters/Filter";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -42,12 +43,20 @@ export class OperationsFactory {
         this.sortAndPaginationFactory = new SortAndPaginationFactory();
     }
 
-    public createReadOperationAST(entity: ConcreteEntity, resolveTree: ResolveTree): ReadOperation {
+    public createReadOperationAST(entityOrRel: ConcreteEntity | Relationship, resolveTree: ResolveTree): ReadOperation {
+        const entity = (entityOrRel instanceof Relationship ? entityOrRel.target : entityOrRel) as ConcreteEntity;
         const projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
+
         const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
-        const operation = new ReadOperation(entity);
+        const operation = new ReadOperation(entityOrRel, Boolean(resolveTree.args?.directed ?? true));
         const fields = this.fieldFactory.createFields(entity, projectionFields);
-        const filters = this.filterFactory.createFilters(entity, whereArgs);
+
+        let filters: Filter[];
+        if (entityOrRel instanceof Relationship) {
+            filters = this.filterFactory.createRelationshipFilters(entityOrRel, whereArgs);
+        } else {
+            filters = this.filterFactory.createFilters(entityOrRel, whereArgs);
+        }
         operation.setFields(fields);
         operation.setFilters(filters);
 
