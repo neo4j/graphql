@@ -73,7 +73,6 @@ export class ReadOperation extends Operation {
         entity: Relationship,
         { returnVariable, parentNode }: OperationTranspileOptions
     ): Cypher.Clause {
-        console.log(entity);
         //TODO: dupe from transpile
         if (!parentNode) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
