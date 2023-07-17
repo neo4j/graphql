@@ -97,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
                 	WITH this
                 	MATCH (this)-[this_genre_Genre_unique:HAS_GENRE]->(:Genre)
                 	WITH count(this_genre_Genre_unique) as c
-                	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.genre required exactly once', [0])
+                	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.genre required exactly once', [0])
                 	RETURN c AS this_genre_Genre_unique_ignored
                 }
                 RETURN collect(DISTINCT this { .name, genre: update_var2 }) AS data"
