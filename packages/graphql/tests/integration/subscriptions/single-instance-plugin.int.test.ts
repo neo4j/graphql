@@ -21,10 +21,10 @@ import { gql } from "graphql-tag";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import type { EventMeta } from "../../../src";
 import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "../../../src/classes/Neo4jGraphQLSubscriptionsDefaultMechanism";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
+import type { EventMeta } from "../../../src/types";
 
 describe("Subscriptions Single Instance Plugin", () => {
     let driver: Driver;
