@@ -20,7 +20,6 @@
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
-    CypherQueryOptions,
     Neo4jFeaturesSettings,
     StartupValidationConfig,
     ContextFeatures,
