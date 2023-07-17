@@ -122,8 +122,8 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                     typeDefs,
                     driver: auth.driver,
                     features,
+                    debug: useStore.getState().enableDebug,
                     config: {
-                        enableDebug: useStore.getState().enableDebug,
                         sessionConfig: {
                             database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
                         },
