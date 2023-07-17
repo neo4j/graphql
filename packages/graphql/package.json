@@ -64,7 +64,7 @@
         "@types/semver": "7.5.0",
         "@types/supertest": "2.0.12",
         "@types/ws": "8.5.5",
-        "dedent": "1.0.2",
+        "dedent": "1.1.0",
         "graphql-middleware": "6.1.35",
         "graphql-tag": "2.12.6",
         "graphql-ws": "5.14.0",
