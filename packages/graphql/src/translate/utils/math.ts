@@ -103,30 +103,38 @@ export function buildMathStatements(
     if (mathDescriptor.operationSymbol === "/" && mathDescriptor.value === 0) {
         throw new Error("Division by zero is not supported");
     }
+
+    const validatePredicates: string[] = [];
+
+    // Raise for operations with NAN
+    validatePredicates.push(
+        `apoc.util.validatePredicate(${scope}.${mathDescriptor.dbName} IS NULL, 'Cannot %s %s to Nan', ["${mathDescriptor.operationName}", $${param}])`
+    );
+
+    const bitSize = mathDescriptor.graphQLType === "Int" ? 32 : 64;
+    // Avoid overflows, for 64 bit overflows, a long overflow is raised anyway by Neo4j
+    validatePredicates.push(
+        `apoc.util.validatePredicate(${scope}.${mathDescriptor.dbName} ${
+            mathDescriptor.operationSymbol
+        } $${param} > 2^${bitSize - 1}-1, 'Overflow: Value returned from operator %s is larger than %s bit', ["${
+            mathDescriptor.operationName
+        }", "${bitSize}"])`
+    );
+
+    // Avoid type coercion where dividing an integer would result in a float value
+    validatePredicates.push(
+        `apoc.util.validatePredicate((${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', ["${mathDescriptor.operationName}", "${mathDescriptor.graphQLType}"])`
+    );
+
     const statements: string[] = [];
     const mathScope = Array.from(new Set([scope, ...withVars]));
     statements.push(`WITH ${mathScope.join(", ")}`);
     statements.push(`CALL {`);
+    // Importing WITH
     statements.push(`WITH ${scope}`);
-    // Raise for operations with NAN
-    statements.push(
-        `CALL apoc.util.validate(${scope}.${mathDescriptor.dbName} IS NULL, 'Cannot %s %s to Nan', ["${mathDescriptor.operationName}", $${param}])`
-    );
-    const bitSize = mathDescriptor.graphQLType === "Int" ? 32 : 64;
-    // Avoid overflows, for 64 bit overflows, a long overflow is raised anyway by Neo4j
-    statements.push(
-        `CALL apoc.util.validate(${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param} > 2^${
-            bitSize - 1
-        }-1, 'Overflow: Value returned from operator %s is larger than %s bit', ["${
-            mathDescriptor.operationName
-        }", "${bitSize}"])`
-    );
-    // Avoid type coercion where dividing an integer would result in a float value
-    if (mathDescriptor.graphQLType === "Int" || mathDescriptor.graphQLType === "BigInt") {
-        statements.push(
-            `CALL apoc.util.validate((${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', ["${mathDescriptor.operationName}", "${mathDescriptor.graphQLType}"])`
-        );
-    }
+    statements.push(`WITH ${scope}`);
+    // Validations
+    statements.push(`WHERE ${validatePredicates.join(" AND ")}`);
     statements.push(
         `SET ${scope}.${mathDescriptor.dbName} = ${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}`
     );
