@@ -21,8 +21,9 @@ import type { EditorView } from "@codemirror/view";
 import type { GraphQLSchema } from "graphql";
 import { parse } from "graphql";
 import { getComplexity, simpleEstimator } from "graphql-query-complexity";
-import prettierBabel from "prettier/parser-babel";
-import parserGraphQL from "prettier/parser-graphql";
+import pluginBabel from "prettier/plugins/babel";
+import pluginGraphQL from "prettier/plugins/graphql";
+import pluginEstree from "prettier/plugins/estree.mjs"; // Explicitly import .mjs file
 import prettier from "prettier/standalone";
 
 export enum ParserOptions {
@@ -39,7 +40,7 @@ export const formatCode = (editorView: EditorView, parserOption: ParserOptions):
         case ParserOptions.JSON:
             options = {
                 parser: "json",
-                plugins: [prettierBabel],
+                plugins: [pluginBabel, pluginEstree],
                 endOfLine: "auto",
                 printWidth: 60,
             };
@@ -48,21 +49,20 @@ export const formatCode = (editorView: EditorView, parserOption: ParserOptions):
         default:
             options = {
                 parser: "graphql",
-                plugins: [parserGraphQL],
+                plugins: [pluginGraphQL],
             };
             break;
     }
 
-    try {
-        const formatted = prettier.format(value, options);
-
-        editorView.dispatch({
-            changes: { from: 0, to: editorView.state.doc.length, insert: formatted },
-            selection: selection.main.to > formatted.length ? undefined : selection,
-        });
-    } catch (e: unknown) {
-        return;
-    }
+    prettier
+        .format(value, options)
+        .then((formatted) => {
+            editorView.dispatch({
+                changes: { from: 0, to: editorView.state.doc.length, insert: formatted },
+                selection: selection.main.to > formatted.length ? undefined : selection,
+            });
+        })
+        .catch(() => {}); // Explicitly ignore errors (on error we simply don't format)
 };
 
 export const handleEditorDisableState = (editorViewRef: HTMLDivElement | null, loading: boolean): void => {
