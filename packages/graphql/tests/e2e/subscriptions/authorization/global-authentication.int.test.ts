@@ -61,11 +61,6 @@ describe("Subscription global authentication", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                config: {
-                    sessionConfig: {
-                        database: neo4j.getIntegrationDatabaseName(),
-                    },
-                },
                 features: {
                     authorization: {
                         key: secret,
@@ -76,7 +71,13 @@ describe("Subscription global authentication", () => {
                 },
             });
 
-            server = new ApolloTestServer(neoSchema);
+            // eslint-disable-next-line @typescript-eslint/require-await
+            server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+                sessionConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+                token: req.headers.authorization,
+            }));
             await server.start();
         });
 
@@ -137,11 +138,6 @@ describe("Subscription global authentication", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                config: {
-                    sessionConfig: {
-                        database: neo4j.getIntegrationDatabaseName(),
-                    },
-                },
                 features: {
                     authorization: {
                         key: secret,
@@ -152,7 +148,13 @@ describe("Subscription global authentication", () => {
                 },
             });
 
-            server = new ApolloTestServer(neoSchema);
+            // eslint-disable-next-line @typescript-eslint/require-await
+            server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+                sessionConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+                token: req.headers.authorization,
+            }));
             await server.start();
         });
 
@@ -213,11 +215,6 @@ describe("Subscription global authentication", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                config: {
-                    sessionConfig: {
-                        database: neo4j.getIntegrationDatabaseName(),
-                    },
-                },
                 features: {
                     authorization: {
                         key: secret,
@@ -228,7 +225,13 @@ describe("Subscription global authentication", () => {
                 },
             });
 
-            server = new ApolloTestServer(neoSchema);
+            // eslint-disable-next-line @typescript-eslint/require-await
+            server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+                sessionConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+                token: req.headers.authorization,
+            }));
             await server.start();
         });
 

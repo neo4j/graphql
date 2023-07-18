@@ -59,15 +59,9 @@ import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthoriza
 export interface Neo4jGraphQLConfig {
     /**
      * @deprecated This argument has been deprecated and will be removed in v4.0.0.
-     * Use {@link sessionConfig} instead. `sessionConfig` is also available in the context for specifying per-request options.
+     * Use the `sessionConfig` context property instead.
      */
     driverConfig?: DriverConfig;
-    /**
-     * Configuration that will be used when constructing a session on each request.
-     * At this entrypoint, only allows for the specification of a non-default database.
-     * The context property has a broader definition.
-     */
-    sessionConfig?: Pick<SessionConfig, "database">;
     /**
      * @deprecated This argument has been deprecated and will be removed in v4.0.0.
      * Please use features.filters instead. More information can be found at
