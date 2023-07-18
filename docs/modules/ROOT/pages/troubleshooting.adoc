@@ -10,6 +10,8 @@ This chapter contains common troubleshooting steps. Additionally, there is a sec
 
 `@neo4j/graphql` uses the https://www.npmjs.com/package/debug[`debug`] library for debug-level logging. You can turn on all debug logging by setting the environment variable `DEBUG` to `@neo4j/graphql:*` when running. For example:
 
+==== Command line
+
 [source, bash, indent=0]
 ----
 DEBUG=@neo4j/graphql:* node src/index.js
@@ -21,6 +23,34 @@ Alternatively, if you are debugging a particular functionality, you can specify 
 2. `@neo4j/graphql:auth` - Logs the status of authorization header and token extraction, and decoding of JWT
 3. `@neo4j/graphql:graphql` - Logs the GraphQL query and variables
 4. `@neo4j/graphql:execute` - Logs the Cypher and Cypher paramaters before execution, and summary of execution
+
+==== Constructor
+
+You can also enable all debug logging in the library by setting the `debug` argument to `true` in the constructor.
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String!
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    debug: true,
+});
+----
 
 === For `@neo4j/introspector`
 
