@@ -62,7 +62,7 @@ export const formatCode = (editorView: EditorView, parserOption: ParserOptions):
                 selection: selection.main.to > formatted.length ? undefined : selection,
             });
         })
-        .catch(null); // Explicitly ignore errors (on error we simply don't format)
+        .catch(() => {}); // Explicitly ignore errors (on error we simply don't format)
 };
 
 export const handleEditorDisableState = (editorViewRef: HTMLDivElement | null, loading: boolean): void => {
