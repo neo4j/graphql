@@ -674,7 +674,7 @@ describe("Cypher Auth Where with Roles", () => {
             		WITH this_posts0
             		MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
             		WITH count(this_posts0_creator_User_unique) as c
-            		CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator must be less than or equal to one', [0])
+            		WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator must be less than or equal to one', [0])
             		RETURN c AS this_posts0_creator_User_unique_ignored
             	}
             	RETURN count(*) AS update_this_posts0
