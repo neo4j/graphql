@@ -51,7 +51,7 @@ query {
 
 === `DateTime`
 
-ISO datetime string stored as a hhttps://neo4j.com/docs/cypher-manual/current/values-and-types/temporal/#_temporal_value_types[datetime] temporal type.
+ISO datetime string stored as a https://neo4j.com/docs/cypher-manual/current/values-and-types/temporal/#_temporal_value_types[datetime] temporal type.
 
 [source, graphql, indent=0]
 ----
