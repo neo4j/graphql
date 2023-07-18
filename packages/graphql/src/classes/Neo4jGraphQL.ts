@@ -130,22 +130,6 @@ class Neo4jGraphQL {
         }
     }
 
-    public get nodes(): Node[] {
-        if (!this._nodes) {
-            throw new Error("You must await `.getSchema()` before accessing `nodes`");
-        }
-
-        return this._nodes;
-    }
-
-    public get relationships(): Relationship[] {
-        if (!this._relationships) {
-            throw new Error("You must await `.getSchema()` before accessing `relationships`");
-        }
-
-        return this._relationships;
-    }
-
     public async getSchema(): Promise<GraphQLSchema> {
         return this.getExecutableSchema();
     }
@@ -262,6 +246,22 @@ class Neo4jGraphQL {
             return { isValid: false, validationErrors: [] };
         }
         return { isValid: true, validationErrors: [] };
+    }
+
+    private get nodes(): Node[] {
+        if (!this._nodes) {
+            throw new Error("You must await `.getSchema()` before accessing `nodes`");
+        }
+
+        return this._nodes;
+    }
+
+    private get relationships(): Relationship[] {
+        if (!this._relationships) {
+            throw new Error("You must await `.getSchema()` before accessing `relationships`");
+        }
+
+        return this._relationships;
     }
 
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
