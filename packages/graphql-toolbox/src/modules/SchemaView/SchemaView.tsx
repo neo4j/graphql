@@ -123,11 +123,6 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                     driver: auth.driver,
                     features,
                     debug: useStore.getState().enableDebug,
-                    config: {
-                        sessionConfig: {
-                            database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
-                        },
-                    },
                 };
 
                 const neoSchema = new Neo4jGraphQL(options);
