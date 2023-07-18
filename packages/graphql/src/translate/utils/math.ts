@@ -114,17 +114,21 @@ export function buildMathStatements(
     const bitSize = mathDescriptor.graphQLType === "Int" ? 32 : 64;
     // Avoid overflows, for 64 bit overflows, a long overflow is raised anyway by Neo4j
     validatePredicates.push(
-        `apoc.util.validatePredicate(${scope}.${mathDescriptor.dbName} ${
-            mathDescriptor.operationSymbol
-        } $${param} > 2^${bitSize - 1}-1, 'Overflow: Value returned from operator %s is larger than %s bit', ["${
+        `apoc.util.validatePredicate(${scope}.${mathDescriptor.dbName} IS NOT NULL AND ${scope}.${
+            mathDescriptor.dbName
+        } ${mathDescriptor.operationSymbol} $${param} > 2^${
+            bitSize - 1
+        }-1, 'Overflow: Value returned from operator %s is larger than %s bit', ["${
             mathDescriptor.operationName
         }", "${bitSize}"])`
     );
 
     // Avoid type coercion where dividing an integer would result in a float value
-    validatePredicates.push(
-        `apoc.util.validatePredicate((${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', ["${mathDescriptor.operationName}", "${mathDescriptor.graphQLType}"])`
-    );
+    if (mathDescriptor.operationSymbol === "/" && mathDescriptor.graphQLType.includes("Int")) {
+        validatePredicates.push(
+            `apoc.util.validatePredicate(${scope}.${mathDescriptor.dbName} IS NOT NULL AND (${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', ["${mathDescriptor.operationName}", "${mathDescriptor.graphQLType}"])`
+        );
+    }
 
     const statements: string[] = [];
     const mathScope = Array.from(new Set([scope, ...withVars]));

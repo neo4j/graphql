@@ -183,6 +183,7 @@ describe("Mathematical operations tests", () => {
                 variableValues: { id, value },
                 contextValue: neo4j.getContextValues(),
             });
+            console.log(gqlResult.errors);
             expect(gqlResult.errors).toBeDefined();
             expect(
                 (gqlResult.errors as GraphQLError[]).some((el) => el.message.toLowerCase().includes(expectedError))
@@ -618,7 +619,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: increment },
-            contextValue: neo4j.getContextValues({ executionContext: session }),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
