@@ -20,7 +20,6 @@
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
 import type {
-    CypherQueryOptions,
     Neo4jFeaturesSettings,
     StartupValidationConfig,
     ContextFeatures,
@@ -58,7 +57,6 @@ import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscri
 
 export interface Neo4jGraphQLConfig {
     startupValidation?: StartupValidationConfig;
-    cypherQueryOptions?: CypherQueryOptions;
 }
 
 export type ValidationConfig = {
