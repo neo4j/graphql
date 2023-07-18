@@ -55,7 +55,6 @@ describe("query options", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: { cypherQueryOptions: { runtime: "interpreted" } },
         });
 
         const id = generate({
@@ -84,7 +83,7 @@ describe("query options", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: neo4j.getContextValues(),
+                contextValue: neo4j.getContextValues({ cypherQueryOptions: { runtime: "interpreted" } }),
             });
 
             expect(result.errors).toBeFalsy();
