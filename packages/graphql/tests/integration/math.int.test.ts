@@ -183,7 +183,6 @@ describe("Mathematical operations tests", () => {
                 variableValues: { id, value },
                 contextValue: neo4j.getContextValues(),
             });
-            console.log(gqlResult.errors);
             expect(gqlResult.errors).toBeDefined();
             expect(
                 (gqlResult.errors as GraphQLError[]).some((el) => el.message.toLowerCase().includes(expectedError))
