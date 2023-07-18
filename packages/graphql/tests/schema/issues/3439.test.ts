@@ -25,7 +25,7 @@ import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { validateSchema } from "graphql";
 
 describe("https://github.com/neo4j/graphql/issues/3439", () => {
-    test("Example 1", async () => {
+    test("Type definitions implementing multiple interfaces", async () => {
         const typeDefs = gql`
             interface INode {
                 id: String!
@@ -1277,7 +1277,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         `);
     });
 
-    test("Example 2", async () => {
+    test("Simple type definitions implementing just one interface", async () => {
         const typeDefs = gql`
             interface IProduct {
                 id: String!
