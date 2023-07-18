@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import type { FieldNode, GraphQLResolveInfo, SelectionSetNode } from "graphql";
+import { Kind, type FieldNode, type GraphQLResolveInfo, type SelectionSetNode } from "graphql";
 import { getOffsetWithDefault, offsetToCursor } from "graphql-relay/connection/arrayConnection";
 import type { ConnectionField, ConnectionQueryArgs } from "../types";
 import { isNeoInt } from "../utils/utils";
 
 function getAliasKey({ selectionSet, key }: { selectionSet: SelectionSetNode | undefined; key: string }): string {
     for (const field of selectionSet?.selections || []) {
-        if (field.kind === "Field" && field.name.value === key && field.alias) {
+        if (field.kind === Kind.FIELD && field.name.value === key && field.alias) {
             return field.alias.value;
         }
     }
@@ -90,7 +90,7 @@ export function createConnectionWithEdgeProperties({
 
     const selections = selectionSet?.selections || [];
 
-    const edgesField = selections.find((x) => x.kind === "Field" && x.name.value === "edges") as FieldNode;
+    const edgesField = selections.find((x) => x.kind === Kind.FIELD && x.name.value === "edges") as FieldNode;
     const cursorKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "cursor" });
     const nodeKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "node" });
 
@@ -109,7 +109,7 @@ export function createConnectionWithEdgeProperties({
 
     const pageInfoKey = getAliasKey({ selectionSet, key: "pageInfo" });
     const edgesKey = getAliasKey({ selectionSet, key: "edges" });
-    const pageInfoField = selections.find((x) => x.kind === "Field" && x.name.value === "pageInfo") as FieldNode;
+    const pageInfoField = selections.find((x) => x.kind === Kind.FIELD && x.name.value === "pageInfo") as FieldNode;
     const pageInfoSelectionSet = pageInfoField?.selectionSet;
     const startCursorKey = getAliasKey({ selectionSet: pageInfoSelectionSet, key: "startCursor" });
     const endCursorKey = getAliasKey({ selectionSet: pageInfoSelectionSet, key: "endCursor" });

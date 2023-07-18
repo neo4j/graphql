@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import type { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import { objectFieldsToComposeFields } from "../to-compose";
 import { upperFirst } from "../../utils/upper-first";
@@ -54,21 +54,32 @@ function buildRelationshipDestinationInterfaceNodeType({
     interfaceNodes: ObjectTypeComposer<any, any>[];
     relationNodeTypeName: string;
     schemaComposer: SchemaComposer;
-}) {
-    const allFields = Object.values(relevantInterface).reduce((acc, x) => [...acc, ...x], []);
+}): InterfaceTypeComposer | undefined {
+    const selectedFields = [
+        ...relevantInterface.primitiveFields,
+        ...relevantInterface.enumFields,
+        ...relevantInterface.scalarFields,
+        ...relevantInterface.temporalFields,
+        ...relevantInterface.pointFields,
+        ...relevantInterface.cypherFields,
+    ];
+
     const connectionFields = [...relevantInterface.relationFields, ...relevantInterface.connectionFields];
-    const [interfaceComposeFields, interfaceConnectionComposeFields] = [allFields, connectionFields].map(
+    const [interfaceComposeFields, interfaceConnectionComposeFields] = [selectedFields, connectionFields].map(
         objectFieldsToComposeFields
     ) as [any, any];
-    const nodeTo = schemaComposer.createInterfaceTC({
-        name: `${relationNodeTypeName}EventPayload`,
-        fields: interfaceComposeFields,
-    });
-    interfaceNodes?.forEach((interfaceNodeType) => {
-        nodeTo.addTypeResolver(interfaceNodeType, () => true);
-        interfaceNodeType.addFields(interfaceConnectionComposeFields);
-    });
-    return nodeTo;
+
+    if (Object.keys(interfaceComposeFields).length) {
+        const nodeTo = schemaComposer.createInterfaceTC({
+            name: `${relationNodeTypeName}EventPayload`,
+            fields: interfaceComposeFields,
+        });
+        interfaceNodes?.forEach((interfaceNodeType) => {
+            nodeTo.addTypeResolver(interfaceNodeType, () => true);
+            interfaceNodeType.addFields(interfaceConnectionComposeFields);
+        });
+        return nodeTo;
+    }
 }
 
 function buildRelationshipDestinationAbstractType({

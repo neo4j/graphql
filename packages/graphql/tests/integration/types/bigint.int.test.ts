@@ -184,7 +184,7 @@ describe("BigInt", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: { executionContext: driver, sessionConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
