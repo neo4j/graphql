@@ -4205,7 +4205,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^4.0.0
     "@graphql-codegen/typescript": ^3.0.0
     "@graphql-tools/merge": ^8.3.3
-    "@neo4j/graphql": ^3.23.1
+    "@neo4j/graphql": ^3.24.0
     "@neo4j/graphql-plugin-auth": ^2.2.0
     "@types/jest": 29.5.3
     "@types/node": 18.15.1
@@ -4288,7 +4288,7 @@ __metadata:
     "@graphiql/react": 0.19.1
     "@neo4j-ndl/base": 1.8.9
     "@neo4j-ndl/react": 1.8.14
-    "@neo4j/graphql": 3.23.1
+    "@neo4j/graphql": 3.24.0
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.36.1
     "@tsconfig/create-react-app": 2.0.1
@@ -4345,7 +4345,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@3.23.1, @neo4j/graphql@^3.13.0, @neo4j/graphql@^3.15.0, @neo4j/graphql@^3.16.0, @neo4j/graphql@^3.23.1, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@3.24.0, @neo4j/graphql@^3.13.0, @neo4j/graphql@^3.15.0, @neo4j/graphql@^3.16.0, @neo4j/graphql@^3.24.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -9522,7 +9522,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": 1.2.2
     "@apollo/server": ^4.7.0
     "@graphql-tools/wrap": ^9.3.6
-    "@neo4j/graphql": ^3.23.1
+    "@neo4j/graphql": ^3.24.0
     fork-ts-checker-webpack-plugin: 8.0.0
     graphql: 16.7.1
     graphql-tag: ^2.12.6
@@ -21063,7 +21063,7 @@ __metadata:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     "@apollo/server": ^4.7.0
-    "@neo4j/graphql": ^3.23.1
+    "@neo4j/graphql": ^3.24.0
     graphql: 16.7.1
     neo4j-driver: 5.10.0
   languageName: unknown
