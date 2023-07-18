@@ -1,5 +1,18 @@
 # @neo4j/graphql-ogm
 
+## 3.24.0
+
+### Minor Changes
+
+-   [#3639](https://github.com/neo4j/graphql/pull/3639) [`09cc28ef2`](https://github.com/neo4j/graphql/commit/09cc28ef26f13c46c220bd160d68c5f6c4668f39) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Encourages switching from `driverConfig` to `sessionConfig` in both constructor and context. Can be used to switch database, and to use impersonation and user switching.
+
+### Patch Changes
+
+-   [#3607](https://github.com/neo4j/graphql/pull/3607) [`12ee8b8f4`](https://github.com/neo4j/graphql/commit/12ee8b8f48043d3bf8cd7a0df4b001340e90c0c0) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Ignore the schema configuration directives for OGM purposes. Fix #3591
+
+-   Updated dependencies [[`c55a2b6fd`](https://github.com/neo4j/graphql/commit/c55a2b6fd36f9eb2ba5f51be3f21e97b68789fcc), [`cd884be5c`](https://github.com/neo4j/graphql/commit/cd884be5c07870ea778f5d81db5c55d45eca6dc3), [`09cc28ef2`](https://github.com/neo4j/graphql/commit/09cc28ef26f13c46c220bd160d68c5f6c4668f39)]:
+    -   @neo4j/graphql@3.24.0
+
 ## 3.23.1
 
 ### Patch Changes
