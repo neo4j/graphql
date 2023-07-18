@@ -174,11 +174,13 @@ const server = new ApolloServer({
 });
 
 await startStandaloneServer(server, {
-    context: async ({ req }) => ({ req, driverConfig: { database: "my-database" }}),
+    context: async ({ req }) => ({ req, sessionConfig: { database: "my-database" }}),
 });
 ----
 
 === `Neo4jGraphQL` constructor
+
+WARNING: This solution is deprecated, and will be removed in 4.0.0. Please pass into the context as in the example directly above.
 
 [source, javascript, indent=0]
 ----

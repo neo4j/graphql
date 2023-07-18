@@ -28,12 +28,12 @@ import type {
     GraphQLList,
     GraphQLSchema,
 } from "graphql";
-import { GraphQLInputObjectType, GraphQLScalarType } from "graphql";
+import { GraphQLInputObjectType, GraphQLScalarType, Kind } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { parseResolveInfo } from "graphql-parse-resolve-info";
 import neo4j from "neo4j-driver";
 
-function getNeo4jArgumentValue({ argument, type }: { argument: unknown | unknown[]; type: GraphQLInputType }) {
+function getNeo4jArgumentValue({ argument, type }: { argument: unknown; type: GraphQLInputType }) {
     if (argument === null) {
         return argument;
     }
@@ -143,9 +143,9 @@ export default function getNeo4jResolveTree(
             );
         }
 
-        if (_type.astNode?.kind === "ObjectTypeDefinition") {
+        if (_type.astNode?.kind === Kind.OBJECT_TYPE_DEFINITION) {
             type = _type as GraphQLObjectType;
-        } else if (_type.astNode?.kind === "InterfaceTypeDefinition") {
+        } else if (_type.astNode?.kind === Kind.INTERFACE_TYPE_DEFINITION) {
             type = _type as GraphQLInterfaceType;
         } else {
             return {

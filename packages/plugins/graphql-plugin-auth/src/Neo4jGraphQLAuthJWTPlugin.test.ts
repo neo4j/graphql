@@ -99,7 +99,7 @@ describe("Neo4jGraphQLAuthJWTPlugin", () => {
     });
 
     test("should throw an error if both noVerify and globalAuthentication are enabled", async () => {
-        let initError: Error | null | unknown = null;
+        let initError: unknown = null;
         try {
             const payload = {
                 sub: "my-id",
