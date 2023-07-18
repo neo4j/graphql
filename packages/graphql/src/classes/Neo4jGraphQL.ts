@@ -56,7 +56,6 @@ import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthoriza
 import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
 
 export interface Neo4jGraphQLConfig {
-    enableDebug?: boolean;
     startupValidation?: StartupValidationConfig;
 }
 
@@ -72,6 +71,7 @@ export interface Neo4jGraphQLConstructor {
     features?: Neo4jFeaturesSettings;
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
+    debug?: boolean;
 }
 
 export const defaultValidationConfig: ValidationConfig = {
@@ -105,8 +105,10 @@ class Neo4jGraphQL {
 
     private authorization?: Neo4jGraphQLAuthorization;
 
+    private debug?: boolean;
+
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, features, typeDefs, resolvers } = input;
+        const { config = {}, driver, features, typeDefs, resolvers, debug } = input;
 
         this.driver = driver;
         this.config = config;
@@ -114,6 +116,8 @@ class Neo4jGraphQL {
 
         this.typeDefs = typeDefs;
         this.resolvers = resolvers;
+
+        this.debug = debug;
 
         this.checkEnableDebug();
 
@@ -269,8 +273,8 @@ class Neo4jGraphQL {
     }
 
     private checkEnableDebug(): void {
-        if (this.config.enableDebug === true || this.config.enableDebug === false) {
-            if (this.config.enableDebug) {
+        if (this.debug === true || this.debug === false) {
+            if (this.debug) {
                 Debug.enable(DEBUG_ALL);
             } else {
                 Debug.disable();
