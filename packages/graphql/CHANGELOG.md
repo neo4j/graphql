@@ -1,5 +1,17 @@
 # @neo4j/graphql
 
+## 3.24.0
+
+### Minor Changes
+
+-   [#3639](https://github.com/neo4j/graphql/pull/3639) [`09cc28ef2`](https://github.com/neo4j/graphql/commit/09cc28ef26f13c46c220bd160d68c5f6c4668f39) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Encourages switching from `driverConfig` to `sessionConfig` in both constructor and context. Can be used to switch database, and to use impersonation and user switching.
+
+### Patch Changes
+
+-   [#3678](https://github.com/neo4j/graphql/pull/3678) [`c55a2b6fd`](https://github.com/neo4j/graphql/commit/c55a2b6fd36f9eb2ba5f51be3f21e97b68789fcc) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix generation of schema for fields to an interface relationship when using subscriptions.
+
+-   [#3627](https://github.com/neo4j/graphql/pull/3627) [`cd884be5c`](https://github.com/neo4j/graphql/commit/cd884be5c07870ea778f5d81db5c55d45eca6dc3) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixing argument parsing Flat/Int wrongly coerced as String.
+
 ## 3.23.1
 
 ### Patch Changes

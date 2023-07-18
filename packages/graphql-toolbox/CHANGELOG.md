@@ -1,5 +1,16 @@
 # @neo4j/graphql-toolbox
 
+## 2.0.4
+
+### Patch Changes
+
+-   [#3614](https://github.com/neo4j/graphql/pull/3614) [`1f3777e4c`](https://github.com/neo4j/graphql/commit/1f3777e4c6471c81b134b17e28f9bb64795c906b) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Remove background color style from connect button
+
+-   [#3644](https://github.com/neo4j/graphql/pull/3644) [`a5ba683f6`](https://github.com/neo4j/graphql/commit/a5ba683f6d01a9b017ffedac4c5dab0509088a66) Thanks [@tbwiss](https://github.com/tbwiss)! - chore: Toolbox - bump prettier to v3 and adjust usage. prettier.format() is an async call now.
+
+-   Updated dependencies [[`c55a2b6fd`](https://github.com/neo4j/graphql/commit/c55a2b6fd36f9eb2ba5f51be3f21e97b68789fcc), [`cd884be5c`](https://github.com/neo4j/graphql/commit/cd884be5c07870ea778f5d81db5c55d45eca6dc3), [`09cc28ef2`](https://github.com/neo4j/graphql/commit/09cc28ef26f13c46c220bd160d68c5f6c4668f39)]:
+    -   @neo4j/graphql@3.24.0
+
 ## 2.0.3
 
 ### Patch Changes
