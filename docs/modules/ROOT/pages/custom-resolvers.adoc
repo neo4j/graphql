@@ -171,7 +171,7 @@ type User implements UserInterface {
 }
 ----
 
-The following resolvers definition would be invalid:
+The following resolvers definition would cause a warning to be logged:
 
 [source, javascript, indent=0]
 ----
@@ -184,7 +184,7 @@ const resolvers = {
 };
 ----
 
-Instead, the following resolvers definition would be required:
+The following resolvers definition would silence the warning:
 
 [source, javascript, indent=0]
 ----
@@ -197,4 +197,4 @@ const resolvers = {
 };
 ----
 
-Mismatches between the resolver map and `@customResolver` directives will be logged to the console as a warning.
+Mismatches between the resolver map and `@customResolver` directives will always be logged to the console as a warning.
