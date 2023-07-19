@@ -21,7 +21,7 @@ const fs = require("fs");
 const path = require("path");
 const { createServer } = require("http");
 const neo4j = require("neo4j-driver");
-const { Neo4jGraphQL, Neo4jGraphQLSubscriptionsSingleInstancePlugin } = require("@neo4j/graphql");
+const { Neo4jGraphQL } = require("@neo4j/graphql");
 const { WebSocketServer } = require("ws");
 const { useServer } = require("graphql-ws/lib/use/ws");
 const express = require("express");
@@ -35,12 +35,12 @@ const NEO4J_PASSWORD = "password";
 
 const AMQP_URI = "amqp://localhost";
 
-const plugin = new Neo4jGraphQLSubscriptionsEngineAMQP({
+const subscriptionsEngine = new Neo4jGraphQLSubscriptionsEngineAMQP({
     connection: AMQP_URI,
 });
 
 //Alternatively, we can remove the AMQP server if we are only using a development server
-// const plugin = new Neo4jGrapghQLSubscriptionsSingleInstancePlugin();
+// const subscriptionsEngine = new Neo4jGrapghQLSubscriptionsSingleInstancePlugin();
 
 if (!process.argv[2]) throw new Error("Usage node server.js [port]");
 
@@ -52,8 +52,8 @@ const driver = neo4j.driver(NEO4J_URL, neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWO
 const neoSchema = new Neo4jGraphQL({
     typeDefs: typeDefs,
     driver,
-    plugins: {
-        subscriptions: plugin,
+    features: {
+        subscriptions: subscriptionsEngine,
     },
 });
 

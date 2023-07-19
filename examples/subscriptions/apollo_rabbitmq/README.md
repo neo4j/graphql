@@ -7,8 +7,8 @@ To run this demo:
 1. Run `npm install`
 2. Make sure the variables `NEO4J_URL`, `NEO4J_USER` and `NEO4J_PASSWORD` in `server.js` are set to you Neo4j database.
 3. Make sure the variable `AMQP_URI` is set to a running RabbitMQ server (or any AMQP "0-9-1" server).
-    - Check [Running RabbitMQ](#running-rabbitmq) for instructions on running a demo RabbitMQ server.
-    - For a simple development server, check on the instructions for [running without rabbitMQ](#running-without-rabbitmq).
+    * Check [Running RabbitMQ](#running-rabbitmq) for instructions on running a demo RabbitMQ server.
+    * For a simple development server, check on the instructions for [running without rabbitMQ](#running-without-rabbitmq).
 4. Run `npm start`
 5. Go to `localhost:4000/graphql`
 
@@ -37,7 +37,7 @@ const plugin = new Neo4jGraphQLSubscriptionsEngineAMQP({
 To
 
 ```js
-const plugin = new new Neo4jGraphQLSubscriptionsSingleInstancePlugin()();
+const plugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin()();
 ```
 
 And update the `neo4j/graphql` import to:

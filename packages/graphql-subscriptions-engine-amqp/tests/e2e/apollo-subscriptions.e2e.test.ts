@@ -27,7 +27,7 @@ import { WebSocketTestClient } from "./setup/ws-client";
 import neo4j from "./setup/neo4j";
 import type { Neo4jGraphQLSubscriptionsEngineAMQP } from "../../src";
 import { UniqueType } from "../utils/graphql-types";
-import createPlugin from "./setup/plugin";
+import createEngine from "./setup/engine";
 import getRabbitConnectionOptions from "./setup/rabbitmq";
 
 describe("Apollo and RabbitMQ Subscription", () => {
@@ -38,7 +38,7 @@ describe("Apollo and RabbitMQ Subscription", () => {
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    let plugin: Neo4jGraphQLSubscriptionsEngineAMQP;
+    let engine: Neo4jGraphQLSubscriptionsEngineAMQP;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -52,13 +52,13 @@ describe("Apollo and RabbitMQ Subscription", () => {
          `;
 
         const connectionOptions = getRabbitConnectionOptions();
-        plugin = createPlugin(connectionOptions);
+        engine = createEngine(connectionOptions);
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
             features: {
-                subscriptions: plugin,
+                subscriptions: engine,
             },
         });
 
@@ -68,7 +68,7 @@ describe("Apollo and RabbitMQ Subscription", () => {
     });
 
     afterEach(async () => {
-        await plugin.close();
+        await engine.close();
         await server.close();
     });
 

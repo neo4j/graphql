@@ -20,11 +20,9 @@
 import type amqp from "amqplib";
 import { Neo4jGraphQLSubscriptionsEngineAMQP } from "../../../src";
 
-export default function createPlugin(connection: amqp.Options.Connect): Neo4jGraphQLSubscriptionsEngineAMQP {
-    const plugin = new Neo4jGraphQLSubscriptionsEngineAMQP({
+export default function createEngine(connection: amqp.Options.Connect): Neo4jGraphQLSubscriptionsEngineAMQP {
+    return new Neo4jGraphQLSubscriptionsEngineAMQP({
         exchange: "neo4j-graphql",
         connection,
     });
-
-    return plugin;
 }

@@ -19,20 +19,20 @@
 
 import type { SubscriptionsEvent } from "@neo4j/graphql";
 import type { Neo4jGraphQLSubscriptionsEngineAMQP } from "../../src";
-import createPlugin from "./setup/plugin";
+import createEngine from "./setup/engine";
 import getRabbitConnectionOptions from "./setup/rabbitmq";
 
 describe("Subscriptions RabbitMQ Integration", () => {
-    let plugin: Neo4jGraphQLSubscriptionsEngineAMQP;
+    let engine: Neo4jGraphQLSubscriptionsEngineAMQP;
 
     beforeEach(async () => {
         const connectionOptions = getRabbitConnectionOptions();
-        plugin = createPlugin(connectionOptions);
-        await plugin.init();
+        engine = createEngine(connectionOptions);
+        await engine.init();
     });
 
     afterEach(async () => {
-        await plugin.close();
+        await engine.close();
     });
 
     test("Send and receive events to eventEmitter", () => {
@@ -50,7 +50,7 @@ describe("Subscriptions RabbitMQ Integration", () => {
                 typename: "test",
             };
 
-            plugin.events.on("create", (msg) => {
+            engine.events.on("create", (msg) => {
                 try {
                     expect(msg).toEqual(event);
                     resolve();
@@ -59,7 +59,7 @@ describe("Subscriptions RabbitMQ Integration", () => {
                 }
             });
 
-            plugin.publish(event).catch((err) => {
+            engine.publish(event).catch((err) => {
                 reject(err);
             });
         });
