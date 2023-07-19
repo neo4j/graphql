@@ -25,3 +25,10 @@ export function parseArguments(directive: DirectiveNode): Record<string, unknown
         return acc;
     }, {});
 }
+
+export function findDirective(directives: readonly DirectiveNode[], name: string): DirectiveNode | undefined {
+    return directives.find((d) => {
+        return d.name.value === name;
+    });
+}
+

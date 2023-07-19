@@ -22,7 +22,7 @@ import type { Operation } from "./Operation";
 import type { Annotations, Annotation } from "./annotation/Annotation";
 import { annotationToKey } from "./annotation/Annotation";
 import { CompositeEntity } from "./entity/CompositeEntity";
-import { ConcreteEntity } from "./entity/ConcreteEntity";
+import { ConcreteEntity } from "./entity/ConcreteEntity"; 
 import type { Entity } from "./entity/Entity";
 export type Operations = {
     Query?: Operation;

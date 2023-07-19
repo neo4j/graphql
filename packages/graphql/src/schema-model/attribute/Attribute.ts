@@ -17,51 +17,15 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLSchemaValidationError } from "../../classes/Error";
 import type { Annotation, Annotations } from "../annotation/Annotation";
-import { annotationToKey } from "../annotation/Annotation";
+import type { AttributeType } from "./AbstractAttribute";
+import { AbstractAttribute } from "./AbstractAttribute";
 
-export enum AttributeType {
-    Boolean = "Boolean",
-    ID = "ID",
-    String = "String",
-    Int = "Int",
-    BigInt = "BigInt",
-    Float = "Float",
-    DateTime = "DateTime",
-    LocalDateTime = "LocalDateTime",
-    Time = "Time",
-    LocalTime = "LocalTime",
-    Date = "Date",
-    Duration = "Duration",
-    Point = "Point",
-    ObjectType = "ObjectType",
-}
+// At this moment Attribute is a dummy class, most of the logic is shared logic between Attribute and AttributeModels defined in the AbstractAttribute class
+export class Attribute extends AbstractAttribute {
 
-export class Attribute {
-    public readonly name: string;
-    public readonly annotations: Partial<Annotations> = {};
-    public readonly type: AttributeType;
-    public readonly isArray: boolean;
-
-    constructor({
-        name,
-        annotations,
-        type,
-        isArray,
-    }: {
-        name: string;
-        annotations: Annotation[];
-        type: AttributeType;
-        isArray: boolean;
-    }) {
-        this.name = name;
-        this.type = type;
-        this.isArray = isArray;
-
-        for (const annotation of annotations) {
-            this.addAnnotation(annotation);
-        }
+    constructor({ name, annotations = [], type }: { name: string; annotations: Annotation[]; type: AttributeType }) {
+        super({ name, type, annotations });
     }
 
     public clone(): Attribute {
@@ -69,18 +33,6 @@ export class Attribute {
             name: this.name,
             annotations: Object.values(this.annotations),
             type: this.type,
-            isArray: this.isArray,
         });
-    }
-
-    private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotationToKey(annotation);
-        if (this.annotations[annotationKey]) {
-            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
-        }
-
-        // We cast to any because we aren't narrowing the Annotation type here.
-        // There's no reason to narrow either, since we care more about performance.
-        this.annotations[annotationKey] = annotation as any;
     }
 }

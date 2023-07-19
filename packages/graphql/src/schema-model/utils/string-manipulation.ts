@@ -17,18 +17,22 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntity } from "./ConcreteEntity";
-import type { Entity } from "./Entity";
+import camelcase from "camelcase";
+import pluralize from "pluralize";
 
-/** Entity for abstract GraphQL types, Interface and Union */
-export class CompositeEntity implements Entity {
-    public readonly name: string;
-    public concreteEntities: ConcreteEntity[];
-    // TODO: add type interface or union, and for interface add fields
-    // TODO: add annotations
+export function singular(name: string): string {
+    const singular = camelcase(name);
+    return `${leadingUnderscores(name)}${singular}`;
+}
 
-    constructor({ name, concreteEntities }: { name: string; concreteEntities: ConcreteEntity[] }) {
-        this.name = name;
-        this.concreteEntities = concreteEntities;
-    }
+// TODO this has to be tested as is different from Node.generatePlural
+export function plural(name: string): string {
+    const plural = pluralize(camelcase(name));
+    return `${leadingUnderscores(name)}${plural}`;
+}
+
+export function leadingUnderscores(name: string): string {
+    const re = /^(_+).+/;
+    const match = re.exec(name);
+    return match?.[1] || "";
 }

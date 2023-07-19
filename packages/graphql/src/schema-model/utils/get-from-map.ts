@@ -17,18 +17,15 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntity } from "./ConcreteEntity";
-import type { Entity } from "./Entity";
-
-/** Entity for abstract GraphQL types, Interface and Union */
-export class CompositeEntity implements Entity {
-    public readonly name: string;
-    public concreteEntities: ConcreteEntity[];
-    // TODO: add type interface or union, and for interface add fields
-    // TODO: add annotations
-
-    constructor({ name, concreteEntities }: { name: string; concreteEntities: ConcreteEntity[] }) {
-        this.name = name;
-        this.concreteEntities = concreteEntities;
+/**
+ * Utility function to ensure that the key exists in the map and avoid unnecessary type casting.
+ * Get the value from a map, if the key does not exist throw an error.
+ *
+ * */
+export function getFromMap<K extends keyof any, V>(map: Map<K, V>, key: K): V {
+    const item = map.get(key);
+    if (item === undefined) {
+        throw new Error(`Key "${String(key)}" does not exist in the map.`);
     }
+    return item;
 }

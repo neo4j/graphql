@@ -26,8 +26,13 @@ import {
 } from "./annotation/AuthorizationAnnotation";
 import { generateModel } from "./generate-model";
 import type { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
+
+import type { ConcreteEntity } from "./entity/ConcreteEntity";
+import type { Attribute } from "./attribute/Attribute";
+import type { Relationship } from "./relationship/Relationship";
 import { SubscriptionsAuthorizationFilterEventRule } from "./annotation/SubscriptionsAuthorizationAnnotation";
 import { AuthenticationAnnotation } from "./annotation/AuthenticationAnnotation";
+
 
 describe("Schema model generation", () => {
     test("parses @authentication directive with no arguments", () => {
@@ -285,5 +290,173 @@ describe("ComposeEntity generation", () => {
         expect(toolEntities?.concreteEntities).toHaveLength(2); // Pencil, Screwdriver
         const humanEntities = schemaModel.compositeEntities.find((e) => e.name === "Human");
         expect(humanEntities?.concreteEntities).toHaveLength(1); // User
+    });
+});
+
+describe("Attribute generation", () => {
+    let schemaModel: Neo4jGraphQLSchemaModel;
+    // entities
+    let userEntity: ConcreteEntity;
+    let accountEntity: ConcreteEntity;
+
+    // relationships 
+    let userAccounts: Relationship;
+
+    // user attributes
+    let id: Attribute;
+    let name: Attribute;
+    let createdAt: Attribute;
+    let releaseDate: Attribute;
+    let runningTime: Attribute;
+    let accountSize: Attribute;
+    let favoriteColors: Attribute;
+    let password: Attribute;
+
+    // hasAccount relationship attributes
+    let creationTime: Attribute;
+
+    // account attributes
+    let status: Attribute;
+    let aOrB: Attribute;
+
+    beforeAll(() => {
+        const typeDefs = gql`
+            type User {
+                id: ID!
+                name: String!
+                createdAt: DateTime
+                releaseDate: Date!
+                runningTime: Time
+                accountSize: BigInt
+                favoriteColors: [String!]!
+                accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", properties: "hasAccount", direction: OUT)
+            }
+            
+            interface hasAccount @relationshipProperties {
+                creationTime: DateTime!
+            }
+
+            type A {
+                id: ID
+            }
+
+            type B {
+                age: Int
+            }
+
+            union AorB = A | B
+            
+            enum Status {
+                ACTIVATED
+                DISABLED
+            }
+
+            type Account {
+                status: Status
+                aOrB: AorB
+            }
+
+            extend type User {
+                password: String!
+            }
+        `;
+
+        const document = mergeTypeDefs(typeDefs);
+        schemaModel = generateModel(document);
+        
+        // entities
+        userEntity = schemaModel.entities.get("User") as ConcreteEntity;
+        userAccounts = userEntity.relationships.get("accounts") as Relationship;
+        accountEntity = schemaModel.entities.get("Account") as ConcreteEntity;
+        
+        // user attributes
+        id = userEntity?.attributes.get("id") as Attribute;
+        name = userEntity?.attributes.get("name") as Attribute;
+        createdAt = userEntity?.attributes.get("createdAt") as Attribute;
+        releaseDate = userEntity?.attributes.get("releaseDate") as Attribute;
+        runningTime = userEntity?.attributes.get("runningTime") as Attribute;
+        accountSize = userEntity?.attributes.get("accountSize") as Attribute;
+        favoriteColors = userEntity?.attributes.get("favoriteColors") as Attribute;
+        
+        // extended attributes
+        password = userEntity?.attributes.get("password") as Attribute;
+
+        // hasAccount relationship attributes
+        creationTime = userAccounts?.attributes.get("creationTime") as Attribute;
+
+        // account attributes
+        status = accountEntity?.attributes.get("status") as Attribute;
+        aOrB = accountEntity?.attributes.get("aOrB") as Attribute;
+    });
+
+    describe("attribute types", () => {
+        test("ID", () => {
+            expect(id.isID()).toBe(true);
+            expect(id.isGraphQLBuiltInScalar()).toBe(true);
+        });
+
+        test("String", () => {
+            expect(name.isString()).toBe(true);
+            expect(id.isGraphQLBuiltInScalar()).toBe(true);
+        });
+
+        test("DateTime", () => {
+            expect(createdAt.isDateTime()).toBe(true);
+            expect(createdAt.isGraphQLBuiltInScalar()).toBe(false);
+            expect(createdAt.isTemporal()).toBe(true);
+            expect(creationTime.isDateTime()).toBe(true);
+            expect(creationTime.isGraphQLBuiltInScalar()).toBe(false);
+            expect(creationTime.isTemporal()).toBe(true);
+            
+        });
+
+        test("Date", () => {
+            expect(releaseDate.isDate()).toBe(true);
+            expect(releaseDate.isGraphQLBuiltInScalar()).toBe(false);
+            expect(releaseDate.isTemporal()).toBe(true);
+        });
+
+        test("Time", () => {
+            expect(runningTime.isTime()).toBe(true);
+            expect(runningTime.isGraphQLBuiltInScalar()).toBe(false);
+            expect(runningTime.isTemporal()).toBe(true);
+        });
+
+        test("BigInt", () => {
+            expect(accountSize.isBigInt()).toBe(true);
+            expect(accountSize.isGraphQLBuiltInScalar()).toBe(false);
+        });
+
+        test("Enum", () => {
+            expect(status.isEnum()).toBe(true);
+            expect(status.isGraphQLBuiltInScalar()).toBe(false);
+        })
+
+        test("Union", () => {
+            expect(aOrB.isUnion()).toBe(true);
+            expect(aOrB.isGraphQLBuiltInScalar()).toBe(false);
+            expect(aOrB.isAbstract()).toBe(true);
+        })
+
+        test("List", () => {
+            expect(favoriteColors.isList()).toBe(true);
+            expect(favoriteColors.isString()).toBe(false);
+        });
+
+        test("on extended entity", () => {
+            expect(password.isString()).toBe(true);
+            expect(password.isGraphQLBuiltInScalar()).toBe(true);
+        });
+
+        test("isRequired", () => {
+            expect(name.isRequired()).toBe(true);
+            expect(id.isRequired()).toBe(true);
+            expect(createdAt.isRequired()).toBe(false);
+            expect(releaseDate.isRequired()).toBe(true);
+            expect(runningTime.isRequired()).toBe(false);
+            expect(accountSize.isRequired()).toBe(false);
+            expect(favoriteColors.isRequired()).toBe(true);
+            expect(password.isRequired()).toBe(true);
+        });
     });
 });
