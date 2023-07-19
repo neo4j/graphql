@@ -34,7 +34,7 @@ import type {
 import { Kind, parse, GraphQLError } from "graphql";
 import * as neo4j from "neo4j-driver";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import parseValueNode from "../../parse-value-node";
+import parseValueNode from "../../../schema-model/parser/parse-value-node";
 import type { FulltextIndex, Neo4jGraphQLCallbacks } from "../../../types";
 import type { IResolvers } from "@graphql-tools/utils";
 import { asArray } from "../../../utils/utils";

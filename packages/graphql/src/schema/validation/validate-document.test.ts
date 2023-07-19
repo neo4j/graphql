@@ -1879,6 +1879,228 @@ describe("validation2.0", () => {
             });
         });
     });
+
+    describe("Directive Combination", () => {
+        describe("valid", () => {
+            test("@cypher with @authentication on Field", () => {
+                const doc = gql`
+                    type User {
+                        id: ID
+                        name: String
+                            @cypher(
+                                statement: """
+                                MATCH (u:User {id: 1}) RETURN u.name AS u
+                                """
+                                columnName: "u"
+                            )
+                            @authentication
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@node with @authentication on Object", () => {
+                const doc = gql`
+                    type User @node(labels: ["Person"]) @authentication {
+                        id: ID
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@query and @mutation", () => {
+                const doc = gql`
+                    type User @query(read: false) {
+                        id: ID
+                        name: String
+                    }
+                    extend schema @mutation(operations: [])
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+        });
+        describe("invalid", () => {
+            test("@cypher with @relationship on Field", () => {
+                const doc = gql`
+                    type User {
+                        id: ID
+                        post: [Post]
+                            @cypher(
+                                statement: """
+                                MATCH (u:User {id: 1})-[:HAS_POST]->(p:Post) RETURN p
+                                """
+                                columnName: "p"
+                            )
+                            @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @cypher cannot be used in combination with @relationship"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "post"]);
+            });
+
+            test("@jwt with @exclude on Object", () => {
+                const doc = gql`
+                    type JWTPayload @jwt @exclude {
+                        id: ID
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @jwt cannot be used in combination with other directives."
+                );
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload"]);
+            });
+
+            test("@jwtClaim with @cypher on Object", () => {
+                const doc = gql`
+                    type JWTPayload @jwt {
+                        id: ID
+                            @jwtClaim(path: "user.id")
+                            @cypher(
+                                statement: """
+                                RETURN 1 as x
+                                """
+                                columnName: "x"
+                            )
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @jwtClaim cannot be used in combination with other directives."
+                );
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id"]);
+            });
+
+            test("@cypher double", () => {
+                const doc = gql`
+                    type User {
+                        id: ID
+                        post: [Post]
+                            @cypher(
+                                statement: """
+                                MATCH (u:User {id: 1})-[:HAS_POST]->(p:Post) RETURN p
+                                """
+                                columnName: "p"
+                            )
+                            @cypher(
+                                statement: """
+                                RETURN "test" AS p
+                                """
+                                columnName: "p"
+                            )
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'The directive "@cypher" can only be used once at this location.'
+                );
+            });
+
+            test("@query both on extension and object", () => {
+                const doc = gql`
+                    type User @query(read: false) {
+                        id: ID
+                        name: String
+                    }
+                    extend type User @query(read: false)
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'The directive "@query" can only be used once at this location.'
+                );
+            });
+
+            test("@query both on schema and object", () => {
+                const doc = gql`
+                    type User @query(read: false) {
+                        id: ID
+                        name: String
+                    }
+                    extend schema @query(read: false)
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @query can only be used in one location: either schema or type."
+                );
+            });
+        });
+    });
 });
 describe("validateDocument", () => {
     test("should throw an error if a directive is in the wrong location", () => {

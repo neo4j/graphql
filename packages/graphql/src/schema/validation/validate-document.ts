@@ -58,6 +58,7 @@ import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
 import { DirectiveArgumentValueValid } from "./custom-rules/directive-argument-value-is-valid";
 import type { IResolvers } from "@graphql-tools/utils";
+import { DirectiveCombinationValid, SchemaOrTypeDirectives } from "./custom-rules/valid-directive-combination";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
@@ -279,7 +280,12 @@ function getBaseSchema({
     // TODO: fix error on DirectiveArgumentOfCorrectType to add it back
     const errors = validateSDL(
         doc,
-        [...specifiedSDLRules, DirectiveArgumentValueValid(userCustomResolvers, extra, callbacks, validateResolvers)],
+        [
+            ...specifiedSDLRules,
+            DirectiveArgumentValueValid(userCustomResolvers, extra, callbacks, validateResolvers),
+            DirectiveCombinationValid(),
+            SchemaOrTypeDirectives(),
+        ],
         // DirectiveArgumentOfCorrectType],
         schemaToExtend
     );
