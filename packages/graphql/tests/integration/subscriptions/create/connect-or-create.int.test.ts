@@ -25,7 +25,7 @@ import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src";
 import { getQuerySource } from "../../../utils/get-query-source";
 import { UniqueType } from "../../../utils/graphql-types";
-import type { Neo4jGraphQLSubscriptionsMechanism } from "../../../../src/types";
+import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src/types";
 import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
 
 describe("Create -> ConnectOrCreate", () => {
@@ -33,7 +33,7 @@ describe("Create -> ConnectOrCreate", () => {
     let neo4j: Neo4j;
     let session: Session;
     let typeDefs: DocumentNode;
-    let plugin: Neo4jGraphQLSubscriptionsMechanism;
+    let plugin: Neo4jGraphQLSubscriptionsEngine;
 
     const typeMovie = new UniqueType("Movie");
     const typeActor = new UniqueType("Actor");

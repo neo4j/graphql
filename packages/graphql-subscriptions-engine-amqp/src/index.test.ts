@@ -18,16 +18,16 @@
  */
 
 import { EventEmitter } from "events";
-import { Neo4jGraphQLSubscriptionsAMQPPlugin } from ".";
+import { Neo4jGraphQLSubscriptionsEngineAMQP } from ".";
 
 describe("index", () => {
-    test("Neo4jGraphQLSubscriptionsAMQPPlugin", () => {
-        expect(Neo4jGraphQLSubscriptionsAMQPPlugin).toBeDefined();
+    test("Neo4jGraphQLSubscriptionsEngineAMQP", () => {
+        expect(Neo4jGraphQLSubscriptionsEngineAMQP).toBeDefined();
     });
 
-    test("Neo4jGraphQLSubscriptionsAMQPPlugin plugin interface", () => {
-        const plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
-            connection: "",
+    test("Neo4jGraphQLSubscriptionsEngineAMQP plugin interface", () => {
+        const plugin = new Neo4jGraphQLSubscriptionsEngineAMQP({
+            connection: ""
         });
 
         expect(plugin.events).toBeInstanceOf(EventEmitter);

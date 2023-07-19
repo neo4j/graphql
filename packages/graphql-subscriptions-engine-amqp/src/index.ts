@@ -18,7 +18,7 @@
  */
 
 import { EventEmitter } from "events";
-import type { Neo4jGraphQLSubscriptionsMechanism, SubscriptionsEvent } from "@neo4j/graphql";
+import type { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "@neo4j/graphql";
 import type { ConnectionOptions } from "./amqp-0-9-1-api";
 import { AmqpApi } from "./amqp-0-9-1-api";
 
@@ -29,7 +29,7 @@ const DEFAULT_VERSION: AmqpVersion = "0-9-1";
 
 type AmqpVersion = "0-9-1";
 
-export type Neo4jGraphQLSubscriptionsAMQPPluginConstructorOptions = {
+export type Neo4jGraphQLSubscriptionsEngineAMQPConstructorOptions = {
     connection: ConnectionOptions;
     amqpVersion?: AmqpVersion;
     exchange?: string;
@@ -37,12 +37,12 @@ export type Neo4jGraphQLSubscriptionsAMQPPluginConstructorOptions = {
     log?: boolean;
 };
 
-export class Neo4jGraphQLSubscriptionsAMQPPlugin implements Neo4jGraphQLSubscriptionsMechanism {
+export class Neo4jGraphQLSubscriptionsEngineAMQP implements Neo4jGraphQLSubscriptionsEngine {
     public events: EventEmitter;
     private amqpApi: AmqpApi<SubscriptionsEvent>;
     private connectionOptions: ConnectionOptions;
 
-    constructor(options: Neo4jGraphQLSubscriptionsAMQPPluginConstructorOptions) {
+    constructor(options: Neo4jGraphQLSubscriptionsEngineAMQPConstructorOptions) {
         const defaultOptions = { exchange: DEFAULT_EXCHANGE, amqpVersion: DEFAULT_VERSION, log: true };
         const finalOptions = { ...defaultOptions, ...options };
 
@@ -50,7 +50,7 @@ export class Neo4jGraphQLSubscriptionsAMQPPlugin implements Neo4jGraphQLSubscrip
         this.amqpApi = new AmqpApi({
             exchange: finalOptions.exchange,
             reconnectTimeout: finalOptions.reconnectTimeout,
-            log: finalOptions.log,
+            log: finalOptions.log
         });
         this.connectionOptions = options.connection;
     }

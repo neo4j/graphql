@@ -3788,9 +3788,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql-plugin-subscriptions-amqp@^2.0.0, @neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-plugin-subscriptions-amqp":
+"@neo4j/graphql-subscriptions-engine-amqp@^2.0.0, @neo4j/graphql-subscriptions-engine-amqp@workspace:packages/graphql-subscriptions-engine-amqp":
   version: 0.0.0-use.local
-  resolution: "@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-plugin-subscriptions-amqp"
+  resolution: "@neo4j/graphql-subscriptions-engine-amqp@workspace:packages/graphql-subscriptions-engine-amqp"
   dependencies:
     "@apollo/server": 4.7.5
     "@neo4j/graphql": ^3.15.0
@@ -8936,7 +8936,7 @@ __metadata:
   dependencies:
     "@apollo/server": ^4.7.0
     "@neo4j/graphql": ^3.15.0
-    "@neo4j/graphql-plugin-subscriptions-amqp": ^2.0.0
+    "@neo4j/graphql-subscriptions-engine-amqp": ^2.0.0
     amqplib: ^0.10.3
     express: ^4.17.3
     graphql-ws: ^5.7.0
@@ -20725,7 +20725,7 @@ __metadata:
   dependencies:
     "@apollo/server": ^4.7.0
     "@neo4j/graphql": ^3.15.0
-    "@neo4j/graphql-plugin-subscriptions-amqp": ^2.0.0
+    "@neo4j/graphql-subscriptions-engine-amqp": ^2.0.0
     concurrently: 8.2.0
     dotenv: ^16.0.3
     express: ^4.18.2

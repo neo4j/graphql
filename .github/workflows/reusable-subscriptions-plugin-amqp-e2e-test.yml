@@ -1,4 +1,4 @@
-name: "@neo4j/graphql-plugin-subscriptions-amqp E2E tests"
+name: "@neo4j/graphql-subscriptions-engine-amqp E2E tests"
 
 on:
   workflow_call:

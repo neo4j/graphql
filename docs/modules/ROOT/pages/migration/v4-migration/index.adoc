@@ -98,7 +98,7 @@ const neoSchema = new Neo4jGraphQL({
 The underlying subscription system has not changed.
 Custom behavior can be implemented the same way, by creating a class implementing the interface described in xref::subscriptions/mechanisms.adoc#custom-subscription[Subscription Mechanisms].
 
-However, if using TypeScript, the exported interface to implement these classes has been renamed from `Neo4jGraphQLSubscriptionsPlugin` to `Neo4jGraphQLSubscriptionsMechanism`.
+However, if using TypeScript, the exported interface to implement these classes has been renamed from `Neo4jGraphQLSubscriptionsPlugin` to `Neo4jGraphQLSubscriptionsEngine`.
 
 
 == Updated Directives

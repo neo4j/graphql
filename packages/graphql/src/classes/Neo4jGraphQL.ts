@@ -23,7 +23,7 @@ import type {
     Neo4jFeaturesSettings,
     StartupValidationConfig,
     ContextFeatures,
-    Neo4jGraphQLSubscriptionsMechanism,
+    Neo4jGraphQLSubscriptionsEngine,
 } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
@@ -346,7 +346,7 @@ class Neo4jGraphQL {
     }
 
     private parseNeo4jFeatures(features: Neo4jFeaturesSettings | undefined): ContextFeatures {
-        let subscriptionPlugin: Neo4jGraphQLSubscriptionsMechanism | undefined;
+        let subscriptionPlugin: Neo4jGraphQLSubscriptionsEngine | undefined;
         if (features?.subscriptions === true) {
             subscriptionPlugin = new Neo4jGraphQLSubscriptionsDefaultMechanism();
         } else {

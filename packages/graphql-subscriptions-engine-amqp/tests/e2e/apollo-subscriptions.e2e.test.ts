@@ -25,7 +25,7 @@ import type { TestGraphQLServer } from "./setup/apollo-server";
 import { ApolloTestServer } from "./setup/apollo-server";
 import { WebSocketTestClient } from "./setup/ws-client";
 import neo4j from "./setup/neo4j";
-import type { Neo4jGraphQLSubscriptionsAMQPPlugin } from "../../src";
+import type { Neo4jGraphQLSubscriptionsEngineAMQP } from "../../src";
 import { UniqueType } from "../utils/graphql-types";
 import createPlugin from "./setup/plugin";
 import getRabbitConnectionOptions from "./setup/rabbitmq";
@@ -38,7 +38,7 @@ describe("Apollo and RabbitMQ Subscription", () => {
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    let plugin: Neo4jGraphQLSubscriptionsAMQPPlugin;
+    let plugin: Neo4jGraphQLSubscriptionsEngineAMQP;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -58,8 +58,8 @@ describe("Apollo and RabbitMQ Subscription", () => {
             typeDefs,
             driver,
             features: {
-                subscriptions: plugin,
-            },
+                subscriptions: plugin
+            }
         });
 
         server = new ApolloTestServer(neoSchema);
@@ -99,15 +99,15 @@ describe("Apollo and RabbitMQ Subscription", () => {
             {
                 [typeMovie.operations.subscribe.created]: {
                     [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                    event: "CREATE",
-                },
+                    event: "CREATE"
+                }
             },
             {
                 [typeMovie.operations.subscribe.created]: {
                     [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
-                    event: "CREATE",
-                },
-            },
+                    event: "CREATE"
+                }
+            }
         ]);
     });
 
@@ -131,9 +131,9 @@ describe("Apollo and RabbitMQ Subscription", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                },
-            },
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" }
+                }
+            }
         ]);
     });
 
@@ -149,7 +149,7 @@ describe("Apollo and RabbitMQ Subscription", () => {
                             }
                         }
                     }
-                `,
+                `
             })
             .expect(200);
         return result;

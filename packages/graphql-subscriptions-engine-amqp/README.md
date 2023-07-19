@@ -1,4 +1,4 @@
-# @neo4j/graphql-plugin-subscriptions-amqp
+# @neo4j/graphql-subscriptions-engine-amqp
 
 Subscription plugin for `@neo4j/graphql`, currently supporting AMQP 0-9-1 brokers such as:
 
@@ -11,15 +11,15 @@ Subscription plugin for `@neo4j/graphql`, currently supporting AMQP 0-9-1 broker
 ## Installation
 
 ```
-npm install @neo4j/graphql-plugin-subscriptions-amqp
+npm install @neo4j/graphql-subscriptions-engine-amqp
 ```
 
 ## Usage
 
 ```javascript
-const { Neo4jGraphQLSubscriptionsAMQPPlugin } = require("@neo4j/graphql-plugin-subscriptions-amqp");
+const { Neo4jGraphQLSubscriptionsEngineAMQP } = require("@neo4j/graphql-subscriptions-engine-amqp");
 
-const plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
+const plugin = new Neo4jGraphQLSubscriptionsEngineAMQP({
     connection: {
         hostname: "localhost",
         username: "guest",

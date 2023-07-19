@@ -1,4 +1,4 @@
-const { Neo4jGraphQLSubscriptionsAMQPPlugin } = require("@neo4j/graphql-plugin-subscriptions-amqp");
+const { Neo4jGraphQLSubscriptionsEngineAMQP } = require("@neo4j/graphql-subscriptions-engine-amqp");
 const { Neo4jGraphQLSubscriptionsSingleInstancePlugin } = require("@neo4j/graphql");
 const { getEnvVariable } = require("./get-env-variable");
 
@@ -7,7 +7,7 @@ module.exports.createPlugin = async function () {
 
     let plugin;
     if (AMQP_URL) {
-        plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
+        plugin = new Neo4jGraphQLSubscriptionsEngineAMQP({
             connection: AMQP_URL,
             reconnectTimeout: 1000,
         });

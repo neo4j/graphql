@@ -1,5 +1,5 @@
-[[subscription-mechanisms]]
-= Mechanisms
+[[subscription-engines]]
+= Engines
 
 There are different ways to how a GraphQL subscription may be set along with `@neo4j/graphql` server.
 
@@ -23,9 +23,9 @@ This behavior enables a simple subscription system that will work on a single in
 == AMQP
 Using subscriptions on a server with multiple instances can be tricky, as described in xref::subscriptions/scaling.adoc[Horizontal Scaling]. 
 Therefore, the recommended approach is to use a PubSub system, which can be achieved with an AMQP broker such as link:https://www.rabbitmq.com/[RabbitMQ]. 
-This is supported by the link:https://www.npmjs.com/package/@neo4j/graphql-plugin-subscriptions-amqp[@neo4j/graphql-plugin-subscriptions-amqp] package.
+This is supported by the link:https://www.npmjs.com/package/@neo4j/graphql-subscriptions-engine-amqp[@neo4j/graphql-subscriptions-engine-amqp] package.
 
-The `@neo4j/graphql-plugin-subscriptions-amqp` plugin connects to message brokers through the `AMQP 0-9-1` protocol to distribute subscription events across all server instances. 
+The `@neo4j/graphql-subscriptions-engine-amqp` plugin connects to message brokers through the `AMQP 0-9-1` protocol to distribute subscription events across all server instances. 
 
 Some brokers supporting this protocol are:
 
@@ -36,7 +36,7 @@ Some brokers supporting this protocol are:
 The plugin can be installed with `npm`:
 
 ```sh
-npm install @neo4j/graphql-plugin-subscriptions-amqp
+npm install @neo4j/graphql-subscriptions-engine-amqp
 ```
 
 NOTE: AMQP 1.0 is **not** supported by this plugin.
@@ -47,9 +47,9 @@ The AMQP plugin should be instanced and passed to the `subscription` field in fe
 This will automatically enable the subscriptions with the AMQP broker as a message queue:
 
 ```javascript
-const { Neo4jGraphQLSubscriptionsAMQPPlugin } = require("@neo4j/graphql-plugin-subscriptions-amqp");
+const { Neo4jGraphQLSubscriptionsEngineAMQP } = require("@neo4j/graphql-subscriptions-engine-amqp");
 
-const amqpSubscription = new Neo4jGraphQLSubscriptionsAMQPPlugin({
+const amqpSubscription = new Neo4jGraphQLSubscriptionsEngineAMQP({
     connection: {
         hostname: "localhost",
         username: "guest",
@@ -84,8 +84,8 @@ Additionally, any option supported by link:https://www.npmjs.com/package/amqplib
 * **close(): Promise<void>**: Closes the connection and channel created, and unbinds the event emitter.
 
 [[custom-subscription]]
-== Custom Subscription Mechanism
-If none of the existing mechanisms is valid for your use case, you can create a new mechanism to connect to any broker you may need. 
+== Custom Subscription Engine
+If none of the existing engines is valid for your use case, you can create a new engine to connect to any broker you may need. 
 For that, you need to create a new class defining your messaging behavior and it must contain:
 
 * An `EventEmitter` property called `events` that should emit an event every time the broker sends a message.
@@ -97,7 +97,7 @@ In case you want to handle subscriptions using link:https://redis.io/[redis]:
 
 ```javascript
 // Note: This is an example of a custom subscription behavior and not a production ready redis implementation.
-class CustomRedisSubscriptionMechanism {
+class CustomRedisSubscriptionEngine {
     constructor(redisClient) {
         this.client = redisClient;
         this.events = new EventEmitter();
@@ -123,7 +123,7 @@ class CustomRedisSubscriptionMechanism {
 }
 
 const client = createClient(); // From https://www.npmjs.com/package/redis
-const redisSubscriptions = new CustomRedisSubscriptionMechanism(client)
+const redisSubscriptions = new CustomRedisSubscriptionEngine(client)
 
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
@@ -138,11 +138,11 @@ Note that extra properties and methods are often needed to handle the connection
 As long as the messages are sent to the broker in the `publish` method and that these messages are received and then emitted through the `events` property, the subscriptions will be properly handled.
 
 === Using Typescript
-If using Typescript, you may import the interface `Neo4jGraphQLSubscriptionsMechanism` to implement your own class.
+If using Typescript, you may import the interface `Neo4jGraphQLSubscriptionsEngine` to implement your own class.
 Ensure the API is correctly defined:
 
 ```typescript
-class CustomRedisMechanism implements Neo4jGraphQLSubscriptionsMechanism {}
+class CustomRedisEngine implements Neo4jGraphQLSubscriptionsEngine {}
 ```
 
 [NOTE]
