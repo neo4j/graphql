@@ -365,7 +365,7 @@ describe("GraphQL models", () => {
         // entities
         userEntity = schemaModel.getConcreteEntityModel("User") as ConcreteEntityModel;
         userAccounts = userEntity.relationships.get("accounts") as RelationshipModel;
-        accountEntity = schemaModel.getConcreteEntityModel("Account") as ConcreteEntityModel;
+        accountEntity = userAccounts.target as ConcreteEntityModel; 
 
         // user attributes
         id = userEntity?.attributes.get("id") as AttributeModel;
