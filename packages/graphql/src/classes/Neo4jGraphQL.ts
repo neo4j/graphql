@@ -19,12 +19,7 @@
 
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
-import type {
-    Neo4jFeaturesSettings,
-    StartupValidationConfig,
-    ContextFeatures,
-    Neo4jGraphQLSubscriptionsMechanism,
-} from "../types";
+import type { Neo4jFeaturesSettings, ContextFeatures, Neo4jGraphQLSubscriptionsMechanism } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
 import type Relationship from "./Relationship";
@@ -55,34 +50,19 @@ import { makeDocumentToAugment } from "../schema/make-document-to-augment";
 import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
 import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
 
-export interface Neo4jGraphQLConfig {
-    startupValidation?: StartupValidationConfig;
-}
-
-export type ValidationConfig = {
-    validateTypeDefs: boolean;
-    validateDuplicateRelationshipFields: boolean;
-};
-
 export interface Neo4jGraphQLConstructor {
     typeDefs: TypeSource;
     resolvers?: IExecutableSchemaDefinition["resolvers"];
     features?: Neo4jFeaturesSettings;
-    config?: Neo4jGraphQLConfig;
     driver?: Driver;
     debug?: boolean;
+    validate?: boolean;
 }
-
-export const defaultValidationConfig: ValidationConfig = {
-    validateTypeDefs: true,
-    validateDuplicateRelationshipFields: true,
-};
 
 class Neo4jGraphQL {
     private typeDefs: TypeSource;
     private resolvers?: IExecutableSchemaDefinition["resolvers"];
 
-    private config: Neo4jGraphQLConfig;
     private driver?: Driver;
     private features: ContextFeatures;
 
@@ -104,18 +84,19 @@ class Neo4jGraphQL {
     private authorization?: Neo4jGraphQLAuthorization;
 
     private debug?: boolean;
+    private validate: boolean;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, features, typeDefs, resolvers, debug } = input;
+        const { driver, features, typeDefs, resolvers, debug, validate = true } = input;
 
         this.driver = driver;
-        this.config = config;
         this.features = this.parseNeo4jFeatures(features);
 
         this.typeDefs = typeDefs;
         this.resolvers = resolvers;
 
         this.debug = debug;
+        this.validate = validate;
 
         this.checkEnableDebug();
 
@@ -296,14 +277,8 @@ class Neo4jGraphQL {
             throw new Error("Schema Model is not defined");
         }
 
-        const config = {
-            ...this.config,
-            callbacks: this.features?.populatedBy?.callbacks,
-        };
-
         const wrapResolverArgs: WrapResolverArguments = {
             driver: this.driver,
-            config,
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: this.schemaModel,
@@ -368,10 +343,8 @@ class Neo4jGraphQL {
         return new Promise((resolve) => {
             const initialDocument = this.getDocument(this.typeDefs);
 
-            const validationConfig = this.parseStartupValidationConfig();
-
-            if (validationConfig.validateTypeDefs) {
-                validateDocument({ document: initialDocument, validationConfig, features: this.features });
+            if (this.validate) {
+                validateDocument({ document: initialDocument, features: this.features });
             }
 
             const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
@@ -388,7 +361,7 @@ class Neo4jGraphQL {
                 userCustomResolvers: this.resolvers,
             });
 
-            if (validationConfig.validateTypeDefs) {
+            if (this.validate) {
                 validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwt: jwt?.type });
             }
 
@@ -413,12 +386,9 @@ class Neo4jGraphQL {
 
         const { directives, types } = subgraph.getValidationDefinitions();
 
-        const validationConfig = this.parseStartupValidationConfig();
-
-        if (validationConfig.validateTypeDefs) {
+        if (this.validate) {
             validateDocument({
                 document: initialDocument,
-                validationConfig,
                 features: this.features,
                 additionalDirectives: directives,
                 additionalTypes: types,
@@ -440,9 +410,7 @@ class Neo4jGraphQL {
             subgraph,
         });
 
-        if (validationConfig.validateTypeDefs) {
-            // validateUserDefinition(document, typeDefs, directives, types);
-            // if (validateTypeDefs) {
+        if (this.validate) {
             validateUserDefinition({
                 userDocument: document,
                 augmentedDocument: typeDefs,
@@ -464,25 +432,6 @@ class Neo4jGraphQL {
         });
 
         return this.composeSchema(schema);
-    }
-
-    private parseStartupValidationConfig(): ValidationConfig {
-        const validationConfig: ValidationConfig = { ...defaultValidationConfig };
-
-        if (this.config?.startupValidation === false) {
-            return {
-                validateTypeDefs: false,
-                validateDuplicateRelationshipFields: false,
-            };
-        }
-
-        if (typeof this.config?.startupValidation === "object") {
-            if (this.config?.startupValidation.typeDefs === false) validationConfig.validateTypeDefs = false;
-            if (this.config?.startupValidation.noDuplicateRelationshipFields === false)
-                validationConfig.validateDuplicateRelationshipFields = false;
-        }
-
-        return validationConfig;
     }
 
     private subscriptionMechanismSetup(): Promise<void> {

@@ -2495,7 +2495,7 @@ describe("Related Fields", () => {
         });
     });
 
-    test("should not throw an error for invalid type defs when startupValidation.typeDefs false", async () => {
+    test("should not throw an error for invalid type defs when validate is false", async () => {
         const typeDefs = gql`
             type ${Address} {
                 houseNumber: Int! @cypher(statement: "RETURN 12 AS number", columnName: "number")
@@ -2529,11 +2529,7 @@ describe("Related Fields", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers,
-            config: {
-                startupValidation: {
-                    typeDefs: false,
-                },
-            },
+            validate: false,
         });
 
         const query = `
