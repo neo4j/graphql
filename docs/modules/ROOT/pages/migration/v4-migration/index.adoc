@@ -44,7 +44,8 @@ neoSchema = new Neo4jGraphQL({
 
 [subscriptions-options]
 === Subscription options
-Subscriptions are no longer set as plugins, but as features.
+
+Subscriptions are no longer configured as a plugin, but as a feature within the `features` option.
 
 This means that, instead of:
 
@@ -69,37 +70,92 @@ const neoSchema = new Neo4jGraphQL({
 ```
 
 ==== Default subscriptions
+
 The class `Neo4jGraphQLSubscriptionsSingleInstancePlugin` is no longer exported. 
 Instead, the default subscriptions behavior can be enabled by setting the `subscriptions` option to `true` .
 
 Instead of:
 
-```javascript
+[source, javascript, indent=0]
+----
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     plugin: {
         subscriptions: new Neo4jGraphQLSubscriptionsSingleInstancePlugin(),
     },
 });
-```
+----
 
 The default subscriptions can be enabled with:
 
-```javascript
+[source, javascript, indent=0]
+----
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     features: {
         subscriptions: true
     },
 });
-```
+----
+
+==== Neo4j GraphQL Subscriptions AMQP package
+
+The name of the interface underlying the Subscriptions system has changed from `Neo4jGraphQLSubscriptionsPlugin` to `Neo4jGraphQLSubscriptionsEngine`. 
+If you were previously using the `@neo4j/graphql-plugins-subscriptions-amqp` package, this has been changed to `@neo4j/graphql-amqp-subscriptions-engine` to reflect this underlying change.
+
+Please uninstall the previous package and install the new one:
+
+[source, bash, indent=0]
+----
+npm uninstall @neo4j/graphql-plugins-subscriptions-amqp
+npm install @neo4j/graphql-amqp-subscriptions-engine
+----
+
+Please then update any imports from:
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQLSubscriptionsAMQPPlugin } from "@neo4j/graphql-plugins-subscriptions-amqp";
+----
+
+To:
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQLAMQPSubscriptionsEngine } from "@neo4j/graphql-amqp-subscriptions-engine";
+----
+
+Then change the instantiations from:
+
+[source, javascript, indent=0]
+----
+const plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
+    connection: {
+        hostname: "localhost",
+        username: "guest",
+        password: "guest",
+    },
+});
+----
+
+To:
+
+[source, javascript, indent=0]
+----
+const subscriptionsEngine = new Neo4jGraphQLAMQPSubscriptionsEngine({
+    connection: {
+        hostname: "localhost",
+        username: "guest",
+        password: "guest",
+    },
+});
+----
 
 ==== Custom Subscription Plugins
 The underlying subscription system has not changed.
-Custom behavior can be implemented the same way, by creating a class implementing the interface described in xref::subscriptions/mechanisms.adoc#custom-subscription[Subscription Mechanisms].
+Custom behavior can be implemented the same way, by creating a class implementing the interface described in xref::subscriptions/engines.adoc#custom-subscription[Subscriptions Engines].
 
-However, if using TypeScript, the exported interface to implement these classes has been renamed from `Neo4jGraphQLSubscriptionsPlugin` to `Neo4jGraphQLSubscriptionsMechanism`.
-
+However, if using TypeScript, the exported interface to implement these classes has been renamed from `Neo4jGraphQLSubscriptionsPlugin` to `Neo4jGraphQLSubscriptionsEngine`.
 
 == Updated Directives
 

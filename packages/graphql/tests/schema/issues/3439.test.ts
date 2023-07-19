@@ -21,7 +21,7 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { validateSchema } from "graphql";
 
 describe("https://github.com/neo4j/graphql/issues/3439", () => {
@@ -58,8 +58,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const subscriptionsMechanism = new TestSubscriptionsMechanism();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsMechanism } });
+        const subscriptionsEngine = new TestSubscriptionsEngine();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsEngine } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -1306,8 +1306,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const subscriptionsMechanism = new TestSubscriptionsMechanism();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsMechanism } });
+        const subscriptionsEngine = new TestSubscriptionsEngine();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsEngine } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -2475,8 +2475,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const subscriptionsMechanism = new TestSubscriptionsMechanism();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsMechanism } });
+        const subscriptionsEngine = new TestSubscriptionsEngine();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsEngine } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);

@@ -19,7 +19,7 @@
 
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
-import type { Neo4jFeaturesSettings, ContextFeatures, Neo4jGraphQLSubscriptionsMechanism } from "../types";
+import type { Neo4jFeaturesSettings, ContextFeatures, Neo4jGraphQLSubscriptionsEngine } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
 import type Relationship from "./Relationship";
@@ -48,7 +48,7 @@ import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
 import { makeDocumentToAugment } from "../schema/make-document-to-augment";
 import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
-import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./Neo4jGraphQLSubscriptionsDefaultEngine";
 
 export interface Neo4jGraphQLConstructor {
     typeDefs: TypeSource;
@@ -286,9 +286,9 @@ class Neo4jGraphQL {
     }
 
     private parseNeo4jFeatures(features: Neo4jFeaturesSettings | undefined): ContextFeatures {
-        let subscriptionPlugin: Neo4jGraphQLSubscriptionsMechanism | undefined;
+        let subscriptionPlugin: Neo4jGraphQLSubscriptionsEngine | undefined;
         if (features?.subscriptions === true) {
-            subscriptionPlugin = new Neo4jGraphQLSubscriptionsDefaultMechanism();
+            subscriptionPlugin = new Neo4jGraphQLSubscriptionsDefaultEngine();
         } else {
             subscriptionPlugin = features?.subscriptions || undefined;
         }

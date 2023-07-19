@@ -20,13 +20,13 @@
 import type { GraphQLFieldMap } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("@subscription directive", () => {
-    let subscriptionPlugin: TestSubscriptionsMechanism;
+    let subscriptionPlugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        subscriptionPlugin = new TestSubscriptionsMechanism();
+        subscriptionPlugin = new TestSubscriptionsEngine();
     });
 
     describe("on OBJECT", () => {

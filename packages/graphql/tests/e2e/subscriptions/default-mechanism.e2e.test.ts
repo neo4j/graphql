@@ -27,12 +27,12 @@ import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
 import { delay } from "../../../src/utils/utils";
 import { UniqueType } from "../../utils/graphql-types";
-import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "../../../src/classes/Neo4jGraphQLSubscriptionsDefaultMechanism";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/Neo4jGraphQLSubscriptionsDefaultEngine";
 
 describe("Single instance Subscription", () => {
     let neo4j: Neo4j;
     let driver: Driver;
-    let plugin: Neo4jGraphQLSubscriptionsDefaultMechanism;
+    let plugin: Neo4jGraphQLSubscriptionsDefaultEngine;
 
     const typeMovie = new UniqueType("Movie");
 
@@ -52,7 +52,7 @@ describe("Single instance Subscription", () => {
     let wsClient2: WebSocketTestClient;
 
     beforeAll(async () => {
-        plugin = new Neo4jGraphQLSubscriptionsDefaultMechanism();
+        plugin = new Neo4jGraphQLSubscriptionsDefaultEngine();
         const typeDefs = `
          type ${typeMovie} {
              title: String

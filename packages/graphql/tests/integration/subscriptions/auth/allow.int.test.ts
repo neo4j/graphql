@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
 import { createBearerToken } from "../../../utils/create-bearer-token";
@@ -31,7 +31,7 @@ describe("auth/allow", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
-    let plugin: TestSubscriptionsMechanism;
+    let plugin: TestSubscriptionsEngine;
     const secret = "secret";
 
     let userType: UniqueType;
@@ -53,7 +53,7 @@ describe("auth/allow", () => {
         commentType = new UniqueType("Comment");
 
         session = await neo4j.getSession();
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
     });
 
     afterEach(async () => {

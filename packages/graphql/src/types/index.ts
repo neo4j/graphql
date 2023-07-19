@@ -407,7 +407,7 @@ export type RelationshipSubscriptionsEvent =
 export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
 
 /** Defines a custom mechanism to transport subscription events internally between servers */
-export interface Neo4jGraphQLSubscriptionsMechanism {
+export interface Neo4jGraphQLSubscriptionsEngine {
     events: EventEmitter;
 
     publish(eventMeta: SubscriptionsEvent): Promise<void> | void;
@@ -468,7 +468,7 @@ export type Neo4jFeaturesSettings = {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
-    subscriptions?: Neo4jGraphQLSubscriptionsMechanism | boolean;
+    subscriptions?: Neo4jGraphQLSubscriptionsEngine | boolean;
 };
 
 /** Parsed features used in context */
@@ -476,7 +476,7 @@ export type ContextFeatures = {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
-    subscriptions?: Neo4jGraphQLSubscriptionsMechanism;
+    subscriptions?: Neo4jGraphQLSubscriptionsEngine;
 };
 
 export type PredicateReturn = {

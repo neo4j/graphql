@@ -15,7 +15,7 @@
         "@neo4j/introspector": "1.0.2",
         "@neo4j/graphql-ogm": "3.14.1",
         "@neo4j/package-tests": "1.0.0",
-        "@neo4j/graphql-plugin-subscriptions-amqp": "1.0.0"
+        "@neo4j/graphql-amqp-subscriptions-engine": "1.0.0"
     },
     "changesets": []
 }

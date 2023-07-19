@@ -26,7 +26,7 @@ import * as directives from "./graphql/directives";
 import * as scalars from "./graphql/scalars";
 const objects = { Point, CartesianPoint };
 
-import { Neo4jGraphQLSubscriptionsMechanism, SubscriptionsEvent } from "./types";
+import { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "./types";
 
 /**
  * Core library functionality.
@@ -41,4 +41,4 @@ export { directives, scalars, objects };
 /**
  * Allows for the implementation of custom subscriptions mechanisms.
  */
-export { Neo4jGraphQLSubscriptionsMechanism, SubscriptionsEvent };
+export { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent };

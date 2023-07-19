@@ -30,7 +30,6 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
     const teamType = new UniqueType("Team");
     const mitigationStateType = new UniqueType("MitigationState");
 
-    const secret = "secret";
     let schema: GraphQLSchema;
     let driver: Driver;
     let neo4j: Neo4j;

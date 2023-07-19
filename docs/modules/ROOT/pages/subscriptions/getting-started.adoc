@@ -34,7 +34,7 @@ import bodyParser from 'body-parser';
 import cors from "cors";
 import { createServer } from "http";
 import neo4j from 'neo4j-driver';
-import { Neo4jGraphQL, Neo4jGraphQLSubscriptionsSingleInstancePlugin } from '@neo4j/graphql';
+import { Neo4jGraphQL } from '@neo4j/graphql';
 import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import express from 'express';
