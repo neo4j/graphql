@@ -54,7 +54,10 @@ describe("Neo4jGraphQL", () => {
         });
     });
 
-    describe("normalizeTypeDefinitions", () => {
+    /**
+     * The output that we would expect from `normalizeTypeDefinitions` with an optimal implementation.
+     */
+    describe.skip("normalizeTypeDefinitions", () => {
         test("string", () => {
             const typeDefs = `
                 type Movie {

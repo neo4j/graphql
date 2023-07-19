@@ -222,19 +222,22 @@ class Neo4jGraphQL {
      * @returns {DocumentNode} The normalized type definitons as a document.
      */
     private normalizeTypeDefinitions(typeDefinitions: TypeDefinitions): DocumentNode {
-        if (typeof typeDefinitions === "function") {
-            return this.normalizeTypeDefinitions(typeDefinitions());
-        }
+        // TODO: The dream: minimal modification of the type definitions. However, this does not merge extensions, which we can't currently deal with in translation.
+        // if (typeof typeDefinitions === "function") {
+        //     return this.normalizeTypeDefinitions(typeDefinitions());
+        // }
 
-        if (typeof typeDefinitions === "string") {
-            return parse(typeDefinitions);
-        }
+        // if (typeof typeDefinitions === "string") {
+        //     return parse(typeDefinitions);
+        // }
 
-        if (Array.isArray(typeDefinitions)) {
-            return mergeTypeDefs(typeDefinitions);
-        }
+        // if (Array.isArray(typeDefinitions)) {
+        //     return mergeTypeDefs(typeDefinitions);
+        // }
 
-        return typeDefinitions;
+        // return typeDefinitions;
+
+        return mergeTypeDefs(typeDefinitions);
     }
 
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
