@@ -23,7 +23,7 @@ import { Neo4jGraphQLSubscriptionsEngineAMQP } from "../../../src";
 export default function createPlugin(connection: amqp.Options.Connect): Neo4jGraphQLSubscriptionsEngineAMQP {
     const plugin = new Neo4jGraphQLSubscriptionsEngineAMQP({
         exchange: "neo4j-graphql",
-        connection
+        connection,
     });
 
     return plugin;

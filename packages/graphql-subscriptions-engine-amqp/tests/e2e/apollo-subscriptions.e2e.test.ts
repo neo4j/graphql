@@ -58,8 +58,8 @@ describe("Apollo and RabbitMQ Subscription", () => {
             typeDefs,
             driver,
             features: {
-                subscriptions: plugin
-            }
+                subscriptions: plugin,
+            },
         });
 
         server = new ApolloTestServer(neoSchema);
@@ -99,15 +99,15 @@ describe("Apollo and RabbitMQ Subscription", () => {
             {
                 [typeMovie.operations.subscribe.created]: {
                     [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                    event: "CREATE"
-                }
+                    event: "CREATE",
+                },
             },
             {
                 [typeMovie.operations.subscribe.created]: {
                     [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
-                    event: "CREATE"
-                }
-            }
+                    event: "CREATE",
+                },
+            },
         ]);
     });
 
@@ -131,9 +131,9 @@ describe("Apollo and RabbitMQ Subscription", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" }
-                }
-            }
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                },
+            },
         ]);
     });
 
@@ -149,7 +149,7 @@ describe("Apollo and RabbitMQ Subscription", () => {
                             }
                         }
                     }
-                `
+                `,
             })
             .expect(200);
         return result;

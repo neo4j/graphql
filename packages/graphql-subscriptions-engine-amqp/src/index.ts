@@ -50,7 +50,7 @@ export class Neo4jGraphQLSubscriptionsEngineAMQP implements Neo4jGraphQLSubscrip
         this.amqpApi = new AmqpApi({
             exchange: finalOptions.exchange,
             reconnectTimeout: finalOptions.reconnectTimeout,
-            log: finalOptions.log
+            log: finalOptions.log,
         });
         this.connectionOptions = options.connection;
     }

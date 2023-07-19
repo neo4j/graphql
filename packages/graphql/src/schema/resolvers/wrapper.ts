@@ -53,7 +53,6 @@ let neo4jDatabaseInfo: Neo4jDatabaseInfo;
 export const wrapResolver =
     ({
         driver,
-        config,
         nodes,
         relationships,
         jwtPayloadFieldsMap,

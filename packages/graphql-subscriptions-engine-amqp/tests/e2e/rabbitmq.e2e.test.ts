@@ -41,13 +41,13 @@ describe("Subscriptions RabbitMQ Integration", () => {
                 event: "create",
                 properties: {
                     new: {
-                        prop: "arthur"
+                        prop: "arthur",
                     },
-                    old: undefined
+                    old: undefined,
                 },
                 id: 2,
                 timestamp: 2,
-                typename: "test"
+                typename: "test",
             };
 
             plugin.events.on("create", (msg) => {
