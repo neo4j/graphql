@@ -81,7 +81,7 @@ export class OperationsFactory {
 
         const projectionFields = { ...resolveTree.fieldsByTypeName[relationship.getAggregationFieldTypename()] };
         const edgeRawFields = {
-            ...projectionFields.edges?.fieldsByTypeName[relationship.getAggregationFieldTypename("edge")],
+            ...projectionFields.edge?.fieldsByTypeName[relationship.getAggregationFieldTypename("edge")],
         };
         const nodeRawFields = {
             ...projectionFields.node?.fieldsByTypeName[relationship.getAggregationFieldTypename("node")],
@@ -95,7 +95,7 @@ export class OperationsFactory {
         const operation = new AggregationOperation(relationship, Boolean(resolveTree.args?.directed ?? true));
         const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
         const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
-
+        const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
         let filters: Filter[];
         if (relationship instanceof Relationship) {
             filters = this.filterFactory.createRelationshipFilters(relationship, whereArgs);
@@ -104,6 +104,7 @@ export class OperationsFactory {
         }
         operation.setFields(fields);
         operation.setNodeFields(nodeFields);
+        operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
 
         const options = resolveTree.args.options as GraphQLOptionsArg | undefined;

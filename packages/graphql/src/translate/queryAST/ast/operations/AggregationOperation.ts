@@ -27,9 +27,9 @@ import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
 import type { PropertySort } from "../sort/PropertySort";
 import type { QueryASTNode } from "../QueryASTNode";
-import { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
+import type { Relationship } from "../../../../schema-model/relationship/Relationship";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
@@ -38,6 +38,7 @@ export class AggregationOperation extends Operation {
 
     public fields: AggregationField[] = []; // Aggregation fields
     public nodeFields: AggregationField[] = []; // Aggregation node fields
+    public edgeFields: AggregationField[] = []; // Aggregation node fields
 
     public aggregationProjectionMap = new Cypher.Map();
 
@@ -77,29 +78,29 @@ export class AggregationOperation extends Operation {
         entity: Relationship,
         field: AggregationField,
         pattern: Cypher.Pattern,
-        targetNode: Cypher.Node,
+        target: Cypher.Variable,
         { returnVariable, parentNode }: OperationTranspileOptions
     ): Cypher.Clause {
         const matchClause = new Cypher.Match(pattern);
-        const filterPredicates = this.getPredicates(targetNode);
+        const filterPredicates = this.getPredicates(target);
 
         if (filterPredicates) {
             matchClause.where(filterPredicates);
         }
         // const subqueries = Cypher.concat(...this.getFieldsSubqueries(targetNode));
-        const ret = this.getFieldProjectionClause(targetNode, returnVariable, field);
+        const ret = this.getFieldProjectionClause(target, returnVariable, field);
         // const ret = new Cypher.With([projection, targetNode]).return([Cypher.collect(targetNode), returnVariable]);
 
         let sortClause: Cypher.With | undefined;
         if (this.sortFields.length > 0 || this.pagination) {
             sortClause = new Cypher.With("*");
-            this.addSortToClause(targetNode, sortClause);
+            this.addSortToClause(target, sortClause);
         }
         // return Cypher.concat(matchClause, subqueries, sortClause, ret);
         return Cypher.concat(matchClause, sortClause, ret);
     }
 
-    public transpileNestedRelationship(
+    private transpileNestedRelationship(
         // Create new Clause per field
         entity: Relationship,
         { parentNode }: OperationTranspileOptions
@@ -123,50 +124,37 @@ export class AggregationOperation extends Operation {
         });
 
         const nodeMap = new Cypher.Map();
+        const edgeMap = new Cypher.Map();
         const nodeFieldSubqueries = this.nodeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
             nodeMap.set(f.getProjectionField(returnVariable));
             return this.createSubquery(entity, f, pattern, targetNode, { returnVariable, parentNode });
         });
-
-        if (nodeMap.size > 0) {
-            this.aggregationProjectionMap.set("node", nodeMap);
-        }
-
-        return [...fieldSubqueries, ...nodeFieldSubqueries];
-    }
-
-    protected getProjectionClause(target: Cypher.Node, returnVariable: Cypher.Variable): Cypher.Return {
-        const nodeMap = new Cypher.Map();
-        this.fields
-            .map((f) => f.getProjectionField(returnVariable))
-            .forEach((fields) => {
-                this.aggregationProjectionMap.set(fields);
-            });
-        this.nodeFields
-            .map((f) => f.getProjectionField(returnVariable))
-            .forEach((fields) => {
-                nodeMap.set(fields);
-            });
-        if (nodeMap.size > 0) {
-            this.aggregationProjectionMap.set("node", nodeMap);
-        }
-
-        const aggExpr = this.fields.map((f) => {
-            return f.getAggregationExpr(target);
+        const edgeFieldSubqueries = this.edgeFields.map((f) => {
+            const returnVariable = new Cypher.Variable();
+            edgeMap.set(f.getProjectionField(returnVariable));
+            return this.createSubquery(entity, f, pattern, relVar, { returnVariable, parentNode });
         });
 
-        return new Cypher.Return([aggExpr[0] as any, returnVariable]);
+        if (nodeMap.size > 0) {
+            this.aggregationProjectionMap.set("node", nodeMap);
+        }
+        if (edgeMap.size > 0) {
+            this.aggregationProjectionMap.set("edge", edgeMap);
+        }
+
+        return [...fieldSubqueries, ...nodeFieldSubqueries, ...edgeFieldSubqueries];
     }
+
     protected getFieldProjectionClause(
-        target: Cypher.Node,
+        target: Cypher.Variable,
         returnVariable: Cypher.Variable,
         field: AggregationField
     ): Cypher.Clause {
         return field.getAggregationProjection(target, returnVariable);
     }
 
-    private getPredicates(target: Cypher.Node): Cypher.Predicate | undefined {
+    private getPredicates(target: Cypher.Variable): Cypher.Predicate | undefined {
         return Cypher.and(...this.filters.map((f) => f.getPredicate(target)));
     }
 
@@ -175,34 +163,7 @@ export class AggregationOperation extends Operation {
         return this.transpileNestedRelationship(this.entity as Relationship, { returnVariable, parentNode });
     }
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause {
-        if (this.entity instanceof Relationship) {
-            return Cypher.concat(...this.transpileNestedRelationship(this.entity, { returnVariable, parentNode }));
-        }
-        const node = createNodeFromEntity(this.entity, this.nodeAlias);
-
-        const filterPredicates = this.getPredicates(node);
-        const projectionFields = this.fields.map((f) => f.getProjectionField(node));
-        const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField());
-
-        const projection = this.getProjectionMap(
-            node,
-            Array.from(new Set([...projectionFields, ...sortProjectionFields])) // TODO remove duplicates
-        );
-
-        const matchClause = new Cypher.Match(node);
-        if (filterPredicates) {
-            matchClause.where(filterPredicates);
-        }
-        const subqueries = Cypher.concat(...this.getFieldsSubqueries(node));
-
-        const ret = new Cypher.Return([projection, returnVariable]);
-
-        let sortClause: Cypher.With | undefined;
-        if (this.sortFields.length > 0 || this.pagination) {
-            sortClause = new Cypher.With("*");
-            this.addSortToClause(node, sortClause);
-        }
-        return Cypher.concat(matchClause, subqueries, sortClause, ret);
+        return Cypher.concat(...this.transpile2({ returnVariable, parentNode }));
     }
 
     protected getFieldsSubqueries(node: Cypher.Node): Cypher.Clause[] {
@@ -215,24 +176,7 @@ export class AggregationOperation extends Operation {
         });
     }
 
-    private getProjectionMap(
-        node: Cypher.Node,
-        projectionFields: Array<string | Record<string, Cypher.Expr>>
-    ): Cypher.MapProjection {
-        const stringFields: string[] = [];
-        let otherFields: Record<string, Cypher.Expr> = {};
-
-        for (const field of projectionFields) {
-            if (typeof field === "string") stringFields.push(field);
-            else {
-                otherFields = { ...otherFields, ...field };
-            }
-        }
-
-        return new Cypher.MapProjection(node, stringFields, otherFields);
-    }
-
-    private addSortToClause(node: Cypher.Node, clause: Cypher.With | Cypher.Return): void {
+    private addSortToClause(node: Cypher.Variable, clause: Cypher.With | Cypher.Return): void {
         const orderByFields = this.sortFields.flatMap((f) => f.getSortFields(node));
         const pagination = this.pagination ? this.pagination.getPagination() : undefined;
         clause.orderBy(...orderByFields);
@@ -247,5 +191,9 @@ export class AggregationOperation extends Operation {
 
     public setNodeFields(fields: AggregationField[]) {
         this.nodeFields = fields;
+    }
+
+    public setEdgeFields(fields: AggregationField[]) {
+        this.edgeFields = fields;
     }
 }
