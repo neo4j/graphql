@@ -72,7 +72,6 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         return acc;
     }, {});
 
-    // init interface to typeNames map
     // hydrate interface to typeNames map
     hydrateInterfacesToTypeNamesMap(definitionCollection);
 
@@ -102,9 +101,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         );
     });
 
-    const schemaDirectives = definitionCollection.schemaDirectives;
-
-    const annotations = createSchemaModelAnnotations(schemaDirectives);
+    const annotations = createSchemaModelAnnotations(definitionCollection.schemaDirectives);
 
     const schema = new Neo4jGraphQLSchemaModel({
         compositeEntities: [...unionEntities, ...interfaceEntities],
@@ -112,7 +109,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         operations,
         annotations,
     });
-
+    definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
     return schema;
 }
 
