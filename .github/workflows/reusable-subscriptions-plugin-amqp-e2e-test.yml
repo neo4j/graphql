@@ -45,9 +45,9 @@ jobs:
         run: yarn --immutable
       - name: Overwrite GraphQL version
         run: yarn up --exact graphql@${{ matrix.graphql-version }}
-      - name: Run packages/plugins/graphql-plugin-subscriptions-amqp e2e tests
+      - name: Run packages/graphql-subscriptions-engine-amqp e2e tests
         run: yarn run test:e2e --coverage
-        working-directory: packages/plugins/graphql-plugin-subscriptions-amqp
+        working-directory: packages/graphql-subscriptions-engine-amqp
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: mypassword
@@ -58,5 +58,5 @@ jobs:
       - name: Archive coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: e2e-coverage-graphql-plugin-subscriptions-amqp
-          path: packages/plugins/graphql-plugin-subscriptions-amqp/coverage/
+          name: e2e-coverage-graphql-subscriptions-engine-amqp
+          path: packages/graphql-subscriptions-engine-amqp/coverage/

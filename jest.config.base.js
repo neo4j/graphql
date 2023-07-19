@@ -19,7 +19,7 @@ module.exports = {
         "@neo4j/introspector(.*)$": "<rootDir>/packages/introspector/src/$1",
         "@neo4j/graphql-ogm(.*)$": "<rootDir>/packages/ogm/src/$1",
         "@neo4j/graphql-subscriptions-engine-amqp(.*)$":
-            "<rootDir>/packages/plugins/graphql-plugin-subscriptions-amqp/src/$1",
+            "<rootDir>/packages/graphql-subscriptions-engine-amqp/src/$1",
         "@neo4j/graphql(.*)$": "<rootDir>/packages/graphql/src/$1",
     },
     snapshotFormat: {
