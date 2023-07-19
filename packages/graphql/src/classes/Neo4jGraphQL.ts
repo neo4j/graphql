@@ -61,7 +61,6 @@ export interface Neo4jGraphQLConfig {
 
 export type ValidationConfig = {
     validateTypeDefs: boolean;
-    validateResolvers: boolean;
     validateDuplicateRelationshipFields: boolean;
 };
 
@@ -76,7 +75,6 @@ export interface Neo4jGraphQLConstructor {
 
 export const defaultValidationConfig: ValidationConfig = {
     validateTypeDefs: true,
-    validateResolvers: true,
     validateDuplicateRelationshipFields: true,
 };
 
@@ -224,8 +222,6 @@ class Neo4jGraphQL {
 
             const { typeDefs } = makeAugmentedSchema(document, {
                 features: this.features,
-                // enableRegex: false,
-                validateResolvers: true,
                 generateSubscriptions: true,
                 userCustomResolvers: undefined,
             });
@@ -388,7 +384,6 @@ class Neo4jGraphQL {
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
-                validateResolvers: validationConfig.validateResolvers,
                 generateSubscriptions: Boolean(this.features?.subscriptions),
                 userCustomResolvers: this.resolvers,
             });
@@ -440,7 +435,6 @@ class Neo4jGraphQL {
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
-            validateResolvers: validationConfig.validateResolvers,
             generateSubscriptions: Boolean(this.features?.subscriptions),
             userCustomResolvers: this.resolvers,
             subgraph,
@@ -478,14 +472,12 @@ class Neo4jGraphQL {
         if (this.config?.startupValidation === false) {
             return {
                 validateTypeDefs: false,
-                validateResolvers: false,
                 validateDuplicateRelationshipFields: false,
             };
         }
 
         if (typeof this.config?.startupValidation === "object") {
             if (this.config?.startupValidation.typeDefs === false) validationConfig.validateTypeDefs = false;
-            if (this.config?.startupValidation.resolvers === false) validationConfig.validateResolvers = false;
             if (this.config?.startupValidation.noDuplicateRelationshipFields === false)
                 validationConfig.validateDuplicateRelationshipFields = false;
         }

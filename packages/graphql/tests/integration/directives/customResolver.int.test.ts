@@ -280,13 +280,25 @@ describe("@customResolver directive", () => {
             });
         });
     });
+
     describe("Custom resolver checks", () => {
+        let warn: jest.SpyInstance;
+
+        beforeEach(() => {
+            warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        });
+
+        afterEach(() => {
+            warn.mockReset();
+        });
+
         test("Check throws error if customResolver is not provided", async () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            await expect(async () => {
-                await neoSchema.getSchema();
-            }).rejects.toThrow(`Custom resolver for ${customResolverField} has not been provided`);
+            await neoSchema.getSchema();
+
+            expect(warn).toHaveBeenCalledWith(`Custom resolver for ${customResolverField} has not been provided`);
         });
+
         test("Check throws error if custom resolver defined for interface", async () => {
             const interfaceType = new UniqueType("UserInterface");
             const typeDefs = `
@@ -309,9 +321,8 @@ describe("@customResolver directive", () => {
                 },
             };
             const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
-            await expect(async () => {
-                await neoSchema.getSchema();
-            }).rejects.toThrow(`Custom resolver for ${customResolverField} has not been provided`);
+            await neoSchema.getSchema();
+            expect(warn).toHaveBeenCalledWith(`Custom resolver for ${customResolverField} has not been provided`);
         });
     });
 });

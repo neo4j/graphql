@@ -191,131 +191,27 @@ describe("Startup Validation", () => {
         await expect(neoSchema.getSchema()).rejects.toThrow(invalidTypeDefsError);
     });
 
-    test("should throw an error for missing custom resolvers by default", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs: customResolverTypeDefs,
-            driver,
+    describe("@customResolver", () => {
+        let warn: jest.SpyInstance;
+
+        beforeEach(() => {
+            warn = jest.spyOn(console, "warn").mockImplementation(() => {});
         });
 
-        await expect(neoSchema.getSchema()).rejects.toThrow(missingCustomResolverError);
-    });
-
-    test("should not throw an error for missing custom resolvers when startupValidation is false", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs: customResolverTypeDefs,
-            driver,
-            config: {
-                startupValidation: false,
-            },
+        afterEach(() => {
+            warn.mockReset();
         });
 
-        await expect(neoSchema.getSchema()).resolves.not.toThrow();
-    });
+        test("should warn for missing custom resolvers", async () => {
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs: customResolverTypeDefs,
+                driver,
+            });
 
-    test("should throw an error for missing custom resolvers when startupValidation is true", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs: customResolverTypeDefs,
-            driver,
-            config: {
-                startupValidation: true,
-            },
+            await neoSchema.getSchema();
+
+            expect(warn).toHaveBeenCalledWith(missingCustomResolverError);
         });
-
-        await expect(neoSchema.getSchema()).rejects.toThrow(missingCustomResolverError);
-    });
-
-    test("should not throw an error for missing custom resolvers when startupValidation.customResolver is false", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs: customResolverTypeDefs,
-            driver,
-            config: {
-                startupValidation: {
-                    typeDefs: false,
-                    resolvers: false,
-                },
-            },
-        });
-
-        await expect(neoSchema.getSchema()).resolves.not.toThrow();
-    });
-
-    test("should throw an error for missing custom resolvers when startupValidation.customResolver is true", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs: customResolverTypeDefs,
-            driver,
-            config: {
-                startupValidation: {
-                    typeDefs: true,
-                    resolvers: true,
-                },
-            },
-        });
-
-        await expect(neoSchema.getSchema()).rejects.toThrow(missingCustomResolverError);
-    });
-
-    test("should throw an error for missing custom resolvers by default when startupValidation is an object", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs: customResolverTypeDefs,
-            driver,
-            config: {
-                startupValidation: {
-                    typeDefs: false,
-                },
-            },
-        });
-
-        await expect(neoSchema.getSchema()).rejects.toThrow(missingCustomResolverError);
-    });
-
-    test("should throw an error for both type defs and custom resolvers by default", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs: invalidAndCustomResolverTypeDefs,
-            driver,
-            config: {
-                startupValidation: true,
-            },
-        });
-
-        await expect(neoSchema.getSchema()).rejects.toThrow(invalidTypeDefsError);
-    });
-
-    test("should throw an error for both type defs and custom resolvers when startupValidation is true", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs: invalidAndCustomResolverTypeDefs,
-            driver,
-            config: {
-                startupValidation: true,
-            },
-        });
-
-        await expect(neoSchema.getSchema()).rejects.toThrow(invalidTypeDefsError);
-    });
-
-    test("should not throw an error for both type defs and custom resolvers when startupValidation is false", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs: invalidAndCustomResolverTypeDefs,
-            driver,
-            config: {
-                startupValidation: false,
-            },
-        });
-
-        await expect(neoSchema.getSchema()).resolves.not.toThrow();
-    });
-
-    test("should only throw an error for missing custom resolvers when startupValidation.typeDefs is false", async () => {
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs: invalidAndCustomResolverTypeDefs,
-            driver,
-            config: {
-                startupValidation: {
-                    typeDefs: false,
-                },
-            },
-        });
-
-        await expect(neoSchema.getSchema()).rejects.toThrow(missingCustomResolverError);
     });
 
     test("should only throw an error for invalid type defs when startupValidation.customResolvers is false", async () => {
