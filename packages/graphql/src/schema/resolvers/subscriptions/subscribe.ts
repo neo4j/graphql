@@ -23,10 +23,13 @@ import { Neo4jGraphQLError } from "../../../classes";
 import type Node from "../../../classes/Node";
 import type { NodeSubscriptionsEvent, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
-import { SubscriptionAuth } from "./subscription-auth";
 import type { SubscriptionEventType, SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where/where";
+import { subscriptionAuthorization } from "./where/authorization";
+import type { GraphQLResolveInfo } from "graphql";
+import { checkAuthentication } from "./authentication/check-authentication";
+import { checkAuthenticationOnSelectionSet } from "./authentication/check-authentication-selection-set";
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) {
@@ -50,25 +53,28 @@ export function generateSubscribeMethod({
     nodes?: Node[];
     relationshipFields?: Map<string, ObjectFields>;
 }) {
-    return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
-        if (node.auth) {
-            const authRules = node.auth.getRules(["SUBSCRIBE"]);
-            for (const rule of authRules) {
-                if (!SubscriptionAuth.validateAuthenticationRule(rule, context)) {
-                    throw new Error("Error, request not authenticated");
-                }
-                if (!SubscriptionAuth.validateRolesRule(rule, context)) {
-                    throw new Error("Error, request not authorized");
-                }
-            }
+    return (
+        _root: any,
+        args: SubscriptionArgs,
+        context: SubscriptionContext,
+        resolveInfo: GraphQLResolveInfo
+    ): AsyncIterator<[SubscriptionsEvent]> => {
+        checkAuthenticationOnSelectionSet(resolveInfo, node, type, context);
+        const entities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
+        const concreteEntity = entities[0];
+
+        if (!concreteEntity) {
+            throw new Error("Could not find entity");
         }
 
-        const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
+        checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
 
+        const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
         if (["create", "update", "delete"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 return (
                     (data[0] as NodeSubscriptionsEvent).typename === node.name &&
+                    subscriptionAuthorization({ event: data[0], node, entity: concreteEntity, context }) &&
                     subscriptionWhere({ where: args.where, event: data[0], node }) &&
                     updateDiffFilter(data[0])
                 );
@@ -83,16 +89,22 @@ export function generateSubscribeMethod({
                 if (!isOfRelevantType) {
                     return false;
                 }
+                const relationFieldName = node.relationFields.find(
+                    (r) => r.typeUnescaped === relationEventPayload.relationshipName
+                )?.fieldName;
 
-                const relationFieldName = node.relationFields.find((r) => {
-                    return r.typeUnescaped === relationEventPayload.relationshipName;
-                })?.fieldName;
-
-                const result =
+                return (
                     !!relationFieldName &&
-                    subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields });
-
-                return result;
+                    subscriptionAuthorization({
+                        event: data[0],
+                        node,
+                        entity: concreteEntity,
+                        nodes,
+                        relationshipFields,
+                        context,
+                    }) &&
+                    subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields })
+                );
             });
         }
 

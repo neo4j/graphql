@@ -76,7 +76,7 @@ describe("Float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -138,7 +138,7 @@ describe("Float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: {
                     imdbRating_float: imdbRatingFloat,
                     imdbRating_int: imdbRatingInt,
@@ -210,7 +210,7 @@ describe("Float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: {
                     float,
                     floats,
@@ -273,7 +273,7 @@ describe("Float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();

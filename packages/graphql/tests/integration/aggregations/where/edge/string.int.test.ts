@@ -85,7 +85,7 @@ describe("aggregations-where-edge-string", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -156,7 +156,7 @@ describe("aggregations-where-edge-string", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -226,7 +226,7 @@ describe("aggregations-where-edge-string", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -296,7 +296,7 @@ describe("aggregations-where-edge-string", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -366,7 +366,7 @@ describe("aggregations-where-edge-string", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -455,7 +455,7 @@ describe("aggregations-where-edge-string", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     if (gqlResult.errors) {
@@ -546,7 +546,7 @@ describe("aggregations-where-edge-string", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     if (gqlResult.errors) {
@@ -641,7 +641,7 @@ describe("aggregations-where-edge-string", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     if (gqlResult.errors) {
@@ -730,7 +730,7 @@ describe("aggregations-where-edge-string", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 if (gqlResult.errors) {
@@ -817,7 +817,7 @@ describe("aggregations-where-edge-string", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 if (gqlResult.errors) {
@@ -905,7 +905,7 @@ describe("aggregations-where-edge-string", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 if (gqlResult.errors) {
@@ -992,7 +992,7 @@ describe("aggregations-where-edge-string", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 if (gqlResult.errors) {
@@ -1048,7 +1048,7 @@ describe("aggregations-where-edge-string", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         if (gqlResult.errors) {

@@ -21,8 +21,6 @@ import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import type { GraphQLOptionsArg, Context, GraphQLWhereArg, CypherFieldReferenceMap } from "../types";
-import { createAuthPredicates } from "./create-auth-predicates";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
@@ -70,29 +68,12 @@ export function translateRead(
         cypherFieldAliasMap,
     });
 
-    if (projection.meta?.authValidatePredicates?.length) {
-        projAuth = new Cypher.With("*").where(
-            Cypher.apoc.util.validatePredicate(
-                Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                AUTH_FORBIDDEN_ERROR
-            )
-        );
-    }
+    const predicates: Cypher.Predicate[] = [];
 
-    const authPredicates = createAuthPredicates({
-        operations: "READ",
-        entity: node,
-        context,
-        allow: {
-            node,
-            varName,
-        },
-    });
+    predicates.push(...projection.predicates);
 
-    if (authPredicates) {
-        (topLevelWhereClause || topLevelMatch).where(
-            Cypher.apoc.util.validatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR)
-        );
+    if (predicates.length) {
+        projAuth = new Cypher.With("*").where(Cypher.and(...predicates));
     }
 
     const projectionSubqueries = Cypher.concat(...projection.subqueries);

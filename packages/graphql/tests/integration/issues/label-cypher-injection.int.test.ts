@@ -23,7 +23,7 @@ import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
-import { createJwtRequest } from "../../utils/create-jwt-request";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("Label cypher injection", () => {
     let schema: GraphQLSchema;
@@ -74,7 +74,7 @@ describe("Label cypher injection", () => {
         const res = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+            contextValue: neo4j.getContextValues({
                 label: "Movie\\u0060) MATCH",
             }),
         });
@@ -110,12 +110,12 @@ describe("Label cypher injection", () => {
         }
         `;
 
-        const req = createJwtRequest("1234", { label: "Movie\\u0060) MATCH" });
+        const token = createBearerToken("1234", { label: "Movie\\u0060) MATCH" });
 
         const res = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(res.errors).toBeUndefined();

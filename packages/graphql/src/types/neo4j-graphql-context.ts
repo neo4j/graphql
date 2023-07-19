@@ -17,35 +17,51 @@
  * limitations under the License.
  */
 
-import type { Driver, Session, Transaction } from "neo4j-driver";
-import type { CypherQueryOptions, DriverConfig } from ".";
-import type { JwtPayload } from "./deprecated/auth/jwt-payload";
-import type { Neo4jDatabaseInfo } from "../classes";
+import type { CypherQueryOptions } from ".";
+import type { JWTPayload } from "jose";
+import type { ExecutionContext, Neo4jGraphQLSessionConfig } from "../classes/Executor";
 
 export interface Neo4jGraphQLContext {
     /**
-     * @deprecated Use the {@link executionContext} property instead.
+     * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options} to use when executing the translated query.
      */
-    driver?: Driver;
-    /**
-     * If using a driver, configures the database and bookmarks to be used when acquiring a session.
-     */
-    driverConfig?: DriverConfig;
+    cypherQueryOptions?: CypherQueryOptions;
     /**
      * The Neo4j driver, session or transaction which will be used to execute the translated query.
      */
-    executionContext?: Driver | Session | Transaction;
+    executionContext?: ExecutionContext;
     /**
      * A decoded JWT payload which can be provided for use in authentication and authorization.
+     * Takes precedence over {@link token} if both are present in the context.
+     *
+     * @example
+     * ```
+     * {
+     *   sub: "1234567890",
+     *   name: "John Doe",
+     *   iat: 1516239022,
+     * }
+     * ```
      */
-    jwt?: JwtPayload;
+    jwt?: JWTPayload;
     /**
-     * @deprecated This property will be removed in 4.0.0.
+     * Configuration that will be used during session construction if a driver was passed into the library on construction or if {@link executionContext} is an instance of a driver.
      */
-    neo4jDatabaseInfo?: Neo4jDatabaseInfo;
+    sessionConfig?: Neo4jGraphQLSessionConfig;
     /**
-     * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options}
-     * when executing the translated query.
+     * The bearer token to be decoded/verified for use in authentication and authorization.
+     * Normally found in the Authorization HTTP header. Can be provided with or without authentication scheme.
+     *
+     * @example
+     * With authentication scheme (standard when used in Authorization header):
+     * ```
+     * Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+     * ```
+     * @example
+     * Without authentication scheme:
+     * ```
+     * eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+     * ```
      */
-    queryOptions?: CypherQueryOptions;
+    token?: string;
 }

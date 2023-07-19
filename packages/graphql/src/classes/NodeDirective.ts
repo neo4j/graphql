@@ -50,13 +50,29 @@ export class NodeDirective {
         return labels.map((label: string) => {
             const jwtPath = ContextParser.parseTag(label, "jwt");
             let ctxPath = ContextParser.parseTag(label, "context");
-            if (jwtPath) ctxPath = `jwt.${jwtPath}`;
+
+            if (jwtPath) {
+                ctxPath = `jwt.${jwtPath}`;
+            }
 
             if (ctxPath) {
-                const mappedLabel = ContextParser.getProperty(ctxPath, context);
-                if (!mappedLabel) throw new Error(`Label value not found in context.`);
-                return mappedLabel;
+                let mappedLabel = ContextParser.getProperty(ctxPath, context);
+                if (mappedLabel) {
+                    return mappedLabel;
+                }
+
+                // Try the new authorization path - this will become default in 4.0.0
+                if (jwtPath) {
+                    ctxPath = `authorization.jwt.${jwtPath}`;
+                    mappedLabel = ContextParser.getProperty(ctxPath, context);
+                    if (mappedLabel) {
+                        return mappedLabel;
+                    }
+                }
+
+                throw new Error(`Label value not found in context.`);
             }
+
             return label;
         });
     }

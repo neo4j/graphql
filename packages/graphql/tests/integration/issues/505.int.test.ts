@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import type { Driver, Session } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import { generate } from "randomstring";
@@ -29,9 +28,6 @@ import { UniqueType } from "../../utils/graphql-types";
 describe("https://github.com/neo4j/graphql/issues/505", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    const plugin = new Neo4jGraphQLAuthJWTPlugin({
-        secret: "secret",
-    });
 
     const userType = new UniqueType("User");
     const workspaceType = new UniqueType("Workspace");
@@ -48,11 +44,11 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         }
 
         type ${workspaceType}
-            @auth(
-                rules: [
+            @authorization(
+                filter: [
                     {
                         operations: [READ]
-                        where: { OR: [{ members: { authId: "$jwt.sub" } }, { admins: { authId: "$jwt.sub" } }] }
+                        where: { OR: [{ node: { members: { authId: "$jwt.sub" } } }, { node: { admins: { authId: "$jwt.sub" } } }] }
                     }
                 ]
             )
@@ -65,27 +61,29 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         }
 
         type ${pageType}
-            @auth(
-                rules: [
+            @authorization(
+                filter: [
                     {
                         operations: [READ]
                         where: {
-                            OR: [
-                                { owner: { authId: "$jwt.sub" } }
-                                {
-                                    AND: [
-                                        { shared: true }
-                                        {
-                                            workspace: {
-                                                OR: [
-                                                    { members: { authId: "$jwt.sub" } }
-                                                    { admins: { authId: "$jwt.sub" } }
-                                                ]
+                            node: { 
+                                OR: [
+                                    { owner: { authId: "$jwt.sub" } } 
+                                    {
+                                        AND: [
+                                            { shared: true } 
+                                            {
+                                                workspace: {
+                                                    OR: [
+                                                        { members: { authId: "$jwt.sub" } } 
+                                                        { admins: { authId: "$jwt.sub" } } 
+                                                    ]
+                                                }
                                             }
-                                        }
-                                    ]
-                                }
-                            ]
+                                        ]
+                                    }
+                                ]
+                            }
                         }
                     }
                 ]
@@ -109,12 +107,12 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         await driver.close();
     });
 
-    async function queryTest(neoSchema: Neo4jGraphQL, variableValues: any, userId: string, session: Session) {
+    async function queryTest(neoSchema: Neo4jGraphQL, variableValues: any, userId: string) {
         async function graphqlQuery(query: string) {
             return graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                contextValue: neo4j.getContextValues({
                     jwt: {
                         sub: userId,
                     },
@@ -168,7 +166,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("single user, single workspace, multiple pages", async () => {
         const session = await neo4j.getSession();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: "secret" } } });
         const userId = generate({ charset: "alphabetic" });
         const workspaceId = generate({ charset: "alphabetic" });
         const pageIds = Array(2)
@@ -206,8 +204,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userId,
-                session
+                userId
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -230,7 +227,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("single user, multiple workspaces, multiple shared pages", async () => {
         const session = await neo4j.getSession();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: "secret" } } });
         const userId = generate({ charset: "alphabetic" });
         const workspaceIds = Array(2)
             .fill(0)
@@ -280,8 +277,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userId,
-                session
+                userId
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -305,7 +301,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("multiple users, multiple workspaces, multiple shared pages", async () => {
         const session = await neo4j.getSession();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: "secret" } } });
         const userIds = Array(2)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" })) as [string, string];
@@ -364,8 +360,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userIds[1],
-                session
+                userIds[1]
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -388,7 +383,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("multiple users, multiple workspaces, multiple mixed shared pages", async () => {
         const session = await neo4j.getSession();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: "secret" } } });
         const userIds = Array(2)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" })) as [string, string];
@@ -447,8 +442,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userIds[1],
-                session
+                userIds[1]
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -471,7 +465,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("multiple users, multiple workspaces, multiple private pages", async () => {
         const session = await neo4j.getSession();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: "secret" } } });
         const userIds = Array(2)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" })) as [string, string];
@@ -530,8 +524,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userIds[1],
-                session
+                userIds[1]
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -554,7 +547,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("multiple users, multiple workspaces where not member, multiple shared pages", async () => {
         const session = await neo4j.getSession();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: "secret" } } });
         const userIds = Array(2)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" })) as [string, string];
@@ -613,8 +606,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userIds[1],
-                session
+                userIds[1]
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -636,7 +628,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("multiple users, multiple workspaces with partial membership, multiple shared pages", async () => {
         const session = await neo4j.getSession();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: "secret" } } });
         const userIds = Array(2)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" })) as [string, string];
@@ -695,8 +687,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userIds[1],
-                session
+                userIds[1]
             );
 
             expect(usersResult?.errors).toBeFalsy();
@@ -719,7 +710,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
     test("multiple users, multiple workspaces with partial membership, multiple mixed shared pages", async () => {
         const session = await neo4j.getSession();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, plugins: { auth: plugin } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: "secret" } } });
         const userIds = Array(2)
             .fill(0)
             .map(() => generate({ charset: "alphabetic" })) as [string, string];
@@ -778,8 +769,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             const { usersResult, workspacesResult, pagesResult, allPagesResult } = await queryTest(
                 neoSchema,
                 variableValues,
-                userIds[1],
-                session
+                userIds[1]
             );
 
             expect(usersResult?.errors).toBeFalsy();

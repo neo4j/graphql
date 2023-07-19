@@ -1,0 +1,279 @@
+= Authentication and Authorization
+
+The largest breaking change in version 4.0.0 is the removal of the `@auth` directive, which requires a migration to the new `@authentication` and `@authorization` directives.
+
+== Instantiation
+
+Whilst the `@auth` directive required the installation of an additional plugin package, the functionality for the new directives is built directly into the library. 
+You should uninstall the previous plugin:
+
+[source, bash, indent=0]
+----
+npm uninstall @neo4j/graphql-plugin-auth
+----
+
+Then, given an example of instantiation using a basic secret with the plugin:
+
+[source, typescript, indent=0]
+----
+new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: "secret",
+        }),
+    }
+})
+----
+
+You can delete the import of `Neo4jGraphQLAuthJWTPlugin` and change the instantiation to:
+
+[source, typescript, indent=0]
+----
+new Neo4jGraphQL({
+    typeDefs,
+    features: {
+        authorization: {
+            key: "secret",
+        }
+    }
+})
+----
+
+== Server
+
+Previously, you could pass in the entire request object and the library would find the `Authorization` header:
+
+[source, typescript, indent=0]
+----
+const server = new ApolloServer({
+    schema, // schema from Neo4jGraphQL.getSchema()
+});
+
+const { url } = await startStandaloneServer(server, {
+    listen: { port: 4000 },
+    context: async ({ req }) => ({ req }),
+});
+----
+
+With the new implementation, the library expects the `Authorization` header to be extracted in the format of a bearer token in the `token` field of the context:
+
+[source, typescript, indent=0]
+----
+const server = new ApolloServer({
+    schema, // schema from Neo4jGraphQL.getSchema()
+});
+
+const { url } = await startStandaloneServer(server, {
+    listen: { port: 4000 },
+    context: async ({ req }) => ({
+        token: req.headers.Authorization,
+    }),
+});
+----
+
+This is to acknowledge the fact that there are a variety of servers which don't have a `req` object (such as serverless functions, which use `event`). 
+
+=== `rolesPath`
+
+The `rolesPath` argument was used to configure a custom path for the "roles" claim in the JWT structure. 
+This configuration has now been moved into the type definitions themselves. 
+So given a previous instantiation:
+
+[source, typescript, indent=0]
+----
+new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: "secret",
+            rolesPath: "some.nested.path",
+        }),
+    }
+})
+----
+
+This now needs to instead be configured in the type definitions as:
+
+[source, graphql, indent=0]
+----
+type JWT @jwt {
+    roles: [String!]! @jwtClaim(path: "some.nested.path")
+}
+----
+
+The type name itself can be anything, as long as it is decorated by `@jwt`.
+
+Whilst there is more setup required in this version, the strongly typed nature of the definition means there is significantly more powerful filtering options in version 4.0.0.
+
+== Global authentication
+
+Global authentication was previously configured in the auth plugin consructor, for instance:
+
+[source, typescript, indent=0]
+----
+new Neo4jGraphQL({
+    typeDefs,
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: "secret",
+            globalAuthentication: true,
+        }),
+    }
+})
+----
+
+To remain consistent with the use of directives for configuration, this is now achieved in type definitions by extending the schema:
+
+[source, graphql, indent=0]
+----
+extend schema @authentication
+----
+
+== Rules
+
+=== `allow`
+
+Given an `allow` rule, which checks the `id` field of a `User` against the JWT subject _before_ any operation:
+
+[source, graphql, indent=0]
+----
+type User @auth(rules: [{ allow: { id: "$jwt.sub" } }]) {
+    id: ID!
+}
+----
+
+This is now:
+
+[source, graphql, indent=0]
+----
+type User @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]) {
+    id: ID!
+}
+----
+
+Note that `allow` is no longer a discrete rule, but configured by a `when` argument which is an array accepting the values `BEFORE` and `AFTER`.
+
+It is expected that users will quite rarely need to specify this argument as it defaults to both, and most users will want to validate a node property both before and after each operation.
+
+=== `bind`
+
+Given an `bind` rule, which checks the `id` field of a `User` against the JWT subject _after_ any operation:
+
+[source, graphql, indent=0]
+----
+type User @auth(rules: [{ bind: { id: "$jwt.sub" } }]) {
+    id: ID!
+}
+----
+
+This is now:
+
+[source, graphql, indent=0]
+----
+type User @authorization(validate: [{ when: [AFTER], where: { node: { id: "$jwt.sub" } } }]) {
+    id: ID!
+}
+----
+
+Note that `bind` is no longer a discrete rule, but configured by a `when` argument which is an array accepting values `BEFORE` and `AFTER`.
+
+It is expected that users will quite rarely need to specify this argument as it defaults to both, and most users will want to validate a node property both before and after each operation.
+
+=== `isAuthenticated`
+
+[WARNING]
+====
+There isn't a direct replacement for the `isAuthenticated` argument.
+Please https://github.com/neo4j/graphql/issues/new/choose[raise a feature request] if this is blocking migration.
+====
+
+Given a previous type definition, which required authentication for any operation on the type `User`:
+
+[source, graphql, indent=0]
+----
+type User @auth(rules: [{ isAuthenticated: true }]) {
+    id: ID!
+}
+----
+
+There is not a rule under `@authorization` anymore, but the closest is:
+
+[source, graphql, indent=0]
+----
+type User @authentication {
+    id: ID!
+}
+----
+
+The difference here being that, for example, given the following query:
+
+[source, graphql, indent=0]
+----
+{
+    users(where: { id: "1" }) {
+        id
+    }
+}
+----
+
+* `@auth(rules: [{ isAuthenticated: true }])` only throws an error if the `where: { id: "1" }` filter results in a match on a `User`.
+* `@authentication` always throws an error if a user is not authenticated.
+This happens _before_ the database execution in order to restrict database access to queries generated by authenticated users only.
+
+=== `roles`
+
+For these examples, the following type is required in the type definitions:
+
+[source, graphql, indent=0]
+----
+type JWT @jwt {
+    roles: [String!]!
+}
+----
+
+Given the following type definition, which requires a user to have the "admin" role to perform any operation on the type `User`:
+
+[source, graphql, indent=0]
+----
+type User @auth(rules: [{ roles: "admin" }]) {
+    id: ID!
+}
+----
+
+This is now:
+
+[source, graphql, indent=0]
+----
+type User @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+    id: ID!
+}
+----
+
+The following changes were made for this migration:
+
+* A `validate` rule has been used, which will throw an error without the role as per the `roles` argument in the `@auth` directive. 
+This can alternatively be a `filter` rule to just return zero results if a user does not have the required role.
+* `roles` has become `roles_INCLUDES`, because the xref::filtering.adoc[full filtering capabilities of the library] can now be used within the `@authorization` directive.
+* `roles` is no longer a top-level rule field, but nested within `where` under `jwt`.
+Any number of JWT claims can now be compared against, if configured within the type decorated with `@jwt`.
+
+=== `where`
+
+It replaces an `@auth` rule which would have previously looked like:
+
+[source, graphql, indent=0]
+----
+type User @auth(rules: [{ where: { id: "$jwt.sub" } }]) {
+    id: ID!
+}
+----
+
+Now the `@authorization` directive must be:
+
+[source, graphql, indent=0]
+----
+type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+    id: ID!
+}
+----

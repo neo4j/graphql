@@ -51,7 +51,7 @@ query {
 
 === `DateTime`
 
-ISO datetime string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime[datetime] temporal type.
+ISO datetime string stored as a https://neo4j.com/docs/cypher-manual/current/values-and-types/temporal/#_temporal_value_types[datetime] temporal type.
 
 [source, graphql, indent=0]
 ----
@@ -62,7 +62,7 @@ type User {
 
 === `Date`
 
-"yyyy-mm-dd" date string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-date[date] temporal type.
+"yyyy-mm-dd" date string stored as a https://neo4j.com/docs/cypher-manual/current/values-and-types/temporal/#_temporal_value_types[date] temporal type.
 
 [source, graphql, indent=0]
 ----
@@ -73,7 +73,7 @@ type Movie {
 
 === `Duration`
 
-ISO 8601 duration string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/duration/[duration] type.
+ISO 8601 duration string stored as a https://neo4j.com/docs/cypher-manual/current/values-and-types/temporal/#cypher-temporal-durations[duration] type.
 
 [source, graphql, indent=0]
 ----
@@ -89,7 +89,7 @@ _Note:_
 
 === `LocalDateTime`
 
-"YYYY-MM-DDTHH:MM:SS" datetime string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-localdatetime[LocalDateTime] temporal type.
+"YYYY-MM-DDTHH:MM:SS" datetime string stored as a https://neo4j.com/docs/cypher-manual/current/values-and-types/temporal/#_temporal_value_types[LocalDateTime] temporal type.
 
 [source, graphql, indent=0]
 ----
@@ -100,7 +100,7 @@ type Movie {
 
 === `Time`
 
-RFC3339 time string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-time[Time] temporal type.
+RFC3339 time string stored as a https://neo4j.com/docs/cypher-manual/current/values-and-types/temporal/#_temporal_value_types[Time] temporal type.
 
 [source, graphql, indent=0]
 ----
@@ -111,7 +111,7 @@ type Movie {
 
 === `LocalTime`
 
-"HH:MM:SS[.sss+]" time string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-localtime[LocalTime] temporal type.
+"HH:MM:SS[.sss+]" time string stored as a https://neo4j.com/docs/cypher-manual/current/values-and-types/temporal/#_temporal_value_types[LocalTime] temporal type.
 
 [source, graphql, indent=0]
 ----
@@ -123,7 +123,7 @@ type Movie {
 [[type-definitions-types-spatial]]
 == Spatial Types
 
-Neo4j GraphQL spatial types translate to spatial values stored using https://neo4j.com/docs/cypher-manual/current/syntax/spatial[point] in the database. The use of either of these types in a GraphQL schema will automatically introduce the types needed to run queries and mutations relevant to these spatial types.
+Neo4j GraphQL spatial types translate to spatial values stored using https://neo4j.com/docs/cypher-manual/current/values-and-types/spatial/[point] in the database. The use of either of these types in a GraphQL schema will automatically introduce the types needed to run queries and mutations relevant to these spatial types.
 
 [[type-definitions-types-point]]
 === `Point`
@@ -154,7 +154,7 @@ type Point {
 }
 ----
 
-==== Queries and Mutations
+==== Queries and mutations
 
 Due to the fact that `Point` is an object type, it has an additional type for input in queries and mutations. However, this input type has the same shape as the object type:
 
@@ -267,7 +267,7 @@ type CartesianPoint {
 }
 ----
 
-==== Queries and Mutations
+==== Queries and mutations
 
 Due to the fact that `CartesianPoint` is an object type, it has an additional type for input in queries and mutations. However, this input type has the same shape as the object type:
 

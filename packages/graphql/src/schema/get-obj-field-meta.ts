@@ -21,9 +21,7 @@ import type { IResolvers } from "@graphql-tools/utils";
 import type {
     BooleanValueNode,
     EnumTypeDefinitionNode,
-    FloatValueNode,
     InterfaceTypeDefinitionNode,
-    IntValueNode,
     ListValueNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
@@ -35,7 +33,6 @@ import type {
     DirectiveNode,
 } from "graphql";
 import { Kind } from "graphql";
-import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
 import { getCypherMeta } from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
@@ -61,8 +58,9 @@ import type {
     Neo4jGraphQLCallbacks,
     SelectableOptions,
     SettableOptions,
+    FilterableOptions,
 } from "../types";
-import parseValueNode from "./parse-value-node";
+import parseValueNode from "../schema-model/parser/parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
 import { getPopulatedByMeta } from "./get-populated-by-meta";
@@ -100,13 +98,13 @@ function getObjFieldMeta({
     unions: UnionTypeDefinitionNode[];
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
-    validateResolvers: boolean;
+    validateResolvers?: boolean;
     callbacks?: Neo4jGraphQLCallbacks;
     customResolvers?: IResolvers | Array<IResolvers>;
 }): ObjectFields {
     const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
     const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
-    const objIsJwtPayload = (obj.directives || []).find((d) => d.name.value === "jwtPayload");
+    const objIsJwtPayload = (obj.directives || []).find((d) => d.name.value === "jwt");
 
     return obj?.fields?.reduce(
         (res: ObjectFields, field) => {
@@ -141,7 +139,6 @@ function getObjFieldMeta({
                 interfaceField,
             });
             const typeMeta = getFieldTypeMeta(field.type);
-            const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
             const defaultDirective = directives.find((x) => x.name.value === "default");
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
@@ -151,6 +148,7 @@ function getObjFieldMeta({
             const jwtClaimDirective = directives.find((x) => x.name.value === "jwtClaim");
             const selectableDirective = directives.find((x) => x.name.value === "selectable");
             const settableDirective = directives.find((x) => x.name.value === "settable");
+            const filterableDirective = directives.find((x) => x.name.value === "filterable");
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
@@ -159,20 +157,25 @@ function getObjFieldMeta({
             const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
             const fieldObject = objects.find((x) => x.name.value === typeMeta.name);
 
+            const selectableOptions = parseSelectableDirective(selectableDirective);
+            const settableOptions = parseSettableDirective(settableDirective);
+            const filterableOptions = parseFilterableDirective(filterableDirective);
+
             const baseField: BaseField = {
                 fieldName: field.name.value,
                 dbPropertyName: field.name.value,
                 typeMeta,
-                selectableOptions: parseSelectableDirective(selectableDirective),
-                settableOptions: parseSettableDirective(settableDirective),
+                selectableOptions,
+                settableOptions,
+                filterableOptions,
                 otherDirectives: (directives || []).filter(
                     (x) =>
                         ![
                             "relationship",
                             "cypher",
                             "id",
-                            "auth",
                             "authorization",
+                            "authentication",
                             "readonly",
                             "writeonly",
                             "customResolver",
@@ -186,10 +189,11 @@ function getObjFieldMeta({
                             "jwtClaim",
                             "selectable",
                             "settable",
+                            "subscriptionsAuthorization",
+                            "filterable",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
-                ...(authDirective ? { auth: getAuth(authDirective) } : {}),
                 description: field.description?.value,
                 readonly:
                     directives.some((d) => d.name.value === "readonly") ||
@@ -210,9 +214,7 @@ function getObjFieldMeta({
 
             if (jwtClaimDirective) {
                 if (!objIsJwtPayload) {
-                    throw new Error(
-                        "@jwtClaim directive can only be used on fields within a type annotated with @jwtPayload"
-                    );
+                    throw new Error("@jwtClaim directive can only be used on fields within a type annotated with @jwt");
                 }
                 if ((field.directives as DirectiveNode[]).length > 1) {
                     throw new Error("@jwtClaim directive cannot be combined with other directives.");
@@ -220,10 +222,6 @@ function getObjFieldMeta({
             }
 
             if (relationshipMeta) {
-                if (authDirective) {
-                    throw new Error("cannot have auth directive on a relationship");
-                }
-
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
                 }
@@ -238,13 +236,13 @@ function getObjFieldMeta({
 
                 const msg = `List type relationship fields must be non-nullable and have non-nullable entries, please change type of ${obj.name.value}.${field.name.value} to [${baseField.typeMeta.name}!]!`;
 
-                if (typeMeta.originalType?.kind === "NonNullType") {
-                    if (typeMeta.originalType?.type.kind === "ListType") {
-                        if (typeMeta.originalType?.type.type.kind !== "NonNullType") {
+                if (typeMeta.originalType?.kind === Kind.NON_NULL_TYPE) {
+                    if (typeMeta.originalType?.type.kind === Kind.LIST_TYPE) {
+                        if (typeMeta.originalType?.type.type.kind !== Kind.NON_NULL_TYPE) {
                             throw new Error(msg);
                         }
                     }
-                } else if (typeMeta.originalType?.kind === "ListType") {
+                } else if (typeMeta.originalType?.kind === Kind.LIST_TYPE) {
                     throw new Error(msg);
                 }
 
@@ -308,8 +306,9 @@ function getObjFieldMeta({
                 const connectionField: ConnectionField = {
                     fieldName: `${baseField.fieldName}Connection`,
                     relationshipTypeName,
-                    selectableOptions: parseSelectableDirective(selectableDirective),
-                    settableOptions: parseSettableDirective(settableDirective),
+                    selectableOptions,
+                    settableOptions,
+                    filterableOptions,
                     typeMeta: {
                         name: connectionTypeName,
                         required: true,
@@ -549,31 +548,33 @@ function getObjFieldMeta({
                     if (defaultDirective) {
                         const value = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                        const checkKind = (kind: string) => {
-                            if (value?.kind !== kind) {
-                                throw new Error(
-                                    `Default value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
-                                );
-                            }
-                        };
+                        const typeError = `Default value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`;
 
                         switch (baseField.typeMeta.name) {
                             case "ID":
                             case "String":
-                                checkKind(Kind.STRING);
-                                primitiveField.defaultValue = (value as StringValueNode).value;
+                                if (value?.kind !== Kind.STRING) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = value.value;
                                 break;
                             case "Boolean":
-                                checkKind(Kind.BOOLEAN);
-                                primitiveField.defaultValue = (value as BooleanValueNode).value;
+                                if (value?.kind !== Kind.BOOLEAN) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = value.value;
                                 break;
                             case "Int":
-                                checkKind(Kind.INT);
-                                primitiveField.defaultValue = parseInt((value as IntValueNode).value, 10);
+                                if (value?.kind !== Kind.INT) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = parseInt(value.value, 10);
                                 break;
                             case "Float":
-                                checkKind(Kind.FLOAT);
-                                primitiveField.defaultValue = parseFloat((value as FloatValueNode).value);
+                                if (value?.kind !== Kind.FLOAT) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = parseFloat(value.value);
                                 break;
                             default:
                                 throw new Error(
@@ -585,31 +586,33 @@ function getObjFieldMeta({
                     if (coalesceDirective) {
                         const value = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                        const checkKind = (kind: string) => {
-                            if (value?.kind !== kind) {
-                                throw new Error(
-                                    `coalesce() value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
-                                );
-                            }
-                        };
+                        const typeError = `coalesce() value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`;
 
                         switch (baseField.typeMeta.name) {
                             case "ID":
                             case "String":
-                                checkKind(Kind.STRING);
-                                primitiveField.coalesceValue = `"${(value as StringValueNode).value}"`;
+                                if (value?.kind !== Kind.STRING) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.coalesceValue = `"${value.value}"`;
                                 break;
                             case "Boolean":
-                                checkKind(Kind.BOOLEAN);
-                                primitiveField.coalesceValue = (value as BooleanValueNode).value;
+                                if (value?.kind !== Kind.BOOLEAN) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.coalesceValue = value.value;
                                 break;
                             case "Int":
-                                checkKind(Kind.INT);
-                                primitiveField.coalesceValue = parseInt((value as IntValueNode).value, 10);
+                                if (value?.kind !== Kind.INT) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.coalesceValue = parseInt(value.value, 10);
                                 break;
                             case "Float":
-                                checkKind(Kind.FLOAT);
-                                primitiveField.coalesceValue = parseFloat((value as FloatValueNode).value);
+                                if (value?.kind !== Kind.FLOAT) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.coalesceValue = parseFloat(value.value);
                                 break;
                             default:
                                 throw new Error(
@@ -676,5 +679,19 @@ function parseSettableDirective(directive: DirectiveNode | undefined): SettableO
     return {
         onCreate: args.onCreate ?? defaultArguments.onCreate,
         onUpdate: args.onUpdate ?? defaultArguments.onUpdate,
+    };
+}
+
+function parseFilterableDirective(directive: DirectiveNode | undefined): FilterableOptions {
+    const defaultArguments = {
+        byValue: true,
+        byAggregate: directive === undefined ? true : false,
+    };
+
+    const args: Partial<FilterableOptions> = directive ? parseArguments(directive) : {};
+
+    return {
+        byValue: args.byValue ?? defaultArguments.byValue,
+        byAggregate: args.byAggregate ?? defaultArguments.byAggregate,
     };
 }

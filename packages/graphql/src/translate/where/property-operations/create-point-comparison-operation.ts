@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { Neo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
 import type { PointField } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
@@ -27,15 +26,13 @@ export function createPointComparisonOperation({
     propertyRefOrCoalesce,
     param,
     pointField,
-    neo4jDatabaseInfo,
 }: {
     operator: string | undefined;
     propertyRefOrCoalesce: Cypher.Property | Cypher.Function | Cypher.Variable;
-    param: Cypher.Param;
+    param: Cypher.Param | Cypher.Property;
     pointField: PointField;
-    neo4jDatabaseInfo: Neo4jDatabaseInfo;
 }): Cypher.ComparisonOp {
-    const pointDistance = createPointDistanceExpression(propertyRefOrCoalesce, param, neo4jDatabaseInfo);
+    const pointDistance = createPointDistanceExpression(propertyRefOrCoalesce, param);
     const distanceRef = param.property("distance");
 
     switch (operator || "EQ") {
@@ -71,20 +68,13 @@ export function createPointComparisonOperation({
     }
 }
 
-function createPointListComprehension(param: Cypher.Param): Cypher.ListComprehension {
+function createPointListComprehension(param: Cypher.Param | Cypher.Property): Cypher.ListComprehension {
     const comprehensionVar = new Cypher.Variable();
     const mapPoint = Cypher.point(comprehensionVar);
     return new Cypher.ListComprehension(comprehensionVar, param).map(mapPoint);
 }
 
-function createPointDistanceExpression(
-    property: Cypher.Expr,
-    param: Cypher.Param,
-    neo4jDatabaseInfo: Neo4jDatabaseInfo
-): Cypher.Function {
+function createPointDistanceExpression(property: Cypher.Expr, param: Cypher.Param | Cypher.Property): Cypher.Function {
     const nestedPointRef = param.property("point");
-    if (neo4jDatabaseInfo.gte("4.4")) {
-        return Cypher.pointDistance(property, Cypher.point(nestedPointRef));
-    }
-    return Cypher.distance(property, Cypher.point(nestedPointRef));
+    return Cypher.pointDistance(property, Cypher.point(nestedPointRef));
 }

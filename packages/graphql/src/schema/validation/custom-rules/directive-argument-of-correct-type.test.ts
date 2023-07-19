@@ -52,7 +52,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                    `"Invalid argument: testValue, error: Int cannot represent non-integer value: \\"CREATE\\""`
+                    `"Invalid argument: testValue, error: Int cannot represent non-integer value."`
                 );
             });
 
@@ -69,7 +69,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                    `"Invalid argument: testValue, error: Int cannot represent non-integer value: 1.2"`
+                    `"Invalid argument: testValue, error: Int cannot represent non-integer value."`
                 );
             });
         });
@@ -102,7 +102,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                    `"Invalid argument: testValue, error: Float cannot represent non numeric value: \\"2.2\\""`
+                    `"Invalid argument: testValue, error: Float cannot represent non numeric value."`
                 );
             });
 
@@ -119,7 +119,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                    `"Invalid argument: testValue, error: Float cannot represent non numeric value: \\"CREATE\\""`
+                    `"Invalid argument: testValue, error: Float cannot represent non numeric value."`
                 );
             });
         });
@@ -152,7 +152,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                    `"Invalid argument: testValue, error: String cannot represent a non string value: 1"`
+                    `"Invalid argument: testValue, error: String cannot represent a non string value."`
                 );
             });
 
@@ -169,7 +169,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                    `"Invalid argument: testValue, error: String cannot represent a non string value: 1.2"`
+                    `"Invalid argument: testValue, error: String cannot represent a non string value."`
                 );
             });
         });
@@ -202,7 +202,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                    `"Invalid argument: testValue, error: Boolean cannot represent a non boolean value: 1"`
+                    `"Invalid argument: testValue, error: Boolean cannot represent a non boolean value."`
                 );
             });
 
@@ -219,7 +219,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                    `"Invalid argument: testValue, error: Boolean cannot represent a non boolean value: \\"string\\""`
+                    `"Invalid argument: testValue, error: Boolean cannot represent a non boolean value."`
                 );
             });
         });
@@ -342,7 +342,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                `"Invalid argument: testValue, error: Int cannot represent non-integer value: 1.3"`
+                `"Invalid argument: testValue, error: Int cannot represent non-integer value."`
             );
         });
     });
@@ -416,7 +416,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                `"Invalid argument: testValue, error: String cannot represent a non string value: 1"`
+                `"Invalid argument: testValue, error: String cannot represent a non string value."`
             );
         });
 
@@ -442,7 +442,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                `"Invalid argument: testValue, error: Int cannot represent non-integer value: 1.3"`
+                `"Invalid argument: testValue, error: Int cannot represent non-integer value."`
             );
         });
 
@@ -468,7 +468,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                `"Invalid argument: testValue, error: Expected type \\"NestedWonderfulInput\\" to be an object."`
+                `"Invalid argument: testValue, error: Expected type to be an object."`
             );
         });
 
@@ -494,7 +494,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
-                `"Invalid argument: testValue, error: Field \\"nested\\" of required type \\"NestedWonderfulInput!\\" was not provided."`
+                `"Invalid argument: testValue, error: Field \\"nested\\" of required type was not provided."`
             );
         });
     });

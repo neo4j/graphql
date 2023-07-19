@@ -20,6 +20,7 @@
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
+import { createBearerToken } from "../utils/create-bearer-token";
 
 describe("Arrays Methods", () => {
     test("push", async () => {
@@ -48,8 +49,9 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            CALL apoc.util.validate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
+            "MATCH (this:Movie)
+            WITH this
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
             RETURN collect(DISTINCT this { .title, .ratings }) AS data"
         `);
@@ -92,8 +94,9 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            CALL apoc.util.validate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
+            "MATCH (this:Movie)
+            WITH this
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
             SET this.scores = this.scores + $this_update_scores_PUSH
             RETURN collect(DISTINCT this { .title, .ratings, .scores }) AS data"
@@ -150,8 +153,9 @@ describe("Arrays Methods", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            CALL apoc.util.validate(this.filmingLocations IS NULL, \\"Property %s cannot be NULL\\", ['filmingLocations'])
+            "MATCH (this:Movie)
+            WITH this
+            WHERE apoc.util.validatePredicate(this.filmingLocations IS NULL, \\"Property %s cannot be NULL\\", ['filmingLocations'])
             SET this.filmingLocations = this.filmingLocations + [p in $this_update_filmingLocations_PUSH | point(p)]
             RETURN collect(DISTINCT this { .title, filmingLocations: CASE
                 WHEN this.filmingLocations IS NOT NULL THEN [update_var0 IN this.filmingLocations | { point: update_var0 }]
@@ -175,14 +179,20 @@ describe("Arrays Methods", () => {
 
     test("push auth", async () => {
         const typeDefs = gql`
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
             type Movie {
                 title: String!
-                ratings: [Float!]! @auth(rules: [{ operations: [UPDATE], isAuthenticated: true }])
+                ratings: [Float!]!
+                    @authorization(validate: [{ operations: [UPDATE], where: { jwt: { roles_INCLUDES: "update" } } }])
             }
         `;
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
+            features: { authorization: { key: "secret" } },
         });
 
         const query = gql`
@@ -196,27 +206,31 @@ describe("Arrays Methods", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const result = await translateQuery(neoSchema, query, {
+            contextValues: { token: createBearerToken("secret") },
+        });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WITH this
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
+            WITH this
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .title, .ratings }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"isAuthenticated\\": true,
+                \\"authorization_param1\\": \\"update\\",
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
                 \\"this_update_ratings_PUSH\\": [
                     1
                 ],
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -247,8 +261,9 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            CALL apoc.util.validate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
+            "MATCH (this:Movie)
+            WITH this
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
             RETURN collect(DISTINCT this { .title, .ratings }) AS data"
         `);
@@ -292,8 +307,9 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            CALL apoc.util.validate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
+            "MATCH (this:Movie)
+            WITH this
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
             SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
             SET this.scores = this.scores[0..-$this_update_scores_POP]
             RETURN collect(DISTINCT this { .title, .ratings, .scores }) AS data"
@@ -316,14 +332,20 @@ describe("Arrays Methods", () => {
 
     test("pop auth", async () => {
         const typeDefs = gql`
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
             type Movie {
                 title: String!
-                ratings: [Float!]! @auth(rules: [{ operations: [UPDATE], isAuthenticated: true }])
+                ratings: [Float!]!
+                    @authorization(validate: [{ operations: [UPDATE], where: { jwt: { roles_INCLUDES: "update" } } }])
             }
         `;
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
+            features: { authorization: { key: "secret" } },
         });
 
         const query = gql`
@@ -337,28 +359,32 @@ describe("Arrays Methods", () => {
             }
         `;
 
-        const result = await translateQuery(neoSchema, query);
+        const result = await translateQuery(neoSchema, query, {
+            contextValues: { token: createBearerToken("secret") },
+        });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WITH this
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
+            WITH this
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .title, .ratings }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"isAuthenticated\\": true,
+                \\"authorization_param1\\": \\"update\\",
+                \\"jwt\\": {
+                    \\"roles\\": []
+                },
                 \\"this_update_ratings_POP\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 },
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -391,8 +417,9 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            CALL apoc.util.validate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
+            "MATCH (this:Movie)
+            WITH this
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
             SET this.scores = this.scores[0..-$this_update_scores_POP]
             RETURN collect(DISTINCT this { .title, .ratings, .scores }) AS data"
@@ -455,25 +482,25 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.id = $param0
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Movie)
+            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             	SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_PUSH
             	RETURN count(*) AS update_this_actedIn0
             }
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:\`ACTED_IN\`]->(update_this1:\`Movie\`)
+                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[update_this3:\`ACTED_IN\`]->(update_this4:\`Movie\`)
+                MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
                 WITH { pay: update_this3.pay } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -550,25 +577,25 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.id = $param0
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Movie)
+            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             	SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay[0..-$updateActors.args.update.actedIn[0].update.edge.pay_POP]
             	RETURN count(*) AS update_this_actedIn0
             }
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:\`ACTED_IN\`]->(update_this1:\`Movie\`)
+                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[update_this3:\`ACTED_IN\`]->(update_this4:\`Movie\`)
+                MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
                 WITH { pay: update_this3.pay } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

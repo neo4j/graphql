@@ -4,13 +4,9 @@
         "rootDir": ".",
         "baseUrl": ".",
         "outDir": "dist",
-        "paths": {
-            "@neo4j/graphql-plugin-auth": ["../plugins/graphql-plugin-auth/src"]
-        },
         "noUncheckedIndexedAccess": true
     },
     "include": ["global.d.ts", "package.json", "src/**/*", "tests/**/*"],
-    "references": [{ "path": "../plugins/graphql-plugin-auth/tsconfig.json" }],
     "ts-node": {
         "require": ["tsconfig-paths/register"]
     }

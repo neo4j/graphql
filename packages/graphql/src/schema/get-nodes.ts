@@ -24,9 +24,7 @@ import { Node } from "../classes";
 import type { NodeDirective } from "../classes/NodeDirective";
 import type { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
 import type { FullText, Neo4jGraphQLCallbacks } from "../types";
-import type { Auth } from "../types/deprecated/auth/auth";
 import { asArray } from "../utils/utils";
-import getAuth from "./get-auth";
 import type { DefinitionNodes } from "./get-definition-nodes";
 import getObjFieldMeta from "./get-obj-field-meta";
 import parseExcludeDirective from "./parse-exclude-directive";
@@ -50,7 +48,7 @@ function getNodes(
     options: {
         callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
-        validateResolvers: boolean;
+        validateResolvers?: boolean;
     }
 ): Nodes {
     let pointInTypeDefs = false;
@@ -64,26 +62,26 @@ function getNodes(
         const otherDirectives = (definition.directives || []).filter(
             (x) =>
                 ![
-                    "auth",
                     "authorization",
+                    "authentication",
                     "exclude",
                     "node",
                     "fulltext",
                     "queryOptions",
                     "plural",
                     "shareable",
+                    "subscriptionsAuthorization",
                     "deprecated",
                     "query",
                     "mutation",
                     "subscription",
-                    "jwtPayload",
+                    "jwt",
                 ].includes(x.name.value)
         );
         const propagatedDirectives = (definition.directives || []).filter((x) =>
             ["deprecated", "shareable"].includes(x.name.value)
         );
 
-        const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
         const pluralDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "plural");
@@ -93,7 +91,7 @@ function getNodes(
         );
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
-        const { interfaceAuthDirectives, interfaceExcludeDirectives } = nodeInterfaces.reduce<{
+        const { interfaceExcludeDirectives } = nodeInterfaces.reduce<{
             interfaceAuthDirectives: DirectiveNode[];
             interfaceExcludeDirectives: DirectiveNode[];
         }>(
@@ -101,12 +99,7 @@ function getNodes(
                 const iface = definitionNodes.interfaceTypes.find((i) => i.name.value === interfaceName.name.value);
 
                 if (iface) {
-                    const interfaceAuthDirective = (iface.directives || []).find((x) => x.name.value === "auth");
                     const interfaceExcludeDirective = (iface.directives || []).find((x) => x.name.value === "exclude");
-
-                    if (interfaceAuthDirective) {
-                        res.interfaceAuthDirectives.push(interfaceAuthDirective);
-                    }
 
                     if (interfaceExcludeDirective) {
                         res.interfaceExcludeDirectives.push(interfaceExcludeDirective);
@@ -118,23 +111,10 @@ function getNodes(
             { interfaceAuthDirectives: [], interfaceExcludeDirectives: [] }
         );
 
-        if (interfaceAuthDirectives.length > 1) {
-            throw new Error(
-                `Multiple interfaces of ${definition.name.value} have @auth directive - cannot determine directive to use`
-            );
-        }
-
         if (interfaceExcludeDirectives.length > 1) {
             throw new Error(
                 `Multiple interfaces of ${definition.name.value} have @exclude directive - cannot determine directive to use`
             );
-        }
-
-        let auth: Auth;
-        if (authDirective || interfaceAuthDirectives.length) {
-            const authData = authDirective || interfaceAuthDirectives[0];
-            if (!authData) throw new Error("authData not found in getNodes");
-            auth = getAuth(authData);
         }
 
         let exclude: Exclude;
@@ -248,8 +228,6 @@ function getNodes(
             otherDirectives,
             propagatedDirectives,
             ...nodeFields,
-            // @ts-ignore we can be sure it's defined
-            auth,
             // @ts-ignore we can be sure it's defined
             exclude,
             schemaConfiguration,

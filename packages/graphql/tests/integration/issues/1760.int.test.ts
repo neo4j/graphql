@@ -24,23 +24,29 @@ import type { Driver } from "neo4j-driver";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";
 import Neo4j from "../neo4j";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1760", () => {
     let schema: GraphQLSchema;
     let driver: Driver;
     let neo4j: Neo4j;
+    const secret = "secret";
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
         const typeDefs = gql`
+            type JWTPayload @jwt {
+                roles: [String!]!
+            }
+
             interface BusinessObject {
                 id: ID! @id(autogenerate: false)
                 nameDetails: NameDetails
             }
 
             type ApplicationVariant implements BusinessObject
-                @auth(rules: [{ isAuthenticated: true, roles: ["ALL"] }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 markets: [Market!]! @relationship(type: "HAS_MARKETS", direction: OUT)
                 id: ID! @id(autogenerate: false)
@@ -52,25 +58,25 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
 
             type NameDetails
-                @auth(rules: [{ isAuthenticated: true, roles: ["ALL"] }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, READ, UPDATE, DELETE]) {
                 fullName: String!
             }
 
             type Market implements BusinessObject
-                @auth(rules: [{ isAuthenticated: true, roles: ["ALL"] }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 id: ID! @id(autogenerate: false)
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", direction: OUT)
             }
 
             type BaseObject
-                @auth(rules: [{ isAuthenticated: true, roles: ["ALL"] }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
                 id: ID! @id
             }
         `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
+        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: secret } } });
         schema = await neoGraphql.getSchema();
     });
 
@@ -114,6 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
         `;
 
+        const token = createBearerToken(secret, { roles: ["ALL"] });
         const result = await graphql({
             schema,
             source: getQuerySource(query),
@@ -129,7 +136,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     limit: 50,
                 },
             },
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(result.errors).toBeFalsy();

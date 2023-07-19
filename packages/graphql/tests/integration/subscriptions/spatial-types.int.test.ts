@@ -296,7 +296,7 @@ describe("Subscriptions to spatial types", () => {
         const equalsResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: equalityFilterQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { longitude, latitude },
         });
 
@@ -329,7 +329,7 @@ describe("Subscriptions to spatial types", () => {
         const inResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: inFilterQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 locations: [
                     { longitude, latitude },
@@ -370,7 +370,7 @@ describe("Subscriptions to spatial types", () => {
         const notInResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: notInFilterQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 locations: [
                     {
@@ -626,7 +626,7 @@ describe("Subscriptions to spatial types", () => {
         const equalsResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: equalityFilterQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { x, y },
         });
 
@@ -659,7 +659,7 @@ describe("Subscriptions to spatial types", () => {
         const inResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: inFilterQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 locations: [
                     { x, y },
@@ -700,7 +700,7 @@ describe("Subscriptions to spatial types", () => {
         const notInResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: notInFilterQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 locations: [
                     {

@@ -74,11 +74,11 @@ describe("Interface Relationships - Update delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH *
             CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:\`ACTED_IN\`]->(this_delete_actedIn_Movie0:Movie)
+            WITH *
+            OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:ACTED_IN]->(this_delete_actedIn_Movie0:Movie)
             WHERE this_delete_actedIn_Movie0.title STARTS WITH $updateActors_args_delete_actedIn0_where_this_delete_actedIn_Movie0param0
             WITH this_delete_actedIn_Movie0_relationship, collect(DISTINCT this_delete_actedIn_Movie0) AS this_delete_actedIn_Movie0_to_delete
             CALL {
@@ -89,8 +89,8 @@ describe("Interface Relationships - Update delete", () => {
             }
             WITH *
             CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:\`ACTED_IN\`]->(this_delete_actedIn_Series0:Series)
+            WITH *
+            OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
             WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors_args_delete_actedIn0_where_this_delete_actedIn_Series0param0
             WITH this_delete_actedIn_Series0_relationship, collect(DISTINCT this_delete_actedIn_Series0) AS this_delete_actedIn_Series0_to_delete
             CALL {
@@ -148,16 +148,16 @@ describe("Interface Relationships - Update delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH *
             CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:\`ACTED_IN\`]->(this_delete_actedIn_Movie0:Movie)
+            WITH *
+            OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:ACTED_IN]->(this_delete_actedIn_Movie0:Movie)
             WHERE this_delete_actedIn_Movie0.title STARTS WITH $updateActors_args_delete_actedIn0_where_this_delete_actedIn_Movie0param0
             WITH *
             CALL {
-            WITH this, this_delete_actedIn_Movie0
-            OPTIONAL MATCH (this_delete_actedIn_Movie0)<-[this_delete_actedIn_Movie0_actors0_relationship:\`ACTED_IN\`]-(this_delete_actedIn_Movie0_actors0:Actor)
+            WITH *
+            OPTIONAL MATCH (this_delete_actedIn_Movie0)<-[this_delete_actedIn_Movie0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Movie0_actors0:Actor)
             WHERE this_delete_actedIn_Movie0_actors0.name = $updateActors_args_delete_actedIn0_delete_actors0_where_this_delete_actedIn_Movie0_actors0param0
             WITH this_delete_actedIn_Movie0_actors0_relationship, collect(DISTINCT this_delete_actedIn_Movie0_actors0) AS this_delete_actedIn_Movie0_actors0_to_delete
             CALL {
@@ -175,13 +175,13 @@ describe("Interface Relationships - Update delete", () => {
             }
             WITH *
             CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:\`ACTED_IN\`]->(this_delete_actedIn_Series0:Series)
+            WITH *
+            OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
             WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors_args_delete_actedIn0_where_this_delete_actedIn_Series0param0
             WITH *
             CALL {
-            WITH this, this_delete_actedIn_Series0
-            OPTIONAL MATCH (this_delete_actedIn_Series0)<-[this_delete_actedIn_Series0_actors0_relationship:\`ACTED_IN\`]-(this_delete_actedIn_Series0_actors0:Actor)
+            WITH *
+            OPTIONAL MATCH (this_delete_actedIn_Series0)<-[this_delete_actedIn_Series0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Series0_actors0:Actor)
             WHERE this_delete_actedIn_Series0_actors0.name = $updateActors_args_delete_actedIn0_delete_actors0_where_this_delete_actedIn_Series0_actors0param0
             WITH this_delete_actedIn_Series0_actors0_relationship, collect(DISTINCT this_delete_actedIn_Series0_actors0) AS this_delete_actedIn_Series0_actors0_to_delete
             CALL {
@@ -259,16 +259,16 @@ describe("Interface Relationships - Update delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH *
             CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:\`ACTED_IN\`]->(this_delete_actedIn_Movie0:Movie)
+            WITH *
+            OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:ACTED_IN]->(this_delete_actedIn_Movie0:Movie)
             WHERE this_delete_actedIn_Movie0.title STARTS WITH $updateActors_args_delete_actedIn0_where_this_delete_actedIn_Movie0param0
             WITH *
             CALL {
-            WITH this, this_delete_actedIn_Movie0
-            OPTIONAL MATCH (this_delete_actedIn_Movie0)<-[this_delete_actedIn_Movie0_actors0_relationship:\`ACTED_IN\`]-(this_delete_actedIn_Movie0_actors0:Actor)
+            WITH *
+            OPTIONAL MATCH (this_delete_actedIn_Movie0)<-[this_delete_actedIn_Movie0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Movie0_actors0:Actor)
             WHERE this_delete_actedIn_Movie0_actors0.name = $updateActors_args_delete_actedIn0_delete__on_Movie0_actors0_where_this_delete_actedIn_Movie0_actors0param0
             WITH this_delete_actedIn_Movie0_actors0_relationship, collect(DISTINCT this_delete_actedIn_Movie0_actors0) AS this_delete_actedIn_Movie0_actors0_to_delete
             CALL {
@@ -286,8 +286,8 @@ describe("Interface Relationships - Update delete", () => {
             }
             WITH *
             CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:\`ACTED_IN\`]->(this_delete_actedIn_Series0:Series)
+            WITH *
+            OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
             WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors_args_delete_actedIn0_where_this_delete_actedIn_Series0param0
             WITH this_delete_actedIn_Series0_relationship, collect(DISTINCT this_delete_actedIn_Series0) AS this_delete_actedIn_Series0_to_delete
             CALL {
@@ -366,16 +366,16 @@ describe("Interface Relationships - Update delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH *
             CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:\`ACTED_IN\`]->(this_delete_actedIn_Movie0:Movie)
+            WITH *
+            OPTIONAL MATCH (this)-[this_delete_actedIn_Movie0_relationship:ACTED_IN]->(this_delete_actedIn_Movie0:Movie)
             WHERE this_delete_actedIn_Movie0.title STARTS WITH $updateActors_args_delete_actedIn0_where_this_delete_actedIn_Movie0param0
             WITH *
             CALL {
-            WITH this, this_delete_actedIn_Movie0
-            OPTIONAL MATCH (this_delete_actedIn_Movie0)<-[this_delete_actedIn_Movie0_actors0_relationship:\`ACTED_IN\`]-(this_delete_actedIn_Movie0_actors0:Actor)
+            WITH *
+            OPTIONAL MATCH (this_delete_actedIn_Movie0)<-[this_delete_actedIn_Movie0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Movie0_actors0:Actor)
             WHERE this_delete_actedIn_Movie0_actors0.name = $updateActors_args_delete_actedIn0_delete__on_Movie0_actors0_where_this_delete_actedIn_Movie0_actors0param0
             WITH this_delete_actedIn_Movie0_actors0_relationship, collect(DISTINCT this_delete_actedIn_Movie0_actors0) AS this_delete_actedIn_Movie0_actors0_to_delete
             CALL {
@@ -393,13 +393,13 @@ describe("Interface Relationships - Update delete", () => {
             }
             WITH *
             CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:\`ACTED_IN\`]->(this_delete_actedIn_Series0:Series)
+            WITH *
+            OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
             WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors_args_delete_actedIn0_where_this_delete_actedIn_Series0param0
             WITH *
             CALL {
-            WITH this, this_delete_actedIn_Series0
-            OPTIONAL MATCH (this_delete_actedIn_Series0)<-[this_delete_actedIn_Series0_actors0_relationship:\`ACTED_IN\`]-(this_delete_actedIn_Series0_actors0:Actor)
+            WITH *
+            OPTIONAL MATCH (this_delete_actedIn_Series0)<-[this_delete_actedIn_Series0_actors0_relationship:ACTED_IN]-(this_delete_actedIn_Series0_actors0:Actor)
             WHERE this_delete_actedIn_Series0_actors0.name = $updateActors_args_delete_actedIn0_delete_actors0_where_this_delete_actedIn_Series0_actors0param0
             WITH this_delete_actedIn_Series0_actors0_relationship, collect(DISTINCT this_delete_actedIn_Series0_actors0) AS this_delete_actedIn_Series0_actors0_to_delete
             CALL {

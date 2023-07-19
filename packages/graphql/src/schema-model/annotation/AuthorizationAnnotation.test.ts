@@ -46,7 +46,7 @@ describe("AuthorizationAnnotation", () => {
                 operations: AuthorizationFilterOperationRule,
                 requireAuthentication: true,
                 where: {
-                    jwtPayload: undefined,
+                    jwt: undefined,
                     node: filterRule.where.node,
                 },
             },
@@ -58,7 +58,7 @@ describe("AuthorizationAnnotation", () => {
                 when: ["BEFORE", "AFTER"],
                 requireAuthentication: true,
                 where: {
-                    jwtPayload: undefined,
+                    jwt: undefined,
                     node: validateRule.where.node,
                 },
             },
@@ -74,6 +74,7 @@ describe("AuthorizationFilterRule", () => {
         const authFilterRule = new AuthorizationFilterRule(rule);
         expect(authFilterRule.operations).toEqual([
             "READ",
+            "AGGREGATE",
             "UPDATE",
             "DELETE",
             "CREATE_RELATIONSHIP",
@@ -81,7 +82,7 @@ describe("AuthorizationFilterRule", () => {
         ]);
         expect(authFilterRule.requireAuthentication).toBeTrue();
         expect(authFilterRule.where).toEqual({
-            jwtPayload: undefined,
+            jwt: undefined,
             node: rule.where.node,
         });
     });
@@ -96,6 +97,7 @@ describe("AuthorizationValidateRule", () => {
         const authValidateRule = new AuthorizationValidateRule(rule);
         expect(authValidateRule.operations).toEqual([
             "READ",
+            "AGGREGATE",
             "CREATE",
             "UPDATE",
             "DELETE",
@@ -104,7 +106,7 @@ describe("AuthorizationValidateRule", () => {
         ]);
         expect(authValidateRule.requireAuthentication).toBeTrue();
         expect(authValidateRule.where).toEqual({
-            jwtPayload: undefined,
+            jwt: undefined,
             node: rule.where.node,
         });
         expect(authValidateRule.when).toEqual(["BEFORE"]);

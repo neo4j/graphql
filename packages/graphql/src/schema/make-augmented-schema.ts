@@ -103,7 +103,7 @@ function makeAugmentedSchema(
         subgraph,
     }: {
         features?: Neo4jFeaturesSettings;
-        validateResolvers: boolean;
+        validateResolvers?: boolean;
         generateSubscriptions?: boolean;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
         subgraph?: Subgraph;
@@ -122,6 +122,11 @@ function makeAugmentedSchema(
     const createInfo = composer.createObjectTC(CreateInfo);
     const deleteInfo = composer.createObjectTC(DeleteInfo);
     const updateInfo = composer.createObjectTC(UpdateInfo);
+    [createInfo, deleteInfo, updateInfo].forEach((info) => {
+        info.deprecateFields({
+            bookmark: "This field has been deprecated because bookmarks are now handled by the driver.",
+        });
+    });
     const pageInfo = composer.createObjectTC(PageInfo);
 
     if (subgraph) {
@@ -194,7 +199,7 @@ function makeAugmentedSchema(
 
     relationshipProperties.forEach((relationship) => {
         const authDirective = (relationship.directives || []).find((x) =>
-            ["auth", "authorization"].includes(x.name.value)
+            ["auth", "authorization", "authentication"].includes(x.name.value)
         );
         if (authDirective) {
             throw new Error("Cannot have @auth directive on relationship properties interface");
@@ -207,7 +212,7 @@ function makeAugmentedSchema(
                 }
             });
 
-            const forbiddenDirectives = ["auth", "authorization", "relationship", "cypher"];
+            const forbiddenDirectives = ["auth", "authorization", "authentication", "relationship", "cypher"];
             forbiddenDirectives.forEach((directive) => {
                 const found = (field.directives || []).find((x) => x.name.value === directive);
                 if (found) {
@@ -914,7 +919,9 @@ function makeAugmentedSchema(
             description: inter.description?.value,
             fields: objectComposeFields,
             directives: graphqlDirectivesToCompose(
-                (inter.directives || []).filter((x) => !["auth", "authorization", "exclude"].includes(x.name.value))
+                (inter.directives || []).filter(
+                    (x) => !["auth", "authorization", "authentication", "exclude"].includes(x.name.value)
+                )
             ),
         });
     });
@@ -988,7 +995,8 @@ function makeAugmentedSchema(
             loc: schemaExtension.loc,
             operationTypes: schemaExtension.operationTypes,
             directives: schemaExtension.directives?.filter(
-                (schemaDirective) => !["query", "mutation", "subscription"].includes(schemaDirective.name.value)
+                (schemaDirective) =>
+                    !["query", "mutation", "subscription", "authentication"].includes(schemaDirective.name.value)
             ),
         };
     });

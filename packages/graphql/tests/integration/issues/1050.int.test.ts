@@ -25,6 +25,7 @@ import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { UniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/1050", () => {
     const testUser = new UniqueType("User");
@@ -62,43 +63,47 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
                 contents: String
             }
 
-            extend type ${testUser.name} @auth(
-                rules: [
+            extend type ${testUser.name} @authorization(
+                validate: [
                     {
                         operations: [READ],
-                        allow: { id: "$context.user.id" },
+                        when: [BEFORE],
+                        where: { node: { id: "$context.user.id" } }
                     }
                 ]
             )
 
-            extend type ${testInbox.name} @auth(
-                rules: [
+            extend type ${testInbox.name} @authorization(
+                validate: [
                     {
                         operations: [READ],
-                        allow: { ownerId: "$context.user.id" },
+                        when: [BEFORE],
+                        where: { node: { ownerId: "$context.user.id" } }
                     }
                 ]
             )
 
-            extend type ${testMessage.name} @auth(
-                rules: [
+            extend type ${testMessage.name} @authorization(
+                validate: [
                     {
                         operations: [READ],
-                        allow: { ownerId: "$context.user.id" },
+                        when: [BEFORE],
+                        where: { node: { ownerId: "$context.user.id" } }
                     }
                 ]
             )
 
-            extend type ${testAttachment.name} @auth(
-                rules: [
+            extend type ${testAttachment.name} @authorization(
+                validate: [
                     {
                         operations: [READ],
-                        allow: { ownerId: "$context.user.id" },
+                        when: [BEFORE],
+                        where: { node: { ownerId: "$context.user.id" } }
                     }
                 ]
             )
         `;
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
+        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: "secret" } } });
         schema = await neoGraphql.getSchema();
     });
 
@@ -148,7 +153,8 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
         const result = await graphql({
             schema,
             source: getQuerySource(query),
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+            contextValue: neo4j.getContextValues({
+                token: createBearerToken("secret"),
                 user: {
                     id: "abc",
                 },

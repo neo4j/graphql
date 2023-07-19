@@ -18,12 +18,12 @@
  */
 
 import type { Context, GraphQLWhereArg } from "../types";
-import type { AuthOperations } from "../types/deprecated/auth/auth-operations";
 import type { Node } from "../classes";
-import { createAuthAndParams } from "./create-auth-and-params";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
+import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
+import type { AuthorizationOperation } from "../types/authorization";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -35,7 +35,7 @@ export function translateTopLevelMatch({
     matchNode: Cypher.Node;
     context: Context;
     node: Node;
-    operation: AuthOperations;
+    operation: AuthorizationOperation;
     where: GraphQLWhereArg | undefined;
 }): Cypher.CypherResult {
     const { matchClause, preComputedWhereFieldSubqueries, whereClause } = createMatchClause({
@@ -65,7 +65,7 @@ export function createMatchClause({
     matchNode: Cypher.Node;
     context: Context;
     node: Node;
-    operation: AuthOperations;
+    operation: AuthorizationOperation;
     where: GraphQLWhereArg | undefined;
 }): CreateMatchClauseReturn {
     const { resolveTree } = context;
@@ -84,14 +84,31 @@ export function createMatchClause({
         matchClause = Cypher.db.index.fulltext.queryNodes(indexName, phraseParam).yield(["node", matchNode]);
 
         whereOperators = node.getLabels(context).map((label) => {
-            return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));
+            return Cypher.in(new Cypher.Param(label), Cypher.labels(matchNode));
         });
     } else if (context.fulltextIndex) {
         ({ matchClause, whereOperators } = createFulltextMatchClause(matchNode, where, node, context));
         where = where?.[node.singular];
     }
 
-    let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined = matchClause;
+    let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
+    const authorizationPredicateReturn = createAuthorizationBeforePredicate({
+        context,
+        nodes: [
+            {
+                variable: matchNode,
+                node,
+            },
+        ],
+        operations: [operation],
+    });
+
+    if (authorizationPredicateReturn?.predicate) {
+        whereClause = new Cypher.With("*");
+    } else {
+        whereClause = matchClause;
+    }
+
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
     if (where) {
         const { predicate: whereOp, preComputedSubqueries } = createWherePredicate({
@@ -123,23 +140,22 @@ export function createMatchClause({
         whereClause.where(andChecks);
     }
 
-    const { cypher: authCypher, params: authParams } = createAuthAndParams({
-        operations: operation,
-        entity: node,
-        context,
-        where: { varName: matchNode, node },
-    });
-    if (authCypher) {
-        const authQuery = new Cypher.RawCypher(() => {
-            return [authCypher, authParams];
-        });
+    if (authorizationPredicateReturn) {
+        const { predicate, preComputedSubqueries } = authorizationPredicateReturn;
 
-        whereClause.where(authQuery);
+        if (predicate) {
+            whereClause.where(predicate);
+        }
+
+        if (preComputedSubqueries && !preComputedSubqueries.empty) {
+            preComputedWhereFieldSubqueries = Cypher.concat(preComputedWhereFieldSubqueries, preComputedSubqueries);
+        }
     }
 
     if (matchClause === whereClause) {
         whereClause = undefined;
     }
+
     return {
         matchClause,
         preComputedWhereFieldSubqueries,

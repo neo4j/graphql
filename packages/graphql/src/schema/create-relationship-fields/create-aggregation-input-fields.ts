@@ -55,6 +55,9 @@ export function createAggregationInputFields(
     });
 
     for (const aggregationField of aggregationFields) {
+        if (!aggregationField.filterableOptions.byAggregate) {
+            continue;
+        }
         switch (aggregationField.typeMeta.name) {
             case "ID":
                 createIDAggregationInputFields(aggregationInput, aggregationField);

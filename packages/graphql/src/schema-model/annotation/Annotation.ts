@@ -17,27 +17,150 @@
  * limitations under the License.
  */
 
+import { AliasAnnotation } from "./AliasAnnotation";
+import { AuthenticationAnnotation } from "./AuthenticationAnnotation";
 import { AuthorizationAnnotation } from "./AuthorizationAnnotation";
+import { CoalesceAnnotation } from "./CoalesceAnnotation";
+import { CustomResolverAnnotation } from "./CustomResolverAnnotation";
 import { CypherAnnotation } from "./CypherAnnotation";
+import { DefaultAnnotation } from "./DefaultAnnotation";
+import { FilterableAnnotation } from "./FilterableAnnotation";
+import { FullTextAnnotation } from "./FullTextAnnotation";
+import { IDAnnotation } from "./IDAnnotation";
+import { JWTClaimAnnotation } from "./JWTClaimAnnotation";
+import { JWTPayloadAnnotation } from "./JWTPayloadAnnotation";
 import { KeyAnnotation } from "./KeyAnnotation";
+import { MutationAnnotation } from "./MutationAnnotation";
+import { NodeAnnotation } from "./NodeAnnotation";
+import { PluralAnnotation } from "./PluralAnnotation";
+import { PopulatedByAnnotation } from "./PopulatedByAnnotation";
+import { PrivateAnnotation } from "./PrivateAnnotation";
+import { QueryAnnotation } from "./QueryAnnotation";
+import { QueryOptionsAnnotation } from "./QueryOptionsAnnotation";
+import { RelationshipPropertiesAnnotation } from "./RelationshipPropertiesAnnotation";
+import { SelectableAnnotation } from "./SelectableAnnotation";
+import { SettableAnnotation } from "./SettableAnnotation";
+import { SubscriptionAnnotation } from "./SubscriptionAnnotation";
+import { SubscriptionsAuthorizationAnnotation } from "./SubscriptionsAuthorizationAnnotation";
+import { TimestampAnnotation } from "./TimestampAnnotation";
+import { UniqueAnnotation } from "./UniqueAnnotation";
 
-export type Annotation = CypherAnnotation | AuthorizationAnnotation | KeyAnnotation;
+export type Annotation =
+    | CypherAnnotation
+    | AuthorizationAnnotation
+    | AuthenticationAnnotation
+    | KeyAnnotation
+    | SubscriptionsAuthorizationAnnotation
+    | AliasAnnotation
+    | QueryOptionsAnnotation
+    | DefaultAnnotation
+    | CoalesceAnnotation
+    | CustomResolverAnnotation
+    | IDAnnotation
+    | MutationAnnotation
+    | PluralAnnotation
+    | FilterableAnnotation
+    | FullTextAnnotation
+    | NodeAnnotation
+    | PopulatedByAnnotation
+    | QueryAnnotation
+    | PrivateAnnotation
+    | RelationshipPropertiesAnnotation
+    | SelectableAnnotation
+    | SettableAnnotation
+    | TimestampAnnotation
+    | UniqueAnnotation
+    | SubscriptionAnnotation
+    | JWTClaimAnnotation
+    | JWTPayloadAnnotation;
 
 export enum AnnotationsKey {
     cypher = "cypher",
     authorization = "authorization",
+    authentication = "authentication",
     key = "key",
+    subscriptionsAuthorization = "subscriptionsAuthorization",
+    alias = "alias",
+    queryOptions = "queryOptions",
+    default = "default",
+    coalesce = "coalesce",
+    customResolver = "customResolver",
+    id = "id",
+    mutation = "mutation",
+    plural = "plural",
+    filterable = "filterable",
+    fulltext = "fulltext",
+    node = "node",
+    populatedBy = "populatedBy",
+    query = "query",
+    private = "private",
+    relationshipProperties = "relationshipProperties",
+    selectable = "selectable",
+    settable = "settable",
+    timestamp = "timestamp",
+    unique = "unique",
+    subscription = "subscription",
+    jwtClaim = "jwtClaim",
+    jwtPayload = "jwtPayload",
 }
 
 export type Annotations = {
     [AnnotationsKey.cypher]: CypherAnnotation;
     [AnnotationsKey.authorization]: AuthorizationAnnotation;
+    [AnnotationsKey.authentication]: AuthenticationAnnotation;
     [AnnotationsKey.key]: KeyAnnotation;
+    [AnnotationsKey.subscriptionsAuthorization]: SubscriptionsAuthorizationAnnotation;
+    [AnnotationsKey.alias]: AliasAnnotation;
+    [AnnotationsKey.queryOptions]: QueryOptionsAnnotation;
+    [AnnotationsKey.default]: DefaultAnnotation;
+    [AnnotationsKey.coalesce]: CoalesceAnnotation;
+    [AnnotationsKey.customResolver]: CustomResolverAnnotation;
+    [AnnotationsKey.id]: IDAnnotation;
+    [AnnotationsKey.mutation]: MutationAnnotation;
+    [AnnotationsKey.plural]: PluralAnnotation;
+    [AnnotationsKey.filterable]: FilterableAnnotation;
+    [AnnotationsKey.fulltext]: FullTextAnnotation;
+    [AnnotationsKey.node]: NodeAnnotation;
+    [AnnotationsKey.populatedBy]: PopulatedByAnnotation;
+    [AnnotationsKey.query]: QueryAnnotation;
+    [AnnotationsKey.private]: PrivateAnnotation;
+    [AnnotationsKey.relationshipProperties]: RelationshipPropertiesAnnotation;
+    [AnnotationsKey.selectable]: SelectableAnnotation;
+    [AnnotationsKey.settable]: SettableAnnotation;
+    [AnnotationsKey.timestamp]: TimestampAnnotation;
+    [AnnotationsKey.unique]: UniqueAnnotation;
+    [AnnotationsKey.subscription]: SubscriptionAnnotation;
+    [AnnotationsKey.jwtClaim]: JWTClaimAnnotation;
+    [AnnotationsKey.jwtPayload]: JWTPayloadAnnotation;
 };
 
 export function annotationToKey(ann: Annotation): keyof Annotations {
     if (ann instanceof CypherAnnotation) return AnnotationsKey.cypher;
     if (ann instanceof AuthorizationAnnotation) return AnnotationsKey.authorization;
+    if (ann instanceof AuthenticationAnnotation) return AnnotationsKey.authentication;
     if (ann instanceof KeyAnnotation) return AnnotationsKey.key;
+    if (ann instanceof SubscriptionsAuthorizationAnnotation) return AnnotationsKey.subscriptionsAuthorization;
+    if (ann instanceof AliasAnnotation) return AnnotationsKey.alias;
+    if (ann instanceof QueryOptionsAnnotation) return AnnotationsKey.queryOptions;
+    if (ann instanceof DefaultAnnotation) return AnnotationsKey.default;
+    if (ann instanceof CoalesceAnnotation) return AnnotationsKey.coalesce;
+    if (ann instanceof CustomResolverAnnotation) return AnnotationsKey.customResolver;
+    if (ann instanceof IDAnnotation) return AnnotationsKey.id;
+    if (ann instanceof MutationAnnotation) return AnnotationsKey.mutation;
+    if (ann instanceof PluralAnnotation) return AnnotationsKey.plural;
+    if (ann instanceof FilterableAnnotation) return AnnotationsKey.filterable;
+    if (ann instanceof FullTextAnnotation) return AnnotationsKey.fulltext;
+    if (ann instanceof NodeAnnotation) return AnnotationsKey.node;
+    if (ann instanceof PopulatedByAnnotation) return AnnotationsKey.populatedBy;
+    if (ann instanceof QueryAnnotation) return AnnotationsKey.query;
+    if (ann instanceof PrivateAnnotation) return AnnotationsKey.private;
+    if (ann instanceof RelationshipPropertiesAnnotation) return AnnotationsKey.relationshipProperties;
+    if (ann instanceof SelectableAnnotation) return AnnotationsKey.selectable;
+    if (ann instanceof SettableAnnotation) return AnnotationsKey.settable;
+    if (ann instanceof TimestampAnnotation) return AnnotationsKey.timestamp;
+    if (ann instanceof UniqueAnnotation) return AnnotationsKey.unique;
+    if (ann instanceof SubscriptionAnnotation) return AnnotationsKey.subscription;
+    if (ann instanceof JWTClaimAnnotation) return AnnotationsKey.jwtClaim;
+    if (ann instanceof JWTPayloadAnnotation) return AnnotationsKey.jwtPayload;
     throw new Error("annotation not known");
 }

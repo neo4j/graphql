@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import type { IncomingMessage } from "http";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { UniqueType } from "../../utils/graphql-types";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/2100", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let bookmarks: string[];
-    let req: IncomingMessage;
+    let token: string;
 
     const BacentaType = new UniqueType("Bacenta");
     const ServiceLogType = new UniqueType("ServiceLog");
@@ -55,13 +53,13 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             serviceDate: ${TimeGraphType}! @relationship(type: "BUSSED_ON", direction: OUT)
         }
 
-        interface Church @auth(rules: [{ isAuthenticated: true }]) {
+        interface Church {
             id: ID @id
             name: String!
             serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
         }
 
-        type ${BacentaType} implements Church {
+        type ${BacentaType} implements Church @authentication {
             id: ID @id
             name: String!
             serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
@@ -76,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 )
         }
 
-        type ${TimeGraphType} @auth(rules: [{ isAuthenticated: true }]) {
+        type ${TimeGraphType} @authentication {
             date: Date
         }
 
@@ -111,12 +109,11 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 RETURN p;
                 `
             );
-            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }
 
-        req = createJwtRequest("secret");
+        token = createBearerToken("secret");
     });
 
     afterAll(async () => {
@@ -164,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks, { req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(result.errors).toBeFalsy();
@@ -218,7 +215,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 variableValues: {
                     id: 1,
                 },
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks, { req }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(result.errors).toBeFalsy();

@@ -9,15 +9,22 @@
     "scripts": {
         "doctor-apollo": "clinic doctor --on-port -- node ./servers/apollo.js",
         "flame-apollo": "clinic flame -- node ./servers/apollo.js",
+        "doctor-benzene": "clinic doctor --on-port -- node ./servers/benzene.js",
+        "flame-benzene": "clinic flame -- node ./servers/benzene.js",
+        "doctor-mercurius": "clinic doctor --on-port -- node ./servers/mercurius.js",
+        "flame-mercurius": "clinic flame -- node ./servers/mercurius.js",
         "doctor-yoga": "clinic doctor --on-port -- node ./servers/yoga.js",
         "flame-yoga": "clinic flame -- node ./servers/yoga.js",
         "load": "k6 run load.js --insecure-skip-tls-verify"
     },
     "devDependencies": {
         "@apollo/server": "^4.7.0",
+        "@benzene/http": "^0.4.2",
         "clinic": "^12.1.0",
+        "fastify": "^4.17.0",
         "graphql-yoga": "^3.9.1",
-        "neo4j-driver": "^5.7.0"
+        "mercurius": "^13.0.0",
+        "neo4j-driver": "^5.8.0"
     },
     "dependencies": {
         "@neo4j/graphql": "link:../../.."

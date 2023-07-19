@@ -69,7 +69,7 @@ describe("OGM", () => {
             }
         `;
 
-        const ogm = new OGM({ typeDefs, driver, config: { driverConfig: { database: "another-random-db" } } });
+        const ogm = new OGM({ typeDefs, driver, database: "another-random-db" });
 
         await ogm.init();
 
@@ -967,6 +967,88 @@ describe("OGM", () => {
                     title: { shortest: "1", longest: "4444" },
                     imdbRating: { min: 1, max: 4, average: 2.5 },
                 });
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
+    describe("indexes and constraints", () => {
+        test("should create constraints with `assertIndexesAndConstraints` method", async () => {
+            const session = driver.session();
+
+            const typeDefs = gql`
+                type Book {
+                    isbn: String! @unique
+                    title: String
+                }
+            `;
+
+            const ogm = new OGM({ typeDefs, driver });
+            const Book = ogm.model("Book") as unknown as Model;
+
+            await ogm.init();
+
+            const isbn = generate({ readable: true });
+            const title = generate({ readable: true });
+
+            const createDuplicateBooks = async () =>
+                await Book.create<{ books: any[] }>({
+                    input: [
+                        { isbn, title },
+                        { isbn, title },
+                    ],
+                });
+
+            try {
+                // ensure the constraint does not exist
+                await session.run(`DROP CONSTRAINT Book_isbn IF EXISTS`);
+
+                // assert
+                await expect(ogm.assertIndexesAndConstraints()).rejects.toThrow("Missing constraint for Book.isbn");
+
+                // create
+                await expect(ogm.assertIndexesAndConstraints({ options: { create: true } })).resolves.not.toThrow();
+
+                // assert again
+                await expect(ogm.assertIndexesAndConstraints()).resolves.not.toThrow();
+
+                await expect(createDuplicateBooks()).rejects.toThrow("Constraint validation failed");
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
+    describe("authentication", () => {
+        test("should allow the use of types requiring authentication in the OGM", async () => {
+            const session = driver.session();
+
+            const typeDefs = gql`
+                type User @authentication {
+                    id: ID
+                    password: String
+                }
+            `;
+
+            const ogm = new OGM({ typeDefs, driver });
+            const User = ogm.model("User") as unknown as Model;
+
+            await ogm.init();
+
+            const id = generate({
+                charset: "alphabetic",
+            });
+            const password = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                const { users } = await User.create<{ users: any[] }>({ input: [{ id, password }] });
+
+                const [user] = users;
+
+                expect(user).toMatchObject({ id, password });
             } finally {
                 await session.close();
             }

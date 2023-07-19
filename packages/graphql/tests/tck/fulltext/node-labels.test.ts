@@ -17,11 +17,10 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("Cypher -> fulltext -> Additional Labels", () => {
     test("simple match with single fulltext property and static additionalLabels", async () => {
@@ -49,13 +48,15 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
-            WHERE (\\"Movie\\" IN labels(this) AND \\"AnotherLabel\\" IN labels(this))
+            WHERE ($param1 IN labels(this) AND $param2 IN labels(this))
             RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"something AND something\\"
+                \\"param0\\": \\"something AND something\\",
+                \\"param1\\": \\"Movie\\",
+                \\"param2\\": \\"AnotherLabel\\"
             }"
         `);
     });
@@ -75,11 +76,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
-            },
+            features: { authorization: { key: secret } },
         });
 
         const query = gql`
@@ -90,20 +87,22 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
             }
         `;
 
-        const req = createJwtRequest(secret, { label });
+        const token = createBearerToken(secret, { label });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
-            WHERE (\\"Movie\\" IN labels(this) AND \\"some-label\\" IN labels(this))
+            WHERE ($param1 IN labels(this) AND $param2 IN labels(this))
             RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"something AND something\\"
+                \\"param0\\": \\"something AND something\\",
+                \\"param1\\": \\"Movie\\",
+                \\"param2\\": \\"some-label\\"
             }"
         `);
     });

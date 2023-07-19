@@ -25,7 +25,6 @@ import { generate } from "randomstring";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
 import { UniqueType } from "../../utils/graphql-types";
@@ -34,9 +33,6 @@ describe("array-pop-errors", () => {
     let driver: Driver;
     let session: Session;
     let neo4j: Neo4j;
-    const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
-        secret: "secret",
-    });
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -91,12 +87,8 @@ describe("array-pop-errors", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -145,7 +137,7 @@ describe("array-pop-errors", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -163,14 +155,11 @@ describe("array-pop-errors", () => {
         const typeDefs = `
             type ${typeMovie} {
                 title: String
-                tags: [String] @auth(rules: [{
-                    operations: [UPDATE],
-                    isAuthenticated: true
-                }])
+                tags: [String] @authentication(operations: [UPDATE])
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { auth: jwtPlugin } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: "secret" } } });
 
         const movieTitle = generate({
             charset: "alphabetic",
@@ -202,12 +191,8 @@ describe("array-pop-errors", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeDefined();
         expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Unauthenticated"))).toBeTruthy();
@@ -250,12 +235,8 @@ describe("array-pop-errors", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -303,12 +284,8 @@ describe("array-pop-errors", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -390,12 +367,8 @@ describe("array-pop-errors", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, numberToPop: 1 },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeDefined();
         expect(

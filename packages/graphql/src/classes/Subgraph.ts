@@ -34,6 +34,7 @@ import { translateResolveReference } from "../translate/translate-resolve-refere
 import type { Context, Node } from "../types";
 import { execute } from "../utils";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
+import { isInArray } from "../utils/is-in-array";
 
 // TODO fetch the directive names from the spec
 const federationDirectiveNames = [
@@ -48,22 +49,14 @@ const federationDirectiveNames = [
     "tag",
     "composeDirective",
     "interfaceObject",
-];
+] as const;
 
 type FederationDirectiveName = (typeof federationDirectiveNames)[number];
 
-type FullyQualifiedFederationDirectiveName = `federation__${FederationDirectiveName}`;
-
 type ReferenceResolver = (reference, context: Context, info: GraphQLResolveInfo) => Promise<unknown>;
 
-const isFederationDirectiveName = (name: string): name is FederationDirectiveName =>
-    federationDirectiveNames.includes(name);
-
 export class Subgraph {
-    private importArgument: Map<
-        FederationDirectiveName,
-        FederationDirectiveName | FullyQualifiedFederationDirectiveName | string
-    >;
+    private importArgument: Map<FederationDirectiveName, string>;
     private typeDefs: TypeSource;
     private linkExtension: SchemaExtensionNode;
 
@@ -96,7 +89,6 @@ export class Subgraph {
     }
 
     public getFullyQualifiedDirectiveName(name: FederationDirectiveName): string {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.importArgument.get(name)!;
     }
 
@@ -164,13 +156,7 @@ export class Subgraph {
         directives: Array<GraphQLDirective>;
         types: Array<GraphQLNamedType>;
     } {
-        // Remove any operations from the extension - we only care for the `@link` directive
-        const emptyExtension: SchemaExtensionNode = {
-            ...this.linkExtension,
-            operationTypes: [],
-        };
-
-        const document = parse(print(emptyExtension));
+        const document = parse(print(this.linkExtension));
 
         const schema = buildSubgraphSchema({ typeDefs: document });
 
@@ -201,7 +187,14 @@ export class Subgraph {
                             if (argument.name.value === "url" && argument.value.kind === Kind.STRING) {
                                 const url = argument.value.value;
                                 if (url.startsWith("https://specs.apollo.dev/federation/v2")) {
-                                    return { extension: definition, directive };
+                                    // Remove any other directives and operations from the extension
+                                    // We only care for the `@link` directive
+                                    const extensionWithLinkOnly = {
+                                        ...definition,
+                                        directives: definition.directives.filter((d) => d.name.value === "link"),
+                                        operationTypes: [],
+                                    };
+                                    return { extension: extensionWithLinkOnly, directive };
                                 }
                             }
                         }
@@ -224,7 +217,7 @@ export class Subgraph {
                     if (value.kind === Kind.STRING) {
                         const trimmedName = this.trimDirectiveName(value.value);
 
-                        if (!isFederationDirectiveName(trimmedName)) {
+                        if (!isInArray(federationDirectiveNames, trimmedName)) {
                             throw new Error(`Encountered unknown Apollo Federation directive ${value.value}`);
                         }
 
@@ -238,7 +231,7 @@ export class Subgraph {
                         if (name?.value.kind === Kind.STRING) {
                             const trimmedName = this.trimDirectiveName(name.value.value);
 
-                            if (!isFederationDirectiveName(trimmedName)) {
+                            if (!isInArray(federationDirectiveNames, trimmedName)) {
                                 throw new Error(`Encountered unknown Apollo Federation directive ${name.value.value}`);
                             }
 

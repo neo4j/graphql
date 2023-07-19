@@ -48,16 +48,6 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
                 name: String! @unique
                 blogs: [${testBlogpost.name}!]! @relationship(type: "IN_CATEGORY", direction: IN)
             }
-            extend type ${testBlogpost.name}
-                @auth(
-                    rules: [
-                        { operations: [UPDATE], allow: { author: { id: "$jwt.sub" } } }
-                        { operations: [UPDATE], bind: { author: "$jwt.sub" } }
-                        { operations: [CREATE, UPDATE, CONNECT, DISCONNECT, DELETE], isAuthenticated: true }
-                    ]
-                )
-            extend type ${testCategory.name}
-                @auth(rules: [{ operations: [CREATE, UPDATE, DELETE, DISCONNECT, CONNECT], isAuthenticated: true }])
         `;
         const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
         schema = await neoGraphql.getSchema();

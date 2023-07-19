@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { parse, print } from "graphql";
-import filterDocument from "./filter-document";
+import { print } from "graphql";
+import { filterDocument } from "./filter-document";
 
 describe("filterDocument", () => {
     test("should remove all directives", () => {
@@ -28,24 +28,49 @@ describe("filterDocument", () => {
                 name: String @auth @private @readonly @writeonly
                 email: String @auth @private @readonly @writeonly
                 password: String @auth @private @readonly @writeonly
+                cars: [Car!]! @relationship(type: "HAS_CAR", direction: OUT, aggregate: false)
+                bikes: [Car!]! @relationship(type: "HAS_CAR", direction: OUT)  
             }
 
+            type Car @query(read: false, aggregate: false) @mutation(operations: []), @subscription(operations: []) {
+                name: String @filterable(byValue: false, byAggregate: false)
+                engine: String @selectable(onRead: false, onAggregate: false)
+            }
 
+            type Bike {
+                name: String @settable(onCreate: false, onUpdate: false)
+                engine: String @filterable
+                model: String @selectable
+                type: String @settable
+            }
+            extend schema @query(read: false, aggregate: false) @mutation(operations: []) @subscription(operations: [])
         `;
 
         const filtered = filterDocument(initial);
 
-        expect(print(filtered)).toEqual(
-            print(
-                parse(`
-                    type User {
-                        id: ID
-                        name: String
-                        email: String
-                        password: String
-                    }
-                `)
-            )
-        );
+        expect(print(filtered)).toMatchInlineSnapshot(`
+            "type User {
+              id: ID
+              name: String
+              email: String
+              password: String
+              cars: [Car!]! @relationship(type: \\"HAS_CAR\\", direction: OUT, aggregate: true)
+              bikes: [Car!]! @relationship(type: \\"HAS_CAR\\", direction: OUT, aggregate: true)
+            }
+
+            type Car {
+              name: String
+              engine: String
+            }
+
+            type Bike {
+              name: String
+              engine: String
+              model: String
+              type: String
+            }
+
+            extend schema @query(read: true, aggregate: true) @mutation(operations: [CREATE, UPDATE, DELETE]) @subscription(operations: [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])"
+        `);
     });
 });

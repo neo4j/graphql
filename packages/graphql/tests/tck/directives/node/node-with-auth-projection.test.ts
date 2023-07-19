@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("Cypher Auth Projection On Connections", () => {
     const secret = "secret";
@@ -42,17 +41,14 @@ describe("Cypher Auth Projection On Connections", () => {
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
-            extend type User @auth(rules: [{ allow: { id: "$jwt.sub" } }])
-            extend type Post @auth(rules: [{ allow: { creator: { id: "$jwt.sub" } } }])
+            extend type User @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }])
+            extend type Post
+                @authorization(validate: [{ when: [BEFORE], where: { node: { creator: { id: "$jwt.sub" } } } }])
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
-            },
+            features: { authorization: { key: secret } },
         });
     });
 
@@ -72,18 +68,22 @@ describe("Cypher Auth Projection On Connections", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { sub: "super_admin" });
+        const token = createBearerToken("secret", { sub: "super_admin" });
         const result = await translateQuery(neoSchema, query, {
-            req,
+            token,
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Person\`)
-            WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            "MATCH (this:Person)
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`HAS_POST\`]->(this1:\`Comment\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this1)<-[:\`HAS_POST\`]-(:\`Person\`)) AND any(this2 IN [(this1)<-[:\`HAS_POST\`]-(this2:\`Person\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)-[this0:HAS_POST]->(this1:Comment)
+                OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:Person)
+                WITH *, count(this2) AS creatorCount
+                WITH *
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this2.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH { node: { content: this1.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -94,8 +94,12 @@ describe("Cypher Auth Projection On Connections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"super_admin\\",
-                \\"param1\\": \\"super_admin\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"super_admin\\"
+                },
+                \\"jwtDefault\\": {}
             }"
         `);
     });

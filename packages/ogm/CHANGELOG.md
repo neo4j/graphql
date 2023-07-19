@@ -1,5 +1,75 @@
 # @neo4j/graphql-ogm
 
+## 3.24.0
+
+### Minor Changes
+
+-   [#3639](https://github.com/neo4j/graphql/pull/3639) [`09cc28ef2`](https://github.com/neo4j/graphql/commit/09cc28ef26f13c46c220bd160d68c5f6c4668f39) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Encourages switching from `driverConfig` to `sessionConfig` in both constructor and context. Can be used to switch database, and to use impersonation and user switching.
+
+### Patch Changes
+
+-   [#3607](https://github.com/neo4j/graphql/pull/3607) [`12ee8b8f4`](https://github.com/neo4j/graphql/commit/12ee8b8f48043d3bf8cd7a0df4b001340e90c0c0) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Ignore the schema configuration directives for OGM purposes. Fix #3591
+
+-   Updated dependencies [[`c55a2b6fd`](https://github.com/neo4j/graphql/commit/c55a2b6fd36f9eb2ba5f51be3f21e97b68789fcc), [`cd884be5c`](https://github.com/neo4j/graphql/commit/cd884be5c07870ea778f5d81db5c55d45eca6dc3), [`09cc28ef2`](https://github.com/neo4j/graphql/commit/09cc28ef26f13c46c220bd160d68c5f6c4668f39)]:
+    -   @neo4j/graphql@3.24.0
+
+## 3.23.1
+
+### Patch Changes
+
+-   [#3601](https://github.com/neo4j/graphql/pull/3601) [`5556221c8`](https://github.com/neo4j/graphql/commit/5556221c82c8bf676e72bf6f3113473e271df1fb) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Ignore `@authentication`, `@authorization` and `subscriptionsAuthorization` directives in the OGM.
+
+-   Updated dependencies [[`0a5e91bb2`](https://github.com/neo4j/graphql/commit/0a5e91bb2d7db61802ffe31517f60949884f4be5)]:
+    -   @neo4j/graphql@3.23.1
+
+## 3.23.0
+
+### Minor Changes
+
+-   [#3581](https://github.com/neo4j/graphql/pull/3581) [`775fdea1d`](https://github.com/neo4j/graphql/commit/775fdea1d7af274094a7dd56018e75fb2b2596e2) Thanks [@ID!](https://github.com/ID!)! - This release includes the addition of three new directives for authentication and authorization:
+
+    The `@authentication` directive is used to configure authentication checks at either the schema, object or field level:
+
+    ```graphql
+    type Post @authentication(operations: [CREATE]) {
+        content: String!
+    }
+    ```
+
+    The `@authorization` directive is used to configure fine-grained authorization against node properties:
+
+    ```graphql
+    type User @authorization(validate: [{ where: { node: { id: "$jwt.sub" } } }]) {
+        id: ID!
+    }
+    ```
+
+    The `@subscriptionsAuthorization` directive is used to configure fine-grained authorization specifically for Subscriptions events:
+
+    ```graphql
+    type Post @subscriptionsAuthorization(filter: [{ where: { node: { author: "$jwt.sub" } } }]) {
+        likes: Int!
+    }
+    ```
+
+    These three directives supersede the `@auth` directive, which will be removed in version 4.0.0 of the Neo4j GraphQL Library.
+
+### Patch Changes
+
+-   Updated dependencies [[`775fdea1d`](https://github.com/neo4j/graphql/commit/775fdea1d7af274094a7dd56018e75fb2b2596e2)]:
+    -   @neo4j/graphql@3.23.0
+
+## 3.22.0
+
+### Patch Changes
+
+-   [#3117](https://github.com/neo4j/graphql/pull/3117) [`c30569a97`](https://github.com/neo4j/graphql/commit/c30569a976f0f6a436ce11016845be47852a54cd) Thanks [@g10](https://github.com/g10)! - feat: expose `assertIndexesAndConstraints` on OGM
+
+-   [#3556](https://github.com/neo4j/graphql/pull/3556) [`4f221fdb2`](https://github.com/neo4j/graphql/commit/4f221fdb2d416f41c77a35bd6c7779f16927d246) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Preserve library generated casing when generating TypeScript types using the OGM.
+
+-   Updated dependencies [[`f779a0061`](https://github.com/neo4j/graphql/commit/f779a00612adc4e0c42a3696435cbf6072dcfe31), [`cc201e6fc`](https://github.com/neo4j/graphql/commit/cc201e6fc6f0146f0cf80aad2bcaf086a215554c), [`56a733023`](https://github.com/neo4j/graphql/commit/56a733023f6f300b92c8811e37bf6884dc661133)]:
+    -   @neo4j/graphql@3.22.0
+
 ## 3.21.0
 
 ### Patch Changes

@@ -78,7 +78,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { serial, x, y },
         });
 
@@ -128,7 +128,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { serial, x, y, z },
         });
 
@@ -194,7 +194,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { serial, x, y: newY },
         });
 
@@ -261,7 +261,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { serial, x, y: newY, z },
         });
 
@@ -324,7 +324,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: partsQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { serial },
         });
 
@@ -379,7 +379,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: partsQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { serial },
         });
 

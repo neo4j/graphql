@@ -25,7 +25,7 @@ import { generate } from "randomstring";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { UniqueType } from "../utils/graphql-types";
-import { createJwtRequest } from "../utils/create-jwt-request";
+import { createBearerToken } from "../utils/create-bearer-token";
 
 describe("unions", () => {
     let driver: Driver;
@@ -103,7 +103,7 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -180,7 +180,7 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -246,7 +246,7 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -317,7 +317,7 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -404,7 +404,7 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -486,7 +486,7 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -568,7 +568,7 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -668,7 +668,7 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -751,7 +751,7 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -774,7 +774,7 @@ describe("unions", () => {
                 union Search = ${MovieType} | ${GenreType}
 
 
-                type ${GenreType} @auth(rules: [{ operations: [READ], allow: { name: "$jwt.jwtAllowedNamesExample" } }]) {
+                type ${GenreType} @authorization(validate: [{ operations: [READ], when: BEFORE, where: { node: { name: "$jwt.jwtAllowedNamesExample" } } }]) {
                     name: String
                 }
 
@@ -820,12 +820,12 @@ describe("unions", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { jwtAllowedNamesExample: "Horror" });
+                const token = createBearerToken(secret, { jwtAllowedNamesExample: "Horror" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             } finally {
@@ -859,12 +859,12 @@ describe("unions", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { jwtAllowedNamesExample: "Romance" });
+                const token = createBearerToken(secret, { jwtAllowedNamesExample: "Romance" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
                 expect(gqlResult.errors).toBeFalsy();
                 expect(gqlResult.data?.[MovieType.plural] as any).toEqual([

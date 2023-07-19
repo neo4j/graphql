@@ -24,7 +24,7 @@ import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import { META_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
@@ -208,10 +208,23 @@ export default async function translateUpdate({
                 if (!relationField.typeMeta.array) {
                     const inStr = relationField.direction === "IN" ? "<-" : "-";
                     const outStr = relationField.direction === "OUT" ? "->" : "-";
+
+                    const validatePredicates: string[] = [];
                     refNodes.forEach((refNode) => {
-                        const validateRelationshipExistence = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        connectStrs.push(validateRelationshipExistence);
+                        const validateRelationshipExistence = `EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name}))`;
+                        validatePredicates.push(validateRelationshipExistence);
                     });
+
+                    if (validatePredicates.length) {
+                        connectStrs.push("WITH *");
+                        connectStrs.push(
+                            `WHERE apoc.util.validatePredicate(${validatePredicates.join(
+                                " OR "
+                            )},'Relationship field "%s.%s" cannot have more than one node linked',["${
+                                relationField.connectionPrefix
+                            }","${relationField.fieldName}"])`
+                        );
+                    }
                 }
 
                 const connectAndParams = createConnectAndParams({
@@ -339,23 +352,27 @@ export default async function translateUpdate({
                     const relTypeStr = `[${relationVarName}:${relationField.type}]`;
 
                     if (!relationField.typeMeta.array) {
-                        // const validateRelationshipExistence = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        // createStrs.push(validateRelationshipExistence);
+                        createStrs.push("WITH *");
+
+                        const validatePredicateTemplate = (condition: string) =>
+                            `WHERE apoc.util.validatePredicate(${condition},'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+
                         const singleCardinalityValidationTemplate = (nodeName) =>
-                            `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                            `EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName}))`;
+
                         if (relationField.union && relationField.union.nodes) {
                             const validateRelationshipExistence = relationField.union.nodes.map(
                                 singleCardinalityValidationTemplate
                             );
-                            createStrs.push(...validateRelationshipExistence);
+                            createStrs.push(validatePredicateTemplate(validateRelationshipExistence.join(" OR ")));
                         } else if (relationField.interface && relationField.interface.implementations) {
                             const validateRelationshipExistence = relationField.interface.implementations.map(
                                 singleCardinalityValidationTemplate
                             );
-                            createStrs.push(...validateRelationshipExistence);
+                            createStrs.push(validatePredicateTemplate(validateRelationshipExistence.join(" OR ")));
                         } else {
                             const validateRelationshipExistence = singleCardinalityValidationTemplate(refNode.name);
-                            createStrs.push(validateRelationshipExistence);
+                            createStrs.push(validatePredicateTemplate(validateRelationshipExistence));
                         }
                     }
 
@@ -424,13 +441,12 @@ export default async function translateUpdate({
         projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
-        if (projection.meta?.authValidatePredicates?.length) {
-            projAuth = new Cypher.With("*").where(
-                Cypher.apoc.util.validatePredicate(
-                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                    AUTH_FORBIDDEN_ERROR
-                )
-            );
+        const predicates: Cypher.Predicate[] = [];
+
+        predicates.push(...projection.predicates);
+
+        if (predicates.length) {
+            projAuth = new Cypher.With("*").where(Cypher.and(...predicates));
         }
     }
 

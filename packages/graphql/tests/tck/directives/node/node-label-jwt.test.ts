@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("Label in Node directive", () => {
     const secret = "secret";
@@ -46,11 +45,7 @@ describe("Label in Node directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
-            },
+            features: { authorization: { key: secret } },
         });
     });
 
@@ -63,13 +58,11 @@ describe("Label in Node directive", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { movielabel: "Film" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { movielabel: "Film" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`)
+            "MATCH (this:Film)
             RETURN this { .title } AS this"
         `);
 
@@ -88,17 +81,15 @@ describe("Label in Node directive", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { movielabel: "Film", personlabel: "Person" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { movielabel: "Film", personlabel: "Person" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`:\`Person\`)
+            "MATCH (this:Actor:Person)
             WHERE this.age > $param0
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`ACTED_IN\`]->(this1:\`Film\`)
+                MATCH (this)-[this0:ACTED_IN]->(this1:Film)
                 WHERE this1.title = $param1
                 WITH this1 { .title } AS this1
                 RETURN collect(this1) AS var2
@@ -128,16 +119,14 @@ describe("Label in Node directive", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { movielabel: "Film" });
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+        const token = createBearerToken("secret", { movielabel: "Film" });
+        const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Film\`)
+                CREATE (create_this1:Film)
                 SET
                     create_this1.title = create_var0.title
                 RETURN create_this1

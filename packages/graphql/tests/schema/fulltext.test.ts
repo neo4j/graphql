@@ -47,7 +47,7 @@ describe("@fulltext schema", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -58,7 +58,7 @@ describe("@fulltext schema", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -190,10 +190,38 @@ describe("@fulltext schema", () => {
             }
 
             type Query {
-              movies(fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in future versions of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\"), options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in future versions of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\"), where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, fulltext: MovieFulltext @deprecated(reason: \\"This argument has been deprecated and will be removed in future versions of the library. Please use the top-level query that corresponds to the index you wish to query instead. More information about the changes to @fulltext can be found here: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.\\"), sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              movies(
+                \\"\\"\\"
+                Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.
+                \\"\\"\\"
+                fulltext: MovieFulltext
+                options: MovieOptions
+                where: MovieWhere
+              ): [Movie!]!
+              moviesAggregate(
+                \\"\\"\\"
+                Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.
+                \\"\\"\\"
+                fulltext: MovieFulltext
+                where: MovieWhere
+              ): MovieAggregateSelection!
+              moviesConnection(
+                after: String
+                first: Int
+                \\"\\"\\"
+                Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.
+                \\"\\"\\"
+                fulltext: MovieFulltext
+                sort: [MovieSort]
+                where: MovieWhere
+              ): MoviesConnection!
+              \\"\\"\\"
+              Query a full-text index. This query returns the query score, but does not allow for aggregations. Use the \`fulltext\` argument under other queries for this functionality.
+              \\"\\"\\"
               moviesFulltextMovieDescription(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]!
+              \\"\\"\\"
+              Query a full-text index. This query returns the query score, but does not allow for aggregations. Use the \`fulltext\` argument under other queries for this functionality.
+              \\"\\"\\"
               moviesFulltextMovieTitle(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]!
             }
 
@@ -210,7 +238,7 @@ describe("@fulltext schema", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

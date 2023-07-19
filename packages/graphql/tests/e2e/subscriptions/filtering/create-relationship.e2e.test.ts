@@ -102,16 +102,17 @@ describe("Connect Subscription with optional filters valid for all types", () =>
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: {
-                driverConfig: {
-                    database: neo4j.getIntegrationDatabaseName(),
-                },
-            },
             features: {
                 subscriptions: new TestSubscriptionsMechanism(),
             },
         });
-        server = new ApolloTestServer(neoSchema);
+        // eslint-disable-next-line @typescript-eslint/require-await
+        server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+            sessionConfig: {
+                database: neo4j.getIntegrationDatabaseName(),
+            },
+            token: req.headers.authorization,
+        }));
         await server.start();
 
         wsClient = new WebSocketTestClient(server.wsPath);
@@ -233,6 +234,99 @@ subscription SubscriptionMovie {
                             screenTime: 1000,
                             node: {
                                 name: "Reeves",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+    });
+
+    test("where across source and target node", async () => {
+        const where = `{ ${typeMovie.operations.subscribe.payload.relationship_created}: { title: "Matrix" }, createdRelationship: { actors: { node: { name: "Keanu" } } } }`;
+        await wsClient.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson, where }));
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    actors: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    name: "Keanu"
+                                                },
+                                                edge: {
+                                                    screenTime: 42
+                                                }
+                                            },
+                                            {
+                                                node: {
+                                                    name: "Reeves"
+                                                },
+                                                edge: {
+                                                    screenTime: 1000
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    title: "Matrix",
+                                },
+                                {
+                                    actors: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    name: "Keanu"
+                                                },
+                                                edge: {
+                                                    screenTime: 42
+                                                }
+                                            },
+                                            {
+                                                node: {
+                                                    name: "Reeves"
+                                                },
+                                                edge: {
+                                                    screenTime: 1000
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    title: "Speed",
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        await wsClient.waitForEvents(1);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.relationship_created]: {
+                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
+                    event: "CREATE_RELATIONSHIP",
+                    relationshipFieldName: "actors",
+                    createdRelationship: {
+                        actors: {
+                            screenTime: 42,
+                            node: {
+                                name: "Keanu",
                             },
                         },
                         directors: null,

@@ -869,7 +869,7 @@ describe("Node", () => {
             const labelString = node.getLabelString(context);
 
             expect(labels).toEqual(["Movie"]);
-            expect(labelString).toBe(":`Movie`");
+            expect(labelString).toBe(":Movie");
         });
 
         test("should return labels updated with context values from Context", () => {
@@ -891,7 +891,7 @@ describe("Node", () => {
             const labelString = node.getLabelString(context);
 
             expect(labels).toEqual(["Movie"]);
-            expect(labelString).toBe(":`Movie`");
+            expect(labelString).toBe(":Movie");
         });
 
         test("should return additional labels updated with jwt values from Context", () => {
@@ -916,7 +916,7 @@ describe("Node", () => {
             const labelString = node.getLabelString(context);
 
             expect(labels).toEqual(["Film", "Movie"]);
-            expect(labelString).toBe(":`Film`:`Movie`");
+            expect(labelString).toBe(":Film:Movie");
         });
     });
 });

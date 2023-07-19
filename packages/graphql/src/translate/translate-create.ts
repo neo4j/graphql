@@ -21,7 +21,7 @@ import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import type { Context } from "../types";
-import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import { META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
@@ -49,6 +49,9 @@ export default async function translateCreate({
     context: Context;
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
+    const { resolveTree } = context;
+    const mutationInputs = resolveTree.args.input as any[];
+
     try {
         return await unwindCreate({ context, node });
     } catch (error) {
@@ -56,9 +59,6 @@ export default async function translateCreate({
             throw error;
         }
     }
-
-    const { resolveTree } = context;
-    const mutationInputs = resolveTree.args.input as any[];
 
     const projectionWith: string[] = [];
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
@@ -139,17 +139,20 @@ export default async function translateCreate({
 
             const projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
 
-            if (projection.meta?.authValidatePredicates?.length) {
-                const projAuth = Cypher.apoc.util.validatePredicate(
-                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                    AUTH_FORBIDDEN_ERROR
-                );
+            const authPredicates: Cypher.Predicate[] = [];
+
+            if (projection.predicates.length) {
+                authPredicates.push(Cypher.and(...projection.predicates));
+            }
+
+            if (authPredicates.length) {
                 return {
                     projection: projectionExpr,
                     projectionSubqueries: projectionSubquery,
-                    projectionAuth: projAuth,
+                    projectionAuth: Cypher.and(...authPredicates),
                 };
             }
+
             return { projection: projectionExpr, projectionSubqueries: projectionSubquery };
         });
 

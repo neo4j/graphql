@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("Node directive labels", () => {
     let driver: Driver;
@@ -63,7 +63,7 @@ describe("Node directive labels", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data.movies[0]).toEqual({
@@ -79,7 +79,7 @@ describe("Node directive labels", () => {
 
         const secret = "1234";
 
-        const req = createJwtRequest(secret, { filmLabel: typeFilm.name });
+        const token = createBearerToken(secret, { filmLabel: typeFilm.name });
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
@@ -99,7 +99,7 @@ describe("Node directive labels", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValues({ token }),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data.movies[0]).toEqual({
@@ -126,7 +126,7 @@ describe("Node directive labels", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+            contextValue: neo4j.getContextValues({
                 filmLabel: typeFilm.name,
             }),
         });

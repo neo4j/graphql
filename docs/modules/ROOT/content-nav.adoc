@@ -27,15 +27,10 @@
 *** xref:pagination/offset-based.adoc[]
 *** xref:pagination/cursor-based.adoc[]
 
-** xref:auth/index.adoc[]
-*** xref:auth/getting-started.adoc[]
-**** xref:auth/auth-directive-subs.adoc[]
-*** xref:auth/authorization/index.adoc[]
-**** xref:auth/authorization/allow.adoc[]
-**** xref:auth/authorization/bind.adoc[]
-**** xref:auth/authorization/roles.adoc[]
-**** xref:auth/authorization/where.adoc[]
-*** xref:auth/authentication.adoc[]
+** Authentication and Authorization
+*** xref:authentication-and-authorization/configuration.adoc[]
+*** xref:authentication-and-authorization/authentication.adoc[]
+*** xref:authentication-and-authorization/authorization.adoc[]
 
 ** xref:introspector.adoc[Introspector]
 
@@ -43,7 +38,9 @@
 *** xref:migration/index.adoc[Migration from `neo4j-graphql-js`]
 *** xref:migration/v2-migration.adoc[]
 *** xref:migration/v3-migration.adoc[]
-*** xref:migration/v4-migration.adoc[]
+*** xref:migration/v4-migration/index.adoc[]
+**** xref:migration/v4-migration/authorization.adoc[]
+**** xref:migration/v4-migration/ogm.adoc[]
 
 ** xref:ogm/index.adoc[]
 *** xref:ogm/installation.adoc[]

@@ -66,11 +66,11 @@ describe("Relay Cursor Connection projections", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH { node: { __resolveType: \\"Actor\\", __id: id(this1) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -106,11 +106,11 @@ describe("Relay Cursor Connection projections", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH { node: { __resolveType: \\"Actor\\", __id: id(this1) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -141,11 +141,11 @@ describe("Relay Cursor Connection projections", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH { node: { __resolveType: \\"Actor\\", __id: id(this1) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -188,18 +188,18 @@ describe("Relay Cursor Connection projections", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.name = $param0
             CALL {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:\`ACTED_IN\`]->(this1:\`Movie\`)
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this2:\`ACTED_IN\`]->(this3:\`Series\`)
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WITH { node: { __resolveType: \\"Series\\", __id: id(this3) } } AS edge
                     RETURN edge
                 }
@@ -237,18 +237,18 @@ describe("Relay Cursor Connection projections", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.name = $param0
             CALL {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:\`ACTED_IN\`]->(this1:\`Movie\`)
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this2:\`ACTED_IN\`]->(this3:\`Series\`)
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WITH { node: { __resolveType: \\"Series\\", __id: id(this3) } } AS edge
                     RETURN edge
                 }
@@ -286,11 +286,11 @@ describe("Relay Cursor Connection projections", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH { node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -326,11 +326,11 @@ describe("Relay Cursor Connection projections", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`ACTED_IN\`]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH { node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

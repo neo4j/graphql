@@ -30,6 +30,7 @@ import { upperFirst } from "../../utils/upper-first";
 import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../where/create-where-predicate";
+import { checkAuthentication } from "../authorization/check-authentication";
 
 type AggregationFields = {
     count?: ResolveTree;
@@ -62,24 +63,51 @@ export function createFieldAggregation({
 
     if (!referenceNode || !referenceRelation) return undefined;
 
+    checkAuthentication({ context, node: referenceNode, targetOperations: ["AGGREGATE"] });
+
     const sourceRef = nodeVar;
     const targetRef = new Cypher.Node({ labels: referenceNode.getLabels(context) });
 
     const fieldPathBase = `${node.name}${referenceNode.name}${upperFirst(relationAggregationField.fieldName)}`;
     const aggregationFields = getAggregationFields(fieldPathBase, field);
+
+    const predicates: Cypher.Predicate[] = [];
+    let preComputedSubqueries: Cypher.CompositeClause | undefined;
+
     const authData = createFieldAggregationAuth({
         node: referenceNode,
         context,
         subqueryNodeAlias: targetRef,
-        nodeFields: aggregationFields.node,
     });
 
-    const { predicate, preComputedSubqueries } = createWherePredicate({
+    if (authData) {
+        const { predicate: authorizationPredicate, preComputedSubqueries: authorizationPreComputedSubqueries } =
+            authData;
+
+        if (authorizationPredicate) {
+            predicates.push(authorizationPredicate);
+        }
+
+        if (authorizationPreComputedSubqueries && !authorizationPreComputedSubqueries.empty) {
+            preComputedSubqueries = Cypher.concat(preComputedSubqueries, authorizationPreComputedSubqueries);
+        }
+    }
+
+    const { predicate: wherePredicate, preComputedSubqueries: wherePreComputedSubqueries } = createWherePredicate({
         targetElement: targetRef,
         whereInput: (field.args.where as GraphQLWhereArg) || {},
         context,
         element: referenceNode,
     });
+
+    if (wherePredicate) {
+        predicates.push(wherePredicate);
+    }
+
+    if (wherePreComputedSubqueries && !wherePreComputedSubqueries.empty) {
+        preComputedSubqueries = Cypher.concat(preComputedSubqueries, wherePreComputedSubqueries);
+    }
+
     const relationshipDirection = getCypherRelationshipDirection(relationAggregationField, {
         directed: field.args.directed as boolean | undefined,
     });
@@ -90,7 +118,7 @@ export function createFieldAggregation({
         .withDirection(relationshipDirection)
         .to(targetRef);
 
-    const matchWherePattern = createMatchWherePattern(targetPattern, preComputedSubqueries, authData, predicate);
+    const matchWherePattern = createMatchWherePattern(targetPattern, preComputedSubqueries, Cypher.and(...predicates));
     const projectionMap = new Cypher.Map();
 
     let projectionSubqueries: Cypher.Clause | undefined;
