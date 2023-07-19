@@ -35,35 +35,6 @@ describe("Neo4jGraphQL", () => {
                 await expect(neoSchema.checkNeo4jCompat()).rejects.toThrow(`neo4j-driver Driver missing`);
             });
         });
-        describe("neo4jValidateGraphQLDocument", () => {
-            test("should return validation error when invalid type definitions provided", () => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs: "type User { name: Strin }" });
-
-                const { validationErrors, isValid } = neoSchema.neo4jValidateGraphQLDocument();
-
-                expect(validationErrors).toHaveLength(1);
-                expect(validationErrors).toContain('Unknown type "Strin". Did you mean "String"?');
-                expect(isValid).toBeFalse();
-            });
-            test("should return several validation errors when invalid type definitions provided", () => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs: "type User { name: Strin @autogenera }" });
-
-                const { validationErrors, isValid } = neoSchema.neo4jValidateGraphQLDocument();
-
-                expect(validationErrors).toHaveLength(2);
-                expect(validationErrors).toContain('Unknown type "Strin". Did you mean "String"?');
-                expect(validationErrors).toContain('Unknown directive "@autogenera".');
-                expect(isValid).toBeFalse();
-            });
-            test("should not return validation error when valid type definitions provided", () => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs: "type User { name: String }" });
-
-                const { validationErrors, isValid } = neoSchema.neo4jValidateGraphQLDocument();
-
-                expect(validationErrors).toHaveLength(0);
-                expect(isValid).toBeTrue();
-            });
-        });
 
         describe("getExecutableSchema", () => {
             test("error should contain path", async () => {

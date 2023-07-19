@@ -271,16 +271,3 @@ Accepts the arguments below:
  Type: `boolean`
 |Whether or not to create constraints if they do not yet exist. Disabled by default.
 |===
-
-[[api-reference-neo4jvalidategraphqldocument]]
-== `neo4jValidateGraphQLDocument`
-
-A synchronous method to verify if the type definitions provided are valid for usage with the `@neo4j/graphql` library. Usage example:
-
-[source, javascript, indent=0]
-----
-const neoSchema = new Neo4jGraphQL({ typeDefs: "type User { name: Strin }" });
-const { isValid, validationErrors } = neoSchema.neo4jValidateGraphQLDocument();
-console.log(isValid) // false
-console.log(validationErrors) // ['Unknown type "Strin". Did you mean "String"?']
-----
