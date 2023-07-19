@@ -50,7 +50,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@apollo/gateway": "2.4.10",
+        "@apollo/gateway": "2.5.0",
         "@apollo/server": "4.7.5",
         "@faker-js/faker": "8.0.2",
         "@neo4j/graphql-plugin-auth": "^2.2.0",
@@ -64,7 +64,7 @@
         "@types/semver": "7.5.0",
         "@types/supertest": "2.0.12",
         "@types/ws": "8.5.5",
-        "dedent": "1.1.0",
+        "dedent": "1.2.0",
         "graphql-middleware": "6.1.35",
         "graphql-tag": "2.12.6",
         "graphql-ws": "5.14.0",
