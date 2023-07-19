@@ -1,6 +1,5 @@
 ---
 "@neo4j/graphql": major
-"@neo4j/graphql-amqp-subscriptions-engine": patch
 ---
 
 Change subscriptions setup, this requires changes to constructor options passed to Neo4jGraphQL. See <https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#subscriptions-options>
