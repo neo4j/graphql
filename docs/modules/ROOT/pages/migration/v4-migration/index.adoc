@@ -206,28 +206,6 @@ new Neo4jGraphQL({
 });
 ----
 
-[[customResolver-checks]]
-==== Checks for custom resolvers
-
-Previously, if no custom resolver was specified for a `@computed` field when creating an instance of Neo4jGraphQL, no errors would be thrown when generating the schema.
-However, it is likely that the lack of a custom resolver would lead to errors at runtime. It is preferable to fail fast in this case as it is easier to debug and makes it less likely that bugs will make it into production.
-
-As a result, checks are now performed to ensure that every `@customResolver` field has a custom resolver provided. If not the library will throw an error during schema generation.
-
-These checks may not always be required or desirable. If this is the case, they can be disabled using the new xref::migration/v4-migration.adoc#startup-validation[`startupValidation`] config option:
-
-[source, javascript, indent=0]
-----
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    config: {
-        startupValidation: {
-          resolvers: false
-        },
-    },
-})
-----
-
 ==== `requires` changes
 
 In version 4.0.0, it is now possible to require non-scalar fields. This means it is also possible to require fields on related type.
@@ -645,17 +623,13 @@ type Person {
 
 In this example, there are multiple fields in the `Team` type which have the same `Person` type, the same `@relationship` type and ("PLAYS_IN") direction (IN). This is an issue when returning data from the database, as there would be no difference between `player1`, `player2` and `backupPlayers`. Selecting these fields would then return the same data.
 
-To disable checks for duplicate relationship fields, the `noDuplicateRelationshipFields` config option should be used:
+These checks can be disabled by disabling all validation in the library, however, this is not recommended unless in production with 100% confidence of type definitions input.
 
 [source, javascript, indent=0]
 ----
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
-    config: {
-        startupValidation: {
-            noDuplicateRelationshipFields: false,
-        },
-    },
+    validate: false,
 });
 ----
 
@@ -700,61 +674,15 @@ type Actor {
 [[startup-validation]]
 === Startup validation
 
-In version 4.0.0, startup xref::migration/v4-migration.adoc#customResolver-checks[checks for custom resolvers], and checks for duplicate relationship fields have been added. As a result, a new configuration option has been added that can disable these checks.
-This new option has been combined with the option to `skipValidateTypeDefs`. As a result, `skipValidateTypeDefs` will be removed and replaced by `startupValidation`.
+The argument `config.skipValidateTypeDefs` has been moved to the top-level of the constructor input and renamed `validate`, which defaults to `true`.
 
-To only disable strict type definition validation, the following config option should be used:
-
-[source, javascript, indent=0]
-----
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    config: {
-        startupValidation: {
-          typeDefs: false
-        },
-    },
-})
-----
-
-To only disable checks for custom resolvers, the following config option should be used:
+To disable type definition validation, the following config option should be used:
 
 [source, javascript, indent=0]
 ----
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
-    config: {
-        startupValidation: {
-          resolvers: false
-        },
-    },
-})
-----
-
-To only disable checks for duplicate relationship fields, the following config option should be used:
-
-[source, javascript, indent=0]
-----
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    config: {
-        startupValidation: {
-            noDuplicateRelationshipFields: false
-        },
-    },
-})
-----
-
-
-To disable all startup checks, the following config option should be used:
-
-[source, javascript, indent=0]
-----
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    config: {
-        startupValidation: false,
-    },
+    validate: false,
 })
 ----
 

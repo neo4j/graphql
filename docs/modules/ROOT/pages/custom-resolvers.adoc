@@ -185,6 +185,7 @@ const resolvers = {
 ----
 
 Instead, the following resolvers definition would be required:
+
 [source, javascript, indent=0]
 ----
 const resolvers = {
@@ -196,16 +197,4 @@ const resolvers = {
 };
 ----
 
-These checks may not always be required or desirable. If this is the case, they can be disabled using the `startupValidation` config option:
-
-[source, javascript, indent=0]
-----
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    config: {
-        startupValidation: {
-          resolvers: false
-        },
-    },
-})
-----
+Mismatches between the resolver map and `@customResolver` directives will be logged to the console as a warning.
