@@ -35,7 +35,6 @@ export function getJwtFields(
             unions: [],
             scalars: [],
             enums: [],
-            validateResolvers: false,
         });
         const standardTypeDefinition = getStandardJwtDefinition(schema);
         const standardJwtFields = getObjFieldMeta({
@@ -45,7 +44,6 @@ export function getJwtFields(
             unions: [],
             scalars: [],
             enums: [],
-            validateResolvers: false,
         });
         fields.primitiveFields.push(...standardJwtFields.primitiveFields);
         return fields;

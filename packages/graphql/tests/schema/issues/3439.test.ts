@@ -58,8 +58,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const subscriptionMechanism = new TestSubscriptionsMechanism();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionMechanism } });
+        const subscriptionsMechanism = new TestSubscriptionsMechanism();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsMechanism } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -1306,8 +1306,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const subscriptionMechanism = new TestSubscriptionsMechanism();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionMechanism } });
+        const subscriptionsMechanism = new TestSubscriptionsMechanism();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsMechanism } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -2475,8 +2475,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const subscriptionMechanism = new TestSubscriptionsMechanism();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionMechanism } });
+        const subscriptionsMechanism = new TestSubscriptionsMechanism();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsMechanism } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);

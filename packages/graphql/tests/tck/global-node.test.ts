@@ -38,7 +38,6 @@ describe("Global nodes", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {},
         });
         const query = gql`
             query Node($id: ID!) {
@@ -78,7 +77,6 @@ describe("Global nodes", () => {
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {},
         });
         const query = gql`
             query Node($id: ID!) {
@@ -123,7 +121,6 @@ describe("Global nodes", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {},
         });
 
         const query = gql`
@@ -163,7 +160,6 @@ describe("Global nodes", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {},
         });
 
         const query = gql`
