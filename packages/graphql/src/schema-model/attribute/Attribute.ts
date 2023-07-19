@@ -17,9 +17,7 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLSchemaValidationError } from "../../classes/Error";
 import type { Annotation, Annotations } from "../annotation/Annotation";
-import { annotationToKey } from "../annotation/Annotation";
 import type { AttributeType } from "./AbstractAttribute";
 import { AbstractAttribute } from "./AbstractAttribute";
 
@@ -37,5 +35,4 @@ export class Attribute extends AbstractAttribute {
             type: this.type,
         });
     }
-
 }

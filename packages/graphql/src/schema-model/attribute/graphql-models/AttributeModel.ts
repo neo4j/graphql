@@ -24,9 +24,7 @@ import type { Attribute } from "../Attribute";
 import type { Annotations } from "../../annotation/Annotation";
 import type { AttributeType } from "../AbstractAttribute";
 import { AbstractAttribute } from "../AbstractAttribute";
-import { ne } from "@faker-js/faker";
 
-// Maybe rename it to GraphQL model
 export class AttributeModel extends AbstractAttribute {
     private _listModel: ListModel | undefined;
     private _mathModel: MathModel | undefined;
@@ -43,9 +41,7 @@ export class AttributeModel extends AbstractAttribute {
     }
 
     /**
-     * 
-     * /**
-     *  Previously defined as:
+     * Previously defined as:
      * [
             ...this.temporalFields,
             ...this.enumFields,
@@ -59,7 +55,6 @@ export class AttributeModel extends AbstractAttribute {
         ];
      */
     isMutable(): boolean {
-        // this is based on the assumption that interface fields and union fields are object fields
         return this.isTemporal() || this.isEnum() || this.isObject() || this.isScalar() || 
         this.isPrimitive() || this.isInterface() || this.isUnion() || this.isPoint();
     }
@@ -69,6 +64,7 @@ export class AttributeModel extends AbstractAttribute {
         // return this.attribute.annotations.unique ? true : false;
         return false;
     }
+    
     /**
      *  Previously defined as:
      * [...this.primitiveFields,
@@ -77,7 +73,6 @@ export class AttributeModel extends AbstractAttribute {
        ...this.temporalFields,
        ...this.pointFields,]
      */
-
     isConstrainable(): boolean {
         return this.isPrimitive() || this.isScalar() || this.isEnum() || this.isTemporal() || this.isPoint();
     }

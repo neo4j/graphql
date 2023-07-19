@@ -46,3 +46,10 @@ function getArgumentValueByType(argumentValue: ValueNode): unknown {
         }
     }
 }
+
+export function findDirective(directives: readonly DirectiveNode[], name: string): DirectiveNode | undefined {
+    return directives.find((d) => {
+        return d.name.value === name;
+    });
+}
+

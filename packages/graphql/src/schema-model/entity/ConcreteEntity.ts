@@ -23,11 +23,10 @@ import type { Annotation, Annotations } from "../annotation/Annotation";
 import { annotationToKey } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Relationship } from "../relationship/Relationship";
-import { AbstractEntity, type Entity } from "./Entity";
+import { AbstractConcreteEntity } from "./Entity";
+import type { Entity } from "./Entity";
 
-export class ConcreteEntity extends AbstractEntity implements Entity {
-   // public readonly name: string;
-   //  public readonly labels: Set<string>;
+export class ConcreteEntity extends AbstractConcreteEntity implements Entity {
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly relationships: Map<string, Relationship> = new Map();
     public readonly annotations: Partial<Annotations> = {};
@@ -46,8 +45,6 @@ export class ConcreteEntity extends AbstractEntity implements Entity {
         relationships?: Relationship[];
     }) {
         super({ name, labels });
-        // this.name = name; TODO: Remove it as is implemented by the Abstract class
-       // this.labels = new Set(labels);
 
         for (const attribute of attributes) {
             this.addAttribute(attribute);

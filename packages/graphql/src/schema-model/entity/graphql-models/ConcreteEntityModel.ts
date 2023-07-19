@@ -21,12 +21,12 @@ import { AttributeModel } from "../../attribute/graphql-models/AttributeModel";
 import type { Relationship } from "../../relationship/Relationship";
 import { getFromMap } from "../../utils/get-from-map";
 import type { Entity } from "../Entity";
-import { AbstractEntity } from "../Entity";
+import { AbstractConcreteEntity } from "../Entity";
 import { singular, plural } from "../../utils/string-manipulation";
 import type { ConcreteEntity } from "../ConcreteEntity";
 import type { Attribute } from "../../attribute/Attribute";
 
-export class ConcreteEntityModel extends AbstractEntity {
+export class ConcreteEntityModel extends AbstractConcreteEntity {
     public readonly attributes: Map<string, AttributeModel> = new Map();
     // TODO: change Relationship to RelationshipModel
     public readonly relationships: Map<string, Relationship> = new Map();

@@ -20,12 +20,14 @@
 import {
     EnumType,
     GraphQLBuiltInScalarType,
+    InterfaceType,
     ListType,
     Neo4jGraphQLNumberType,
     Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
     ObjectType,
     ScalarType,
+    UnionType,
     UserScalarType,
 } from "./AbstractAttribute";
 import { Attribute } from "./Attribute";
@@ -210,6 +212,24 @@ describe("Attribute", () => {
             expect(attribute.isUserScalar()).toBe(true);
         });
 
+        test("isInterface", () => {
+            const attribute = new Attribute({
+                name: "test",
+                annotations: [],
+                type: new InterfaceType("Tool", true),
+            });
+            expect(attribute.isInterface()).toBe(true);
+        });
+
+        test("isUnion", () => {
+            const attribute = new Attribute({
+                name: "test",
+                annotations: [],
+                type: new UnionType("Tool", true),
+            });
+            expect(attribute.isUnion()).toBe(true);
+        });
+
         describe("List", () => {
             test("isList", () => {
                 const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
@@ -313,6 +333,17 @@ describe("Attribute", () => {
 
             expect(attribute.isTemporal()).toBe(true);
         });
+
+
+        test("isAbstract", () => {
+            const attribute = new Attribute({
+                name: "test",
+                annotations: [],
+                type: new UnionType("Tool", true),
+            });
+
+            expect(attribute.isAbstract()).toBe(true);
+        });
     });
 
     test("isRequired", () => {
@@ -348,7 +379,7 @@ describe("Attribute", () => {
         expect(attributeRequired.isRequired()).toBe(true);
         expect(attributeNotRequired.isRequired()).toBe(false);
     });
-    
+
     test("isListElementRequired", () => {
         const listElementRequired = new Attribute({
             name: "test",
@@ -361,17 +392,8 @@ describe("Attribute", () => {
             annotations: [],
             type: new ListType(new ScalarType(GraphQLBuiltInScalarType.String, false), true),
         });
-       
+
         expect(listElementRequired.isListElementRequired()).toBe(true);
         expect(listElementNotRequired.isListElementRequired()).toBe(false);
-    });
-
-    // TODO: test isInterface and isUnion
-    test("isInterface", () => {
-        expect(true).toBe(true);
-    });
-
-    test("isUnion", () => {
-        expect(true).toBe(true);
     });
 });

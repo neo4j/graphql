@@ -18,7 +18,6 @@
  */
 
 
-
 export interface Entity {
     readonly name: string;
 
@@ -27,7 +26,7 @@ export interface Entity {
     // annotations
 }
 
-export abstract class AbstractEntity {
+export abstract class AbstractConcreteEntity {
 /*     protected readonly listAttributes: Attribute[] = [];
     protected readonly listRelationships: Attribute[] = []; */
 
@@ -38,7 +37,4 @@ export abstract class AbstractEntity {
         this.name = name;
         this.labels = new Set(labels);
     }
-
-    
-
 }

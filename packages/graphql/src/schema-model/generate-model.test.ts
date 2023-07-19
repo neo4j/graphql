@@ -28,6 +28,7 @@ import { generateModel } from "./generate-model";
 import type { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import type { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Attribute } from "./attribute/Attribute";
+import type { Relationship } from "./relationship/Relationship";
 
 describe("ConcreteEntity generation", () => {
     let schemaModel: Neo4jGraphQLSchemaModel;
@@ -181,6 +182,10 @@ describe("Attribute generation", () => {
     let schemaModel: Neo4jGraphQLSchemaModel;
     // entities
     let userEntity: ConcreteEntity;
+    let accountEntity: ConcreteEntity;
+
+    // relationships 
+    let userAccounts: Relationship;
 
     // user attributes
     let id: Attribute;
@@ -193,20 +198,14 @@ describe("Attribute generation", () => {
     let password: Attribute;
 
     // hasAccount relationship attributes
-    let createdDateTime: Attribute;
+    let creationTime: Attribute;
+
     // account attributes
     let status: Attribute;
-    let securityLevel: Attribute;
+    let aOrB: Attribute;
 
     beforeAll(() => {
         const typeDefs = gql`
-            enum Status {
-                ACTIVATED
-                DISABLED
-            }
-
-            union SecurityLevel = String | Int
-
             type User {
                 id: ID!
                 name: String!
@@ -217,15 +216,29 @@ describe("Attribute generation", () => {
                 favoriteColors: [String!]!
                 accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", properties: "hasAccount", direction: OUT)
             }
-     
-            interface hasAccount @relationshipProperties {
-                createdDateTime: DateTime!
-            }
             
+            interface hasAccount @relationshipProperties {
+                creationTime: DateTime!
+            }
+
+            type A {
+                id: ID
+            }
+
+            type B {
+                age: Int
+            }
+
+            union AorB = A | B
+            
+            enum Status {
+                ACTIVATED
+                DISABLED
+            }
+
             type Account {
-                id: ID!
                 status: Status
-                securityLevel: SecurityLevel
+                aOrB: AorB
             }
 
             extend type User {
@@ -235,7 +248,13 @@ describe("Attribute generation", () => {
 
         const document = mergeTypeDefs(typeDefs);
         schemaModel = generateModel(document);
+        
+        // entities
         userEntity = schemaModel.entities.get("User") as ConcreteEntity;
+        userAccounts = userEntity.relationships.get("accounts") as Relationship;
+        accountEntity = schemaModel.entities.get("Account") as ConcreteEntity;
+        
+        // user attributes
         id = userEntity?.attributes.get("id") as Attribute;
         name = userEntity?.attributes.get("name") as Attribute;
         createdAt = userEntity?.attributes.get("createdAt") as Attribute;
@@ -243,7 +262,16 @@ describe("Attribute generation", () => {
         runningTime = userEntity?.attributes.get("runningTime") as Attribute;
         accountSize = userEntity?.attributes.get("accountSize") as Attribute;
         favoriteColors = userEntity?.attributes.get("favoriteColors") as Attribute;
+        
+        // extended attributes
         password = userEntity?.attributes.get("password") as Attribute;
+
+        // hasAccount relationship attributes
+        creationTime = userAccounts?.attributes.get("creationTime") as Attribute;
+
+        // account attributes
+        status = accountEntity?.attributes.get("status") as Attribute;
+        aOrB = accountEntity?.attributes.get("aOrB") as Attribute;
     });
 
     describe("attribute types", () => {
@@ -260,22 +288,40 @@ describe("Attribute generation", () => {
         test("DateTime", () => {
             expect(createdAt.isDateTime()).toBe(true);
             expect(createdAt.isGraphQLBuiltInScalar()).toBe(false);
+            expect(createdAt.isTemporal()).toBe(true);
+            expect(creationTime.isDateTime()).toBe(true);
+            expect(creationTime.isGraphQLBuiltInScalar()).toBe(false);
+            expect(creationTime.isTemporal()).toBe(true);
+            
         });
 
         test("Date", () => {
             expect(releaseDate.isDate()).toBe(true);
             expect(releaseDate.isGraphQLBuiltInScalar()).toBe(false);
+            expect(releaseDate.isTemporal()).toBe(true);
         });
 
         test("Time", () => {
             expect(runningTime.isTime()).toBe(true);
             expect(runningTime.isGraphQLBuiltInScalar()).toBe(false);
+            expect(runningTime.isTemporal()).toBe(true);
         });
 
         test("BigInt", () => {
             expect(accountSize.isBigInt()).toBe(true);
             expect(accountSize.isGraphQLBuiltInScalar()).toBe(false);
         });
+
+        test("Enum", () => {
+            expect(status.isEnum()).toBe(true);
+            expect(status.isGraphQLBuiltInScalar()).toBe(false);
+        })
+
+        test("Union", () => {
+            expect(aOrB.isUnion()).toBe(true);
+            expect(aOrB.isGraphQLBuiltInScalar()).toBe(false);
+            expect(aOrB.isAbstract()).toBe(true);
+        })
 
         test("List", () => {
             expect(favoriteColors.isList()).toBe(true);

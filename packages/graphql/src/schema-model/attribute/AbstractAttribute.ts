@@ -56,7 +56,7 @@ export enum ScalarTypeCategory {
 
 export type Neo4jGraphQLScalarType = Neo4jGraphQLTemporalType | Neo4jGraphQLNumberType | Neo4jGraphQLSpatialType;
 
-// The ScalarType class is not used to represent user defined scalar types, see UserScalarType for that
+// The ScalarType class is not used to represent user defined scalar types, see UserScalarType for that.
 export class ScalarType {
     public readonly name: GraphQLBuiltInScalarType | Neo4jGraphQLScalarType;
     public readonly isRequired: boolean;
@@ -113,7 +113,7 @@ export class ListType {
     public isRequired: boolean;
     constructor(ofType: AttributeType, isRequired: boolean) {
         if (ofType instanceof ListType) {
-            throw new Neo4jGraphQLSchemaValidationError("Nested lists are not supported yet");
+            throw new Neo4jGraphQLSchemaValidationError("two-dimensional lists are not supported");
         }
         this.ofType = ofType;
         this.isRequired = isRequired;
@@ -130,7 +130,27 @@ export class EnumType {
     }
 }
 
-export type AttributeType = ScalarType | UserScalarType | ObjectType | ListType | EnumType;
+export class UnionType {
+    public name: string;
+    public isRequired: boolean;
+
+    constructor(name: string, isRequired: boolean) {
+        this.name = name;
+        this.isRequired = isRequired;
+    }
+}
+
+export class InterfaceType {
+    public name: string;
+    public isRequired: boolean;
+
+    constructor(name: string, isRequired: boolean) {
+        this.name = name;
+        this.isRequired = isRequired;
+    }
+}
+
+export type AttributeType = ScalarType | UserScalarType | ObjectType | ListType | EnumType | UnionType | InterfaceType;
 
 export abstract class AbstractAttribute {
     public name: string;
@@ -249,11 +269,11 @@ export abstract class AbstractAttribute {
     }
 
     isInterface(): boolean {
-        throw new Error("Method not implemented.");
+        return this.type instanceof InterfaceType;
     }
 
     isUnion(): boolean {
-        throw new Error("Method not implemented.");
+        return this.type instanceof UnionType;
     }
 
     isUserScalar(): boolean {
@@ -275,6 +295,9 @@ export abstract class AbstractAttribute {
         return this.type instanceof ScalarType && this.type.category === ScalarTypeCategory.Neo4jGraphQLTemporalType;
     }
 
+    isAbstract(): boolean {
+        return this.isInterface() || this.isUnion();
+    }
     /**
      *  END of category assertions
      */
