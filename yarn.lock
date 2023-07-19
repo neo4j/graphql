@@ -4371,7 +4371,7 @@ __metadata:
     "@types/ws": 8.5.5
     camelcase: ^6.3.0
     debug: ^4.3.4
-    dedent: 1.1.0
+    dedent: 1.2.0
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
     graphql-compose: ^9.0.8
@@ -13101,12 +13101,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dedent@npm:1.1.0":
-  version: 1.1.0
-  resolution: "dedent@npm:1.1.0"
-  dependencies:
+"dedent@npm:1.2.0":
+  version: 1.2.0
+  resolution: "dedent@npm:1.2.0"
+  peerDependencies:
     babel-plugin-macros: ^3.1.0
-  checksum: fc1536be53fce06211b4e65d3f5325235b5d119659aa70fdb4c21a2d0d096161d48bec7ef5ac79b260d2731af84475d59e3531d4b2f0d6d505cb3169301d4050
+  peerDependenciesMeta:
+    babel-plugin-macros:
+      optional: true
+  checksum: 239f12ddd443a1a59b210af10c9b30985bb0c177403a53353d3c450d13acec2e532ef03bc3ba31aee1ea6cfa54c865edcd5fa249a2f34ad447e68bdb6717e67b
   languageName: node
   linkType: hard
 
