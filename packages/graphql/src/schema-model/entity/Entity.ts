@@ -25,16 +25,3 @@ export interface Entity {
     // relationships
     // annotations
 }
-
-export abstract class AbstractConcreteEntity {
-/*     protected readonly listAttributes: Attribute[] = [];
-    protected readonly listRelationships: Attribute[] = []; */
-
-    public readonly name: string;
-    public readonly labels: Set<string>;
-
-    constructor({ name, labels }: { name: string; labels: string[] }) {
-        this.name = name;
-        this.labels = new Set(labels);
-    }
-}

@@ -22,11 +22,15 @@ import { CypherAnnotation } from "../../annotation/CypherAnnotation";
 import { parseArguments } from "../utils";
 
 export function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
-    const { statement } = parseArguments(directive);
+    const { statement, columnName } = parseArguments(directive);
     if (!statement || typeof statement !== "string") {
         throw new Neo4jGraphQLSchemaValidationError("@cypher statement required");
     }
+    if (!columnName || typeof columnName !== "string") {
+        throw new Neo4jGraphQLSchemaValidationError("@cypher columnName required");
+    }
     return new CypherAnnotation({
         statement: statement,
+        columnName: columnName,
     });
 }

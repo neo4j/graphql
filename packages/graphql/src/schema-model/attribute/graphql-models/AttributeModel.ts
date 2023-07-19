@@ -22,10 +22,23 @@ import { AggregationModel } from "./AggregationModel";
 import { ListModel } from "./ListModel";
 import type { Attribute } from "../Attribute";
 import type { Annotations } from "../../annotation/Annotation";
-import type { AttributeType } from "../AbstractAttribute";
-import { AbstractAttribute } from "../AbstractAttribute";
+import {
+    EnumType,
+    GraphQLBuiltInScalarType,
+    InterfaceType,
+    ListType,
+    Neo4jGraphQLNumberType,
+    Neo4jGraphQLSpatialType,
+    Neo4jGraphQLTemporalType,
+    ObjectType,
+    ScalarType,
+    ScalarTypeCategory,
+    UnionType,
+    UserScalarType,
+} from "../AttributeType";
+import type { Neo4jGraphQLScalarType, AttributeType } from "../AttributeType";
 
-export class AttributeModel extends AbstractAttribute {
+export class AttributeModel {
     private _listModel: ListModel | undefined;
     private _mathModel: MathModel | undefined;
     private _aggregationModel: AggregationModel | undefined;
@@ -34,10 +47,9 @@ export class AttributeModel extends AbstractAttribute {
     public type: AttributeType;
 
     constructor(attribute: Attribute) {
-        super({ name: attribute.name, type: attribute.type, annotations: attribute.annotations });
         this.name = attribute.name;
-        this.annotations = attribute.annotations;
         this.type = attribute.type;
+        this.annotations = attribute.annotations;
     }
 
     /**
@@ -55,16 +67,23 @@ export class AttributeModel extends AbstractAttribute {
         ];
      */
     isMutable(): boolean {
-        return this.isTemporal() || this.isEnum() || this.isObject() || this.isScalar() || 
-        this.isPrimitive() || this.isInterface() || this.isUnion() || this.isPoint();
+        return (
+            (this.isTemporal() ||
+                this.isEnum() ||
+                this.isObject() ||
+                this.isScalar() ||
+                this.isPrimitive() ||
+                this.isInterface() ||
+                this.isUnion() ||
+                this.isPoint()) &&
+            !this.isCypher()
+        );
     }
 
     isUnique(): boolean {
-        // TODO: add it when the annotations are merged
-        // return this.attribute.annotations.unique ? true : false;
-        return false;
+        return this.annotations.unique ? true : false;
     }
-    
+
     /**
      *  Previously defined as:
      * [...this.primitiveFields,
@@ -104,4 +123,153 @@ export class AttributeModel extends AbstractAttribute {
         }
         return this._aggregationModel;
     }
+
+    isBoolean(): boolean {
+        return this.type instanceof ScalarType && this.type.name === GraphQLBuiltInScalarType.Boolean;
+    }
+
+    isID(): boolean {
+        return this.type instanceof ScalarType && this.type.name === GraphQLBuiltInScalarType.ID;
+    }
+
+    isInt(): boolean {
+        return this.type instanceof ScalarType && this.type.name === GraphQLBuiltInScalarType.Int;
+    }
+
+    isFloat(): boolean {
+        return this.type instanceof ScalarType && this.type.name === GraphQLBuiltInScalarType.Float;
+    }
+
+    isString(): boolean {
+        return this.type instanceof ScalarType && this.type.name === GraphQLBuiltInScalarType.String;
+    }
+
+    isCartesianPoint(): boolean {
+        return this.type instanceof ScalarType && this.type.name === Neo4jGraphQLSpatialType.CartesianPoint;
+    }
+
+    isPoint(): boolean {
+        return this.type instanceof ScalarType && this.type.name === Neo4jGraphQLSpatialType.Point;
+    }
+
+    isBigInt(): boolean {
+        return this.type instanceof ScalarType && this.type.name === Neo4jGraphQLNumberType.BigInt;
+    }
+
+    isDate(): boolean {
+        return this.type instanceof ScalarType && this.type.name === Neo4jGraphQLTemporalType.Date;
+    }
+
+    isDateTime(): boolean {
+        return this.type instanceof ScalarType && this.type.name === Neo4jGraphQLTemporalType.DateTime;
+    }
+
+    isLocalDateTime(): boolean {
+        return this.type instanceof ScalarType && this.type.name === Neo4jGraphQLTemporalType.LocalDateTime;
+    }
+
+    isTime(): boolean {
+        return this.type instanceof ScalarType && this.type.name === Neo4jGraphQLTemporalType.Time;
+    }
+
+    isLocalTime(): boolean {
+        return this.type instanceof ScalarType && this.type.name === Neo4jGraphQLTemporalType.LocalTime;
+    }
+
+    isDuration(): boolean {
+        return this.type instanceof ScalarType && this.type.name === Neo4jGraphQLTemporalType.Duration;
+    }
+
+    isList(): boolean {
+        return this.type instanceof ListType;
+    }
+
+    isListOf(
+        elementType: Exclude<AttributeType, ListType> | GraphQLBuiltInScalarType | Neo4jGraphQLScalarType | string
+    ): boolean {
+        if (!(this.type instanceof ListType)) {
+            return false;
+        }
+        if (typeof elementType === "string") {
+            return this.type.ofType.name === elementType;
+        }
+
+        return this.type.ofType.name === elementType.name;
+    }
+
+    isListElementRequired(): boolean {
+        if (!(this.type instanceof ListType)) {
+            return false;
+        }
+        return this.type.ofType.isRequired;
+    }
+
+    isObject(): boolean {
+        return this.type instanceof ObjectType;
+    }
+
+    isEnum(): boolean {
+        return this.type instanceof EnumType;
+    }
+
+    isRequired(): boolean {
+        return this.type.isRequired;
+    }
+
+    isInterface(): boolean {
+        return this.type instanceof InterfaceType;
+    }
+
+    isUnion(): boolean {
+        return this.type instanceof UnionType;
+    }
+
+    isUserScalar(): boolean {
+        return this.type instanceof UserScalarType;
+    }
+
+    /**
+     *  START of category assertions
+     */
+    isGraphQLBuiltInScalar(): boolean {
+        return this.type instanceof ScalarType && this.type.category === ScalarTypeCategory.GraphQLBuiltInScalarType;
+    }
+
+    isSpatial(): boolean {
+        return this.type instanceof ScalarType && this.type.category === ScalarTypeCategory.Neo4jGraphQLSpatialType;
+    }
+
+    isTemporal(): boolean {
+        return this.type instanceof ScalarType && this.type.category === ScalarTypeCategory.Neo4jGraphQLTemporalType;
+    }
+
+    isAbstract(): boolean {
+        return this.isInterface() || this.isUnion();
+    }
+    /**
+     *  END of category assertions
+     */
+
+    isCypher(): boolean {
+        return this.annotations.cypher ? true : false;
+    }
+
+    /**
+     * START of Refactoring methods, these methods are just adapters to the new methods
+     * to help the transition from the old Node/Relationship/BaseField classes
+     * */
+
+    // TODO: remove this method and use isGraphQLBuiltInScalar instead
+    isPrimitive(): boolean {
+        return this.isGraphQLBuiltInScalar();
+    }
+
+    // TODO: remove this and use isUserScalar instead
+    isScalar(): boolean {
+        return this.isUserScalar();
+    }
+
+    /**
+     * END of refactoring methods
+     */
 }

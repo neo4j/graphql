@@ -26,13 +26,11 @@ import {
 } from "./annotation/AuthorizationAnnotation";
 import { generateModel } from "./generate-model";
 import type { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
-
-import type { ConcreteEntity } from "./entity/ConcreteEntity";
-import type { Attribute } from "./attribute/Attribute";
-import type { Relationship } from "./relationship/Relationship";
 import { SubscriptionsAuthorizationFilterEventRule } from "./annotation/SubscriptionsAuthorizationAnnotation";
 import { AuthenticationAnnotation } from "./annotation/AuthenticationAnnotation";
-
+import type { AttributeModel } from "./attribute/graphql-models/AttributeModel";
+import type { ConcreteEntityModel } from "./entity/graphql-models/ConcreteEntityModel";
+import type { RelationshipModel } from "./relationship/graphql-model/RelationshipModel";
 
 describe("Schema model generation", () => {
     test("parses @authentication directive with no arguments", () => {
@@ -293,31 +291,31 @@ describe("ComposeEntity generation", () => {
     });
 });
 
-describe("Attribute generation", () => {
+describe("GraphQL models", () => {
     let schemaModel: Neo4jGraphQLSchemaModel;
     // entities
-    let userEntity: ConcreteEntity;
-    let accountEntity: ConcreteEntity;
+    let userEntity: ConcreteEntityModel;
+    let accountEntity: ConcreteEntityModel;
 
-    // relationships 
-    let userAccounts: Relationship;
+    // relationships
+    let userAccounts: RelationshipModel;
 
     // user attributes
-    let id: Attribute;
-    let name: Attribute;
-    let createdAt: Attribute;
-    let releaseDate: Attribute;
-    let runningTime: Attribute;
-    let accountSize: Attribute;
-    let favoriteColors: Attribute;
-    let password: Attribute;
+    let id: AttributeModel;
+    let name: AttributeModel;
+    let createdAt: AttributeModel;
+    let releaseDate: AttributeModel;
+    let runningTime: AttributeModel;
+    let accountSize: AttributeModel;
+    let favoriteColors: AttributeModel;
+    let password: AttributeModel;
 
     // hasAccount relationship attributes
-    let creationTime: Attribute;
+    let creationTime: AttributeModel;
 
     // account attributes
-    let status: Attribute;
-    let aOrB: Attribute;
+    let status: AttributeModel;
+    let aOrB: AttributeModel;
 
     beforeAll(() => {
         const typeDefs = gql`
@@ -331,7 +329,7 @@ describe("Attribute generation", () => {
                 favoriteColors: [String!]!
                 accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", properties: "hasAccount", direction: OUT)
             }
-            
+
             interface hasAccount @relationshipProperties {
                 creationTime: DateTime!
             }
@@ -345,7 +343,7 @@ describe("Attribute generation", () => {
             }
 
             union AorB = A | B
-            
+
             enum Status {
                 ACTIVATED
                 DISABLED
@@ -363,32 +361,32 @@ describe("Attribute generation", () => {
 
         const document = mergeTypeDefs(typeDefs);
         schemaModel = generateModel(document);
-        
+
         // entities
-        userEntity = schemaModel.entities.get("User") as ConcreteEntity;
-        userAccounts = userEntity.relationships.get("accounts") as Relationship;
-        accountEntity = schemaModel.entities.get("Account") as ConcreteEntity;
-        
+        userEntity = schemaModel.getConcreteEntityModel("User") as ConcreteEntityModel;
+        userAccounts = userEntity.relationships.get("accounts") as RelationshipModel;
+        accountEntity = schemaModel.getConcreteEntityModel("Account") as ConcreteEntityModel;
+
         // user attributes
-        id = userEntity?.attributes.get("id") as Attribute;
-        name = userEntity?.attributes.get("name") as Attribute;
-        createdAt = userEntity?.attributes.get("createdAt") as Attribute;
-        releaseDate = userEntity?.attributes.get("releaseDate") as Attribute;
-        runningTime = userEntity?.attributes.get("runningTime") as Attribute;
-        accountSize = userEntity?.attributes.get("accountSize") as Attribute;
-        favoriteColors = userEntity?.attributes.get("favoriteColors") as Attribute;
-        
+        id = userEntity?.attributes.get("id") as AttributeModel;
+        name = userEntity?.attributes.get("name") as AttributeModel;
+        createdAt = userEntity?.attributes.get("createdAt") as AttributeModel;
+        releaseDate = userEntity?.attributes.get("releaseDate") as AttributeModel;
+        runningTime = userEntity?.attributes.get("runningTime") as AttributeModel;
+        accountSize = userEntity?.attributes.get("accountSize") as AttributeModel;
+        favoriteColors = userEntity?.attributes.get("favoriteColors") as AttributeModel;
+
         // extended attributes
-        password = userEntity?.attributes.get("password") as Attribute;
+        password = userEntity?.attributes.get("password") as AttributeModel;
 
         // hasAccount relationship attributes
-        creationTime = userAccounts?.attributes.get("creationTime") as Attribute;
+        creationTime = userAccounts?.attributes.get("creationTime") as AttributeModel;
 
         // account attributes
-        status = accountEntity?.attributes.get("status") as Attribute;
-        aOrB = accountEntity?.attributes.get("aOrB") as Attribute;
+        status = accountEntity?.attributes.get("status") as AttributeModel;
+        aOrB = accountEntity?.attributes.get("aOrB") as AttributeModel;
     });
-
+    
     describe("attribute types", () => {
         test("ID", () => {
             expect(id.isID()).toBe(true);
@@ -407,7 +405,6 @@ describe("Attribute generation", () => {
             expect(creationTime.isDateTime()).toBe(true);
             expect(creationTime.isGraphQLBuiltInScalar()).toBe(false);
             expect(creationTime.isTemporal()).toBe(true);
-            
         });
 
         test("Date", () => {
@@ -430,13 +427,13 @@ describe("Attribute generation", () => {
         test("Enum", () => {
             expect(status.isEnum()).toBe(true);
             expect(status.isGraphQLBuiltInScalar()).toBe(false);
-        })
+        });
 
         test("Union", () => {
             expect(aOrB.isUnion()).toBe(true);
             expect(aOrB.isGraphQLBuiltInScalar()).toBe(false);
             expect(aOrB.isAbstract()).toBe(true);
-        })
+        });
 
         test("List", () => {
             expect(favoriteColors.isList()).toBe(true);

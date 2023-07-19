@@ -17,12 +17,17 @@
  * limitations under the License.
  */
 
-export class CypherAnnotation {
-    public statement: string;
-    public columnName: string;
+import type { ConcreteEntityModel } from "./ConcreteEntityModel";
 
-    constructor({ statement, columnName }: { statement: string, columnName: string }) {
-        this.statement = statement;
-        this.columnName = columnName;
+// As the composite entity is not yet implemented, this is a placeholder
+export class CompositeEntityModel {
+    public readonly name: string;
+    public concreteEntities: ConcreteEntityModel[];
+    // TODO: add type interface or union, and for interface add fields
+    // TODO: add annotations
+
+    constructor({ name, concreteEntities }: { name: string; concreteEntities: ConcreteEntityModel[] }) {
+        this.name = name;
+        this.concreteEntities = concreteEntities;
     }
 }

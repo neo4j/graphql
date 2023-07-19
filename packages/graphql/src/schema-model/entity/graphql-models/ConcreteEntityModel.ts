@@ -21,36 +21,37 @@ import { AttributeModel } from "../../attribute/graphql-models/AttributeModel";
 import type { Relationship } from "../../relationship/Relationship";
 import { getFromMap } from "../../utils/get-from-map";
 import type { Entity } from "../Entity";
-import { AbstractConcreteEntity } from "../Entity";
 import { singular, plural } from "../../utils/string-manipulation";
 import type { ConcreteEntity } from "../ConcreteEntity";
 import type { Attribute } from "../../attribute/Attribute";
+import { RelationshipModel } from "../../relationship/graphql-model/RelationshipModel";
 
-export class ConcreteEntityModel extends AbstractConcreteEntity {
+export class ConcreteEntityModel {
+    public readonly name: string;
+    public readonly labels: Set<string>;
     public readonly attributes: Map<string, AttributeModel> = new Map();
-    // TODO: change Relationship to RelationshipModel
-    public readonly relationships: Map<string, Relationship> = new Map();
-   
+    public readonly relationships: Map<string, RelationshipModel> = new Map();
+
     // These keys allow to store the keys of the map in memory and avoid keep iterating over the map.
     private mutableFieldsKeys: string[] = [];
     private uniqueFieldsKeys: string[] = [];
     private constrainableFieldsKeys: string[] = [];
-
-    // TODO: remove this just added to help the migration.
-    private readonly listAttributes: Attribute[] = [];
 
     // typesNames
     private _singular: string | undefined;
     private _plural: string | undefined;
 
     constructor(entity: ConcreteEntity) {
-        super({ name: entity.name, labels: [...entity.labels] });
-        this.initAttributes();
+        this.name = entity.name;
+        this.labels = entity.labels;
+        this.initAttributes(entity.attributes);
+        this.initRelationships(entity.relationships);
     }
 
-    private initAttributes() {
-        this.listAttributes.forEach((attribute) => {
+    private initAttributes(attributes: Map<string, Attribute>) {
+        for (const [attributeName, attribute] of attributes.entries()) {
             const attributeModel = new AttributeModel(attribute);
+            this.attributes.set(attributeName, attributeModel);
             if (attributeModel.isMutable()) {
                 this.mutableFieldsKeys.push(attribute.name);
             }
@@ -60,9 +61,14 @@ export class ConcreteEntityModel extends AbstractConcreteEntity {
             if (attributeModel.isConstrainable()) {
                 this.constrainableFieldsKeys.push(attribute.name);
             }
+        }
+    }
 
-            this.attributes.set(attribute.name, attributeModel);
-        });
+    private initRelationships(relationships: Map<string, Relationship>) {
+        for (const [relationshipName, relationship] of relationships.entries()) {
+            const {name, type, direction, target, attributes } = relationship;
+            this.relationships.set(relationshipName, new RelationshipModel({name, type, direction, source: this, target, attributes }));
+        }
     }
 
     public get mutableFields(): AttributeModel[] {
@@ -86,8 +92,9 @@ export class ConcreteEntityModel extends AbstractConcreteEntity {
     }
 
     public getAllLabels(): string[] {
-        throw new Error("Method not implemented.");
+        return this.labels ? [...this.labels] : [this.name];
     }
+
 
     public get singular(): string {
         if (!this._singular) {
@@ -98,7 +105,9 @@ export class ConcreteEntityModel extends AbstractConcreteEntity {
 
     public get plural(): string {
         if (!this._plural) {
+            // TODO: consider case when the plural is defined with the plural annotation
             this._plural = plural(this.name);
+
         }
         return this._plural;
     }

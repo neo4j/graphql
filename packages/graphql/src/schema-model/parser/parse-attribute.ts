@@ -21,7 +21,7 @@ import type { FieldDefinitionNode, TypeNode, DirectiveNode } from "graphql";
 import { Kind } from "graphql";
 import { filterTruthy } from "../../utils/utils";
 import type { Annotation } from "../annotation/Annotation";
-import type { AttributeType, Neo4jGraphQLScalarType } from "../attribute/AbstractAttribute";
+import type { AttributeType, Neo4jGraphQLScalarType } from "../attribute/AttributeType";
 import {
     ScalarType,
     EnumType,
@@ -34,7 +34,7 @@ import {
     Neo4jGraphQLSpatialType,
     Neo4jGraphQLNumberType,
     Neo4jGraphQLTemporalType,
-} from "../attribute/AbstractAttribute";
+} from "../attribute/AttributeType";
 import { Attribute } from "../attribute/Attribute";
 import { Field } from "../attribute/Field";
 import { parseAuthenticationAnnotation } from "./annotations-parser/authentication-annotation";

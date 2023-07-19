@@ -58,11 +58,4 @@ export class AggregationModel {
     getSumComparator(comparator: ComparisonOperator): string {
         return `${this.attributeModel.name}_SUM_${comparator}`;
     }
-
-    /**
-     * Given the GraphQL field name, returns the semantic information about the aggregation it tries to perform
-     **/
-    getAggregationMetadata(graphQLField: string): { fieldName: string; operator: string; comparator: string } {
-        throw new Error("Not implemented");
-    }
 }
