@@ -21,7 +21,7 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
 import { validateSchema } from "graphql";
 
 describe("https://github.com/neo4j/graphql/issues/3439", () => {
@@ -58,8 +58,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const subscriptionPlugin = new TestSubscriptionsPlugin();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+        const subscriptionsMechanism = new TestSubscriptionsMechanism();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsMechanism } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -96,7 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -1258,7 +1258,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -1306,8 +1306,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const subscriptionPlugin = new TestSubscriptionsPlugin();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+        const subscriptionsMechanism = new TestSubscriptionsMechanism();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsMechanism } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -1328,7 +1328,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -1344,7 +1344,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -2427,7 +2427,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -2475,8 +2475,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
         `;
 
-        const subscriptionPlugin = new TestSubscriptionsPlugin();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+        const subscriptionsMechanism = new TestSubscriptionsMechanism();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsMechanism } });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -2497,7 +2497,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -2513,7 +2513,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -3193,7 +3193,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
