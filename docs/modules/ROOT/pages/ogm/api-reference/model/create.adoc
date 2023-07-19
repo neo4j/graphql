@@ -39,7 +39,7 @@ await Movie.create({ input: [{ title: "The Matrix" }] })
 |`context` +
  +
  Type: `any`
-|The `context` value for the GraphQL mutation.
+|The `context` value for the GraphQL mutation. A `driver`, `session` or `transaction` can be passed into the `executionContext` field of the `context`. See https://neo4j.com/docs/javascript-manual/current/transactions/[Transactions] for more details on running transactions.
 
 |`rootValue` +
  +
