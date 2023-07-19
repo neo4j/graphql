@@ -41,7 +41,7 @@ import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
-import { parse, type DocumentNode, type GraphQLSchema } from "graphql";
+import type { DocumentNode, GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
