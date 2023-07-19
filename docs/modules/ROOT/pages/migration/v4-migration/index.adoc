@@ -686,6 +686,9 @@ const neoSchema = new Neo4jGraphQL({
 })
 ----
 
+If you started using the `config.startupValidation` option, this has also been rolled into the same `validate` setting for simplicity.
+The `resolvers` option of this is now just a warning, and `noDuplicateRelationshipFields` is now a mandatory check rolled into `validate`.
+
 [[opt-in-aggregation]]
 === Opt-in Aggregation
 
