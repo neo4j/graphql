@@ -17,186 +17,51 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode } from "graphql";
-import { Kind } from "graphql";
+import { makeDirectiveNode } from "@graphql-tools/utils";
 import { parseKeyAnnotation } from "./key-annotation";
 
+const tests = [
+    {
+        name: "should parse when there is only one directive",
+        directives: [makeDirectiveNode("key", { fields: "sku variation { id }" })],
+        expected: {
+            resolvable: true,
+        },
+    },
+    {
+        name: "should parse when there are two directives",
+        directives: [
+            makeDirectiveNode("key", { fields: "sku variation { id }" }),
+            makeDirectiveNode("key", { fields: "sku variation { id }" }),
+        ],
+        expected: {
+            resolvable: true,
+        },
+    },
+    {
+        name: "should parse resolvable when there is only one directive",
+        directives: [makeDirectiveNode("key", { fields: "sku variation { id }", resolvable: true })],
+        expected: {
+            resolvable: true,
+        },
+    },
+    {
+        name: "should parse resolvable when there are two directives",
+        directives: [
+            makeDirectiveNode("key", { fields: "sku variation { id }", resolvable: true }),
+            makeDirectiveNode("key", { fields: "sku variation { id }" }),
+        ],
+        expected: {
+            resolvable: true,
+        },
+    },
+];
+
 describe("parseKeyAnnotation", () => {
-    it("should parse when there is only one directive", () => {
-        const directives: readonly DirectiveNode[] = [
-            {
-                kind: Kind.DIRECTIVE,
-                name: {
-                    kind: Kind.NAME,
-                    value: "key",
-                },
-                arguments: [
-                    {
-                        kind: Kind.ARGUMENT,
-                        name: {
-                            kind: Kind.NAME,
-                            value: "fields",
-                        },
-                        value: {
-                            kind: Kind.STRING,
-                            value: "sku variation { id }",
-                        },
-                    },
-                ],
-            },
-        ];
-        const keyAnnotation = parseKeyAnnotation(directives);
-        expect(keyAnnotation.resolvable).toBe(true);
-    });
-    it("should parse when there are two directives", () => {
-        const directives: readonly DirectiveNode[] = [
-            {
-                kind: Kind.DIRECTIVE,
-                name: {
-                    kind: Kind.NAME,
-                    value: "key",
-                },
-                arguments: [
-                    {
-                        kind: Kind.ARGUMENT,
-                        name: {
-                            kind: Kind.NAME,
-                            value: "fields",
-                        },
-                        value: {
-                            kind: Kind.STRING,
-                            value: "id",
-                        },
-                    },
-                ],
-            },
-            {
-                kind: Kind.DIRECTIVE,
-                name: {
-                    kind: Kind.NAME,
-                    value: "key",
-                },
-                arguments: [
-                    {
-                        kind: Kind.ARGUMENT,
-                        name: {
-                            kind: Kind.NAME,
-                            value: "fields",
-                        },
-                        value: {
-                            kind: Kind.STRING,
-                            value: "sku variation { id }",
-                        },
-                    },
-                ],
-            },
-        ];
-        const keyAnnotation = parseKeyAnnotation(directives);
-        expect(keyAnnotation.resolvable).toBe(true);
-    });
-    it("should parse resolvable when there is only one directive", () => {
-        const directives: readonly DirectiveNode[] = [
-            {
-                kind: Kind.DIRECTIVE,
-                name: {
-                    kind: Kind.NAME,
-                    value: "key",
-                },
-                arguments: [
-                    {
-                        kind: Kind.ARGUMENT,
-                        name: {
-                            kind: Kind.NAME,
-                            value: "fields",
-                        },
-                        value: {
-                            kind: Kind.STRING,
-                            value: "sku variation { id }",
-                        },
-                    },
-                    {
-                        kind: Kind.ARGUMENT,
-                        name: {
-                            kind: Kind.NAME,
-                            value: "resolvable",
-                        },
-                        value: {
-                            kind: Kind.BOOLEAN,
-                            value: false,
-                        },
-                    },
-                ],
-            },
-        ];
-        const keyAnnotation = parseKeyAnnotation(directives);
-        expect(keyAnnotation.resolvable).toBe(false);
-    });
-    it("should parse resolvable when there are two directives", () => {
-        const directives: readonly DirectiveNode[] = [
-            {
-                kind: Kind.DIRECTIVE,
-                name: {
-                    kind: Kind.NAME,
-                    value: "key",
-                },
-                arguments: [
-                    {
-                        kind: Kind.ARGUMENT,
-                        name: {
-                            kind: Kind.NAME,
-                            value: "fields",
-                        },
-                        value: {
-                            kind: Kind.STRING,
-                            value: "sku variation { id }",
-                        },
-                    },
-                    {
-                        kind: Kind.ARGUMENT,
-                        name: {
-                            kind: Kind.NAME,
-                            value: "resolvable",
-                        },
-                        value: {
-                            kind: Kind.BOOLEAN,
-                            value: false,
-                        },
-                    },
-                ],
-            },
-            {
-                kind: Kind.DIRECTIVE,
-                name: {
-                    kind: Kind.NAME,
-                    value: "key",
-                },
-                arguments: [
-                    {
-                        kind: Kind.ARGUMENT,
-                        name: {
-                            kind: Kind.NAME,
-                            value: "fields",
-                        },
-                        value: {
-                            kind: Kind.STRING,
-                            value: "id",
-                        },
-                    },
-                    {
-                        kind: Kind.ARGUMENT,
-                        name: {
-                            kind: Kind.NAME,
-                            value: "resolvable",
-                        },
-                        value: {
-                            kind: Kind.BOOLEAN,
-                            value: true,
-                        },
-                    },
-                ],
-            },
-        ];
-        const keyAnnotation = parseKeyAnnotation(directives);
-        expect(keyAnnotation.resolvable).toBe(true);
+    tests.forEach((test) => {
+        it(`${test.name}`, () => {
+            const keyAnnotation = parseKeyAnnotation(test.directives);
+            expect(keyAnnotation.resolvable).toBe(test.expected.resolvable);
+        });
     });
 });
