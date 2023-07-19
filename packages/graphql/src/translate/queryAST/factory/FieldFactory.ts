@@ -29,6 +29,11 @@ import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttribu
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
 import { RelationshipField } from "../ast/fields/RelationshipField";
+import { RelationshipAggregationField } from "../ast/fields/aggregation-fields/RelationshipAggregationField";
+import type { AggregationField } from "../ast/fields/aggregation-fields/AggregationField";
+import { CountField } from "../ast/fields/aggregation-fields/CountField";
+import { filterTruthy } from "../../../utils/utils";
+import { AggregationAttributeField } from "../ast/fields/aggregation-fields/AggregationAttributeField";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -38,10 +43,18 @@ export class FieldFactory {
 
     public createFields(entity: ConcreteEntity | Relationship, rawFields: Record<string, ResolveTree>): Field[] {
         return Object.values(rawFields).map((field: ResolveTree) => {
-            const { fieldName, isConnection } = parseSelectionSetField(field.name);
+            const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
             if (isConnection) {
                 if (entity instanceof Relationship) throw new Error("Cannot create connection field of relationship");
                 return this.createConnectionField(entity, fieldName, field);
+            }
+
+            if (isAggregation) {
+                if (entity instanceof Relationship) throw new Error("Cannot create aggregation field of relationship");
+
+                const relationship = entity.findRelationship(fieldName);
+                if (!relationship) throw new Error("Relationship for aggregation not found");
+                return this.createRelationshipAggregationField(relationship, fieldName, field);
             }
 
             if (entity instanceof ConcreteEntity) {
@@ -57,6 +70,47 @@ export class FieldFactory {
                 field,
             });
         });
+    }
+
+    private createRelationshipAggregationField(
+        relationship: Relationship,
+        fieldName: string,
+        resolveTree: ResolveTree
+    ): RelationshipAggregationField {
+        // const operation = this.queryASTFactory.operationsFactory.createReadOperationAST(relationship, field);
+        // console.log(fieldName, resolveTree, relationship.aggregationFieldTypename);
+
+        // const args = resolveTree.args;
+        // const fields = resolveTree.fieldsByTypeName[relationship.aggregationFieldTypename];
+
+        const operation = this.queryASTFactory.operationsFactory.createAggregationOperation(relationship, resolveTree);
+        return new RelationshipAggregationField({
+            alias: resolveTree.alias,
+            operation,
+        });
+    }
+
+    public createAggregationFields(
+        entity: ConcreteEntity | Relationship,
+        rawFields: Record<string, ResolveTree>
+    ): AggregationField[] {
+        return filterTruthy(
+            Object.values(rawFields).map((field) => {
+                if (field.name === "count") {
+                    return new CountField({
+                        alias: field.alias,
+                        entity,
+                    });
+                } else {
+                    const attribute = entity.findAttribute(field.name);
+                    if (!attribute) throw new Error(`Attribute ${field.name} not found`);
+                    return new AggregationAttributeField({
+                        attribute,
+                        alias: field.alias,
+                    });
+                }
+            })
+        );
     }
 
     private createAttributeField({

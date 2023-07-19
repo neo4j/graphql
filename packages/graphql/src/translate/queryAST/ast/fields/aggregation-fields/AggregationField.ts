@@ -17,24 +17,14 @@
  * limitations under the License.
  */
 
+import { Field } from "../Field";
 import type Cypher from "@neo4j/cypher-builder";
-import { QueryASTNode } from "../QueryASTNode";
-import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
 
-export abstract class Field extends QueryASTNode {
-    public alias: string;
-
-    constructor(alias: string) {
-        super();
-        this.alias = alias;
+export abstract class AggregationField extends Field {
+    public getProjectionField(_variable: Cypher.Variable): Record<string, Cypher.Expr> {
+        return {};
     }
 
-    public abstract getProjectionField(variable: Cypher.Variable): string | Record<string, Cypher.Expr>;
-    public getSubquery(_node: Cypher.Node): Cypher.Clause[] | Cypher.Clause | undefined {
-        return undefined;
-    }
-
-    public accept(v: QueryASTVisitor) {
-        return v.visitField(this);
-    }
+    public abstract getAggregationExpr(variable: Cypher.Variable): Cypher.Expr;
+    public abstract getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause;
 }

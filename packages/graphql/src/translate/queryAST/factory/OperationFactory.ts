@@ -28,7 +28,8 @@ import { ReadOperation } from "../ast/operations/ReadOperation";
 import type { ConnectionSortArg, GraphQLOptionsArg } from "../../../types";
 import { SortAndPaginationFactory } from "./SortAndPagintationFactory";
 import type { Integer } from "neo4j-driver";
-import { Filter } from "../ast/filters/Filter";
+import type { Filter } from "../ast/filters/Filter";
+import { AggregationOperation } from "../ast/operations/AggregationOperation";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -58,6 +59,51 @@ export class OperationsFactory {
             filters = this.filterFactory.createFilters(entityOrRel, whereArgs);
         }
         operation.setFields(fields);
+        operation.setFilters(filters);
+
+        const options = resolveTree.args.options as GraphQLOptionsArg | undefined;
+        if (options) {
+            const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
+            operation.addSort(...sort);
+
+            const pagination = this.sortAndPaginationFactory.createPagination(options);
+            if (pagination) {
+                operation.addPagination(pagination);
+            }
+        }
+
+        return operation;
+    }
+
+    // TODO: dupe from read operation
+    public createAggregationOperation(relationship: Relationship, resolveTree: ResolveTree): AggregationOperation {
+        const entity = relationship.target as ConcreteEntity;
+
+        const projectionFields = { ...resolveTree.fieldsByTypeName[relationship.getAggregationFieldTypename()] };
+        const edgeRawFields = {
+            ...projectionFields.edges?.fieldsByTypeName[relationship.getAggregationFieldTypename("edge")],
+        };
+        const nodeRawFields = {
+            ...projectionFields.node?.fieldsByTypeName[relationship.getAggregationFieldTypename("node")],
+        };
+        delete projectionFields.node;
+        delete projectionFields.edge;
+
+        // const projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
+
+        const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
+        const operation = new AggregationOperation(relationship, Boolean(resolveTree.args?.directed ?? true));
+        const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
+        const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
+
+        let filters: Filter[];
+        if (relationship instanceof Relationship) {
+            filters = this.filterFactory.createRelationshipFilters(relationship, whereArgs);
+        } else {
+            filters = this.filterFactory.createFilters(relationship, whereArgs);
+        }
+        operation.setFields(fields);
+        operation.setNodeFields(nodeFields);
         operation.setFilters(filters);
 
         const options = resolveTree.args.options as GraphQLOptionsArg | undefined;
