@@ -16,59 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {
-    TypeNode,
-    DirectiveNode,
-    DocumentNode,
-    FieldDefinitionNode,
-    ObjectTypeDefinitionNode,
-    SchemaExtensionNode,
-} from "graphql";
-import { Kind } from "graphql";
+import type { DirectiveNode, DocumentNode, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import type { Operations } from "./Neo4jGraphQLSchemaModel";
 import type { Annotation } from "./annotation/Annotation";
-import {
-    Neo4jGraphQLNumberType,
-    GraphQLBuiltInScalarType,
-    ListType,
-    Neo4jGraphQLSpatialType,
-    ScalarType,
-    Neo4jGraphQLTemporalType,
-    EnumType,
-    UserScalarType,
-    ObjectType,
-    UnionType,
-    InterfaceType,
-} from "./attribute/AbstractAttribute";
-import type { Neo4jGraphQLScalarType, AttributeType } from "./attribute/AbstractAttribute";
-import { Attribute } from "./attribute/Attribute";
+import type { Attribute } from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
-import { parseAuthorizationAnnotation } from "./parser/authorization-annotation";
-import { parseCypherAnnotation } from "./parser/cypher-annotation";
-import { parseKeyAnnotation } from "./parser/key-annotation";
+import { parseAuthorizationAnnotation } from "./parser/annotations-parser/authorization-annotation";
+import { parseKeyAnnotation } from "./parser/annotations-parser/key-annotation";
 import { parseArguments, findDirective } from "./parser/utils";
 import type { RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
-
-import {  getDefinitionCollection } from "./parser/definition-collection";
 import type { DefinitionCollection } from "./parser/definition-collection";
-
-import { parseAuthenticationAnnotation } from "./parser/authentication-annotation";
+import { getDefinitionCollection } from "./parser/definition-collection";
+import { parseAuthenticationAnnotation } from "./parser/annotations-parser/authentication-annotation";
 import { Operation } from "./Operation";
-import { parseSubscriptionsAuthorizationAnnotation } from "./parser/subscriptions-authorization-annotation";
-import { Field } from "./attribute/Field";
-
+import { parseSubscriptionsAuthorizationAnnotation } from "./parser/annotations-parser/subscriptions-authorization-annotation";
+import { parseAttribute, parseField } from "./parser/parse-attribute";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
 
     const operations: Operations = definitionCollection.operations.reduce((acc, definition): Operations => {
-        acc[definition.name.value] = generateOperation(definition, definitionCollection);
+        acc[definition.name.value] = generateOperation(definition);
         return acc;
     }, {});
 
@@ -149,9 +123,9 @@ function generateCompositeEntity(
         return concreteEntity;
     });
     if (!compositeFields.length) {
-         throw new Neo4jGraphQLSchemaValidationError(
+        throw new Neo4jGraphQLSchemaValidationError(
             `Composite entity ${entityDefinitionName} has no concrete entities`
-         );
+        );
     }
     // TODO: add annotations
     return new CompositeEntity({
@@ -204,8 +178,8 @@ function generateRelationshipField(
             throw new Error(
                 `There is no matching interface defined with @relationshipProperties for properties "${properties}"`
             );
-      
-        const fields = (propertyInterface.fields || []).map((field) => generateAttribute(field, definitionCollection));
+
+        const fields = (propertyInterface.fields || []).map((field) => parseAttribute(field, definitionCollection));
 
         attributes = filterTruthy(fields) as Attribute[];
     }
@@ -224,7 +198,7 @@ function generateConcreteEntity(
     definitionCollection: DefinitionCollection
 ): ConcreteEntity {
     const fields = (definition.fields || []).map((fieldDefinition) =>
-        generateAttribute(fieldDefinition, definitionCollection)
+        parseAttribute(fieldDefinition, definitionCollection)
     );
 
     const directives = (definition.directives || []).reduce((acc, directive) => {
@@ -247,132 +221,6 @@ function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments:
         return nodeDirectiveArguments.labels as string[];
     }
     return [definition.name.value];
-}
-
-function parseTypeNode(
-    definitionCollection: DefinitionCollection,
-    typeNode: TypeNode,
-    isRequired = false
-): AttributeType {
-    switch (typeNode.kind) {
-        case Kind.NAMED_TYPE: {
-            if (isScalarType(typeNode.name.value)) {
-                return new ScalarType(typeNode.name.value, isRequired);
-            } else if (isEnum(definitionCollection, typeNode.name.value)) {
-                return new EnumType(typeNode.name.value, isRequired);
-            } else if (isUserScalar(definitionCollection, typeNode.name.value)) {
-                return new UserScalarType(typeNode.name.value, isRequired);
-            } else if (isObject(definitionCollection, typeNode.name.value)) {
-                return new ObjectType(typeNode.name.value, isRequired);
-            } else if (isUnion(definitionCollection, typeNode.name.value)) {
-                return new UnionType(typeNode.name.value, isRequired);
-            } else if (isInterface(definitionCollection, typeNode.name.value)) {
-                return new InterfaceType(typeNode.name.value, isRequired);
-            } else {
-                throw new Error(`Error while parsing Attribute with name: ${typeNode.name.value}`);
-            }
-        }
-
-        case Kind.LIST_TYPE: {
-            const innerType = parseTypeNode(definitionCollection, typeNode.type);
-            return new ListType(innerType, isRequired);
-        }
-        case Kind.NON_NULL_TYPE:
-            return parseTypeNode(definitionCollection, typeNode.type, true);
-    }
-}
-// TODO: figure out difference between field and attribute
-function generateAttribute(field: FieldDefinitionNode, definitionCollection: DefinitionCollection, retField = false): Attribute | Field {
-    const name = field.name.value;
-    const type = parseTypeNode(definitionCollection, field.type);
-    const annotations = createFieldAnnotations(field.directives || []);
-    if (retField) {
-        return new Field({
-            name,
-            annotations,
-        })
-    }
-    return new Attribute({
-        name,
-        annotations,
-        type,
-    });
-}
-
-function isInterface(definitionCollection: DefinitionCollection, name: string): boolean {
-    return definitionCollection.interfaceTypes.has(name);
-}
-
-function isUnion(definitionCollection: DefinitionCollection, name: string): boolean {
-    return definitionCollection.unionTypes.has(name);
-}
-
-function isEnum(definitionCollection: DefinitionCollection, name: string): boolean {
-    return definitionCollection.enumTypes.has(name);
-}
-
-function isUserScalar(definitionCollection: DefinitionCollection, name: string) {
-    return definitionCollection.scalarTypes.has(name);
-}
-
-function isObject(definitionCollection, name: string) {
-    return definitionCollection.nodes.has(name);
-}
-
-function isScalarType(value: string): value is GraphQLBuiltInScalarType | Neo4jGraphQLScalarType {
-    return (
-        isGraphQLBuiltInScalar(value) ||
-        isNeo4jGraphQLSpatialType(value) ||
-        isNeo4jGraphQLNumberType(value) ||
-        isNeo4jGraphQLTemporalType(value)
-    );
-}
-
-function isGraphQLBuiltInScalar(value: string): value is GraphQLBuiltInScalarType {
-    return Object.values<string>(GraphQLBuiltInScalarType).includes(value);
-}
-
-function isNeo4jGraphQLSpatialType(value: string): value is Neo4jGraphQLSpatialType {
-    return Object.values<string>(Neo4jGraphQLSpatialType).includes(value);
-}
-
-function isNeo4jGraphQLNumberType(value: string): value is Neo4jGraphQLNumberType {
-    return Object.values<string>(Neo4jGraphQLNumberType).includes(value);
-}
-
-function isNeo4jGraphQLTemporalType(value: string): value is Neo4jGraphQLTemporalType {
-    return Object.values<string>(Neo4jGraphQLTemporalType).includes(value);
-}
-
-function generateField(field: FieldDefinitionNode, definitionCollection: DefinitionCollection): Attribute {
-    const name = field.name.value;
-    const type = parseTypeNode(definitionCollection, field.type);
-    const annotations = createFieldAnnotations(field.directives || []);
-    return new Attribute({
-        name,
-        annotations,
-        type,
-    });
-}
-
-
-function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
-    return filterTruthy(
-        directives.map((directive) => {
-            switch (directive.name.value) {
-                case "cypher":
-                    return parseCypherAnnotation(directive);
-                case "authorization":
-                    return parseAuthorizationAnnotation(directive);
-                case "authentication":
-                    return parseAuthenticationAnnotation(directive);
-                case "subscriptionsAuthorization":
-                    return parseSubscriptionsAuthorizationAnnotation(directive);
-                default:
-                    return undefined;
-            }
-        })
-    );
 }
 
 function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
@@ -419,8 +267,8 @@ function createSchemaModelAnnotations(directives: readonly DirectiveNode[]): Ann
     return schemaModelAnnotations.concat(annotations);
 }
 
-function generateOperation(definition: ObjectTypeDefinitionNode, definitionCollection: DefinitionCollection): Operation {
-    const fields = (definition.fields || []).map((fieldDefinition) => generateAttribute(fieldDefinition, definitionCollection, true)) as Field[];
+function generateOperation(definition: ObjectTypeDefinitionNode): Operation {
+    const fields = (definition.fields || []).map((fieldDefinition) => parseField(fieldDefinition));
 
     return new Operation({
         name: definition.name.value,

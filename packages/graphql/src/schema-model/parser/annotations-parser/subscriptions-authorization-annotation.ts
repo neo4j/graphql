@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import { parseArguments } from "./utils";
-import type { SubscriptionsAuthorizationFilterRuleConstructor } from "../annotation/SubscriptionsAuthorizationAnnotation";
+import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
+import { parseArguments } from "../utils";
+import type { SubscriptionsAuthorizationFilterRuleConstructor } from "../../annotation/SubscriptionsAuthorizationAnnotation";
 import {
     SubscriptionsAuthorizationAnnotation,
     SubscriptionsAuthorizationAnnotationArguments,
     SubscriptionsAuthorizationFilterRule,
-} from "../annotation/SubscriptionsAuthorizationAnnotation";
+} from "../../annotation/SubscriptionsAuthorizationAnnotation";
 
 export function parseSubscriptionsAuthorizationAnnotation(
     directive: DirectiveNode

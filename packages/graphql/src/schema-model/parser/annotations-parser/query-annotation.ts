@@ -16,15 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import type { DirectiveNode } from "graphql";
-import { NodeAnnotation } from "../annotation/NodeAnnotation";
-import { parseArguments } from "./utils";
+import { QueryAnnotation } from "../../annotation/QueryAnnotation";
+import { parseArguments } from "../utils";
 
-export function parseNodeAnnotation(directive: DirectiveNode): NodeAnnotation {
-    const { label, labels } = parseArguments(directive) as { label: string; labels: string[] };
+export function parseQueryAnnotation(directive: DirectiveNode): QueryAnnotation {
+    const { read, aggregate } = parseArguments(directive) as { read: boolean; aggregate: boolean };
 
-    return new NodeAnnotation({
-        label,
-        labels,
+    return new QueryAnnotation({
+        read,
+        aggregate,
     });
 }

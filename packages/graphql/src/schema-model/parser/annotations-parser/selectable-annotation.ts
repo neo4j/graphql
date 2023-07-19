@@ -17,9 +17,14 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { JWTPayloadAnnotation } from "../annotation/JWTPayloadAnnotation";
+import { SelectableAnnotation } from "../../annotation/SelectableAnnotation";
+import { parseArguments } from "../utils";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function parseJWTPayloadAnnotation(_directive: DirectiveNode): JWTPayloadAnnotation {
-    return new JWTPayloadAnnotation();
+export function parseSelectableAnnotation(directive: DirectiveNode): SelectableAnnotation {
+    const { onRead, onAggregate } = parseArguments(directive) as { onRead: boolean; onAggregate: boolean };
+
+    return new SelectableAnnotation({
+        onRead,
+        onAggregate,
+    });
 }

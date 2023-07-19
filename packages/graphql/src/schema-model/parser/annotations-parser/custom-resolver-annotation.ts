@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import { CypherAnnotation } from "../annotation/CypherAnnotation";
-import { parseArguments } from "./utils";
+import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
+import { CustomResolverAnnotation } from "../../annotation/CustomResolverAnnotation";
+import { parseArguments } from "../utils";
 
-export function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
-    const { statement } = parseArguments(directive);
-    if (!statement || typeof statement !== "string") {
-        throw new Neo4jGraphQLSchemaValidationError("@cypher statement required");
+export function parseCustomResolverAnnotation(directive: DirectiveNode): CustomResolverAnnotation {
+    const { requires } = parseArguments(directive);
+    if (!Array.isArray(requires)) {
+        throw new Neo4jGraphQLSchemaValidationError("@customResolver requires must be an array");
     }
-    return new CypherAnnotation({
-        statement: statement,
+    return new CustomResolverAnnotation({
+        requires,
     });
 }

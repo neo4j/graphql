@@ -20,7 +20,7 @@
 import type { ValueNode } from "graphql/language/ast";
 import { Kind } from "graphql/language";
 
-function parseValueNode(ast: ValueNode): any {
+export function parseValueNode(ast: ValueNode): any {
     switch (ast.kind) {
         case Kind.ENUM:
         case Kind.STRING:
@@ -43,4 +43,3 @@ function parseValueNode(ast: ValueNode): any {
     }
 }
 
-export default parseValueNode;

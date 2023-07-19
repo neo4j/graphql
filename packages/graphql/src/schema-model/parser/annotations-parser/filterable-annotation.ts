@@ -17,9 +17,14 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { PrivateAnnotation } from "../annotation/PrivateAnnotation";
+import { FilterableAnnotation } from "../../annotation/FilterableAnnotation";
+import { parseArguments } from "../utils";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function parsePrivateAnnotation(_directive: DirectiveNode): PrivateAnnotation {
-    return new PrivateAnnotation();
+export function parseFilterableAnnotation(directive: DirectiveNode): FilterableAnnotation {
+    const { byValue, byAnnotation } = parseArguments(directive) as { byValue: boolean; byAnnotation: boolean };
+
+    return new FilterableAnnotation({
+        byAnnotation,
+        byValue,
+    });
 }

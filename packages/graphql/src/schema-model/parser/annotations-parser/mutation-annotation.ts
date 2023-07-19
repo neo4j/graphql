@@ -16,16 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import type { DirectiveNode } from "graphql";
-import { QueryAnnotation } from "../annotation/QueryAnnotation";
-import { parseArguments } from "./utils";
+import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
+import { MutationAnnotation } from "../../annotation/MutationAnnotation";
+import { parseArguments } from "../utils";
 
-export function parseQueryAnnotation(directive: DirectiveNode): QueryAnnotation {
-    const { read, aggregate } = parseArguments(directive) as { read: boolean; aggregate: boolean };
-
-    return new QueryAnnotation({
-        read,
-        aggregate,
+export function parseMutationAnnotation(directive: DirectiveNode): MutationAnnotation {
+    const { operations } = parseArguments(directive);
+    if (!Array.isArray(operations)) {
+        throw new Neo4jGraphQLSchemaValidationError("@mutation operations must be an array");
+    }
+    return new MutationAnnotation({
+        operations,
     });
 }

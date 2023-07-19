@@ -17,14 +17,12 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import type { FullTextFields } from "../annotation/FullTextAnnotation";
-import { FullTextAnnotation } from "../annotation/FullTextAnnotation";
-import { parseArguments } from "./utils";
+import { PluralAnnotation } from "../../annotation/PluralAnnotation";
+import { parseArguments } from "../utils";
 
-export function parseFullTextAnnotation(directive: DirectiveNode): FullTextAnnotation {
-    const { fields } = parseArguments(directive) as { fields: FullTextFields };
-
-    return new FullTextAnnotation({
-        fields,
+export function parsePluralAnnotation(directive: DirectiveNode): PluralAnnotation {
+    const { value } = parseArguments(directive) as { value: string };
+    return new PluralAnnotation({
+        value,
     });
 }

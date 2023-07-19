@@ -17,14 +17,16 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { SelectableAnnotation } from "../annotation/SelectableAnnotation";
-import { parseArguments } from "./utils";
+import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
+import { CypherAnnotation } from "../../annotation/CypherAnnotation";
+import { parseArguments } from "../utils";
 
-export function parseSelectableAnnotation(directive: DirectiveNode): SelectableAnnotation {
-    const { onRead, onAggregate } = parseArguments(directive) as { onRead: boolean; onAggregate: boolean };
-
-    return new SelectableAnnotation({
-        onRead,
-        onAggregate,
+export function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
+    const { statement } = parseArguments(directive);
+    if (!statement || typeof statement !== "string") {
+        throw new Neo4jGraphQLSchemaValidationError("@cypher statement required");
+    }
+    return new CypherAnnotation({
+        statement: statement,
     });
 }

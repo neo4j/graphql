@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { PopulatedByAnnotation } from "../annotation/PopulatedByAnnotation";
-import { parseArguments } from "./utils";
+import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
+import { parseArguments } from "../utils";
 
-export function parsePopulatedByAnnotation(directive: DirectiveNode): PopulatedByAnnotation {
-    const { callback, operations } = parseArguments(directive) as { callback: string; operations: string[] };
+export function parseUniqueAnnotation(directive: DirectiveNode): UniqueAnnotation {
+    const { constraintName } = parseArguments(directive) as { constraintName: string };
 
-    return new PopulatedByAnnotation({
-        callback,
-        operations,
+    return new UniqueAnnotation({
+        constraintName,
     });
 }

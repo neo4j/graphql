@@ -16,11 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import type { DirectiveNode } from "graphql";
-import { RelationshipPropertiesAnnotation } from "../annotation/RelationshipPropertiesAnnotation";
+import { JWTClaimAnnotation } from "../../annotation/JWTClaimAnnotation";
+import { parseArguments } from "../utils";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function parseRelationshipPropertiesAnnotation(_directive: DirectiveNode): RelationshipPropertiesAnnotation {
-    return new RelationshipPropertiesAnnotation();
+export function parseJWTClaimAnnotation(directive: DirectiveNode): JWTClaimAnnotation {
+    const { path } = parseArguments(directive) as { path: string };
+
+    return new JWTClaimAnnotation({
+        path,
+    });
 }

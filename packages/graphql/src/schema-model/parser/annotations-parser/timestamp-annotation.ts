@@ -16,21 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { DirectiveNode } from "graphql";
+import { TimestampAnnotation } from "../../annotation/TimestampAnnotation";
+import { parseArguments } from "../utils";
 
-import { type DirectiveNode } from "graphql";
-import { IDAnnotation } from "../annotation/IDAnnotation";
-import { parseArguments } from "./utils";
+export function parseTimestampAnnotation(directive: DirectiveNode): TimestampAnnotation {
+    const { operations } = parseArguments(directive) as { operations: string[] };
 
-export function parseIDAnnotation(directive: DirectiveNode): IDAnnotation {
-    const { autogenerate, unique, global } = parseArguments(directive) as {
-        autogenerate: boolean;
-        unique: boolean;
-        global: boolean;
-    };
-
-    return new IDAnnotation({
-        autogenerate,
-        unique,
-        global,
+    return new TimestampAnnotation({
+        operations,
     });
 }

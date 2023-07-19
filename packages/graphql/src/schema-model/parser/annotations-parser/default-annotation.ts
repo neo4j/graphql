@@ -18,11 +18,10 @@
  */
 
 import { Kind, type DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import type { DefaultAnnotationValue } from "../annotation/DefaultAnnotation";
-import { DefaultAnnotation } from "../annotation/DefaultAnnotation";
-import parseValueNode from "./parse-value-node";
-
+import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
+import type { DefaultAnnotationValue } from "../../annotation/DefaultAnnotation";
+import { DefaultAnnotation } from "../../annotation/DefaultAnnotation";
+import { parseValueNode } from "../parse-value-node";
 
 export function parseDefaultAnnotation(directive: DirectiveNode): DefaultAnnotation {
     if (!directive.arguments || !directive.arguments[0] || !directive.arguments[0].value.kind) {

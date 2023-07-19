@@ -18,9 +18,9 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import { QueryOptionsAnnotation } from "../annotation/QueryOptionsAnnotation";
-import { parseArguments } from "./utils";
+import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
+import { QueryOptionsAnnotation } from "../../annotation/QueryOptionsAnnotation";
+import { parseArguments } from "../utils";
 
 export function parseQueryOptionsAnnotation(directive: DirectiveNode): QueryOptionsAnnotation {
     const { limit } = parseArguments(directive) as {

@@ -17,16 +17,13 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import { MutationAnnotation } from "../annotation/MutationAnnotation";
-import { parseArguments } from "./utils";
+import { SubscriptionAnnotation } from "../../annotation/SubscriptionAnnotation";
+import { parseArguments } from "../utils";
 
-export function parseMutationAnnotation(directive: DirectiveNode): MutationAnnotation {
-    const { operations } = parseArguments(directive);
-    if (!Array.isArray(operations)) {
-        throw new Neo4jGraphQLSchemaValidationError("@mutation operations must be an array");
-    }
-    return new MutationAnnotation({
+export function parseSubscriptionAnnotation(directive: DirectiveNode): SubscriptionAnnotation {
+    const { operations } = parseArguments(directive) as { operations: string[] };
+
+    return new SubscriptionAnnotation({
         operations,
     });
 }

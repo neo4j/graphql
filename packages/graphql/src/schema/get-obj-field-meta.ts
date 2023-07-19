@@ -60,7 +60,7 @@ import type {
     SettableOptions,
     FilterableOptions,
 } from "../types";
-import parseValueNode from "../schema-model/parser/parse-value-node";
+import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
 import { getPopulatedByMeta } from "./get-populated-by-meta";

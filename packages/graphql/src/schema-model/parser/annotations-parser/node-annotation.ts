@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { PluralAnnotation } from "../annotation/PluralAnnotation";
-import { parseArguments } from "./utils";
+import { NodeAnnotation } from "../../annotation/NodeAnnotation";
+import { parseArguments } from "../utils";
 
-export function parsePluralAnnotation(directive: DirectiveNode): PluralAnnotation {
-    const { value } = parseArguments(directive) as { value: string };
-    return new PluralAnnotation({
-        value,
+export function parseNodeAnnotation(directive: DirectiveNode): NodeAnnotation {
+    const { label, labels } = parseArguments(directive) as { label: string; labels: string[] };
+
+    return new NodeAnnotation({
+        label,
+        labels,
     });
 }

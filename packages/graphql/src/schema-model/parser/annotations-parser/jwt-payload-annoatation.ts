@@ -17,22 +17,9 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import { AliasAnnotation } from "../annotation/AliasAnnotation";
-import { parseArguments } from "./utils";
+import { JWTPayloadAnnotation } from "../../annotation/JWTPayloadAnnotation";
 
-export function parseAliasAnnotation(directive: DirectiveNode): AliasAnnotation {
-    const { property, ...unrecognizedArguments } = parseArguments(directive) as {
-        property: string;
-    };
-
-    if (Object.keys(unrecognizedArguments).length) {
-        throw new Neo4jGraphQLSchemaValidationError(
-            `@alias unrecognized arguments: ${Object.keys(unrecognizedArguments).join(", ")}`
-        );
-    }
-
-    return new AliasAnnotation({
-        property,
-    });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function parseJWTPayloadAnnotation(_directive: DirectiveNode): JWTPayloadAnnotation {
+    return new JWTPayloadAnnotation();
 }

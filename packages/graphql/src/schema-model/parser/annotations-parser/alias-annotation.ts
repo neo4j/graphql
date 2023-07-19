@@ -17,13 +17,22 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { SubscriptionAnnotation } from "../annotation/SubscriptionAnnotation";
-import { parseArguments } from "./utils";
+import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
+import { AliasAnnotation } from "../../annotation/AliasAnnotation";
+import { parseArguments } from "../utils";
 
-export function parseSubscriptionAnnotation(directive: DirectiveNode): SubscriptionAnnotation {
-    const { operations } = parseArguments(directive) as { operations: string[] };
+export function parseAliasAnnotation(directive: DirectiveNode): AliasAnnotation {
+    const { property, ...unrecognizedArguments } = parseArguments(directive) as {
+        property: string;
+    };
 
-    return new SubscriptionAnnotation({
-        operations,
+    if (Object.keys(unrecognizedArguments).length) {
+        throw new Neo4jGraphQLSchemaValidationError(
+            `@alias unrecognized arguments: ${Object.keys(unrecognizedArguments).join(", ")}`
+        );
+    }
+
+    return new AliasAnnotation({
+        property,
     });
 }

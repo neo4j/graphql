@@ -18,7 +18,7 @@
  */
 
 import { makeDirectiveNode } from "@graphql-tools/utils";
-import { MutationOperations } from "../../graphql/directives/mutation";
+import { MutationOperations } from "../../../graphql/directives/mutation";
 import { parseMutationAnnotation } from "./mutation-annotation";
 
 const tests = [

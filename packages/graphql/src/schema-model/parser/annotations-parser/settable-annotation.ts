@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { JWTClaimAnnotation } from "../annotation/JWTClaimAnnotation";
-import { parseArguments } from "./utils";
+import { SettableAnnotation } from "../../annotation/SettableAnnotation";
+import { parseArguments } from "../utils";
 
-export function parseJWTClaimAnnotation(directive: DirectiveNode): JWTClaimAnnotation {
-    const { path } = parseArguments(directive) as { path: string };
+export function parseSettableAnnotation(directive: DirectiveNode): SettableAnnotation {
+    const { onCreate, onUpdate } = parseArguments(directive) as { onCreate: boolean; onUpdate: boolean };
 
-    return new JWTClaimAnnotation({
-        path,
+    return new SettableAnnotation({
+        onCreate,
+        onUpdate,
     });
 }

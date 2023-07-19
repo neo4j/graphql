@@ -18,10 +18,10 @@
  */
 
 import { Kind, type DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import type { CoalesceAnnotationValue } from "../annotation/CoalesceAnnotation";
-import { CoalesceAnnotation } from "../annotation/CoalesceAnnotation";
-import parseValueNode from "./parse-value-node";
+import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
+import type { CoalesceAnnotationValue } from "../../annotation/CoalesceAnnotation";
+import { CoalesceAnnotation } from "../../annotation/CoalesceAnnotation";
+import { parseValueNode } from "../parse-value-node";
 
 export function parseCoalesceAnnotation(directive: DirectiveNode): CoalesceAnnotation {
     if (!directive.arguments || !directive.arguments[0] || !directive.arguments[0].value.kind) {

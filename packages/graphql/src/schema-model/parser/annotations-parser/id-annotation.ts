@@ -16,15 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
-import { FilterableAnnotation } from "../annotation/FilterableAnnotation";
-import { parseArguments } from "./utils";
 
-export function parseFilterableAnnotation(directive: DirectiveNode): FilterableAnnotation {
-    const { byValue, byAnnotation } = parseArguments(directive) as { byValue: boolean; byAnnotation: boolean };
+import { type DirectiveNode } from "graphql";
+import { IDAnnotation } from "../../annotation/IDAnnotation";
+import { parseArguments } from "../utils";
 
-    return new FilterableAnnotation({
-        byAnnotation,
-        byValue,
+export function parseIDAnnotation(directive: DirectiveNode): IDAnnotation {
+    const { autogenerate, unique, global } = parseArguments(directive) as {
+        autogenerate: boolean;
+        unique: boolean;
+        global: boolean;
+    };
+
+    return new IDAnnotation({
+        autogenerate,
+        unique,
+        global,
     });
 }

@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { UniqueAnnotation } from "../annotation/UniqueAnnotation";
-import { parseArguments } from "./utils";
+import type { FullTextFields } from "../../annotation/FullTextAnnotation";
+import { FullTextAnnotation } from "../../annotation/FullTextAnnotation";
+import { parseArguments } from "../utils";
 
-export function parseUniqueAnnotation(directive: DirectiveNode): UniqueAnnotation {
-    const { constraintName } = parseArguments(directive) as { constraintName: string };
+export function parseFullTextAnnotation(directive: DirectiveNode): FullTextAnnotation {
+    const { fields } = parseArguments(directive) as { fields: FullTextFields };
 
-    return new UniqueAnnotation({
-        constraintName,
+    return new FullTextAnnotation({
+        fields,
     });
 }

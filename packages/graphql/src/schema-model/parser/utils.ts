@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import parseValueNode from "./parse-value-node";
+import { parseValueNode } from "./parse-value-node";
 
 export function parseArguments(directive: DirectiveNode): Record<string, unknown> {
     return (directive.arguments || [])?.reduce((acc, argument) => {
@@ -31,4 +31,3 @@ export function findDirective(directives: readonly DirectiveNode[], name: string
         return d.name.value === name;
     });
 }
-

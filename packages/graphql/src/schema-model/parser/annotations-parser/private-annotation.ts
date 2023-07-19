@@ -17,14 +17,9 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { SettableAnnotation } from "../annotation/SettableAnnotation";
-import { parseArguments } from "./utils";
+import { PrivateAnnotation } from "../../annotation/PrivateAnnotation";
 
-export function parseSettableAnnotation(directive: DirectiveNode): SettableAnnotation {
-    const { onCreate, onUpdate } = parseArguments(directive) as { onCreate: boolean; onUpdate: boolean };
-
-    return new SettableAnnotation({
-        onCreate,
-        onUpdate,
-    });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function parsePrivateAnnotation(_directive: DirectiveNode): PrivateAnnotation {
+    return new PrivateAnnotation();
 }
