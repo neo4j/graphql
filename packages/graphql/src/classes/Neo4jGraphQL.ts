@@ -192,37 +192,6 @@ class Neo4jGraphQL {
         });
     }
 
-    public neo4jValidateGraphQLDocument(): { isValid: boolean; validationErrors: string[] } {
-        try {
-            const initialDocument = this.getDocument(this.typeDefs);
-
-            validateDocument({ document: initialDocument, features: this.features });
-
-            const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
-            const { jwt } = typesExcludedFromGeneration;
-
-            const { typeDefs } = makeAugmentedSchema(document, {
-                features: this.features,
-                generateSubscriptions: true,
-                userCustomResolvers: undefined,
-            });
-
-            validateUserDefinition({
-                userDocument: document,
-                augmentedDocument: typeDefs,
-                jwt: jwt?.type,
-            });
-        } catch (error) {
-            // TODO: include path here
-            if (error instanceof Error) {
-                const validationErrors = error.message.split("\n\n");
-                return { isValid: false, validationErrors };
-            }
-            return { isValid: false, validationErrors: [] };
-        }
-        return { isValid: true, validationErrors: [] };
-    }
-
     private get nodes(): Node[] {
         if (!this._nodes) {
             throw new Error("You must await `.getSchema()` before accessing `nodes`");
