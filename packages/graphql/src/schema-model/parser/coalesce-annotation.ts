@@ -21,7 +21,7 @@ import { Kind, type DirectiveNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { CoalesceAnnotationValue } from "../annotation/CoalesceAnnotation";
 import { CoalesceAnnotation } from "../annotation/CoalesceAnnotation";
-import { getArgumentValueByType } from "./utils";
+import parseValueNode from "./parse-value-node";
 
 export function parseCoalesceAnnotation(directive: DirectiveNode): CoalesceAnnotation {
     if (!directive.arguments || !directive.arguments[0] || !directive.arguments[0].value.kind) {
@@ -35,7 +35,7 @@ export function parseCoalesceAnnotation(directive: DirectiveNode): CoalesceAnnot
         case Kind.BOOLEAN:
         case Kind.INT:
         case Kind.FLOAT:
-            value = getArgumentValueByType(directive.arguments[0].value) as CoalesceAnnotationValue;
+            value = parseValueNode(directive.arguments[0].value) as CoalesceAnnotationValue;
             break;
         default:
             throw new Neo4jGraphQLSchemaValidationError(

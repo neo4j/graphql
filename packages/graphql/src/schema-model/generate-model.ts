@@ -60,15 +60,15 @@ import type { DefinitionCollection } from "./parser/definition-collection";
 
 import { parseAuthenticationAnnotation } from "./parser/authentication-annotation";
 import { Operation } from "./Operation";
-import { Field } from "./attribute/Field";
 import { parseSubscriptionsAuthorizationAnnotation } from "./parser/subscriptions-authorization-annotation";
+import { Field } from "./attribute/Field";
 
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
 
-    const operations: Operations = definitionNodes.operations.reduce((acc, definition): Operations => {
-        acc[definition.name.value] = generateOperation(definition);
+    const operations: Operations = definitionCollection.operations.reduce((acc, definition): Operations => {
+        acc[definition.name.value] = generateOperation(definition, definitionCollection);
         return acc;
     }, {});
 
@@ -102,15 +102,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         );
     });
 
-    const schemaDirectives = definitionNodes.schemaExtensions.reduce(
-        (directives: DirectiveNode[], schemaExtension: SchemaExtensionNode) => {
-            if (schemaExtension.directives) {
-                directives.push(...schemaExtension.directives);
-            }
-            return directives;
-        },
-        []
-    );
+    const schemaDirectives = definitionCollection.schemaDirectives;
 
     const annotations = createSchemaModelAnnotations(schemaDirectives);
 
@@ -218,7 +210,7 @@ function generateRelationshipField(
       
         const fields = (propertyInterface.fields || []).map((field) => generateAttribute(field, definitionCollection));
 
-        attributes = filterTruthy(fields);
+        attributes = filterTruthy(fields) as Attribute[];
     }
     return new Relationship({
         name: fieldName,
@@ -248,7 +240,7 @@ function generateConcreteEntity(
     return new ConcreteEntity({
         name: definition.name.value,
         labels,
-        attributes: filterTruthy(fields),
+        attributes: filterTruthy(fields) as Attribute[],
         annotations: createEntityAnnotations(definition.directives || []),
     });
 }
@@ -292,11 +284,17 @@ function parseTypeNode(
             return parseTypeNode(definitionCollection, typeNode.type, true);
     }
 }
-
-function generateAttribute(field: FieldDefinitionNode, definitionCollection: DefinitionCollection): Attribute {
+// TODO: figure out difference between field and attribute
+function generateAttribute(field: FieldDefinitionNode, definitionCollection: DefinitionCollection, retField = false): Attribute | Field {
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
     const annotations = createFieldAnnotations(field.directives || []);
+    if (retField) {
+        return new Field({
+            name,
+            annotations,
+        })
+    }
     return new Attribute({
         name,
         annotations,
@@ -424,8 +422,8 @@ function createSchemaModelAnnotations(directives: readonly DirectiveNode[]): Ann
     return schemaModelAnnotations.concat(annotations);
 }
 
-function generateOperation(definition: ObjectTypeDefinitionNode): Operation {
-    const fields = (definition.fields || []).map((fieldDefinition) => generateField(fieldDefinition));
+function generateOperation(definition: ObjectTypeDefinitionNode, definitionCollection: DefinitionCollection): Operation {
+    const fields = (definition.fields || []).map((fieldDefinition) => generateAttribute(fieldDefinition, definitionCollection, true)) as Field[];
 
     return new Operation({
         name: definition.name.value,

@@ -21,7 +21,8 @@ import { Kind, type DirectiveNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { DefaultAnnotationValue } from "../annotation/DefaultAnnotation";
 import { DefaultAnnotation } from "../annotation/DefaultAnnotation";
-import { getArgumentValueByType } from "./utils";
+import parseValueNode from "./parse-value-node";
+
 
 export function parseDefaultAnnotation(directive: DirectiveNode): DefaultAnnotation {
     if (!directive.arguments || !directive.arguments[0] || !directive.arguments[0].value.kind) {
@@ -35,7 +36,7 @@ export function parseDefaultAnnotation(directive: DirectiveNode): DefaultAnnotat
         case Kind.BOOLEAN:
         case Kind.INT:
         case Kind.FLOAT:
-            value = getArgumentValueByType(directive.arguments[0].value) as DefaultAnnotationValue;
+            value = parseValueNode(directive.arguments[0].value) as DefaultAnnotationValue;
             break;
         default:
             throw new Neo4jGraphQLSchemaValidationError(
