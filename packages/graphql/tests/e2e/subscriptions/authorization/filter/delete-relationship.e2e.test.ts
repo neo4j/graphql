@@ -65,18 +65,19 @@ describe("Subscriptions authorization with relationship deletion events", () => 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: {
-                driverConfig: {
-                    database: neo4j.getIntegrationDatabaseName(),
-                },
-            },
             features: {
                 authorization: { key },
                 subscriptions: new TestSubscriptionsMechanism(),
             },
         });
 
-        server = new ApolloTestServer(neoSchema);
+        // eslint-disable-next-line @typescript-eslint/require-await
+        server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+            sessionConfig: {
+                database: neo4j.getIntegrationDatabaseName(),
+            },
+            token: req.headers.authorization,
+        }));
         await server.start();
     });
 

@@ -28,7 +28,7 @@ import { getNeo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { AUTH_FORBIDDEN_ERROR, DEBUG_GRAPHQL } from "../../constants";
-import type { Context, ContextFeatures, Neo4jGraphQLPlugins } from "../../types";
+import type { Context, ContextFeatures } from "../../types";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import Cypher from "@neo4j/cypher-builder";
@@ -43,7 +43,6 @@ export type WrapResolverArguments = {
     relationships: Relationship[];
     jwtPayloadFieldsMap?: Map<string, string>;
     schemaModel: Neo4jGraphQLSchemaModel;
-    plugins?: Neo4jGraphQLPlugins;
     dbInfo?: Neo4jDatabaseInfo;
     features: ContextFeatures;
     authorization?: Neo4jGraphQLAuthorization;
@@ -59,7 +58,6 @@ export const wrapResolver =
         relationships,
         jwtPayloadFieldsMap,
         schemaModel,
-        plugins,
         dbInfo,
         authorization,
         features,
@@ -68,7 +66,6 @@ export const wrapResolver =
     (next) =>
     // TODO: type this as Neo4jGraphQLContext
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
-        const { driverConfig } = config;
         const callbacks = features.populatedBy?.callbacks;
 
         if (debug.enabled) {
@@ -81,28 +78,19 @@ export const wrapResolver =
         }
 
         if (!context?.executionContext) {
-            if (context?.driver) {
-                context.executionContext = context.driver;
-            } else {
-                if (!driver) {
-                    throw new Error(
-                        "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or a driver, session or transaction passed as context.executionContext in each request."
-                    );
-                }
-                context.executionContext = driver;
+            if (!driver) {
+                throw new Error(
+                    "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or a driver, session or transaction passed as context.executionContext in each request."
+                );
             }
+            context.executionContext = driver;
         }
 
         context.info = info;
 
-        if (!context?.driverConfig) {
-            context.driverConfig = driverConfig;
-        }
-
         context.nodes = nodes;
         context.relationships = relationships;
         context.schemaModel = schemaModel;
-        context.plugins = plugins || {};
         context.subscriptionsEnabled = Boolean(features.subscriptions);
         context.callbacks = callbacks;
         context.features = features;
@@ -147,17 +135,9 @@ export const wrapResolver =
             executionContext: context.executionContext,
         };
 
-        if (config.queryOptions) {
-            executorConstructorParam.queryOptions = config.queryOptions;
-        }
+        executorConstructorParam.cypherQueryOptions = context.cypherQueryOptions;
 
-        if (context.driverConfig?.database) {
-            executorConstructorParam.database = context.driverConfig?.database;
-        }
-
-        if (context.driverConfig?.bookmarks) {
-            executorConstructorParam.bookmarks = context.driverConfig?.bookmarks;
-        }
+        executorConstructorParam.sessionConfig = context.sessionConfig;
 
         context.executor = new Executor(executorConstructorParam);
 
@@ -178,7 +158,6 @@ export const wrapSubscription =
     (resolverArgs: WrapResolverArguments) =>
     (next) =>
     async (root: any, args: any, context: SubscriptionConnectionContext | undefined, info: GraphQLResolveInfo) => {
-        const plugins = resolverArgs?.plugins || {};
         const subscriptionsConfig = resolverArgs?.features.subscriptions;
         const schemaModel = resolverArgs?.schemaModel;
         const contextParams = context?.connectionParams || {};

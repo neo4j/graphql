@@ -89,16 +89,16 @@ describe("#324", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Person\`)
+            "MATCH (this:Person)
             WHERE this.identifier = $param0
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_car0_relationship:\`CAR\`]->(this_car0:Car)
+            	MATCH (this)-[this_car0_relationship:CAR]->(this_car0:Car)
             	WITH this, this_car0
             	CALL {
             		WITH this, this_car0
-            		MATCH (this_car0)-[this_car0_manufacturer0_relationship:\`MANUFACTURER\`]->(this_car0_manufacturer0:Manufacturer)
+            		MATCH (this_car0)-[this_car0_manufacturer0_relationship:MANUFACTURER]->(this_car0_manufacturer0:Manufacturer)
             		SET this_car0_manufacturer0.name = $this_update_car0_manufacturer0_name
             		WITH this, this_car0, this_car0_manufacturer0
             		CALL {
@@ -112,7 +112,7 @@ describe("#324", () => {
             					WITH connectedNodes, parentNodes
             					UNWIND parentNodes as this_car0_manufacturer0
             					UNWIND connectedNodes as this_car0_manufacturer0_logo0_connect0_node
-            					MERGE (this_car0_manufacturer0)-[:\`LOGO\`]->(this_car0_manufacturer0_logo0_connect0_node)
+            					MERGE (this_car0_manufacturer0)-[:LOGO]->(this_car0_manufacturer0_logo0_connect0_node)
             				}
             			}
             		WITH this, this_car0, this_car0_manufacturer0, this_car0_manufacturer0_logo0_connect0_node
@@ -121,9 +121,9 @@ describe("#324", () => {
             		WITH this, this_car0, this_car0_manufacturer0
             		CALL {
             			WITH this_car0_manufacturer0
-            			MATCH (this_car0_manufacturer0)-[this_car0_manufacturer0_logo_Logo_unique:\`LOGO\`]->(:Logo)
+            			MATCH (this_car0_manufacturer0)-[this_car0_manufacturer0_logo_Logo_unique:LOGO]->(:Logo)
             			WITH count(this_car0_manufacturer0_logo_Logo_unique) as c
-            			CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDManufacturer.logo required exactly once', [0])
+            			WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDManufacturer.logo required exactly once', [0])
             			RETURN c AS this_car0_manufacturer0_logo_Logo_unique_ignored
             		}
             		RETURN count(*) AS update_this_car0_manufacturer0
@@ -131,9 +131,9 @@ describe("#324", () => {
             	WITH this, this_car0
             	CALL {
             		WITH this_car0
-            		MATCH (this_car0)-[this_car0_manufacturer_Manufacturer_unique:\`MANUFACTURER\`]->(:Manufacturer)
+            		MATCH (this_car0)-[this_car0_manufacturer_Manufacturer_unique:MANUFACTURER]->(:Manufacturer)
             		WITH count(this_car0_manufacturer_Manufacturer_unique) as c
-            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDCar.manufacturer required exactly once', [0])
+            		WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDCar.manufacturer required exactly once', [0])
             		RETURN c AS this_car0_manufacturer_Manufacturer_unique_ignored
             	}
             	RETURN count(*) AS update_this_car0
@@ -141,9 +141,9 @@ describe("#324", () => {
             WITH *
             CALL {
             	WITH this
-            	MATCH (this)-[this_car_Car_unique:\`CAR\`]->(:Car)
+            	MATCH (this)-[this_car_Car_unique:CAR]->(:Car)
             	WITH count(this_car_Car_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPerson.car required exactly once', [0])
+            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPerson.car required exactly once', [0])
             	RETURN c AS this_car_Car_unique_ignored
             }
             RETURN collect(DISTINCT this { .identifier }) AS data"

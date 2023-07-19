@@ -74,7 +74,7 @@ describe("Label cypher injection", () => {
         const res = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+            contextValue: neo4j.getContextValues({
                 label: "Movie\\u0060) MATCH",
             }),
         });
@@ -115,7 +115,7 @@ describe("Label cypher injection", () => {
         const res = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(res.errors).toBeUndefined();

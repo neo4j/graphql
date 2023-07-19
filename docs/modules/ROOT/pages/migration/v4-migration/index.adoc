@@ -778,3 +778,168 @@ type Actor @query(aggregate: true) {
 }
 ----
 
+=== Cypher query options
+
+If you had a need to pass in Cypher query options for query tuning, this interface has been changed.
+
+The config option `queryOptions` has now become `cypherQueryOptions` inside the context function, and it now accepts simple strings instead of enums.
+
+The following is an example before the change:
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL, CypherRuntime } = require("@neo4j/graphql");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String!
+    }
+`;
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        queryOptions: {
+            runtime: CypherRuntime.INTERPRETED,
+        },
+    },
+});
+----
+
+This is what is required after the change:
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String!
+    }
+`;
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+});
+
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
+});
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ cypherQueryOptions: { runtime: "interpreted" }}),
+});
+----
+
+This reflects the fact that the Cypher query options are set on a per-request basis.
+
+=== Session configuration
+
+Session configuration is now available only in the context under the `sessionConfig` key.
+
+This was previously `driverConfig`, available in both the constructor and in the context:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        driverConfig: {
+            database: "different-db"
+        },
+    },
+})
+----
+
+The new `sessionConfig` key is only available in the context:
+
+[source, javascript, indent=0]
+----
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
+
+const typeDefs = `#graphql
+    type User {
+        name: String
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
+});
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ sessionConfig: { database: "my-database" }}),
+});
+----
+
+The `bookmarks` key has been removed because it is no longer needed with the bookmark manager of the newer driver.
+
+=== Debug logging
+
+The programmatic toggle for debug logging has been moved from `config.enableDebug` to simply `debug`.
+
+An example of `enableDebug`:
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String!
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    config: {
+      enableDebug: true,
+    }
+});
+----
+
+This now becomes:
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String!
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    debug: true,
+});
+----

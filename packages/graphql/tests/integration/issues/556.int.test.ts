@@ -26,7 +26,6 @@ import { Neo4jGraphQL } from "../../../src/classes";
 describe("https://github.com/neo4j/graphql/issues/556 - Input Object type ArticleCreateInput must define one or more fields", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let bookmarks: string[];
     const typeDefs = gql`
         type User556 {
             name: String!
@@ -79,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();

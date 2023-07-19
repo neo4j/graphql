@@ -122,6 +122,11 @@ function makeAugmentedSchema(
     const createInfo = composer.createObjectTC(CreateInfo);
     const deleteInfo = composer.createObjectTC(DeleteInfo);
     const updateInfo = composer.createObjectTC(UpdateInfo);
+    [createInfo, deleteInfo, updateInfo].forEach((info) => {
+        info.deprecateFields({
+            bookmark: "This field has been deprecated because bookmarks are now handled by the driver.",
+        });
+    });
     const pageInfo = composer.createObjectTC(PageInfo);
 
     if (subgraph) {

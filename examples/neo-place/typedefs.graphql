@@ -14,7 +14,7 @@ type Query {
             """
             columnName: "canvas"
         )
-        @auth(rules: [{ isAuthenticated: true }])
+        @authentication
 }
 
-extend type Pixel @auth(rules: [{ isAuthenticated: true }])
+extend type Pixel @authentication

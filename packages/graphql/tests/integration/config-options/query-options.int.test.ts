@@ -22,7 +22,6 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { CypherRuntime } from "../../../src";
 
 describe("query options", () => {
     let driver: Driver;
@@ -56,7 +55,6 @@ describe("query options", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: { queryOptions: { runtime: CypherRuntime.INTERPRETED } },
         });
 
         const id = generate({
@@ -85,7 +83,7 @@ describe("query options", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues({ cypherQueryOptions: { runtime: "interpreted" } }),
             });
 
             expect(result.errors).toBeFalsy();

@@ -78,7 +78,7 @@ describe("Cypher Fragment", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             RETURN this { .id, .username } AS this"
         `);
 
@@ -103,17 +103,17 @@ describe("Cypher Fragment", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:\`OWNS\`]->(this1:\`Tile\`)
+                    MATCH (this)-[this0:OWNS]->(this1:Tile)
                     WITH this1 { __resolveType: \\"Tile\\", __id: id(this), .id } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this3:\`OWNS\`]->(this4:\`Character\`)
+                    MATCH (this)-[this3:OWNS]->(this4:Character)
                     WITH this4 { __resolveType: \\"Character\\", __id: id(this), .id } AS this4
                     RETURN this4 AS var2
                 }
@@ -143,7 +143,7 @@ describe("Cypher Fragment", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             RETURN this { .id, .username } AS this"
         `);
 

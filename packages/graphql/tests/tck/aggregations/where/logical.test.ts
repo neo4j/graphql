@@ -55,10 +55,10 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN count(this1) > $param0 AS var2, count(this1) < $param1 AS var3
             }
             WITH *
@@ -92,10 +92,10 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN count(this1) > $param0 AS var2, count(this1) < $param1 AS var3
             }
             WITH *
@@ -129,10 +129,10 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN count(this1) > $param0 AS var2
             }
             WITH *
@@ -169,10 +169,10 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN count(this1) > $param0 AS var2, count(this1) < $param1 AS var3, count(this1) > $param2 AS var4, count(this1) < $param3 AS var5
             }
             WITH *

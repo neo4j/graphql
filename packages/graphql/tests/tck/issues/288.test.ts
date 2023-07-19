@@ -62,7 +62,7 @@ describe("#288", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`USER\`)
+                CREATE (create_this1:USER)
                 SET
                     create_this1.USERID = create_var0.USERID,
                     create_this1.COMPANYID = create_var0.COMPANYID
@@ -99,7 +99,7 @@ describe("#288", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`USER\`)
+            "MATCH (this:USER)
             WHERE this.USERID = $param0
             SET this.COMPANYID = $this_update_COMPANYID
             RETURN collect(DISTINCT this { .USERID, .COMPANYID }) AS data"

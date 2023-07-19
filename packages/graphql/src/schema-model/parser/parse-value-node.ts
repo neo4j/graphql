@@ -17,48 +17,30 @@
  * limitations under the License.
  */
 
-import type { ValueNode, ObjectValueNode } from "graphql/language/ast";
+import type { ValueNode } from "graphql/language/ast";
 import { Kind } from "graphql/language";
 
-function valueOfObjectValueNode(ast: ObjectValueNode) {
-    return Object.values(ast.fields).reduce((a, b) => {
-         
-        a[b.name.value] = parseValueNode(b.value);
-
-        return a;
-    }, {});
-}
-
 function parseValueNode(ast: ValueNode): any {
-    let result: any;
-
     switch (ast.kind) {
         case Kind.ENUM:
         case Kind.STRING:
-            result = ast.value;
-            break;
-
+        case Kind.BOOLEAN:
+            return ast.value;
         case Kind.INT:
         case Kind.FLOAT:
-            result = Number(ast.value);
-            break;
-
-        case Kind.BOOLEAN:
-            result = Boolean(ast.value);
-            break;
+            return Number(ast.value);
         case Kind.NULL:
-            break;
+            return null;
         case Kind.LIST:
-            result = ast.values.map(parseValueNode);
-            break;
+            return ast.values.map(parseValueNode);
         case Kind.OBJECT:
-            result = valueOfObjectValueNode(ast);
-            break;
+            return ast.fields.reduce((a, b) => {
+                a[b.name.value] = parseValueNode(b.value);
+                return a;
+            }, {});
         default:
             throw new Error(`invalid Kind: ${ast.kind}`);
     }
-
-    return result;
 }
 
 export default parseValueNode;

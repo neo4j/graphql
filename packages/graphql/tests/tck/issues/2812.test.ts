@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
             "UNWIND $create_param3 AS create_var4
             CALL {
                 WITH create_var4
-                CREATE (create_this0:\`Movie\`)
+                CREATE (create_this0:Movie)
                 SET
                     create_this0.id = create_var4.id
                 WITH create_this0, create_var4
@@ -91,14 +91,14 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                     WITH create_this0, create_var4
                     UNWIND create_var4.actors.create AS create_var5
                     WITH create_var5.node AS create_var6, create_var5.edge AS create_var7, create_this0
-                    CREATE (create_this8:\`Actor\`)
+                    CREATE (create_this8:Actor)
                     SET
                         create_this8.name = create_var6.name,
                         create_this8.nodeCreatedBy = create_var6.nodeCreatedBy,
                         create_this8.fieldA = create_var6.fieldA,
                         create_this8.fieldB = create_var6.fieldB,
                         create_this8.id = randomUUID()
-                    MERGE (create_this0)<-[create_this9:\`ACTED_IN\`]-(create_this8)
+                    MERGE (create_this0)<-[create_this9:ACTED_IN]-(create_this8)
                     WITH *
                     WHERE (apoc.util.validatePredicate((create_var6.fieldA IS NOT NULL AND NOT ($isAuthenticated = true AND $create_param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate((create_var6.fieldB IS NOT NULL AND NOT ($isAuthenticated = true AND $create_param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     RETURN collect(NULL) AS create_var10
@@ -109,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
             }
             CALL {
                 WITH create_this0
-                MATCH (create_this0)<-[create_this1:\`ACTED_IN\`]-(create_this2:\`Actor\`)
+                MATCH (create_this0)<-[create_this1:ACTED_IN]-(create_this2:Actor)
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this2.nodeCreatedBy = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this2 { .name } AS create_this2
                 RETURN collect(create_this2) AS create_var3
@@ -196,7 +196,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
             "UNWIND $create_param3 AS create_var4
             CALL {
                 WITH create_var4
-                CREATE (create_this0:\`Movie\`)
+                CREATE (create_this0:Movie)
                 SET
                     create_this0.id = create_var4.id
                 WITH create_this0, create_var4
@@ -204,14 +204,14 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                     WITH create_this0, create_var4
                     UNWIND create_var4.actors.create AS create_var5
                     WITH create_var5.node AS create_var6, create_var5.edge AS create_var7, create_this0
-                    CREATE (create_this8:\`Actor\`)
+                    CREATE (create_this8:Actor)
                     SET
                         create_this8.name = create_var6.name,
                         create_this8.nodeCreatedBy = create_var6.nodeCreatedBy,
                         create_this8.fieldA = create_var6.fieldA,
                         create_this8.fieldB = create_var6.fieldB,
                         create_this8.id = randomUUID()
-                    MERGE (create_this0)<-[create_this9:\`ACTED_IN\`]-(create_this8)
+                    MERGE (create_this0)<-[create_this9:ACTED_IN]-(create_this8)
                     WITH *
                     WHERE (apoc.util.validatePredicate((create_var6.fieldA IS NOT NULL AND NOT ($isAuthenticated = true AND $create_param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate((create_var6.fieldB IS NOT NULL AND NOT ($isAuthenticated = true AND $create_param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     RETURN collect(NULL) AS create_var10
@@ -222,7 +222,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
             }
             CALL {
                 WITH create_this0
-                MATCH (create_this0)<-[create_this1:\`ACTED_IN\`]-(create_this2:\`Actor\`)
+                MATCH (create_this0)<-[create_this1:ACTED_IN]-(create_this2:Actor)
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this2.nodeCreatedBy = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this2 { .name } AS create_this2
                 RETURN collect(create_this2) AS create_var3
@@ -307,7 +307,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
             "UNWIND $create_param3 AS create_var4
             CALL {
                 WITH create_var4
-                CREATE (create_this0:\`Movie\`)
+                CREATE (create_this0:Movie)
                 SET
                     create_this0.id = create_var4.id
                 WITH create_this0, create_var4
@@ -315,12 +315,12 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                     WITH create_this0, create_var4
                     UNWIND create_var4.actors.create AS create_var5
                     WITH create_var5.node AS create_var6, create_var5.edge AS create_var7, create_this0
-                    CREATE (create_this8:\`Actor\`)
+                    CREATE (create_this8:Actor)
                     SET
                         create_this8.name = create_var6.name,
                         create_this8.nodeCreatedBy = create_var6.nodeCreatedBy,
                         create_this8.id = randomUUID()
-                    MERGE (create_this0)<-[create_this9:\`ACTED_IN\`]-(create_this8)
+                    MERGE (create_this0)<-[create_this9:ACTED_IN]-(create_this8)
                     RETURN collect(NULL) AS create_var10
                 }
                 WITH *
@@ -329,7 +329,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
             }
             CALL {
                 WITH create_this0
-                MATCH (create_this0)<-[create_this1:\`ACTED_IN\`]-(create_this2:\`Actor\`)
+                MATCH (create_this0)<-[create_this1:ACTED_IN]-(create_this2:Actor)
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this2.nodeCreatedBy = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this2 { .name } AS create_this2
                 RETURN collect(create_this2) AS create_var3

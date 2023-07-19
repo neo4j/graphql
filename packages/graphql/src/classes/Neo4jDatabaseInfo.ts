@@ -68,8 +68,8 @@ export class Neo4jDatabaseInfo {
 }
 
 export async function getNeo4jDatabaseInfo(executor: Executor): Promise<Neo4jDatabaseInfo> {
-    const { result: dbmsComponentsQueryResult } = await executor.execute(DBMS_COMPONENTS_QUERY as string, {}, "READ");
-    const rawRow = dbmsComponentsQueryResult?.records[0] as any;
+    const { records } = await executor.execute(DBMS_COMPONENTS_QUERY as string, {}, "READ");
+    const rawRow = records[0] as any;
     const [rawVersion, edition] = rawRow as [string, Neo4jEdition];
     return new Neo4jDatabaseInfo(rawVersion, edition);
 }

@@ -46,8 +46,11 @@ class Model {
 
     private _rootTypeFieldNames?: RootTypeFieldNames;
 
-    constructor(name: string) {
+    private database?: string;
+
+    constructor(name: string, database?: string) {
         this.name = name;
+        this.database = database;
     }
 
     public set selectionSet(selectionSet: string | DocumentNode) {
@@ -141,7 +144,7 @@ class Model {
             schema: this.schema,
             source: query,
             rootValue,
-            contextValue: context,
+            contextValue: { sessionConfig: { database: this.database }, ...context },
             variableValues,
         });
 
@@ -196,7 +199,7 @@ class Model {
             schema: this.schema,
             source: mutation,
             rootValue,
-            contextValue: context,
+            contextValue: { sessionConfig: { database: this.database }, ...context },
             variableValues,
         });
 
@@ -285,7 +288,7 @@ class Model {
             schema: this.schema,
             source: mutation,
             rootValue,
-            contextValue: context,
+            contextValue: { sessionConfig: { database: this.database }, ...context },
             variableValues,
         });
 
@@ -343,7 +346,7 @@ class Model {
             schema: this.schema,
             source: mutation,
             rootValue,
-            contextValue: context,
+            contextValue: { sessionConfig: { database: this.database }, ...context },
             variableValues,
         });
 
@@ -426,7 +429,7 @@ class Model {
             schema: this.schema,
             source: query,
             rootValue,
-            contextValue: context,
+            contextValue: { sessionConfig: { database: this.database }, ...context },
             variableValues,
         });
 

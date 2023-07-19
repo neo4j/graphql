@@ -102,7 +102,7 @@ describe("Custom Directives", () => {
             const gqlResult = await graphql({
                 schema,
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();

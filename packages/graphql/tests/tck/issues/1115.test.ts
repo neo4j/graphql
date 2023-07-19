@@ -82,14 +82,14 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Parent\`)
+            "MATCH (this:Parent)
             WITH this
             CALL {
                 WITH this
-                MERGE (this_connectOrCreate_children0:\`Child\` { tcId: $this_connectOrCreate_children_param0 })
+                MERGE (this_connectOrCreate_children0:Child { tcId: $this_connectOrCreate_children_param0 })
                 ON CREATE SET
                     this_connectOrCreate_children0.tcId = $this_connectOrCreate_children_param1
-                MERGE (this)<-[this_connectOrCreate_children_this0:\`HAS\`]-(this_connectOrCreate_children0)
+                MERGE (this)<-[this_connectOrCreate_children_this0:HAS]-(this_connectOrCreate_children0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_children_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN count(*) AS _
@@ -97,10 +97,10 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
             WITH this
             CALL {
                 WITH this
-                MERGE (this_connectOrCreate_children1:\`Child\` { tcId: $this_connectOrCreate_children_param5 })
+                MERGE (this_connectOrCreate_children1:Child { tcId: $this_connectOrCreate_children_param5 })
                 ON CREATE SET
                     this_connectOrCreate_children1.tcId = $this_connectOrCreate_children_param6
-                MERGE (this)<-[this_connectOrCreate_children_this1:\`HAS\`]-(this_connectOrCreate_children1)
+                MERGE (this)<-[this_connectOrCreate_children_this1:HAS]-(this_connectOrCreate_children1)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_children_param7 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN count(*) AS _

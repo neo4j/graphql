@@ -27,7 +27,8 @@ import { graphql } from "graphql";
 
 import { tracking } from "../../analytics/tracking";
 import { Extension } from "../../components/Filename";
-import { EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
+import { DEFAULT_DATABASE_NAME, EDITOR_PARAMS_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../constants";
+import { AuthContext } from "../../contexts/auth";
 import { Screen } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
 import { useStore } from "../../store";
@@ -47,6 +48,7 @@ export interface Props {
 
 export const EditorView = ({ schema }: Props) => {
     const store = useStore();
+    const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [showDocs, setShowDocs] = useState<boolean>(false);
@@ -68,7 +70,11 @@ export const EditorView = ({ schema }: Props) => {
                 const response = await graphql({
                     schema: schema,
                     source: override || useStore.getState().getActiveTab().query || "",
-                    contextValue: {},
+                    contextValue: {
+                        sessionConfig: {
+                            database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
+                        },
+                    },
                     variableValues: safeParse(useStore.getState().getActiveTab().variables, {}),
                 });
 

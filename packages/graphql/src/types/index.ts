@@ -24,7 +24,7 @@ import type { Directive } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
 import type { Integer } from "neo4j-driver";
-import type { Node, Relationship } from "../classes";
+import type { Neo4jDatabaseInfo, Node, Relationship } from "../classes";
 import type { Executor } from "../classes/Executor";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
@@ -32,11 +32,6 @@ import type { JwtPayload } from "./jwt-payload";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
 
 export { Node } from "../classes";
-
-export type DriverConfig = {
-    database?: string;
-    bookmarks?: string | string[];
-};
 
 type AuthorizationContext = {
     jwt?: JwtPayload;
@@ -55,12 +50,12 @@ export interface Context extends Neo4jGraphQLContext {
     schemaModel: Neo4jGraphQLSchemaModel;
     schema: GraphQLSchema;
     callbacks?: Neo4jGraphQLCallbacks;
-    plugins?: Neo4jGraphQLPlugins;
     features: ContextFeatures;
     subscriptionsEnabled: boolean;
     executor: Executor;
     extensions?: Record<string, any>;
     authorization: AuthorizationContext;
+    neo4jDatabaseInfo?: Neo4jDatabaseInfo;
     [k: string]: any;
 }
 
@@ -220,13 +215,7 @@ export interface TemporalField extends PrimitiveField {
 
 export type PointField = BaseField;
 
-export type SortableField =
-    | PrimitiveField
-    | CustomScalarField
-    | CustomEnumField
-    | TemporalField
-    | PointField
-    | CypherField;
+export type SortableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | CypherField;
 
 export type SortDirection = "ASC" | "DESC";
 
@@ -265,7 +254,7 @@ export interface GraphQLOptionsArg {
  * passed to resolvers.
  */
 export interface GraphQLWhereArg {
-    [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
+    [k: string]: any;
     AND?: GraphQLWhereArg[];
     OR?: GraphQLWhereArg[];
     NOT?: GraphQLWhereArg;
@@ -283,7 +272,7 @@ export interface ConnectionWhereArg {
 
 export interface InterfaceWhereArg {
     _on?: GraphQLWhereArg[];
-    [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
+    [k: string]: any;
 }
 
 /**
@@ -298,65 +287,18 @@ export type TimeStampOperations = "CREATE" | "UPDATE";
 
 export type CallbackOperations = "CREATE" | "UPDATE";
 
-export enum CypherRuntime {
-    INTERPRETED = "interpreted",
-    SLOTTED = "slotted",
-    PIPELINED = "pipelined",
-}
-
-export enum CypherPlanner {
-    COST = "cost",
-    IDP = "idp",
-    DP = "dp",
-}
-
-export enum CypherConnectComponentsPlanner {
-    GREEDY = "greedy",
-    IDP = "idp",
-}
-
-export enum CypherUpdateStrategy {
-    DEFAULT = "default",
-    EAGER = "eager",
-}
-
-export enum CypherExpressionEngine {
-    DEFAULT = "default",
-    INTERPRETED = "interpreted",
-    COMPILED = "compiled",
-}
-
-export enum CypherOperatorEngine {
-    DEFAULT = "default",
-    INTERPRETED = "interpreted",
-    COMPILED = "compiled",
-}
-
-export enum CypherInterpretedPipesFallback {
-    DEFAULT = "default",
-    DISABLED = "disabled",
-    WHITELISTED_PLANS_ONLY = "whitelisted_plans_only",
-    ALL = "all",
-}
-
-export enum CypherReplanning {
-    DEFAULT = "default",
-    FORCE = "force",
-    SKIP = "skip",
-}
-
 /*
   Object keys and enum values map to values at https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/#cypher-query-options
 */
 export interface CypherQueryOptions {
-    runtime?: CypherRuntime;
-    planner?: CypherPlanner;
-    connectComponentsPlanner?: CypherConnectComponentsPlanner;
-    updateStrategy?: CypherUpdateStrategy;
-    expressionEngine?: CypherExpressionEngine;
-    operatorEngine?: CypherOperatorEngine;
-    interpretedPipesFallback?: CypherInterpretedPipesFallback;
-    replan?: CypherReplanning;
+    runtime?: "interpreted" | "slotted" | "pipelined";
+    planner?: "cost" | "idp" | "dp";
+    connectComponentsPlanner?: "greedy" | "idp";
+    updateStrategy?: "default" | "eager";
+    expressionEngine?: "default" | "interpreted" | "compiled";
+    operatorEngine?: "default" | "interpreted" | "compiled";
+    interpretedPipesFallback?: "default" | "disabled" | "whitelisted_plans_only" | "all";
+    replan?: "default" | "force" | "skip";
 }
 
 /** The startup validation checks to run */
@@ -374,20 +316,6 @@ export type StartupValidationConfig = StartupValidationOptions | boolean;
 
 /** Input field for graphql-compose */
 export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
-
-export interface Neo4jGraphQLAuthPlugin {
-    rolesPath?: string;
-    isGlobalAuthenticationEnabled?: boolean;
-    bindPredicate?: "all" | "any";
-
-    decode<T>(token: string): Promise<T | undefined>;
-    /**
-     * This function tries to resolve public or secret keys.
-     * The implementation on how to resolve the keys by the `JWKSEndpoint` or by the `Secret` is set on when the plugin is being initiated.
-     * @param req
-     */
-    tryToResolveKeys(req: unknown): void;
-}
 
 /** Raw event metadata returned from queries */
 export type NodeSubscriptionMeta = {
@@ -499,10 +427,6 @@ export interface Neo4jGraphQLSubscriptionsMechanism {
 
     /** To be called, if needed, in getSchema */
     init?(): Promise<void>;
-}
-
-export interface Neo4jGraphQLPlugins {
-    auth?: Neo4jGraphQLAuthPlugin;
 }
 
 export type CallbackReturnValue = string | number | boolean | undefined | null;

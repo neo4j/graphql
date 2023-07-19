@@ -76,13 +76,12 @@ describe("Math operators", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WITH this
             CALL {
             WITH this
-            CALL apoc.util.validate(this.viewers IS NULL, 'Cannot %s %s to Nan', [\\"_INCREMENT\\", $this_update_viewers_INCREMENT])
-            CALL apoc.util.validate(this.viewers + $this_update_viewers_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_INCREMENT\\", \\"32\\"])
-            CALL apoc.util.validate((this.viewers + $this_update_viewers_INCREMENT) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', [\\"_INCREMENT\\", \\"Int\\"])
+            WITH this
+            WHERE apoc.util.validatePredicate(this.viewers IS NULL, 'Cannot %s %s to Nan', [\\"_INCREMENT\\", $this_update_viewers_INCREMENT]) AND apoc.util.validatePredicate(this.viewers IS NOT NULL AND this.viewers + $this_update_viewers_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_INCREMENT\\", \\"32\\"])
             SET this.viewers = this.viewers + $this_update_viewers_INCREMENT
             RETURN this as this_viewers__INCREMENT
             }
@@ -114,12 +113,12 @@ describe("Math operators", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WITH this
             CALL {
             WITH this
-            CALL apoc.util.validate(this.revenue IS NULL, 'Cannot %s %s to Nan', [\\"_MULTIPLY\\", $this_update_revenue_MULTIPLY])
-            CALL apoc.util.validate(this.revenue * $this_update_revenue_MULTIPLY > 2^63-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_MULTIPLY\\", \\"64\\"])
+            WITH this
+            WHERE apoc.util.validatePredicate(this.revenue IS NULL, 'Cannot %s %s to Nan', [\\"_MULTIPLY\\", $this_update_revenue_MULTIPLY]) AND apoc.util.validatePredicate(this.revenue IS NOT NULL AND this.revenue * $this_update_revenue_MULTIPLY > 2^63-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_MULTIPLY\\", \\"64\\"])
             SET this.revenue = this.revenue * $this_update_revenue_MULTIPLY
             RETURN this as this_revenue__MULTIPLY
             }
@@ -150,17 +149,16 @@ describe("Math operators", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Movie)
+            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             	WITH this_actedIn0, this
             	CALL {
             	WITH this_actedIn0
-            	CALL apoc.util.validate(this_actedIn0.viewers IS NULL, 'Cannot %s %s to Nan', [\\"_INCREMENT\\", $this_update_actedIn0_viewers_INCREMENT])
-            	CALL apoc.util.validate(this_actedIn0.viewers + $this_update_actedIn0_viewers_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_INCREMENT\\", \\"32\\"])
-            	CALL apoc.util.validate((this_actedIn0.viewers + $this_update_actedIn0_viewers_INCREMENT) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', [\\"_INCREMENT\\", \\"Int\\"])
+            	WITH this_actedIn0
+            	WHERE apoc.util.validatePredicate(this_actedIn0.viewers IS NULL, 'Cannot %s %s to Nan', [\\"_INCREMENT\\", $this_update_actedIn0_viewers_INCREMENT]) AND apoc.util.validatePredicate(this_actedIn0.viewers IS NOT NULL AND this_actedIn0.viewers + $this_update_actedIn0_viewers_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_INCREMENT\\", \\"32\\"])
             	SET this_actedIn0.viewers = this_actedIn0.viewers + $this_update_actedIn0_viewers_INCREMENT
             	RETURN this_actedIn0 as this_actedIn0_viewers__INCREMENT
             	}
@@ -169,7 +167,7 @@ describe("Math operators", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:\`ACTED_IN\`]->(update_this1:\`Movie\`)
+                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
                 WITH update_this1 { .viewers } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
@@ -208,16 +206,16 @@ describe("Math operators", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:\`ACTED_IN\`]->(this_actedIn0:Movie)
+            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             	WITH this_acted_in0_relationship, this
             	CALL {
             	WITH this_acted_in0_relationship
-            	CALL apoc.util.validate(this_acted_in0_relationship.pay IS NULL, 'Cannot %s %s to Nan', [\\"_ADD\\", $updateActors.args.update.actedIn[0].update.edge.pay_ADD])
-            	CALL apoc.util.validate(this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD > 2^63-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_ADD\\", \\"64\\"])
+            	WITH this_acted_in0_relationship
+            	WHERE apoc.util.validatePredicate(this_acted_in0_relationship.pay IS NULL, 'Cannot %s %s to Nan', [\\"_ADD\\", $updateActors.args.update.actedIn[0].update.edge.pay_ADD]) AND apoc.util.validatePredicate(this_acted_in0_relationship.pay IS NOT NULL AND this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD > 2^63-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_ADD\\", \\"64\\"])
             	SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD
             	RETURN this_acted_in0_relationship as this_acted_in0_relationship_pay__ADD
             	}
@@ -226,13 +224,13 @@ describe("Math operators", () => {
             WITH *
             CALL {
                 WITH this
-                MATCH (this)-[update_this0:\`ACTED_IN\`]->(update_this1:\`Movie\`)
+                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[update_this3:\`ACTED_IN\`]->(update_this4:\`Movie\`)
+                MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
                 WITH { pay: update_this3.pay } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -279,29 +277,28 @@ describe("Math operators", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH this
             CALL {
             	 WITH this
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_married_with0_relationship:\`MARRIED_WITH\`]->(this_marriedWith0:Star)
+            	MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
             	WITH this_marriedWith0, this
             	CALL {
             	WITH this_marriedWith0
-            	CALL apoc.util.validate(this_marriedWith0.marriageLength IS NULL, 'Cannot %s %s to Nan', [\\"_INCREMENT\\", $this_update_marriedWith0_marriageLength_INCREMENT])
-            	CALL apoc.util.validate(this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_INCREMENT\\", \\"32\\"])
-            	CALL apoc.util.validate((this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', [\\"_INCREMENT\\", \\"Int\\"])
+            	WITH this_marriedWith0
+            	WHERE apoc.util.validatePredicate(this_marriedWith0.marriageLength IS NULL, 'Cannot %s %s to Nan', [\\"_INCREMENT\\", $this_update_marriedWith0_marriageLength_INCREMENT]) AND apoc.util.validatePredicate(this_marriedWith0.marriageLength IS NOT NULL AND this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_INCREMENT\\", \\"32\\"])
             	SET this_marriedWith0.marriageLength = this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT
             	RETURN this_marriedWith0 as this_marriedWith0_marriageLength__INCREMENT
             	}
             	WITH this, this_marriedWith0
             	CALL {
             		WITH this_marriedWith0
-            		MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:\`MARRIED_WITH\`]-(:Actor)
+            		MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:MARRIED_WITH]-(:Actor)
             		WITH count(this_marriedWith0_marriedWith_Actor_unique) as c
-            		CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
+            		WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
             		RETURN c AS this_marriedWith0_marriedWith_Actor_unique_ignored
             	}
             	RETURN count(*) AS update_this_marriedWith0
@@ -313,7 +310,7 @@ describe("Math operators", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[update_this0:\`MARRIED_WITH\`]->(update_this1:\`Star\`)
+                    MATCH (this)-[update_this0:MARRIED_WITH]->(update_this1:Star)
                     WITH update_this1 { __resolveType: \\"Star\\", __id: id(this), .marriageLength } AS update_this1
                     RETURN update_this1 AS update_var2
                 }
@@ -352,28 +349,27 @@ describe("Math operators", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH this
             CALL {
             	 WITH this
             WITH this
             CALL {
             	WITH this
-            	MATCH (this)-[this_married_with0_relationship:\`MARRIED_WITH\`]->(this_marriedWith0:Star)
+            	MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
             	WITH this, this_marriedWith0
             	CALL {
             		WITH this_marriedWith0
-            		MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:\`MARRIED_WITH\`]-(:Actor)
+            		MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:MARRIED_WITH]-(:Actor)
             		WITH count(this_marriedWith0_marriedWith_Actor_unique) as c
-            		CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
+            		WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
             		RETURN c AS this_marriedWith0_marriedWith_Actor_unique_ignored
             	}
             	WITH this_marriedWith0, this
             	CALL {
             	WITH this_marriedWith0
-            	CALL apoc.util.validate(this_marriedWith0.marriageLength IS NULL, 'Cannot %s %s to Nan', [\\"_INCREMENT\\", $this_update_marriedWith0_on_Star_marriageLength_INCREMENT])
-            	CALL apoc.util.validate(this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_INCREMENT\\", \\"32\\"])
-            	CALL apoc.util.validate((this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', [\\"_INCREMENT\\", \\"Int\\"])
+            	WITH this_marriedWith0
+            	WHERE apoc.util.validatePredicate(this_marriedWith0.marriageLength IS NULL, 'Cannot %s %s to Nan', [\\"_INCREMENT\\", $this_update_marriedWith0_on_Star_marriageLength_INCREMENT]) AND apoc.util.validatePredicate(this_marriedWith0.marriageLength IS NOT NULL AND this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_INCREMENT\\", \\"32\\"])
             	SET this_marriedWith0.marriageLength = this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT
             	RETURN this_marriedWith0 as this_marriedWith0_marriageLength__INCREMENT
             	}
@@ -386,7 +382,7 @@ describe("Math operators", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[update_this0:\`MARRIED_WITH\`]->(update_this1:\`Star\`)
+                    MATCH (this)-[update_this0:MARRIED_WITH]->(update_this1:Star)
                     WITH update_this1 { __resolveType: \\"Star\\", __id: id(this), .marriageLength } AS update_this1
                     RETURN update_this1 AS update_var2
                 }

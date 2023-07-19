@@ -105,7 +105,7 @@ describe("connect-or-create with @id", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -155,7 +155,7 @@ describe("connect-or-create with @id", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toHaveLength(1);
@@ -194,7 +194,7 @@ describe("connect-or-create with @id", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toHaveLength(1);
@@ -237,7 +237,7 @@ describe("connect-or-create with @id", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -286,7 +286,7 @@ describe("connect-or-create with @id", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();

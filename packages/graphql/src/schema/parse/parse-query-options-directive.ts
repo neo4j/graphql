@@ -21,7 +21,7 @@ import type { DirectiveNode, ObjectFieldNode, ObjectTypeDefinitionNode, ObjectVa
 import * as neo4j from "neo4j-driver";
 import { QueryOptionsDirective } from "../../classes/QueryOptionsDirective";
 import { Neo4jGraphQLError } from "../../classes/Error";
-import parseValueNode from "../parse-value-node";
+import parseValueNode from "../../schema-model/parser/parse-value-node";
 
 export function parseQueryOptionsDirective({
     directive,

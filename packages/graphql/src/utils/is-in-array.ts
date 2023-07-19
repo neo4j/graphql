@@ -17,11 +17,7 @@
  * limitations under the License.
  */
 
-import type { Node, RelationField } from "@neo4j/graphql";
-import type { OGM } from "..";
-
-export { default as filterDocument } from "./filter-document";
-
-export function getReferenceNode(ogm: OGM, relationField: RelationField): Node | undefined {
-    return ogm.nodes.find((x) => x.name === relationField.typeMeta.name);
+/** Checks if element is in array, and checks its type */
+export function isInArray<T>(arr: Array<T> | ReadonlyArray<T>, element: unknown): element is T {
+    return arr.includes(element as any);
 }

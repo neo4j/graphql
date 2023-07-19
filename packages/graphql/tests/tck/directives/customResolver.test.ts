@@ -60,7 +60,7 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`User\`)
+                "MATCH (this:User)
                 RETURN this { .firstName } AS this"
             `);
 
@@ -81,7 +81,7 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`User\`)
+                "MATCH (this:User)
                 RETURN this { .firstName, .lastName, .fullName } AS this"
             `);
 
@@ -101,7 +101,7 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`User\`)
+                "MATCH (this:User)
                 RETURN this { .firstName, .fullName, .lastName } AS this"
             `);
 
@@ -120,7 +120,7 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`User\`)
+                "MATCH (this:User)
                 RETURN this { .fullName, .firstName, .lastName } AS this"
             `);
 
@@ -163,7 +163,7 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`User\`)
+                "MATCH (this:User)
                 RETURN this { .firstName, .fullName } AS this"
             `);
 
@@ -182,7 +182,7 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`User\`)
+                "MATCH (this:User)
                 RETURN this { .fullName } AS this"
             `);
 
@@ -245,13 +245,13 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`User\`)
+                "MATCH (this:User)
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:\`LIVES_AT\`]->(this1:\`Address\`)
+                    MATCH (this)-[this0:LIVES_AT]->(this1:Address)
                     CALL {
                         WITH this1
-                        MATCH (this1)-[this2:\`IN_CITY\`]->(this3:\`City\`)
+                        MATCH (this1)-[this2:IN_CITY]->(this3:City)
                         WITH this3 { .name, .population } AS this3
                         RETURN head(collect(this3)) AS var4
                     }
@@ -276,7 +276,7 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`User\`)
+                "MATCH (this:User)
                 RETURN this { .firstName } AS this"
             `);
 
@@ -301,13 +301,13 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`User\`)
+                "MATCH (this:User)
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:\`LIVES_AT\`]->(this1:\`Address\`)
+                    MATCH (this)-[this0:LIVES_AT]->(this1:Address)
                     CALL {
                         WITH this1
-                        MATCH (this1)-[this2:\`IN_CITY\`]->(this3:\`City\`)
+                        MATCH (this1)-[this2:IN_CITY]->(this3:City)
                         WITH this3 { .population, .name } AS this3
                         RETURN head(collect(this3)) AS var4
                     }
@@ -332,13 +332,13 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`User\`)
+                "MATCH (this:User)
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:\`LIVES_AT\`]->(this1:\`Address\`)
+                    MATCH (this)-[this0:LIVES_AT]->(this1:Address)
                     CALL {
                         WITH this1
-                        MATCH (this1)-[this2:\`IN_CITY\`]->(this3:\`City\`)
+                        MATCH (this1)-[this2:IN_CITY]->(this3:City)
                         WITH this3 { .name, .population } AS this3
                         RETURN head(collect(this3)) AS var4
                     }
@@ -410,17 +410,17 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Author\`)
+                "MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
                         WITH *
-                        MATCH (this)-[this0:\`WROTE\`]->(this1:\`Book\`)
+                        MATCH (this)-[this0:WROTE]->(this1:Book)
                         WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title } AS this1
                         RETURN this1 AS var2
                         UNION
                         WITH *
-                        MATCH (this)-[this3:\`WROTE\`]->(this4:\`Journal\`)
+                        MATCH (this)-[this3:WROTE]->(this4:Journal)
                         WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject } AS this4
                         RETURN this4 AS var2
                     }
@@ -445,7 +445,7 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Author\`)
+                "MATCH (this:Author)
                 RETURN this { .name } AS this"
             `);
 
@@ -469,17 +469,17 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Author\`)
+                "MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
                         WITH *
-                        MATCH (this)-[this0:\`WROTE\`]->(this1:\`Book\`)
+                        MATCH (this)-[this0:WROTE]->(this1:Book)
                         WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title } AS this1
                         RETURN this1 AS var2
                         UNION
                         WITH *
-                        MATCH (this)-[this3:\`WROTE\`]->(this4:\`Journal\`)
+                        MATCH (this)-[this3:WROTE]->(this4:Journal)
                         WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject } AS this4
                         RETURN this4 AS var2
                     }
@@ -504,17 +504,17 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Author\`)
+                "MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
                         WITH *
-                        MATCH (this)-[this0:\`WROTE\`]->(this1:\`Book\`)
+                        MATCH (this)-[this0:WROTE]->(this1:Book)
                         WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title } AS this1
                         RETURN this1 AS var2
                         UNION
                         WITH *
-                        MATCH (this)-[this3:\`WROTE\`]->(this4:\`Journal\`)
+                        MATCH (this)-[this3:WROTE]->(this4:Journal)
                         WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject } AS this4
                         RETURN this4 AS var2
                     }
@@ -591,17 +591,17 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Author\`)
+                "MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
                         WITH *
-                        MATCH (this)-[this0:\`WROTE\`]->(this1:\`Book\`)
+                        MATCH (this)-[this0:WROTE]->(this1:Book)
                         WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title, .publicationYear } AS this1
                         RETURN this1 AS var2
                         UNION
                         WITH *
-                        MATCH (this)-[this3:\`WROTE\`]->(this4:\`Journal\`)
+                        MATCH (this)-[this3:WROTE]->(this4:Journal)
                         WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject, .publicationYear } AS this4
                         RETURN this4 AS var2
                     }
@@ -626,7 +626,7 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Author\`)
+                "MATCH (this:Author)
                 RETURN this { .name } AS this"
             `);
 
@@ -650,17 +650,17 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Author\`)
+                "MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
                         WITH *
-                        MATCH (this)-[this0:\`WROTE\`]->(this1:\`Book\`)
+                        MATCH (this)-[this0:WROTE]->(this1:Book)
                         WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title, .publicationYear } AS this1
                         RETURN this1 AS var2
                         UNION
                         WITH *
-                        MATCH (this)-[this3:\`WROTE\`]->(this4:\`Journal\`)
+                        MATCH (this)-[this3:WROTE]->(this4:Journal)
                         WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject, .publicationYear } AS this4
                         RETURN this4 AS var2
                     }
@@ -685,17 +685,17 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Author\`)
+                "MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
                         WITH *
-                        MATCH (this)-[this0:\`WROTE\`]->(this1:\`Book\`)
+                        MATCH (this)-[this0:WROTE]->(this1:Book)
                         WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title, .publicationYear } AS this1
                         RETURN this1 AS var2
                         UNION
                         WITH *
-                        MATCH (this)-[this3:\`WROTE\`]->(this4:\`Journal\`)
+                        MATCH (this)-[this3:WROTE]->(this4:Journal)
                         WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject, .publicationYear } AS this4
                         RETURN this4 AS var2
                     }
