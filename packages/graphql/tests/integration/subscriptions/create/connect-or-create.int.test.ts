@@ -26,7 +26,7 @@ import { Neo4jGraphQL } from "../../../../src";
 import { getQuerySource } from "../../../utils/get-query-source";
 import { UniqueType } from "../../../utils/graphql-types";
 import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src/types";
-import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 
 describe("Create -> ConnectOrCreate", () => {
     let driver: Driver;
@@ -64,7 +64,7 @@ describe("Create -> ConnectOrCreate", () => {
 
     beforeEach(async () => {
         session = await neo4j.getSession();
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
         neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: plugin } });
     });
 

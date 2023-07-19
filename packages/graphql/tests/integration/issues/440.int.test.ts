@@ -23,7 +23,7 @@ import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("https://github.com/neo4j/graphql/issues/440", () => {
     let driver: Driver;
@@ -189,7 +189,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             typeDefs,
             driver,
             features: {
-                subscriptions: new TestSubscriptionsMechanism(),
+                subscriptions: new TestSubscriptionsEngine(),
             },
         });
         const videoID = generate({ charset: "alphabetic" });

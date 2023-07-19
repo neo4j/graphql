@@ -22,7 +22,7 @@ import type { GraphQLResolveInfo } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jError } from "neo4j-driver";
-import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
+import type { Node, Relationship } from "../../classes";
 import type { Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import { getNeo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import { Executor } from "../../classes/Executor";
@@ -38,7 +38,6 @@ const debug = Debug(DEBUG_GRAPHQL);
 
 export type WrapResolverArguments = {
     driver?: Driver;
-    config: Neo4jGraphQLConfig;
     nodes: Node[];
     relationships: Relationship[];
     jwtPayloadFieldsMap?: Map<string, string>;

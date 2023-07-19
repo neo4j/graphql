@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("auth/bind", () => {
@@ -83,7 +83,7 @@ describe("auth/bind", () => {
                 }
             `;
 
-            const plugin = new TestSubscriptionsMechanism();
+            const plugin = new TestSubscriptionsEngine();
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,

@@ -301,19 +301,6 @@ export interface CypherQueryOptions {
     replan?: "default" | "force" | "skip";
 }
 
-/** The startup validation checks to run */
-export interface StartupValidationOptions {
-    typeDefs?: boolean;
-    resolvers?: boolean;
-    noDuplicateRelationshipFields?: boolean;
-}
-
-/**
- * Configure which startup validation checks should be run.
- * Optionally, a boolean can be passed to toggle all these options.
- */
-export type StartupValidationConfig = StartupValidationOptions | boolean;
-
 /** Input field for graphql-compose */
 export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
 

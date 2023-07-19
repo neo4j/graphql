@@ -22,14 +22,14 @@ import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src";
 import { UniqueType } from "../../../utils/graphql-types";
-import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import Neo4j from "../../neo4j";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("Subscriptions delete", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let plugin: TestSubscriptionsMechanism;
+    let plugin: TestSubscriptionsEngine;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -37,7 +37,7 @@ describe("Subscriptions delete", () => {
     });
 
     beforeEach(() => {
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
     });
 
     afterAll(async () => {

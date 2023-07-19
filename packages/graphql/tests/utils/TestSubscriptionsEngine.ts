@@ -16,13 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { EventEmitter } from "events";
-import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
+import type { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "../../src/types";
 
-describe("Neo4jGraphQLSubscriptionsDefaultMechanism", () => {
-    test("should construct without arguments", () => {
-        const plugin = new Neo4jGraphQLSubscriptionsDefaultMechanism();
-        expect(plugin.events).toBeInstanceOf(EventEmitter);
-    });
-});
+export class TestSubscriptionsEngine implements Neo4jGraphQLSubscriptionsEngine {
+    public events = new EventEmitter();
+
+    public eventList: SubscriptionsEvent[] = [];
+
+    // eslint-disable-next-line @typescript-eslint/require-await
+    async publish(eventMeta: SubscriptionsEvent): Promise<void> {
+        this.eventList.push(eventMeta);
+        this.events.emit(eventMeta.event, eventMeta);
+    }
+}

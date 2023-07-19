@@ -23,7 +23,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../../../src";
 import { UniqueType } from "../../../utils/graphql-types";
-import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import Neo4j from "../../neo4j";
 
 describe("Subscriptions update", () => {
@@ -31,7 +31,7 @@ describe("Subscriptions update", () => {
     let neo4j: Neo4j;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
-    let plugin: TestSubscriptionsMechanism;
+    let plugin: TestSubscriptionsEngine;
 
     let typeActor: UniqueType;
     let typeMovie: UniqueType;
@@ -47,7 +47,7 @@ describe("Subscriptions update", () => {
         typeActor = new UniqueType("Actor");
         typeMovie = new UniqueType("Movie");
 
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
         const typeDefs = gql`
             type ${typeActor.name} {
                 name: String!
