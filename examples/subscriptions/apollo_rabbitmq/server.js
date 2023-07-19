@@ -27,7 +27,7 @@ const { useServer } = require("graphql-ws/lib/use/ws");
 const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
 const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
-const { Neo4jGraphQLSubscriptionsEngineAMQP } = require("@neo4j/graphql-subscriptions-engine-amqp");
+const { Neo4jGraphQLSubscriptionsAMQPEngine } = require("@neo4j/graphql-subscriptions-engine-amqp");
 
 const NEO4J_URL = "bolt://localhost:7687";
 const NEO4J_USER = "neo4j";
@@ -35,7 +35,7 @@ const NEO4J_PASSWORD = "password";
 
 const AMQP_URI = "amqp://localhost";
 
-const subscriptionsEngine = new Neo4jGraphQLSubscriptionsEngineAMQP({
+const subscriptionsEngine = new Neo4jGraphQLSubscriptionsAMQPEngine({
     connection: AMQP_URI,
 });
 

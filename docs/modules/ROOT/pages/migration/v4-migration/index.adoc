@@ -122,7 +122,7 @@ To:
 
 [source, javascript, indent=0]
 ----
-import { Neo4jGraphQLSubscriptionsEngineAMQP } from "@neo4j/graphql-subscriptions-engine-amqp";
+import { Neo4jGraphQLSubscriptionsAMQPEngine } from "@neo4j/graphql-subscriptions-engine-amqp";
 ----
 
 Then change the instantiations from:
@@ -142,7 +142,7 @@ To:
 
 [source, javascript, indent=0]
 ----
-const subscriptionsEngine = new Neo4jGraphQLSubscriptionsEngineAMQP({
+const subscriptionsEngine = new Neo4jGraphQLSubscriptionsAMQPEngine({
     connection: {
         hostname: "localhost",
         username: "guest",
