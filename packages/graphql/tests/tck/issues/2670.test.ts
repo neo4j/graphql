@@ -64,13 +64,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH *
@@ -104,13 +104,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) < $param0 AS var4
                 }
                 WITH *
@@ -144,13 +144,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) > $param0 AS var4
                 }
                 WITH *
@@ -186,13 +186,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN min(size(this3.title)) = $param0 AS var4
                 }
                 WITH *
@@ -228,13 +228,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN avg(size(this3.title)) = $param0 AS var4
                 }
                 WITH *
@@ -265,13 +265,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN max(this2.intValue) < $param0 AS var4
                 }
                 WITH *
@@ -307,13 +307,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN min(this2.intValue) = $param0 AS var4
                 }
                 WITH *
@@ -347,13 +347,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH *
@@ -387,13 +387,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH *
@@ -427,13 +427,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH *
@@ -442,10 +442,10 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this6:\`IN_GENRE\`]-(this7:\`Movie\`)
+                    MATCH (this1)<-[this6:IN_GENRE]-(this7:Movie)
                     RETURN count(this7) = $param1 AS var8
                 }
                 WITH *
@@ -483,13 +483,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH *
@@ -523,13 +523,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) = $param0 AS var4
                 }
                 WITH *
@@ -572,18 +572,18 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) = $param0 AS var4
                 }
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this5:\`IN_GENRE\`]-(this6:\`Series\`)
+                    MATCH (this1)<-[this5:IN_GENRE]-(this6:Series)
                     RETURN min(size(this6.name)) = $param1 AS var7
                 }
                 WITH *
@@ -630,18 +630,18 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) = $param0 AS var4
                 }
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this5:\`IN_GENRE\`]-(this6:\`Series\`)
+                    MATCH (this1)<-[this5:IN_GENRE]-(this6:Series)
                     RETURN min(size(this6.name)) = $param1 AS var7
                 }
                 WITH *
@@ -688,18 +688,18 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this2:\`IN_GENRE\`]-(this3:\`Movie\`)
+                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) = $param0 AS var4
                 }
                 CALL {
                     WITH this1
-                    MATCH (this1)<-[this5:\`IN_GENRE\`]-(this6:\`Series\`)
+                    MATCH (this1)<-[this5:IN_GENRE]-(this6:Series)
                     RETURN min(size(this6.name)) = $param1 AS var7
                 }
                 WITH *
@@ -742,18 +742,18 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`IN_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 RETURN count(this1) = $param0 AS var2
             }
             CALL {
                 WITH this
-                MATCH (this)-[this3:\`IN_GENRE\`]->(this4:\`Genre\`)
+                MATCH (this)-[this3:IN_GENRE]->(this4:Genre)
                 CALL {
                     WITH this4
-                    MATCH (this4)<-[this5:\`IN_GENRE\`]-(this6:\`Movie\`)
+                    MATCH (this4)<-[this5:IN_GENRE]-(this6:Movie)
                     RETURN count(this6) = $param1 AS var7
                 }
                 WITH *

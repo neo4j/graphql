@@ -41,20 +41,18 @@ import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPoi
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import { isRootType } from "../../utils/is-root-type";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
-import type { ValidationConfig } from "../../classes/Neo4jGraphQL";
-import { defaultValidationConfig } from "../../classes/Neo4jGraphQL";
 import type { Neo4jFeaturesSettings } from "../../types";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
         .filter((definition) => {
             if (
-                definition.kind === "ObjectTypeDefinition" ||
-                definition.kind === "ScalarTypeDefinition" ||
-                definition.kind === "InterfaceTypeDefinition" ||
-                definition.kind === "UnionTypeDefinition" ||
-                definition.kind === "EnumTypeDefinition" ||
-                definition.kind === "InputObjectTypeDefinition"
+                definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
+                definition.kind === Kind.SCALAR_TYPE_DEFINITION ||
+                definition.kind === Kind.INTERFACE_TYPE_DEFINITION ||
+                definition.kind === Kind.UNION_TYPE_DEFINITION ||
+                definition.kind === Kind.ENUM_TYPE_DEFINITION ||
+                definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION
             ) {
                 RESERVED_TYPE_NAMES.forEach((reservedName) => {
                     if (reservedName.regex.test(definition.name.value)) {
@@ -63,7 +61,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                 });
             }
 
-            if (definition.kind === "ObjectTypeDefinition") {
+            if (definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
                 if (!isRootType(definition)) {
                     return true;
                 }
@@ -147,7 +145,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
     return {
         ...document,
         definitions: document.definitions.reduce((res: DefinitionNode[], def) => {
-            if (def.kind === "InputObjectTypeDefinition") {
+            if (def.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION) {
                 const fields = filterInputTypes(def.fields);
 
                 if (!fields?.length) {
@@ -163,7 +161,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                 ];
             }
 
-            if (def.kind === "ObjectTypeDefinition" || def.kind === "InterfaceTypeDefinition") {
+            if (def.kind === Kind.OBJECT_TYPE_DEFINITION || def.kind === Kind.INTERFACE_TYPE_DEFINITION) {
                 const fields = filterFields(def.fields, features);
 
                 if (!fields?.length) {
@@ -194,7 +192,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                 ];
             }
 
-            if (def.kind === "SchemaExtension") {
+            if (def.kind === Kind.SCHEMA_EXTENSION) {
                 if (
                     def.directives?.some((x) => ["authentication"].includes(x.name.value)) &&
                     !features?.authorization
@@ -220,13 +218,11 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
 
 function getBaseSchema({
     document,
-    validateTypeDefs = true,
     features,
     additionalDirectives = [],
     additionalTypes = [],
 }: {
     document: DocumentNode;
-    validateTypeDefs: boolean;
     features: Neo4jFeaturesSettings | undefined;
     additionalDirectives: Array<GraphQLDirective>;
     additionalTypes: Array<GraphQLNamedType>;
@@ -248,18 +244,16 @@ function getBaseSchema({
         ],
     });
 
-    return extendSchema(schemaToExtend, doc, { assumeValid: !validateTypeDefs });
+    return extendSchema(schemaToExtend, doc);
 }
 
 function validateDocument({
     document,
-    validationConfig = defaultValidationConfig,
     features,
     additionalDirectives = [],
     additionalTypes = [],
 }: {
     document: DocumentNode;
-    validationConfig?: ValidationConfig;
     features: Neo4jFeaturesSettings | undefined;
     additionalDirectives?: Array<GraphQLDirective>;
     additionalTypes?: Array<GraphQLNamedType>;
@@ -267,18 +261,17 @@ function validateDocument({
     const schema = getBaseSchema({
         document,
         features,
-        validateTypeDefs: validationConfig.validateTypeDefs,
         additionalDirectives,
         additionalTypes,
     });
-    if (validationConfig.validateTypeDefs) {
-        const errors = validateSchema(schema);
-        const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
-        if (filteredErrors.length) {
-            throw new Error(filteredErrors.join("\n"));
-        }
+
+    const errors = validateSchema(schema);
+    const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
+    if (filteredErrors.length) {
+        throw new Error(filteredErrors.join("\n"));
     }
-    validateSchemaCustomizations({ document, schema, validationConfig });
+
+    validateSchemaCustomizations({ document, schema });
 }
 
 export default validateDocument;

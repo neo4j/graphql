@@ -25,11 +25,11 @@ However, when _Client A_ triggers the mutation, it may query a different server.
 The change happens successfully in the database, and any client connected to the same server will receive the subscription event, however, _Client A_
 will **not** receive any update, as the server it's connected to will not get notified of any mutation.
 
-This is the default behavior of the subscription mechanism provided by the library, making it unsuitable for use in an horizontally scaled environment.
+This is the default behavior of the subscription engine provided by the library, making it unsuitable for use in an horizontally scaled environment.
 
 == Using PubSub
 One solution to this problem (as well as how `@neo4j/graphql` is intended to work) is to use a PubSub pattern with an external broker to broadcast events through multiple instances. 
-This can be achieved through different xref::subscriptions/mechanisms.adoc[Subscription Mechanisms].
+This can be achieved through different xref::subscriptions/engines.adoc[Subscription Mechanisms].
 
 Following the previous example, using an intermediate broker to broadcast the events across all instances, the infrastructure would look like this:
 
@@ -45,5 +45,5 @@ The events are as follow:
 
 [NOTE]
 ====
-You can find examples of this pattern with `@neo4j/graphql` on xref::subscriptions/mechanisms.adoc[Subscription Mechanisms].
+You can find examples of this pattern with `@neo4j/graphql` on xref::subscriptions/engines.adoc[Subscription Mechanisms].
 ====

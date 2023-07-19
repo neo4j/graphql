@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
@@ -27,10 +27,10 @@ import { createBearerToken } from "../../utils/create-bearer-token";
 describe("Subscriptions metadata on create", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
-    let plugin: TestSubscriptionsMechanism;
+    let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
         typeDefs = gql`
             type Actor {
                 id: String!
@@ -91,7 +91,7 @@ describe("Subscriptions metadata on create", () => {
             RETURN this1, meta AS this1_meta
             }
             WITH this0, this1, this0_meta + this1_meta AS meta
-            RETURN [ this0 { .id }, this1 { .id } ] AS data, meta"
+            RETURN [this0 { .id }, this1 { .id }] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

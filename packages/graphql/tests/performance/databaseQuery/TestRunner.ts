@@ -22,7 +22,6 @@ import { gql } from "graphql-tag";
 import type { Driver, ProfiledPlan } from "neo4j-driver";
 import type { DocumentNode } from "graphql";
 import type * as Performance from "../types";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { translateQuery } from "../../tck/utils/tck-test-utils";
 import type Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
 
@@ -78,10 +77,7 @@ export class TestRunner {
     }
 
     private async runPerformanceTest(query: DocumentNode): Promise<Performance.Result> {
-        const req = createJwtRequest("secret", {});
-        const cypherQuery = await translateQuery(this.schema, query, {
-            req,
-        });
+        const cypherQuery = await translateQuery(this.schema, query);
 
         return this.runCypherQuery(cypherQuery.cypher, cypherQuery.params);
     }

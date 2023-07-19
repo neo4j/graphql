@@ -151,7 +151,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             })
         ).resolves.not.toThrow();
@@ -189,8 +189,8 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
             schema,
             source: mutation,
             contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
+                executionContext: driver,
+                sessionConfig: { database: databaseName },
             },
             variableValues: {
                 orderNo,
@@ -207,8 +207,8 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
             schema,
             source: mutation,
             contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
+                executionContext: driver,
+                sessionConfig: { database: databaseName },
             },
             variableValues: {
                 orderNo,

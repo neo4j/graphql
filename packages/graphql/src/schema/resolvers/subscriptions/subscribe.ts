@@ -89,12 +89,11 @@ export function generateSubscribeMethod({
                 if (!isOfRelevantType) {
                     return false;
                 }
+                const relationFieldName = node.relationFields.find(
+                    (r) => r.typeUnescaped === relationEventPayload.relationshipName
+                )?.fieldName;
 
-                const relationFieldName = node.relationFields.find((r) => {
-                    return r.typeUnescaped === relationEventPayload.relationshipName;
-                })?.fieldName;
-
-                const result =
+                return (
                     !!relationFieldName &&
                     subscriptionAuthorization({
                         event: data[0],
@@ -104,9 +103,8 @@ export function generateSubscribeMethod({
                         relationshipFields,
                         context,
                     }) &&
-                    subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields });
-
-                return result;
+                    subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields })
+                );
             });
         }
 

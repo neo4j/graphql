@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({

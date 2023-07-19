@@ -75,7 +75,7 @@ describe("Cypher sort tests", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Movie\`)
+                "MATCH (this:Movie)
                 WITH *
                 ORDER BY this.id DESC
                 RETURN this { .id, .title } AS this"
@@ -97,7 +97,7 @@ describe("Cypher sort tests", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Movie\`)
+                "MATCH (this:Movie)
                 WITH *
                 ORDER BY this.id DESC
                 RETURN this { aliased: this.id, .title, .id } AS this"
@@ -118,7 +118,7 @@ describe("Cypher sort tests", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Movie\`)
+                "MATCH (this:Movie)
                 WITH *
                 ORDER BY this.id DESC
                 RETURN this { .title, .id } AS this"
@@ -140,7 +140,7 @@ describe("Cypher sort tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -173,7 +173,7 @@ describe("Cypher sort tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WITH *
             ORDER BY this.id DESC, this.title ASC
             RETURN this { .id, .title } AS this"
@@ -200,7 +200,7 @@ describe("Cypher sort tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
             ORDER BY this.id DESC, this.title ASC
@@ -238,10 +238,10 @@ describe("Cypher sort tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`HAS_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
                 WITH this1 { .name } AS this1
                 ORDER BY this1.name DESC
                 RETURN collect(this1) AS var2
@@ -266,10 +266,10 @@ describe("Cypher sort tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`HAS_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
                 WITH this1 { .name } AS this1
                 ORDER BY this1.name ASC
                 RETURN collect(this1) AS var2
@@ -295,10 +295,10 @@ describe("Cypher sort tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`HAS_GENRE\`]->(this1:\`Genre\`)
+                MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
                 CALL {
                     WITH this1
                     CALL {

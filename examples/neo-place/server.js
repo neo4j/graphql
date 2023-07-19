@@ -8,11 +8,10 @@ const { useServer } = require("graphql-ws/lib/use/ws");
 const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
 const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
-const { Neo4jGraphQLAuthJWTPlugin } = require("@neo4j/graphql-plugin-auth");
 
 const setupMap = require("./map-setup");
 const { getDriver } = require("./get-driver");
-const { createPlugin } = require("./create-plugin");
+const { createEngine } = require("./create-engine");
 
 // Load type definitions
 const typeDefs = fs.readFileSync(path.join(__dirname, "typedefs.graphql"), "utf-8");
@@ -20,16 +19,14 @@ const typeDefs = fs.readFileSync(path.join(__dirname, "typedefs.graphql"), "utf-
 async function main() {
     const driver = await getDriver();
 
-    const plugin = await createPlugin();
+    const engine = await createEngine();
 
     const neoSchema = new Neo4jGraphQL({
         typeDefs: typeDefs,
         driver: driver,
-        plugins: {
-            subscriptions: plugin,
-            auth: new Neo4jGraphQLAuthJWTPlugin({
-                secret: "super-secret42",
-            }),
+        features: {
+            authorization: { key: "super-secret42" },
+            subscriptions: engine || true
         },
     });
 
@@ -64,7 +61,7 @@ async function main() {
 
     const server = new ApolloServer({
         schema,
-        context: ({ req }) => ({ req }),
+        context: ({ req }) => ({ token: req.headers.authorization }),
         plugins: [
             ApolloServerPluginDrainHttpServer({
                 httpServer,

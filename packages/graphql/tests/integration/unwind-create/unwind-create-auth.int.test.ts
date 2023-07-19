@@ -93,7 +93,7 @@ describe("unwind-create field-level auth rules", () => {
                     schema: await neoSchema.getSchema(),
                     source: query,
                     variableValues: { id, id2 },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -151,7 +151,7 @@ describe("unwind-create field-level auth rules", () => {
                     schema: await neoSchema.getSchema(),
                     source: query,
                     variableValues: { id, name },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -223,7 +223,7 @@ describe("unwind-create field-level auth rules", () => {
                     schema: await neoSchema.getSchema(),
                     source: query,
                     variableValues: { id, name },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -286,7 +286,7 @@ describe("unwind-create field-level auth rules", () => {
                     schema: await neoSchema.getSchema(),
                     source: query,
                     variableValues: { id, id2 },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -344,7 +344,7 @@ describe("unwind-create field-level auth rules", () => {
                     schema: await neoSchema.getSchema(),
                     source: query,
                     variableValues: { name },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();

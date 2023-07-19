@@ -18,26 +18,15 @@
  */
 
 import type { DocumentNode, GraphQLSchema } from "graphql";
-import type { ValidationConfig } from "../../classes/Neo4jGraphQL";
 import { getDefinitionNodes } from "../get-definition-nodes";
 import { validateCustomResolverRequires } from "./validate-custom-resolver-requires";
 import { validateDuplicateRelationshipFields } from "./validate-duplicate-relationship-fields";
 
-export function validateSchemaCustomizations({
-    document,
-    schema,
-    validationConfig,
-}: {
-    document: DocumentNode;
-    schema: GraphQLSchema;
-    validationConfig: ValidationConfig;
-}) {
+export function validateSchemaCustomizations({ document, schema }: { document: DocumentNode; schema: GraphQLSchema }) {
     const definitionNodes = getDefinitionNodes(document);
 
     for (const objectType of definitionNodes.objectTypes) {
         validateCustomResolverRequires(objectType, schema);
-        if (validationConfig.validateDuplicateRelationshipFields) {
-            validateDuplicateRelationshipFields(objectType);
-        }
+        validateDuplicateRelationshipFields(objectType);
     }
 }

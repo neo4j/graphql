@@ -44,7 +44,8 @@ neoSchema = new Neo4jGraphQL({
 
 [subscriptions-options]
 === Subscription options
-Subscriptions are no longer set as plugins, but as features.
+
+Subscriptions are no longer configured as a plugin, but as a feature within the `features` option.
 
 This means that, instead of:
 
@@ -69,37 +70,92 @@ const neoSchema = new Neo4jGraphQL({
 ```
 
 ==== Default subscriptions
+
 The class `Neo4jGraphQLSubscriptionsSingleInstancePlugin` is no longer exported. 
 Instead, the default subscriptions behavior can be enabled by setting the `subscriptions` option to `true` .
 
 Instead of:
 
-```javascript
+[source, javascript, indent=0]
+----
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     plugin: {
         subscriptions: new Neo4jGraphQLSubscriptionsSingleInstancePlugin(),
     },
 });
-```
+----
 
 The default subscriptions can be enabled with:
 
-```javascript
+[source, javascript, indent=0]
+----
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     features: {
         subscriptions: true
     },
 });
-```
+----
+
+==== Neo4j GraphQL Subscriptions AMQP package
+
+The name of the interface underlying the Subscriptions system has changed from `Neo4jGraphQLSubscriptionsPlugin` to `Neo4jGraphQLSubscriptionsEngine`. 
+If you were previously using the `@neo4j/graphql-plugins-subscriptions-amqp` package, this has been changed to `@neo4j/graphql-amqp-subscriptions-engine` to reflect this underlying change.
+
+Please uninstall the previous package and install the new one:
+
+[source, bash, indent=0]
+----
+npm uninstall @neo4j/graphql-plugins-subscriptions-amqp
+npm install @neo4j/graphql-amqp-subscriptions-engine
+----
+
+Please then update any imports from:
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQLSubscriptionsAMQPPlugin } from "@neo4j/graphql-plugins-subscriptions-amqp";
+----
+
+To:
+
+[source, javascript, indent=0]
+----
+import { Neo4jGraphQLAMQPSubscriptionsEngine } from "@neo4j/graphql-amqp-subscriptions-engine";
+----
+
+Then change the instantiations from:
+
+[source, javascript, indent=0]
+----
+const plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
+    connection: {
+        hostname: "localhost",
+        username: "guest",
+        password: "guest",
+    },
+});
+----
+
+To:
+
+[source, javascript, indent=0]
+----
+const subscriptionsEngine = new Neo4jGraphQLAMQPSubscriptionsEngine({
+    connection: {
+        hostname: "localhost",
+        username: "guest",
+        password: "guest",
+    },
+});
+----
 
 ==== Custom Subscription Plugins
 The underlying subscription system has not changed.
-Custom behavior can be implemented the same way, by creating a class implementing the interface described in xref::subscriptions/mechanisms.adoc#custom-subscription[Subscription Mechanisms].
+Custom behavior can be implemented the same way, by creating a class implementing the interface described in xref::subscriptions/engines.adoc#custom-subscription[Subscriptions Engines].
 
-However, if using TypeScript, the exported interface to implement these classes has been renamed from `Neo4jGraphQLSubscriptionsPlugin` to `Neo4jGraphQLSubscriptionsMechanism`.
-
+However, if using TypeScript, the exported interface to implement these classes has been renamed from `Neo4jGraphQLSubscriptionsPlugin` to `Neo4jGraphQLSubscriptionsEngine`.
 
 == Updated Directives
 
@@ -204,28 +260,6 @@ new Neo4jGraphQL({
     }
   }
 });
-----
-
-[[customResolver-checks]]
-==== Checks for custom resolvers
-
-Previously, if no custom resolver was specified for a `@computed` field when creating an instance of Neo4jGraphQL, no errors would be thrown when generating the schema.
-However, it is likely that the lack of a custom resolver would lead to errors at runtime. It is preferable to fail fast in this case as it is easier to debug and makes it less likely that bugs will make it into production.
-
-As a result, checks are now performed to ensure that every `@customResolver` field has a custom resolver provided. If not the library will throw an error during schema generation.
-
-These checks may not always be required or desirable. If this is the case, they can be disabled using the new xref::migration/v4-migration.adoc#startup-validation[`startupValidation`] config option:
-
-[source, javascript, indent=0]
-----
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    config: {
-        startupValidation: {
-          resolvers: false
-        },
-    },
-})
 ----
 
 ==== `requires` changes
@@ -645,17 +679,13 @@ type Person {
 
 In this example, there are multiple fields in the `Team` type which have the same `Person` type, the same `@relationship` type and ("PLAYS_IN") direction (IN). This is an issue when returning data from the database, as there would be no difference between `player1`, `player2` and `backupPlayers`. Selecting these fields would then return the same data.
 
-To disable checks for duplicate relationship fields, the `noDuplicateRelationshipFields` config option should be used:
+These checks can be disabled by disabling all validation in the library, however, this is not recommended unless in production with 100% confidence of type definitions input.
 
 [source, javascript, indent=0]
 ----
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
-    config: {
-        startupValidation: {
-            noDuplicateRelationshipFields: false,
-        },
-    },
+    validate: false,
 });
 ----
 
@@ -700,63 +730,20 @@ type Actor {
 [[startup-validation]]
 === Startup validation
 
-In version 4.0.0, startup xref::migration/v4-migration.adoc#customResolver-checks[checks for custom resolvers], and checks for duplicate relationship fields have been added. As a result, a new configuration option has been added that can disable these checks.
-This new option has been combined with the option to `skipValidateTypeDefs`. As a result, `skipValidateTypeDefs` will be removed and replaced by `startupValidation`.
+The argument `config.skipValidateTypeDefs` has been moved to the top-level of the constructor input and renamed `validate`, which defaults to `true`.
 
-To only disable strict type definition validation, the following config option should be used:
-
-[source, javascript, indent=0]
-----
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    config: {
-        startupValidation: {
-          typeDefs: false
-        },
-    },
-})
-----
-
-To only disable checks for custom resolvers, the following config option should be used:
+To disable type definition validation, the following config option should be used:
 
 [source, javascript, indent=0]
 ----
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
-    config: {
-        startupValidation: {
-          resolvers: false
-        },
-    },
+    validate: false,
 })
 ----
 
-To only disable checks for duplicate relationship fields, the following config option should be used:
-
-[source, javascript, indent=0]
-----
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    config: {
-        startupValidation: {
-            noDuplicateRelationshipFields: false
-        },
-    },
-})
-----
-
-
-To disable all startup checks, the following config option should be used:
-
-[source, javascript, indent=0]
-----
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    config: {
-        startupValidation: false,
-    },
-})
-----
+If you started using the `config.startupValidation` option, this has also been rolled into the same `validate` setting for simplicity.
+The `resolvers` option of this is now just a warning, and `noDuplicateRelationshipFields` is now a mandatory check rolled into `validate`.
 
 [[opt-in-aggregation]]
 === Opt-in Aggregation
@@ -778,3 +765,168 @@ type Actor @query(aggregate: true) {
 }
 ----
 
+=== Cypher query options
+
+If you had a need to pass in Cypher query options for query tuning, this interface has been changed.
+
+The config option `queryOptions` has now become `cypherQueryOptions` inside the context function, and it now accepts simple strings instead of enums.
+
+The following is an example before the change:
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL, CypherRuntime } = require("@neo4j/graphql");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String!
+    }
+`;
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        queryOptions: {
+            runtime: CypherRuntime.INTERPRETED,
+        },
+    },
+});
+----
+
+This is what is required after the change:
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String!
+    }
+`;
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+});
+
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
+});
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ cypherQueryOptions: { runtime: "interpreted" }}),
+});
+----
+
+This reflects the fact that the Cypher query options are set on a per-request basis.
+
+=== Session configuration
+
+Session configuration is now available only in the context under the `sessionConfig` key.
+
+This was previously `driverConfig`, available in both the constructor and in the context:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        driverConfig: {
+            database: "different-db"
+        },
+    },
+})
+----
+
+The new `sessionConfig` key is only available in the context:
+
+[source, javascript, indent=0]
+----
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
+
+const typeDefs = `#graphql
+    type User {
+        name: String
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+const server = new ApolloServer({
+    schema: await neoSchema.getSchema(),
+});
+
+await startStandaloneServer(server, {
+    context: async ({ req }) => ({ sessionConfig: { database: "my-database" }}),
+});
+----
+
+The `bookmarks` key has been removed because it is no longer needed with the bookmark manager of the newer driver.
+
+=== Debug logging
+
+The programmatic toggle for debug logging has been moved from `config.enableDebug` to simply `debug`.
+
+An example of `enableDebug`:
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String!
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    config: {
+      enableDebug: true,
+    }
+});
+----
+
+This now becomes:
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String!
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    debug: true,
+});
+----

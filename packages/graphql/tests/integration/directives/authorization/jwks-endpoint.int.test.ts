@@ -26,7 +26,6 @@ import supertest from "supertest";
 import Koa from "koa";
 import Router from "koa-router";
 import jwt from "koa-jwt";
-
 import jwksRsa from "jwks-rsa";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
@@ -102,7 +101,7 @@ describe("auth/jwks-endpoint", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                contextValue: neo4j.getContextValues({
                     token,
                 }),
             });
@@ -170,7 +169,7 @@ describe("auth/jwks-endpoint", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                contextValue: neo4j.getContextValues({
                     token,
                 }),
             });
@@ -237,7 +236,7 @@ describe("auth/jwks-endpoint", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                contextValue: neo4j.getContextValues({
                     token,
                 }),
             });
@@ -300,7 +299,7 @@ describe("auth/jwks-endpoint", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                contextValue: neo4j.getContextValues({
                     token,
                 }),
             });
@@ -363,7 +362,7 @@ describe("auth/jwks-endpoint", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                contextValue: neo4j.getContextValues({
                     token,
                 }),
             });
@@ -427,7 +426,7 @@ describe("auth/jwks-endpoint", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                contextValue: neo4j.getContextValues({
                     token,
                 }),
             });
@@ -490,7 +489,7 @@ describe("auth/jwks-endpoint", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                contextValue: neo4j.getContextValues({
                     token,
                 }),
             });

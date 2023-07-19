@@ -24,7 +24,7 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
-import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
 import { createBearerToken } from "../../../utils/create-bearer-token";
@@ -62,20 +62,21 @@ describe("Subscription authentication", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                config: {
-                    driverConfig: {
-                        database: neo4j.getIntegrationDatabaseName(),
-                    },
-                },
                 features: {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
-            server = new ApolloTestServer(neoSchema);
+            // eslint-disable-next-line @typescript-eslint/require-await
+            server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+                sessionConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+                token: req.headers.authorization,
+            }));
             await server.start();
         });
 
@@ -185,20 +186,21 @@ describe("Subscription authentication", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                config: {
-                    driverConfig: {
-                        database: neo4j.getIntegrationDatabaseName(),
-                    },
-                },
                 features: {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
-            server = new ApolloTestServer(neoSchema);
+            // eslint-disable-next-line @typescript-eslint/require-await
+            server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+                sessionConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+                token: req.headers.authorization,
+            }));
             await server.start();
         });
 
@@ -276,16 +278,11 @@ describe("Subscription authentication", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                config: {
-                    driverConfig: {
-                        database: neo4j.getIntegrationDatabaseName(),
-                    },
-                },
                 features: {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -389,20 +386,21 @@ describe("Subscription authentication", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                config: {
-                    driverConfig: {
-                        database: neo4j.getIntegrationDatabaseName(),
-                    },
-                },
                 features: {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
-            server = new ApolloTestServer(neoSchema);
+            // eslint-disable-next-line @typescript-eslint/require-await
+            server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+                sessionConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+                token: req.headers.authorization,
+            }));
             await server.start();
         });
 
@@ -498,20 +496,21 @@ describe("Subscription authentication", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     driver,
-                    config: {
-                        driverConfig: {
-                            database: neo4j.getIntegrationDatabaseName(),
-                        },
-                    },
                     features: {
                         authorization: {
                             key: secret,
                         },
-                        subscriptions: new TestSubscriptionsMechanism(),
+                        subscriptions: new TestSubscriptionsEngine(),
                     },
                 });
 
-                server = new ApolloTestServer(neoSchema);
+                // eslint-disable-next-line @typescript-eslint/require-await
+                server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+                    sessionConfig: {
+                        database: neo4j.getIntegrationDatabaseName(),
+                    },
+                    token: req.headers.authorization,
+                }));
                 await server.start();
             });
 
@@ -586,20 +585,21 @@ describe("Subscription authentication", () => {
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     driver,
-                    config: {
-                        driverConfig: {
-                            database: neo4j.getIntegrationDatabaseName(),
-                        },
-                    },
                     features: {
                         authorization: {
                             key: secret,
                         },
-                        subscriptions: new TestSubscriptionsMechanism(),
+                        subscriptions: new TestSubscriptionsEngine(),
                     },
                 });
 
-                server = new ApolloTestServer(neoSchema);
+                // eslint-disable-next-line @typescript-eslint/require-await
+                server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+                    sessionConfig: {
+                        database: neo4j.getIntegrationDatabaseName(),
+                    },
+                    token: req.headers.authorization,
+                }));
                 await server.start();
             });
 
@@ -727,16 +727,11 @@ describe("Subscription authentication", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                config: {
-                    driverConfig: {
-                        database: neo4j.getIntegrationDatabaseName(),
-                    },
-                },
                 features: {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -5143,20 +5138,21 @@ describe("Subscription authentication", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                config: {
-                    driverConfig: {
-                        database: neo4j.getIntegrationDatabaseName(),
-                    },
-                },
                 features: {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
-            server = new ApolloTestServer(neoSchema);
+            // eslint-disable-next-line @typescript-eslint/require-await
+            server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+                sessionConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+                token: req.headers.authorization,
+            }));
             await server.start();
 
             wsClient = new WebSocketTestClient(server.wsPath);
@@ -5488,20 +5484,21 @@ describe("Subscription authentication", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                config: {
-                    driverConfig: {
-                        database: neo4j.getIntegrationDatabaseName(),
-                    },
-                },
                 features: {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
-            server = new ApolloTestServer(neoSchema);
+            // eslint-disable-next-line @typescript-eslint/require-await
+            server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+                sessionConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+                token: req.headers.authorization,
+            }));
             await server.start();
         });
 
@@ -5578,20 +5575,21 @@ describe("Subscription authentication", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 driver,
-                config: {
-                    driverConfig: {
-                        database: neo4j.getIntegrationDatabaseName(),
-                    },
-                },
                 features: {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
-            server = new ApolloTestServer(neoSchema);
+            // eslint-disable-next-line @typescript-eslint/require-await
+            server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+                sessionConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+                token: req.headers.authorization,
+            }));
             await server.start();
         });
 

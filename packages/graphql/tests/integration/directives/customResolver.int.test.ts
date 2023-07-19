@@ -21,11 +21,9 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import gql from "graphql-tag";
 import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQLAuthJWTPlugin } from "../../../../plugins/graphql-plugin-auth/src";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { INVALID_REQUIRED_FIELD_ERROR } from "../../../src/schema/get-custom-resolver-meta";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { createJwtRequest } from "../../utils/create-jwt-request";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 import { createBearerToken } from "../../utils/create-bearer-token";
@@ -282,13 +280,25 @@ describe("@customResolver directive", () => {
             });
         });
     });
+
     describe("Custom resolver checks", () => {
+        let warn: jest.SpyInstance;
+
+        beforeEach(() => {
+            warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        });
+
+        afterEach(() => {
+            warn.mockReset();
+        });
+
         test("Check throws error if customResolver is not provided", async () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            await expect(async () => {
-                await neoSchema.getSchema();
-            }).rejects.toThrow(`Custom resolver for ${customResolverField} has not been provided`);
+            await neoSchema.getSchema();
+
+            expect(warn).toHaveBeenCalledWith(`Custom resolver for ${customResolverField} has not been provided`);
         });
+
         test("Check throws error if custom resolver defined for interface", async () => {
             const interfaceType = new UniqueType("UserInterface");
             const typeDefs = `
@@ -311,9 +321,8 @@ describe("@customResolver directive", () => {
                 },
             };
             const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
-            await expect(async () => {
-                await neoSchema.getSchema();
-            }).rejects.toThrow(`Custom resolver for ${customResolverField} has not been provided`);
+            await neoSchema.getSchema();
+            expect(warn).toHaveBeenCalledWith(`Custom resolver for ${customResolverField} has not been provided`);
         });
     });
 });
@@ -2486,7 +2495,7 @@ describe("Related Fields", () => {
         });
     });
 
-    test("should not throw an error for invalid type defs when startupValidation.typeDefs false", async () => {
+    test("should not throw an error for invalid type defs when validate is false", async () => {
         const typeDefs = gql`
             type ${Address} {
                 houseNumber: Int! @cypher(statement: "RETURN 12 AS number", columnName: "number")
@@ -2520,11 +2529,7 @@ describe("Related Fields", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers,
-            config: {
-                startupValidation: {
-                    typeDefs: false,
-                },
-            },
+            validate: false,
         });
 
         const query = `

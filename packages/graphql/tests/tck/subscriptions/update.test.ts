@@ -19,17 +19,17 @@
 
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on update", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
-    let plugin: TestSubscriptionsMechanism;
+    let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
         typeDefs = gql`
             type Actor {
                 name: String!
@@ -65,7 +65,7 @@ describe("Subscriptions metadata on update", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
-            MATCH (this:\`Movie\`)
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH this { .* } AS oldProps, this, meta
             CALL {
@@ -112,7 +112,7 @@ describe("Subscriptions metadata on update", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
-            MATCH (this:\`Movie\`)
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH this { .* } AS oldProps, this, meta
             CALL {
@@ -121,7 +121,7 @@ describe("Subscriptions metadata on update", () => {
             	WITH this, meta
             CALL {
             	WITH this, meta
-            	MATCH (this)<-[this_acted_in0_relationship:\`ACTED_IN\`]-(this_actors0:Actor)
+            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
             	WITH this_actors0 { .* } AS oldProps, this, meta, this_actors0
             	CALL {

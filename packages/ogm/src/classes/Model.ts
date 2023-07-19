@@ -20,6 +20,7 @@
 import type { DocumentNode, GraphQLSchema, SelectionSetNode } from "graphql";
 import { graphql, parse, print } from "graphql";
 import type { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
+import type { Neo4jGraphQLContext } from "@neo4j/graphql/src";
 
 function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNode): string {
     if (typeof selectionSet === "string") {
@@ -46,8 +47,11 @@ class Model {
 
     private _rootTypeFieldNames?: RootTypeFieldNames;
 
-    constructor(name: string) {
+    private database?: string;
+
+    constructor(name: string, database?: string) {
         this.name = name;
+        this.database = database;
     }
 
     public set selectionSet(selectionSet: string | DocumentNode) {
@@ -101,7 +105,7 @@ class Model {
         options?: GraphQLOptionsArg;
         selectionSet?: string | DocumentNode | SelectionSetNode;
         args?: any;
-        context?: any;
+        context?: Neo4jGraphQLContext;
         rootValue?: any;
     } = {}): Promise<T> {
         if (!this.schema) {
@@ -141,7 +145,7 @@ class Model {
             schema: this.schema,
             source: query,
             rootValue,
-            contextValue: context,
+            contextValue: { sessionConfig: { database: this.database }, ...context },
             variableValues,
         });
 
@@ -162,7 +166,7 @@ class Model {
         input?: any;
         selectionSet?: string | DocumentNode | SelectionSetNode;
         args?: any;
-        context?: any;
+        context?: Neo4jGraphQLContext;
         rootValue?: any;
     } = {}): Promise<T> {
         if (!this.schema) {
@@ -196,7 +200,7 @@ class Model {
             schema: this.schema,
             source: mutation,
             rootValue,
-            contextValue: context,
+            contextValue: { sessionConfig: { database: this.database }, ...context },
             variableValues,
         });
 
@@ -227,7 +231,7 @@ class Model {
         create?: any;
         selectionSet?: string | DocumentNode | SelectionSetNode;
         args?: any;
-        context?: any;
+        context?: Neo4jGraphQLContext;
         rootValue?: any;
     } = {}): Promise<T> {
         if (!this.schema) {
@@ -285,7 +289,7 @@ class Model {
             schema: this.schema,
             source: mutation,
             rootValue,
-            contextValue: context,
+            contextValue: { sessionConfig: { database: this.database }, ...context },
             variableValues,
         });
 
@@ -304,7 +308,7 @@ class Model {
     }: {
         where?: GraphQLWhereArg;
         delete?: any;
-        context?: any;
+        context?: Neo4jGraphQLContext;
         rootValue?: any;
     } = {}): Promise<DeleteInfo> {
         if (!this.schema) {
@@ -343,7 +347,7 @@ class Model {
             schema: this.schema,
             source: mutation,
             rootValue,
-            contextValue: context,
+            contextValue: { sessionConfig: { database: this.database }, ...context },
             variableValues,
         });
 
@@ -364,7 +368,7 @@ class Model {
         where?: GraphQLWhereArg;
         fulltext?: any;
         aggregate: Record<string, unknown>;
-        context?: any;
+        context?: Neo4jGraphQLContext;
         rootValue?: any;
     }): Promise<T> {
         if (!this.schema) {
@@ -426,7 +430,7 @@ class Model {
             schema: this.schema,
             source: query,
             rootValue,
-            contextValue: context,
+            contextValue: { sessionConfig: { database: this.database }, ...context },
             variableValues,
         });
 

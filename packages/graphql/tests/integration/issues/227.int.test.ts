@@ -99,7 +99,7 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { id: townId },
             });
 

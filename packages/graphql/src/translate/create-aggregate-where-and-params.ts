@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Neo4jDatabaseInfo, Node, Relationship } from "../classes";
+import type { Node, Relationship } from "../classes";
 import type { RelationField, Context, GraphQLWhereArg, PredicateReturn } from "../types";
 import type { AggregationFieldRegexGroups } from "./where/utils";
 import { aggregationFieldRegEx, whereRegEx } from "./where/utils";
@@ -27,13 +27,12 @@ import {
     createComparisonOperation,
 } from "./where/property-operations/create-comparison-operation";
 import { NODE_OR_EDGE_KEYS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
-import type { LogicalOperator } from "./utils/logical-operators";
 import { isLogicalOperator, getLogicalPredicate } from "./utils/logical-operators";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { asArray } from "../utils/utils";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
 
-type WhereFilter = Record<string | LogicalOperator, any>;
+type WhereFilter = Record<string, any>;
 
 export type AggregateWhereInput = {
     count: number;
@@ -205,7 +204,7 @@ function aggregateEntityWhere(
                 predicates.push(logicalPredicate);
             }
         } else {
-            const operation = createEntityOperation(refNodeOrRelation, target, key, value, context);
+            const operation = createEntityOperation(refNodeOrRelation, target, key, value);
             const operationVar = new Cypher.Variable();
             returnProjections.push([operation, operationVar]);
             predicates.push(Cypher.eq(operationVar, new Cypher.Literal(true)));
@@ -221,8 +220,7 @@ function createEntityOperation(
     refNodeOrRelation: Node | Relationship,
     target: Cypher.Node | Cypher.Relationship,
     aggregationInputField: string,
-    aggregationInputValue: any,
-    context: Context
+    aggregationInputValue: any
 ): Cypher.Predicate {
     const paramName = new Cypher.Param(aggregationInputValue);
     const regexResult = aggregationFieldRegEx.exec(aggregationInputField)?.groups as AggregationFieldRegexGroups;
@@ -256,8 +254,6 @@ function createEntityOperation(
             param: paramName,
             durationField,
             pointField,
-            // Casting because this is definitely assigned in the wrapper
-            neo4jDatabaseInfo: context.neo4jDatabaseInfo as Neo4jDatabaseInfo,
         });
         const dbFieldName = mapToDbProperty(refNodeOrRelation, fieldName);
         const collectedProperty =

@@ -67,7 +67,7 @@ describe("Cypher Auth Projection", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WITH this
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
@@ -112,7 +112,7 @@ describe("Cypher Auth Projection", () => {
             "UNWIND $create_param3 AS create_var1
             CALL {
                 WITH create_var1
-                CREATE (create_this0:\`User\`)
+                CREATE (create_this0:User)
                 SET
                     create_this0.id = create_var1.id
                 RETURN create_this0

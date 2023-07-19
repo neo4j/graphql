@@ -16,12 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 "use strict";
 
 import neo4j from "neo4j-driver";
- 
 import { Neo4jGraphQL } from "@neo4j/graphql";
-// eslint-disable-next-line import/named
 import { createYoga } from "graphql-yoga";
 import { getLargeSchema } from "../typedefs.js";
 import { createServer } from "http";

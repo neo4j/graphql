@@ -21,7 +21,6 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
@@ -31,7 +30,6 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
     const teamType = new UniqueType("Team");
     const mitigationStateType = new UniqueType("MitigationState");
 
-    const secret = "secret";
     let schema: GraphQLSchema;
     let driver: Driver;
     let neo4j: Neo4j;
@@ -62,11 +60,6 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret,
-                }),
-            },
         });
         schema = await neoGraphql.getSchema();
     });

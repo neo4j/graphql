@@ -315,7 +315,7 @@ describe("getRelationshipMeta", () => {
         const result = getRelationshipMeta(field);
 
         expect(result).toMatchObject({
-            type: "`ACTED_IN`",
+            type: "ACTED_IN",
             direction: "IN",
             properties: "ActedIn",
         });
@@ -387,7 +387,7 @@ describe("getRelationshipMeta", () => {
         const result = getRelationshipMeta(field);
 
         expect(result).toMatchObject({
-            type: "`ACTED_IN`",
+            type: "ACTED_IN",
             direction: "IN",
             queryDirection: "DEFAULT_UNDIRECTED",
         });
@@ -559,7 +559,7 @@ describe("getRelationshipMeta", () => {
         const result = getRelationshipMeta(field);
 
         expect(result).toMatchObject({
-            type: "`ACTED_IN`",
+            type: "ACTED_IN",
             direction: "IN",
             nestedOperations: ["CONNECT", "CREATE"],
         });
@@ -619,7 +619,7 @@ describe("getRelationshipMeta", () => {
         const result = getRelationshipMeta(field);
 
         expect(result).toMatchObject({
-            type: "`ACTED_IN`",
+            type: "ACTED_IN",
             direction: "IN",
             properties: "ActedIn",
             queryDirection: "DEFAULT_UNDIRECTED",
