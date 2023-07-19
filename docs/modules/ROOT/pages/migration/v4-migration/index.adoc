@@ -101,14 +101,14 @@ const neoSchema = new Neo4jGraphQL({
 ==== Neo4j GraphQL Subscriptions AMQP package
 
 The name of the interface underlying the Subscriptions system has changed from `Neo4jGraphQLSubscriptionsPlugin` to `Neo4jGraphQLSubscriptionsEngine`. 
-If you were previously using the `@neo4j/graphql-plugins-subscriptions-amqp` package, this has been changed to `@neo4j/graphql-subscriptions-engine-amqp` to reflect this underlying change.
+If you were previously using the `@neo4j/graphql-plugins-subscriptions-amqp` package, this has been changed to `@neo4j/graphql-amqp-subscriptions-engine` to reflect this underlying change.
 
 Please uninstall the previous package and install the new one:
 
 [source, bash, indent=0]
 ----
 npm uninstall @neo4j/graphql-plugins-subscriptions-amqp
-npm install @neo4j/graphql-subscriptions-engine-amqp
+npm install @neo4j/graphql-amqp-subscriptions-engine
 ----
 
 Please then update any imports from:
@@ -122,7 +122,7 @@ To:
 
 [source, javascript, indent=0]
 ----
-import { Neo4jGraphQLSubscriptionsAMQPEngine } from "@neo4j/graphql-subscriptions-engine-amqp";
+import { Neo4jGraphQLAMQPSubscriptionsEngine } from "@neo4j/graphql-amqp-subscriptions-engine";
 ----
 
 Then change the instantiations from:
@@ -142,7 +142,7 @@ To:
 
 [source, javascript, indent=0]
 ----
-const subscriptionsEngine = new Neo4jGraphQLSubscriptionsAMQPEngine({
+const subscriptionsEngine = new Neo4jGraphQLAMQPSubscriptionsEngine({
     connection: {
         hostname: "localhost",
         username: "guest",

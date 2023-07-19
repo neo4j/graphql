@@ -29,7 +29,7 @@ Note that you need both [Docker](https://docs.docker.com/) and [Docker-compose](
 If you are building a local dev server, you can run this demo without RabbitMQ, by using a local event system. To do this replacing the plugin setup in `server.js` from:
 
 ```js
-const plugin = new Neo4jGraphQLSubscriptionsAMQPEngine({
+const plugin = new Neo4jGraphQLAMQPSubscriptionsEngine({
     connection: AMQP_URI,
 });
 ```

@@ -23,9 +23,9 @@ This behavior enables a simple subscription system that will work on a single in
 == AMQP
 Using subscriptions on a server with multiple instances can be tricky, as described in xref::subscriptions/scaling.adoc[Horizontal Scaling]. 
 Therefore, the recommended approach is to use a PubSub system, which can be achieved with an AMQP broker such as link:https://www.rabbitmq.com/[RabbitMQ]. 
-This is supported by the link:https://www.npmjs.com/package/@neo4j/graphql-subscriptions-engine-amqp[@neo4j/graphql-subscriptions-engine-amqp] package.
+This is supported by the link:https://www.npmjs.com/package/@neo4j/graphql-amqp-subscriptions-engine[@neo4j/graphql-amqp-subscriptions-engine] package.
 
-The `@neo4j/graphql-subscriptions-engine-amqp` plugin connects to message brokers through the `AMQP 0-9-1` protocol to distribute subscription events across all server instances. 
+The `@neo4j/graphql-amqp-subscriptions-engine` plugin connects to message brokers through the `AMQP 0-9-1` protocol to distribute subscription events across all server instances. 
 
 Some brokers supporting this protocol are:
 
@@ -36,7 +36,7 @@ Some brokers supporting this protocol are:
 The plugin can be installed with `npm`:
 
 ```sh
-npm install @neo4j/graphql-subscriptions-engine-amqp
+npm install @neo4j/graphql-amqp-subscriptions-engine
 ```
 
 NOTE: AMQP 1.0 is **not** supported by this plugin.
@@ -47,9 +47,9 @@ The AMQP plugin should be instanced and passed to the `subscription` field in fe
 This will automatically enable the subscriptions with the AMQP broker as a message queue:
 
 ```javascript
-const { Neo4jGraphQLSubscriptionsAMQPEngine } = require("@neo4j/graphql-subscriptions-engine-amqp");
+const { Neo4jGraphQLAMQPSubscriptionsEngine } = require("@neo4j/graphql-amqp-subscriptions-engine");
 
-const amqpSubscription = new Neo4jGraphQLSubscriptionsAMQPEngine({
+const amqpSubscription = new Neo4jGraphQLAMQPSubscriptionsEngine({
     connection: {
         hostname: "localhost",
         username: "guest",

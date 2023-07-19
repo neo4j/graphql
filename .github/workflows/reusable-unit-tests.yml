@@ -24,7 +24,7 @@ jobs:
           - graphql
           - ogm
           - introspector
-          - graphql-subscriptions-engine-amqp
+          - graphql-amqp-subscriptions-engine
 
     runs-on: ubuntu-latest
 

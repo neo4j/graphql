@@ -17,12 +17,20 @@
  * limitations under the License.
  */
 
-import type amqp from "amqplib";
-import { Neo4jGraphQLSubscriptionsAMQPEngine } from "../../../src";
+import { EventEmitter } from "events";
+import { Neo4jGraphQLAMQPSubscriptionsEngine } from ".";
 
-export default function createEngine(connection: amqp.Options.Connect): Neo4jGraphQLSubscriptionsAMQPEngine {
-    return new Neo4jGraphQLSubscriptionsAMQPEngine({
-        exchange: "neo4j-graphql",
-        connection,
+describe("index", () => {
+    test("Neo4jGraphQLAMQPSubscriptionsEngine", () => {
+        expect(Neo4jGraphQLAMQPSubscriptionsEngine).toBeDefined();
     });
-}
+
+    test("Neo4jGraphQLAMQPSubscriptionsEngine plugin interface", () => {
+        const plugin = new Neo4jGraphQLAMQPSubscriptionsEngine({
+            connection: "",
+        });
+
+        expect(plugin.events).toBeInstanceOf(EventEmitter);
+        expect(typeof plugin.publish).toBe("function");
+    });
+});

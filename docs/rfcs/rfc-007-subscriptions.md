@@ -1281,7 +1281,7 @@ class Neo4jGraphQLSubscriptionsLocalPlugin extends Neo4jGraphQLSubscriptionsPlug
 And in rough pseudocode, an implementation of this using an AMQP broker would look roughly like:
 
 ```ts
-class Neo4jGraphQLSubscriptionsAMQPEngine extends Neo4jGraphQLSubscriptionsPlugin {
+class Neo4jGraphQLAMQPSubscriptionsEngine extends Neo4jGraphQLSubscriptionsPlugin {
     private amqpConnection;
 
     public publish(eventMeta: SubscriptionsEvent) {

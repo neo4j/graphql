@@ -1,4 +1,4 @@
-name: "@neo4j/graphql-subscriptions-engine-amqp E2E tests"
+name: "@neo4j/graphql-amqp-subscriptions-engine E2E tests"
 
 on:
   workflow_call:
@@ -45,9 +45,9 @@ jobs:
         run: yarn --immutable
       - name: Overwrite GraphQL version
         run: yarn up --exact graphql@${{ matrix.graphql-version }}
-      - name: Run packages/graphql-subscriptions-engine-amqp e2e tests
+      - name: Run packages/graphql-amqp-subscriptions-engine e2e tests
         run: yarn run test:e2e --coverage
-        working-directory: packages/graphql-subscriptions-engine-amqp
+        working-directory: packages/graphql-amqp-subscriptions-engine
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: mypassword
@@ -58,5 +58,5 @@ jobs:
       - name: Archive coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: e2e-coverage-graphql-subscriptions-engine-amqp
-          path: packages/graphql-subscriptions-engine-amqp/coverage/
+          name: e2e-coverage-graphql-amqp-subscriptions-engine
+          path: packages/graphql-amqp-subscriptions-engine/coverage/

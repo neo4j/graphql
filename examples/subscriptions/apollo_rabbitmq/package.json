@@ -12,7 +12,7 @@
     "dependencies": {
         "@apollo/server": "^4.7.0",
         "@neo4j/graphql": "^3.15.0",
-        "@neo4j/graphql-subscriptions-engine-amqp": "^2.0.0",
+        "@neo4j/graphql-amqp-subscriptions-engine": "^2.0.0",
         "amqplib": "^0.10.3",
         "express": "^4.17.3",
         "graphql-ws": "^5.7.0",

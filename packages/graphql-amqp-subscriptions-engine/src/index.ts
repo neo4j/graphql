@@ -29,7 +29,7 @@ const DEFAULT_VERSION: AmqpVersion = "0-9-1";
 
 type AmqpVersion = "0-9-1";
 
-export type Neo4jGraphQLSubscriptionsAMQPEngineConstructorOptions = {
+export type Neo4jGraphQLAMQPSubscriptionsEngineConstructorOptions = {
     connection: ConnectionOptions;
     amqpVersion?: AmqpVersion;
     exchange?: string;
@@ -37,12 +37,12 @@ export type Neo4jGraphQLSubscriptionsAMQPEngineConstructorOptions = {
     log?: boolean;
 };
 
-export class Neo4jGraphQLSubscriptionsAMQPEngine implements Neo4jGraphQLSubscriptionsEngine {
+export class Neo4jGraphQLAMQPSubscriptionsEngine implements Neo4jGraphQLSubscriptionsEngine {
     public events: EventEmitter;
     private amqpApi: AmqpApi<SubscriptionsEvent>;
     private connectionOptions: ConnectionOptions;
 
-    constructor(options: Neo4jGraphQLSubscriptionsAMQPEngineConstructorOptions) {
+    constructor(options: Neo4jGraphQLAMQPSubscriptionsEngineConstructorOptions) {
         const defaultOptions = { exchange: DEFAULT_EXCHANGE, amqpVersion: DEFAULT_VERSION, log: true };
         const finalOptions = { ...defaultOptions, ...options };
 

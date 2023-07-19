@@ -25,7 +25,7 @@ import type { TestGraphQLServer } from "./setup/apollo-server";
 import { ApolloTestServer } from "./setup/apollo-server";
 import { WebSocketTestClient } from "./setup/ws-client";
 import neo4j from "./setup/neo4j";
-import type { Neo4jGraphQLSubscriptionsAMQPEngine } from "../../src";
+import type { Neo4jGraphQLAMQPSubscriptionsEngine } from "../../src";
 import { UniqueType } from "../utils/graphql-types";
 import createEngine from "./setup/engine";
 import getRabbitConnectionOptions from "./setup/rabbitmq";
@@ -38,7 +38,7 @@ describe("Apollo and RabbitMQ Subscription", () => {
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    let engine: Neo4jGraphQLSubscriptionsAMQPEngine;
+    let engine: Neo4jGraphQLAMQPSubscriptionsEngine;
 
     beforeAll(async () => {
         driver = await neo4j();
