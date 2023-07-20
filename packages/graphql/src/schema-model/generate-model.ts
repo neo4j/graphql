@@ -53,7 +53,6 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         generateConcreteEntity(node, definitionCollection)
     );
 
-    // TODO: this error could happen directly in getDefinitionCollection instead of here, as because we moved to Map structure it will never be the case that we have duplicate nodes.
     const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
         if (acc.has(entity.name)) {
             throw new Neo4jGraphQLSchemaValidationError(`Duplicate node ${entity.name}`);
@@ -122,11 +121,14 @@ function generateCompositeEntity(
         }
         return concreteEntity;
     });
-    if (!compositeFields.length) {
+    /*  
+   // This is commented out because is currently possible to have leaf interfaces as demonstrated in the test
+   // packages/graphql/tests/integration/aggregations/where/node/string.int.test.ts 
+   if (!compositeFields.length) {
         throw new Neo4jGraphQLSchemaValidationError(
             `Composite entity ${entityDefinitionName} has no concrete entities`
         );
-    }
+    } */
     // TODO: add annotations
     return new CompositeEntity({
         name: entityDefinitionName,
@@ -174,10 +176,11 @@ function generateRelationshipField(
     let attributes: Attribute[] = [];
     if (properties && typeof properties === "string") {
         const propertyInterface = definitionCollection.relationshipProperties.get(properties);
-        if (!propertyInterface)
+        if (!propertyInterface) {
             throw new Error(
-                `There is no matching interface defined with @relationshipProperties for properties "${properties}"`
+                `The \`@relationshipProperties\` directive could not be found on the \`${properties}\` interface`
             );
+        }
 
         const fields = (propertyInterface.fields || []).map((field) => parseAttribute(field, definitionCollection));
 

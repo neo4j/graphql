@@ -23,6 +23,7 @@ import { GraphQLBuiltInScalarType, ScalarType } from "../../attribute/AttributeT
 import { ConcreteEntityModel } from "./ConcreteEntityModel";
 import { AttributeModel } from "../../attribute/graphql-models/AttributeModel";
 import { CypherAnnotation } from "../../annotation/CypherAnnotation";
+import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 
 describe("ConcreteEntityModel", () => {
     let userModel: ConcreteEntityModel;
@@ -33,7 +34,7 @@ describe("ConcreteEntityModel", () => {
     beforeAll(() => {
         const idAttribute = new Attribute({
             name: "id",
-            annotations: [],
+            annotations: [new UniqueAnnotation( { constraintName: "User_id_unique" })],
             type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
         });
 
@@ -66,7 +67,7 @@ describe("ConcreteEntityModel", () => {
         closestUser = userModel.attributes.get("closestUser") as AttributeModel;
     });
 
-    test("should generate a valid GraphQL model", () => {
+    test("should generate a valid ConcreteEntityModel model", () => {
         expect(userModel).toBeDefined();
         expect(userModel).toBeInstanceOf(ConcreteEntityModel);
         expect(userModel.name).toBe("User");
@@ -84,5 +85,48 @@ describe("ConcreteEntityModel", () => {
     test("should return the correct mutable fields, (Cypher fields are removed)", () => {
         expect(userModel.mutableFields).toHaveLength(2);
         expect(userModel.mutableFields).toEqual([userId, userName]);
+    });
+
+    test("should return the correct labels", () => {
+        expect(userModel.getAllLabels()).toStrictEqual(["User"]);
+        expect(userModel.getMainLabel()).toBe("User");
+    });
+
+    test("should return the correct unique fields", () => {
+        expect(userModel.uniqueFields).toHaveLength(1);
+        expect(userModel.uniqueFields).toStrictEqual([userId]);
+    });
+
+    test("should return the correct singular name", () => {
+        expect(userModel.singular).toBe("user");
+    });
+
+    test("should return the correct plural name", () => {
+        expect(userModel.plural).toBe("users");
+    });
+
+    describe("ConcreteEntityOperations", () => {
+        test("should construct a valid ConcreteEntityOperations", () => {
+            expect(userModel.operations).toBeDefined();
+        });
+
+        test("should return the correct rootTypeFieldNames", () => {
+            expect(userModel.operations.rootTypeFieldNames).toStrictEqual({
+                aggregate: "usersAggregate",
+                create: "createUsers",
+                delete: "deleteUsers",
+                read: "users",
+                subscribe: {
+                    created: "userCreated",
+                    deleted: "userDeleted",
+                    relationship_created: "userRelationshipCreated",
+                    relationship_deleted: "userRelationshipDeleted",
+                    updated: "userUpdated",
+                },
+                update: "updateUsers",
+            });
+        });
+
+        // TODO: add tests for all the other operations if we keep them
     });
 });

@@ -21,11 +21,11 @@ import { Neo4jGraphQLSchemaValidationError } from "../../classes/Error";
 import { annotationToKey, type Annotation, type Annotations } from "../annotation/Annotation";
 import type { AttributeType } from "./AttributeType";
 
-export class Attribute  {
+export class Attribute {
     public readonly name: string;
     public readonly annotations: Partial<Annotations> = {};
     public readonly type: AttributeType;
-
+ 
     constructor({ name, annotations = [], type }: { name: string; annotations: Annotation[]; type: AttributeType }) {
         this.name = name;
         this.type = type;

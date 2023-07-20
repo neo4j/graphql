@@ -95,7 +95,6 @@ export class AttributeModel {
     isConstrainable(): boolean {
         return this.isGraphQLBuiltInScalar() || this.isScalar() || this.isEnum() || this.isTemporal() || this.isPoint();
     }
-    // TODO: remember to figure out constrainableFields
 
     /**
      * @throws {Error} if the attribute is not a list

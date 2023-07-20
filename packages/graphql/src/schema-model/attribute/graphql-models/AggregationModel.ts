@@ -38,7 +38,9 @@ export class AggregationModel {
             aggregationList.push(this.getAverageComparator(comparator));
             aggregationList.push(this.getMinComparator(comparator));
             aggregationList.push(this.getMaxComparator(comparator));
-            aggregationList.push(this.getSumComparator(comparator));
+            if (this.attributeModel.isNumeric()) {
+                aggregationList.push(this.getSumComparator(comparator));
+            }
             return aggregationList;
         }).flat();
     }

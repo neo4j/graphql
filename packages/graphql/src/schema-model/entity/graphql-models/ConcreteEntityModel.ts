@@ -25,25 +25,33 @@ import { singular, plural } from "../../utils/string-manipulation";
 import type { ConcreteEntity } from "../ConcreteEntity";
 import type { Attribute } from "../../attribute/Attribute";
 import { RelationshipModel } from "../../relationship/graphql-model/RelationshipModel";
+import type { Annotations } from "../../annotation/Annotation";
+import { ConcreteEntityOperations } from "./ConcreteEntityOperations";
 
 export class ConcreteEntityModel {
     public readonly name: string;
     public readonly labels: Set<string>;
     public readonly attributes: Map<string, AttributeModel> = new Map();
     public readonly relationships: Map<string, RelationshipModel> = new Map();
+    public readonly annotations: Partial<Annotations>;
 
     // These keys allow to store the keys of the map in memory and avoid keep iterating over the map.
     private mutableFieldsKeys: string[] = [];
     private uniqueFieldsKeys: string[] = [];
     private constrainableFieldsKeys: string[] = [];
 
-    // typesNames
+    private _relatedEntities: Entity[] | undefined;
+
     private _singular: string | undefined;
     private _plural: string | undefined;
+
+    // specialize models
+    private _operations: ConcreteEntityOperations | undefined;
 
     constructor(entity: ConcreteEntity) {
         this.name = entity.name;
         this.labels = entity.labels;
+        this.annotations = entity.annotations;
         this.initAttributes(entity.attributes);
         this.initRelationships(entity.relationships);
     }
@@ -55,19 +63,23 @@ export class ConcreteEntityModel {
             if (attributeModel.isMutable()) {
                 this.mutableFieldsKeys.push(attribute.name);
             }
-            if (attributeModel.isUnique()) {
-                this.uniqueFieldsKeys.push(attribute.name);
-            }
+
             if (attributeModel.isConstrainable()) {
                 this.constrainableFieldsKeys.push(attribute.name);
+                if (attributeModel.isUnique()) {
+                    this.uniqueFieldsKeys.push(attribute.name);
+                }
             }
         }
     }
 
     private initRelationships(relationships: Map<string, Relationship>) {
         for (const [relationshipName, relationship] of relationships.entries()) {
-            const {name, type, direction, target, attributes } = relationship;
-            this.relationships.set(relationshipName, new RelationshipModel({name, type, direction, source: this, target, attributes }));
+            const { name, type, direction, target, attributes } = relationship;
+            this.relationships.set(
+                relationshipName,
+                new RelationshipModel({ name, type, direction, source: this, target, attributes })
+            );
         }
     }
 
@@ -83,19 +95,26 @@ export class ConcreteEntityModel {
         return this.constrainableFieldsKeys.map((key) => getFromMap(this.attributes, key));
     }
 
-    public get relationshipAttributesName(): string[] {
-        return [...this.relationships.keys()];
+    public get relatedEntities(): Entity[] {
+        if (!this._relatedEntities) {
+            this._relatedEntities = [...this.relationships.values()].map((relationship) => relationship.target);
+        }
+        return this._relatedEntities;
     }
 
-    public getRelatedEntities(): Entity[] {
-        return [...this.relationships.values()].map((relationship) => relationship.target);
-    }
-
+    // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
     public getAllLabels(): string[] {
-        return this.labels ? [...this.labels] : [this.name];
+        if (this.annotations.node?.labels) {
+            return this.annotations.node.labels;
+        }
+        return [this.name];
     }
 
+    public getMainLabel(): string {
+        return this.getAllLabels()[0] as string; // getAllLabels always returns at least one label
+    }
 
+    
     public get singular(): string {
         if (!this._singular) {
             this._singular = singular(this.name);
@@ -105,10 +124,21 @@ export class ConcreteEntityModel {
 
     public get plural(): string {
         if (!this._plural) {
-            // TODO: consider case when the plural is defined with the plural annotation
-            this._plural = plural(this.name);
-
+            if (this.annotations.plural) {
+                this._plural = plural(this.annotations.plural.value);
+            } else {
+                this._plural = plural(this.name);
+            }
         }
         return this._plural;
     }
+
+    get operations(): ConcreteEntityOperations {
+        if (!this._operations) {
+            return new ConcreteEntityOperations(this);
+        }
+        return this._operations;
+    }
+
+    // TODO: Implement the Globals methods toGlobalId and fromGlobalId, getGlobalId etc...
 }

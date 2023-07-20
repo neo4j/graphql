@@ -34,7 +34,6 @@ import { Attribute } from "../Attribute";
 import { AttributeModel } from "./AttributeModel";
 import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 import { CypherAnnotation } from "../../annotation/CypherAnnotation";
-import { e } from "@neo4j/cypher-builder";
 
 describe("Attribute", () => {
     describe("type assertions", () => {

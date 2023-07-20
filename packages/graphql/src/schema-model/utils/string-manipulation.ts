@@ -25,7 +25,7 @@ export function singular(name: string): string {
     return `${leadingUnderscores(name)}${singular}`;
 }
 
-// TODO this has to be tested as is different from Node.generatePlural
+
 export function plural(name: string): string {
     const plural = pluralize(camelcase(name));
     return `${leadingUnderscores(name)}${plural}`;

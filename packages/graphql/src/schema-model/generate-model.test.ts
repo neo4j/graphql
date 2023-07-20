@@ -365,7 +365,7 @@ describe("GraphQL models", () => {
         // entities
         userEntity = schemaModel.getConcreteEntityModel("User") as ConcreteEntityModel;
         userAccounts = userEntity.relationships.get("accounts") as RelationshipModel;
-        accountEntity = userAccounts.target as ConcreteEntityModel; 
+        accountEntity = userAccounts.target as ConcreteEntityModel; // it's possible to obtain accountEntity using schemaModel.getConcreteEntityModel("Account") as well
 
         // user attributes
         id = userEntity?.attributes.get("id") as AttributeModel;
@@ -386,7 +386,7 @@ describe("GraphQL models", () => {
         status = accountEntity?.attributes.get("status") as AttributeModel;
         aOrB = accountEntity?.attributes.get("aOrB") as AttributeModel;
     });
-    
+
     describe("attribute types", () => {
         test("ID", () => {
             expect(id.isID()).toBe(true);

@@ -44,5 +44,5 @@ export class ListModel {
     getNotIncludes(): string {
         return `${this.attributeModel.name}_NOT_INCLUDES`;
     }
-   
+    
 }
