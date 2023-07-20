@@ -1,7 +1,0 @@
-[[guides]]
-= How-to Guides
-
-Here you can find a selection of guides to help you work with the Neo4j GraphQL Library.
-
-* xref::guides/apollo-federation.adoc[Apollo Federation (beta)] - guide on how to set up subgraphs using the Neo4j GraphQL Library.
-* xref::guides/frameworks/nextjs.adoc[Usage with Next.js] - guide on how to use `@neo4j/graphql` with Next.js.
