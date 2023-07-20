@@ -329,7 +329,7 @@ class Node extends GraphElement {
 
         return `${this.leadingUnderscores(name)}${plural}`;
     }
-
+    
     private leadingUnderscores(name: string): string {
         const re = /^(_+).+/;
         const match = re.exec(name);
