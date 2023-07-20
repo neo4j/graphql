@@ -25,29 +25,36 @@ import type {
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
 } from "graphql";
-import { Kind, GraphQLError, isTypeDefinitionNode, isTypeExtensionNode } from "graphql";
+import { Kind, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { invalidCombinations } from "../utils/invalid-directive-combinations";
+import { getInnerTypeName } from "./directive-argument-value-is-valid";
+const SCALAR_TYPE_NAMES = ["string", "int", "float", "boolean", "id"];
 
-export function DirectiveCombinationValid() {
+export function ValidJwtDirectives() {
     return function (context: SDLValidationContext): ASTVisitor {
+        let seenJwtType = false;
         return {
-            enter(node: ASTNode, _key, _parent, path, ancestors) {
-                if (!("directives" in node) || !node.directives) {
+            ObjectTypeDefinition(objectType: ObjectTypeDefinitionNode, _key, _parent, path, ancestors) {
+                const [temp] = getPathToDirectiveNode(path, ancestors);
+                const pathToHere = [...temp, objectType.name.value, `@jwt`];
+
+                if (!objectType.directives) {
                     return;
                 }
-                const [temp, traversedDef] = getPathToDirectiveNode(path, ancestors);
-                const currentNodeErrorPath =
-                    isTypeDefinitionNode(node) || isTypeExtensionNode(node) ? [...temp, node.name.value] : temp;
 
-                const { isValid, errorMsg, errorPath } = assertValidDirectives(node.directives, invalidCombinations);
+                const { isValid, errorMsg, ...extra } = assertJwtDirective(
+                    objectType.directives,
+                    objectType,
+                    seenJwtType
+                );
+                seenJwtType = extra.seenJwtType;
                 if (!isValid) {
                     const errorOpts = {
-                        nodes: [traversedDef || node],
+                        nodes: [objectType],
                         // extensions: {
                         //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
                         // },
-                        path: errorPath || currentNodeErrorPath,
+                        path: pathToHere,
                         source: undefined,
                         positions: undefined,
                         originalError: undefined,
@@ -67,49 +74,26 @@ export function DirectiveCombinationValid() {
                     );
                 }
             },
-        };
-    };
-}
 
-export function SchemaOrTypeDirectives() {
-    return function (context: SDLValidationContext): ASTVisitor {
-        const schemaLevelConfiguration = new Map<string, boolean>([
-            ["query", false],
-            ["mutation", false],
-            ["subscription", false],
-        ]);
-        const typeLevelConfiguration = new Map<string, boolean>([
-            ["query", false],
-            ["mutation", false],
-            ["subscription", false],
-        ]);
-        return {
-            enter(node: ASTNode) {
-                if (!("directives" in node) || !node.directives) {
+            FieldDefinition(field: FieldDefinitionNode, _key, _parent, path, ancestors) {
+                const [temp, _, parentOfTraversedDef] = getPathToDirectiveNode(path, ancestors);
+                const pathToHere = [...temp, `@jwtClaim`];
+
+                if (!field.directives) {
                     return;
                 }
 
-                const isSchemaLevel = node.kind === Kind.SCHEMA_DEFINITION || node.kind === Kind.SCHEMA_EXTENSION;
-                const isTypeLevel = isTypeDefinitionNode(node) || isTypeExtensionNode(node);
-                if (!isSchemaLevel && !isTypeLevel) {
-                    // only check combination of schema-level and type-level
-                    return;
-                }
-
-                const { isValid, errorMsg } = assertSchemaOrType(
-                    node.directives,
-                    schemaLevelConfiguration,
-                    typeLevelConfiguration,
-                    isSchemaLevel,
-                    isTypeLevel
+                const { isValid, errorMsg } = assertJwtClaimDirective(
+                    field.directives,
+                    parentOfTraversedDef as ObjectTypeDefinitionNode
                 );
                 if (!isValid) {
                     const errorOpts = {
-                        nodes: [node],
+                        nodes: parentOfTraversedDef ? [parentOfTraversedDef, field] : [field],
                         // extensions: {
                         //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
                         // },
-                        path: undefined,
+                        path: pathToHere,
                         source: undefined,
                         positions: undefined,
                         originalError: undefined,
@@ -185,10 +169,55 @@ type AssertionResponse = {
     errorPath: ReadonlyArray<string | number>;
 };
 
-function assertValidDirectives(
+function notCombined(directive: DirectiveNode) {
+    if (["jwt", "jwtClaim"].includes(directive.name.value)) {
+        throw new Error(
+            `Invalid directive usage: Directive @${directive.name.value} cannot be used in combination with other directives.`
+        );
+    }
+}
+
+function correctClaimLocation(directive: DirectiveNode, objectType: ObjectTypeDefinitionNode) {
+    if ("jwtClaim" === directive.name.value) {
+        if (!objectType.directives?.find((d) => d.name.value === "jwt")) {
+            throw new Error(
+                `Invalid directive usage: Directive @${directive.name.value} can only be used in \\"@jwt\\" types.`
+            );
+        }
+    }
+}
+
+function correctClaimFieldType(directive: DirectiveNode, objectType: ObjectTypeDefinitionNode) {
+    if ("jwt" === directive.name.value) {
+        // TODO: replace with schema model scalars
+        if (
+            objectType.fields?.some((field) => !SCALAR_TYPE_NAMES.includes(getInnerTypeName(field.type).toLowerCase()))
+        ) {
+            throw new Error(
+                `Invalid directive usage: Fields of a @${directive.name.value} type can only be Scalars or Lists of Scalars.`
+            );
+        }
+    }
+}
+
+function singleUse(directive: DirectiveNode, seenJwtType: boolean): boolean {
+    if ("jwt" === directive.name.value) {
+        if (seenJwtType) {
+            throw new Error(
+                `Invalid directive usage: Directive @${directive.name.value} can only be used once in the Type Definitions.`
+            );
+        } else {
+            seenJwtType = true;
+        }
+    }
+    return seenJwtType;
+}
+
+function assertJwtDirective(
     directives: readonly DirectiveNode[],
-    invalidCombinations: { [k: string]: string[] }
-): AssertionResponse {
+    objectType: ObjectTypeDefinitionNode,
+    seenJwtType: boolean
+): AssertionResponse & { seenJwtType: boolean } {
     let isValid = true;
     let errorMsg, errorPath;
 
@@ -199,28 +228,22 @@ function assertValidDirectives(
 
     try {
         directives.forEach((directive) => {
-            if (invalidCombinations[directive.name.value]) {
-                directives.forEach((d) => {
-                    if (invalidCombinations[directive.name.value]?.includes(d.name.value)) {
-                        throw new Error(
-                            `Invalid directive usage: Directive @${directive.name.value} cannot be used in combination with @${d.name.value}`
-                        );
-                    }
-                });
+            if (directives.length > 1) {
+                notCombined(directive);
             }
+            seenJwtType = singleUse(directive, seenJwtType);
+            correctClaimFieldType(directive, objectType);
         });
     } catch (err) {
         onError(err as Error);
     }
 
-    return { isValid, errorMsg, errorPath };
+    return { isValid, errorMsg, errorPath, seenJwtType };
 }
-function assertSchemaOrType(
+
+function assertJwtClaimDirective(
     directives: readonly DirectiveNode[],
-    schemaLevelConfiguration: Map<string, boolean>,
-    typeLevelConfiguration: Map<string, boolean>,
-    isSchemaLevel: boolean,
-    isTypeLevel: boolean
+    objectType: ObjectTypeDefinitionNode
 ): AssertionResponse {
     let isValid = true;
     let errorMsg, errorPath;
@@ -232,25 +255,10 @@ function assertSchemaOrType(
 
     try {
         directives.forEach((directive) => {
-            if (schemaLevelConfiguration.has(directive.name.value)) {
-                // only applicable ones: query, mutation, subscription
-                if (isSchemaLevel) {
-                    if (typeLevelConfiguration.get(directive.name.value)) {
-                        throw new Error(
-                            `Invalid directive usage: Directive @${directive.name.value} can only be used in one location: either schema or type.`
-                        );
-                    }
-                    schemaLevelConfiguration.set(directive.name.value, true);
-                }
-                if (isTypeLevel) {
-                    if (schemaLevelConfiguration.get(directive.name.value)) {
-                        throw new Error(
-                            `Invalid directive usage: Directive @${directive.name.value} can only be used in one location: either schema or type.`
-                        );
-                    }
-                    typeLevelConfiguration.set(directive.name.value, true);
-                }
+            if (directives.length > 1) {
+                notCombined(directive);
             }
+            correctClaimLocation(directive, objectType);
         });
     } catch (err) {
         onError(err as Error);

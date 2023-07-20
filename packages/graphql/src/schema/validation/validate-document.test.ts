@@ -1961,59 +1961,6 @@ describe("validation2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "post"]);
             });
 
-            test("@jwt with @exclude on Object", () => {
-                const doc = gql`
-                    type JWTPayload @jwt @exclude {
-                        id: ID
-                    }
-                `;
-
-                const executeValidate = () => validateDocument({ document: doc });
-                const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid directive usage: Directive @jwt cannot be used in combination with other directives."
-                );
-                expect(errors[0]).toHaveProperty("path", ["JWTPayload"]);
-            });
-
-            test("@jwtClaim with @cypher on Object", () => {
-                const doc = gql`
-                    type JWTPayload @jwt {
-                        id: ID
-                            @jwtClaim(path: "user.id")
-                            @cypher(
-                                statement: """
-                                RETURN 1 as x
-                                """
-                                columnName: "x"
-                            )
-                    }
-                `;
-
-                const executeValidate = () => validateDocument({ document: doc });
-                const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid directive usage: Directive @jwtClaim cannot be used in combination with other directives."
-                );
-                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id"]);
-            });
-
             test("@cypher double", () => {
                 const doc = gql`
                     type User {
@@ -2098,6 +2045,152 @@ describe("validation2.0", () => {
                     "message",
                     "Invalid directive usage: Directive @query can only be used in one location: either schema or type."
                 );
+            });
+        });
+    });
+
+    describe("JWT directives", () => {
+        describe("invalid", () => {
+            test("@jwt not combined", () => {
+                const doc = gql`
+                    type JWTPayload @jwt @exclude {
+                        id: ID
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @jwt cannot be used in combination with other directives."
+                );
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "@jwt"]);
+            });
+
+            test("@jwtClaim not combined", () => {
+                const doc = gql`
+                    type JWTPayload @jwt {
+                        id: ID
+                            @jwtClaim(path: "user.id")
+                            @cypher(
+                                statement: """
+                                RETURN 1 as x
+                                """
+                                columnName: "x"
+                            )
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @jwtClaim cannot be used in combination with other directives."
+                );
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id", "@jwtClaim"]);
+            });
+
+            test("@jwtClaim incorrect location outside @jwt", () => {
+                const doc = gql`
+                    type JWTPayload {
+                        id: ID @jwtClaim(path: "user.id")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Invalid directive usage: Directive @jwtClaim can only be used in \\"@jwt\\" types.'
+                );
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id", "@jwtClaim"]);
+            });
+
+            test("multiple @jwt in type defs", () => {
+                const doc = gql`
+                    type JWTPayload @jwt {
+                        id: ID @jwtClaim(path: "sub")
+                    }
+
+                    type OtherJWTPayload @jwt {
+                        id: ID @jwtClaim(path: "uid")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @jwt can only be used once in the Type Definitions."
+                );
+                expect(errors[0]).toHaveProperty("path", ["OtherJWTPayload", "@jwt"]);
+            });
+
+            test("@jwt fields not scalars", () => {
+                const doc = gql`
+                    type JWTPayload @jwt {
+                        post: Post
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Fields of a @jwt type can only be Scalars or Lists of Scalars."
+                );
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "@jwt"]);
+            });
+        });
+
+        describe("valid", () => {
+            test("@jwt and @jwtClaim", () => {
+                const doc = gql`
+                    type JWTPayload @jwt {
+                        id: ID @jwtClaim(path: "sub")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
             });
         });
     });

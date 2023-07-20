@@ -59,6 +59,7 @@ import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argumen
 import { DirectiveArgumentValueValid } from "./custom-rules/directive-argument-value-is-valid";
 import type { IResolvers } from "@graphql-tools/utils";
 import { DirectiveCombinationValid, SchemaOrTypeDirectives } from "./custom-rules/valid-directive-combination";
+import { ValidJwtDirectives } from "./custom-rules/valid-jwt-directives";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
@@ -285,6 +286,7 @@ function getBaseSchema({
             DirectiveArgumentValueValid(userCustomResolvers, extra, callbacks, validateResolvers),
             DirectiveCombinationValid(),
             SchemaOrTypeDirectives(),
+            ValidJwtDirectives(),
         ],
         // DirectiveArgumentOfCorrectType],
         schemaToExtend

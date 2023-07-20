@@ -683,7 +683,7 @@ function getPrettyName(typeNode: TypeNode): string {
     return typeNode.name.value;
 }
 
-function getInnerTypeName(typeNode: TypeNode): string {
+export function getInnerTypeName(typeNode: TypeNode): string {
     if (typeNode.kind === Kind.LIST_TYPE) {
         return getInnerTypeName(typeNode.type);
     }
