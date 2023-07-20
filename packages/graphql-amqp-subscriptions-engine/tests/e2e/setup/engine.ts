@@ -16,17 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventEmitter } from "events";
-import type { Neo4jGraphQLSubscriptionsMechanism, SubscriptionsEvent } from "../../src/types";
 
-export class TestSubscriptionsMechanism implements Neo4jGraphQLSubscriptionsMechanism {
-    public events = new EventEmitter();
+import type amqp from "amqplib";
+import { Neo4jGraphQLAMQPSubscriptionsEngine } from "../../../src";
 
-    public eventList: SubscriptionsEvent[] = [];
-
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async publish(eventMeta: SubscriptionsEvent): Promise<void> {
-        this.eventList.push(eventMeta);
-        this.events.emit(eventMeta.event, eventMeta);
-    }
+export default function createEngine(connection: amqp.Options.Connect): Neo4jGraphQLAMQPSubscriptionsEngine {
+    return new Neo4jGraphQLAMQPSubscriptionsEngine({
+        exchange: "neo4j-graphql",
+        connection,
+    });
 }

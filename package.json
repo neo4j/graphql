@@ -13,8 +13,7 @@
         "packages/graphql/tests/performance/server",
         "examples/migration",
         "examples/neo-place",
-        "examples/subscriptions/*",
-        "packages/plugins/*"
+        "examples/subscriptions/*"
     ],
     "scripts": {
         "build": "tsc --build tsconfig.production.json",
@@ -30,8 +29,8 @@
     },
     "devDependencies": {
         "@tsconfig/node16": "1.0.4",
-        "@typescript-eslint/eslint-plugin": "6.0.0",
-        "@typescript-eslint/parser": "6.0.0",
+        "@typescript-eslint/eslint-plugin": "6.1.0",
+        "@typescript-eslint/parser": "6.1.0",
         "concurrently": "8.2.0",
         "dotenv": "16.3.1",
         "eslint": "8.45.0",

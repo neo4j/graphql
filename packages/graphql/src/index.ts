@@ -26,15 +26,7 @@ import * as directives from "./graphql/directives";
 import * as scalars from "./graphql/scalars";
 const objects = { Point, CartesianPoint };
 
-import {
-    DeleteInfo,
-    GraphQLOptionsArg,
-    GraphQLSortArg,
-    GraphQLWhereArg,
-    Neo4jGraphQLSubscriptionsMechanism,
-    Node,
-    SubscriptionsEvent,
-} from "./types";
+import { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "./types";
 
 /**
  * Core library functionality.
@@ -47,11 +39,6 @@ export { Neo4jGraphQL, Neo4jGraphQLConstructor, Neo4jGraphQLContext };
 export { directives, scalars, objects };
 
 /**
- * Exports for usage by the OGM.
- */
-export { DeleteInfo, GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Node };
-
-/**
  * Allows for the implementation of custom subscriptions mechanisms.
  */
-export { Neo4jGraphQLSubscriptionsMechanism, SubscriptionsEvent };
+export { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent };

@@ -68,8 +68,8 @@ describe("TreeDescriptor Parser", () => {
             typeDefs,
         });
         schema = await neoSchema.getSchema();
-        nodes = neoSchema.nodes;
-        relationships = neoSchema.relationships;
+        nodes = neoSchema["nodes"];
+        relationships = neoSchema["relationships"];
 
         movieNode = nodes.find((node) => node.name === "Movie") as unknown as Node;
         context = new ContextBuilder({

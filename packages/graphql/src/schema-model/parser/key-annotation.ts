@@ -26,7 +26,7 @@ export function parseKeyAnnotation(directives: readonly DirectiveNode[]): KeyAnn
 
     directives.forEach((directive) => {
         // fields is a recognized argument but we don't use it, hence we ignore the non-usage of the variable.
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+         
         const { fields, resolvable, ...unrecognizedArguments } = parseArguments(directive) as {
             fields: string;
             resolvable: boolean;

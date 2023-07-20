@@ -19,17 +19,17 @@
 
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on delete", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
-    let plugin: TestSubscriptionsMechanism;
+    let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
         typeDefs = gql`
             type Actor {
                 name: String!

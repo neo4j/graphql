@@ -21,13 +21,13 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("@selectable", () => {
-    let subscriptionMechanism: TestSubscriptionsMechanism;
+    let subscriptionMechanism: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        subscriptionMechanism = new TestSubscriptionsMechanism();
+        subscriptionMechanism = new TestSubscriptionsEngine();
     });
 
     test("Disable read fields", async () => {

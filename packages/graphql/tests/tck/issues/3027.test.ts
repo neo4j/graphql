@@ -85,8 +85,8 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Book)
                 WHERE this.isbn = $param0
-                CALL apoc.util.validate(EXISTS((this)<-[:TRANSLATED_BOOK_TITLE]-(:BookTitle_SV)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"Book\\",\\"translatedTitle\\"])
-                CALL apoc.util.validate(EXISTS((this)<-[:TRANSLATED_BOOK_TITLE]-(:BookTitle_EN)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"Book\\",\\"translatedTitle\\"])
+                WITH *
+                WHERE apoc.util.validatePredicate(EXISTS((this)<-[:TRANSLATED_BOOK_TITLE]-(:BookTitle_SV)) OR EXISTS((this)<-[:TRANSLATED_BOOK_TITLE]-(:BookTitle_EN)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"Book\\",\\"translatedTitle\\"])
                 CREATE (this_create_translatedTitle_BookTitle_EN0_node:BookTitle_EN)
                 SET this_create_translatedTitle_BookTitle_EN0_node.value = $this_create_translatedTitle_BookTitle_EN0_node_value
                 MERGE (this)<-[:TRANSLATED_BOOK_TITLE]-(this_create_translatedTitle_BookTitle_EN0_node)
@@ -176,8 +176,8 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Book)
                 WHERE this.isbn = $param0
-                CALL apoc.util.validate(EXISTS((this)<-[:TRANSLATED_BOOK_TITLE]-(:BookTitle_SV)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"Book\\",\\"translatedTitle\\"])
-                CALL apoc.util.validate(EXISTS((this)<-[:TRANSLATED_BOOK_TITLE]-(:BookTitle_EN)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"Book\\",\\"translatedTitle\\"])
+                WITH *
+                WHERE apoc.util.validatePredicate(EXISTS((this)<-[:TRANSLATED_BOOK_TITLE]-(:BookTitle_SV)) OR EXISTS((this)<-[:TRANSLATED_BOOK_TITLE]-(:BookTitle_EN)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"Book\\",\\"translatedTitle\\"])
                 CREATE (this_create_translatedTitle_BookTitle_EN0_node_BookTitle_EN:BookTitle_EN)
                 SET this_create_translatedTitle_BookTitle_EN0_node_BookTitle_EN.value = $this_create_translatedTitle_BookTitle_EN0_node_BookTitle_EN_value
                 MERGE (this)<-[:TRANSLATED_BOOK_TITLE]-(this_create_translatedTitle_BookTitle_EN0_node_BookTitle_EN)

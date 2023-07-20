@@ -41,8 +41,6 @@ import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPoi
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import { isRootType } from "../../utils/is-root-type";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
-import type { ValidationConfig } from "../../classes/Neo4jGraphQL";
-import { defaultValidationConfig } from "../../classes/Neo4jGraphQL";
 import type { Neo4jFeaturesSettings } from "../../types";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
@@ -220,13 +218,11 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
 
 function getBaseSchema({
     document,
-    validateTypeDefs = true,
     features,
     additionalDirectives = [],
     additionalTypes = [],
 }: {
     document: DocumentNode;
-    validateTypeDefs: boolean;
     features: Neo4jFeaturesSettings | undefined;
     additionalDirectives: Array<GraphQLDirective>;
     additionalTypes: Array<GraphQLNamedType>;
@@ -248,18 +244,16 @@ function getBaseSchema({
         ],
     });
 
-    return extendSchema(schemaToExtend, doc, { assumeValid: !validateTypeDefs });
+    return extendSchema(schemaToExtend, doc);
 }
 
 function validateDocument({
     document,
-    validationConfig = defaultValidationConfig,
     features,
     additionalDirectives = [],
     additionalTypes = [],
 }: {
     document: DocumentNode;
-    validationConfig?: ValidationConfig;
     features: Neo4jFeaturesSettings | undefined;
     additionalDirectives?: Array<GraphQLDirective>;
     additionalTypes?: Array<GraphQLNamedType>;
@@ -267,18 +261,17 @@ function validateDocument({
     const schema = getBaseSchema({
         document,
         features,
-        validateTypeDefs: validationConfig.validateTypeDefs,
         additionalDirectives,
         additionalTypes,
     });
-    if (validationConfig.validateTypeDefs) {
-        const errors = validateSchema(schema);
-        const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
-        if (filteredErrors.length) {
-            throw new Error(filteredErrors.join("\n"));
-        }
+
+    const errors = validateSchema(schema);
+    const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
+    if (filteredErrors.length) {
+        throw new Error(filteredErrors.join("\n"));
     }
-    validateSchemaCustomizations({ document, schema, validationConfig });
+
+    validateSchemaCustomizations({ document, schema });
 }
 
 export default validateDocument;

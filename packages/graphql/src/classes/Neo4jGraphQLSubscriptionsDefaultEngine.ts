@@ -18,19 +18,12 @@
  */
 
 import { EventEmitter } from "events";
-import { Neo4jGraphQLSubscriptionsAMQPPlugin } from ".";
+import type { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "../types";
 
-describe("index", () => {
-    test("Neo4jGraphQLSubscriptionsAMQPPlugin", () => {
-        expect(Neo4jGraphQLSubscriptionsAMQPPlugin).toBeDefined();
-    });
+export class Neo4jGraphQLSubscriptionsDefaultEngine implements Neo4jGraphQLSubscriptionsEngine {
+    public events: EventEmitter = new EventEmitter();
 
-    test("Neo4jGraphQLSubscriptionsAMQPPlugin plugin interface", () => {
-        const plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
-            connection: "",
-        });
-
-        expect(plugin.events).toBeInstanceOf(EventEmitter);
-        expect(typeof plugin.publish).toBe("function");
-    });
-});
+    publish(eventMeta: SubscriptionsEvent): void | Promise<void> {
+        this.events.emit(eventMeta.event, eventMeta);
+    }
+}
