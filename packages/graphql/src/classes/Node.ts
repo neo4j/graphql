@@ -170,7 +170,7 @@ class Node extends GraphElement {
             ...this.enumFields,
             ...this.objectFields,
             ...this.scalarFields, // this are just custom scalars
-            ...this.primitiveFields, // this are instead built-in scalars, confirmed By Alexandra
+            ...this.primitiveFields, // this are instead built-in scalars
             ...this.interfaceFields,
             ...this.objectFields,
             ...this.unionFields,
