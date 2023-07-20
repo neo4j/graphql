@@ -44,10 +44,5 @@ export class ListModel {
     getNotIncludes(): string {
         return `${this.attributeModel.name}_NOT_INCLUDES`;
     }
-    /**
-     * Given the GraphQL field name, returns the semantic information about the list operation it tries to perform
-     **/
-    getListMetadata(graphQLField: string): { fieldName: string; operator: string; comparator?: string } {
-        throw new Error("Not implemented");
-    }
+   
 }

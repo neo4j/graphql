@@ -34,6 +34,7 @@ import { Attribute } from "../Attribute";
 import { AttributeModel } from "./AttributeModel";
 import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 import { CypherAnnotation } from "../../annotation/CypherAnnotation";
+import { e } from "@neo4j/cypher-builder";
 
 describe("Attribute", () => {
     describe("type assertions", () => {
@@ -475,14 +476,120 @@ describe("Attribute", () => {
             const attribute = new AttributeModel(
                 new Attribute({
                     name: "test",
-                    annotations: [new CypherAnnotation({
-                        statement: "MATCH (this)-[:FRIENDS_WITH]->(closestUser:User) RETURN closestUser",
-                        columnName: "closestUser",
-                    })],
+                    annotations: [
+                        new CypherAnnotation({
+                            statement: "MATCH (this)-[:FRIENDS_WITH]->(closestUser:User) RETURN closestUser",
+                            columnName: "closestUser",
+                        }),
+                    ],
                     type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
                 })
             );
             expect(attribute.isCypher()).toBe(true);
+        });
+    });
+
+    describe("specialized models", () => {
+        test("List Model", () => {
+            const listElementAttribute = new AttributeModel(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ListType(new ScalarType(GraphQLBuiltInScalarType.String, true), false),
+                })
+            );
+
+            expect(listElementAttribute).toBeInstanceOf(AttributeModel);
+            expect(listElementAttribute.listModel).toBeDefined();
+            expect(listElementAttribute.listModel.getIncludes()).toMatchInlineSnapshot(`"test_INCLUDES"`);
+            expect(listElementAttribute.listModel.getNotIncludes()).toMatchInlineSnapshot(`"test_NOT_INCLUDES"`);
+            expect(listElementAttribute.listModel.getPop()).toMatchInlineSnapshot(`"test_POP"`);
+            expect(listElementAttribute.listModel.getPush()).toMatchInlineSnapshot(`"test_PUSH"`);
+        });
+
+        test("Aggregation Model", () => {
+            const attribute = new AttributeModel(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.Int, true),
+                })
+            );
+            // TODO: test it with String as well.
+
+            expect(attribute).toBeInstanceOf(AttributeModel);
+            expect(attribute.aggregationModel).toBeDefined();
+            expect(attribute.aggregationModel.getAggregationComparators()).toEqual(
+                expect.arrayContaining([
+                    "test_AVERAGE_EQUAL",
+                    "test_MIN_EQUAL",
+                    "test_MAX_EQUAL",
+                    "test_SUM_EQUAL",
+                    "test_AVERAGE_GT",
+                    "test_MIN_GT",
+                    "test_MAX_GT",
+                    "test_SUM_GT",
+                    "test_AVERAGE_GTE",
+                    "test_MIN_GTE",
+                    "test_MAX_GTE",
+                    "test_SUM_GTE",
+                    "test_AVERAGE_LT",
+                    "test_MIN_LT",
+                    "test_MAX_LT",
+                    "test_SUM_LT",
+                    "test_AVERAGE_LTE",
+                    "test_MIN_LTE",
+                    "test_MAX_LTE",
+                    "test_SUM_LTE",
+                ])
+            );
+            // Average
+            expect(attribute.aggregationModel.getAverageComparator("EQUAL")).toMatchInlineSnapshot(
+                `"test_AVERAGE_EQUAL"`
+            );
+            expect(attribute.aggregationModel.getAverageComparator("GT")).toMatchInlineSnapshot(`"test_AVERAGE_GT"`);
+            expect(attribute.aggregationModel.getAverageComparator("GTE")).toMatchInlineSnapshot(`"test_AVERAGE_GTE"`);
+            expect(attribute.aggregationModel.getAverageComparator("LT")).toMatchInlineSnapshot(`"test_AVERAGE_LT"`);
+            expect(attribute.aggregationModel.getAverageComparator("LTE")).toMatchInlineSnapshot(`"test_AVERAGE_LTE"`);
+            // Max
+            expect(attribute.aggregationModel.getMaxComparator("EQUAL")).toMatchInlineSnapshot(`"test_MAX_EQUAL"`);
+            expect(attribute.aggregationModel.getMaxComparator("GT")).toMatchInlineSnapshot(`"test_MAX_GT"`);
+            expect(attribute.aggregationModel.getMaxComparator("GTE")).toMatchInlineSnapshot(`"test_MAX_GTE"`);
+            expect(attribute.aggregationModel.getMaxComparator("LT")).toMatchInlineSnapshot(`"test_MAX_LT"`);
+            expect(attribute.aggregationModel.getMaxComparator("LTE")).toMatchInlineSnapshot(`"test_MAX_LTE"`);
+            // Min
+            expect(attribute.aggregationModel.getMinComparator("EQUAL")).toMatchInlineSnapshot(`"test_MIN_EQUAL"`);
+            expect(attribute.aggregationModel.getMinComparator("GT")).toMatchInlineSnapshot(`"test_MIN_GT"`);
+            expect(attribute.aggregationModel.getMinComparator("GTE")).toMatchInlineSnapshot(`"test_MIN_GTE"`);
+            expect(attribute.aggregationModel.getMinComparator("LT")).toMatchInlineSnapshot(`"test_MIN_LT"`);
+            expect(attribute.aggregationModel.getMinComparator("LTE")).toMatchInlineSnapshot(`"test_MIN_LTE"`);
+            // Sum
+            expect(attribute.aggregationModel.getSumComparator("EQUAL")).toMatchInlineSnapshot(`"test_SUM_EQUAL"`);
+            expect(attribute.aggregationModel.getSumComparator("GT")).toMatchInlineSnapshot(`"test_SUM_GT"`);
+            expect(attribute.aggregationModel.getSumComparator("GTE")).toMatchInlineSnapshot(`"test_SUM_GTE"`);
+            expect(attribute.aggregationModel.getSumComparator("LT")).toMatchInlineSnapshot(`"test_SUM_LT"`);
+            expect(attribute.aggregationModel.getSumComparator("LTE")).toMatchInlineSnapshot(`"test_SUM_LTE"`);
+        });
+
+        test("Math Model", () => {
+            const attribute = new AttributeModel(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.Int, true),
+                })
+            );
+            // TODO: test it with float as well.
+            expect(attribute).toBeInstanceOf(AttributeModel);
+            expect(attribute.mathModel).toBeDefined();
+            expect(attribute.mathModel.getMathOperations()).toEqual(
+                expect.arrayContaining(["test_INCREMENT", "test_DECREMENT", "test_MULTIPLY", "test_DIVIDE"])
+            );
+
+            expect(attribute.mathModel.getAdd()).toMatchInlineSnapshot(`"test_INCREMENT"`);
+            expect(attribute.mathModel.getSubtract()).toMatchInlineSnapshot(`"test_DECREMENT"`);
+            expect(attribute.mathModel.getMultiply()).toMatchInlineSnapshot(`"test_MULTIPLY"`);
+            expect(attribute.mathModel.getDivide()).toMatchInlineSnapshot(`"test_DIVIDE"`);
         });
     });
 });

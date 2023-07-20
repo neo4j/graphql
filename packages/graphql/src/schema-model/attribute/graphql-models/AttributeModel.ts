@@ -72,7 +72,7 @@ export class AttributeModel {
                 this.isEnum() ||
                 this.isObject() ||
                 this.isScalar() ||
-                this.isPrimitive() ||
+                this.isGraphQLBuiltInScalar() ||
                 this.isInterface() ||
                 this.isUnion() ||
                 this.isPoint()) &&
@@ -93,7 +93,7 @@ export class AttributeModel {
        ...this.pointFields,]
      */
     isConstrainable(): boolean {
-        return this.isPrimitive() || this.isScalar() || this.isEnum() || this.isTemporal() || this.isPoint();
+        return this.isGraphQLBuiltInScalar() || this.isScalar() || this.isEnum() || this.isTemporal() || this.isPoint();
     }
     // TODO: remember to figure out constrainableFields
 
@@ -246,6 +246,15 @@ export class AttributeModel {
     isAbstract(): boolean {
         return this.isInterface() || this.isUnion();
     }
+
+    isScalar(): boolean {
+        return this.isGraphQLBuiltInScalar() || this.isUserScalar() || this.isSpatial() || this.isTemporal() || this.isBigInt();
+    }
+
+    isNumeric(): boolean {
+        return this.isBigInt() || this.isFloat() || this.isInt();
+    }
+
     /**
      *  END of category assertions
      */
@@ -254,22 +263,4 @@ export class AttributeModel {
         return this.annotations.cypher ? true : false;
     }
 
-    /**
-     * START of Refactoring methods, these methods are just adapters to the new methods
-     * to help the transition from the old Node/Relationship/BaseField classes
-     * */
-
-    // TODO: remove this method and use isGraphQLBuiltInScalar instead
-    isPrimitive(): boolean {
-        return this.isGraphQLBuiltInScalar();
-    }
-
-    // TODO: remove this and use isUserScalar instead
-    isScalar(): boolean {
-        return this.isUserScalar();
-    }
-
-    /**
-     * END of refactoring methods
-     */
 }

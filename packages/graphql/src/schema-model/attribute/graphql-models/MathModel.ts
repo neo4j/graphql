@@ -22,15 +22,16 @@ import type { AttributeModel } from "./AttributeModel";
 
 export class MathModel {
     readonly attributeModel: AttributeModel;
+
     constructor(attributeModel: AttributeModel) {
-        if (!attributeModel.isScalar()) {
-            throw new Error("Attribute is not a scalar");
+        if (!attributeModel.isNumeric()) {
+            throw new Error("Math model available only for numeric attributes");
         }
         this.attributeModel = attributeModel;
     }
 
     getMathOperations(): string[] {
-        return [this.getAdd(), this.getSubtract(), this.getMultiply(), this.getDecrement()];
+        return [this.getAdd(), this.getSubtract(), this.getMultiply(), this.getDivide()];
     }
 
     getAdd(): string {
@@ -40,14 +41,16 @@ export class MathModel {
     }
 
     getSubtract(): string {
-        return `${this.attributeModel.name}_SUBTRACT`;
+        return this.attributeModel.isInt() || this.attributeModel.isBigInt() ? 
+        `${this.attributeModel.name}_DECREMENT` :`${this.attributeModel.name}_SUBTRACT`;
     }
 
     getMultiply(): string {
         return `${this.attributeModel.name}_MULTIPLY`;
     }
 
-    getDecrement(): string {
-        return `${this.attributeModel.name}_DECREMENT`;
+    getDivide(): string {
+        return `${this.attributeModel.name}_DIVIDE`;
     }
+
 }
