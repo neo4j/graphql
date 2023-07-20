@@ -89,19 +89,14 @@ export class OperationsFactory {
         delete projectionFields.node;
         delete projectionFields.edge;
 
-        // const projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
-
         const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
         const operation = new AggregationOperation(relationship, Boolean(resolveTree.args?.directed ?? true));
         const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
         const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
         const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
-        let filters: Filter[];
-        if (relationship instanceof Relationship) {
-            filters = this.filterFactory.createRelationshipFilters(relationship, whereArgs);
-        } else {
-            filters = this.filterFactory.createFilters(relationship, whereArgs);
-        }
+
+        const filters = this.filterFactory.createFilters(relationship.target as ConcreteEntity, whereArgs); // Aggregation filters only apply to target node
+
         operation.setFields(fields);
         operation.setNodeFields(nodeFields);
         operation.setEdgeFields(edgeFields);

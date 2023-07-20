@@ -77,7 +77,7 @@ export class FilterFactory {
             }
 
             const attr = entity.findAttribute(fieldName);
-            if (!attr) throw new Error("No attribute found");
+            if (!attr) throw new Error(`Attribute ${fieldName} not found`);
             return this.createPropertyFilter({
                 attribute: attr,
                 comparisonValue: value,
@@ -94,7 +94,7 @@ export class FilterFactory {
             }
             const { fieldName, operator, isNot, isConnection } = parseWhereField(key);
             const attr = relationship.findAttribute(fieldName);
-            if (!attr) throw new Error("No attribute found");
+            if (!attr) throw new Error(`Attribute ${fieldName} not found`);
             return this.createPropertyFilter({
                 attribute: attr,
                 comparisonValue: value,
