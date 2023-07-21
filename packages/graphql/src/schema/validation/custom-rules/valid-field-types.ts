@@ -24,52 +24,28 @@ import type {
     ObjectTypeDefinitionNode,
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
+    ListTypeNode,
+    TypeNode,
+    NonNullTypeNode,
 } from "graphql";
 import { Kind, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { getInnerTypeName } from "./directive-argument-value-is-valid";
 
-// TODO: replace with schema model built-in graphql scalars
-const SCALAR_TYPE_NAMES = ["string", "int", "float", "boolean", "id"];
-
-export function ValidJwtDirectives() {
+export function ValidFieldTypes() {
     return function (context: SDLValidationContext): ASTVisitor {
-        let seenJwtType = false;
         return {
-            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-                const isJwtDirective = directiveNode.name.value === "jwt";
-                const isJwtClaimDirective = directiveNode.name.value === "jwtClaim";
-                if (!isJwtDirective && !isJwtClaimDirective) {
-                    return;
-                }
+            FieldDefinition(field: FieldDefinitionNode, _key, _parent, path, ancestors) {
+                const [temp] = getPathToDirectiveNode(path, ancestors);
 
-                const [temp, traversedDef, parentOfTraversedDef] = getPathToDirectiveNode(path, ancestors);
-                if (!traversedDef) {
-                    console.error("No last definition traversed");
-                    return;
-                }
-                const pathToHere = [...temp, `@${directiveNode.name.value}`];
-
-                let result;
-                if (isJwtDirective) {
-                    result = assertJwtDirective(traversedDef as ObjectTypeDefinitionNode, seenJwtType);
-                    seenJwtType = result.seenJwtType;
-                } else {
-                    result = assertJwtClaimDirective(
-                        traversedDef as FieldDefinitionNode,
-                        parentOfTraversedDef as ObjectTypeDefinitionNode
-                    );
-                }
-
-                const { isValid, errorMsg } = result;
-
+                const { isValid, errorMsg } = assertFieldOfValidType(field);
                 if (!isValid) {
                     const errorOpts = {
-                        nodes: [directiveNode, traversedDef],
+                        nodes: [field],
                         // extensions: {
                         //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
                         // },
-                        path: pathToHere,
+                        path: temp,
                         source: undefined,
                         positions: undefined,
                         originalError: undefined,
@@ -145,10 +121,7 @@ type AssertionResponse = {
     errorPath: ReadonlyArray<string | number>;
 };
 
-function assertJwtDirective(
-    objectType: ObjectTypeDefinitionNode,
-    seenJwtType: boolean
-): AssertionResponse & { seenJwtType: boolean } {
+function assertFieldOfValidType(field: FieldDefinitionNode): AssertionResponse {
     let isValid = true;
     let errorMsg, errorPath;
 
@@ -158,53 +131,41 @@ function assertJwtDirective(
     };
 
     try {
-        if (seenJwtType) {
-            throw new Error(`Invalid directive usage: Directive @jwt can only be used once in the Type Definitions.`);
-        } else {
-            seenJwtType = true;
-        }
-
-        if (objectType.directives && objectType.directives.length > 1) {
-            throw new Error(
-                `Invalid directive usage: Directive @jwt cannot be used in combination with other directives.`
-            );
-        }
-        if (
-            objectType.fields?.some((field) => !SCALAR_TYPE_NAMES.includes(getInnerTypeName(field.type).toLowerCase()))
-        ) {
-            throw new Error(`Invalid directive usage: Fields of a @jwt type can only be Scalars or Lists of Scalars.`);
-        }
-    } catch (err) {
-        onError(err as Error);
-    }
-
-    return { isValid, errorMsg, errorPath, seenJwtType };
-}
-
-function assertJwtClaimDirective(
-    fieldType: FieldDefinitionNode,
-    objectType: ObjectTypeDefinitionNode
-): AssertionResponse {
-    let isValid = true;
-    let errorMsg, errorPath;
-
-    const onError = (error: Error) => {
-        isValid = false;
-        errorMsg = error.message;
-    };
-
-    try {
-        if (fieldType.directives && fieldType.directives.length > 1) {
-            throw new Error(
-                `Invalid directive usage: Directive @jwtClaim cannot be used in combination with other directives.`
-            );
-        }
-        if (!objectType.directives?.find((d) => d.name.value === "jwt")) {
-            throw new Error(`Invalid directive usage: Directive @jwtClaim can only be used in \\"@jwt\\" types.`);
-        }
+        isNotMatrixType(field);
+        isValidRelationshipType(field);
     } catch (err) {
         onError(err as Error);
     }
 
     return { isValid, errorMsg, errorPath };
+}
+
+function isNotMatrixType(field: FieldDefinitionNode) {
+    const isListType = field.type.kind === Kind.LIST_TYPE;
+    if (isListType) {
+        const listNode = field.type;
+        const isMatrix = listNode.type.kind === Kind.LIST_TYPE;
+        // && listNode.type.type.kind === Kind.LIST_TYPE;
+        if (isMatrix) {
+            throw new Error(`Invalid field type: Matrix arrays not supported.`);
+        }
+    }
+}
+
+function isValidRelationshipType(field: FieldDefinitionNode) {
+    if (field.directives?.find((d) => d.name.value === "relationship")) {
+        const msg = `Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [${getInnerTypeName(
+            field.type
+        )}!]!`;
+
+        if (field.type.kind === Kind.NON_NULL_TYPE) {
+            if (field.type.type.kind === Kind.LIST_TYPE) {
+                if (field.type.type.type.kind !== Kind.NON_NULL_TYPE) {
+                    throw new Error(msg);
+                }
+            }
+        } else if (field.type.kind === Kind.LIST_TYPE) {
+            throw new Error(msg);
+        }
+    }
 }

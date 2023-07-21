@@ -1882,7 +1882,7 @@ describe("validation2.0", () => {
 
     describe("Directive Combination", () => {
         describe("valid", () => {
-            test("@cypher with @authentication on Field", () => {
+            test("@cypher with @timestamp on Field", () => {
                 const doc = gql`
                     type User {
                         id: ID
@@ -1893,7 +1893,7 @@ describe("validation2.0", () => {
                                 """
                                 columnName: "u"
                             )
-                            @authentication
+                            @timestamp
                     }
                 `;
 
@@ -1901,9 +1901,9 @@ describe("validation2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test("@node with @authentication on Object", () => {
+            test("@node with @exclude on Object", () => {
                 const doc = gql`
-                    type User @node(labels: ["Person"]) @authentication {
+                    type User @node(labels: ["Person"]) @exclude(operations: []) {
                         id: ID
                         name: String
                     }
@@ -2051,7 +2051,7 @@ describe("validation2.0", () => {
 
     describe("JWT directives", () => {
         describe("invalid", () => {
-            test("@jwt not combined", () => {
+            test("@jwt cannot combined", () => {
                 const doc = gql`
                     type JWTPayload @jwt @exclude {
                         id: ID
@@ -2074,7 +2074,7 @@ describe("validation2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["JWTPayload", "@jwt"]);
             });
 
-            test("@jwtClaim not combined", () => {
+            test("@jwtClaim cannot combined", () => {
                 const doc = gql`
                     type JWTPayload @jwt {
                         id: ID
@@ -2192,6 +2192,470 @@ describe("validation2.0", () => {
                 const executeValidate = () => validateDocument({ document: doc });
                 expect(executeValidate).not.toThrow();
             });
+        });
+    });
+
+    describe("@relationshipProperties", () => {
+        describe("invalid", () => {
+            test("@relationshipProperties reserved field name", () => {
+                const interfaceTypes = gql`
+                    interface HasPost @relationshipProperties {
+                        cursor: Int
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type User {
+                        name: String
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "HasPost")
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid @relationshipProperties field: Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"
+                );
+                expect(errors[0]).toHaveProperty("path", ["HasPost", "cursor"]);
+            });
+
+            test("@cypher forbidden on @relationshipProperties field", () => {
+                const interfaceTypes = gql`
+                    interface HasPost @relationshipProperties {
+                        review: Float
+                            @cypher(
+                                statement: """
+                                WITH 2 as x RETURN x
+                                """
+                                columnName: "x"
+                            )
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type User {
+                        name: String
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "HasPost")
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid @relationshipProperties field: Cannot use the @cypher directive on relationship properties."
+                );
+                expect(errors[0]).toHaveProperty("path", ["HasPost", "review"]);
+            });
+        });
+
+        describe("valid", () => {
+            test("@relationshipProperties", () => {
+                const interfaceTypes = gql`
+                    interface HasPost @relationshipProperties {
+                        review: Float
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type User {
+                        name: String
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "HasPost")
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
+                expect(executeValidate).not.toThrow();
+            });
+        });
+    });
+
+    describe("Field Type", () => {
+        describe("invalid", () => {
+            test("matrix array", () => {
+                const doc = gql`
+                    type Post {
+                        titles: [[String]]
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "Invalid field type: Matrix arrays not supported.");
+                expect(errors[0]).toHaveProperty("path", ["Post", "titles"]);
+            });
+
+            test("@relationship nullable list type", () => {
+                const doc = gql`
+                    type User {
+                        posts: [Post!] @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [Post!]!"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "posts"]);
+            });
+
+            test("@relationship non-nullable list of nullable type", () => {
+                const doc = gql`
+                    type User {
+                        posts: [Post]! @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
+                try {
+                    validateDocument({ document: doc });
+                } catch (err) {
+                    console.error(err);
+                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [Post!]!"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "posts"]);
+            });
+        });
+
+        describe("valid", () => {
+            test("simple list", () => {
+                const doc = gql`
+                    type Post {
+                        titles: [String]
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@relationship non-null list of non-nullable type", () => {
+                const doc = gql`
+                    type User {
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                expect(executeValidate).not.toThrow();
+            });
+        });
+    });
+
+    describe("Reserved Type Name", () => {
+        test("PageInfo type", () => {
+            const doc = gql`
+                type PageInfo {
+                    id: ID
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            try {
+                validateDocument({ document: doc });
+            } catch (err) {
+                console.error(err);
+            }
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information."
+            );
+        });
+
+        test("PageInfo interface", () => {
+            const doc = gql`
+                interface PageInfo {
+                    id: ID
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            try {
+                validateDocument({ document: doc });
+            } catch (err) {
+                console.error(err);
+            }
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information."
+            );
+        });
+
+        test("PageInfo union", () => {
+            const doc = gql`
+                union PageInfo
+                {
+                    id: ID
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            try {
+                validateDocument({ document: doc });
+            } catch (err) {
+                console.error(err);
+            }
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information."
+            );
+        });
+
+        test("PageInfo enum", () => {
+            const doc = gql`
+                enum PageInfo {
+                    FIRST
+                    SECOND
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            try {
+                validateDocument({ document: doc });
+            } catch (err) {
+                console.error(err);
+            }
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information."
+            );
+        });
+
+        test("PageInfo scalar", () => {
+            const doc = gql`
+                scalar PageInfo
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            try {
+                validateDocument({ document: doc });
+            } catch (err) {
+                console.error(err);
+            }
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information."
+            );
+        });
+
+        test("Connection", () => {
+            const doc = gql`
+                type SomeConnection {
+                    id: ID
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            try {
+                validateDocument({ document: doc });
+            } catch (err) {
+                console.error(err);
+            }
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                'Type or Interface with name ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.'
+            );
+        });
+
+        test("Node type", () => {
+            const doc = gql`
+                type Node {
+                    id: ID
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            try {
+                validateDocument({ document: doc });
+            } catch (err) {
+                console.error(err);
+            }
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Type or Interface with name `Node` reserved to support Relay. See https://relay.dev/graphql/ for more information."
+            );
+        });
+
+        test("Node interface", () => {
+            const doc = gql`
+                interface Node {
+                    id: ID
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            try {
+                validateDocument({ document: doc });
+            } catch (err) {
+                console.error(err);
+            }
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Type or Interface with name `Node` reserved to support Relay. See https://relay.dev/graphql/ for more information."
+            );
+        });
+
+        test("Node union", () => {
+            const doc = gql`
+                union Node
+                {
+                    id: ID
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            try {
+                validateDocument({ document: doc });
+            } catch (err) {
+                console.error(err);
+            }
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Type or Interface with name `Node` reserved to support Relay. See https://relay.dev/graphql/ for more information."
+            );
+        });
+
+        test("Node enum", () => {
+            const doc = gql`
+                enum Node {
+                    ONE
+                    TWO
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            try {
+                validateDocument({ document: doc });
+            } catch (err) {
+                console.error(err);
+            }
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Type or Interface with name `Node` reserved to support Relay. See https://relay.dev/graphql/ for more information."
+            );
+        });
+
+        test("Node scalar", () => {
+            const doc = gql`
+                scalar Node
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc });
+            const errors = getError(executeValidate);
+            try {
+                validateDocument({ document: doc });
+            } catch (err) {
+                console.error(err);
+            }
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Type or Interface with name `Node` reserved to support Relay. See https://relay.dev/graphql/ for more information."
+            );
         });
     });
 });

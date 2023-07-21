@@ -60,24 +60,27 @@ import { DirectiveArgumentValueValid } from "./custom-rules/directive-argument-v
 import type { IResolvers } from "@graphql-tools/utils";
 import { DirectiveCombinationValid, SchemaOrTypeDirectives } from "./custom-rules/valid-directive-combination";
 import { ValidJwtDirectives } from "./custom-rules/valid-jwt-directives";
+import { ValidFieldTypes } from "./custom-rules/valid-field-types";
+import { ReservedTypeNames } from "./custom-rules/reserved-type-names";
+import { ValidRelationshipProperties } from "./custom-rules/valid-relationship-properties";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
         .filter((definition) => {
-            if (
-                definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
-                definition.kind === Kind.SCALAR_TYPE_DEFINITION ||
-                definition.kind === Kind.INTERFACE_TYPE_DEFINITION ||
-                definition.kind === Kind.UNION_TYPE_DEFINITION ||
-                definition.kind === Kind.ENUM_TYPE_DEFINITION ||
-                definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION
-            ) {
-                RESERVED_TYPE_NAMES.forEach((reservedName) => {
-                    if (reservedName.regex.test(definition.name.value)) {
-                        throw new Error(reservedName.error);
-                    }
-                });
-            }
+            // if (
+            //     definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
+            //     definition.kind === Kind.SCALAR_TYPE_DEFINITION ||
+            //     definition.kind === Kind.INTERFACE_TYPE_DEFINITION ||
+            //     definition.kind === Kind.UNION_TYPE_DEFINITION ||
+            //     definition.kind === Kind.ENUM_TYPE_DEFINITION ||
+            //     definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION
+            // ) {
+            //     RESERVED_TYPE_NAMES.forEach((reservedName) => {
+            //         if (reservedName.regex.test(definition.name.value)) {
+            //             throw new Error(reservedName.error);
+            //         }
+            //     });
+            // }
 
             if (definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
                 if (!isRootType(definition)) {
@@ -287,6 +290,9 @@ function getBaseSchema({
             DirectiveCombinationValid(),
             SchemaOrTypeDirectives(),
             ValidJwtDirectives(),
+            ValidRelationshipProperties(),
+            ValidFieldTypes(),
+            ReservedTypeNames(),
         ],
         // DirectiveArgumentOfCorrectType],
         schemaToExtend

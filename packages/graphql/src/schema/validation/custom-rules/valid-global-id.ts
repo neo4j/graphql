@@ -27,49 +27,32 @@ import type {
 } from "graphql";
 import { Kind, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { getInnerTypeName } from "./directive-argument-value-is-valid";
+import { RESERVED_INTERFACE_FIELDS } from "../../../constants";
 
-// TODO: replace with schema model built-in graphql scalars
-const SCALAR_TYPE_NAMES = ["string", "int", "float", "boolean", "id"];
-
-export function ValidJwtDirectives() {
+export function ValidGlobalID() {
     return function (context: SDLValidationContext): ASTVisitor {
-        let seenJwtType = false;
         return {
             Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-                const isJwtDirective = directiveNode.name.value === "jwt";
-                const isJwtClaimDirective = directiveNode.name.value === "jwtClaim";
-                if (!isJwtDirective && !isJwtClaimDirective) {
+                if (directiveNode.name.value !== "id") {
                     return;
                 }
 
-                const [temp, traversedDef, parentOfTraversedDef] = getPathToDirectiveNode(path, ancestors);
+                const [temp, traversedDef] = getPathToDirectiveNode(path, ancestors);
                 if (!traversedDef) {
                     console.error("No last definition traversed");
                     return;
                 }
-                const pathToHere = [...temp, `@${directiveNode.name.value}`];
 
-                let result;
-                if (isJwtDirective) {
-                    result = assertJwtDirective(traversedDef as ObjectTypeDefinitionNode, seenJwtType);
-                    seenJwtType = result.seenJwtType;
-                } else {
-                    result = assertJwtClaimDirective(
-                        traversedDef as FieldDefinitionNode,
-                        parentOfTraversedDef as ObjectTypeDefinitionNode
-                    );
-                }
-
-                const { isValid, errorMsg } = result;
-
+                const { isValid, errorMsg, errorPath } = assertValidGlobalID(
+                    traversedDef as ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode
+                );
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [directiveNode, traversedDef],
                         // extensions: {
                         //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
                         // },
-                        path: pathToHere,
+                        path: [...temp, ...errorPath],
                         source: undefined,
                         positions: undefined,
                         originalError: undefined,
@@ -145,45 +128,9 @@ type AssertionResponse = {
     errorPath: ReadonlyArray<string | number>;
 };
 
-function assertJwtDirective(
-    objectType: ObjectTypeDefinitionNode,
-    seenJwtType: boolean
-): AssertionResponse & { seenJwtType: boolean } {
-    let isValid = true;
-    let errorMsg, errorPath;
-
-    const onError = (error: Error) => {
-        isValid = false;
-        errorMsg = error.message;
-    };
-
-    try {
-        if (seenJwtType) {
-            throw new Error(`Invalid directive usage: Directive @jwt can only be used once in the Type Definitions.`);
-        } else {
-            seenJwtType = true;
-        }
-
-        if (objectType.directives && objectType.directives.length > 1) {
-            throw new Error(
-                `Invalid directive usage: Directive @jwt cannot be used in combination with other directives.`
-            );
-        }
-        if (
-            objectType.fields?.some((field) => !SCALAR_TYPE_NAMES.includes(getInnerTypeName(field.type).toLowerCase()))
-        ) {
-            throw new Error(`Invalid directive usage: Fields of a @jwt type can only be Scalars or Lists of Scalars.`);
-        }
-    } catch (err) {
-        onError(err as Error);
-    }
-
-    return { isValid, errorMsg, errorPath, seenJwtType };
-}
-
-function assertJwtClaimDirective(
-    fieldType: FieldDefinitionNode,
-    objectType: ObjectTypeDefinitionNode
+function assertValidGlobalID(
+    // field: FieldDefinitionNode,
+    type: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode
 ): AssertionResponse {
     let isValid = true;
     let errorMsg, errorPath;
@@ -193,14 +140,77 @@ function assertJwtClaimDirective(
         errorMsg = error.message;
     };
 
-    try {
-        if (fieldType.directives && fieldType.directives.length > 1) {
+    /*
+            const globalIdFields = nodeFields.primitiveFields.filter((field) => field.isGlobalIdField);
+
+        if (globalIdFields.length > 1) {
             throw new Error(
-                `Invalid directive usage: Directive @jwtClaim cannot be used in combination with other directives.`
+                "Only one field may be decorated with an '@id' directive with the global argument set to `true`"
             );
         }
-        if (!objectType.directives?.find((d) => d.name.value === "jwt")) {
-            throw new Error(`Invalid directive usage: Directive @jwtClaim can only be used in \\"@jwt\\" types.`);
+
+        const globalIdField = globalIdFields[0];
+
+        const idField = definition.fields?.find((x) => x.name.value === "id");
+
+        if (globalIdField && idField) {
+            const hasAlias = idField.directives?.find((x) => x.name.value === "alias");
+            if (!hasAlias) {
+                throw new Error(
+                    `Type ${definition.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
+                );
+            }
+        }
+
+        if (globalIdField && !globalIdField.unique) {
+            throw new Error(
+                `Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique`
+            );
+        }
+    */
+    try {
+        const globalIdFields = type.fields?.filter((f) =>
+            f.directives?.find(
+                (d) =>
+                    d.name.value === "id" &&
+                    d.arguments?.find(
+                        (a) => a.name.value === "global" && a.value.kind === Kind.BOOLEAN && a.value.value === true
+                    )
+            )
+        );
+
+        if (globalIdFields) {
+            if (globalIdFields.length > 1) {
+                throw new Error(
+                    "Only one field may be decorated with an '@id' directive with the global argument set to `true`"
+                );
+            }
+
+            const globalIdField = globalIdFields[0];
+
+            const idField = type.fields?.find((x) => x.name.value === "id");
+
+            if (globalIdField && idField) {
+                const hasAlias = idField.directives?.find((x) => x.name.value === "alias");
+                if (!hasAlias) {
+                    throw new Error(
+                        `Type ${type.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
+                    );
+                }
+            }
+
+            if (
+                globalIdField &&
+                !globalIdField.directives
+                    ?.find((d) => d.name.value === "id")
+                    ?.arguments?.find(
+                        (a) => a.name.value === "unique" && a.value.kind === Kind.BOOLEAN && a.value.value === true
+                    )
+            ) {
+                throw new Error(
+                    `Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique`
+                );
+            }
         }
     } catch (err) {
         onError(err as Error);
