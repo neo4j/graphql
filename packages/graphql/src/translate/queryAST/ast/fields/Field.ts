@@ -20,6 +20,7 @@
 import type Cypher from "@neo4j/cypher-builder";
 import { QueryASTNode } from "../QueryASTNode";
 import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
+import type { CypherTreeSelection } from "../../../cypher-tree/CypherTreeSelection";
 
 export abstract class Field extends QueryASTNode {
     public alias: string;
@@ -30,6 +31,8 @@ export abstract class Field extends QueryASTNode {
     }
 
     public abstract getProjectionField(variable: Cypher.Variable): string | Record<string, Cypher.Expr>;
+    public compileToCypher({ tree, target }: { tree: CypherTreeSelection; target: Cypher.Variable }): void {}
+
     public getSubquery(_node: Cypher.Node): Cypher.Clause[] | Cypher.Clause | undefined {
         return undefined;
     }

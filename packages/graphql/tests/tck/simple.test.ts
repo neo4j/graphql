@@ -39,7 +39,7 @@ describe("Simple Cypher tests", () => {
         });
     });
 
-    test("Single selection, Movie by title", async () => {
+    test.only("Single selection, Movie by title", async () => {
         const query = gql`
             {
                 movies(where: { title: "River Runs Through It, A" }) {

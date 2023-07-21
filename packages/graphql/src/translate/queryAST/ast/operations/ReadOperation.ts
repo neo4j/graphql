@@ -30,6 +30,7 @@ import type { PropertySort } from "../sort/PropertySort";
 import type { QueryASTNode } from "../QueryASTNode";
 import { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
+import { CypherTreeSelection } from "../../../cypher-tree/CypherTreeSelection";
 
 export class ReadOperation extends Operation {
     public readonly entity: ConcreteEntity | Relationship; // TODO: normal entities
@@ -46,6 +47,25 @@ export class ReadOperation extends Operation {
         super();
         this.entity = entity;
         this.directed = directed;
+    }
+
+    public getCypherTree(): CypherTreeSelection {
+        if (this.entity instanceof Relationship) {
+            throw new Error("Not implemented");
+        }
+        const node = createNodeFromEntity(this.entity, this.nodeAlias);
+        const pattern = new Cypher.Pattern(node);
+
+        const readSelection = new CypherTreeSelection({
+            pattern,
+            target: node,
+            alias: this.nodeAlias || "this",
+        });
+
+        this.fields.forEach((f) => f.compileToCypher({ tree: readSelection, target: node }));
+        // const projectionFields = this.fields.map((f) => f.getCypherTree(node));
+
+        return readSelection;
     }
 
     public get children(): QueryASTNode[] {

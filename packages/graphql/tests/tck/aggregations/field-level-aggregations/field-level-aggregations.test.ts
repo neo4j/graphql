@@ -73,7 +73,7 @@ describe("Field Level Aggregations", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("Node Aggregations and Count", async () => {
+    test.only("Node Aggregations and Count", async () => {
         const query = gql`
             query {
                 movies {
