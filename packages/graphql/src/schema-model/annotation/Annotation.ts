@@ -37,7 +37,6 @@ import { PopulatedByAnnotation } from "./PopulatedByAnnotation";
 import { PrivateAnnotation } from "./PrivateAnnotation";
 import { QueryAnnotation } from "./QueryAnnotation";
 import { QueryOptionsAnnotation } from "./QueryOptionsAnnotation";
-import { RelationshipPropertiesAnnotation } from "./RelationshipPropertiesAnnotation";
 import { SelectableAnnotation } from "./SelectableAnnotation";
 import { SettableAnnotation } from "./SettableAnnotation";
 import { SubscriptionAnnotation } from "./SubscriptionAnnotation";
@@ -65,7 +64,6 @@ export type Annotation =
     | PopulatedByAnnotation
     | QueryAnnotation
     | PrivateAnnotation
-    | RelationshipPropertiesAnnotation
     | SelectableAnnotation
     | SettableAnnotation
     | TimestampAnnotation
@@ -94,7 +92,6 @@ export enum AnnotationsKey {
     populatedBy = "populatedBy",
     query = "query",
     private = "private",
-    relationshipProperties = "relationshipProperties",
     selectable = "selectable",
     settable = "settable",
     timestamp = "timestamp",
@@ -124,7 +121,6 @@ export type Annotations = {
     [AnnotationsKey.populatedBy]: PopulatedByAnnotation;
     [AnnotationsKey.query]: QueryAnnotation;
     [AnnotationsKey.private]: PrivateAnnotation;
-    [AnnotationsKey.relationshipProperties]: RelationshipPropertiesAnnotation;
     [AnnotationsKey.selectable]: SelectableAnnotation;
     [AnnotationsKey.settable]: SettableAnnotation;
     [AnnotationsKey.timestamp]: TimestampAnnotation;
@@ -154,7 +150,6 @@ export function annotationToKey(ann: Annotation): keyof Annotations {
     if (ann instanceof PopulatedByAnnotation) return AnnotationsKey.populatedBy;
     if (ann instanceof QueryAnnotation) return AnnotationsKey.query;
     if (ann instanceof PrivateAnnotation) return AnnotationsKey.private;
-    if (ann instanceof RelationshipPropertiesAnnotation) return AnnotationsKey.relationshipProperties;
     if (ann instanceof SelectableAnnotation) return AnnotationsKey.selectable;
     if (ann instanceof SettableAnnotation) return AnnotationsKey.settable;
     if (ann instanceof TimestampAnnotation) return AnnotationsKey.timestamp;
