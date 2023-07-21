@@ -29,7 +29,7 @@ export class QueryAST {
     }
 
     public transpile(): Cypher.Clause {
-        const tree = this.operation.getCypherTree();
+        const tree = this.operation.getCypherTree({});
         return tree.getCypher(
             new CypherTreeContext({
                 target: new Cypher.NamedVariable("this"),

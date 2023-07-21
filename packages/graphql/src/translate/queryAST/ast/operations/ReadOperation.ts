@@ -49,20 +49,33 @@ export class ReadOperation extends Operation {
         this.directed = directed;
     }
 
-    public getCypherTree(): CypherTreeSelection {
+    public getCypherTree({ parentNode }: { parentNode?: Cypher.Variable }): CypherTreeSelection {
+        let pattern: Cypher.Pattern;
+        let targetNode: Cypher.Node;
         if (this.entity instanceof Relationship) {
-            throw new Error("Not implemented");
+            if (!parentNode) throw new Error("No parent node found!");
+            const relVar = createRelationshipFromEntity(this.entity);
+            targetNode = createNodeFromEntity(this.entity.target as ConcreteEntity);
+            const relDirection = getRelationshipDirection(this.entity, this.directed);
+
+            pattern = new Cypher.Pattern(parentNode as Cypher.Node)
+                .withoutLabels()
+                .related(relVar)
+                .withDirection(relDirection)
+                .to(targetNode);
+        } else {
+            targetNode = createNodeFromEntity(this.entity, this.nodeAlias);
+            pattern = new Cypher.Pattern(targetNode);
         }
-        const node = createNodeFromEntity(this.entity, this.nodeAlias);
-        const pattern = new Cypher.Pattern(node);
 
         const readSelection = new CypherTreeSelection({
             pattern,
-            target: node,
+            target: targetNode,
             alias: this.nodeAlias || "this",
         });
 
-        this.fields.forEach((f) => f.compileToCypher({ tree: readSelection, target: node }));
+        this.fields.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
+        this.filters.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
         // const projectionFields = this.fields.map((f) => f.getCypherTree(node));
 
         return readSelection;

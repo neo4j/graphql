@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import type { CypherTreeSelection } from "../../../cypher-tree/CypherTreeSelection";
+import { CypherTreeProjectionField } from "../../../cypher-tree/CypherTreeSelection";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ReadOperation } from "../operations/ReadOperation";
 import { Field } from "./Field";
@@ -34,6 +36,17 @@ export class RelationshipField extends Field {
 
     public get children(): QueryASTNode[] {
         return [this.operation];
+    }
+
+    public compileToCypher({ tree, target }: { tree: CypherTreeSelection; target: Cypher.Variable }): void {
+        // Tell operation about the pattern
+        const nestedTree = this.operation.getCypherTree({
+            parentNode: target,
+        });
+        tree.addNestedSelection(nestedTree);
+
+        const projectionField = new CypherTreeProjectionField(this.alias, this.projectionVariable);
+        tree.projection.addField(projectionField);
     }
 
     public getProjectionField(): Record<string, Cypher.Expr> {

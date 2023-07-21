@@ -1,16 +1,25 @@
 import Cypher from "@neo4j/cypher-builder";
 
 export class CypherTreeContext {
-    public variables: Cypher.Variable[] = [];
+    public variables: Cypher.Variable[];
     public target: Cypher.Variable;
 
-    constructor({ target }: { target: Cypher.Variable }) {
+    constructor({ target, vars }: { target: Cypher.Variable; vars?: Cypher.Variable[] }) {
         this.target = target;
+        this.variables = vars || [];
+    }
+
+    public push(...vars: Cypher.Variable[]): CypherTreeContext {
+        return new CypherTreeContext({
+            target: this.target,
+            vars: [...this.variables, ...vars],
+        });
     }
 }
 
 export abstract class CypherTreeNode<R extends Cypher.Clause | Cypher.Expr = Cypher.Clause> {
     public children: CypherTreeNode[] = [];
+    // public parent: CypherTreeNode | undefined;
 
     protected addChildren(...children: CypherTreeNode[]): void {
         this.children.push(...children);
@@ -22,6 +31,7 @@ export abstract class CypherTreeNode<R extends Cypher.Clause | Cypher.Expr = Cyp
 export class CypherTreeSelection extends CypherTreeNode {
     private pattern: Cypher.Pattern;
     private nestedSelection: CypherTreeSelection[] = [];
+    private filters: CypherTreeFilter[] = [];
     public projection: CypherTreeProjection;
 
     constructor({ pattern, target, alias }: { pattern: Cypher.Pattern; target: Cypher.Variable; alias: string }) {
@@ -30,20 +40,48 @@ export class CypherTreeSelection extends CypherTreeNode {
         this.projection = new CypherTreeProjection(target, alias);
     }
 
+    public addFilter(treeFilter: CypherTreeFilter): void {
+        this.filters.push(treeFilter);
+    }
+
+    // public hasParentOf(type) {
+    //     if (this instanceof FulltextTreeSelection) return true;
+    // }
+
+    public addNestedSelection(selection: CypherTreeSelection) {
+        this.nestedSelection.push(selection);
+    }
+
     public getCypher(ctx: CypherTreeContext): Cypher.Clause {
         const match = new Cypher.Match(this.pattern);
-        ctx.variables.push(...this.pattern.getVariables());
+
+        const filtersCypher = this.filters.map((f) => f.getCypher(ctx));
+        match.where(Cypher.and(...filtersCypher));
+        const nestedCtx = ctx.push(...this.pattern.getVariables());
         const subqueries = this.nestedSelection
             .map((s) => {
-                return s.getCypher(ctx);
+                return s.getCypher(nestedCtx);
             })
             .map((c) => {
-                return new Cypher.Call(c).innerWith(...ctx.variables);
+                return new Cypher.Call(c).innerWith(...nestedCtx.variables);
             });
 
         const ret = this.projection.getCypher(ctx);
 
         return Cypher.concat(match, ...subqueries, ret);
+    }
+}
+
+export class CypherTreeFilter extends CypherTreeNode<Cypher.Predicate> {
+    private predicate: Cypher.Predicate;
+
+    constructor(predicate: Cypher.Predicate) {
+        super();
+        this.predicate = predicate;
+    }
+
+    public getCypher(_ctx: CypherTreeContext): Cypher.Predicate {
+        return this.predicate;
     }
 }
 
