@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import type { AttributeModel } from "./AttributeModel";
+import type { AttributeAdapter } from "./AttributeAdapter";
 
 import { AGGREGATION_COMPARISON_OPERATORS } from "../../../constants";
 
 type ComparisonOperator = (typeof AGGREGATION_COMPARISON_OPERATORS)[number];
 
-export class AggregationModel {
-    readonly attributeModel: AttributeModel;
-    constructor(attributeModel: AttributeModel) {
-        if (!attributeModel.isScalar()) {
+export class AggregationAdapter {
+    readonly AttributeAdapter: AttributeAdapter;
+    constructor(AttributeAdapter: AttributeAdapter) {
+        if (!AttributeAdapter.isScalar()) {
             throw new Error("Aggregation model available only for scalar attributes");
         }
-        this.attributeModel = attributeModel;
+        this.AttributeAdapter = AttributeAdapter;
     }
 
     getAggregationComparators(): string[] {
@@ -38,7 +38,7 @@ export class AggregationModel {
             aggregationList.push(this.getAverageComparator(comparator));
             aggregationList.push(this.getMinComparator(comparator));
             aggregationList.push(this.getMaxComparator(comparator));
-            if (this.attributeModel.isNumeric()) {
+            if (this.AttributeAdapter.isNumeric()) {
                 aggregationList.push(this.getSumComparator(comparator));
             }
             return aggregationList;
@@ -46,27 +46,27 @@ export class AggregationModel {
     }
 
     getAverageComparator(comparator: ComparisonOperator): string {
-        return this.attributeModel.isString()
-            ? `${this.attributeModel.name}_AVERAGE_LENGTH_${comparator}`
-            : `${this.attributeModel.name}_AVERAGE_${comparator}`;
+        return this.AttributeAdapter.isString()
+            ? `${this.AttributeAdapter.name}_AVERAGE_LENGTH_${comparator}`
+            : `${this.AttributeAdapter.name}_AVERAGE_${comparator}`;
     }
 
     getMinComparator(comparator: ComparisonOperator): string {
-        return this.attributeModel.isString()
-            ? `${this.attributeModel.name}_SHORTEST_LENGTH_${comparator}`
-            : `${this.attributeModel.name}_MIN_${comparator}`;
+        return this.AttributeAdapter.isString()
+            ? `${this.AttributeAdapter.name}_SHORTEST_LENGTH_${comparator}`
+            : `${this.AttributeAdapter.name}_MIN_${comparator}`;
     }
 
     getMaxComparator(comparator: ComparisonOperator): string {
-        return this.attributeModel.isString()
-            ? `${this.attributeModel.name}_LONGEST_LENGTH_${comparator}`
-            : `${this.attributeModel.name}_MAX_${comparator}`;
+        return this.AttributeAdapter.isString()
+            ? `${this.AttributeAdapter.name}_LONGEST_LENGTH_${comparator}`
+            : `${this.AttributeAdapter.name}_MAX_${comparator}`;
     }
 
     getSumComparator(comparator: ComparisonOperator): string {
-        if (!this.attributeModel.isNumeric()) {
+        if (!this.AttributeAdapter.isNumeric()) {
             throw new Error("Sum aggregation is available only for numeric attributes");
         }
-        return `${this.attributeModel.name}_SUM_${comparator}`;
+        return `${this.AttributeAdapter.name}_SUM_${comparator}`;
     }
 }

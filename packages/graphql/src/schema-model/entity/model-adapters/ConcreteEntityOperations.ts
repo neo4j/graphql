@@ -18,33 +18,39 @@
  */
 
 import { upperFirst } from "../../../utils/upper-first";
-import type{ ConcreteEntityModel } from "./ConcreteEntityModel";
-import type { AggregateTypeNames, FulltextTypeNames, MutationResponseTypeNames, RootTypeFieldNames, SubscriptionEvents } from "../../../classes/Node";
+import type { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
+import type {
+    AggregateTypeNames,
+    FulltextTypeNames,
+    MutationResponseTypeNames,
+    RootTypeFieldNames,
+    SubscriptionEvents,
+} from "../../../classes/Node";
 
 export class ConcreteEntityOperations {
-    private readonly concreteEntityModel: ConcreteEntityModel;
+    private readonly ConcreteEntityAdapter: ConcreteEntityAdapter;
     private readonly pascalCasePlural: string;
     private readonly pascalCaseSingular: string;
 
-    constructor(concreteEntityModel: ConcreteEntityModel) {
-        this.concreteEntityModel = concreteEntityModel;
-        this.pascalCasePlural = upperFirst(this.concreteEntityModel.plural);
-        this.pascalCaseSingular = upperFirst(this.concreteEntityModel.singular);
+    constructor(ConcreteEntityAdapter: ConcreteEntityAdapter) {
+        this.ConcreteEntityAdapter = ConcreteEntityAdapter;
+        this.pascalCasePlural = upperFirst(this.ConcreteEntityAdapter.plural);
+        this.pascalCaseSingular = upperFirst(this.ConcreteEntityAdapter.singular);
     }
 
     public get rootTypeFieldNames(): RootTypeFieldNames {
         return {
             create: `create${this.pascalCasePlural}`,
-            read: this.concreteEntityModel.plural,
+            read: this.ConcreteEntityAdapter.plural,
             update: `update${this.pascalCasePlural}`,
             delete: `delete${this.pascalCasePlural}`,
-            aggregate: `${this.concreteEntityModel.plural}Aggregate`,
+            aggregate: `${this.ConcreteEntityAdapter.plural}Aggregate`,
             subscribe: {
-                created: `${this.concreteEntityModel.singular}Created`,
-                updated: `${this.concreteEntityModel.singular}Updated`,
-                deleted: `${this.concreteEntityModel.singular}Deleted`,
-                relationship_deleted: `${this.concreteEntityModel.singular}RelationshipDeleted`,
-                relationship_created: `${this.concreteEntityModel.singular}RelationshipCreated`,
+                created: `${this.ConcreteEntityAdapter.singular}Created`,
+                updated: `${this.ConcreteEntityAdapter.singular}Updated`,
+                deleted: `${this.ConcreteEntityAdapter.singular}Deleted`,
+                relationship_deleted: `${this.ConcreteEntityAdapter.singular}RelationshipDeleted`,
+                relationship_created: `${this.ConcreteEntityAdapter.singular}RelationshipCreated`,
             },
         };
     }
@@ -59,8 +65,8 @@ export class ConcreteEntityOperations {
 
     public get aggregateTypeNames(): AggregateTypeNames {
         return {
-            selection: `${this.concreteEntityModel.name}AggregateSelection`,
-            input: `${this.concreteEntityModel.name}AggregateSelectionInput`,
+            selection: `${this.ConcreteEntityAdapter.name}AggregateSelection`,
+            input: `${this.ConcreteEntityAdapter.name}AggregateSelectionInput`,
         };
     }
 
@@ -82,13 +88,12 @@ export class ConcreteEntityOperations {
     }
 
     public get subscriptionEventPayloadFieldNames(): SubscriptionEvents {
-         return {
+        return {
             create: `created${this.pascalCaseSingular}`,
             update: `updated${this.pascalCaseSingular}`,
             delete: `deleted${this.pascalCaseSingular}`,
-            create_relationship: `${this.concreteEntityModel.singular}`,
-            delete_relationship: `${this.concreteEntityModel.singular}`,
+            create_relationship: `${this.ConcreteEntityAdapter.singular}`,
+            delete_relationship: `${this.ConcreteEntityAdapter.singular}`,
         };
     }
-    
 }

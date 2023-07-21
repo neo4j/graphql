@@ -19,18 +19,18 @@
 
 import { upperFirst } from "graphql-compose";
 import type { Entity } from "../../entity/Entity";
-import { ConcreteEntityModel } from "../../entity/graphql-models/ConcreteEntityModel";
+import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipDirection } from "../Relationship";
-import { AttributeModel } from "../../attribute/graphql-models/AttributeModel";
+import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import type { Attribute } from "../../attribute/Attribute";
 import { ConcreteEntity } from "../../entity/ConcreteEntity";
 import { CompositeEntity } from "../../entity/CompositeEntity";
 
-export class RelationshipModel {
+export class RelationshipAdapter {
     public readonly name: string;
     public readonly type: string;
-    public readonly attributes: Map<string, AttributeModel> = new Map();
-    public readonly source: ConcreteEntityModel;
+    public readonly attributes: Map<string, AttributeAdapter> = new Map();
+    public readonly source: ConcreteEntityAdapter;
     private rawEntity: Entity;
     private _target: Entity | undefined;
     public readonly direction: RelationshipDirection;
@@ -56,7 +56,7 @@ export class RelationshipModel {
         name: string;
         type: string;
         attributes?: Map<string, Attribute>;
-        source: ConcreteEntityModel;
+        source: ConcreteEntityAdapter;
         target: Entity;
         direction: RelationshipDirection;
     }) {
@@ -70,8 +70,8 @@ export class RelationshipModel {
 
     private initAttributes(attributes: Map<string, Attribute>) {
         for (const [attributeName, attribute] of attributes.entries()) {
-            const attributeModel = new AttributeModel(attribute);
-            this.attributes.set(attributeName, attributeModel);
+            const attributeAdapter = new AttributeAdapter(attribute);
+            this.attributes.set(attributeName, attributeAdapter);
         }
     }
 
@@ -79,7 +79,7 @@ export class RelationshipModel {
     get target(): Entity {
         if (!this._target) {
             if (this.rawEntity instanceof ConcreteEntity) {
-                this._target = new ConcreteEntityModel(this.rawEntity);
+                this._target = new ConcreteEntityAdapter(this.rawEntity);
             } else if (this.rawEntity instanceof CompositeEntity) {
                 this._target = new CompositeEntity(this.rawEntity);
             } else {

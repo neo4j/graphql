@@ -17,32 +17,31 @@
  * limitations under the License.
  */
 
-import type { AttributeModel } from "./AttributeModel";
+import type { AttributeAdapter } from "./AttributeAdapter";
 
-export class ListModel {
-    readonly attributeModel: AttributeModel;
+export class ListAdapter {
+    readonly AttributeAdapter: AttributeAdapter;
 
-    constructor(attributeModel: AttributeModel) {
-        if (!attributeModel.isList()) {
+    constructor(AttributeAdapter: AttributeAdapter) {
+        if (!AttributeAdapter.isList()) {
             throw new Error("Attribute is not a list");
         }
-        this.attributeModel = attributeModel;
+        this.AttributeAdapter = AttributeAdapter;
     }
 
     getPush(): string {
-        return `${this.attributeModel.name}_PUSH`;
+        return `${this.AttributeAdapter.name}_PUSH`;
     }
 
     getPop(): string {
-        return `${this.attributeModel.name}_POP`;
+        return `${this.AttributeAdapter.name}_POP`;
     }
 
     getIncludes(): string {
-        return `${this.attributeModel.name}_INCLUDES`;
+        return `${this.AttributeAdapter.name}_INCLUDES`;
     }
 
     getNotIncludes(): string {
-        return `${this.attributeModel.name}_NOT_INCLUDES`;
+        return `${this.AttributeAdapter.name}_NOT_INCLUDES`;
     }
-    
 }

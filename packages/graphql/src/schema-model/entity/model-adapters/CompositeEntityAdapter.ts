@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntityModel } from "./ConcreteEntityModel";
+import type { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
 
 // As the composite entity is not yet implemented, this is a placeholder
-export class CompositeEntityModel {
+export class CompositeEntityAdapter {
     public readonly name: string;
-    public concreteEntities: ConcreteEntityModel[];
+    public concreteEntities: ConcreteEntityAdapter[];
     // TODO: add type interface or union, and for interface add fields
     // TODO: add annotations
 
-    constructor({ name, concreteEntities }: { name: string; concreteEntities: ConcreteEntityModel[] }) {
+    constructor({ name, concreteEntities }: { name: string; concreteEntities: ConcreteEntityAdapter[] }) {
         this.name = name;
         this.concreteEntities = concreteEntities;
     }

@@ -169,8 +169,8 @@ class Node extends GraphElement {
             ...this.temporalFields,
             ...this.enumFields,
             ...this.objectFields,
-            ...this.scalarFields, // this are just custom scalars
-            ...this.primitiveFields, // this are instead built-in scalars
+            ...this.scalarFields, // these are just custom scalars
+            ...this.primitiveFields, // these are instead built-in scalars
             ...this.interfaceFields,
             ...this.objectFields,
             ...this.unionFields,
@@ -329,7 +329,7 @@ class Node extends GraphElement {
 
         return `${this.leadingUnderscores(name)}${plural}`;
     }
-    
+
     private leadingUnderscores(name: string): string {
         const re = /^(_+).+/;
         const match = re.exec(name);

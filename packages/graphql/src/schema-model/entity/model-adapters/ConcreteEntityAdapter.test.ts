@@ -20,21 +20,21 @@
 import { ConcreteEntity } from "../ConcreteEntity";
 import { Attribute } from "../../attribute/Attribute";
 import { GraphQLBuiltInScalarType, ScalarType } from "../../attribute/AttributeType";
-import { ConcreteEntityModel } from "./ConcreteEntityModel";
-import { AttributeModel } from "../../attribute/graphql-models/AttributeModel";
+import { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
+import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import { CypherAnnotation } from "../../annotation/CypherAnnotation";
 import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 
-describe("ConcreteEntityModel", () => {
-    let userModel: ConcreteEntityModel;
-    let userId: AttributeModel;
-    let userName: AttributeModel;
-    let closestUser: AttributeModel;
+describe("ConcreteEntityAdapter", () => {
+    let userModel: ConcreteEntityAdapter;
+    let userId: AttributeAdapter;
+    let userName: AttributeAdapter;
+    let closestUser: AttributeAdapter;
 
     beforeAll(() => {
         const idAttribute = new Attribute({
             name: "id",
-            annotations: [new UniqueAnnotation( { constraintName: "User_id_unique" })],
+            annotations: [new UniqueAnnotation({ constraintName: "User_id_unique" })],
             type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
         });
 
@@ -61,25 +61,25 @@ describe("ConcreteEntityModel", () => {
             attributes: [idAttribute, nameAttribute, closestUserAttribute],
         });
 
-        userModel = new ConcreteEntityModel(userEntity);
-        userId = userModel.attributes.get("id") as AttributeModel;
-        userName = userModel.attributes.get("name") as AttributeModel;
-        closestUser = userModel.attributes.get("closestUser") as AttributeModel;
+        userModel = new ConcreteEntityAdapter(userEntity);
+        userId = userModel.attributes.get("id") as AttributeAdapter;
+        userName = userModel.attributes.get("name") as AttributeAdapter;
+        closestUser = userModel.attributes.get("closestUser") as AttributeAdapter;
     });
 
-    test("should generate a valid ConcreteEntityModel model", () => {
+    test("should generate a valid ConcreteEntityAdapter model", () => {
         expect(userModel).toBeDefined();
-        expect(userModel).toBeInstanceOf(ConcreteEntityModel);
+        expect(userModel).toBeInstanceOf(ConcreteEntityAdapter);
         expect(userModel.name).toBe("User");
         expect(userModel.labels).toEqual(new Set(["User"]));
         expect(userModel.attributes.size).toBe(3);
         expect(userModel.relationships.size).toBe(0);
         expect(userId).toBeDefined();
-        expect(userId).toBeInstanceOf(AttributeModel);
+        expect(userId).toBeInstanceOf(AttributeAdapter);
         expect(userName).toBeDefined();
-        expect(userName).toBeInstanceOf(AttributeModel);
+        expect(userName).toBeInstanceOf(AttributeAdapter);
         expect(closestUser).toBeDefined();
-        expect(closestUser).toBeInstanceOf(AttributeModel);
+        expect(closestUser).toBeInstanceOf(AttributeAdapter);
     });
 
     test("should return the correct mutable fields, (Cypher fields are removed)", () => {

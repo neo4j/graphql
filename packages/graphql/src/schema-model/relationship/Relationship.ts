@@ -32,8 +32,8 @@ export class Relationship {
     public readonly source: ConcreteEntity;
     public readonly target: Entity;
     public readonly direction: RelationshipDirection;
-    
-    // TODO: Delegate to the RelationshipModel the following properties
+
+    // TODO: Delegate to the RelationshipAdapter the following properties
     /**Note: Required for now to infer the types without ResolveTree */
     public get connectionFieldTypename(): string {
         return `${this.source.name}${upperFirst(this.name)}Connection`;

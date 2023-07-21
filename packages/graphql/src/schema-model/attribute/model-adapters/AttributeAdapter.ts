@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { MathModel } from "./MathModel";
-import { AggregationModel } from "./AggregationModel";
-import { ListModel } from "./ListModel";
+import { MathAdapter } from "./MathAdapter";
+import { AggregationAdapter } from "./AggregationAdapter";
+import { ListAdapter } from "./ListAdapter";
 import type { Attribute } from "../Attribute";
 import type { Annotations } from "../../annotation/Annotation";
 import {
@@ -36,12 +36,12 @@ import {
     UnionType,
     UserScalarType,
 } from "../AttributeType";
-import type { Neo4jGraphQLScalarType, AttributeType } from "../AttributeType";
+import type { AttributeType, Neo4jGraphQLScalarType } from "../AttributeType";
 
-export class AttributeModel {
-    private _listModel: ListModel | undefined;
-    private _mathModel: MathModel | undefined;
-    private _aggregationModel: AggregationModel | undefined;
+export class AttributeAdapter {
+    private _listModel: ListAdapter | undefined;
+    private _mathModel: MathAdapter | undefined;
+    private _aggregationModel: AggregationAdapter | undefined;
     public name: string;
     public annotations: Partial<Annotations>;
     public type: AttributeType;
@@ -99,9 +99,9 @@ export class AttributeModel {
     /**
      * @throws {Error} if the attribute is not a list
      */
-    get listModel(): ListModel {
+    get listModel(): ListAdapter {
         if (!this._listModel) {
-            this._listModel = new ListModel(this);
+            this._listModel = new ListAdapter(this);
         }
         return this._listModel;
     }
@@ -109,16 +109,16 @@ export class AttributeModel {
     /**
      * @throws {Error} if the attribute is not a scalar
      */
-    get mathModel(): MathModel {
+    get mathModel(): MathAdapter {
         if (!this._mathModel) {
-            this._mathModel = new MathModel(this);
+            this._mathModel = new MathAdapter(this);
         }
         return this._mathModel;
     }
 
-    get aggregationModel(): AggregationModel {
+    get aggregationModel(): AggregationAdapter {
         if (!this._aggregationModel) {
-            this._aggregationModel = new AggregationModel(this);
+            this._aggregationModel = new AggregationAdapter(this);
         }
         return this._aggregationModel;
     }
@@ -247,7 +247,13 @@ export class AttributeModel {
     }
 
     isScalar(): boolean {
-        return this.isGraphQLBuiltInScalar() || this.isUserScalar() || this.isSpatial() || this.isTemporal() || this.isBigInt();
+        return (
+            this.isGraphQLBuiltInScalar() ||
+            this.isUserScalar() ||
+            this.isSpatial() ||
+            this.isTemporal() ||
+            this.isBigInt()
+        );
     }
 
     isNumeric(): boolean {
@@ -261,5 +267,4 @@ export class AttributeModel {
     isCypher(): boolean {
         return this.annotations.cypher ? true : false;
     }
-
 }

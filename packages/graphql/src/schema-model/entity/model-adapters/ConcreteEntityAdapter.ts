@@ -17,22 +17,22 @@
  * limitations under the License.
  */
 
-import { AttributeModel } from "../../attribute/graphql-models/AttributeModel";
+import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import type { Relationship } from "../../relationship/Relationship";
 import { getFromMap } from "../../utils/get-from-map";
 import type { Entity } from "../Entity";
 import { singular, plural } from "../../utils/string-manipulation";
 import type { ConcreteEntity } from "../ConcreteEntity";
 import type { Attribute } from "../../attribute/Attribute";
-import { RelationshipModel } from "../../relationship/graphql-model/RelationshipModel";
+import { RelationshipAdapter } from "../../relationship/model-adapters/RelationshipAdapter";
 import type { Annotations } from "../../annotation/Annotation";
 import { ConcreteEntityOperations } from "./ConcreteEntityOperations";
 
-export class ConcreteEntityModel {
+export class ConcreteEntityAdapter {
     public readonly name: string;
     public readonly labels: Set<string>;
-    public readonly attributes: Map<string, AttributeModel> = new Map();
-    public readonly relationships: Map<string, RelationshipModel> = new Map();
+    public readonly attributes: Map<string, AttributeAdapter> = new Map();
+    public readonly relationships: Map<string, RelationshipAdapter> = new Map();
     public readonly annotations: Partial<Annotations>;
 
     // These keys allow to store the keys of the map in memory and avoid keep iterating over the map.
@@ -58,15 +58,15 @@ export class ConcreteEntityModel {
 
     private initAttributes(attributes: Map<string, Attribute>) {
         for (const [attributeName, attribute] of attributes.entries()) {
-            const attributeModel = new AttributeModel(attribute);
-            this.attributes.set(attributeName, attributeModel);
-            if (attributeModel.isMutable()) {
+            const attributeAdapter = new AttributeAdapter(attribute);
+            this.attributes.set(attributeName, attributeAdapter);
+            if (attributeAdapter.isMutable()) {
                 this.mutableFieldsKeys.push(attribute.name);
             }
 
-            if (attributeModel.isConstrainable()) {
+            if (attributeAdapter.isConstrainable()) {
                 this.constrainableFieldsKeys.push(attribute.name);
-                if (attributeModel.isUnique()) {
+                if (attributeAdapter.isUnique()) {
                     this.uniqueFieldsKeys.push(attribute.name);
                 }
             }
@@ -78,20 +78,20 @@ export class ConcreteEntityModel {
             const { name, type, direction, target, attributes } = relationship;
             this.relationships.set(
                 relationshipName,
-                new RelationshipModel({ name, type, direction, source: this, target, attributes })
+                new RelationshipAdapter({ name, type, direction, source: this, target, attributes })
             );
         }
     }
 
-    public get mutableFields(): AttributeModel[] {
+    public get mutableFields(): AttributeAdapter[] {
         return this.mutableFieldsKeys.map((key) => getFromMap(this.attributes, key));
     }
 
-    public get uniqueFields(): AttributeModel[] {
+    public get uniqueFields(): AttributeAdapter[] {
         return this.uniqueFieldsKeys.map((key) => getFromMap(this.attributes, key));
     }
 
-    public get constrainableFields(): AttributeModel[] {
+    public get constrainableFields(): AttributeAdapter[] {
         return this.constrainableFieldsKeys.map((key) => getFromMap(this.attributes, key));
     }
 
@@ -114,7 +114,6 @@ export class ConcreteEntityModel {
         return this.getAllLabels()[0] as string; // getAllLabels always returns at least one label
     }
 
-    
     public get singular(): string {
         if (!this._singular) {
             this._singular = singular(this.name);

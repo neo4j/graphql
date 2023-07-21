@@ -28,9 +28,9 @@ import { generateModel } from "./generate-model";
 import type { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import { SubscriptionsAuthorizationFilterEventRule } from "./annotation/SubscriptionsAuthorizationAnnotation";
 import { AuthenticationAnnotation } from "./annotation/AuthenticationAnnotation";
-import type { AttributeModel } from "./attribute/graphql-models/AttributeModel";
-import type { ConcreteEntityModel } from "./entity/graphql-models/ConcreteEntityModel";
-import type { RelationshipModel } from "./relationship/graphql-model/RelationshipModel";
+import type { AttributeAdapter } from "./attribute/model-adapters/AttributeAdapter";
+import type { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "./relationship/model-adapters/RelationshipAdapter";
 
 describe("Schema model generation", () => {
     test("parses @authentication directive with no arguments", () => {
@@ -294,28 +294,28 @@ describe("ComposeEntity generation", () => {
 describe("GraphQL models", () => {
     let schemaModel: Neo4jGraphQLSchemaModel;
     // entities
-    let userEntity: ConcreteEntityModel;
-    let accountEntity: ConcreteEntityModel;
+    let userEntity: ConcreteEntityAdapter;
+    let accountEntity: ConcreteEntityAdapter;
 
     // relationships
-    let userAccounts: RelationshipModel;
+    let userAccounts: RelationshipAdapter;
 
     // user attributes
-    let id: AttributeModel;
-    let name: AttributeModel;
-    let createdAt: AttributeModel;
-    let releaseDate: AttributeModel;
-    let runningTime: AttributeModel;
-    let accountSize: AttributeModel;
-    let favoriteColors: AttributeModel;
-    let password: AttributeModel;
+    let id: AttributeAdapter;
+    let name: AttributeAdapter;
+    let createdAt: AttributeAdapter;
+    let releaseDate: AttributeAdapter;
+    let runningTime: AttributeAdapter;
+    let accountSize: AttributeAdapter;
+    let favoriteColors: AttributeAdapter;
+    let password: AttributeAdapter;
 
     // hasAccount relationship attributes
-    let creationTime: AttributeModel;
+    let creationTime: AttributeAdapter;
 
     // account attributes
-    let status: AttributeModel;
-    let aOrB: AttributeModel;
+    let status: AttributeAdapter;
+    let aOrB: AttributeAdapter;
 
     beforeAll(() => {
         const typeDefs = gql`
@@ -363,28 +363,28 @@ describe("GraphQL models", () => {
         schemaModel = generateModel(document);
 
         // entities
-        userEntity = schemaModel.getConcreteEntityModel("User") as ConcreteEntityModel;
-        userAccounts = userEntity.relationships.get("accounts") as RelationshipModel;
-        accountEntity = userAccounts.target as ConcreteEntityModel; // it's possible to obtain accountEntity using schemaModel.getConcreteEntityModel("Account") as well
+        userEntity = schemaModel.getConcreteEntityAdapter("User") as ConcreteEntityAdapter;
+        userAccounts = userEntity.relationships.get("accounts") as RelationshipAdapter;
+        accountEntity = userAccounts.target as ConcreteEntityAdapter; // it's possible to obtain accountEntity using schemaModel.getConcreteEntityAdapter("Account") as well
 
         // user attributes
-        id = userEntity?.attributes.get("id") as AttributeModel;
-        name = userEntity?.attributes.get("name") as AttributeModel;
-        createdAt = userEntity?.attributes.get("createdAt") as AttributeModel;
-        releaseDate = userEntity?.attributes.get("releaseDate") as AttributeModel;
-        runningTime = userEntity?.attributes.get("runningTime") as AttributeModel;
-        accountSize = userEntity?.attributes.get("accountSize") as AttributeModel;
-        favoriteColors = userEntity?.attributes.get("favoriteColors") as AttributeModel;
+        id = userEntity?.attributes.get("id") as AttributeAdapter;
+        name = userEntity?.attributes.get("name") as AttributeAdapter;
+        createdAt = userEntity?.attributes.get("createdAt") as AttributeAdapter;
+        releaseDate = userEntity?.attributes.get("releaseDate") as AttributeAdapter;
+        runningTime = userEntity?.attributes.get("runningTime") as AttributeAdapter;
+        accountSize = userEntity?.attributes.get("accountSize") as AttributeAdapter;
+        favoriteColors = userEntity?.attributes.get("favoriteColors") as AttributeAdapter;
 
         // extended attributes
-        password = userEntity?.attributes.get("password") as AttributeModel;
+        password = userEntity?.attributes.get("password") as AttributeAdapter;
 
         // hasAccount relationship attributes
-        creationTime = userAccounts?.attributes.get("creationTime") as AttributeModel;
+        creationTime = userAccounts?.attributes.get("creationTime") as AttributeAdapter;
 
         // account attributes
-        status = accountEntity?.attributes.get("status") as AttributeModel;
-        aOrB = accountEntity?.attributes.get("aOrB") as AttributeModel;
+        status = accountEntity?.attributes.get("status") as AttributeAdapter;
+        aOrB = accountEntity?.attributes.get("aOrB") as AttributeAdapter;
     });
 
     describe("attribute types", () => {

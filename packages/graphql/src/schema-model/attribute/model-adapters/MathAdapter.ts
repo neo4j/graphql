@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -18,16 +17,16 @@
  * limitations under the License.
  */
 
-import type { AttributeModel } from "./AttributeModel";
+import type { AttributeAdapter } from "./AttributeAdapter";
 
-export class MathModel {
-    readonly attributeModel: AttributeModel;
+export class MathAdapter {
+    readonly AttributeAdapter: AttributeAdapter;
 
-    constructor(attributeModel: AttributeModel) {
-        if (!attributeModel.isNumeric()) {
+    constructor(AttributeAdapter: AttributeAdapter) {
+        if (!AttributeAdapter.isNumeric()) {
             throw new Error("Math model available only for numeric attributes");
         }
-        this.attributeModel = attributeModel;
+        this.AttributeAdapter = AttributeAdapter;
     }
 
     getMathOperations(): string[] {
@@ -35,22 +34,22 @@ export class MathModel {
     }
 
     getAdd(): string {
-        return this.attributeModel.isInt() || this.attributeModel.isBigInt()
-            ? `${this.attributeModel.name}_INCREMENT`
-            : `${this.attributeModel.name}_ADD`;
+        return this.AttributeAdapter.isInt() || this.AttributeAdapter.isBigInt()
+            ? `${this.AttributeAdapter.name}_INCREMENT`
+            : `${this.AttributeAdapter.name}_ADD`;
     }
 
     getSubtract(): string {
-        return this.attributeModel.isInt() || this.attributeModel.isBigInt() ? 
-        `${this.attributeModel.name}_DECREMENT` :`${this.attributeModel.name}_SUBTRACT`;
+        return this.AttributeAdapter.isInt() || this.AttributeAdapter.isBigInt()
+            ? `${this.AttributeAdapter.name}_DECREMENT`
+            : `${this.AttributeAdapter.name}_SUBTRACT`;
     }
 
     getMultiply(): string {
-        return `${this.attributeModel.name}_MULTIPLY`;
+        return `${this.AttributeAdapter.name}_MULTIPLY`;
     }
 
     getDivide(): string {
-        return `${this.attributeModel.name}_DIVIDE`;
+        return `${this.AttributeAdapter.name}_DIVIDE`;
     }
-
 }

@@ -31,14 +31,14 @@ import {
     UserScalarType,
 } from "../AttributeType";
 import { Attribute } from "../Attribute";
-import { AttributeModel } from "./AttributeModel";
+import { AttributeAdapter } from "./AttributeAdapter";
 import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 import { CypherAnnotation } from "../../annotation/CypherAnnotation";
 
 describe("Attribute", () => {
     describe("type assertions", () => {
         test("isID", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -50,7 +50,7 @@ describe("Attribute", () => {
         });
 
         test("isBoolean", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -62,7 +62,7 @@ describe("Attribute", () => {
         });
 
         test("isInt", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -74,7 +74,7 @@ describe("Attribute", () => {
         });
 
         test("isFloat", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -85,7 +85,7 @@ describe("Attribute", () => {
         });
 
         test("isString", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -96,7 +96,7 @@ describe("Attribute", () => {
         });
 
         test("isCartesianPoint", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -108,7 +108,7 @@ describe("Attribute", () => {
         });
 
         test("isPoint", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -120,7 +120,7 @@ describe("Attribute", () => {
         });
 
         test("isBigInt", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -132,7 +132,7 @@ describe("Attribute", () => {
         });
 
         test("isDate", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -144,7 +144,7 @@ describe("Attribute", () => {
         });
 
         test("isDateTime", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -156,7 +156,7 @@ describe("Attribute", () => {
         });
 
         test("isLocalDateTime", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -168,7 +168,7 @@ describe("Attribute", () => {
         });
 
         test("isTime", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -180,7 +180,7 @@ describe("Attribute", () => {
         });
 
         test("isLocalTime", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -192,7 +192,7 @@ describe("Attribute", () => {
         });
 
         test("isDuration", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -204,7 +204,7 @@ describe("Attribute", () => {
         });
 
         test("isObject", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -216,7 +216,7 @@ describe("Attribute", () => {
         });
 
         test("isEnum", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -228,7 +228,7 @@ describe("Attribute", () => {
         });
 
         test("isUserScalar", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -240,7 +240,7 @@ describe("Attribute", () => {
         });
 
         test("isInterface", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -251,7 +251,7 @@ describe("Attribute", () => {
         });
 
         test("isUnion", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -265,7 +265,7 @@ describe("Attribute", () => {
             test("isList", () => {
                 const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
 
-                const attribute = new AttributeModel(
+                const attribute = new AttributeAdapter(
                     new Attribute({
                         name: "test",
                         annotations: [],
@@ -279,7 +279,7 @@ describe("Attribute", () => {
             test("isListOf, should return false if attribute it's not a list", () => {
                 const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
 
-                const attribute = new AttributeModel(
+                const attribute = new AttributeAdapter(
                     new Attribute({
                         name: "test",
                         annotations: [],
@@ -293,7 +293,7 @@ describe("Attribute", () => {
             test("isListOf(Attribute), should return false if it's a list of a different type", () => {
                 const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
 
-                const attribute = new AttributeModel(
+                const attribute = new AttributeAdapter(
                     new Attribute({
                         name: "test",
                         annotations: [],
@@ -307,7 +307,7 @@ describe("Attribute", () => {
             test("isListOf(Attribute), should return true if it's a list of a the same type.", () => {
                 const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
 
-                const attribute = new AttributeModel(
+                const attribute = new AttributeAdapter(
                     new Attribute({
                         name: "test",
                         annotations: [],
@@ -321,7 +321,7 @@ describe("Attribute", () => {
             test("isListOf(string), should return false if it's a list of a different type", () => {
                 const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
 
-                const attribute = new AttributeModel(
+                const attribute = new AttributeAdapter(
                     new Attribute({
                         name: "test",
                         annotations: [],
@@ -334,7 +334,7 @@ describe("Attribute", () => {
             test("isListOf(string), should return true if it's a list of a the same type.", () => {
                 const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
 
-                const attribute = new AttributeModel(
+                const attribute = new AttributeAdapter(
                     new Attribute({
                         name: "test",
                         annotations: [],
@@ -348,7 +348,7 @@ describe("Attribute", () => {
 
     describe("category assertions", () => {
         test("isGraphQLBuiltInScalar", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -360,7 +360,7 @@ describe("Attribute", () => {
         });
 
         test("isSpatial", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -372,7 +372,7 @@ describe("Attribute", () => {
         });
 
         test("isTemporal", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -384,7 +384,7 @@ describe("Attribute", () => {
         });
 
         test("isAbstract", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -397,7 +397,7 @@ describe("Attribute", () => {
     });
 
     test("isRequired", () => {
-        const attributeRequired = new AttributeModel(
+        const attributeRequired = new AttributeAdapter(
             new Attribute({
                 name: "test",
                 annotations: [],
@@ -405,7 +405,7 @@ describe("Attribute", () => {
             })
         );
 
-        const attributeNotRequired = new AttributeModel(
+        const attributeNotRequired = new AttributeAdapter(
             new Attribute({
                 name: "test",
                 annotations: [],
@@ -418,7 +418,7 @@ describe("Attribute", () => {
     });
 
     test("isRequired - List", () => {
-        const attributeRequired = new AttributeModel(
+        const attributeRequired = new AttributeAdapter(
             new Attribute({
                 name: "test",
                 annotations: [],
@@ -426,7 +426,7 @@ describe("Attribute", () => {
             })
         );
 
-        const attributeNotRequired = new AttributeModel(
+        const attributeNotRequired = new AttributeAdapter(
             new Attribute({
                 name: "test",
                 annotations: [],
@@ -439,7 +439,7 @@ describe("Attribute", () => {
     });
 
     test("isListElementRequired", () => {
-        const listElementRequired = new AttributeModel(
+        const listElementRequired = new AttributeAdapter(
             new Attribute({
                 name: "test",
                 annotations: [],
@@ -447,7 +447,7 @@ describe("Attribute", () => {
             })
         );
 
-        const listElementNotRequired = new AttributeModel(
+        const listElementNotRequired = new AttributeAdapter(
             new Attribute({
                 name: "test",
                 annotations: [],
@@ -461,7 +461,7 @@ describe("Attribute", () => {
 
     describe("annotation assertions", () => {
         test("isUnique", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [new UniqueAnnotation({ constraintName: "test" })],
@@ -472,7 +472,7 @@ describe("Attribute", () => {
         });
 
         test("isCypher", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [
@@ -490,7 +490,7 @@ describe("Attribute", () => {
 
     describe("specialized models", () => {
         test("List Model", () => {
-            const listElementAttribute = new AttributeModel(
+            const listElementAttribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -498,7 +498,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(listElementAttribute).toBeInstanceOf(AttributeModel);
+            expect(listElementAttribute).toBeInstanceOf(AttributeAdapter);
             expect(listElementAttribute.listModel).toBeDefined();
             expect(listElementAttribute.listModel.getIncludes()).toMatchInlineSnapshot(`"test_INCLUDES"`);
             expect(listElementAttribute.listModel.getNotIncludes()).toMatchInlineSnapshot(`"test_NOT_INCLUDES"`);
@@ -507,7 +507,7 @@ describe("Attribute", () => {
         });
 
         test("Aggregation Model", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -516,7 +516,7 @@ describe("Attribute", () => {
             );
             // TODO: test it with String as well.
 
-            expect(attribute).toBeInstanceOf(AttributeModel);
+            expect(attribute).toBeInstanceOf(AttributeAdapter);
             expect(attribute.aggregationModel).toBeDefined();
             expect(attribute.aggregationModel.getAggregationComparators()).toEqual(
                 expect.arrayContaining([
@@ -571,7 +571,7 @@ describe("Attribute", () => {
         });
 
         test("Math Model", () => {
-            const attribute = new AttributeModel(
+            const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -579,7 +579,7 @@ describe("Attribute", () => {
                 })
             );
             // TODO: test it with float as well.
-            expect(attribute).toBeInstanceOf(AttributeModel);
+            expect(attribute).toBeInstanceOf(AttributeAdapter);
             expect(attribute.mathModel).toBeDefined();
             expect(attribute.mathModel.getMathOperations()).toEqual(
                 expect.arrayContaining(["test_INCREMENT", "test_DECREMENT", "test_MULTIPLY", "test_DIVIDE"])
