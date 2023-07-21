@@ -8,7 +8,6 @@
     },
     "private": true,
     "workspaces": [
-        "docs",
         "packages/*",
         "packages/graphql/tests/performance/server",
         "examples/migration",
