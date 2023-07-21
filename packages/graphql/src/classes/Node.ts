@@ -44,6 +44,7 @@ import { GraphElement } from "./GraphElement";
 import type { NodeDirective } from "./NodeDirective";
 import type { QueryOptionsDirective } from "./QueryOptionsDirective";
 import type { SchemaConfiguration } from "../schema/schema-configuration";
+import { leadingUnderscores } from "../utils/leading-underscore";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -320,20 +321,14 @@ class Node extends GraphElement {
     private generateSingular(): string {
         const singular = camelcase(this.name);
 
-        return `${this.leadingUnderscores(this.name)}${singular}`;
+        return `${leadingUnderscores(this.name)}${singular}`;
     }
 
     private generatePlural(inputPlural: string | undefined): string {
         const name = inputPlural || this.plural || this.name;
         const plural = inputPlural || this.plural ? camelcase(name) : pluralize(camelcase(name));
 
-        return `${this.leadingUnderscores(name)}${plural}`;
-    }
-
-    private leadingUnderscores(name: string): string {
-        const re = /^(_+).+/;
-        const match = re.exec(name);
-        return match?.[1] || "";
+        return `${leadingUnderscores(name)}${plural}`;
     }
 }
 

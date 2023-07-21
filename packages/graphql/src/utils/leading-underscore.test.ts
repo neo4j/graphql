@@ -17,17 +17,18 @@
  * limitations under the License.
  */
 
-import camelcase from "camelcase";
-import pluralize from "pluralize";
-import { leadingUnderscores } from "../../utils/leading-underscore";
+import { leadingUnderscores } from "./leading-underscore";
 
-export function singular(name: string): string {
-    const singular = camelcase(name);
-    return `${leadingUnderscores(name)}${singular}`;
-}
+describe("leadingUnderscores", () => {
+    test("should return empty string if no leading underscores", () => {
+        expect(leadingUnderscores("test")).toBe("");
+    });
+    
+    test("should return single underscore if single leading underscore", () => {
+        expect(leadingUnderscores("_test")).toBe("_");
+    });
 
-
-export function plural(name: string): string {
-    const plural = pluralize(camelcase(name));
-    return `${leadingUnderscores(name)}${plural}`;
-}
+    test("should return multiple underscores if multiple leading underscores", () => {
+        expect(leadingUnderscores("___test")).toBe("___");
+    });
+});
