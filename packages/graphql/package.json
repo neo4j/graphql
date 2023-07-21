@@ -91,7 +91,7 @@
         "@graphql-tools/resolvers-composition": "^7.0.0",
         "@graphql-tools/schema": "10.0.0",
         "@graphql-tools/utils": "^10.0.0",
-        "@neo4j/cypher-builder": "^1.0.0",
+        "@neo4j/cypher-builder": "^1.1.1",
         "camelcase": "^6.3.0",
         "debug": "^4.3.4",
         "deep-equal": "^2.0.5",

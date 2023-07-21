@@ -162,6 +162,7 @@ export class AggregationOperation extends Operation {
     public transpile2({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause[] {
         return this.transpileNestedRelationship(this.entity as Relationship, { returnVariable, parentNode });
     }
+
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause {
         return Cypher.concat(...this.transpile2({ returnVariable, parentNode }));
     }
