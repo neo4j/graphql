@@ -63,6 +63,9 @@ import { ValidJwtDirectives } from "./custom-rules/valid-jwt-directives";
 import { ValidFieldTypes } from "./custom-rules/valid-field-types";
 import { ReservedTypeNames } from "./custom-rules/reserved-type-names";
 import { ValidRelationshipProperties } from "./custom-rules/valid-relationship-properties";
+import { ValidGlobalID } from "./custom-rules/valid-global-id";
+import { ValidObjectType } from "./custom-rules/valid-object-type";
+import { ValidDirectiveInheritance } from "./custom-rules/directive-multiple-inheritance";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
@@ -290,11 +293,14 @@ function getBaseSchema({
             DirectiveCombinationValid(),
             SchemaOrTypeDirectives(),
             ValidJwtDirectives(),
+            ValidGlobalID(),
             ValidRelationshipProperties(),
             ValidFieldTypes(),
             ReservedTypeNames(),
+            ValidObjectType(),
+            ValidDirectiveInheritance(),
+            DirectiveArgumentOfCorrectType,
         ],
-        // DirectiveArgumentOfCorrectType],
         schemaToExtend
     );
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
@@ -303,7 +309,7 @@ function getBaseSchema({
         throw filteredErrors;
     }
     // ===========================================
-    return extendSchema(schemaToExtend, doc, { assumeValid: !validateTypeDefs });
+    return extendSchema(schemaToExtend, doc);
 }
 
 function validateDocument({
@@ -347,7 +353,8 @@ function validateDocument({
         const errors = validateSchema(schema);
         const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
         if (filteredErrors.length) {
-            throw new Error(filteredErrors.join("\n"));
+            throw filteredErrors;
+            // throw new Error(filteredErrors.join("\n"));
         }
     }
     // TODO: how to improve this??

@@ -27,24 +27,38 @@ import type {
 } from "graphql";
 import { Kind, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { RESERVED_INTERFACE_FIELDS } from "../../../constants";
 
 export function ValidGlobalID() {
     return function (context: SDLValidationContext): ASTVisitor {
+        const typeNameToGlobalId = new Map<string, boolean>();
+        const interfaceToImplementingTypes = new Map<string, string[]>();
         return {
             Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-                if (directiveNode.name.value !== "id") {
-                    return;
-                }
-
-                const [temp, traversedDef] = getPathToDirectiveNode(path, ancestors);
+                const [temp, traversedDef, parentOfTraversedDef] = getPathToDirectiveNode(path, ancestors);
                 if (!traversedDef) {
                     console.error("No last definition traversed");
                     return;
                 }
+                if (!parentOfTraversedDef) {
+                    console.error("No parent of last definition traversed");
+                    return;
+                }
+
+                if (directiveNode.name.value !== "id") {
+                    return;
+                }
+                const isGlobalID = directiveNode.arguments?.find(
+                    (a) => a.name.value === "global" && a.value.kind === Kind.BOOLEAN && a.value.value === true
+                );
+                if (!isGlobalID) {
+                    return;
+                }
 
                 const { isValid, errorMsg, errorPath } = assertValidGlobalID(
-                    traversedDef as ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode
+                    directiveNode,
+                    parentOfTraversedDef,
+                    typeNameToGlobalId,
+                    interfaceToImplementingTypes
                 );
                 if (!isValid) {
                     const errorOpts = {
@@ -71,6 +85,88 @@ export function ValidGlobalID() {
                         )
                     );
                 }
+            },
+
+            ObjectTypeDefinition: {
+                enter(objectType: ObjectTypeDefinitionNode) {
+                    objectType.interfaces?.forEach((i) => {
+                        const x = interfaceToImplementingTypes.get(i.name.value) || [];
+                        interfaceToImplementingTypes.set(i.name.value, x?.concat(objectType.name.value));
+                    });
+                },
+                leave(objectType: ObjectTypeDefinitionNode) {
+                    const hasGlobalIDField = typeNameToGlobalId.get(objectType.name.value);
+                    const fieldNamedID = objectType.fields?.find((x) => x.name.value === "id");
+
+                    if (!hasGlobalIDField || !fieldNamedID) {
+                        return;
+                    }
+
+                    const { isValid, errorMsg, errorPath } = assertGlobalIDDoesNotClash(objectType, fieldNamedID);
+                    if (!isValid) {
+                        const errorOpts = {
+                            nodes: [objectType, fieldNamedID],
+                            // extensions: {
+                            //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
+                            // },
+                            path: [objectType.name.value, ...errorPath],
+                            source: undefined,
+                            positions: undefined,
+                            originalError: undefined,
+                        };
+
+                        // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
+                        context.reportError(
+                            new GraphQLError(
+                                errorMsg || "Error",
+                                errorOpts.nodes,
+                                errorOpts.source,
+                                errorOpts.positions,
+                                errorOpts.path,
+                                errorOpts.originalError
+                                // errorOpts.extensions
+                            )
+                        );
+                    }
+                },
+            },
+
+            InterfaceTypeDefinition: {
+                leave(interfaceType: InterfaceTypeDefinitionNode) {
+                    const hasGlobalIDField = typeNameToGlobalId.get(interfaceType.name.value);
+                    const fieldNamedID = interfaceType.fields?.find((x) => x.name.value === "id");
+
+                    if (!hasGlobalIDField || !fieldNamedID) {
+                        return;
+                    }
+
+                    const { isValid, errorMsg, errorPath } = assertGlobalIDDoesNotClash(interfaceType, fieldNamedID);
+                    if (!isValid) {
+                        const errorOpts = {
+                            nodes: [interfaceType],
+                            // extensions: {
+                            //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
+                            // },
+                            path: [interfaceType.name.value, ...errorPath],
+                            source: undefined,
+                            positions: undefined,
+                            originalError: undefined,
+                        };
+
+                        // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
+                        context.reportError(
+                            new GraphQLError(
+                                errorMsg || "Error",
+                                errorOpts.nodes,
+                                errorOpts.source,
+                                errorOpts.positions,
+                                errorOpts.path,
+                                errorOpts.originalError
+                                // errorOpts.extensions
+                            )
+                        );
+                    }
+                },
             },
         };
     };
@@ -128,9 +224,9 @@ type AssertionResponse = {
     errorPath: ReadonlyArray<string | number>;
 };
 
-function assertValidGlobalID(
-    // field: FieldDefinitionNode,
-    type: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode
+function assertGlobalIDDoesNotClash(
+    objectType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    fieldNamedID: FieldDefinitionNode
 ): AssertionResponse {
     let isValid = true;
     let errorMsg, errorPath;
@@ -139,78 +235,66 @@ function assertValidGlobalID(
         isValid = false;
         errorMsg = error.message;
     };
-
-    /*
-            const globalIdFields = nodeFields.primitiveFields.filter((field) => field.isGlobalIdField);
-
-        if (globalIdFields.length > 1) {
-            throw new Error(
-                "Only one field may be decorated with an '@id' directive with the global argument set to `true`"
-            );
-        }
-
-        const globalIdField = globalIdFields[0];
-
-        const idField = definition.fields?.find((x) => x.name.value === "id");
-
-        if (globalIdField && idField) {
-            const hasAlias = idField.directives?.find((x) => x.name.value === "alias");
-            if (!hasAlias) {
-                throw new Error(
-                    `Type ${definition.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
-                );
-            }
-        }
-
-        if (globalIdField && !globalIdField.unique) {
-            throw new Error(
-                `Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique`
-            );
-        }
-    */
     try {
-        const globalIdFields = type.fields?.filter((f) =>
-            f.directives?.find(
-                (d) =>
-                    d.name.value === "id" &&
-                    d.arguments?.find(
-                        (a) => a.name.value === "global" && a.value.kind === Kind.BOOLEAN && a.value.value === true
-                    )
-            )
+        const hasAlias = fieldNamedID.directives?.find((x) => x.name.value === "alias");
+        if (!hasAlias) {
+            throw new Error(
+                'Invalid global id field: Types decorated with an `@id` directive with the global argument set to `true` cannot have a field named "id". Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field.'
+            );
+        }
+    } catch (err) {
+        onError(err as Error);
+    }
+
+    return { isValid, errorMsg, errorPath: ["id"] };
+}
+
+function assertValidGlobalID(
+    directiveNode: DirectiveNode,
+    typeDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    typeNameToGlobalId: Map<string, boolean>,
+    interfaceToImplementingTypes: Map<string, string[]>
+): AssertionResponse {
+    let isValid = true;
+    let errorMsg, errorPath;
+
+    const onError = (error: Error) => {
+        isValid = false;
+        errorMsg = error.message;
+    };
+    try {
+        console.log(
+            "checking for",
+            typeDef.name.value,
+            typeDef.interfaces,
+            interfaceToImplementingTypes.get(typeDef.name.value)
         );
+        const globalNodeStatus = typeNameToGlobalId.get(typeDef.name.value);
+        const globalNodeStatusFromInterface = typeDef.interfaces?.map((i) => typeNameToGlobalId.get(i.name.value));
+        const globalNodeStatusFromType = interfaceToImplementingTypes
+            .get(typeDef.name.value)
+            ?.map((typeName) => typeNameToGlobalId.get(typeName));
+        if (
+            globalNodeStatus === true ||
+            globalNodeStatusFromInterface?.some((s) => s === true) ||
+            globalNodeStatusFromType?.some((s) => s === true)
+        ) {
+            errorPath = ["@id", "global"];
+            throw new Error(
+                "Invalid directive usage: Only one field may be decorated with an '@id' directive with the global argument set to `true`."
+            );
+        } else {
+            typeNameToGlobalId.set(typeDef.name.value, true);
+        }
 
-        if (globalIdFields) {
-            if (globalIdFields.length > 1) {
-                throw new Error(
-                    "Only one field may be decorated with an '@id' directive with the global argument set to `true`"
-                );
-            }
-
-            const globalIdField = globalIdFields[0];
-
-            const idField = type.fields?.find((x) => x.name.value === "id");
-
-            if (globalIdField && idField) {
-                const hasAlias = idField.directives?.find((x) => x.name.value === "alias");
-                if (!hasAlias) {
-                    throw new Error(
-                        `Type ${type.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
-                    );
-                }
-            }
-
-            if (
-                globalIdField &&
-                !globalIdField.directives
-                    ?.find((d) => d.name.value === "id")
-                    ?.arguments?.find(
-                        (a) => a.name.value === "unique" && a.value.kind === Kind.BOOLEAN && a.value.value === true
-                    )
-            ) {
-                throw new Error(
-                    `Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique`
-                );
-            }
+        const isNotUnique = directiveNode.arguments?.find(
+            (a) => a.name.value === "unique" && a.value.kind === Kind.BOOLEAN && a.value.value === false
+        );
+        if (isNotUnique) {
+            errorPath = ["@id", "unique"];
+            throw new Error(
+                `Invalid global id field: Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique.`
+            );
         }
     } catch (err) {
         onError(err as Error);

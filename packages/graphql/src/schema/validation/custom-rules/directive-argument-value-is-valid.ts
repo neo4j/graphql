@@ -55,7 +55,10 @@ export function DirectiveArgumentValueValid(
         return {
             Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
                 const genericDirectiveName = [
+                    "id",
+                    "timestamp",
                     "default",
+                    "unique",
                     "coalesce",
                     "queryoptions",
                     "fulltext",
@@ -189,6 +192,32 @@ function assertArgumentsValue(
 ): AssertionResponse {
     let isValid = true;
     let errorMsg, errorPath;
+
+    if (directiveNode.name.value === "id") {
+        verifyId(directiveNode, traversedDef as FieldDefinitionNode, (error) => {
+            isValid = false;
+            errorMsg = error.message;
+            errorPath = ["autogenerate"];
+            // errorPath = _path;
+        });
+    }
+
+    if (directiveNode.name.value === "timestamp") {
+        verifyTimestamp(traversedDef as FieldDefinitionNode, (error) => {
+            isValid = false;
+            errorMsg = error.message;
+            errorPath = [];
+            // errorPath = _path;
+        });
+    }
+    if (directiveNode.name.value === "unique") {
+        verifyUnique(parentDef as ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode, (error) => {
+            isValid = false;
+            errorMsg = error.message;
+            errorPath = [];
+            // errorPath = _path;
+        });
+    }
 
     if (directiveNode.name.value === "default") {
         verifyDefault(
@@ -372,6 +401,59 @@ function validateSelectionSet(
 }
 */
 
+function verifyUnique(
+    parentDefinition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    errorCallback: (err: Error) => void
+) {
+    try {
+        if (parentDefinition.kind === Kind.INTERFACE_TYPE_DEFINITION) {
+            throw new Error("@unique invalid: Cannot use `@unique` on fields of Interface types.");
+        }
+    } catch (err) {
+        errorCallback(err as Error);
+    }
+}
+function verifyTimestamp(traversedDefinition: FieldDefinitionNode, errorCallback: (err: Error) => void) {
+    try {
+        if (traversedDefinition.type.kind === Kind.LIST_TYPE) {
+            throw new Error("@timestamp invalid: Cannot autogenerate an array.");
+        }
+        if (!["DateTime", "Time"].includes(getInnerTypeName(traversedDefinition.type))) {
+            throw new Error("@timestamp invalid: Cannot timestamp Temporal fields lacking time zone information.");
+        }
+    } catch (err) {
+        errorCallback(err as Error);
+    }
+}
+
+function verifyId(
+    idDirective: DirectiveNode,
+    traversedDefinition: FieldDefinitionNode,
+    errorCallback: (err: Error) => void
+) {
+    const autogenerateArg = idDirective.arguments?.find((x) => x.name.value === "autogenerate");
+    if (!autogenerateArg) {
+        // delegate to DirectiveArgumentOfCorrectType rule
+        return;
+    }
+    const autogenerate = parseValueNode(autogenerateArg.value);
+    if (!autogenerate) {
+        return;
+    }
+    try {
+        if (autogenerate) {
+            if (traversedDefinition.type.kind === Kind.LIST_TYPE) {
+                throw new Error("@id.autogenerate invalid: Cannot autogenerate an array.");
+            }
+            if (getInnerTypeName(traversedDefinition.type) !== "ID") {
+                throw new Error("@id.autogenerate invalid: Cannot autogenerate a non ID field.");
+            }
+        }
+    } catch (err) {
+        errorCallback(err as Error);
+    }
+}
+
 function verifyPopulatedBy(
     relationshipDirective: DirectiveNode,
     traversedDefinition: FieldDefinitionNode,
@@ -496,7 +578,7 @@ function verifyFulltext(
                 throw new Error(`@fulltext.indexes invalid value for: ${indexName}. Duplicate name.`);
             }
 
-            index.fields.forEach((field) => {
+            (index.fields || []).forEach((field) => {
                 const foundField = compatibleFields?.find((f) => f.name.value === field);
                 if (!foundField) {
                     throw new Error(
@@ -609,11 +691,23 @@ function verifyDefault(
                 }
             });
         } else {
-            if (_isTemporal(expectedType)) {
+            const _isSpatialField = _isSpatial(expectedType);
+            if (_isSpatialField) {
+                throw new Error(`@default is not supported by Spatial types at this time.`);
+            }
+            const isTemporalField = _isTemporal(expectedType);
+            if (isTemporalField) {
                 if (Number.isNaN(Date.parse((defaultArg?.value as StringValueNode).value))) {
                     throw new Error(`@default.value is not a valid ${expectedType}`);
                 }
-            } else if (fromValueKind(defaultArg.value, enums).toLowerCase() !== expectedType.toLowerCase()) {
+            }
+            // TODO: enums
+            if (!["ID", "String", "Boolean", "Int", "Float"].includes(expectedType)) {
+                throw new Error(
+                    `@default directive can only be used on Temporal types and types: Int | Float | String | Boolean | ID | Enum`
+                );
+            }
+            if (fromValueKind(defaultArg.value, enums).toLowerCase() !== expectedType.toLowerCase()) {
                 throw new Error(`@default.value on ${expectedType} fields must be of type ${expectedType}`);
             }
         }
@@ -624,6 +718,9 @@ function verifyDefault(
 
 function _isTemporal(typeName: string) {
     return ["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeName);
+}
+function _isSpatial(typeName: string) {
+    return ["Point", "CartesianPoint"].includes(typeName);
 }
 
 function verifyCoalesce(
@@ -662,6 +759,20 @@ function verifyCoalesce(
                 }
             });
         } else {
+            const _isSpatialField = _isSpatial(expectedType);
+            if (_isSpatialField) {
+                throw new Error(`@coalesce is not supported by Spatial types at this time.`);
+            }
+            const isTemporalField = _isTemporal(expectedType);
+            if (isTemporalField) {
+                throw new Error(`@coalesce is not supported by Temporal types at this time.`);
+            }
+            // TODO: enums
+            if (!["ID", "String", "Boolean", "Int", "Float"].includes(expectedType)) {
+                throw new Error(
+                    `@coalesce directive can only be used on types: Int | Float | String | Boolean | ID | Enum`
+                );
+            }
             if (fromValueKind(coalesceArg.value, enums).toLowerCase() !== expectedType.toLowerCase()) {
                 throw new Error(`@coalesce.value on ${expectedType} fields must be of type ${expectedType}`);
             }

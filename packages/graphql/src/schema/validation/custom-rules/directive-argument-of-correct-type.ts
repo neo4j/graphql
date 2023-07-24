@@ -25,41 +25,44 @@ import type {
     ASTNode,
     ObjectTypeDefinitionNode,
     FieldDefinitionNode,
+    GraphQLDirective,
+    GraphQLSchema,
 } from "graphql";
 import { GraphQLError, coerceInputValue, valueFromASTUntyped, buildASTSchema } from "graphql";
+import type { Maybe } from "graphql/jsutils/Maybe";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { VALIDATION_ERROR_CODES } from "../utils/validation-error-codes";
 
 export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): ASTVisitor {
     // TODO: find a way to scope this schema instead of creating the whole document
-    // should only contain dynamic directives and their associated types
-    // or create a duplicate rule that does not make this schema for the initial document validation.
-    // either way, Refactor this to only create the schema if needed.
-    const schema = buildASTSchema(context.getDocument(), { assumeValid: true, assumeValidSDL: true });
+    // should only contain dynamic directives and their associated types (typeWhere + jwt payload)
+    let schema: GraphQLSchema | undefined;
+    const getSchemaFromDocument = (): GraphQLSchema => {
+        if (!schema) {
+            schema = buildASTSchema(context.getDocument(), { assumeValid: true, assumeValidSDL: true });
+        }
+        return schema;
+    };
 
     return {
         Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
-            const genericDirectiveName = [
-                "authorization",
-                "authentication",
-                "fulltext",
-                "relationship",
-                "node",
-                "customresolver",
-                "cypher",
-            ].find((applicableDirectiveName) =>
+            const isOneOfAuthorizationDirectives = ["authorization", "authentication"].find((applicableDirectiveName) =>
                 directiveNode.name.value.toLowerCase().includes(applicableDirectiveName)
             );
+            const otherDirectives = ["fulltext", "relationship", "node", "customresolver", "cypher"].find(
+                (applicableDirectiveName) => directiveNode.name.value.toLowerCase().includes(applicableDirectiveName)
+            );
 
-            // Validate only Authorization/Authentication usage
-            if (!genericDirectiveName) {
+            if (!isOneOfAuthorizationDirectives && !otherDirectives) {
                 return;
             }
 
-            const directiveDefinitionFromDocument = schema.getDirective(directiveNode.name.value);
-            const directiveDefinitionFromSchema = context.getSchema()?.getDirective(directiveNode.name.value);
-
-            const directiveDefinition = directiveDefinitionFromSchema || directiveDefinitionFromDocument;
+            let directiveDefinition: Maybe<GraphQLDirective>;
+            if (isOneOfAuthorizationDirectives) {
+                directiveDefinition = getSchemaFromDocument().getDirective(directiveNode.name.value);
+            } else {
+                directiveDefinition = context.getSchema()?.getDirective(directiveNode.name.value);
+            }
 
             if (!directiveDefinition) {
                 // Do not report, delegate this report to KnownDirectivesRule
@@ -68,7 +71,7 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
             const pathToHere = [...getPathToDirectiveNode(path, ancenstors), `@${directiveNode.name.value}`];
             directiveNode.arguments?.forEach((argument) => {
                 const argumentDefinition = findArgumentDefinitionNodeByName(
-                    directiveDefinition.args,
+                    (directiveDefinition as GraphQLDirective).args,
                     argument.name.value
                 );
                 console.log("arg", argument.name.value, argumentDefinition);
@@ -80,7 +83,7 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                     const errorOpts = {
                         nodes: [argument, directiveNode],
                         extensions: {
-                            exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
+                            exception: { code: VALIDATION_ERROR_CODES[directiveNode.name.value.toUpperCase()] },
                         },
                         path: [...pathToHere, argument.name.value, ...errorPath],
                         source: undefined,
