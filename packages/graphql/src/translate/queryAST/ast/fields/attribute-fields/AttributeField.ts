@@ -1,0 +1,60 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
+import { CypherTreeProjectionField, type CypherTreeSelection } from "../../../../cypher-tree/CypherTreeSelection";
+import type { QueryASTNode } from "../../QueryASTNode";
+import { Field } from "../Field";
+import type Cypher from "@neo4j/cypher-builder";
+
+export class AttributeField extends Field {
+    protected attribute: Attribute;
+
+    constructor({ alias, attribute }: { alias: string; attribute: Attribute }) {
+        super(alias);
+        this.attribute = attribute;
+    }
+
+    public get children(): QueryASTNode[] {
+        return [];
+    }
+
+    public compileToCypher({ tree, target }: { tree: CypherTreeSelection; target: Cypher.Variable }): void {
+        const targetProperty = target.property(this.attribute.name);
+        if (this.alias !== this.attribute.name) {
+            const projection = new CypherTreeProjectionField(this.alias, targetProperty);
+            tree.projection.addField(projection);
+        } else {
+            const projection = new CypherTreeProjectionField(this.alias);
+            tree.projection.addField(projection);
+        }
+    }
+
+    public getProjectionField(variable: Cypher.Variable): string | Record<string, Cypher.Expr> {
+        const variableProperty = variable.property(this.attribute.name);
+        return this.createAttributeProperty(variableProperty);
+    }
+
+    private createAttributeProperty(variableProperty: Cypher.Property): string | Record<string, Cypher.Expr> {
+        if (this.alias !== this.attribute.name) {
+            return { [this.alias]: variableProperty };
+        }
+        return this.attribute.name;
+    }
+}

@@ -100,7 +100,7 @@ describe("Cypher sort tests", () => {
                 "MATCH (this:Movie)
                 WITH *
                 ORDER BY this.id DESC
-                RETURN this { aliased: this.id, .title, .id } AS this"
+                RETURN this { .title, .id, aliased: this.id } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

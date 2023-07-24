@@ -43,6 +43,15 @@ export class Relationship {
         return `${this.source.name}${upperFirst(this.name)}Relationship`;
     }
 
+    /**Note: Required for now to infer the types without ResolveTree */
+    public getAggregationFieldTypename(nestedField?: "node" | "edge"): string {
+        const nestedFieldStr = upperFirst(nestedField || "");
+        const aggregationStr = nestedField ? "Aggregate" : "Aggregation";
+        return `${this.source.name}${upperFirst(this.target.name)}${upperFirst(
+            this.name
+        )}${nestedFieldStr}${aggregationStr}Selection`;
+    }
+
     constructor({
         name,
         type,
