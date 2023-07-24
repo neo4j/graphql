@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { CypherTreeSelection } from "../../../cypher-tree/CypherTreeSelection";
-import { CypherTreeProjectionField } from "../../../cypher-tree/CypherTreeSelection";
+import { CypherTreeProjectionField } from "../../../cypher-tree/Projection";
+import type { CypherTreeSelection } from "../../../cypher-tree/Selection";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ReadOperation } from "../operations/ReadOperation";
 import { Field } from "./Field";

@@ -18,7 +18,8 @@
  */
 
 import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
-import { CypherTreeProjectionField, type CypherTreeSelection } from "../../../../cypher-tree/CypherTreeSelection";
+import { CypherTreeProjectionField } from "../../../../cypher-tree/Projection";
+import type { CypherTreeSelection } from "../../../../cypher-tree/Selection";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Field } from "../Field";
 import type Cypher from "@neo4j/cypher-builder";

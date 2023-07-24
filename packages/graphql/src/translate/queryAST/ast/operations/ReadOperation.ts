@@ -30,7 +30,7 @@ import type { PropertySort } from "../sort/PropertySort";
 import type { QueryASTNode } from "../QueryASTNode";
 import { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
-import { CypherTreeSelection } from "../../../cypher-tree/CypherTreeSelection";
+import { CypherTreeSelection } from "../../../cypher-tree/Selection";
 
 export class ReadOperation extends Operation {
     public readonly entity: ConcreteEntity | Relationship; // TODO: normal entities

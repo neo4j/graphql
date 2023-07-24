@@ -20,8 +20,8 @@
 import { QueryASTNode } from "../QueryASTNode";
 import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
 import type Cypher from "@neo4j/cypher-builder";
-import type { CypherTreeSelection } from "../../../cypher-tree/CypherTreeSelection";
-import { CypherTreeFilter } from "../../../cypher-tree/CypherTreeSelection";
+import type { CypherTreeSelection } from "../../../cypher-tree/Selection";
+import { CypherTreeFilter } from "../../../cypher-tree/Filter";
 
 export type NumericalWhereOperator = "GT" | "GTE" | "LT" | "LTE";
 export type SpatialWhereOperator = "DISTANCE";
