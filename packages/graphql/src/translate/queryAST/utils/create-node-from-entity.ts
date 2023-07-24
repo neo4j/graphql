@@ -29,6 +29,7 @@ export function createNodeFromEntity(entity: ConcreteEntity, name?: string): Cyp
         labels: entity.labels,
     });
 }
+
 export function createRelationshipFromEntity(rel: Relationship, name?: string): Cypher.Relationship {
     if (name) {
         return new Cypher.NamedRelationship(name, { type: rel.type });

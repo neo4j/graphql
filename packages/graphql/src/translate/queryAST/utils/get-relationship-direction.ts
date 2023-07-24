@@ -22,6 +22,7 @@ import type { Relationship } from "../../../schema-model/relationship/Relationsh
 
 export function getRelationshipDirection(relationship: Relationship, directed = true): "left" | "right" | "undirected" {
     if (!directed) return "undirected";
+
     switch (relationship.direction) {
         case "IN":
             return "left";

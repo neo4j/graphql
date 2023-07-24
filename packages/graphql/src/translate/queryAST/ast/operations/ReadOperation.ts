@@ -49,7 +49,13 @@ export class ReadOperation extends Operation {
         this.directed = directed;
     }
 
-    public getCypherTree({ parentNode }: { parentNode?: Cypher.Variable }): CypherTreeSelection {
+    public getCypherTree({
+        parentNode,
+        returnVariable,
+    }: {
+        parentNode?: Cypher.Variable;
+        returnVariable: Cypher.Variable;
+    }): CypherTreeSelection {
         let pattern: Cypher.Pattern;
         let targetNode: Cypher.Node;
         if (this.entity instanceof Relationship) {
@@ -71,7 +77,7 @@ export class ReadOperation extends Operation {
         const readSelection = new CypherTreeSelection({
             pattern,
             target: targetNode,
-            alias: this.nodeAlias || "this",
+            alias: returnVariable,
         });
 
         this.fields.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));

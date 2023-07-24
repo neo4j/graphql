@@ -34,7 +34,15 @@ export class CypherTreeSelection extends CypherTreeNode {
     private filters: CypherTreeFilter[] = [];
     public projection: CypherTreeProjection;
 
-    constructor({ pattern, target, alias }: { pattern: Cypher.Pattern; target: Cypher.Variable; alias: string }) {
+    constructor({
+        pattern,
+        target,
+        alias,
+    }: {
+        pattern: Cypher.Pattern;
+        target: Cypher.Variable;
+        alias: Cypher.Variable;
+    }) {
         super();
         this.pattern = pattern;
         this.projection = new CypherTreeProjection(target, alias);
@@ -85,16 +93,27 @@ export class CypherTreeFilter extends CypherTreeNode<Cypher.Predicate> {
     }
 }
 
+type ProjectionOptions = {
+    aggregation: boolean;
+};
+
+const DEFAULT_OPTIONS: ProjectionOptions = {
+    aggregation: false,
+};
+
 export class CypherTreeProjection extends CypherTreeNode {
     private fields: CypherTreeProjectionField[] = [];
-    private preProjection: CypherTreeProjectionField[] = [];
     private target: Cypher.Variable;
-    private alias: string;
+    private alias: Cypher.Variable;
 
-    constructor(target: Cypher.Variable, alias: string) {
+    public options: ProjectionOptions;
+
+    constructor(target: Cypher.Variable, alias: Cypher.Variable, opts: Partial<ProjectionOptions> = {}) {
         super();
         this.target = target;
         this.alias = alias;
+
+        this.options = { ...DEFAULT_OPTIONS, ...opts };
     }
 
     public addField(field: CypherTreeProjectionField) {
@@ -102,6 +121,21 @@ export class CypherTreeProjection extends CypherTreeNode {
     }
 
     public getCypher(ctx: CypherTreeContext): Cypher.Clause {
+        const mapProjection = new Cypher.MapProjection(this.target);
+
+        for (const f of this.fields) {
+            mapProjection.set(f.getProjection(ctx));
+            // ret.addColumns([f.getProjection(ctx), f.alias]);
+        }
+
+        // Nested relationships are Cypher Aggregations (collect)
+        if (this.options.aggregation) {
+            // this.target shouldn't be here (just for compatibility), it should be a new Cypher.Variable
+            return new Cypher.With([mapProjection, this.target]).return([Cypher.collect(this.target), this.alias]);
+        } else {
+            return new Cypher.Return([mapProjection, this.alias]);
+        }
+
         // let withStatement: Cypher.With | undefined;
         // if (this.preProjection.length > 0) {
         //     withStatement = new Cypher.With();
@@ -110,15 +144,6 @@ export class CypherTreeProjection extends CypherTreeNode {
         //         withStatement.addColumns([p.getCypher(ctx), p.alias]);
         //     }
         // }
-
-        const mapProjection = new Cypher.MapProjection(this.target);
-
-        for (const f of this.fields) {
-            mapProjection.set(f.getProjection(ctx));
-            // ret.addColumns([f.getProjection(ctx), f.alias]);
-        }
-        const ret = new Cypher.Return([mapProjection, this.alias]);
-        return Cypher.concat(ret);
     }
 }
 

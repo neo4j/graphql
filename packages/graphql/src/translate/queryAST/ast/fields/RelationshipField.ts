@@ -42,10 +42,15 @@ export class RelationshipField extends Field {
         // Tell operation about the pattern
         const nestedTree = this.operation.getCypherTree({
             parentNode: target,
+            returnVariable: this.projectionVariable,
         });
+
+        nestedTree.projection.options.aggregation = true;
+
         tree.addNestedSelection(nestedTree);
 
         const projectionField = new CypherTreeProjectionField(this.alias, this.projectionVariable);
+
         tree.projection.addField(projectionField);
     }
 
