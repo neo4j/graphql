@@ -22,13 +22,13 @@ import { Neo4jGraphQL } from "../../../src";
 import type { GraphQLInputObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("@filterable directive", () => {
-    let plugin: TestSubscriptionsMechanism;
+    let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
     });
 
     describe("on SCALAR", () => {

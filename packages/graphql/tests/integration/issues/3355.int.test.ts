@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("https://github.com/neo4j/graphql/issues/3351", () => {
     let driver: Driver;
@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/3351", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
-                subscriptions: new TestSubscriptionsMechanism(),
+                subscriptions: new TestSubscriptionsEngine(),
             },
         });
 

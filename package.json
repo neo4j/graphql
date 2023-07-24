@@ -8,13 +8,11 @@
     },
     "private": true,
     "workspaces": [
-        "docs",
         "packages/*",
         "packages/graphql/tests/performance/server",
         "examples/migration",
         "examples/neo-place",
-        "examples/subscriptions/*",
-        "packages/plugins/*"
+        "examples/subscriptions/*"
     ],
     "scripts": {
         "build": "tsc --build tsconfig.production.json",

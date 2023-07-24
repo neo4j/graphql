@@ -1,5 +1,123 @@
 # @neo4j/graphql
 
+## 4.0.0-beta.0
+
+### Major Changes
+
+-   [#3062](https://github.com/neo4j/graphql/pull/3062) [`ea1bae3c3`](https://github.com/neo4j/graphql/commit/ea1bae3c3b8ec53febfa056c5fec25aa9b0c5c2a) Thanks [@mjfwebb](https://github.com/mjfwebb)! - The deprecated `@callback` directive has been removed. Any remaining usages of `@callback` should be replaced with `@populatedBy`. See https://github.com/neo4j/graphql/blob/dev/docs/modules/ROOT/pages/guides/v4-migration/index.adoc#callback-renamed-to-populatedby for more information.
+
+-   [#3013](https://github.com/neo4j/graphql/pull/3013) [`0fb2592b4`](https://github.com/neo4j/graphql/commit/0fb2592b4271adc02f4bbbf6e467eec5f7742be1) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove aggregation fields for relationships to a single node (non-List relationships) - these serve no functional utility
+
+-   [#2863](https://github.com/neo4j/graphql/pull/2863) [`c9ee9e757`](https://github.com/neo4j/graphql/commit/c9ee9e757427f512950ec58aad7e30923b297a05) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Support for Neo4j database 4.3 has been dropped. Please use the current Neo4j 5 release, or the LTS 4.4 release.
+
+-   [#2996](https://github.com/neo4j/graphql/pull/2996) [`4a78e7a8d`](https://github.com/neo4j/graphql/commit/4a78e7a8d70d3ff1ebaff8ba63ce1f9e5849d8e6) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Aliased properties are now automatically escaped using backticks. If you were using backticks in the `property` argument of your `@alias` directives, these should now be removed.
+
+-   [#2834](https://github.com/neo4j/graphql/pull/2834) [`8d3aff007`](https://github.com/neo4j/graphql/commit/8d3aff007c0d5428313cef23602e9a4ef5ef3792) Thanks [@a-alle](https://github.com/a-alle)! - Deprecated @node directive arguments `label` and `additionalLabels` have been removed. Please use the `labels` argument.
+
+-   [#3671](https://github.com/neo4j/graphql/pull/3671) [`b3951fa81`](https://github.com/neo4j/graphql/commit/b3951fa81232a968fe492a4b10ea54afc604e2d2) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove `nodes` and `relationships` from the public API of the `Neo4jGraphQL` class.
+
+-   [#3628](https://github.com/neo4j/graphql/pull/3628) [`2167c9ac1`](https://github.com/neo4j/graphql/commit/2167c9ac10b178ad881b12310fc798fc1f77b262) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Specifying Cypher query options to be used is now `cypherQueryOptions` instead of just `queryOptions`, and each option accepts a simple string rather than an enum.
+
+-   [#3242](https://github.com/neo4j/graphql/pull/3242) [`29d68ad51`](https://github.com/neo4j/graphql/commit/29d68ad515bcd2ee573d40387978250f92f83fe9) Thanks [@angrykoala](https://github.com/angrykoala)! - Escape properties and relationships if needed, using | and & as part of the label is no longer supported
+
+-   [#3105](https://github.com/neo4j/graphql/pull/3105) [`395e12f14`](https://github.com/neo4j/graphql/commit/395e12f14e0e7fffe50e3841ca5e69da459855d2) Thanks [@mjfwebb](https://github.com/mjfwebb)! - skipValidateTypeDefs has been removed. Please use startupValidation instead. See https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#startup-validation
+
+-   [#3043](https://github.com/neo4j/graphql/pull/3043) [`15a7f0418`](https://github.com/neo4j/graphql/commit/15a7f04188bcc676477ec562e24b27851a927905) Thanks [@mjfwebb](https://github.com/mjfwebb)! - It was possible to define schemas with types that have multiple relationship fields connected by the same type of relationships. Instances of this scenario are now detected during schema generation and an error is thrown so developers are informed to remedy the type definitions.
+
+    An example of what is now considered invalid with these checks:
+
+    ```graphql
+    type Team {
+        player1: Person! @relationship(type: "PLAYS_IN", direction: IN)
+        player2: Person! @relationship(type: "PLAYS_IN", direction: IN)
+        backupPlayers: [Person!]! @relationship(type: "PLAYS_IN", direction: IN)
+    }
+
+    type Person {
+        teams: [Team!]! @relationship(type: "PLAYS_IN", direction: OUT)
+    }
+    ```
+
+    For more information about this change and how to disable this validation please see the [4.0.0 migration guide](https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/)
+
+-   [#2818](https://github.com/neo4j/graphql/pull/2818) [`93b9d806b`](https://github.com/neo4j/graphql/commit/93b9d806b12c79dae7491b901378acf9d43f1c06) Thanks [@a-alle](https://github.com/a-alle)! - Removed deprecated argument `plural` from `@node` directive. Please use the `@plural` directive instead.
+
+-   [#3670](https://github.com/neo4j/graphql/pull/3670) [`d4aea32c6`](https://github.com/neo4j/graphql/commit/d4aea32c66aa1dcbf7b3399165adf74fed36e92e) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Removal of the following exports: `Neo4jGraphQLAuthenticationError`, `Neo4jGraphQLForbiddenError`, `EventMeta`, `Neo4jGraphQLAuthPlugin` and `RelationField`. This are either redundant, or internals which shouldn't have been exported.
+
+-   [#3679](https://github.com/neo4j/graphql/pull/3679) [`5ea18136e`](https://github.com/neo4j/graphql/commit/5ea18136e36303efc0806cc7027b7dfce13e1fa4) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove unused `DeleteInfo`, `GraphQLSortArg`, `GraphQLOptionsArg` and `GraphQLWhereArg` type exports.
+
+-   [#3673](https://github.com/neo4j/graphql/pull/3673) [`aa11d5251`](https://github.com/neo4j/graphql/commit/aa11d525111cfda005581ed2327407b9c9c319f9) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Programmatic toggling of debug logging is now done using the `debug` option of the constructor.
+
+-   [#3234](https://github.com/neo4j/graphql/pull/3234) [`f1225baa7`](https://github.com/neo4j/graphql/commit/f1225baa75c71ad82e36e9fb250477382eb6757c) Thanks [@angrykoala](https://github.com/angrykoala)! - Change subscriptions setup, this requires changes to constructor options passed to Neo4jGraphQL. See <https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#subscriptions-options>
+
+    For single instance subscriptions use `true`:
+
+    ```javascript
+    const neoSchema = new Neo4jGraphQL({
+        typeDefs,
+        features: {
+            subscriptions: true,
+        },
+    });
+    ```
+
+    For any other plugin, pass it `features.subscriptions`:
+
+    ```javascript
+    const neoSchema = new Neo4jGraphQL({
+        typeDefs,
+        features: {
+            subscriptions: subscriptionPlugin,
+        },
+    });
+    ```
+
+-   [#3645](https://github.com/neo4j/graphql/pull/3645) [`7df67be49`](https://github.com/neo4j/graphql/commit/7df67be4991b8829acbd00651c66b41558729008) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The minimum version of `neo4j-driver` is now `5.8.0`, please upgrade. The `boomkark` field in the selection set has been marked as deprecated and will be removed in version `5.0.0` of the library.
+
+-   [#2922](https://github.com/neo4j/graphql/pull/2922) [`7743399d3`](https://github.com/neo4j/graphql/commit/7743399d320b26126bb6e83bcd498c1c78517a83) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - The `requires` argument of the `@customResolver` directive now accepts a graphql selection set. This means it is now possible to require non-scalar fields such as related types.
+
+-   [#2769](https://github.com/neo4j/graphql/pull/2769) [`e5b53a597`](https://github.com/neo4j/graphql/commit/e5b53a5976a2880e0efdecddcddcfb427015c823) Thanks [@angrykoala](https://github.com/angrykoala)! - `@cypher` directive now requires the parameter `columnName`.
+
+    This requires all cypher queries to be made with a valid alias that must be referred in this new parameter.
+
+    For Example:
+
+    **@neo4j/graphql@3**
+
+    ```
+    @cypher(statement: "MATCH (i:Item) WHERE i.public=true RETURN i.name")
+    ```
+
+    **@neo4j/graphql@4**
+
+    ```
+    @cypher(statement: "MATCH (i:Item) WHERE i.public=true RETURN i.name as result", columnName: "result")
+    ```
+
+-   [#3630](https://github.com/neo4j/graphql/pull/3630) [`3896544b5`](https://github.com/neo4j/graphql/commit/3896544b50939df38a792bcd9b41bc77f25bc5a9) Thanks [@darrellwarde](https://github.com/darrellwarde)! - `neo4jDatabaseInfo` has been removed from the context. It is our belief that this has little utility in the library. If you regularly use different drivers connected to _different versions_ of Neo4j and require this feature, please raise an issue: https://github.com/neo4j/graphql/issues/new/choose
+
+-   [#2944](https://github.com/neo4j/graphql/pull/2944) [`8f0656b35`](https://github.com/neo4j/graphql/commit/8f0656b35b86a1d4966dea8cdb2a8ee5a3505dd6) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Made `@relationshipProperties` mandatory for relationship property interfaces
+
+-   [#3099](https://github.com/neo4j/graphql/pull/3099) [`c9f35f10c`](https://github.com/neo4j/graphql/commit/c9f35f10c0fde1af7b82a3adbd7137955705495a) Thanks [@mjfwebb](https://github.com/mjfwebb)! - config.callbacks has been deprecated and replaced with features.populatedBy.callbacks. See https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby for more information.
+
+-   [#3687](https://github.com/neo4j/graphql/pull/3687) [`1ad4328e4`](https://github.com/neo4j/graphql/commit/1ad4328e4bba39801aa96bf961e6e5c5a2a9ce8d) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Validation of type definitions is now configured using the `validate` boolean option in the constructor, which defaults to `true`.
+
+-   [#2819](https://github.com/neo4j/graphql/pull/2819) [`2ab3d5212`](https://github.com/neo4j/graphql/commit/2ab3d521277d66afd7acaea00aa56d44f10480bd) Thanks [@a-alle](https://github.com/a-alle)! - Removed `@computed` directive. Please use `@customResolver` instead.
+
+-   [#2598](https://github.com/neo4j/graphql/pull/2598) [`257aa4c97`](https://github.com/neo4j/graphql/commit/257aa4c97a0d367063725dff703fdd30f0f8ecb5) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove all arguments from IExecutableSchemaDefinition apart from `typeDefs` and `resolvers`. This is to simplify the API and to remove any unexpected behaviours from arguments which we blindly pass through.
+
+-   [#3653](https://github.com/neo4j/graphql/pull/3653) [`5b5f08ce7`](https://github.com/neo4j/graphql/commit/5b5f08ce764f431fa685c8320351236a9aaf57a0) Thanks [@angrykoala](https://github.com/angrykoala)! - All labels and field names are escaped in the generated Cypher
+
+-   [#3097](https://github.com/neo4j/graphql/pull/3097) [`9f5a44545`](https://github.com/neo4j/graphql/commit/9f5a445455280abfcf862c2cf23ce44e7a11bc0d) Thanks [@mjfwebb](https://github.com/mjfwebb)! - `enableRegex` has been removed and replaced with `MATCHES` filters in the features configuration object. See the migration guide for more information: https://neo4j.com/docs/graphql-manual/current/guides/v4-migration
+
+-   [#2955](https://github.com/neo4j/graphql/pull/2955) [`9f3a9374e`](https://github.com/neo4j/graphql/commit/9f3a9374e5272577f2453cd3704c6924526f8b45) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Relationship type strings are now automatically escaped using backticks. If you were using backticks in the `type` argument of your `@relationship` directives, these should now be removed to avoid backticks being added into your relationship type labels.
+
+-   [#3674](https://github.com/neo4j/graphql/pull/3674) [`59e369992`](https://github.com/neo4j/graphql/commit/59e369992b2226a3c5feec72f2799e2b30765819) Thanks [@darrellwarde](https://github.com/darrellwarde)! - `cypherQueryOptions` moved into context-only, as a per-request option.
+
+### Minor Changes
+
+-   [#3661](https://github.com/neo4j/graphql/pull/3661) [`ce84c47cc`](https://github.com/neo4j/graphql/commit/ce84c47cc610366def7d3abd9227ecb5244ef9d1) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The evaluation of authorization rules is now supported when using the Neo4j GraphQL Library as a Federation Subgraph.
+
 ## 3.24.0
 
 ### Minor Changes

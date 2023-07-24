@@ -2,7 +2,6 @@
     "mode": "pre",
     "tag": "beta",
     "initialVersions": {
-        "graphql-manual": "3.0.0",
         "migration": "0.0.1",
         "neo-place": "0.1.0",
         "neo-push-client": "1.0.0",
@@ -15,7 +14,41 @@
         "@neo4j/introspector": "1.0.2",
         "@neo4j/graphql-ogm": "3.14.1",
         "@neo4j/package-tests": "1.0.0",
-        "@neo4j/graphql-plugin-subscriptions-amqp": "1.0.0"
+        "@neo4j/graphql-amqp-subscriptions-engine": "0.1.0",
+        "apollo-subscriptions-server": "1.0.1",
+        "apollo-federation-subgraph-compatibility": "1.0.0",
+        "server_perf": "1.0.0"
     },
-    "changesets": []
+    "changesets": [
+        "big-crabs-exist",
+        "breezy-cameras-shop",
+        "clean-wasps-brake",
+        "curly-scissors-help",
+        "dry-doors-beg",
+        "early-carrots-scream",
+        "eighty-ads-develop",
+        "fluffy-suns-invite",
+        "gentle-colts-relate",
+        "khaki-experts-decide",
+        "loud-comics-try",
+        "loud-rivers-wonder",
+        "moody-crews-march",
+        "new-comics-retire",
+        "nine-poems-retire",
+        "ninety-onions-press",
+        "old-pigs-float",
+        "orange-bats-add",
+        "orange-kings-turn",
+        "poor-fans-smile",
+        "quick-insects-turn",
+        "shy-moles-invite",
+        "smart-vans-greet",
+        "sour-dolls-crash",
+        "sour-pugs-drive",
+        "spotty-snakes-fry",
+        "weak-planes-punch",
+        "wicked-ties-burn",
+        "witty-penguins-collect",
+        "witty-rabbits-prove"
+    ]
 }

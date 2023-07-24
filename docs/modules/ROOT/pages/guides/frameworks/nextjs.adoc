@@ -1,5 +1,0 @@
-[[usage-nextjs]]
-
-= Usage with Next.js
-
-We maintain an https://github.com/vercel/next.js/tree/canary/examples/with-apollo-neo4j-graphql[example project] in the Next.js repository  on how to use `@neo4j/graphql` with Next. The example demonstrates how to use the Neo4j Movie Database with GraphQL and https://www.apollographql.com/docs/apollo-server/[Apollo Server 4].

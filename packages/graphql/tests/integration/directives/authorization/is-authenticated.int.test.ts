@@ -26,7 +26,7 @@ import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { runCypher } from "../../../utils/run-cypher";
 import { UniqueType } from "../../../utils/graphql-types";
-import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { cleanNodes } from "../../../utils/clean-nodes";
 
@@ -604,7 +604,7 @@ describe("auth/is-authenticated", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -808,7 +808,7 @@ describe("auth/is-authenticated", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: { authorization: { key: secret }, subscriptions: new TestSubscriptionsMechanism() },
+                features: { authorization: { key: secret }, subscriptions: new TestSubscriptionsEngine() },
             });
 
             const query = `
@@ -967,7 +967,7 @@ describe("auth/is-authenticated", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 

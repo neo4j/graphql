@@ -24,7 +24,7 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
-import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
 import { createBearerToken } from "../../../utils/create-bearer-token";
@@ -66,7 +66,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -190,7 +190,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -282,7 +282,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -390,7 +390,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -500,7 +500,7 @@ describe("Subscription authentication", () => {
                         authorization: {
                             key: secret,
                         },
-                        subscriptions: new TestSubscriptionsMechanism(),
+                        subscriptions: new TestSubscriptionsEngine(),
                     },
                 });
 
@@ -589,7 +589,7 @@ describe("Subscription authentication", () => {
                         authorization: {
                             key: secret,
                         },
-                        subscriptions: new TestSubscriptionsMechanism(),
+                        subscriptions: new TestSubscriptionsEngine(),
                     },
                 });
 
@@ -731,7 +731,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -5142,7 +5142,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -5488,7 +5488,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -5579,7 +5579,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsMechanism(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
