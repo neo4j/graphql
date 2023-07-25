@@ -18,7 +18,7 @@
  */
 
 import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
-import { CypherTreeProjectionField } from "../../../../cypher-tree/Projection";
+import { CypherTreeProjectionField } from "../../../../cypher-tree/ProjectionField";
 import type { CypherTreeSelection } from "../../../../cypher-tree/Selection";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Field } from "../Field";

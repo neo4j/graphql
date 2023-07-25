@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-import { CypherTreeProjectionField } from "../../../cypher-tree/Projection";
+import { CypherTreeProjectionField } from "../../../cypher-tree/ProjectionField";
 import type { CypherTreeSelection } from "../../../cypher-tree/Selection";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ReadOperation } from "../operations/ReadOperation";
 import { Field } from "./Field";
 import Cypher from "@neo4j/cypher-builder";
 
+// TODO: same as connection and aggregation fields
 export class RelationshipField extends Field {
     private operation: ReadOperation;
 

@@ -1,6 +1,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import { CypherTreeNode } from "./CypherTreeNode";
 import type { CypherTreeContext } from "./Context";
+import type { CypherTreeProjectionField } from "./ProjectionField";
 
 export class CypherTreeProjection extends CypherTreeNode {
     private fields: CypherTreeProjectionField[] = [];
@@ -45,31 +46,5 @@ export class CypherTreeProjection extends CypherTreeNode {
         //         withStatement.addColumns([p.getCypher(ctx), p.alias]);
         //     }
         // }
-    }
-}
-
-export type CypherTreeProjectionFieldOptions = {
-    collect: boolean;
-};
-
-export class CypherTreeProjectionField {
-    public alias: string; // This is an exception
-    private expr: Cypher.Expr | undefined;
-
-    private options: CypherTreeProjectionFieldOptions;
-
-    private static DEFAULT_OPTIONS: CypherTreeProjectionFieldOptions = {
-        collect: false,
-    };
-
-    constructor(alias: string, expr?: Cypher.Expr, opts: Partial<CypherTreeProjectionFieldOptions> = {}) {
-        this.alias = alias;
-        this.expr = expr;
-        this.options = { ...CypherTreeProjectionField.DEFAULT_OPTIONS, ...opts };
-    }
-
-    public getProjection(_ctx: CypherTreeContext): string | Record<string, Cypher.Expr> {
-        if (this.expr) return { [this.alias]: this.expr };
-        else return this.alias;
     }
 }

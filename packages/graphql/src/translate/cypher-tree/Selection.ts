@@ -8,7 +8,7 @@ export class CypherTreeSelection extends CypherTreeNode {
     private pattern: Cypher.Pattern;
     private nestedSelection: CypherTreeSelection[] = [];
     private filters: CypherTreeFilter[] = [];
-    public projection: CypherTreeProjection;
+    public projection: CypherTreeProjection; // This should be an array of projections
 
     constructor({
         pattern,
