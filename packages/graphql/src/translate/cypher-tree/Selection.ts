@@ -3,11 +3,13 @@ import { CypherTreeNode } from "./CypherTreeNode";
 import { CypherTreeProjection } from "./Projection";
 import type { CypherTreeContext } from "./Context";
 import type { CypherTreeFilter } from "./Filter";
+import type { CypherTreeAssign } from "./Assign";
 
 export class CypherTreeSelection extends CypherTreeNode {
     private pattern: Cypher.Pattern;
     private nestedSelection: CypherTreeSelection[] = [];
     private filters: CypherTreeFilter[] = [];
+    private assignments: CypherTreeAssign[] = [];
     public projection: CypherTreeProjection; // This should be an array of projections
 
     constructor({
@@ -27,6 +29,11 @@ export class CypherTreeSelection extends CypherTreeNode {
     public addFilter(treeFilter: CypherTreeFilter): void {
         this.filters.push(treeFilter);
     }
+
+    public addAssignment(treeAssign: CypherTreeAssign): void {
+        this.assignments.push(treeAssign);
+    }
+
 
     // public hasParentOf(type) {
     //     if (this instanceof FulltextTreeSelection) return true;
