@@ -22,6 +22,7 @@ import type { AggregationOperation } from "../../operations/AggregationOperation
 import { Field } from "../Field";
 import Cypher from "@neo4j/cypher-builder";
 
+// TODO: this is an operation field too
 /** This class groups a full aggregation operation, not a particular aggregation field, which is a bit confusing */
 export class RelationshipAggregationField extends Field {
     private operation: AggregationOperation;

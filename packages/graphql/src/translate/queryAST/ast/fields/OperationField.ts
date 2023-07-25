@@ -21,16 +21,16 @@ import { CypherTreeProjectionField } from "../../../cypher-tree/ProjectionField"
 import type { CypherTreeSelection } from "../../../cypher-tree/Selection";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ConnectionReadOperation } from "../operations/ConnectionReadOperation";
+import type { ReadOperation } from "../operations/ReadOperation";
 import { Field } from "./Field";
 import Cypher from "@neo4j/cypher-builder";
 
-// TODO: OperationField
-export class ConnectionField extends Field {
-    private operation: ConnectionReadOperation;
+export class OperationField extends Field {
+    private operation: ReadOperation | ConnectionReadOperation;
 
     private projectionVariable = new Cypher.Variable();
 
-    constructor({ operation, alias }: { operation: ConnectionReadOperation; alias: string }) {
+    constructor({ operation, alias }: { operation: ReadOperation | ConnectionReadOperation; alias: string }) {
         super(alias);
         this.operation = operation;
     }
@@ -45,6 +45,8 @@ export class ConnectionField extends Field {
             parentNode: target,
             returnVariable: this.projectionVariable,
         });
+
+        nestedTree.projection.options.collect = true;
 
         tree.addNestedSelection(nestedTree);
 

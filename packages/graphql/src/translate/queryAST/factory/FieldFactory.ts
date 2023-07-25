@@ -22,18 +22,17 @@ import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Field } from "../ast/fields/Field";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { QueryASTFactory } from "./QueryASTFactory";
-import { ConnectionField } from "../ast/fields/ConnectionField";
 import { Relationship } from "../../../schema-model/relationship/Relationship";
 import { AttributeType } from "../../../schema-model/attribute/Attribute";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
-import { RelationshipField } from "../ast/fields/RelationshipField";
 import { RelationshipAggregationField } from "../ast/fields/aggregation-fields/RelationshipAggregationField";
 import type { AggregationField } from "../ast/fields/aggregation-fields/AggregationField";
 import { CountField } from "../ast/fields/aggregation-fields/CountField";
 import { filterTruthy } from "../../../utils/utils";
 import { AggregationAttributeField } from "../ast/fields/aggregation-fields/AggregationAttributeField";
+import { OperationField } from "../ast/fields/OperationField";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -147,12 +146,12 @@ export class FieldFactory {
         }
     }
 
-    private createConnectionField(entity: ConcreteEntity, fieldName: string, field: ResolveTree): ConnectionField {
+    private createConnectionField(entity: ConcreteEntity, fieldName: string, field: ResolveTree): OperationField {
         const relationship = entity.findRelationship(fieldName);
         if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
         const connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST(relationship, field);
 
-        return new ConnectionField({
+        return new OperationField({
             operation: connectionOp,
             alias: field.alias,
         });
@@ -163,14 +162,14 @@ export class FieldFactory {
         relationship: Relationship,
         fieldName: string,
         field: ResolveTree
-    ): RelationshipField {
+    ): OperationField {
         // const nestedFields = field.fieldsByTypeName[entity.name];
         // if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
         // const connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST(relationship, field);
 
         const operation = this.queryASTFactory.operationsFactory.createReadOperationAST(relationship, field);
 
-        return new RelationshipField({
+        return new OperationField({
             operation,
             alias: field.alias,
         });
