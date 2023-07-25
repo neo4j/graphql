@@ -9,7 +9,7 @@ export class CypherTreeProjection extends CypherTreeNode {
     private alias: Cypher.Variable;
 
     public options = {
-        aggregation: false,
+        collect: false,
     };
 
     constructor(target: Cypher.Variable, alias: Cypher.Variable) {
@@ -30,8 +30,8 @@ export class CypherTreeProjection extends CypherTreeNode {
             // ret.addColumns([f.getProjection(ctx), f.alias]);
         }
 
-        // Nested relationships are Cypher Aggregations (collect)
-        if (this.options.aggregation) {
+        // Nested relationships are Cypher collects (collect)
+        if (this.options.collect) {
             // this.target shouldn't be here (just for compatibility), it should be a new Cypher.Variable
             return new Cypher.With([mapProjection, this.target]).return([Cypher.collect(this.target), this.alias]);
         } else {

@@ -46,7 +46,7 @@ export class RelationshipField extends Field {
             returnVariable: this.projectionVariable,
         });
 
-        nestedTree.projection.options.aggregation = true;
+        nestedTree.projection.options.collect = true;
 
         tree.addNestedSelection(nestedTree);
 

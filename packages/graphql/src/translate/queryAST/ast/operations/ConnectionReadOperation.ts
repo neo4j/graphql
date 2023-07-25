@@ -30,6 +30,7 @@ import type { Pagination, PaginationField } from "../pagination/Pagination";
 import type { QueryASTNode } from "../QueryASTNode";
 import { filterTruthy } from "../../../../utils/utils";
 import type { Sort, SortField } from "../sort/Sort";
+import { CypherTreeSelection } from "../../../cypher-tree/Selection";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: Relationship;
@@ -61,6 +62,41 @@ export class ConnectionReadOperation extends Operation {
             // ...(this.sortFields?.edge || []), // TODO: add sort fields
             // ...(this.sortFields?.node || []),
         ]);
+    }
+
+    public getCypherTree({
+        parentNode,
+        returnVariable,
+    }: {
+        parentNode?: Cypher.Variable;
+        returnVariable: Cypher.Variable;
+    }): CypherTreeSelection {
+        if (!parentNode) throw new Error("No parent node found!");
+        // const node = createNodeFromEntity(this.relationship.target as ConcreteEntity);
+        const relationship = new Cypher.Relationship({ type: this.relationship.type });
+        const relDirection = getRelationshipDirection(this.relationship, this.directed);
+        const targetNode = createNodeFromEntity(this.relationship.target as ConcreteEntity);
+
+        // new Cypher.Pattern(parentNode).withoutLabels().related(relationship).withDirection(relDirection).to(node)
+
+        const pattern = new Cypher.Pattern(parentNode as Cypher.Node)
+            .withoutLabels()
+            .related(relationship)
+            .withDirection(relDirection)
+            .to(targetNode);
+
+        const readSelection = new CypherTreeSelection({
+            pattern,
+            target: targetNode,
+            alias: returnVariable,
+        });
+
+        this.nodeFilters.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
+        this.edgeFilters.forEach((f) => f.compileToCypher({ tree: readSelection, target: relationship }));
+        this.nodeFields.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
+        this.edgeFields.forEach((f) => f.compileToCypher({ tree: readSelection, target: relationship }));
+
+        return readSelection;
     }
 
     public setNodeFields(fields: Field[]) {

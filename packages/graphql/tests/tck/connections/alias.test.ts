@@ -48,7 +48,7 @@ describe("Connections Alias", () => {
         });
     });
 
-    test("Alias Top Level Connection Field", async () => {
+    test.only("Alias Top Level Connection Field", async () => {
         const query = gql`
             {
                 movies {
