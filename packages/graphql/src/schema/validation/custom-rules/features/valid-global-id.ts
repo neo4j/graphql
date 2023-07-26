@@ -27,6 +27,8 @@ import type {
 } from "graphql";
 import { Kind, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
+import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
+import { getPathToDirectiveNode } from "../utils/path-parser";
 
 export function ValidGlobalID() {
     return function (context: SDLValidationContext): ASTVisitor {
@@ -54,12 +56,14 @@ export function ValidGlobalID() {
                     return;
                 }
 
-                const { isValid, errorMsg, errorPath } = assertValidGlobalID(
-                    directiveNode,
-                    parentOfTraversedDef,
-                    typeNameToGlobalId,
-                    interfaceToImplementingTypes
-                );
+                const { isValid, errorMsg, errorPath } = assertValid([
+                    assertValidGlobalID.bind(null, {
+                        directiveNode,
+                        typeDef: parentOfTraversedDef,
+                        typeNameToGlobalId,
+                        interfaceToImplementingTypes,
+                    }),
+                ]);
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [directiveNode, traversedDef],
@@ -102,7 +106,9 @@ export function ValidGlobalID() {
                         return;
                     }
 
-                    const { isValid, errorMsg, errorPath } = assertGlobalIDDoesNotClash(objectType, fieldNamedID);
+                    const { isValid, errorMsg, errorPath } = assertValid([
+                        assertGlobalIDDoesNotClash.bind(null, fieldNamedID),
+                    ]);
                     if (!isValid) {
                         const errorOpts = {
                             nodes: [objectType, fieldNamedID],
@@ -140,7 +146,9 @@ export function ValidGlobalID() {
                         return;
                     }
 
-                    const { isValid, errorMsg, errorPath } = assertGlobalIDDoesNotClash(interfaceType, fieldNamedID);
+                    const { isValid, errorMsg, errorPath } = assertValid([
+                        assertGlobalIDDoesNotClash.bind(null, fieldNamedID),
+                    ]);
                     if (!isValid) {
                         const errorOpts = {
                             nodes: [interfaceType],
@@ -172,133 +180,52 @@ export function ValidGlobalID() {
     };
 }
 
-function getPathToDirectiveNode(
-    path: readonly (number | string)[],
-    ancenstors: readonly (ASTNode | readonly ASTNode[])[]
-): [
-    Array<string>,
-    ObjectTypeDefinitionNode | FieldDefinitionNode | InterfaceTypeDefinitionNode | undefined,
-    ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | undefined
-] {
-    const documentASTNodes = ancenstors[1];
-    if (!documentASTNodes || (Array.isArray(documentASTNodes) && !documentASTNodes.length)) {
-        return [[], undefined, undefined];
-    }
-    const [, definitionIdx] = path;
-    const traversedDefinition = documentASTNodes[definitionIdx as number];
-    const pathToHere: (ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode)[] = [
-        traversedDefinition,
-    ];
-    let lastSeenDefinition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode =
-        traversedDefinition;
-    const getNextDefinition = parsePath(path, traversedDefinition);
-    for (const definition of getNextDefinition()) {
-        lastSeenDefinition = definition;
-        pathToHere.push(definition);
-    }
-    const parentOfLastSeenDefinition = pathToHere.slice(-2)[0] as
-        | ObjectTypeDefinitionNode
-        | InterfaceTypeDefinitionNode;
-    return [pathToHere.map((n) => n.name?.value || "Schema"), lastSeenDefinition, parentOfLastSeenDefinition];
-}
-
-function parsePath(
-    path: readonly (number | string)[],
-    traversedDefinition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode
-) {
-    return function* getNextDefinition(idx = 2) {
-        while (path[idx] && path[idx] !== "directives") {
-            // continue parsing for annotated fields
-            const key = path[idx] as string;
-            const idxAtKey = path[idx + 1] as number;
-            traversedDefinition = traversedDefinition[key][idxAtKey];
-            yield traversedDefinition;
-            idx += 2;
-        }
-    };
-}
-
-type AssertionResponse = {
-    isValid: boolean;
-    errorMsg?: string;
-    errorPath: ReadonlyArray<string | number>;
-};
-
-function assertGlobalIDDoesNotClash(
-    objectType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    fieldNamedID: FieldDefinitionNode
-): AssertionResponse {
-    let isValid = true;
-    let errorMsg, errorPath;
-
-    const onError = (error: Error) => {
-        isValid = false;
-        errorMsg = error.message;
-    };
-    try {
-        const hasAlias = fieldNamedID.directives?.find((x) => x.name.value === "alias");
-        if (!hasAlias) {
-            throw new Error(
-                'Invalid global id field: Types decorated with an `@id` directive with the global argument set to `true` cannot have a field named "id". Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field.'
-            );
-        }
-    } catch (err) {
-        onError(err as Error);
-    }
-
-    return { isValid, errorMsg, errorPath: ["id"] };
-}
-
-function assertValidGlobalID(
-    directiveNode: DirectiveNode,
-    typeDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    typeNameToGlobalId: Map<string, boolean>,
-    interfaceToImplementingTypes: Map<string, string[]>
-): AssertionResponse {
-    let isValid = true;
-    let errorMsg, errorPath;
-
-    const onError = (error: Error) => {
-        isValid = false;
-        errorMsg = error.message;
-    };
-    try {
-        console.log(
-            "checking for",
-            typeDef.name.value,
-            typeDef.interfaces,
-            interfaceToImplementingTypes.get(typeDef.name.value)
+function assertGlobalIDDoesNotClash(fieldNamedID: FieldDefinitionNode) {
+    const hasAlias = fieldNamedID.directives?.find((x) => x.name.value === "alias");
+    if (!hasAlias) {
+        throw new DocumentValidationError(
+            'Invalid global id field: Types decorated with an `@id` directive with the global argument set to `true` cannot have a field named "id". Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field.',
+            ["id"]
         );
-        const globalNodeStatus = typeNameToGlobalId.get(typeDef.name.value);
-        const globalNodeStatusFromInterface = typeDef.interfaces?.map((i) => typeNameToGlobalId.get(i.name.value));
-        const globalNodeStatusFromType = interfaceToImplementingTypes
-            .get(typeDef.name.value)
-            ?.map((typeName) => typeNameToGlobalId.get(typeName));
-        if (
-            globalNodeStatus === true ||
-            globalNodeStatusFromInterface?.some((s) => s === true) ||
-            globalNodeStatusFromType?.some((s) => s === true)
-        ) {
-            errorPath = ["@id", "global"];
-            throw new Error(
-                "Invalid directive usage: Only one field may be decorated with an '@id' directive with the global argument set to `true`."
-            );
-        } else {
-            typeNameToGlobalId.set(typeDef.name.value, true);
-        }
+    }
+}
 
-        const isNotUnique = directiveNode.arguments?.find(
-            (a) => a.name.value === "unique" && a.value.kind === Kind.BOOLEAN && a.value.value === false
+function assertValidGlobalID({
+    directiveNode,
+    typeDef,
+    typeNameToGlobalId,
+    interfaceToImplementingTypes,
+}: {
+    directiveNode: DirectiveNode;
+    typeDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
+    typeNameToGlobalId: Map<string, boolean>;
+    interfaceToImplementingTypes: Map<string, string[]>;
+}) {
+    const globalNodeStatus = typeNameToGlobalId.get(typeDef.name.value);
+    const globalNodeStatusFromInterface = typeDef.interfaces?.map((i) => typeNameToGlobalId.get(i.name.value));
+    const globalNodeStatusFromType = interfaceToImplementingTypes
+        .get(typeDef.name.value)
+        ?.map((typeName) => typeNameToGlobalId.get(typeName));
+    if (
+        globalNodeStatus === true ||
+        globalNodeStatusFromInterface?.some((s) => s === true) ||
+        globalNodeStatusFromType?.some((s) => s === true)
+    ) {
+        throw new DocumentValidationError(
+            "Invalid directive usage: Only one field may be decorated with an '@id' directive with the global argument set to `true`.",
+            ["@id", "global"]
         );
-        if (isNotUnique) {
-            errorPath = ["@id", "unique"];
-            throw new Error(
-                `Invalid global id field: Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique.`
-            );
-        }
-    } catch (err) {
-        onError(err as Error);
+    } else {
+        typeNameToGlobalId.set(typeDef.name.value, true);
     }
 
-    return { isValid, errorMsg, errorPath };
+    const isNotUnique = directiveNode.arguments?.find(
+        (a) => a.name.value === "unique" && a.value.kind === Kind.BOOLEAN && a.value.value === false
+    );
+    if (isNotUnique) {
+        throw new DocumentValidationError(
+            `Invalid global id field: Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique.`,
+            ["@id", "unique"]
+        );
+    }
 }

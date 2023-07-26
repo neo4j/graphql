@@ -17,16 +17,10 @@
  * limitations under the License.
  */
 
-import type {
-    ASTVisitor,
-    DirectiveNode,
-    ASTNode,
-    ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
-} from "graphql";
-import { Kind, GraphQLError } from "graphql";
+import type { ASTVisitor, ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
+import { GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
+import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
 
 export function ValidDirectiveInheritance() {
     return function (context: SDLValidationContext): ASTVisitor {
@@ -54,10 +48,9 @@ export function ValidDirectiveInheritance() {
                     return;
                 }
 
-                const { isValid, errorMsg, errorPath } = assertMultipleInheritance(
-                    interfacesToExludeDirectiveMap,
-                    multipleInheritedInterfaces
-                );
+                const { isValid, errorMsg, errorPath } = assertValid([
+                    assertMultipleInheritance.bind(null, interfacesToExludeDirectiveMap, multipleInheritedInterfaces),
+                ]);
 
                 if (!isValid) {
                     const errorOpts = {
@@ -89,43 +82,23 @@ export function ValidDirectiveInheritance() {
     };
 }
 
-type AssertionResponse = {
-    isValid: boolean;
-    errorMsg?: string;
-    errorPath: ReadonlyArray<string | number>;
-};
-
 function assertMultipleInheritance(
     interfacesToExludeDirectiveMap: Map<string, boolean>,
     multipleInheritedInterfaces: Map<string, string[]>
-): AssertionResponse {
-    let isValid = true;
-    let errorMsg, errorPath;
-
-    const onError = (error: Error) => {
-        isValid = false;
-        errorMsg = error.message;
-    };
-
-    try {
-        for (const [typeName, implementedInterfaces] of multipleInheritedInterfaces.entries()) {
-            let isMultipleInherited = false;
-            for (const interfaceName of implementedInterfaces) {
-                if (interfacesToExludeDirectiveMap.get(interfaceName) === true) {
-                    if (isMultipleInherited) {
-                        errorPath = [typeName];
-                        throw new Error(
-                            `Multiple implemented interfaces of ${typeName} have @exclude directive - cannot determine directive to use.`
-                        );
-                    } else {
-                        isMultipleInherited = true;
-                    }
+) {
+    for (const [typeName, implementedInterfaces] of multipleInheritedInterfaces.entries()) {
+        let isMultipleInherited = false;
+        for (const interfaceName of implementedInterfaces) {
+            if (interfacesToExludeDirectiveMap.get(interfaceName) === true) {
+                if (isMultipleInherited) {
+                    throw new DocumentValidationError(
+                        `Multiple implemented interfaces of ${typeName} have @exclude directive - cannot determine directive to use.`,
+                        [typeName]
+                    );
+                } else {
+                    isMultipleInherited = true;
                 }
             }
         }
-    } catch (err) {
-        onError(err as Error);
     }
-
-    return { isValid, errorMsg, errorPath };
 }

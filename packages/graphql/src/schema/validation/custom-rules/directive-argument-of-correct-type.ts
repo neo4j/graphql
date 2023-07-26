@@ -74,7 +74,7 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                     (directiveDefinition as GraphQLDirective).args,
                     argument.name.value
                 );
-                console.log("arg", argument.name.value, argumentDefinition);
+                // console.log("arg", argument.name.value, argumentDefinition);
                 if (!argumentDefinition) {
                     return;
                 }
@@ -126,7 +126,7 @@ function getPathToDirectiveNode(
     const pathToHere: string[] = [traversedDefinition?.name?.value];
     const getNextDefinition = parsePath(path, traversedDefinition);
     for (const definition of getNextDefinition()) {
-        console.log("d:", definition);
+        // console.log("d:", definition);
         pathToHere.push(definition.name.value);
     }
     return pathToHere;

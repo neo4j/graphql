@@ -27,12 +27,13 @@ import type {
 } from "graphql";
 import { Kind, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
+import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
 
 export function ValidObjectType() {
     return function (context: SDLValidationContext): ASTVisitor {
         return {
             ObjectTypeDefinition(objectType: ObjectTypeDefinitionNode) {
-                const { isValid, errorMsg } = assertValidType(objectType);
+                const { isValid, errorMsg } = assertValid([assertValidType.bind(null, objectType)]);
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [objectType],
@@ -60,7 +61,7 @@ export function ValidObjectType() {
                 }
             },
             InterfaceTypeDefinition(interfaceType: InterfaceTypeDefinitionNode) {
-                const { isValid, errorMsg } = assertValidType(interfaceType);
+                const { isValid, errorMsg } = assertValid([assertValidType.bind(null, interfaceType)]);
 
                 if (!isValid) {
                     const errorOpts = {
@@ -92,28 +93,8 @@ export function ValidObjectType() {
     };
 }
 
-type AssertionResponse = {
-    isValid: boolean;
-    errorMsg?: string;
-    errorPath: ReadonlyArray<string | number>;
-};
-
-function assertValidType(type: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode): AssertionResponse {
-    let isValid = true;
-    let errorMsg, errorPath;
-
-    const onError = (error: Error) => {
-        isValid = false;
-        errorMsg = error.message;
-    };
-
-    try {
-        if (!type.fields || !type.fields.length) {
-            throw new Error("Objects and Interfaces must have one or more fields.");
-        }
-    } catch (err) {
-        onError(err as Error);
+function assertValidType(type: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode) {
+    if (!type.fields || !type.fields.length) {
+        throw new DocumentValidationError("Objects and Interfaces must have one or more fields.", []);
     }
-
-    return { isValid, errorMsg, errorPath: [] };
 }

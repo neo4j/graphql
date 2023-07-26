@@ -29,7 +29,8 @@ import type {
 } from "graphql";
 import { Kind, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { RESERVED_TYPE_NAMES } from "../../../constants";
+import { RESERVED_TYPE_NAMES } from "../../../../constants";
+import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
 
 type SpecializedASTNode =
     | ObjectTypeDefinitionNode
@@ -56,7 +57,9 @@ export function ReservedTypeNames() {
                     return;
                 }
 
-                const { isValid, errorMsg } = assertTypeNameIsReserved(node as SpecializedASTNode);
+                const { isValid, errorMsg } = assertValid([
+                    assertTypeNameIsReserved.bind(null, node as SpecializedASTNode),
+                ]);
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [node],
@@ -87,30 +90,10 @@ export function ReservedTypeNames() {
     };
 }
 
-type AssertionResponse = {
-    isValid: boolean;
-    errorMsg?: string;
-    errorPath: ReadonlyArray<string | number>;
-};
-
-function assertTypeNameIsReserved(node: SpecializedASTNode): AssertionResponse {
-    let isValid = true;
-    let errorMsg, errorPath;
-
-    const onError = (error: Error) => {
-        isValid = false;
-        errorMsg = error.message;
-    };
-
-    try {
-        RESERVED_TYPE_NAMES.forEach((reservedName) => {
-            if (reservedName.regex.test(node.name.value)) {
-                throw new Error(reservedName.error);
-            }
-        });
-    } catch (err) {
-        onError(err as Error);
-    }
-
-    return { isValid, errorMsg, errorPath };
+function assertTypeNameIsReserved(node: SpecializedASTNode) {
+    RESERVED_TYPE_NAMES.forEach((reservedName) => {
+        if (reservedName.regex.test(node.name.value)) {
+            throw new DocumentValidationError(reservedName.error, []);
+        }
+    });
 }

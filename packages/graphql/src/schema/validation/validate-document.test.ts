@@ -29,7 +29,7 @@ import { RESERVED_TYPE_NAMES } from "../../constants";
 import type { Neo4jGraphQLCallback } from "../../types";
 import validateDocument from "./validate-document";
 
-describe("validation2.0", () => {
+describe("validation 2.0", () => {
     describe("Directive Argument (existence)", () => {
         // TODO: @exclude?
         describe("@cypher", () => {
@@ -106,7 +106,13 @@ describe("validation2.0", () => {
                     }
                 `;
                 // TODO: is "ScalarOrEnum" type exposed to the user?
-                expect(() => validateDocument({ document: doc })).toThrow(
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).toThrow(
                     'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
                 );
             });
@@ -116,8 +122,13 @@ describe("validation2.0", () => {
                         name: String @coalesce(value: "dummy")
                     }
                 `;
-
-                expect(() => validateDocument({ document: doc })).not.toThrow();
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).not.toThrow();
             });
         });
         describe("@default", () => {
@@ -128,7 +139,13 @@ describe("validation2.0", () => {
                     }
                 `;
                 // TODO: is "ScalarOrEnum" type exposed to the user?
-                expect(() => validateDocument({ document: doc })).toThrow(
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).toThrow(
                     'Directive "@default" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
                 );
             });
@@ -139,7 +156,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc })).not.toThrow();
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).not.toThrow();
             });
         });
         describe("@fulltext", () => {
@@ -226,7 +249,10 @@ describe("validation2.0", () => {
                         name: String @populatedBy
                     }
                 `;
-                expect(() => validateDocument({ document: doc })).toThrow(
+
+                const executeValidate = () =>
+                    validateDocument({ document: doc, callbacks: { myCallback: () => "hello" } });
+                expect(executeValidate).toThrow(
                     'Directive "@populatedBy" argument "callback" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -255,7 +281,13 @@ describe("validation2.0", () => {
                         title: String
                     }
                 `;
-                expect(() => validateDocument({ document: doc })).toThrow(
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).toThrow(
                     'Directive "@relationship" argument "type" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -268,7 +300,13 @@ describe("validation2.0", () => {
                         title: String
                     }
                 `;
-                expect(() => validateDocument({ document: doc })).toThrow(
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).toThrow(
                     'Directive "@relationship" argument "type" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -281,7 +319,13 @@ describe("validation2.0", () => {
                         title: String
                     }
                 `;
-                expect(() => validateDocument({ document: doc })).toThrow(
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).toThrow(
                     'Directive "@relationship" argument "direction" of type "RelationshipDirection!" is required, but it was not provided.'
                 );
             });
@@ -295,7 +339,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc })).not.toThrow();
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).not.toThrow();
             });
         });
     });
@@ -333,7 +383,12 @@ describe("validation2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc });
+            const enums = [] as EnumTypeDefinitionNode[];
+            const interfaces = [] as InterfaceTypeDefinitionNode[];
+            const unions = [] as UnionTypeDefinitionNode[];
+            const objects = [] as ObjectTypeDefinitionNode[];
+            const executeValidate = () =>
+                validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -354,7 +409,12 @@ describe("validation2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc });
+            const enums = [] as EnumTypeDefinitionNode[];
+            const interfaces = [] as InterfaceTypeDefinitionNode[];
+            const unions = [] as UnionTypeDefinitionNode[];
+            const objects = [] as ObjectTypeDefinitionNode[];
+            const executeValidate = () =>
+                validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -429,10 +489,8 @@ describe("validation2.0", () => {
                     name: String
                 }
             `;
-            // TODO: fix this, no error thrown bc nested property
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            console.log(errors.message);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -453,7 +511,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 try {
                     validateDocument({ document: doc });
@@ -462,10 +526,7 @@ describe("validation2.0", () => {
                 }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @default.value is not a valid DateTime"
-                );
+                expect(errors[0]).toHaveProperty("message", "@default.value is not a valid DateTime");
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default", "value"]);
             });
 
@@ -477,7 +538,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -504,10 +571,7 @@ describe("validation2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @default.value on Status fields must be of type Status"
-                );
+                expect(errors[0]).toHaveProperty("message", "@default.value on Status fields must be of type Status");
                 expect(errors[0]).toHaveProperty("path", ["User", "status", "@default", "value"]);
             });
 
@@ -559,7 +623,7 @@ describe("validation2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @default.value on Status list fields must be a list of Status values"
+                    "@default.value on Status list fields must be a list of Status values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@default", "value"]);
             });
@@ -589,7 +653,7 @@ describe("validation2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @default.value on Status list fields must be a list of Status values"
+                    "@default.value on Status list fields must be a list of Status values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@default", "value"]);
             });
@@ -623,14 +687,17 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @default.value on Int fields must be of type Int"
-                );
+                expect(errors[0]).toHaveProperty("message", "@default.value on Int fields must be of type Int");
                 expect(errors[0]).toHaveProperty("path", ["User", "age", "@default", "value"]);
             });
 
@@ -641,7 +708,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -652,13 +725,19 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @default.value on Int list fields must be a list of Int values"
+                    "@default.value on Int list fields must be a list of Int values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "ages", "@default", "value"]);
             });
@@ -670,7 +749,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -681,14 +766,17 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @default.value on Float fields must be of type Float"
-                );
+                expect(errors[0]).toHaveProperty("message", "@default.value on Float fields must be of type Float");
                 expect(errors[0]).toHaveProperty("path", ["User", "avg", "@default", "value"]);
             });
 
@@ -699,7 +787,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -710,13 +804,19 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @default.value on Float list fields must be a list of Float values"
+                    "@default.value on Float list fields must be a list of Float values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "avgs", "@default", "value"]);
             });
@@ -728,7 +828,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -739,14 +845,17 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @default.value on Boolean fields must be of type Boolean"
-                );
+                expect(errors[0]).toHaveProperty("message", "@default.value on Boolean fields must be of type Boolean");
                 expect(errors[0]).toHaveProperty("path", ["User", "registered", "@default", "value"]);
             });
 
@@ -757,7 +866,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -768,13 +883,19 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @default.value on Boolean list fields must be a list of Boolean values"
+                    "@default.value on Boolean list fields must be a list of Boolean values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@default", "value"]);
             });
@@ -786,7 +907,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -797,14 +924,17 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @default.value on String fields must be of type String"
-                );
+                expect(errors[0]).toHaveProperty("message", "@default.value on String fields must be of type String");
                 expect(errors[0]).toHaveProperty("path", ["User", "name", "@default", "value"]);
             });
 
@@ -815,7 +945,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -826,13 +962,19 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @default.value on String list fields must be a list of String values"
+                    "@default.value on String list fields must be a list of String values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "names", "@default", "value"]);
             });
@@ -844,7 +986,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -855,14 +1003,17 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @default.value on ID fields must be of type ID"
-                );
+                expect(errors[0]).toHaveProperty("message", "@default.value on ID fields must be of type ID");
                 expect(errors[0]).toHaveProperty("path", ["User", "uid", "@default", "value"]);
             });
 
@@ -873,37 +1024,54 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @default.value on ID list fields must be a list of ID values"
+                    "@default.value on ID list fields must be a list of ID values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "ids", "@default", "value"]);
             });
 
-            // todo: fix this comparison expectedType: ID,  fromValueKind(): string
-            test.skip("@default on ID list must be list of ID values correct", () => {
+            test("@default on ID list must be list of ID values correct", () => {
                 const doc = gql`
                     type User {
                         ids: [ID] @default(value: ["123-223"])
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
-            test.skip("@default on ID must be ID correct", () => {
+            test("@default on ID must be ID correct", () => {
                 const doc = gql`
                     type User {
                         uid: ID @default(value: "234-432")
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -914,18 +1082,20 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @default is not supported by Spatial types at this time."
-                );
+                expect(errors[0]).toHaveProperty("message", "@default is not supported by Spatial types at this time.");
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default", "value"]);
             });
 
-            // TODO: check type is supported (check in enums)
             test("@default only supported on scalar types", () => {
                 const doc = gql`
                     type User {
@@ -936,15 +1106,21 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @default directive can only be used on Temporal types and types: Int | Float | String | Boolean | ID | Enum"
+                    "@default directive can only be used on Temporal types and types: Int | Float | String | Boolean | ID | Enum"
                 );
-                expect(errors[0]).toHaveProperty("path", ["User", "post", "@default", "value"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "post", "@default"]);
             });
         });
 
@@ -972,10 +1148,7 @@ describe("validation2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @coalesce.value on Status fields must be of type Status"
-                );
+                expect(errors[0]).toHaveProperty("message", "@coalesce.value on Status fields must be of type Status");
                 expect(errors[0]).toHaveProperty("path", ["User", "status", "@coalesce", "value"]);
             });
 
@@ -1027,7 +1200,7 @@ describe("validation2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @coalesce.value on Status list fields must be a list of Status values"
+                    "@coalesce.value on Status list fields must be a list of Status values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@coalesce", "value"]);
             });
@@ -1057,7 +1230,7 @@ describe("validation2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @coalesce.value on Status list fields must be a list of Status values"
+                    "@coalesce.value on Status list fields must be a list of Status values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@coalesce", "value"]);
             });
@@ -1092,14 +1265,17 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @coalesce.value on Int fields must be of type Int"
-                );
+                expect(errors[0]).toHaveProperty("message", "@coalesce.value on Int fields must be of type Int");
                 expect(errors[0]).toHaveProperty("path", ["User", "age", "@coalesce", "value"]);
             });
 
@@ -1110,7 +1286,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1121,13 +1303,19 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @coalesce.value on Int list fields must be a list of Int values"
+                    "@coalesce.value on Int list fields must be a list of Int values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "ages", "@coalesce", "value"]);
             });
@@ -1139,7 +1327,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1150,14 +1344,17 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @coalesce.value on Float fields must be of type Float"
-                );
+                expect(errors[0]).toHaveProperty("message", "@coalesce.value on Float fields must be of type Float");
                 expect(errors[0]).toHaveProperty("path", ["User", "avg", "@coalesce", "value"]);
             });
 
@@ -1168,7 +1365,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1179,13 +1382,19 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @coalesce.value on Float list fields must be a list of Float values"
+                    "@coalesce.value on Float list fields must be a list of Float values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "avgs", "@coalesce", "value"]);
             });
@@ -1197,7 +1406,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1208,13 +1423,19 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @coalesce.value on Boolean fields must be of type Boolean"
+                    "@coalesce.value on Boolean fields must be of type Boolean"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "registered", "@coalesce", "value"]);
             });
@@ -1226,7 +1447,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1237,13 +1464,19 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @coalesce.value on Boolean list fields must be a list of Boolean values"
+                    "@coalesce.value on Boolean list fields must be a list of Boolean values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@coalesce", "value"]);
             });
@@ -1255,7 +1488,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1266,14 +1505,17 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @coalesce.value on String fields must be of type String"
-                );
+                expect(errors[0]).toHaveProperty("message", "@coalesce.value on String fields must be of type String");
                 expect(errors[0]).toHaveProperty("path", ["User", "name", "@coalesce", "value"]);
             });
 
@@ -1284,7 +1526,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1295,13 +1543,19 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @coalesce.value on String list fields must be a list of String values"
+                    "@coalesce.value on String list fields must be a list of String values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "names", "@coalesce", "value"]);
             });
@@ -1313,7 +1567,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1324,14 +1584,17 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: value, error: @coalesce.value on ID fields must be of type ID"
-                );
+                expect(errors[0]).toHaveProperty("message", "@coalesce.value on ID fields must be of type ID");
                 expect(errors[0]).toHaveProperty("path", ["User", "uid", "@coalesce", "value"]);
             });
 
@@ -1342,37 +1605,54 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @coalesce.value on ID list fields must be a list of ID values"
+                    "@coalesce.value on ID list fields must be a list of ID values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "ids", "@coalesce", "value"]);
             });
 
-            // todo: fix this comparison expectedType: ID,  fromValueKind(): string
-            test.skip("@coalesce on ID list must be list of ID values correct", () => {
+            test("@coalesce on ID list must be list of ID values correct", () => {
                 const doc = gql`
                     type User {
                         ids: [ID] @coalesce(value: ["123-223"])
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
-            test.skip("@coalesce on ID must be ID correct", () => {
+            test("@coalesce on ID must be ID correct", () => {
                 const doc = gql`
                     type User {
                         uid: ID @coalesce(value: "234-432")
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1383,13 +1663,19 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @coalesce is not supported by Spatial types at this time."
+                    "@coalesce is not supported by Spatial types at this time."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@coalesce", "value"]);
             });
@@ -1401,18 +1687,23 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @coalesce is not supported by Temporal types at this time."
+                    "@coalesce is not supported by Temporal types at this time."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@coalesce", "value"]);
             });
 
-            // TODO: check type is supported (check in enums)
             test("@coalesce only supported on scalar types", () => {
                 const doc = gql`
                     type User {
@@ -1423,15 +1714,21 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: value, error: @coalesce directive can only be used on types: Int | Float | String | Boolean | ID | Enum"
+                    "@coalesce directive can only be used on types: Int | Float | String | Boolean | ID | Enum"
                 );
-                expect(errors[0]).toHaveProperty("path", ["User", "post", "@coalesce", "value"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "post", "@coalesce"]);
             });
         });
 
@@ -1454,7 +1751,7 @@ describe("validation2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: limit, error: @queryOptions.limit.default invalid value: -1. Must be greater than 0."
+                    "@queryOptions.limit.default invalid value: -1. Must be greater than 0."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "@queryOptions", "limit"]);
             });
@@ -1477,7 +1774,7 @@ describe("validation2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: limit, error: @queryOptions.limit.max invalid value: -1. Must be greater than 0."
+                    "@queryOptions.limit.max invalid value: -1. Must be greater than 0."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "@queryOptions", "limit"]);
             });
@@ -1500,7 +1797,7 @@ describe("validation2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: limit, error: @queryOptions.limit.max invalid value: 9. Must be greater than limit.default: 10."
+                    "@queryOptions.limit.max invalid value: 9. Must be greater than limit.default: 10."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "@queryOptions", "limit"]);
             });
@@ -1547,10 +1844,7 @@ describe("validation2.0", () => {
                 }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: indexes, error: @fulltext.indexes invalid value for: a. Duplicate name."
-                );
+                expect(errors[0]).toHaveProperty("message", "@fulltext.indexes invalid value for: a. Duplicate name.");
                 expect(errors[0]).toHaveProperty("path", ["User", "@fulltext", "indexes"]);
             });
 
@@ -1572,7 +1866,7 @@ describe("validation2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: indexes, error: @fulltext.indexes invalid value for: a. Field age is not of type String or ID."
+                    "@fulltext.indexes invalid value for: a. Field age is not of type String or ID."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "@fulltext", "indexes"]);
             });
@@ -1605,18 +1899,19 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "error: @relationship invalid. Multiple fields of the same type cannot have a relationship with the same direction and type combination."
+                    "@relationship invalid. Multiple fields of the same type cannot have a relationship with the same direction and type combination."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "archivedPosts", "@relationship"]);
             });
@@ -1639,18 +1934,13 @@ describe("validation2.0", () => {
                 const executeValidate = () =>
                     validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "error: @relationship.properties invalid. Cannot find interface to represent the relationship properties: Poster."
+                    "@relationship.properties invalid. Cannot find interface to represent the relationship properties: Poster."
                 );
-                expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship", "properties"]);
             });
 
             test("@relationship two relationshipProperties interface found", () => {
@@ -1679,18 +1969,13 @@ describe("validation2.0", () => {
                 const executeValidate = () =>
                     validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "error: @relationship.properties invalid. Cannot have more than 1 interface represent the relationship properties."
+                    "@relationship.properties invalid. Cannot have more than 1 interface represent the relationship properties."
                 );
-                expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship", "properties"]);
             });
 
             test("@relationship relationshipProperties interface not annotated with @relationshipProperties", () => {
@@ -1716,18 +2001,13 @@ describe("validation2.0", () => {
                 const executeValidate = () =>
                     validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "error: @relationship.properties invalid. Properties interface Poster must use directive `@relationshipProperties`."
+                    "@relationship.properties invalid. Properties interface Poster must use directive `@relationshipProperties`."
                 );
-                expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship", "properties"]);
             });
 
             test("@relationship correct usage", () => {
@@ -1742,6 +2022,7 @@ describe("validation2.0", () => {
                         posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "Poster")
                         archived: [Post!]!
                             @relationship(type: "HAS_ARCHIVED_POST", direction: OUT, properties: "Poster")
+                        favorite: Post @relationship(type: "HAS_FAVORITE", direction: OUT)
                     }
                     type Post {
                         title: String
@@ -1768,16 +2049,11 @@ describe("validation2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: callback, error: @populatedBy.callback needs to be provided in features option."
+                    "@populatedBy.callback needs to be provided in features option."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "name", "@populatedBy", "callback"]);
             });
@@ -1795,16 +2071,11 @@ describe("validation2.0", () => {
                         callbacks: { getUName: "i should really be a Function.." as unknown as Neo4jGraphQLCallback },
                     });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid argument: callback, error: @populatedBy.callback `getUName` must be of type Function."
+                    "@populatedBy.callback `getUName` must be of type Function."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "name", "@populatedBy", "callback"]);
             });
@@ -1852,11 +2123,8 @@ describe("validation2.0", () => {
                 }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "error: @unique invalid: Cannot use `@unique` on fields of Interface types."
-                );
-                expect(errors[0]).toHaveProperty("path", ["IUser", "name", "@unique"]);
+                expect(errors[0]).toHaveProperty("message", "Cannot use `@unique` on fields of Interface types.");
+                expect(errors[0]).toHaveProperty("path", ["IUser", "name"]);
             });
         });
 
@@ -1887,7 +2155,7 @@ describe("validation2.0", () => {
                 }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "error: @timestamp invalid: Cannot autogenerate an array.");
+                expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
                 expect(errors[0]).toHaveProperty("path", ["User", "lastSeenAt", "@timestamp"]);
             });
             test("@timestamp cannot timestamp temporal fields lacking time zone information", () => {
@@ -1908,7 +2176,7 @@ describe("validation2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "error: @timestamp invalid: Cannot timestamp Temporal fields lacking time zone information."
+                    "Cannot timestamp Temporal fields lacking time zone information."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "lastSeenAt", "@timestamp"]);
             });
@@ -1941,10 +2209,7 @@ describe("validation2.0", () => {
                 }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: autogenerate, error: @id.autogenerate invalid: Cannot autogenerate an array."
-                );
+                expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
                 expect(errors[0]).toHaveProperty("path", ["User", "uid", "@id", "autogenerate"]);
             });
             test("@id autogenerate cannot autogenerate a non ID field", () => {
@@ -1963,10 +2228,7 @@ describe("validation2.0", () => {
                 }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid argument: autogenerate, error: @id.autogenerate invalid: Cannot autogenerate a non ID field."
-                );
+                expect(errors[0]).toHaveProperty("message", "Cannot autogenerate a non ID field.");
                 expect(errors[0]).toHaveProperty("path", ["User", "uid", "@id", "autogenerate"]);
             });
         });
@@ -2194,7 +2456,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 try {
                     validateDocument({ document: doc });
@@ -2990,7 +3258,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 try {
                     validateDocument({ document: doc });
@@ -3016,7 +3290,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 const errors = getError(executeValidate);
                 try {
                     validateDocument({ document: doc });
@@ -3055,7 +3335,13 @@ describe("validation2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc });
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -3305,6 +3591,7 @@ describe("validation2.0", () => {
         });
     });
 });
+
 describe("validateDocument", () => {
     test("should throw an error if a directive is in the wrong location", () => {
         const doc = gql`
@@ -3313,9 +3600,14 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
-            'Directive "@coalesce" may not be used on OBJECT.'
-        );
+        const enums = [] as EnumTypeDefinitionNode[];
+        const interfaces = [] as InterfaceTypeDefinitionNode[];
+        const unions = [] as UnionTypeDefinitionNode[];
+        const objects = [] as ObjectTypeDefinitionNode[];
+        const executeValidate = () =>
+            validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: undefined });
+
+        expect(executeValidate).toThrow('Directive "@coalesce" may not be used on OBJECT.');
     });
 
     test("should throw an error if a directive is missing an argument", () => {
@@ -3325,7 +3617,14 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+        const enums = [] as EnumTypeDefinitionNode[];
+        const interfaces = [] as InterfaceTypeDefinitionNode[];
+        const unions = [] as UnionTypeDefinitionNode[];
+        const objects = [] as ObjectTypeDefinitionNode[];
+        const executeValidate = () =>
+            validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: undefined });
+
+        expect(executeValidate).toThrow(
             'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
         );
     });
@@ -3474,10 +3773,13 @@ describe("validateDocument", () => {
 
     describe("relationshipProperties directive", () => {
         test("should not throw when used correctly on an interface", () => {
-            const doc = gql`
+            const interfaceTypes = gql`
                 interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
+            `;
+            const doc = gql`
+                ${interfaceTypes}
 
                 type Actor {
                     name: String!
@@ -3490,8 +3792,14 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument({ document: doc, features: undefined });
-            expect(res).toBeUndefined();
+            const enums = [] as EnumTypeDefinitionNode[];
+            const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+            const unions = [] as UnionTypeDefinitionNode[];
+            const objects = [] as ObjectTypeDefinitionNode[];
+            const executeValidate = () =>
+                validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: undefined });
+
+            expect(executeValidate).not.toThrow();
         });
 
         test("should throw if used on an object type", () => {

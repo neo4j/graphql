@@ -17,16 +17,7 @@
  * limitations under the License.
  */
 
-import {
-    GraphQLSchema,
-    extendSchema,
-    validateSchema,
-    specifiedDirectives,
-    Kind,
-    EnumTypeDefinitionNode,
-    InterfaceTypeDefinitionNode,
-    UnionTypeDefinitionNode,
-} from "graphql";
+import { GraphQLSchema, extendSchema, validateSchema, specifiedDirectives, Kind } from "graphql";
 import type {
     DefinitionNode,
     DocumentNode,
@@ -36,6 +27,9 @@ import type {
     TypeNode,
     GraphQLDirective,
     GraphQLNamedType,
+    EnumTypeDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    UnionTypeDefinitionNode,
 } from "graphql";
 import pluralize from "pluralize";
 import * as scalars from "../../graphql/scalars";
@@ -56,16 +50,19 @@ import type { Neo4jFeaturesSettings, Neo4jGraphQLCallbacks } from "../../types";
 import { validateSDL } from "./validate-sdl";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
-import { DirectiveArgumentValueValid } from "./custom-rules/directive-argument-value-is-valid";
 import type { IResolvers } from "@graphql-tools/utils";
-import { DirectiveCombinationValid, SchemaOrTypeDirectives } from "./custom-rules/valid-directive-combination";
-import { ValidJwtDirectives } from "./custom-rules/valid-jwt-directives";
-import { ValidFieldTypes } from "./custom-rules/valid-field-types";
-import { ReservedTypeNames } from "./custom-rules/reserved-type-names";
-import { ValidRelationshipProperties } from "./custom-rules/valid-relationship-properties";
-import { ValidGlobalID } from "./custom-rules/valid-global-id";
-import { ValidObjectType } from "./custom-rules/valid-object-type";
-import { ValidDirectiveInheritance } from "./custom-rules/directive-multiple-inheritance";
+import {
+    DirectiveCombinationValid,
+    SchemaOrTypeDirectives,
+} from "./custom-rules/valid-types/valid-directive-combination";
+import { ValidJwtDirectives } from "./custom-rules/features/valid-jwt-directives";
+import { ValidFieldTypes } from "./custom-rules/valid-types/valid-field-types";
+import { ReservedTypeNames } from "./custom-rules/valid-types/reserved-type-names";
+import { ValidGlobalID } from "./custom-rules/features/valid-global-id";
+import { ValidObjectType } from "./custom-rules/valid-types/valid-object-type";
+import { ValidDirectiveInheritance } from "./custom-rules/valid-types/directive-multiple-inheritance";
+import { DirectiveIsValid } from "./custom-rules/directives/valid-directive";
+import { ValidRelationshipProperties } from "./custom-rules/features/valid-relationship-properties";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
@@ -289,7 +286,7 @@ function getBaseSchema({
         doc,
         [
             ...specifiedSDLRules,
-            DirectiveArgumentValueValid(userCustomResolvers, extra, callbacks, validateResolvers),
+            DirectiveIsValid(extra, callbacks, validateResolvers),
             DirectiveCombinationValid(),
             SchemaOrTypeDirectives(),
             ValidJwtDirectives(),
