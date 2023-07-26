@@ -4,18 +4,24 @@ import type { CypherTreeContext } from "./Context";
 import type { CypherTreeProjectionField } from "./ProjectionField";
 
 export class CypherTreeProjection extends CypherTreeNode {
-    private fields: CypherTreeProjectionField[] = [];
-    private target: Cypher.Variable;
+    private fields: CypherTreeProjectionField[] = []; // Cypher.Map
+    private target: Cypher.Variable; // If no target, this is a normal map
     private alias: Cypher.Variable;
+    private type: "Map" | "MapProjection";
 
     public options = {
         collect: false,
     };
 
-    constructor(target: Cypher.Variable, alias: Cypher.Variable) {
+    constructor(target: Cypher.Variable, alias: Cypher.Variable, type: "Map" | "MapProjection" = "MapProjection") {
         super();
         this.target = target;
         this.alias = alias;
+        this.type = type;
+    }
+
+    public setType(type: "Map" | "MapProjection"): void {
+        this.type = type;
     }
 
     public addField(field: CypherTreeProjectionField) {
@@ -23,11 +29,20 @@ export class CypherTreeProjection extends CypherTreeNode {
     }
 
     public getCypher(ctx: CypherTreeContext): Cypher.Clause {
-        const mapProjection = new Cypher.MapProjection(this.target);
+        let mapProjection: Cypher.Map | Cypher.MapProjection;
 
-        for (const f of this.fields) {
-            mapProjection.set(f.getProjection(ctx));
-            // ret.addColumns([f.getProjection(ctx), f.alias]);
+        if (this.type === "MapProjection") {
+            mapProjection = new Cypher.MapProjection(this.target);
+
+            for (const f of this.fields) {
+                mapProjection.set(f.getMapProjection(ctx));
+            }
+        } else {
+            mapProjection = new Cypher.Map();
+
+            for (const f of this.fields) {
+                mapProjection.set(f.getMapRecord(ctx));
+            }
         }
 
         // Nested relationships are Cypher collects (collect)

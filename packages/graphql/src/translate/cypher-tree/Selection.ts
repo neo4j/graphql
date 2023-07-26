@@ -34,11 +34,6 @@ export class CypherTreeSelection extends CypherTreeNode {
         this.assignments.push(treeAssign);
     }
 
-
-    // public hasParentOf(type) {
-    //     if (this instanceof FulltextTreeSelection) return true;
-    // }
-
     public addNestedSelection(selection: CypherTreeSelection) {
         this.nestedSelection.push(selection);
     }
@@ -49,6 +44,9 @@ export class CypherTreeSelection extends CypherTreeNode {
         const filtersCypher = this.filters.map((f) => f.getCypher(ctx));
         match.where(Cypher.and(...filtersCypher));
         const nestedCtx = ctx.push(...this.pattern.getVariables());
+
+        const assignmentCypher = this.assignments.map((ass) => ass.getCypher(ctx));
+
         const subqueries = this.nestedSelection
             .map((s) => {
                 return s.getCypher(nestedCtx);
@@ -59,6 +57,6 @@ export class CypherTreeSelection extends CypherTreeNode {
 
         const ret = this.projection.getCypher(ctx);
 
-        return Cypher.concat(match, ...subqueries, ret);
+        return Cypher.concat(match, ...subqueries, ...assignmentCypher, ret);
     }
 }

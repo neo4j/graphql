@@ -31,6 +31,8 @@ import type { QueryASTNode } from "../QueryASTNode";
 import { filterTruthy } from "../../../../utils/utils";
 import type { Sort, SortField } from "../sort/Sort";
 import { CypherTreeSelection } from "../../../cypher-tree/Selection";
+import { CypherTreeProjectionField, CypherTreeProjectionMapField } from "../../../cypher-tree/ProjectionField";
+import { CypherTreeAssign } from "../../../cypher-tree/Assign";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: Relationship;
@@ -93,8 +95,38 @@ export class ConnectionReadOperation extends Operation {
 
         this.nodeFilters.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
         this.edgeFilters.forEach((f) => f.compileToCypher({ tree: readSelection, target: relationship }));
-        this.nodeFields.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
-        this.edgeFields.forEach((f) => f.compileToCypher({ tree: readSelection, target: relationship }));
+
+        const nodeProjection = new CypherTreeProjectionMapField("node");
+        const edgeVar = new Cypher.NamedVariable("edge");
+        const assignEdge = new CypherTreeAssign(edgeVar);
+
+        if (this.nodeFields.length > 0) {
+            this.nodeFields.forEach((f) =>
+                f.toProjection(nodeProjection).compileToCypher({ tree: readSelection, target: targetNode })
+            );
+        } else {
+            nodeProjection.addField(
+                new CypherTreeProjectionField("__resolveType", new Cypher.Literal(this.relationship.target.name))
+            );
+            nodeProjection.addField(new CypherTreeProjectionField("__id", Cypher.id(targetNode)));
+        }
+        this.edgeFields.forEach((f) =>
+            f.toProjection(assignEdge).compileToCypher({ tree: readSelection, target: relationship })
+        );
+
+        assignEdge.addField(nodeProjection);
+
+        readSelection.addAssignment(assignEdge);
+
+        const edgesVar = new Cypher.NamedVariable("edges");
+        readSelection.addAssignment(new CypherTreeAssign(edgesVar, Cypher.collect(edgeVar)));
+        const totalCount = new Cypher.NamedVariable("totalCount");
+        readSelection.addAssignment(new CypherTreeAssign(totalCount, Cypher.size(edgesVar)).withVars(edgesVar));
+
+        readSelection.projection.setType("Map");
+
+        readSelection.projection.addField(new CypherTreeProjectionField("edges", edgesVar));
+        readSelection.projection.addField(new CypherTreeProjectionField("totalCount", totalCount));
 
         return readSelection;
     }
