@@ -93,8 +93,8 @@ export class ConnectionReadOperation extends Operation {
             alias: returnVariable,
         });
 
-        this.nodeFilters.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
         this.edgeFilters.forEach((f) => f.compileToCypher({ tree: readSelection, target: relationship }));
+        this.nodeFilters.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
 
         const nodeProjection = new CypherTreeProjectionMapField("node");
         const edgeVar = new Cypher.NamedVariable("edge");

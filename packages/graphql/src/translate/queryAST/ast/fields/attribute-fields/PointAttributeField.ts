@@ -34,6 +34,10 @@ export class PointAttributeField extends AttributeField {
         return { [this.alias]: pointProjection };
     }
 
+    protected getCypherExpr(target: Cypher.Variable): Cypher.Expr {
+        return this.createPointProjection(target);
+    }
+
     private createPointProjection(variable: Cypher.Variable): Cypher.Expr {
         const pointProperty = variable.property(this.attribute.name);
 

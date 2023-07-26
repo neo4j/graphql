@@ -21,6 +21,12 @@ import Cypher from "@neo4j/cypher-builder";
 import { AttributeField } from "./AttributeField";
 
 export class DateTimeField extends AttributeField {
+    protected getCypherExpr(target: Cypher.Variable): Cypher.Expr {
+        const targetProperty = target.property(this.attribute.name);
+
+        return this.createDateTimeProjection(targetProperty);
+    }
+
     public getProjectionField(variable: Cypher.Variable): Record<string, Cypher.Expr> {
         const targetProperty = variable.property(this.attribute.name);
         const fieldExpr = this.createDateTimeProjection(targetProperty);
