@@ -357,11 +357,7 @@ describe("validation 2.0", () => {
                     name: String
                 }
             `;
-            try {
-                validateDocument({ document: doc });
-            } catch (Err) {
-                console.error(Err);
-            }
+
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
@@ -519,11 +515,7 @@ describe("validation 2.0", () => {
                     validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
 
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "@default.value is not a valid DateTime");
@@ -1742,11 +1734,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -1765,11 +1753,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -1788,11 +1772,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -1837,11 +1817,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "@fulltext.indexes invalid value for: a. Duplicate name.");
@@ -1857,11 +1833,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2116,11 +2088,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "Cannot use `@unique` on fields of Interface types.");
@@ -2148,11 +2116,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
@@ -2167,11 +2131,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2202,11 +2162,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
@@ -2221,11 +2177,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "Cannot autogenerate a non ID field.");
@@ -2247,11 +2199,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2271,11 +2219,7 @@ describe("validation 2.0", () => {
                 const executeValidate = () =>
                     validateDocument({ document: doc, userCustomResolvers: { User: { name: () => "sweet" } } });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2310,11 +2254,7 @@ describe("validation 2.0", () => {
                         extra: { enums, interfaces, unions, objects },
                     });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2342,11 +2282,7 @@ describe("validation 2.0", () => {
                         extra: { enums, interfaces, unions, objects },
                     });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2464,11 +2400,7 @@ describe("validation 2.0", () => {
                     validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
 
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2503,11 +2435,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2527,11 +2455,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2551,11 +2475,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2577,11 +2497,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2607,11 +2523,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2630,11 +2542,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2657,11 +2565,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2683,11 +2587,7 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -2724,11 +2624,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -2753,11 +2649,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -2781,11 +2673,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -2814,11 +2702,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -2846,11 +2730,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -2871,11 +2751,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -2895,11 +2771,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -2920,11 +2792,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(2);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -2970,11 +2838,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty("message", "Union type Production must define one or more member types.");
@@ -3007,11 +2871,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty("message", "Union type Production must define one or more member types.");
@@ -3028,11 +2888,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty("message", 'Unknown type "Production". Did you mean "Duration"?');
@@ -3074,11 +2930,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -3136,11 +2988,7 @@ describe("validation 2.0", () => {
                     validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
 
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -3181,11 +3029,7 @@ describe("validation 2.0", () => {
                     validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
 
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -3237,11 +3081,21 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc });
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "Invalid field type: Matrix arrays not supported.");
+                expect(errors[0]).toHaveProperty("path", ["Post", "titles"]);
+            });
+
+            test("matrix array aliased", () => {
+                const doc = gql`
+                    type Post {
+                        titles: [[String]] @alias(property: "names")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc });
+                const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "Invalid field type: Matrix arrays not supported.");
@@ -3266,11 +3120,6 @@ describe("validation 2.0", () => {
                     validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
 
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -3298,11 +3147,6 @@ describe("validation 2.0", () => {
                     validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
 
                 const errors = getError(executeValidate);
-                try {
-                    validateDocument({ document: doc });
-                } catch (err) {
-                    console.error(err);
-                }
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -3357,11 +3201,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -3379,11 +3219,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -3402,11 +3238,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -3425,11 +3257,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -3445,11 +3273,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -3467,11 +3291,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -3489,11 +3309,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -3511,11 +3327,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -3534,11 +3346,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -3557,11 +3365,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
@@ -3577,11 +3381,7 @@ describe("validation 2.0", () => {
 
             const executeValidate = () => validateDocument({ document: doc });
             const errors = getError(executeValidate);
-            try {
-                validateDocument({ document: doc });
-            } catch (err) {
-                console.error(err);
-            }
+
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(

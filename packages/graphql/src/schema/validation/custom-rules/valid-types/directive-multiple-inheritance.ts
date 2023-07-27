@@ -48,16 +48,13 @@ export function ValidDirectiveInheritance() {
                     return;
                 }
 
-                const { isValid, errorMsg, errorPath } = assertValid([
-                    assertMultipleInheritance.bind(null, interfacesToExludeDirectiveMap, multipleInheritedInterfaces),
-                ]);
+                const { isValid, errorMsg, errorPath } = assertValid(
+                    assertMultipleInheritance.bind(null, interfacesToExludeDirectiveMap, multipleInheritedInterfaces)
+                );
 
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [interfaceType],
-                        // extensions: {
-                        //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        // },
                         path: errorPath,
                         source: undefined,
                         positions: undefined,
@@ -73,7 +70,6 @@ export function ValidDirectiveInheritance() {
                             errorOpts.positions,
                             errorOpts.path,
                             errorOpts.originalError
-                            // errorOpts.extensions
                         )
                     );
                 }

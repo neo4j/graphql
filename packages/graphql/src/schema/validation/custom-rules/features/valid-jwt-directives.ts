@@ -20,7 +20,6 @@
 import type {
     ASTVisitor,
     DirectiveNode,
-    ASTNode,
     ObjectTypeDefinitionNode,
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
@@ -29,7 +28,7 @@ import { Kind, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES } from "../../../../constants";
 import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
-import { getPathToDirectiveNode } from "../utils/path-parser";
+import { getPathToNode } from "../utils/path-parser";
 import { getInnerTypeName } from "../utils/utils";
 
 export function ValidJwtDirectives() {
@@ -43,7 +42,7 @@ export function ValidJwtDirectives() {
                     return;
                 }
 
-                const [temp, traversedDef, parentOfTraversedDef] = getPathToDirectiveNode(path, ancestors);
+                const [temp, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
                 if (!traversedDef) {
                     console.error("No last definition traversed");
                     return;
@@ -52,18 +51,10 @@ export function ValidJwtDirectives() {
 
                 let result;
                 if (isJwtDirective) {
-                    result = assertValid([
-                        assertJwtDirective.bind(null, traversedDef as ObjectTypeDefinitionNode, seenJwtType),
-                    ]);
+                    result = assertValid(assertJwtDirective.bind(null, traversedDef, seenJwtType));
                     seenJwtType = true;
                 } else {
-                    result = assertValid([
-                        assertJwtClaimDirective.bind(
-                            null,
-                            traversedDef as FieldDefinitionNode,
-                            parentOfTraversedDef as ObjectTypeDefinitionNode
-                        ),
-                    ]);
+                    result = assertValid(assertJwtClaimDirective.bind(null, traversedDef, parentOfTraversedDef));
                 }
 
                 const { isValid, errorMsg } = result;
@@ -71,9 +62,6 @@ export function ValidJwtDirectives() {
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [directiveNode, traversedDef],
-                        // extensions: {
-                        //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        // },
                         path: pathToHere,
                         source: undefined,
                         positions: undefined,
@@ -89,7 +77,6 @@ export function ValidJwtDirectives() {
                             errorOpts.positions,
                             errorOpts.path,
                             errorOpts.originalError
-                            // errorOpts.extensions
                         )
                     );
                 }
@@ -98,7 +85,15 @@ export function ValidJwtDirectives() {
     };
 }
 
-function assertJwtDirective(objectType: ObjectTypeDefinitionNode, seenJwtType: boolean) {
+function assertJwtDirective(
+    objectType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode,
+    seenJwtType: boolean
+) {
+    if (objectType.kind !== Kind.OBJECT_TYPE_DEFINITION) {
+        // delegate
+        return;
+    }
+
     if (seenJwtType) {
         throw new DocumentValidationError(
             `Invalid directive usage: Directive @jwt can only be used once in the Type Definitions.`,
@@ -120,7 +115,20 @@ function assertJwtDirective(objectType: ObjectTypeDefinitionNode, seenJwtType: b
     }
 }
 
-function assertJwtClaimDirective(fieldType: FieldDefinitionNode, objectType: ObjectTypeDefinitionNode) {
+function assertJwtClaimDirective(
+    fieldType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode,
+    objectType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | undefined
+) {
+    if (!objectType) {
+        console.error("No parent of last definition traversed");
+        return;
+    }
+
+    if (fieldType.kind !== Kind.FIELD_DEFINITION || objectType.kind !== Kind.OBJECT_TYPE_DEFINITION) {
+        // delegate
+        return;
+    }
+
     if (fieldType.directives && fieldType.directives.length > 1) {
         throw new DocumentValidationError(
             `Invalid directive usage: Directive @jwtClaim cannot be used in combination with other directives.`,

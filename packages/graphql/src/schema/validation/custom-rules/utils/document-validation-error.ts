@@ -46,12 +46,12 @@ export class DocumentValidationError extends Error {
     }
 }
 
-export function assertValid(fns: (() => void | undefined)[]): AssertionResponse {
+export function assertValid(fn: () => void | undefined): AssertionResponse {
     let isValid = true;
     let errorMsg, errorPath;
 
     try {
-        fns.forEach((fn) => fn());
+        fn();
     } catch (error) {
         isValid = false;
         errorMsg = (error as DocumentValidationError).message;

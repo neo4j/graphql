@@ -16,6 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// add codes for which you want the error message to be mapped (types be stripped from message or renamed, ..)
 export const VALIDATION_ERROR_CODES = {
     AUTHORIZATION: "@neo4j/graphql:AUTHORIZATION_VALIDATION",
     AUTHENTICATION: "@neo4j/graphql:AUTHENTICATION_VALIDATION",

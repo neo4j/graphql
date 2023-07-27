@@ -16,21 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {
-    ASTVisitor,
-    DirectiveNode,
-    ASTNode,
-    ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
-    TypeNode,
-    ValueNode,
-    EnumTypeDefinitionNode,
-    StringValueNode,
-    ObjectFieldNode,
-    InterfaceTypeDefinitionNode,
-    UnionTypeDefinitionNode,
-} from "graphql";
-import { Kind, parse, GraphQLError } from "graphql";
+import type { TypeNode, ValueNode, EnumTypeDefinitionNode, ObjectFieldNode } from "graphql";
+import { Kind } from "graphql";
 import * as neo4j from "neo4j-driver";
 import parseValueNode from "../../../../schema-model/parser/parse-value-node";
 
@@ -86,3 +73,7 @@ export function parseArgumentToInt(field: ObjectFieldNode | undefined): neo4j.In
     }
     return undefined;
 }
+
+// TODO:
+// invalidCombinations to matrix?
+// prepare validate-document for merge

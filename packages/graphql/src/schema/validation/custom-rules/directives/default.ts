@@ -32,7 +32,7 @@ import { GRAPHQL_BUILTIN_SCALAR_TYPES, isSpatial, isTemporal } from "../../../..
 
 // TODO: schema-generation: save enums as map
 
-function verifyDefault(enums: EnumTypeDefinitionNode[]) {
+export function verifyDefault(enums?: EnumTypeDefinitionNode[]) {
     return function ({
         directiveNode,
         traversedDef,
@@ -51,6 +51,10 @@ function verifyDefault(enums: EnumTypeDefinitionNode[]) {
         if (!defaultArg) {
             // delegate to DirectiveArgumentOfCorrectType rule
             return;
+        }
+
+        if (!enums) {
+            throw new Error("Missing data: Enums.");
         }
 
         if (!isArray) {
@@ -77,11 +81,4 @@ function verifyDefault(enums: EnumTypeDefinitionNode[]) {
         }
         sameTypeArgumentAsField({ directiveName: "@default", traversedDef, argument: defaultArg, enums });
     };
-}
-
-export function ValidDefaultArgument(enums?: EnumTypeDefinitionNode[]) {
-    if (!enums) {
-        throw new Error("Missing data: Enums.");
-    }
-    return verifyDefault(enums);
 }

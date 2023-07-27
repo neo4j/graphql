@@ -20,7 +20,6 @@
 import type {
     ASTVisitor,
     DirectiveNode,
-    ASTNode,
     ObjectTypeDefinitionNode,
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
@@ -29,7 +28,7 @@ import { Kind, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { RESERVED_INTERFACE_FIELDS } from "../../../../constants";
 import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
-import { getPathToDirectiveNode } from "../utils/path-parser";
+import { getPathToNode } from "../utils/path-parser";
 
 export function ValidRelationshipProperties() {
     return function (context: SDLValidationContext): ASTVisitor {
@@ -39,21 +38,18 @@ export function ValidRelationshipProperties() {
                     return;
                 }
 
-                const [temp, traversedDef] = getPathToDirectiveNode(path, ancestors);
+                const [temp, traversedDef] = getPathToNode(path, ancestors);
                 if (!traversedDef) {
                     console.error("No last definition traversed");
                     return;
                 }
 
-                const { isValid, errorMsg, errorPath } = assertValid([
-                    assertRelationshipProperties.bind(null, traversedDef),
-                ]);
+                const { isValid, errorMsg, errorPath } = assertValid(
+                    assertRelationshipProperties.bind(null, traversedDef)
+                );
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [directiveNode, traversedDef],
-                        // extensions: {
-                        //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        // },
                         path: [...temp, ...errorPath],
                         source: undefined,
                         positions: undefined,
@@ -69,7 +65,6 @@ export function ValidRelationshipProperties() {
                             errorOpts.positions,
                             errorOpts.path,
                             errorOpts.originalError
-                            // errorOpts.extensions
                         )
                     );
                 }

@@ -17,17 +17,7 @@
  * limitations under the License.
  */
 
-import type {
-    ASTVisitor,
-    DirectiveNode,
-    ASTNode,
-    ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
-    ListTypeNode,
-    TypeNode,
-    NonNullTypeNode,
-} from "graphql";
+import type { ASTVisitor, DirectiveNode, FieldDefinitionNode } from "graphql";
 import { Kind, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { verifyId } from "../directives/id";
@@ -36,18 +26,18 @@ import { verifyTimestamp } from "../directives/timestamp";
 import { verifyUnique } from "../directives/unique";
 import type { VALIDATION_FN } from "../utils/document-validation-error";
 import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
-import { getPathToDirectiveNode } from "../utils/path-parser";
+import { getPathToNode } from "../utils/path-parser";
 
-function getValidationFunctions(directiveName: string): VALIDATION_FN[] | undefined {
+function getValidationFunction(directiveName: string): VALIDATION_FN | undefined {
     switch (directiveName) {
         case "id":
-            return [verifyId];
+            return verifyId;
         case "timestamp":
-            return [verifyTimestamp];
+            return verifyTimestamp;
         case "unique":
-            return [verifyUnique];
+            return verifyUnique;
         case "relationship":
-            return [verifyRelationshipFieldType];
+            return verifyRelationshipFieldType;
         default:
             return;
     }
@@ -57,14 +47,11 @@ export function ValidFieldTypes() {
     return function (context: SDLValidationContext): ASTVisitor {
         return {
             FieldDefinition(field: FieldDefinitionNode, _key, _parent, path, ancestors) {
-                const [temp] = getPathToDirectiveNode(path, ancestors);
-                const { isValid, errorMsg } = assertValid([isNotMatrixType.bind(null, field)]);
+                const [temp] = getPathToNode(path, ancestors);
+                const { isValid, errorMsg } = assertValid(isNotMatrixType.bind(null, field));
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [field],
-                        // extensions: {
-                        //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        // },
                         path: temp,
                         source: undefined,
                         positions: undefined,
@@ -80,36 +67,30 @@ export function ValidFieldTypes() {
                             errorOpts.positions,
                             errorOpts.path,
                             errorOpts.originalError
-                            // errorOpts.extensions
                         )
                     );
                 }
             },
             Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-                const [temp, traversedDef, parentOfTraversedDef] = getPathToDirectiveNode(path, ancestors);
-                const validationFns = getValidationFunctions(directiveNode.name.value);
-                if (!validationFns) {
+                const [temp, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
+                const validationFn = getValidationFunction(directiveNode.name.value);
+                if (!validationFn) {
                     return;
                 }
                 if (!traversedDef) {
                     console.error("No last definition traversed");
                     return;
                 }
-
-                const preappliedFns = validationFns.map((fn) =>
-                    fn.bind(null, {
+                const { isValid, errorMsg, errorPath } = assertValid(
+                    validationFn.bind(null, {
                         directiveNode,
                         traversedDef,
                         parentDef: parentOfTraversedDef,
                     })
                 );
-                const { isValid, errorMsg, errorPath } = assertValid(preappliedFns);
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [traversedDef],
-                        // extensions: {
-                        //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        // },
                         path: [...temp, ...errorPath],
                         source: undefined,
                         positions: undefined,
@@ -125,7 +106,6 @@ export function ValidFieldTypes() {
                             errorOpts.positions,
                             errorOpts.path,
                             errorOpts.originalError
-                            // errorOpts.extensions
                         )
                     );
                 }
@@ -139,6 +119,7 @@ function isNotMatrixType(field: FieldDefinitionNode) {
     if (isListType) {
         const listNode = field.type;
         const isMatrix = listNode.type.kind === Kind.LIST_TYPE;
+        // TODO: figure this out - seems to have no impact having this commented-out
         // && listNode.type.type.kind === Kind.LIST_TYPE;
         if (isMatrix) {
             throw new DocumentValidationError(`Invalid field type: Matrix arrays not supported.`, []);

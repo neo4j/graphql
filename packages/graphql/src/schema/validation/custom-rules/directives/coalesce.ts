@@ -29,7 +29,7 @@ import { getInnerTypeName } from "../utils/utils";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES, isSpatial, isTemporal } from "../../../../constants";
 import { DocumentValidationError } from "../utils/document-validation-error";
 
-function verifyCoalesce(enums: EnumTypeDefinitionNode[]) {
+export function verifyCoalesce(enums?: EnumTypeDefinitionNode[]) {
     return function ({
         directiveNode,
         traversedDef,
@@ -48,6 +48,10 @@ function verifyCoalesce(enums: EnumTypeDefinitionNode[]) {
         if (!coalesceArg) {
             // delegate to DirectiveArgumentOfCorrectType rule
             return;
+        }
+
+        if (!enums) {
+            throw new Error("Missing data: Enums.");
         }
 
         if (!isArray) {
@@ -73,11 +77,4 @@ function verifyCoalesce(enums: EnumTypeDefinitionNode[]) {
         }
         sameTypeArgumentAsField({ directiveName: "@coalesce", traversedDef, argument: coalesceArg, enums });
     };
-}
-
-export function ValidCoalesceArgument(enums?: EnumTypeDefinitionNode[]) {
-    if (!enums) {
-        throw new Error("Missing data: Enums.");
-    }
-    return verifyCoalesce(enums);
 }

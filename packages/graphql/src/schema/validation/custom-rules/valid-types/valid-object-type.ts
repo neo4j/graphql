@@ -17,15 +17,8 @@
  * limitations under the License.
  */
 
-import type {
-    ASTVisitor,
-    DirectiveNode,
-    ASTNode,
-    ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
-} from "graphql";
-import { Kind, GraphQLError } from "graphql";
+import type { ASTVisitor, ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
+import { GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
 
@@ -33,13 +26,10 @@ export function ValidObjectType() {
     return function (context: SDLValidationContext): ASTVisitor {
         return {
             ObjectTypeDefinition(objectType: ObjectTypeDefinitionNode) {
-                const { isValid, errorMsg } = assertValid([assertValidType.bind(null, objectType)]);
+                const { isValid, errorMsg } = assertValid(assertValidType.bind(null, objectType));
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [objectType],
-                        // extensions: {
-                        //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        // },
                         path: undefined,
                         source: undefined,
                         positions: undefined,
@@ -55,20 +45,16 @@ export function ValidObjectType() {
                             errorOpts.positions,
                             errorOpts.path,
                             errorOpts.originalError
-                            // errorOpts.extensions
                         )
                     );
                 }
             },
             InterfaceTypeDefinition(interfaceType: InterfaceTypeDefinitionNode) {
-                const { isValid, errorMsg } = assertValid([assertValidType.bind(null, interfaceType)]);
+                const { isValid, errorMsg } = assertValid(assertValidType.bind(null, interfaceType));
 
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [interfaceType],
-                        // extensions: {
-                        //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        // },
                         path: undefined,
                         source: undefined,
                         positions: undefined,
@@ -84,7 +70,6 @@ export function ValidObjectType() {
                             errorOpts.positions,
                             errorOpts.path,
                             errorOpts.originalError
-                            // errorOpts.extensions
                         )
                     );
                 }

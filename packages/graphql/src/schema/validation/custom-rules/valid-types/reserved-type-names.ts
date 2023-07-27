@@ -44,28 +44,14 @@ export function ReservedTypeNames() {
     return function (context: SDLValidationContext): ASTVisitor {
         return {
             enter(node: ASTNode) {
-                if (
-                    ![
-                        Kind.OBJECT_TYPE_DEFINITION,
-                        Kind.SCALAR_TYPE_DEFINITION,
-                        Kind.INTERFACE_TYPE_DEFINITION,
-                        Kind.UNION_TYPE_DEFINITION,
-                        Kind.ENUM_TYPE_DEFINITION,
-                        Kind.INPUT_OBJECT_TYPE_DEFINITION,
-                    ].includes(node.kind)
-                ) {
+                if (!isSpecializedASTNode(node)) {
                     return;
                 }
 
-                const { isValid, errorMsg } = assertValid([
-                    assertTypeNameIsReserved.bind(null, node as SpecializedASTNode),
-                ]);
+                const { isValid, errorMsg } = assertValid(assertTypeNameIsReserved.bind(null, node));
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [node],
-                        // extensions: {
-                        //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        // },
                         path: undefined,
                         source: undefined,
                         positions: undefined,
@@ -81,7 +67,6 @@ export function ReservedTypeNames() {
                             errorOpts.positions,
                             errorOpts.path,
                             errorOpts.originalError
-                            // errorOpts.extensions
                         )
                     );
                 }
@@ -90,6 +75,21 @@ export function ReservedTypeNames() {
     };
 }
 
+function isSpecializedASTNode(node: ASTNode): node is SpecializedASTNode {
+    if (
+        [
+            Kind.OBJECT_TYPE_DEFINITION,
+            Kind.SCALAR_TYPE_DEFINITION,
+            Kind.INTERFACE_TYPE_DEFINITION,
+            Kind.UNION_TYPE_DEFINITION,
+            Kind.ENUM_TYPE_DEFINITION,
+            Kind.INPUT_OBJECT_TYPE_DEFINITION,
+        ].includes(node.kind)
+    ) {
+        return true;
+    }
+    return false;
+}
 function assertTypeNameIsReserved(node: SpecializedASTNode) {
     RESERVED_TYPE_NAMES.forEach((reservedName) => {
         if (reservedName.regex.test(node.name.value)) {

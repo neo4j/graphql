@@ -31,17 +31,17 @@ import type { SDLValidationContext } from "graphql/validation/ValidationContext"
 import type { Neo4jGraphQLCallbacks } from "../../../../types";
 import type { IResolvers } from "@graphql-tools/utils";
 import { asArray } from "../../../../utils/utils";
-import { ValidCoalesceArgument } from "./coalesce";
-import { ValidDefaultArgument } from "./default";
+import { verifyCoalesce } from "./coalesce";
+import { verifyDefault } from "./default";
 import { verifyFulltext } from "./fulltext";
 import { verifyPopulatedBy } from "./populatedBy";
 import { verifyQueryOptions } from "./queryOptions";
 import { verifyRelationshipArgumentValue } from "./relationship";
 import type { VALIDATION_FN } from "../utils/document-validation-error";
 import { assertValid } from "../utils/document-validation-error";
-import { getPathToDirectiveNode } from "../utils/path-parser";
+import { getPathToNode } from "../utils/path-parser";
 
-function getValidationFunctions(
+function getValidationFunction(
     directiveName: string,
     relationshipTypeToDirectionAndFieldTypeMap: Map<string, [string, string][]>,
     extra?: {
@@ -52,20 +52,20 @@ function getValidationFunctions(
     },
     callbacks?: Neo4jGraphQLCallbacks,
     validateResolvers = true
-): VALIDATION_FN[] | undefined {
+): VALIDATION_FN | undefined {
     switch (directiveName) {
         case "coalesce":
-            return [ValidCoalesceArgument(extra?.enums)];
+            return verifyCoalesce(extra?.enums);
         case "default":
-            return [ValidDefaultArgument(extra?.enums)];
+            return verifyDefault(extra?.enums);
         case "fulltext":
-            return [verifyFulltext];
+            return verifyFulltext;
         case "populatedBy":
-            return [verifyPopulatedBy(callbacks)];
+            return verifyPopulatedBy(callbacks);
         case "queryOptions":
-            return [verifyQueryOptions];
+            return verifyQueryOptions;
         case "relationship":
-            return [verifyRelationshipArgumentValue(relationshipTypeToDirectionAndFieldTypeMap, extra)];
+            return verifyRelationshipArgumentValue(relationshipTypeToDirectionAndFieldTypeMap, extra);
         default:
             return;
     }
@@ -85,17 +85,17 @@ export function DirectiveIsValid(
         const relationshipTypeToDirectionAndFieldTypeMap = new Map<string, [string, string][]>();
         return {
             Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
-                const validationFns = getValidationFunctions(
+                const validationFn = getValidationFunction(
                     directiveNode.name.value,
                     relationshipTypeToDirectionAndFieldTypeMap,
                     extra,
                     callbacks
                 );
-                if (!validationFns) {
+                if (!validationFn) {
                     return;
                 }
 
-                const [temp, traversedDef, parentOfTraversedDef] = getPathToDirectiveNode(path, ancenstors);
+                const [temp, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancenstors);
                 const pathToHere = [...temp, `@${directiveNode.name.value}`];
 
                 if (!traversedDef) {
@@ -103,20 +103,16 @@ export function DirectiveIsValid(
                     return;
                 }
 
-                const preappliedFns = validationFns.map((fn) =>
-                    fn.bind(null, {
+                const { isValid, errorMsg, errorPath } = assertValid(
+                    validationFn.bind(null, {
                         directiveNode,
                         traversedDef,
                         parentDef: parentOfTraversedDef,
                     })
                 );
-                const { isValid, errorMsg, errorPath } = assertValid(preappliedFns);
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [directiveNode, traversedDef],
-                        // extensions: {
-                        //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        // },
                         path: [...pathToHere, ...errorPath],
                         source: undefined,
                         positions: undefined,
@@ -132,7 +128,6 @@ export function DirectiveIsValid(
                             errorOpts.positions,
                             errorOpts.path,
                             errorOpts.originalError
-                            // errorOpts.extensions
                         )
                     );
                 }

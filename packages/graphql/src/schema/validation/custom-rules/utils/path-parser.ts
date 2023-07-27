@@ -18,7 +18,7 @@
  */
 import type { ASTNode, ObjectTypeDefinitionNode, FieldDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
 
-export function getPathToDirectiveNode(
+export function getPathToNode(
     path: readonly (number | string)[],
     ancenstors: readonly (ASTNode | readonly ASTNode[])[]
 ): [

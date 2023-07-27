@@ -20,7 +20,6 @@
 import type {
     ASTVisitor,
     DirectiveNode,
-    ASTNode,
     ObjectTypeDefinitionNode,
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
@@ -28,7 +27,7 @@ import type {
 import { Kind, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
-import { getPathToDirectiveNode } from "../utils/path-parser";
+import { getPathToNode } from "../utils/path-parser";
 
 export function ValidGlobalID() {
     return function (context: SDLValidationContext): ASTVisitor {
@@ -36,7 +35,7 @@ export function ValidGlobalID() {
         const interfaceToImplementingTypes = new Map<string, string[]>();
         return {
             Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-                const [temp, traversedDef, parentOfTraversedDef] = getPathToDirectiveNode(path, ancestors);
+                const [temp, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
                 if (!traversedDef) {
                     console.error("No last definition traversed");
                     return;
@@ -56,20 +55,17 @@ export function ValidGlobalID() {
                     return;
                 }
 
-                const { isValid, errorMsg, errorPath } = assertValid([
+                const { isValid, errorMsg, errorPath } = assertValid(
                     assertValidGlobalID.bind(null, {
                         directiveNode,
                         typeDef: parentOfTraversedDef,
                         typeNameToGlobalId,
                         interfaceToImplementingTypes,
-                    }),
-                ]);
+                    })
+                );
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [directiveNode, traversedDef],
-                        // extensions: {
-                        //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        // },
                         path: [...temp, ...errorPath],
                         source: undefined,
                         positions: undefined,
@@ -85,7 +81,6 @@ export function ValidGlobalID() {
                             errorOpts.positions,
                             errorOpts.path,
                             errorOpts.originalError
-                            // errorOpts.extensions
                         )
                     );
                 }
@@ -106,15 +101,12 @@ export function ValidGlobalID() {
                         return;
                     }
 
-                    const { isValid, errorMsg, errorPath } = assertValid([
-                        assertGlobalIDDoesNotClash.bind(null, fieldNamedID),
-                    ]);
+                    const { isValid, errorMsg, errorPath } = assertValid(
+                        assertGlobalIDDoesNotClash.bind(null, fieldNamedID)
+                    );
                     if (!isValid) {
                         const errorOpts = {
                             nodes: [objectType, fieldNamedID],
-                            // extensions: {
-                            //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                            // },
                             path: [objectType.name.value, ...errorPath],
                             source: undefined,
                             positions: undefined,
@@ -130,7 +122,6 @@ export function ValidGlobalID() {
                                 errorOpts.positions,
                                 errorOpts.path,
                                 errorOpts.originalError
-                                // errorOpts.extensions
                             )
                         );
                     }
@@ -146,15 +137,12 @@ export function ValidGlobalID() {
                         return;
                     }
 
-                    const { isValid, errorMsg, errorPath } = assertValid([
-                        assertGlobalIDDoesNotClash.bind(null, fieldNamedID),
-                    ]);
+                    const { isValid, errorMsg, errorPath } = assertValid(
+                        assertGlobalIDDoesNotClash.bind(null, fieldNamedID)
+                    );
                     if (!isValid) {
                         const errorOpts = {
                             nodes: [interfaceType],
-                            // extensions: {
-                            //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                            // },
                             path: [interfaceType.name.value, ...errorPath],
                             source: undefined,
                             positions: undefined,
@@ -170,7 +158,6 @@ export function ValidGlobalID() {
                                 errorOpts.positions,
                                 errorOpts.path,
                                 errorOpts.originalError
-                                // errorOpts.extensions
                             )
                         );
                     }
