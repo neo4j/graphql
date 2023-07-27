@@ -5,6 +5,8 @@ import type { CypherTreeContext } from "./Context";
 import type { CypherTreeFilter } from "./Filter";
 import type { CypherTreeAssign } from "./Assign";
 import type { CypherTreeSort } from "./Sort";
+import type { CypherTreeSkip } from "./Skip";
+import type { CypherTreeLimit } from "./Limit";
 
 export class CypherTreeSelection extends CypherTreeNode {
     private pattern: Cypher.Pattern;
@@ -12,7 +14,6 @@ export class CypherTreeSelection extends CypherTreeNode {
     private filters: CypherTreeFilter[] = [];
     private assignments: CypherTreeAssign[] = [];
     public projection: CypherTreeProjection; // This should be an array of projections
-    private sort: CypherTreeSort[] = [];
 
     constructor({
         pattern,
@@ -33,7 +34,15 @@ export class CypherTreeSelection extends CypherTreeNode {
     }
 
     public addSort(treeSort: CypherTreeSort): void {
-        this.sort.push(treeSort);
+        this.projection.sortFields.push(treeSort);
+    }
+
+    public setSkip(skip: CypherTreeSkip) {
+        this.projection.skip = skip;
+    }
+
+    public setLimit(limit: CypherTreeLimit) {
+        this.projection.limit = limit;
     }
 
     public addAssignment(treeAssign: CypherTreeAssign): void {
@@ -52,12 +61,22 @@ export class CypherTreeSelection extends CypherTreeNode {
         const nestedCtx = ctx.push(...this.pattern.getVariables());
 
         const assignmentCypher = this.assignments.map((ass) => ass.getCypher(ctx));
-        const sortCypherFields = this.sort.map((s) => s.getCypher(ctx));
+        // const sortCypherFields = this.sortFields.map((s) => s.getCypher(ctx));
+        // let sortWith: Cypher.With | undefined;
+        // if (sortCypherFields.length > 0) {
+        //     sortWith = new Cypher.With("*").orderBy(...sortCypherFields); // Maybe this should be part of sort.ts
+        // }
 
-        let sortWith: Cypher.Clause | undefined;
-        if (sortCypherFields.length > 0) {
-            sortWith = new Cypher.With("*").orderBy(...sortCypherFields); // Maybe this should be part of sort.ts
-        }
+        // if (this.skip) {
+        //     const skipExpr = this.skip.getCypher(ctx);
+        //     if (!sortWith) sortWith = new Cypher.With("*");
+        //     sortWith.skip(skipExpr as any);
+        // }
+        // if (this.limit) {
+        //     const limitExpr = this.limit.getCypher(ctx);
+        //     if (!sortWith) sortWith = new Cypher.With("*");
+        //     sortWith.limit(limitExpr as any);
+        // }
 
         const subqueries = this.nestedSelection
             .map((s) => {
@@ -69,6 +88,6 @@ export class CypherTreeSelection extends CypherTreeNode {
 
         const ret = this.projection.getCypher(ctx);
 
-        return Cypher.concat(match, ...subqueries, ...assignmentCypher, sortWith, ret);
+        return Cypher.concat(match, ...subqueries, ...assignmentCypher, ret);
     }
 }
