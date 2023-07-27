@@ -23,6 +23,9 @@ import type { QueryASTNode } from "../QueryASTNode";
 import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
 import type { SortField } from "./Sort";
 import { Sort } from "./Sort";
+import type { CypherTreeSelection } from "../../../cypher-tree/Selection";
+import { CypherTreeSort } from "../../../cypher-tree/Sort";
+import { CypherTreeProjectionField } from "../../../cypher-tree/ProjectionField";
 
 export class PropertySort extends Sort {
     private attribute: Attribute;
@@ -40,6 +43,16 @@ export class PropertySort extends Sort {
 
     public accept(v: QueryASTVisitor): void {
         v.visitSort(this);
+    }
+
+    public compileToCypher({ tree, target }: { tree: CypherTreeSelection; target: Cypher.Variable }): void {
+        const nodeProperty = target.property(this.attribute.name); // getDBName?
+
+        tree.addSort(new CypherTreeSort(nodeProperty, this.direction));
+        tree.projection.addField(new CypherTreeProjectionField(this.attribute.name, nodeProperty, this.attribute.name));
+
+        // const projection = new CypherTreeProjectionField(this.alias, targetExpr, this.attribute.name);
+        // this.addProjectionToTree(tree, projection);
     }
 
     public getSortFields(variable: Cypher.Variable | Cypher.Property): SortField[] {

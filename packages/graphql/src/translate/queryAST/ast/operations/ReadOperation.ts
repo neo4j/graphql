@@ -82,6 +82,7 @@ export class ReadOperation extends Operation {
 
         this.fields.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
         this.filters.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
+        this.sortFields.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
         // const projectionFields = this.fields.map((f) => f.getCypherTree(node));
 
         return readSelection;

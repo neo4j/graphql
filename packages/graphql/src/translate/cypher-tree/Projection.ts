@@ -4,7 +4,7 @@ import type { CypherTreeContext } from "./Context";
 import type { CypherTreeProjectionField } from "./ProjectionField";
 
 export class CypherTreeProjection extends CypherTreeNode {
-    private fields: CypherTreeProjectionField[] = []; // Cypher.Map
+    private fields: Record<string, CypherTreeProjectionField> = {}; // Using an object to avoid duplicate fields
     private target: Cypher.Variable; // If no target, this is a normal map
     private alias: Cypher.Variable;
     private type: "Map" | "MapProjection";
@@ -25,22 +25,24 @@ export class CypherTreeProjection extends CypherTreeNode {
     }
 
     public addField(field: CypherTreeProjectionField) {
-        this.fields.push(field);
+        this.fields[field.alias] = field;
     }
 
     public getCypher(ctx: CypherTreeContext): Cypher.Clause {
         let mapProjection: Cypher.Map | Cypher.MapProjection;
 
+        const fields = Object.values(this.fields);
+
         if (this.type === "MapProjection") {
             mapProjection = new Cypher.MapProjection(this.target);
 
-            for (const f of this.fields) {
+            for (const f of fields) {
                 mapProjection.set(f.getMapProjection(ctx));
             }
         } else {
             mapProjection = new Cypher.Map();
 
-            for (const f of this.fields) {
+            for (const f of fields) {
                 mapProjection.set(f.getMapRecord(ctx));
             }
         }

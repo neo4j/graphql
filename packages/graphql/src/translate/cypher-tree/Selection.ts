@@ -4,6 +4,7 @@ import { CypherTreeProjection } from "./Projection";
 import type { CypherTreeContext } from "./Context";
 import type { CypherTreeFilter } from "./Filter";
 import type { CypherTreeAssign } from "./Assign";
+import type { CypherTreeSort } from "./Sort";
 
 export class CypherTreeSelection extends CypherTreeNode {
     private pattern: Cypher.Pattern;
@@ -11,6 +12,7 @@ export class CypherTreeSelection extends CypherTreeNode {
     private filters: CypherTreeFilter[] = [];
     private assignments: CypherTreeAssign[] = [];
     public projection: CypherTreeProjection; // This should be an array of projections
+    private sort: CypherTreeSort[] = [];
 
     constructor({
         pattern,
@@ -30,6 +32,10 @@ export class CypherTreeSelection extends CypherTreeNode {
         this.filters.push(treeFilter);
     }
 
+    public addSort(treeSort: CypherTreeSort): void {
+        this.sort.push(treeSort);
+    }
+
     public addAssignment(treeAssign: CypherTreeAssign): void {
         this.assignments.push(treeAssign);
     }
@@ -46,6 +52,12 @@ export class CypherTreeSelection extends CypherTreeNode {
         const nestedCtx = ctx.push(...this.pattern.getVariables());
 
         const assignmentCypher = this.assignments.map((ass) => ass.getCypher(ctx));
+        const sortCypherFields = this.sort.map((s) => s.getCypher(ctx));
+
+        let sortWith: Cypher.Clause | undefined;
+        if (sortCypherFields.length > 0) {
+            sortWith = new Cypher.With("*").orderBy(...sortCypherFields); // Maybe this should be part of sort.ts
+        }
 
         const subqueries = this.nestedSelection
             .map((s) => {
@@ -57,6 +69,6 @@ export class CypherTreeSelection extends CypherTreeNode {
 
         const ret = this.projection.getCypher(ctx);
 
-        return Cypher.concat(match, ...subqueries, ...assignmentCypher, ret);
+        return Cypher.concat(match, ...subqueries, ...assignmentCypher, sortWith, ret);
     }
 }

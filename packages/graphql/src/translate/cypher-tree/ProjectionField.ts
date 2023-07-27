@@ -14,8 +14,10 @@ export class CypherTreeProjectionField {
     }
 
     public getMapProjection(ctx: CypherTreeContext): string | Record<string, Cypher.Expr> {
-        if (this.alias === this.propertyName) return this.alias;
-        else return this.getMapRecord(ctx);
+        // This is just to comply with tck
+        if (this.alias === this.propertyName && this.expr instanceof Cypher.Property) {
+            return this.alias;
+        } else return this.getMapRecord(ctx);
     }
 
     public getMapRecord(_ctx: CypherTreeContext): Record<string, Cypher.Expr> {

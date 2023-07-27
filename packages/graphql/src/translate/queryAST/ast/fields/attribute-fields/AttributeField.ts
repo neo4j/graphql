@@ -37,9 +37,10 @@ export class AttributeField extends Field {
     }
 
     public compileToCypher({ tree, target }: { tree: CypherTreeSelection; target: Cypher.Variable }): void {
-        const targetProperty = this.getCypherExpr(target);
+        const targetExpr = this.getCypherExpr(target);
+
         // if (this.alias !== this.attribute.name) {
-        const projection = new CypherTreeProjectionField(this.alias, targetProperty, this.attribute.name);
+        const projection = new CypherTreeProjectionField(this.alias, targetExpr, this.attribute.name);
         this.addProjectionToTree(tree, projection);
         // } else {
         //     const projection = new CypherTreeProjectionField(this.alias);
