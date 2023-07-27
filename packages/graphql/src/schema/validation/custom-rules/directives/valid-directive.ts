@@ -126,7 +126,6 @@ export function DirectiveIsValid(
                     // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                     context.reportError(
                         new GraphQLError(
-                            // `${errorPath[0] ? `Invalid argument: ${errorPath[0]}, ` : ""}${errorMsg}`,
                             errorMsg || "error",
                             errorOpts.nodes,
                             errorOpts.source,

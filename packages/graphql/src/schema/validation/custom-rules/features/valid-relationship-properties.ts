@@ -48,9 +48,6 @@ export function ValidRelationshipProperties() {
                 const { isValid, errorMsg, errorPath } = assertValid([
                     assertRelationshipProperties.bind(null, traversedDef),
                 ]);
-                // const { isValid, errorMsg, errorPath } = assertRelationshipProperties(
-                //     traversedDef as InterfaceTypeDefinitionNode
-                // );
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [directiveNode, traversedDef],

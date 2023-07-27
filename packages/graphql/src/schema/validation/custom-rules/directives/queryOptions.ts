@@ -22,7 +22,6 @@ import { parseArgumentToInt } from "../utils/utils";
 import { DocumentValidationError } from "../utils/document-validation-error";
 
 export function verifyQueryOptions({ directiveNode }: { directiveNode: DirectiveNode }) {
-    // TODO: QueryOptionsDirective type
     const limitArg = directiveNode.arguments?.find((a) => a.name.value === "limit");
     if (!limitArg) {
         // nothing to check, argument is optional
