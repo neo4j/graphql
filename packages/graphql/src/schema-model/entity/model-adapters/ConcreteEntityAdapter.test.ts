@@ -88,7 +88,7 @@ describe("ConcreteEntityAdapter", () => {
     });
 
     test("should return the correct labels", () => {
-        expect(userAdapter.getAllLabels()).toStrictEqual(["User"]);
+        expect(userAdapter.getLabels()).toStrictEqual(["User"]);
         expect(userAdapter.getMainLabel()).toBe("User");
     });
 

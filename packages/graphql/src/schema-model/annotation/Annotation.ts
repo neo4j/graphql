@@ -31,7 +31,6 @@ import { JWTClaimAnnotation } from "./JWTClaimAnnotation";
 import { JWTPayloadAnnotation } from "./JWTPayloadAnnotation";
 import { KeyAnnotation } from "./KeyAnnotation";
 import { MutationAnnotation } from "./MutationAnnotation";
-import { NodeAnnotation } from "./NodeAnnotation";
 import { PluralAnnotation } from "./PluralAnnotation";
 import { PopulatedByAnnotation } from "./PopulatedByAnnotation";
 import { PrivateAnnotation } from "./PrivateAnnotation";
@@ -60,7 +59,6 @@ export type Annotation =
     | PluralAnnotation
     | FilterableAnnotation
     | FullTextAnnotation
-    | NodeAnnotation
     | PopulatedByAnnotation
     | QueryAnnotation
     | PrivateAnnotation
@@ -88,7 +86,6 @@ export enum AnnotationsKey {
     jwtPayload = "jwtPayload",
     key = "key",
     mutation = "mutation",
-    node = "node",
     plural = "plural",
     populatedBy = "populatedBy",
     private = "private",
@@ -118,7 +115,6 @@ export type Annotations = {
     [AnnotationsKey.plural]: PluralAnnotation;
     [AnnotationsKey.filterable]: FilterableAnnotation;
     [AnnotationsKey.fulltext]: FullTextAnnotation;
-    [AnnotationsKey.node]: NodeAnnotation;
     [AnnotationsKey.populatedBy]: PopulatedByAnnotation;
     [AnnotationsKey.query]: QueryAnnotation;
     [AnnotationsKey.private]: PrivateAnnotation;
@@ -147,7 +143,6 @@ export function annotationToKey(ann: Annotation): keyof Annotations {
     if (ann instanceof PluralAnnotation) return AnnotationsKey.plural;
     if (ann instanceof FilterableAnnotation) return AnnotationsKey.filterable;
     if (ann instanceof FullTextAnnotation) return AnnotationsKey.fulltext;
-    if (ann instanceof NodeAnnotation) return AnnotationsKey.node;
     if (ann instanceof PopulatedByAnnotation) return AnnotationsKey.populatedBy;
     if (ann instanceof QueryAnnotation) return AnnotationsKey.query;
     if (ann instanceof PrivateAnnotation) return AnnotationsKey.private;

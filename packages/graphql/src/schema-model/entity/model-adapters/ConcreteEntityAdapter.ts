@@ -102,15 +102,12 @@ export class ConcreteEntityAdapter {
     }
 
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
-    public getAllLabels(): string[] {
-        if (this.annotations.node?.labels) {
-            return this.annotations.node.labels;
-        }
-        return [this.name];
+    public getLabels(): string[] {
+        return Array.from(this.labels);
     }
 
     public getMainLabel(): string {
-        return this.getAllLabels()[0] as string; // getAllLabels always returns at least one label
+        return this.getLabels()[0] as string; 
     }
 
     public get singular(): string {

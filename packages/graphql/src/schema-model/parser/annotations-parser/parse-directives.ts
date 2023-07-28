@@ -26,7 +26,6 @@ import { parseDefaultAnnotation } from "./default-annotation";
 import { parseIDAnnotation } from "./id-annotation";
 import { parseFilterableAnnotation } from "./filterable-annotation";
 import { parseMutationAnnotation } from "./mutation-annotation";
-import { parseNodeAnnotation } from "./node-annotation";
 import { parsePluralAnnotation } from "./plural-annotation";
 import { parsePopulatedByAnnotation } from "./populated-by-annotation";
 import { parsePrivateAnnotation } from "./private-annotation";
@@ -77,8 +76,6 @@ export function parseDirectives(directives: readonly DirectiveNode[]): Annotatio
                     return parseJWTPayloadAnnotation(directive);
                 case AnnotationsKey.mutation:
                     return parseMutationAnnotation(directive);
-                case AnnotationsKey.node:
-                    return parseNodeAnnotation(directive);
                 case AnnotationsKey.plural:
                     return parsePluralAnnotation(directive);
                 case AnnotationsKey.populatedBy:

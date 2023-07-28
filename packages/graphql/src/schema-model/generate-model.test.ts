@@ -362,7 +362,7 @@ describe("Relationship", () => {
     });
 });
 
-describe.skip("Annotations", () => {
+describe("Annotations", () => {
     let schemaModel: Neo4jGraphQLSchemaModel;
     let userEntity: ConcreteEntity;
     let accountEntity: ConcreteEntity;

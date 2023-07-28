@@ -22,7 +22,7 @@ import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import type { Operations } from "./Neo4jGraphQLSchemaModel";
-import { annotationToKey, type Annotation, AnnotationsKey } from "./annotation/Annotation";
+import type { Annotation } from "./annotation/Annotation";
 import type { Attribute } from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
@@ -34,10 +34,9 @@ import type { DefinitionCollection } from "./parser/definition-collection";
 import { getDefinitionCollection } from "./parser/definition-collection";
 import { Operation } from "./Operation";
 import { parseAttribute, parseField } from "./parser/parse-attribute";
-import { relationshipDirective } from "../graphql/directives";
+import { nodeDirective, relationshipDirective } from "../graphql/directives";
 import { parseKeyAnnotation } from "./parser/annotations-parser/key-annotation";
 import { parseDirectives } from "./parser/annotations-parser/parse-directives";
-import type { NodeAnnotation } from "./annotation/NodeAnnotation";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -211,18 +210,25 @@ function generateConcreteEntity(
     );
 
     const annotations = createEntityAnnotations(definition.directives || []);
-    const nodeAnnotation = annotations.find((annotation: Annotation) => {
-        AnnotationsKey.node === annotationToKey(annotation);
-    });
-    const labels = nodeAnnotation ? (nodeAnnotation as NodeAnnotation).labels : [definition.name.value];
 
     // TODO: add annotations inherited from interface
     return new ConcreteEntity({
         name: definition.name.value,
-        labels,
+        labels: getLabels(definition),
         attributes: filterTruthy(fields) as Attribute[],
         annotations,
     });
+}
+
+function getLabels(entityDefinition: ObjectTypeDefinitionNode): string[] {
+    const nodeDirectiveUsage = findDirective(entityDefinition.directives || [], "node");
+    if (nodeDirectiveUsage) {
+        const nodeArguments = parseArguments(nodeDirective, nodeDirectiveUsage) as { labels?: string[] };
+        if (nodeArguments.labels?.length) {
+            return nodeArguments.labels;
+        }
+    }
+    return [entityDefinition.name.value];
 }
 
 function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
