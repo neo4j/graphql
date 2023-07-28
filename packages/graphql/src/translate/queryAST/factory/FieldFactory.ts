@@ -23,7 +23,7 @@ import type { Field } from "../ast/fields/Field";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { Relationship } from "../../../schema-model/relationship/Relationship";
-import { AttributeType } from "../../../schema-model/attribute/Attribute";
+import { Attribute, AttributeType } from "../../../schema-model/attribute/Attribute";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
@@ -33,6 +33,8 @@ import { CountField } from "../ast/fields/aggregation-fields/CountField";
 import { filterTruthy } from "../../../utils/utils";
 import { AggregationAttributeField } from "../ast/fields/aggregation-fields/AggregationAttributeField";
 import { OperationField } from "../ast/fields/OperationField";
+import { CypherAttributeField } from "../ast/fields/attribute-fields/CypherAttributeField";
+import { CypherAnnotation } from "../../../schema-model/annotation/CypherAnnotation";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -122,7 +124,21 @@ export class FieldFactory {
         field: ResolveTree;
     }): AttributeField {
         const attribute = entity.findAttribute(fieldName);
+
         if (!attribute) throw new Error(`attribute ${fieldName} not found`);
+
+        if (attribute.annotations.cypher) {
+            return this.createCypherAttributeField({
+                entity,
+                fieldName,
+                field,
+                attribute,
+            });
+            // return new CypherAttributeField({
+            //     attribute,
+            //     alias: field.alias,
+            // });
+        }
 
         switch (attribute.type) {
             case AttributeType.Point: {
@@ -144,6 +160,40 @@ export class FieldFactory {
                 return new AttributeField({ alias: field.alias, attribute });
             }
         }
+    }
+
+    private createCypherAttributeField({
+        entity,
+        fieldName,
+        field,
+        attribute,
+    }: {
+        entity: ConcreteEntity | Relationship;
+        attribute: Attribute;
+        fieldName: string;
+        field: ResolveTree;
+    }): CypherAttributeField {
+        // console.log(fieldName);
+        // console.log(field.fieldsByTypeName);
+
+        const fields = Object.values(field.fieldsByTypeName)[0]; // TODO: use actual Field type
+
+        // TODO: get the actual entity related to this attribute!!
+        console.log(fields, attribute);
+
+        let cypherProjection: Record<string, string> | undefined; //Alias-value of cypher projection
+        if (fields) {
+            cypherProjection = Object.values(fields).reduce((acc, f) => {
+                acc[f.alias] = f.name;
+                return acc;
+            }, {});
+        }
+
+        return new CypherAttributeField({
+            attribute,
+            alias: field.alias,
+            projection: cypherProjection,
+        });
     }
 
     private createConnectionField(entity: ConcreteEntity, fieldName: string, field: ResolveTree): OperationField {
