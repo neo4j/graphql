@@ -19,15 +19,16 @@
 
 import type { DirectiveNode } from "graphql";
 import { MutationDirective } from "../classes/MutationDirective";
+import type { MutationOperations} from "../graphql/directives/mutation";
 import { mutationDirective as mutationDirectiveDefinition } from "../graphql/directives/mutation";
-import { getArgumentValues } from "../utils/get-argument-values";
+import { parseArguments } from "../schema-model/parser/parse-arguments";
 
 function parseMutationDirective(directiveNode: DirectiveNode | undefined) {
     if (!directiveNode || directiveNode.name.value !== mutationDirectiveDefinition.name) {
         throw new Error("Undefined or incorrect directive passed into parseMutationDirective function");
     }
-    const arg = getArgumentValues(mutationDirectiveDefinition, directiveNode) as {
-        operations: ConstructorParameters<typeof MutationDirective>[0];
+    const arg = parseArguments(mutationDirectiveDefinition, directiveNode) as {
+        operations: MutationOperations[];
     };
 
     return new MutationDirective(arg.operations);

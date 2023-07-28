@@ -17,15 +17,13 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
 import { CustomResolverAnnotation } from "../../annotation/CustomResolverAnnotation";
-import { parseArguments } from "../utils";
+import { parseArguments } from "../parse-arguments";
+import { customResolverDirective } from "../../../graphql/directives";
 
 export function parseCustomResolverAnnotation(directive: DirectiveNode): CustomResolverAnnotation {
-    const { requires } = parseArguments(directive);
-    if (!Array.isArray(requires)) {
-        throw new Neo4jGraphQLSchemaValidationError("@customResolver requires must be an array");
-    }
+    const { requires } = parseArguments(customResolverDirective, directive) as { requires: string };
+
     return new CustomResolverAnnotation({
         requires,
     });

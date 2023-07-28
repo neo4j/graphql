@@ -31,6 +31,8 @@ import { AuthenticationAnnotation } from "./annotation/AuthenticationAnnotation"
 import type { AttributeAdapter } from "./attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "./relationship/model-adapters/RelationshipAdapter";
+import type { ConcreteEntity } from "./entity/ConcreteEntity";
+import type { Relationship } from "./relationship/Relationship";
 
 describe("Schema model generation", () => {
     test("parses @authentication directive with no arguments", () => {
@@ -263,7 +265,7 @@ describe("ComposeEntity generation", () => {
                 ) {
                 id: ID!
                 name: String!
-                preferiteTool: Tool
+                favoriteTool: Tool
             }
 
             extend type User {
@@ -289,9 +291,141 @@ describe("ComposeEntity generation", () => {
         const humanEntities = schemaModel.compositeEntities.find((e) => e.name === "Human");
         expect(humanEntities?.concreteEntities).toHaveLength(1); // User
     });
+
+    test("concrete entity has correct attributes", () => {
+        const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+        expect(userEntity?.attributes.has("id")).toBeTrue();
+        expect(userEntity?.attributes.has("name")).toBeTrue();
+        expect(userEntity?.attributes.has("password")).toBeTrue();
+        expect(userEntity?.attributes.has("favoriteTool")).toBeTrue();
+    });
 });
 
-describe("GraphQL models", () => {
+describe("Relationship", () => {
+    let schemaModel: Neo4jGraphQLSchemaModel;
+
+    beforeAll(() => {
+        const typeDefs = gql`
+            type User {
+                id: ID!
+                name: String!
+                accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", properties: "hasAccount", direction: OUT)
+                favoriteShow: [Show!]! @relationship(type: "FAVORITE_SHOW", direction: OUT)
+            }
+
+            interface hasAccount @relationshipProperties {
+                creationTime: DateTime!
+            }
+
+            union Show = Movie | TvShow
+
+            type Movie {
+                name: String!
+            }
+
+            type TvShow {
+                name: String!
+                episodes: Int
+            }
+
+            type Account {
+                id: ID!
+                username: String!
+            }
+
+            extend type User {
+                password: String! @authorization(filter: [{ where: { node: { id: { equals: "$jwt.sub" } } } }])
+            }
+        `;
+
+        const document = mergeTypeDefs(typeDefs);
+        schemaModel = generateModel(document);
+    });
+
+    test("concrete entity has correct relationship", () => {
+        const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+        const accounts = userEntity?.relationships.get("accounts");
+        expect(accounts).toBeDefined();
+        expect(accounts?.type).toBe("HAS_ACCOUNT");
+        expect(accounts?.direction).toBe("OUT");
+        expect(accounts?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(accounts?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(accounts?.target.name).toBe("Account");
+        expect(accounts?.attributes.has("creationTime")).toBeTrue();
+    });
+});
+
+describe.skip("Annotations", () => {
+    let schemaModel: Neo4jGraphQLSchemaModel;
+    let userEntity: ConcreteEntity;
+    let accountEntity: ConcreteEntity;
+
+    beforeAll(() => {
+        const typeDefs = gql`
+            type User @query @mutation @subscription {
+                id: ID!
+                name: String! @selectable(onAggregate: true)
+                accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", direction: OUT)
+            }
+
+            type Account @subscription(operations: [CREATE]){
+                id: ID!
+                username: String!  @settable(onCreate: false)
+            }
+
+            extend type User {
+                password: String! @authorization(filter: [{ where: { node: { id: { equals: "$jwt.sub" } } } }])
+            }
+        `;
+
+        const document = mergeTypeDefs(typeDefs);
+        schemaModel = generateModel(document);
+        userEntity = schemaModel.concreteEntities.find((e) => e.name === "User") as ConcreteEntity;
+        accountEntity = schemaModel.concreteEntities.find((e) => e.name === "Account") as ConcreteEntity;
+    });
+
+    test("concrete entities should be generated with the correct annotations", () => {
+        const userQuery = userEntity?.annotations[AnnotationsKey.query];
+        expect(userQuery).toBeDefined();
+        expect(userQuery?.read).toBe(true);
+        expect(userQuery?.aggregate).toBe(false);
+        
+        const userMutation = userEntity?.annotations[AnnotationsKey.mutation];
+        expect(userMutation).toBeDefined();
+        expect(userMutation?.operations).toStrictEqual(["CREATE", "UPDATE", "DELETE"]);
+
+        const userSubscription = userEntity?.annotations[AnnotationsKey.mutation];
+        expect(userSubscription).toBeDefined();
+        expect(userSubscription?.operations).toStrictEqual(["CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"]);
+
+        const accountSubscription = accountEntity?.annotations[AnnotationsKey.subscription];
+        expect(accountSubscription).toBeDefined();
+        expect(accountSubscription?.operations).toStrictEqual(["CREATE"]);
+    });
+
+    test("attributes should be generated with the correct annotations", () => {
+        const userName = userEntity?.attributes.get("name");
+        expect(userName?.annotations[AnnotationsKey.selectable]).toBeDefined();
+        expect(userName?.annotations[AnnotationsKey.selectable]?.onRead).toBe(true);
+        expect(userName?.annotations[AnnotationsKey.selectable]?.onAggregate).toBe(true);
+
+        const creationTime = accountEntity?.attributes.get("creationTime");
+        expect(creationTime?.annotations[AnnotationsKey.settable]).toBeDefined();
+        expect(creationTime?.annotations[AnnotationsKey.settable]?.onCreate).toBe(false);
+        expect(creationTime?.annotations[AnnotationsKey.settable]?.onUpdate).toBe(true);
+    });
+
+    
+});
+
+describe("GraphQL adapters", () => {
     let schemaModel: Neo4jGraphQLSchemaModel;
     // entities
     let userEntity: ConcreteEntityAdapter;

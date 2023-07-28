@@ -19,10 +19,11 @@
 import type { DirectiveNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
 import { CypherAnnotation } from "../../annotation/CypherAnnotation";
-import { parseArguments } from "../utils";
+import { parseArguments } from "../parse-arguments";
+import { cypherDirective } from "../../../graphql/directives";
 
 export function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
-    const { statement, columnName } = parseArguments(directive);
+    const { statement, columnName } = parseArguments(cypherDirective, directive);
     if (!statement || typeof statement !== "string") {
         throw new Neo4jGraphQLSchemaValidationError("@cypher statement required");
     }

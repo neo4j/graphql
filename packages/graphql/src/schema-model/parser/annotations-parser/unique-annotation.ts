@@ -18,10 +18,11 @@
  */
 import type { DirectiveNode } from "graphql";
 import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
-import { parseArguments } from "../utils";
+import { parseArguments } from "../parse-arguments";
+import { uniqueDirective } from "../../../graphql/directives";
 
 export function parseUniqueAnnotation(directive: DirectiveNode): UniqueAnnotation {
-    const { constraintName } = parseArguments(directive) as { constraintName: string };
+    const { constraintName } = parseArguments(uniqueDirective, directive) as { constraintName: string };
 
     return new UniqueAnnotation({
         constraintName,

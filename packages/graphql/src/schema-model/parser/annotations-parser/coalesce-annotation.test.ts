@@ -21,25 +21,26 @@ import { makeDirectiveNode } from "@graphql-tools/utils";
 import type { DirectiveNode } from "graphql";
 import { Kind } from "graphql";
 import { parseCoalesceAnnotation } from "./coalesce-annotation";
+import { coalesceDirective } from "../../../graphql/directives";
 
 describe("parseCoalesceAnnotation", () => {
     it("should parse correctly with string coalesce value", () => {
-        const directive = makeDirectiveNode("coalesce", { value: "myCoalesceValue" });
+        const directive = makeDirectiveNode("coalesce", { value: "myCoalesceValue" }, coalesceDirective);
         const coalesceAnnotation = parseCoalesceAnnotation(directive);
         expect(coalesceAnnotation.value).toBe("myCoalesceValue");
     });
     it("should parse correctly with int coalesce value", () => {
-        const directive = makeDirectiveNode("coalesce", { value: 25 });
+        const directive = makeDirectiveNode("coalesce", { value: 25 }, coalesceDirective);
         const coalesceAnnotation = parseCoalesceAnnotation(directive);
         expect(coalesceAnnotation.value).toBe(25);
     });
     it("should parse correctly with float coalesce value", () => {
-        const directive = makeDirectiveNode("coalesce", { value: 25.5 });
+        const directive = makeDirectiveNode("coalesce", { value: 25.5 }, coalesceDirective);
         const coalesceAnnotation = parseCoalesceAnnotation(directive);
         expect(coalesceAnnotation.value).toBe(25.5);
     });
     it("should parse correctly with boolean coalesce value", () => {
-        const directive = makeDirectiveNode("coalesce", { value: true });
+        const directive = makeDirectiveNode("coalesce", { value: true }, coalesceDirective);
         const coalesceAnnotation = parseCoalesceAnnotation(directive);
         expect(coalesceAnnotation.value).toBe(true);
     });
@@ -58,15 +59,16 @@ describe("parseCoalesceAnnotation", () => {
                         value: "value",
                     },
                     value: {
-                        kind: Kind.ENUM,
-                        value: "myEnumValue",
+                        kind: Kind.STRING,
+                        value: "myStringValue",
                     },
                 },
             ],
         };
         const coalesceAnnotation = parseCoalesceAnnotation(directive);
-        expect(coalesceAnnotation.value).toBe("myEnumValue");
+        expect(coalesceAnnotation.value).toBe("myStringValue");
     });
+
     it("should throw error if no value is provided", () => {
         const directive: DirectiveNode = {
             kind: Kind.DIRECTIVE,
@@ -76,6 +78,6 @@ describe("parseCoalesceAnnotation", () => {
             },
             arguments: [],
         };
-        expect(() => parseCoalesceAnnotation(directive)).toThrow("@coalesce directive must have a value");
+        expect(() => parseCoalesceAnnotation(directive)).toThrow("Argument \"value\" of required type \"ScalarOrEnum!\" was not provided.");
     });
 });

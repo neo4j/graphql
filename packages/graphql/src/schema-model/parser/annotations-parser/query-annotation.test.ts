@@ -19,6 +19,7 @@
 
 import { makeDirectiveNode } from "@graphql-tools/utils";
 import { parseQueryAnnotation } from "./query-annotation";
+import { queryDirective } from "../../../graphql/directives";
 
 const tests = [
     {
@@ -26,7 +27,7 @@ const tests = [
         directive: makeDirectiveNode("query", {
             read: true,
             aggregate: false,
-        }),
+        }, queryDirective),
         expected: {
             read: true,
             aggregate: false,
@@ -37,7 +38,7 @@ const tests = [
         directive: makeDirectiveNode("query", {
             read: false,
             aggregate: true,
-        }),
+        }, queryDirective),
         expected: {
             read: false,
             aggregate: true,

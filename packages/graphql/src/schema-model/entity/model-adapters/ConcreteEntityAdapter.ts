@@ -75,10 +75,9 @@ export class ConcreteEntityAdapter {
 
     private initRelationships(relationships: Map<string, Relationship>) {
         for (const [relationshipName, relationship] of relationships.entries()) {
-            const { name, type, direction, target, attributes } = relationship;
             this.relationships.set(
                 relationshipName,
-                new RelationshipAdapter({ name, type, direction, source: this, target, attributes })
+                new RelationshipAdapter(relationship, this)
             );
         }
     }

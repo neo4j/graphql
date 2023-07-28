@@ -18,13 +18,13 @@
  */
 import type { DirectiveNode } from "graphql";
 import { NodeAnnotation } from "../../annotation/NodeAnnotation";
-import { parseArguments } from "../utils";
+import { parseArguments } from "../parse-arguments";
+import { nodeDirective } from "../../../graphql/directives";
 
 export function parseNodeAnnotation(directive: DirectiveNode): NodeAnnotation {
-    const { label, labels } = parseArguments(directive) as { label: string; labels: string[] };
+    const { labels } = parseArguments(nodeDirective, directive) as { label: string; labels: string[] };
 
     return new NodeAnnotation({
-        label,
         labels,
     });
 }

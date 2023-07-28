@@ -19,10 +19,11 @@
 
 import { type DirectiveNode } from "graphql";
 import { IDAnnotation } from "../../annotation/IDAnnotation";
-import { parseArguments } from "../utils";
+import { parseArguments } from "../parse-arguments";
+import { idDirective } from "../../../graphql/directives";
 
 export function parseIDAnnotation(directive: DirectiveNode): IDAnnotation {
-    const { autogenerate, unique, global } = parseArguments(directive) as {
+    const { autogenerate, unique, global } = parseArguments(idDirective, directive) as {
         autogenerate: boolean;
         unique: boolean;
         global: boolean;

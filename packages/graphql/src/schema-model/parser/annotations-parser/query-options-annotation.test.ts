@@ -19,6 +19,7 @@
 
 import { makeDirectiveNode } from "@graphql-tools/utils";
 import { parseQueryOptionsAnnotation } from "./query-options-annotation";
+import { queryOptionsDirective } from "../../../graphql/directives";
 
 const tests = [
     {
@@ -28,7 +29,7 @@ const tests = [
                 default: 25,
                 max: 100,
             },
-        }),
+        }, queryOptionsDirective),
         expected: {
             limit: {
                 default: 25,
@@ -42,7 +43,7 @@ const tests = [
             limit: {
                 default: 25,
             },
-        }),
+        }, queryOptionsDirective),
         expected: {
             limit: {
                 default: 25,
@@ -56,7 +57,7 @@ const tests = [
             limit: {
                 max: 100,
             },
-        }),
+        }, queryOptionsDirective),
         expected: {
             limit: {
                 default: undefined,

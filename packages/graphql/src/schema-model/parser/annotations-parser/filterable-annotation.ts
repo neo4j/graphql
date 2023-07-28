@@ -18,13 +18,17 @@
  */
 import type { DirectiveNode } from "graphql";
 import { FilterableAnnotation } from "../../annotation/FilterableAnnotation";
-import { parseArguments } from "../utils";
+import { parseArguments } from "../parse-arguments";
+import { filterableDirective } from "../../../graphql/directives";
 
 export function parseFilterableAnnotation(directive: DirectiveNode): FilterableAnnotation {
-    const { byValue, byAnnotation } = parseArguments(directive) as { byValue: boolean; byAnnotation: boolean };
+    const { byValue, byAggregate } = parseArguments(filterableDirective, directive) as {
+        byValue: boolean;
+        byAggregate: boolean;
+    };
 
     return new FilterableAnnotation({
-        byAnnotation,
+        byAggregate,
         byValue,
     });
 }

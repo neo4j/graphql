@@ -20,23 +20,23 @@
 import { makeDirectiveNode } from "@graphql-tools/utils";
 import type { DirectiveNode } from "graphql";
 import { parseFullTextAnnotation } from "./full-text-annotation";
+import { fulltextDirective } from "../../../graphql/directives";
 
 describe("parseFullTextAnnotation", () => {
     it("should parse correctly", () => {
-        const directive: DirectiveNode = makeDirectiveNode("fullText", {
-            fields: {
-                name: "myName",
-                fields: ["firstField", "secondField"],
-                queryName: "myQueryName",
-                indexName: "myIndexName",
-            },
-        });
+        const directive: DirectiveNode = makeDirectiveNode(
+            "fullText",
+            { indexes: [{ indexName: "ProductName", fields: ["name"] }] },
+            fulltextDirective
+        );
         const fullTextAnnotation = parseFullTextAnnotation(directive);
-        expect(fullTextAnnotation.fields).toEqual({
-            name: "myName",
-            fields: ["firstField", "secondField"],
-            queryName: "myQueryName",
-            indexName: "myIndexName",
+        expect(fullTextAnnotation).toEqual({
+            indexes: [
+                {
+                    fields: ["name"],
+                    indexName: "ProductName",
+                },
+            ],
         });
     });
 });

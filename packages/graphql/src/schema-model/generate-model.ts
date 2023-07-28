@@ -22,21 +22,22 @@ import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import type { Operations } from "./Neo4jGraphQLSchemaModel";
-import type { Annotation } from "./annotation/Annotation";
+import { annotationToKey, type Annotation, AnnotationsKey } from "./annotation/Annotation";
 import type { Attribute } from "./attribute/Attribute";
 import { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
-import { parseAuthorizationAnnotation } from "./parser/annotations-parser/authorization-annotation";
-import { parseKeyAnnotation } from "./parser/annotations-parser/key-annotation";
-import { parseArguments, findDirective } from "./parser/utils";
-import type { RelationshipDirection } from "./relationship/Relationship";
+import { findDirective } from "./parser/utils";
+import { parseArguments } from "./parser/parse-arguments";
+import type { NestedOperation, QueryDirection, RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
 import type { DefinitionCollection } from "./parser/definition-collection";
 import { getDefinitionCollection } from "./parser/definition-collection";
-import { parseAuthenticationAnnotation } from "./parser/annotations-parser/authentication-annotation";
 import { Operation } from "./Operation";
-import { parseSubscriptionsAuthorizationAnnotation } from "./parser/annotations-parser/subscriptions-authorization-annotation";
 import { parseAttribute, parseField } from "./parser/parse-attribute";
+import { relationshipDirective } from "../graphql/directives";
+import { parseKeyAnnotation } from "./parser/annotations-parser/key-annotation";
+import { parseDirectives } from "./parser/annotations-parser/parse-directives";
+import type { NodeAnnotation } from "./annotation/NodeAnnotation";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -163,15 +164,17 @@ function generateRelationshipField(
     definitionCollection: DefinitionCollection
 ): Relationship | undefined {
     const fieldTypeMeta = getFieldTypeMeta(field.type);
-    const relationshipDirective = findDirective(field.directives || [], "relationship");
-    if (!relationshipDirective) return undefined;
+    const relationshipUsage = findDirective(field.directives || [], "relationship");
+    if (!relationshipUsage) return undefined;
 
     const fieldName = field.name.value;
     const relatedEntityName = fieldTypeMeta.name;
     const relatedToEntity = schema.getEntity(relatedEntityName);
     if (!relatedToEntity) throw new Error(`Entity ${relatedEntityName} Not Found`);
-
-    const { type, direction, properties } = parseArguments(relationshipDirective);
+    const { type, direction, properties, queryDirection, nestedOperations, aggregate } = parseArguments(
+        relationshipDirective,
+        relationshipUsage
+    );
 
     let attributes: Attribute[] = [];
     if (properties && typeof properties === "string") {
@@ -193,6 +196,9 @@ function generateRelationshipField(
         source,
         target: relatedToEntity,
         direction: direction as RelationshipDirection,
+        queryDirection: queryDirection as QueryDirection,
+        nestedOperations: nestedOperations as NestedOperation[],
+        aggregate: aggregate as boolean,
     });
 }
 
@@ -204,26 +210,19 @@ function generateConcreteEntity(
         parseAttribute(fieldDefinition, definitionCollection)
     );
 
-    const directives = (definition.directives || []).reduce((acc, directive) => {
-        acc.set(directive.name.value, parseArguments(directive));
-        return acc;
-    }, new Map<string, Record<string, unknown>>());
-    const labels = getLabels(definition, directives.get("node") || {});
-    // TODO: add annotations inherited from interface
+    const annotations = createEntityAnnotations(definition.directives || []);
+    const nodeAnnotation = annotations.find((annotation: Annotation) => {
+        AnnotationsKey.node === annotationToKey(annotation);
+    });
+    const labels = nodeAnnotation ? (nodeAnnotation as NodeAnnotation).labels : [definition.name.value];
 
+    // TODO: add annotations inherited from interface
     return new ConcreteEntity({
         name: definition.name.value,
         labels,
         attributes: filterTruthy(fields) as Attribute[],
-        annotations: createEntityAnnotations(definition.directives || []),
+        annotations,
     });
-}
-
-function getLabels(definition: ObjectTypeDefinitionNode, nodeDirectiveArguments: Record<string, unknown>): string[] {
-    if ((nodeDirectiveArguments.labels as string[] | undefined)?.length) {
-        return nodeDirectiveArguments.labels as string[];
-    }
-    return [definition.name.value];
 }
 
 function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
@@ -234,21 +233,7 @@ function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotati
     if (keyDirectives) {
         entityAnnotations.push(parseKeyAnnotation(keyDirectives));
     }
-
-    const annotations: Annotation[] = filterTruthy(
-        directives.map((directive) => {
-            switch (directive.name.value) {
-                case "authorization":
-                    return parseAuthorizationAnnotation(directive);
-                case "authentication":
-                    return parseAuthenticationAnnotation(directive);
-                case "subscriptionsAuthorization":
-                    return parseSubscriptionsAuthorizationAnnotation(directive);
-                default:
-                    return undefined;
-            }
-        })
-    );
+    const annotations = parseDirectives(directives);
 
     return entityAnnotations.concat(annotations);
 }
@@ -256,16 +241,7 @@ function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotati
 function createSchemaModelAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
     const schemaModelAnnotations: Annotation[] = [];
 
-    const annotations: Annotation[] = filterTruthy(
-        directives.map((directive) => {
-            switch (directive.name.value) {
-                case "authentication":
-                    return parseAuthenticationAnnotation(directive);
-                default:
-                    return undefined;
-            }
-        })
-    );
+    const annotations = parseDirectives(directives);
 
     return schemaModelAnnotations.concat(annotations);
 }

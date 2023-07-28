@@ -18,37 +18,37 @@
  */
 
 import { makeDirectiveNode } from "@graphql-tools/utils";
-import { MutationOperations } from "../../../graphql/directives/mutation";
+import { MutationOperations, mutationDirective } from "../../../graphql/directives/mutation";
 import { parseMutationAnnotation } from "./mutation-annotation";
 
 const tests = [
     {
         name: "should parse correctly with a CREATE operation set",
-        directive: makeDirectiveNode("mutation", { operations: [MutationOperations.CREATE] }),
+        directive: makeDirectiveNode("mutation", { operations: [MutationOperations.CREATE] }, mutationDirective),
         expected: { operations: [MutationOperations.CREATE] },
     },
     {
         name: "should parse correctly with an UPDATE operation set",
-        directive: makeDirectiveNode("mutation", { operations: [MutationOperations.UPDATE] }),
+        directive: makeDirectiveNode("mutation", { operations: [MutationOperations.UPDATE] }, mutationDirective),
         expected: { operations: [MutationOperations.UPDATE] },
     },
     {
         name: "should parse correctly with a DELETE operation set",
-        directive: makeDirectiveNode("mutation", { operations: [MutationOperations.DELETE] }),
+        directive: makeDirectiveNode("mutation", { operations: [MutationOperations.DELETE] }, mutationDirective),
         expected: { operations: [MutationOperations.DELETE] },
     },
     {
         name: "should parse correctly with a CREATE and UPDATE operation set",
         directive: makeDirectiveNode("mutation", {
             operations: [MutationOperations.CREATE, MutationOperations.UPDATE],
-        }),
+        }, mutationDirective),
         expected: { operations: [MutationOperations.CREATE, MutationOperations.UPDATE] },
     },
     {
         name: "should parse correctly with a CREATE, UPDATE and DELETE operation set",
         directive: makeDirectiveNode("mutation", {
             operations: [MutationOperations.CREATE, MutationOperations.UPDATE, MutationOperations.DELETE],
-        }),
+        }, mutationDirective),
         expected: {
             operations: [MutationOperations.CREATE, MutationOperations.UPDATE, MutationOperations.DELETE],
         },

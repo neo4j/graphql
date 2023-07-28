@@ -17,33 +17,20 @@
  * limitations under the License.
  */
 
-import { Kind, type DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
+import type { DirectiveNode } from "graphql";
 import type { CoalesceAnnotationValue } from "../../annotation/CoalesceAnnotation";
 import { CoalesceAnnotation } from "../../annotation/CoalesceAnnotation";
-import { parseValueNode } from "../parse-value-node";
+import { parseArguments } from "../parse-arguments";
+import { coalesceDirective } from "../../../graphql/directives";
 
 export function parseCoalesceAnnotation(directive: DirectiveNode): CoalesceAnnotation {
-    if (!directive.arguments || !directive.arguments[0] || !directive.arguments[0].value.kind) {
+    const args = parseArguments(coalesceDirective, directive) as Record<string, CoalesceAnnotationValue>;
+
+    if (!args || args.value === undefined) {
         throw new Error("@coalesce directive must have a value");
     }
 
-    let value: CoalesceAnnotationValue;
-    switch (directive.arguments[0].value.kind) {
-        case Kind.ENUM:
-        case Kind.STRING:
-        case Kind.BOOLEAN:
-        case Kind.INT:
-        case Kind.FLOAT:
-            value = parseValueNode(directive.arguments[0].value) as CoalesceAnnotationValue;
-            break;
-        default:
-            throw new Neo4jGraphQLSchemaValidationError(
-                "@coalesce directive can only be used on types: Int | Float | String | Boolean | ID | DateTime | Enum"
-            );
-    }
-
     return new CoalesceAnnotation({
-        value,
+        value: args.value,
     });
 }

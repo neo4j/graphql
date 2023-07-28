@@ -24,6 +24,8 @@ import type { ConcreteEntity } from "../entity/ConcreteEntity";
 import type { Entity } from "../entity/Entity";
 
 export type RelationshipDirection = "IN" | "OUT";
+export type QueryDirection = "DEFAULT_DIRECTED" | "DEFAULT_UNDIRECTED" | "DIRECTED_ONLY" | "UNDIRECTED_ONLY";
+export type NestedOperation = "CREATE" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "CONNECT_OR_CREATE";
 
 export class Relationship {
     public readonly name: string; // name of the relationship field, e.g. friends
@@ -32,8 +34,11 @@ export class Relationship {
     public readonly source: ConcreteEntity;
     public readonly target: Entity;
     public readonly direction: RelationshipDirection;
+    public readonly queryDirection: QueryDirection;
+    public readonly nestedOperations: NestedOperation[];
+    public readonly aggregate: boolean;
 
-    // TODO: Delegate to the RelationshipAdapter the following properties
+    // TODO: Remove  connectionFieldTypename and relationshipFieldTypename and delegate to the adapter
     /**Note: Required for now to infer the types without ResolveTree */
     public get connectionFieldTypename(): string {
         return `${this.source.name}${upperFirst(this.name)}Connection`;
@@ -51,6 +56,9 @@ export class Relationship {
         source,
         target,
         direction,
+        queryDirection,
+        nestedOperations,
+        aggregate,
     }: {
         name: string;
         type: string;
@@ -58,12 +66,18 @@ export class Relationship {
         source: ConcreteEntity;
         target: Entity;
         direction: RelationshipDirection;
+        queryDirection: QueryDirection;
+        nestedOperations: NestedOperation[];
+        aggregate: boolean;
     }) {
         this.type = type;
         this.source = source;
         this.target = target;
         this.name = name;
         this.direction = direction;
+        this.queryDirection = queryDirection;
+        this.nestedOperations = nestedOperations;
+        this.aggregate = aggregate;
 
         for (const attribute of attributes) {
             this.addAttribute(attribute);
@@ -78,6 +92,9 @@ export class Relationship {
             source: this.source,
             target: this.target,
             direction: this.direction,
+            queryDirection: this.queryDirection,
+            nestedOperations: this.nestedOperations,
+            aggregate: this.aggregate,
         });
     }
 

@@ -20,10 +20,11 @@
 import { makeDirectiveNode } from "@graphql-tools/utils";
 import type { DirectiveNode } from "graphql";
 import { parseJWTClaimAnnotation } from "./jwt-claim-annotation";
+import { jwtClaim } from "../../../graphql/directives";
 
 describe("parseJWTClaimAnnotation", () => {
     test("should correctly parse jwtClaim path", () => {
-        const directive: DirectiveNode = makeDirectiveNode("jwtClaim", { path: "jwtClaimPath" });
+        const directive: DirectiveNode = makeDirectiveNode("jwtClaim", { path: "jwtClaimPath" }, jwtClaim);
         const jwtClaimAnnotation = parseJWTClaimAnnotation(directive);
 
         expect(jwtClaimAnnotation.path).toBe("jwtClaimPath");

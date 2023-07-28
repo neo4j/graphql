@@ -64,7 +64,7 @@ import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
 import { getPopulatedByMeta } from "./get-populated-by-meta";
-import { parseArguments } from "../schema-model/parser/utils";
+import { parseArgumentsFromUnknownDirective } from "../schema-model/parser/parse-arguments";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -657,7 +657,7 @@ function parseSelectableDirective(directive: DirectiveNode | undefined): Selecta
         onAggregate: true,
     };
 
-    const args: Partial<SelectableOptions> = directive ? parseArguments(directive) : {};
+    const args: Partial<SelectableOptions> = directive ? parseArgumentsFromUnknownDirective(directive) : {};
 
     return {
         onRead: args.onRead ?? defaultArguments.onRead,
@@ -671,7 +671,7 @@ function parseSettableDirective(directive: DirectiveNode | undefined): SettableO
         onUpdate: true,
     };
 
-    const args: Partial<SettableOptions> = directive ? parseArguments(directive) : {};
+    const args: Partial<SettableOptions> = directive ? parseArgumentsFromUnknownDirective(directive) : {};
 
     return {
         onCreate: args.onCreate ?? defaultArguments.onCreate,
@@ -685,7 +685,7 @@ function parseFilterableDirective(directive: DirectiveNode | undefined): Filtera
         byAggregate: directive === undefined ? true : false,
     };
 
-    const args: Partial<FilterableOptions> = directive ? parseArguments(directive) : {};
+    const args: Partial<FilterableOptions> = directive ? parseArgumentsFromUnknownDirective(directive) : {};
 
     return {
         byValue: args.byValue ?? defaultArguments.byValue,

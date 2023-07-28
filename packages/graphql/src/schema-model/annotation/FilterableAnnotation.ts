@@ -19,10 +19,10 @@
 
 export class FilterableAnnotation {
     public readonly byValue: boolean;
-    public readonly byAnnotation: boolean;
+    public readonly byAggregate: boolean;
 
-    constructor({ byValue, byAnnotation }: { byValue: boolean; byAnnotation: boolean }) {
+    constructor({ byValue, byAggregate }: { byValue: boolean; byAggregate: boolean }) {
         this.byValue = byValue;
-        this.byAnnotation = byAnnotation;
+        this.byAggregate = byAggregate;
     }
 }

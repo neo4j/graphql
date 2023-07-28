@@ -20,8 +20,9 @@ import type { DirectiveNode } from "graphql";
 import type { GraphQLWhereArg } from "../../../types";
 import type { AuthenticationOperation } from "../../annotation/AuthenticationAnnotation";
 import { AuthenticationAnnotation } from "../../annotation/AuthenticationAnnotation";
+import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 
-import { parseArguments } from "../utils";
+
 const authenticationDefaultOperations: AuthenticationOperation[] = [
     "READ",
     "AGGREGATE",
@@ -33,7 +34,7 @@ const authenticationDefaultOperations: AuthenticationOperation[] = [
     "SUBSCRIBE",
 ];
 export function parseAuthenticationAnnotation(directive: DirectiveNode): AuthenticationAnnotation {
-    const args = parseArguments(directive) as {
+    const args = parseArgumentsFromUnknownDirective(directive) as {
         operations?: AuthenticationOperation[];
         jwt?: GraphQLWhereArg;
     };

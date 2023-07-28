@@ -19,6 +19,7 @@
 
 import { makeDirectiveNode } from "@graphql-tools/utils";
 import { parseSelectableAnnotation } from "./selectable-annotation";
+import { selectableDirective } from "../../../graphql/directives";
 
 const tests = [
     {
@@ -26,7 +27,7 @@ const tests = [
         directive: makeDirectiveNode("selectable", {
             onRead: true,
             onAggregate: true,
-        }),
+        }, selectableDirective),
         expected: {
             onRead: true,
             onAggregate: true,
@@ -37,7 +38,7 @@ const tests = [
         directive: makeDirectiveNode("selectable", {
             onRead: true,
             onAggregate: false,
-        }),
+        }, selectableDirective),
         expected: {
             onRead: true,
             onAggregate: false,

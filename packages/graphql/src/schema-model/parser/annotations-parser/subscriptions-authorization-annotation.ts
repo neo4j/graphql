@@ -18,7 +18,8 @@
  */
 import type { DirectiveNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
-import { parseArguments } from "../utils";
+import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
+
 import type { SubscriptionsAuthorizationFilterRuleConstructor } from "../../annotation/SubscriptionsAuthorizationAnnotation";
 import {
     SubscriptionsAuthorizationAnnotation,
@@ -29,7 +30,7 @@ import {
 export function parseSubscriptionsAuthorizationAnnotation(
     directive: DirectiveNode
 ): SubscriptionsAuthorizationAnnotation {
-    const { filter, ...unrecognizedArguments } = parseArguments(directive) as {
+    const { filter, ...unrecognizedArguments } = parseArgumentsFromUnknownDirective(directive) as {
         filter?: Record<string, any>[];
     };
     if (!filter) {

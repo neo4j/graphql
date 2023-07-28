@@ -19,6 +19,7 @@
 
 import { makeDirectiveNode } from "@graphql-tools/utils";
 import { parseSettableAnnotation } from "./settable-annotation";
+import { settableDirective } from "../../../graphql/directives";
 
 const tests = [
     {
@@ -26,7 +27,7 @@ const tests = [
         directive: makeDirectiveNode("settable", {
             onCreate: true,
             onUpdate: true,
-        }),
+        }, settableDirective),
         expected: {
             onCreate: true,
             onUpdate: true,
@@ -37,7 +38,7 @@ const tests = [
         directive: makeDirectiveNode("settable", {
             onCreate: true,
             onUpdate: false,
-        }),
+        }, settableDirective),
         expected: {
             onCreate: true,
             onUpdate: false,

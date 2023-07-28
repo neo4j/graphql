@@ -17,33 +17,20 @@
  * limitations under the License.
  */
 
-import { Kind, type DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
+import type { DirectiveNode } from "graphql";
 import type { DefaultAnnotationValue } from "../../annotation/DefaultAnnotation";
 import { DefaultAnnotation } from "../../annotation/DefaultAnnotation";
-import { parseValueNode } from "../parse-value-node";
+import { parseArguments } from "../parse-arguments";
+import { defaultDirective } from "../../../graphql/directives";
 
 export function parseDefaultAnnotation(directive: DirectiveNode): DefaultAnnotation {
-    if (!directive.arguments || !directive.arguments[0] || !directive.arguments[0].value.kind) {
+    const args = parseArguments(defaultDirective, directive) as Record<string, DefaultAnnotationValue>;
+
+    if (!args || args.value === undefined) {
         throw new Error("@default directive must have a value");
     }
 
-    let value: DefaultAnnotationValue;
-    switch (directive.arguments[0].value.kind) {
-        case Kind.ENUM:
-        case Kind.STRING:
-        case Kind.BOOLEAN:
-        case Kind.INT:
-        case Kind.FLOAT:
-            value = parseValueNode(directive.arguments[0].value) as DefaultAnnotationValue;
-            break;
-        default:
-            throw new Neo4jGraphQLSchemaValidationError(
-                "@default directive can only be used on types: Int | Float | String | Boolean | ID | DateTime | Enum"
-            );
-    }
-
     return new DefaultAnnotation({
-        value,
+        value: args.value,
     });
 }

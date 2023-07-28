@@ -26,7 +26,7 @@ import { CypherAnnotation } from "../../annotation/CypherAnnotation";
 import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 
 describe("ConcreteEntityAdapter", () => {
-    let userModel: ConcreteEntityAdapter;
+    let userAdapter: ConcreteEntityAdapter;
     let userId: AttributeAdapter;
     let userName: AttributeAdapter;
     let closestUser: AttributeAdapter;
@@ -61,19 +61,19 @@ describe("ConcreteEntityAdapter", () => {
             attributes: [idAttribute, nameAttribute, closestUserAttribute],
         });
 
-        userModel = new ConcreteEntityAdapter(userEntity);
-        userId = userModel.attributes.get("id") as AttributeAdapter;
-        userName = userModel.attributes.get("name") as AttributeAdapter;
-        closestUser = userModel.attributes.get("closestUser") as AttributeAdapter;
+        userAdapter = new ConcreteEntityAdapter(userEntity);
+        userId = userAdapter.attributes.get("id") as AttributeAdapter;
+        userName = userAdapter.attributes.get("name") as AttributeAdapter;
+        closestUser = userAdapter.attributes.get("closestUser") as AttributeAdapter;
     });
 
     test("should generate a valid ConcreteEntityAdapter model", () => {
-        expect(userModel).toBeDefined();
-        expect(userModel).toBeInstanceOf(ConcreteEntityAdapter);
-        expect(userModel.name).toBe("User");
-        expect(userModel.labels).toEqual(new Set(["User"]));
-        expect(userModel.attributes.size).toBe(3);
-        expect(userModel.relationships.size).toBe(0);
+        expect(userAdapter).toBeDefined();
+        expect(userAdapter).toBeInstanceOf(ConcreteEntityAdapter);
+        expect(userAdapter.name).toBe("User");
+        expect(userAdapter.labels).toEqual(new Set(["User"]));
+        expect(userAdapter.attributes.size).toBe(3);
+        expect(userAdapter.relationships.size).toBe(0);
         expect(userId).toBeDefined();
         expect(userId).toBeInstanceOf(AttributeAdapter);
         expect(userName).toBeDefined();
@@ -83,35 +83,35 @@ describe("ConcreteEntityAdapter", () => {
     });
 
     test("should return the correct mutable fields, (Cypher fields are removed)", () => {
-        expect(userModel.mutableFields).toHaveLength(2);
-        expect(userModel.mutableFields).toEqual([userId, userName]);
+        expect(userAdapter.mutableFields).toHaveLength(2);
+        expect(userAdapter.mutableFields).toEqual([userId, userName]);
     });
 
     test("should return the correct labels", () => {
-        expect(userModel.getAllLabels()).toStrictEqual(["User"]);
-        expect(userModel.getMainLabel()).toBe("User");
+        expect(userAdapter.getAllLabels()).toStrictEqual(["User"]);
+        expect(userAdapter.getMainLabel()).toBe("User");
     });
 
     test("should return the correct unique fields", () => {
-        expect(userModel.uniqueFields).toHaveLength(1);
-        expect(userModel.uniqueFields).toStrictEqual([userId]);
+        expect(userAdapter.uniqueFields).toHaveLength(1);
+        expect(userAdapter.uniqueFields).toStrictEqual([userId]);
     });
 
     test("should return the correct singular name", () => {
-        expect(userModel.singular).toBe("user");
+        expect(userAdapter.singular).toBe("user");
     });
 
     test("should return the correct plural name", () => {
-        expect(userModel.plural).toBe("users");
+        expect(userAdapter.plural).toBe("users");
     });
 
     describe("ConcreteEntityOperations", () => {
         test("should construct a valid ConcreteEntityOperations", () => {
-            expect(userModel.operations).toBeDefined();
+            expect(userAdapter.operations).toBeDefined();
         });
 
         test("should return the correct rootTypeFieldNames", () => {
-            expect(userModel.operations.rootTypeFieldNames).toStrictEqual({
+            expect(userAdapter.operations.rootTypeFieldNames).toStrictEqual({
                 aggregate: "usersAggregate",
                 create: "createUsers",
                 delete: "deleteUsers",

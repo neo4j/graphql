@@ -20,7 +20,7 @@
 import { upperFirst } from "graphql-compose";
 import type { Entity } from "../../entity/Entity";
 import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipDirection } from "../Relationship";
+import type { NestedOperation, QueryDirection, Relationship, RelationshipDirection } from "../Relationship";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import type { Attribute } from "../../attribute/Attribute";
 import { ConcreteEntity } from "../../entity/ConcreteEntity";
@@ -34,6 +34,9 @@ export class RelationshipAdapter {
     private rawEntity: Entity;
     private _target: Entity | undefined;
     public readonly direction: RelationshipDirection;
+    public readonly queryDirection: QueryDirection;
+    public readonly nestedOperations: NestedOperation[];
+    public readonly aggregate: boolean;
 
     /**Note: Required for now to infer the types without ResolveTree */
     public get connectionFieldTypename(): string {
@@ -45,25 +48,65 @@ export class RelationshipAdapter {
         return `${this.source.name}${upperFirst(this.name)}Relationship`;
     }
 
-    constructor({
+    /*  constructor({
         name,
         type,
         attributes = new Map<string, Attribute>(),
         source,
         target,
         direction,
+        queryDirection,
+        nestedOperations,
+        aggregate,
     }: {
         name: string;
         type: string;
         attributes?: Map<string, Attribute>;
-        source: ConcreteEntityAdapter;
+        source: ConcreteEntity | ConcreteEntityAdapter;
         target: Entity;
         direction: RelationshipDirection;
+        queryDirection: QueryDirection;
+        nestedOperations: NestedOperation[];
+        aggregate: boolean;
     }) {
         this.name = name;
         this.type = type;
-        this.source = source;
+        if (source instanceof ConcreteEntity) {
+            this.source = new ConcreteEntityAdapter(source);
+        } else {
+            this.source = source;
+        }
         this.direction = direction;
+        this.queryDirection = queryDirection;
+        this.nestedOperations = nestedOperations;
+        this.aggregate = aggregate;
+        this.rawEntity = target;
+        this.initAttributes(attributes);
+    } */
+
+    constructor(relationship: Relationship, sourceAdapter?: ConcreteEntityAdapter) {
+        const {
+            name,
+            type,
+            attributes = new Map<string, Attribute>(),
+            source,
+            target,
+            direction,
+            queryDirection,
+            nestedOperations,
+            aggregate,
+        } = relationship;
+        this.name = name;
+        this.type = type;
+        if (sourceAdapter) {
+            this.source = sourceAdapter;
+        } else {
+            this.source = new ConcreteEntityAdapter(source);
+        }
+        this.direction = direction;
+        this.queryDirection = queryDirection;
+        this.nestedOperations = nestedOperations;
+        this.aggregate = aggregate;
         this.rawEntity = target;
         this.initAttributes(attributes);
     }

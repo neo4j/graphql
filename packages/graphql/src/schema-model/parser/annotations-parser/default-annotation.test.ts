@@ -21,25 +21,26 @@ import { makeDirectiveNode } from "@graphql-tools/utils";
 import type { DirectiveNode } from "graphql";
 import { Kind } from "graphql";
 import { parseDefaultAnnotation } from "./default-annotation";
+import { defaultDirective } from "../../../graphql/directives";
 
 describe("parseDefaultAnnotation", () => {
     it("should parse correctly with string default value", () => {
-        const directive = makeDirectiveNode("default", { value: "myDefaultValue" });
+        const directive = makeDirectiveNode("default", { value: "myDefaultValue" }, defaultDirective);
         const defaultAnnotation = parseDefaultAnnotation(directive);
         expect(defaultAnnotation.value).toBe("myDefaultValue");
     });
     it("should parse correctly with int default value", () => {
-        const directive = makeDirectiveNode("default", { value: 25 });
+        const directive = makeDirectiveNode("default", { value: 25 }, defaultDirective);
         const defaultAnnotation = parseDefaultAnnotation(directive);
         expect(defaultAnnotation.value).toBe(25);
     });
     it("should parse correctly with float default value", () => {
-        const directive = makeDirectiveNode("default", { value: 25.5 });
+        const directive = makeDirectiveNode("default", { value: 25.5 }, defaultDirective);
         const defaultAnnotation = parseDefaultAnnotation(directive);
         expect(defaultAnnotation.value).toBe(25.5);
     });
     it("should parse correctly with boolean default value", () => {
-        const directive = makeDirectiveNode("default", { value: true });
+        const directive = makeDirectiveNode("default", { value: true }, defaultDirective);
         const defaultAnnotation = parseDefaultAnnotation(directive);
         expect(defaultAnnotation.value).toBe(true);
     });
@@ -58,14 +59,14 @@ describe("parseDefaultAnnotation", () => {
                         value: "value",
                     },
                     value: {
-                        kind: Kind.ENUM,
-                        value: "myEnumValue",
+                        kind: Kind.STRING,
+                        value: "myStringValue",
                     },
                 },
             ],
         };
         const defaultAnnotation = parseDefaultAnnotation(directive);
-        expect(defaultAnnotation.value).toBe("myEnumValue");
+        expect(defaultAnnotation.value).toBe("myStringValue");
     });
     it("should throw error if no value is provided", () => {
         const directive: DirectiveNode = {
@@ -76,6 +77,6 @@ describe("parseDefaultAnnotation", () => {
             },
             arguments: [],
         };
-        expect(() => parseDefaultAnnotation(directive)).toThrow("@default directive must have a value");
+        expect(() => parseDefaultAnnotation(directive)).toThrow("Argument \"value\" of required type \"ScalarOrEnum!\" was not provided.");
     });
 });

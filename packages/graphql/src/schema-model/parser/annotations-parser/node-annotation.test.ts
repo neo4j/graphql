@@ -20,15 +20,14 @@
 import { makeDirectiveNode } from "@graphql-tools/utils";
 import type { DirectiveNode } from "graphql";
 import { parseNodeAnnotation } from "./node-annotation";
+import { nodeDirective } from "../../../graphql/directives";
 
 describe("parseNodeAnnotation", () => {
     it("should parse correctly", () => {
         const directive: DirectiveNode = makeDirectiveNode("node", {
-            label: "Movie",
             labels: ["Movie", "Person"],
-        });
+        }, nodeDirective);
         const nodeAnnotation = parseNodeAnnotation(directive);
-        expect(nodeAnnotation.label).toBe("Movie");
         expect(nodeAnnotation.labels).toEqual(["Movie", "Person"]);
     });
 });

@@ -18,9 +18,9 @@
  */
 
 export class CustomResolverAnnotation {
-    public readonly requires: string[];
+    public readonly requires: string;
 
-    constructor({ requires }: { requires: string[] }) {
+    constructor({ requires }: { requires: string }) {
         this.requires = requires;
     }
 }

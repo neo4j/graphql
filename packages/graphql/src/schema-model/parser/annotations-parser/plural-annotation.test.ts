@@ -20,10 +20,11 @@
 import { makeDirectiveNode } from "@graphql-tools/utils";
 import type { DirectiveNode } from "graphql";
 import { parsePluralAnnotation } from "./plural-annotation";
+import { pluralDirective } from "../../../graphql/directives";
 
 describe("parsePluralAnnotation", () => {
     it("should parse correctly", () => {
-        const directive: DirectiveNode = makeDirectiveNode("Plural", { value: "myPluralString" });
+        const directive: DirectiveNode = makeDirectiveNode("Plural", { value: "myPluralString" }, pluralDirective);
         const pluralAnnotation = parsePluralAnnotation(directive);
         expect(pluralAnnotation.value).toBe("myPluralString");
     });

@@ -28,10 +28,10 @@ import {
     AuthorizationFilterRule,
     AuthorizationValidateRule,
 } from "../../annotation/AuthorizationAnnotation";
-import { parseArguments } from "../utils";
+import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 
 export function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAnnotation {
-    const { filter, validate, ...unrecognizedArguments } = parseArguments(directive) as {
+    const { filter, validate, ...unrecognizedArguments } = parseArgumentsFromUnknownDirective(directive) as {
         filter?: Record<string, any>[];
         validate?: Record<string, any>[];
     };

@@ -18,10 +18,14 @@
  */
 import type { DirectiveNode } from "graphql";
 import { SettableAnnotation } from "../../annotation/SettableAnnotation";
-import { parseArguments } from "../utils";
+import { parseArguments } from "../parse-arguments";
+import { settableDirective } from "../../../graphql/directives";
 
 export function parseSettableAnnotation(directive: DirectiveNode): SettableAnnotation {
-    const { onCreate, onUpdate } = parseArguments(directive) as { onCreate: boolean; onUpdate: boolean };
+    const { onCreate, onUpdate } = parseArguments(settableDirective, directive) as {
+        onCreate: boolean;
+        onUpdate: boolean;
+    };
 
     return new SettableAnnotation({
         onCreate,

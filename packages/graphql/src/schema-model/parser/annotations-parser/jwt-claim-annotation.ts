@@ -18,10 +18,11 @@
  */
 import type { DirectiveNode } from "graphql";
 import { JWTClaimAnnotation } from "../../annotation/JWTClaimAnnotation";
-import { parseArguments } from "../utils";
+import { parseArguments } from "../parse-arguments";
+import { jwtClaim } from "../../../graphql/directives";
 
 export function parseJWTClaimAnnotation(directive: DirectiveNode): JWTClaimAnnotation {
-    const { path } = parseArguments(directive) as { path: string };
+    const { path } = parseArguments(jwtClaim, directive) as { path: string };
 
     return new JWTClaimAnnotation({
         path,

@@ -19,10 +19,8 @@
 
 export class NodeAnnotation {
     public readonly labels: string[];
-    public readonly label: string;
 
-    constructor({ labels, label }: { labels: string[]; label: string }) {
+    constructor({ labels }: { labels: string[] }) {
         this.labels = labels;
-        this.label = label;
     }
 }

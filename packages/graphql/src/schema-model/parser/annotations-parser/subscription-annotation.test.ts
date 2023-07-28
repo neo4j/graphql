@@ -19,23 +19,24 @@
 
 import { makeDirectiveNode } from "@graphql-tools/utils";
 import { parseSubscriptionAnnotation } from "./subscription-annotation";
+import { subscriptionDirective } from "../../../graphql/directives";
 
 const tests = [
     {
         name: "should parse correctly when CREATE operation is passed",
-        directive: makeDirectiveNode("subscription", { operations: ["CREATE"] }),
+        directive: makeDirectiveNode("subscription", { operations: ["CREATE"] }, subscriptionDirective),
         operations: ["CREATE"],
         expected: { operations: ["CREATE"] },
     },
     {
         name: "should parse correctly when UPDATE operation is passed",
-        directive: makeDirectiveNode("subscription", { operations: ["UPDATE"] }),
+        directive: makeDirectiveNode("subscription", { operations: ["UPDATE"] }, subscriptionDirective),
         operations: ["UPDATE"],
         expected: { operations: ["UPDATE"] },
     },
     {
         name: "should parse correctly when CREATE and UPDATE operations are passed",
-        directive: makeDirectiveNode("subscription", { operations: ["CREATE", "UPDATE"] }),
+        directive: makeDirectiveNode("subscription", { operations: ["CREATE", "UPDATE"] }, subscriptionDirective),
         operations: ["CREATE", "UPDATE"],
         expected: { operations: ["CREATE", "UPDATE"] },
     },

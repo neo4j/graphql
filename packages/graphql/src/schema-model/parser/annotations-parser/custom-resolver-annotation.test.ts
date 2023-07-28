@@ -20,11 +20,12 @@
 import { makeDirectiveNode } from "@graphql-tools/utils";
 import type { DirectiveNode } from "graphql";
 import { parseCustomResolverAnnotation } from "./custom-resolver-annotation";
+import { customResolverDirective } from "../../../graphql/directives";
 
 describe("parseCustomResolverAnnotation", () => {
     it("should parse correctly", () => {
-        const directive: DirectiveNode = makeDirectiveNode("customResolver", { requires: ["firstName", "lastName"] });
+        const directive: DirectiveNode = makeDirectiveNode("customResolver", { requires: "firstName lastName" }, customResolverDirective);
         const customResolverAnnotation = parseCustomResolverAnnotation(directive);
-        expect(customResolverAnnotation.requires).toEqual(["firstName", "lastName"]);
+        expect(customResolverAnnotation.requires).toBe("firstName lastName");
     });
 });

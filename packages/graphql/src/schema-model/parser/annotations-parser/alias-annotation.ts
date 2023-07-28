@@ -19,10 +19,11 @@
 import type { DirectiveNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
 import { AliasAnnotation } from "../../annotation/AliasAnnotation";
-import { parseArguments } from "../utils";
+import { aliasDirective } from "../../../graphql/directives";
+import { parseArguments } from "../parse-arguments";
 
 export function parseAliasAnnotation(directive: DirectiveNode): AliasAnnotation {
-    const { property, ...unrecognizedArguments } = parseArguments(directive) as {
+    const { property, ...unrecognizedArguments } = parseArguments(aliasDirective, directive) as {
         property: string;
     };
 

@@ -18,10 +18,14 @@
  */
 import type { DirectiveNode } from "graphql";
 import { PopulatedByAnnotation } from "../../annotation/PopulatedByAnnotation";
-import { parseArguments } from "../utils";
+import { parseArguments } from "../parse-arguments";
+import { populatedByDirective } from "../../../graphql/directives";
 
 export function parsePopulatedByAnnotation(directive: DirectiveNode): PopulatedByAnnotation {
-    const { callback, operations } = parseArguments(directive) as { callback: string; operations: string[] };
+    const { callback, operations } = parseArguments(populatedByDirective, directive) as {
+        callback: string;
+        operations: string[];
+    };
 
     return new PopulatedByAnnotation({
         callback,

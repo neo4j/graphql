@@ -18,10 +18,11 @@
  */
 import type { DirectiveNode } from "graphql";
 import { SubscriptionAnnotation } from "../../annotation/SubscriptionAnnotation";
-import { parseArguments } from "../utils";
+import { parseArguments } from "../parse-arguments";
+import { subscriptionDirective } from "../../../graphql/directives";
 
 export function parseSubscriptionAnnotation(directive: DirectiveNode): SubscriptionAnnotation {
-    const { operations } = parseArguments(directive) as { operations: string[] };
+    const { operations } = parseArguments(subscriptionDirective, directive) as { operations: string[] };
 
     return new SubscriptionAnnotation({
         operations,

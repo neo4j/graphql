@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-export type FullTextFields = {
+export type FullTextField = {
     name: string;
     fields: string[];
     queryName: string;
@@ -25,9 +25,9 @@ export type FullTextFields = {
 };
 
 export class FullTextAnnotation {
-    public readonly fields: FullTextFields;
+    public readonly indexes: FullTextField[];
 
-    constructor({ fields }: { fields: FullTextFields }) {
-        this.fields = fields;
+    constructor({ indexes }: { indexes: FullTextField[] }) {
+        this.indexes = indexes;
     }
 }
