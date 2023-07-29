@@ -20,11 +20,10 @@
 import type { DirectiveNode } from "graphql";
 import type { CoalesceAnnotationValue } from "../../annotation/CoalesceAnnotation";
 import { CoalesceAnnotation } from "../../annotation/CoalesceAnnotation";
-import { parseArguments } from "../parse-arguments";
-import { coalesceDirective } from "../../../graphql/directives";
+import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 
 export function parseCoalesceAnnotation(directive: DirectiveNode): CoalesceAnnotation {
-    const args = parseArguments(coalesceDirective, directive) as Record<string, CoalesceAnnotationValue>;
+    const args = parseArgumentsFromUnknownDirective(directive) as Record<string, CoalesceAnnotationValue>;
 
     if (!args || args.value === undefined) {
         throw new Error("@coalesce directive must have a value");

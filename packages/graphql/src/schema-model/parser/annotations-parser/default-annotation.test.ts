@@ -77,6 +77,6 @@ describe("parseDefaultAnnotation", () => {
             },
             arguments: [],
         };
-        expect(() => parseDefaultAnnotation(directive)).toThrow("Argument \"value\" of required type \"ScalarOrEnum!\" was not provided.");
+        expect(() => parseDefaultAnnotation(directive)).toThrow("@default directive must have a value");
     });
 });

@@ -17,10 +17,8 @@
  * limitations under the License.
  */
 
-import type { FieldDefinitionNode, TypeNode, DirectiveNode } from "graphql";
+import type { FieldDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
-import { filterTruthy } from "../../utils/utils";
-import type { Annotation } from "../annotation/Annotation";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../attribute/AttributeType";
 import {
     ScalarType,
@@ -37,20 +35,16 @@ import {
 } from "../attribute/AttributeType";
 import { Attribute } from "../attribute/Attribute";
 import { Field } from "../attribute/Field";
-import { parseAuthenticationAnnotation } from "./annotations-parser/authentication-annotation";
-import { parseAuthorizationAnnotation } from "./annotations-parser/authorization-annotation";
-import { parseCypherAnnotation } from "./annotations-parser/cypher-annotation";
 import type { DefinitionCollection } from "./definition-collection";
-import { parseSubscriptionsAuthorizationAnnotation } from "./annotations-parser/subscriptions-authorization-annotation";
+import { parseAnnotations } from "./parse-annotation";
 
-// TODO: figure out difference between field and attribute
 export function parseAttribute(
     field: FieldDefinitionNode,
     definitionCollection: DefinitionCollection
 ): Attribute | Field {
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
-    const annotations = createFieldAnnotations(field.directives || []);
+    const annotations = parseAnnotations(field.directives || []);
 
     return new Attribute({
         name,
@@ -59,9 +53,10 @@ export function parseAttribute(
     });
 }
 
+// we may want to remove Fields from the schema model
 export function parseField(field: FieldDefinitionNode): Field {
     const name = field.name.value;
-    const annotations = createFieldAnnotations(field.directives || []);
+    const annotations = parseAnnotations(field.directives || []);
     return new Field({
         name,
         annotations,
@@ -144,23 +139,4 @@ function isNeo4jGraphQLNumberType(value: string): value is Neo4jGraphQLNumberTyp
 
 function isNeo4jGraphQLTemporalType(value: string): value is Neo4jGraphQLTemporalType {
     return Object.values<string>(Neo4jGraphQLTemporalType).includes(value);
-}
-
-function createFieldAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
-    return filterTruthy(
-        directives.map((directive) => {
-            switch (directive.name.value) {
-                case "cypher":
-                    return parseCypherAnnotation(directive);
-                case "authorization":
-                    return parseAuthorizationAnnotation(directive);
-                case "authentication":
-                    return parseAuthenticationAnnotation(directive);
-                case "subscriptionsAuthorization":
-                    return parseSubscriptionsAuthorizationAnnotation(directive);
-                default:
-                    return undefined;
-            }
-        })
-    );
 }

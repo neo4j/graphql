@@ -24,6 +24,7 @@ import {
     GraphQLDirective,
     GraphQLFloat,
     GraphQLInt,
+    GraphQLList,
     GraphQLNonNull,
     Kind,
     parse,
@@ -55,6 +56,10 @@ describe("parseArguments", () => {
                     type: ScalarOrEnumType,
                     defaultValue: "test",
                 },
+                customListScalar: {
+                    type: new GraphQLList(ScalarOrEnumType),
+                    defaultValue: ["test"],
+                },
             },
         });
     });
@@ -63,7 +68,7 @@ describe("parseArguments", () => {
         const typeDefs = `
      
             type User {
-                name: String @testDirective(booleanArgument: false, intArgument: 2, floatArgument: 4.0, customScalar: "123")
+                name: String @testDirective(booleanArgument: false, intArgument: 2, floatArgument: 4.0, customScalar: "123", customListScalar: ["123"])
             }
         `;
 
@@ -82,13 +87,13 @@ describe("parseArguments", () => {
 
         const args = parseArguments(testDirectiveDefinition, nameCoalesceUsage);
 
-        expect(args).toEqual({ booleanArgument: false, intArgument: 2, floatArgument: 4.0, customScalar: "123" });
+        expect(args).toEqual({ booleanArgument: false, intArgument: 2, floatArgument: 4.0, customScalar: "123", customListScalar: ["123"] });
     });
 
     test("should use default values", () => {
         const typeDefs = `
             type User {
-                name: String @testDirective(booleanArgument: false, intArgument: 2,)
+                name: String @testDirective(booleanArgument: false, intArgument: 2)
             }
         `;
 
@@ -107,7 +112,7 @@ describe("parseArguments", () => {
 
         const args = parseArguments(testDirectiveDefinition, nameCoalesceUsage);
 
-        expect(args).toEqual({ booleanArgument: false, intArgument: 2, floatArgument: 3.0, customScalar: "test" });
+        expect(args).toEqual({ booleanArgument: false, intArgument: 2, floatArgument: 3.0, customScalar: "test", customListScalar: ["test"] });
     });
 
     test("parseArgumentsFromUnknownDirective", () => {

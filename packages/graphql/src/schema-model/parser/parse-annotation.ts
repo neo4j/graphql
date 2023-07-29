@@ -18,35 +18,35 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import { parseAliasAnnotation } from "./alias-annotation";
-import { parseCoalesceAnnotation } from "./coalesce-annotation";
-import { parseCypherAnnotation } from "./cypher-annotation";
-import { parseCustomResolverAnnotation } from "./custom-resolver-annotation";
-import { parseDefaultAnnotation } from "./default-annotation";
-import { parseIDAnnotation } from "./id-annotation";
-import { parseFilterableAnnotation } from "./filterable-annotation";
-import { parseMutationAnnotation } from "./mutation-annotation";
-import { parsePluralAnnotation } from "./plural-annotation";
-import { parsePopulatedByAnnotation } from "./populated-by-annotation";
-import { parsePrivateAnnotation } from "./private-annotation";
-import { parseQueryAnnotation } from "./query-annotation";
-import { parseQueryOptionsAnnotation } from "./query-options-annotation";
-import { parseSelectableAnnotation } from "./selectable-annotation";
-import { parseSettableAnnotation } from "./settable-annotation";
-import { parseSubscriptionAnnotation } from "./subscription-annotation";
-import { parseTimestampAnnotation } from "./timestamp-annotation";
-import { parseUniqueAnnotation } from "./unique-annotation";
-import { parseFullTextAnnotation } from "./full-text-annotation";
-import { parseJWTClaimAnnotation } from "./jwt-claim-annotation";
-import { parseJWTPayloadAnnotation } from "./jwt-payload-annotation";
-import { parseAuthorizationAnnotation } from "./authorization-annotation";
-import { parseAuthenticationAnnotation } from "./authentication-annotation";
-import { parseSubscriptionsAuthorizationAnnotation } from "./subscriptions-authorization-annotation";
-import { filterTruthy } from "../../../utils/utils";
-import type { Annotation } from "../../annotation/Annotation";
-import { AnnotationsKey } from "../../annotation/Annotation";
+import { parseAliasAnnotation } from "./annotations-parser/alias-annotation";
+import { parseCoalesceAnnotation } from "./annotations-parser/coalesce-annotation";
+import { parseCypherAnnotation } from "./annotations-parser/cypher-annotation";
+import { parseCustomResolverAnnotation } from "./annotations-parser/custom-resolver-annotation";
+import { parseDefaultAnnotation } from "./annotations-parser/default-annotation";
+import { parseIDAnnotation } from "./annotations-parser/id-annotation";
+import { parseFilterableAnnotation } from "./annotations-parser/filterable-annotation";
+import { parseMutationAnnotation } from "./annotations-parser/mutation-annotation";
+import { parsePluralAnnotation } from "./annotations-parser/plural-annotation";
+import { parsePopulatedByAnnotation } from "./annotations-parser/populated-by-annotation";
+import { parsePrivateAnnotation } from "./annotations-parser/private-annotation";
+import { parseQueryAnnotation } from "./annotations-parser/query-annotation";
+import { parseQueryOptionsAnnotation } from "./annotations-parser/query-options-annotation";
+import { parseSelectableAnnotation } from "./annotations-parser/selectable-annotation";
+import { parseSettableAnnotation } from "./annotations-parser/settable-annotation";
+import { parseSubscriptionAnnotation } from "./annotations-parser/subscription-annotation";
+import { parseTimestampAnnotation } from "./annotations-parser/timestamp-annotation";
+import { parseUniqueAnnotation } from "./annotations-parser/unique-annotation";
+import { parseFullTextAnnotation } from "./annotations-parser/full-text-annotation";
+import { parseJWTClaimAnnotation } from "./annotations-parser/jwt-claim-annotation";
+import { parseJWTPayloadAnnotation } from "./annotations-parser/jwt-payload-annotation";
+import { parseAuthorizationAnnotation } from "./annotations-parser/authorization-annotation";
+import { parseAuthenticationAnnotation } from "./annotations-parser/authentication-annotation";
+import { parseSubscriptionsAuthorizationAnnotation } from "./annotations-parser/subscriptions-authorization-annotation";
+import { filterTruthy } from "../../utils/utils";
+import type { Annotation } from "../annotation/Annotation";
+import { AnnotationsKey } from "../annotation/Annotation";
 
-export function parseDirectives(directives: readonly DirectiveNode[]): Annotation[] {
+export function parseAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
     return filterTruthy(
         directives.map((directive) => {
             switch (directive.name.value) {

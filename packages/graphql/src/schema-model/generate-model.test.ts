@@ -32,7 +32,6 @@ import type { AttributeAdapter } from "./attribute/model-adapters/AttributeAdapt
 import type { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "./relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntity } from "./entity/ConcreteEntity";
-import type { Relationship } from "./relationship/Relationship";
 
 describe("Schema model generation", () => {
     test("parses @authentication directive with no arguments", () => {
@@ -375,9 +374,9 @@ describe("Annotations", () => {
                 accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", direction: OUT)
             }
 
-            type Account @subscription(operations: [CREATE]){
+            type Account @subscription(operations: [CREATE]) {
                 id: ID!
-                username: String!  @settable(onCreate: false)
+                accountName: String! @settable(onCreate: false)
             }
 
             extend type User {
@@ -396,14 +395,20 @@ describe("Annotations", () => {
         expect(userQuery).toBeDefined();
         expect(userQuery?.read).toBe(true);
         expect(userQuery?.aggregate).toBe(false);
-        
+
         const userMutation = userEntity?.annotations[AnnotationsKey.mutation];
         expect(userMutation).toBeDefined();
         expect(userMutation?.operations).toStrictEqual(["CREATE", "UPDATE", "DELETE"]);
 
-        const userSubscription = userEntity?.annotations[AnnotationsKey.mutation];
+        const userSubscription = userEntity?.annotations[AnnotationsKey.subscription];
         expect(userSubscription).toBeDefined();
-        expect(userSubscription?.operations).toStrictEqual(["CREATE", "UPDATE", "DELETE", "CREATE_RELATIONSHIP", "DELETE_RELATIONSHIP"]);
+        expect(userSubscription?.operations).toStrictEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CREATE_RELATIONSHIP",
+            "DELETE_RELATIONSHIP",
+        ]);
 
         const accountSubscription = accountEntity?.annotations[AnnotationsKey.subscription];
         expect(accountSubscription).toBeDefined();
@@ -416,13 +421,11 @@ describe("Annotations", () => {
         expect(userName?.annotations[AnnotationsKey.selectable]?.onRead).toBe(true);
         expect(userName?.annotations[AnnotationsKey.selectable]?.onAggregate).toBe(true);
 
-        const creationTime = accountEntity?.attributes.get("creationTime");
-        expect(creationTime?.annotations[AnnotationsKey.settable]).toBeDefined();
-        expect(creationTime?.annotations[AnnotationsKey.settable]?.onCreate).toBe(false);
-        expect(creationTime?.annotations[AnnotationsKey.settable]?.onUpdate).toBe(true);
+        const accountName = accountEntity?.attributes.get("accountName");
+        expect(accountName?.annotations[AnnotationsKey.settable]).toBeDefined();
+        expect(accountName?.annotations[AnnotationsKey.settable]?.onCreate).toBe(false);
+        expect(accountName?.annotations[AnnotationsKey.settable]?.onUpdate).toBe(true);
     });
-
-    
 });
 
 describe("GraphQL adapters", () => {

@@ -78,6 +78,6 @@ describe("parseCoalesceAnnotation", () => {
             },
             arguments: [],
         };
-        expect(() => parseCoalesceAnnotation(directive)).toThrow("Argument \"value\" of required type \"ScalarOrEnum!\" was not provided.");
+        expect(() => parseCoalesceAnnotation(directive)).toThrow("@coalesce directive must have a value");
     });
 });

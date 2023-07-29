@@ -36,7 +36,7 @@ import { Operation } from "./Operation";
 import { parseAttribute, parseField } from "./parser/parse-attribute";
 import { nodeDirective, relationshipDirective } from "../graphql/directives";
 import { parseKeyAnnotation } from "./parser/annotations-parser/key-annotation";
-import { parseDirectives } from "./parser/annotations-parser/parse-directives";
+import { parseAnnotations } from "./parser/parse-annotation";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -239,7 +239,7 @@ function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotati
     if (keyDirectives) {
         entityAnnotations.push(parseKeyAnnotation(keyDirectives));
     }
-    const annotations = parseDirectives(directives);
+    const annotations = parseAnnotations(directives);
 
     return entityAnnotations.concat(annotations);
 }
@@ -247,7 +247,7 @@ function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotati
 function createSchemaModelAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
     const schemaModelAnnotations: Annotation[] = [];
 
-    const annotations = parseDirectives(directives);
+    const annotations = parseAnnotations(directives);
 
     return schemaModelAnnotations.concat(annotations);
 }

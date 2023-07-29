@@ -20,11 +20,10 @@
 import type { DirectiveNode } from "graphql";
 import type { DefaultAnnotationValue } from "../../annotation/DefaultAnnotation";
 import { DefaultAnnotation } from "../../annotation/DefaultAnnotation";
-import { parseArguments } from "../parse-arguments";
-import { defaultDirective } from "../../../graphql/directives";
+import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 
 export function parseDefaultAnnotation(directive: DirectiveNode): DefaultAnnotation {
-    const args = parseArguments(defaultDirective, directive) as Record<string, DefaultAnnotationValue>;
+    const args = parseArgumentsFromUnknownDirective(directive) as Record<string, DefaultAnnotationValue>;
 
     if (!args || args.value === undefined) {
         throw new Error("@default directive must have a value");
