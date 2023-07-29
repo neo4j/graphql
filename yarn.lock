@@ -4156,26 +4156,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.8.14, @neo4j-ndl/base@npm:^1.8.14":
-  version: 1.8.14
-  resolution: "@neo4j-ndl/base@npm:1.8.14"
-  checksum: 71115adf46ea58d24dc21b3588d5b2d008d577aa7282497f214fb4297ae0eef5ef91a6d08885bf9c23e8cbd3aafcfe821b198f969a2e889373dd45b1f59264ab
+"@neo4j-ndl/base@npm:1.9.0, @neo4j-ndl/base@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "@neo4j-ndl/base@npm:1.9.0"
+  checksum: 6aa58859e708c21c2d74fc4c6294968f7af039d06b348fb38bda250c9bce92b8703b6e91d97315d93882ffb48e6d4ab2bb3c3cb549e25d2aa311a0e845e194ba
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.8.20":
-  version: 1.8.20
-  resolution: "@neo4j-ndl/react@npm:1.8.20"
+"@neo4j-ndl/react@npm:1.9.0":
+  version: 1.9.0
+  resolution: "@neo4j-ndl/react@npm:1.9.0"
   dependencies:
     "@floating-ui/react": ^0.24.2
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^1.8.14
+    "@neo4j-ndl/base": ^1.9.0
     "@tanstack/react-table": ^8.9.3
     classnames: ^2.3.1
+    date-fns: ^2.30.0
     detect-browser: ^5.3.0
     re-resizable: ^6.9.9
     react-aria: ^3.25.0
+    react-datepicker: ^4.14.1
     react-dropzone: ^14.0.0
     react-focus-lock: ^2.9.4
     react-select: 5.7.0
@@ -4186,7 +4188,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: ">=16.8.0"
-  checksum: 1b54685e261ea6ac22850f4186f369bc1b3f112182fd4587cf7c2dc5f53472d8ed31a885c39b5ff2477a5e4eaf4592dc2bd29a01cbc89082ef1ea31a902733c7
+  checksum: d7402f1ba90bd9455887b9cb1de18969fb538b0c9ad7c14c13208edebe8480bdff200c8834deee9789961e9203425821db8ca0cfe2ac44690d3c31b4667ffb0e
   languageName: node
   linkType: hard
 
@@ -4286,8 +4288,8 @@ __metadata:
     "@dnd-kit/modifiers": 6.0.1
     "@dnd-kit/sortable": 7.0.2
     "@graphiql/react": 0.19.2
-    "@neo4j-ndl/base": 1.8.14
-    "@neo4j-ndl/react": 1.8.20
+    "@neo4j-ndl/base": 1.9.0
+    "@neo4j-ndl/react": 1.9.0
     "@neo4j/graphql": 3.24.0
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.36.2
@@ -5375,6 +5377,13 @@ __metadata:
   dependencies:
     debug: ^4.3.1
   checksum: 663438d9154db3c11bc7d41a4838162542db9cb4cf989fe8936e9bd9e5b99e3a58d73c8888afa1180a8cb93375c1d165bb397939de8a5ab8507d13d2aed2a086
+  languageName: node
+  linkType: hard
+
+"@popperjs/core@npm:^2.11.8":
+  version: 2.11.8
+  resolution: "@popperjs/core@npm:2.11.8"
+  checksum: e5c69fdebf52a4012f6a1f14817ca8e9599cb1be73dd1387e1785e2ed5e5f0862ff817f420a87c7fc532add1f88a12e25aeb010ffcbdc98eace3d55ce2139cf0
   languageName: node
   linkType: hard
 
@@ -11347,7 +11356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:2.3.2, classnames@npm:^2.3.1":
+"classnames@npm:2.3.2, classnames@npm:^2.2.6, classnames@npm:^2.3.1":
   version: 2.3.2
   resolution: "classnames@npm:2.3.2"
   checksum: 2c62199789618d95545c872787137262e741f9db13328e216b093eea91c85ef2bfb152c1f9e63027204e2559a006a92eb74147d46c800a9f96297ae1d9f96f4e
@@ -24592,7 +24601,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -25071,6 +25080,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-datepicker@npm:^4.14.1":
+  version: 4.16.0
+  resolution: "react-datepicker@npm:4.16.0"
+  dependencies:
+    "@popperjs/core": ^2.11.8
+    classnames: ^2.2.6
+    date-fns: ^2.30.0
+    prop-types: ^15.7.2
+    react-onclickoutside: ^6.12.2
+    react-popper: ^2.3.0
+  peerDependencies:
+    react: ^16.9.0 || ^17 || ^18
+    react-dom: ^16.9.0 || ^17 || ^18
+  checksum: 59da0305ca3a353ca007cf526320335790d73108942cc8f0d7177a1dfd020b28c5ea70f9d042f240cd2eadd09b3aa22357e6b6f509b42b6d8d51d73d20c97476
+  languageName: node
+  linkType: hard
+
 "react-dom@npm:18.2.0":
   version: 18.2.0
   resolution: "react-dom@npm:18.2.0"
@@ -25100,6 +25126,13 @@ __metadata:
   version: 6.0.9
   resolution: "react-error-overlay@npm:6.0.9"
   checksum: 695853bc885e798008a00c10d8d94e5ac91626e8130802fea37345f9c037f41b80104345db2ee87f225feb4a4ef71b0df572b17c378a6d397b6815f6d4a84293
+  languageName: node
+  linkType: hard
+
+"react-fast-compare@npm:^3.0.1":
+  version: 3.2.2
+  resolution: "react-fast-compare@npm:3.2.2"
+  checksum: 2071415b4f76a3e6b55c84611c4d24dcb12ffc85811a2840b5a3f1ff2d1a99be1020d9437ee7c6e024c9f4cbb84ceb35e48cf84f28fcb00265ad2dfdd3947704
   languageName: node
   linkType: hard
 
@@ -25134,6 +25167,30 @@ __metadata:
   version: 18.2.0
   resolution: "react-is@npm:18.2.0"
   checksum: e72d0ba81b5922759e4aff17e0252bd29988f9642ed817f56b25a3e217e13eea8a7f2322af99a06edb779da12d5d636e9fda473d620df9a3da0df2a74141d53e
+  languageName: node
+  linkType: hard
+
+"react-onclickoutside@npm:^6.12.2":
+  version: 6.13.0
+  resolution: "react-onclickoutside@npm:6.13.0"
+  peerDependencies:
+    react: ^15.5.x || ^16.x || ^17.x || ^18.x
+    react-dom: ^15.5.x || ^16.x || ^17.x || ^18.x
+  checksum: a7cfe62e91f7f92891cda7b885d6eec7b2854850f8703ccafcea5c04bb93a210a566a70b51b9fae0cc30c3485e04eb6a3f3ae58f495cac3ec2747b4fc44d1ad2
+  languageName: node
+  linkType: hard
+
+"react-popper@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "react-popper@npm:2.3.0"
+  dependencies:
+    react-fast-compare: ^3.0.1
+    warning: ^4.0.2
+  peerDependencies:
+    "@popperjs/core": ^2.0.0
+    react: ^16.8.0 || ^17 || ^18
+    react-dom: ^16.8.0 || ^17 || ^18
+  checksum: 837111c98738011c69b3069a464ea5bdcbf487105b6148e8faf90cb7337e134edb1b98b8824322941c378756cca30a15c18c25f558e53b85ed5762fa0dc8e6b2
   languageName: node
   linkType: hard
 
@@ -29545,6 +29602,15 @@ __metadata:
   dependencies:
     makeerror: 1.0.12
   checksum: ad7a257ea1e662e57ef2e018f97b3c02a7240ad5093c392186ce0bcf1f1a60bbadd520d073b9beb921ed99f64f065efb63dfc8eec689a80e569f93c1c5d5e16c
+  languageName: node
+  linkType: hard
+
+"warning@npm:^4.0.2":
+  version: 4.0.3
+  resolution: "warning@npm:4.0.3"
+  dependencies:
+    loose-envify: ^1.0.0
+  checksum: 4f2cb6a9575e4faf71ddad9ad1ae7a00d0a75d24521c193fa464f30e6b04027bd97aa5d9546b0e13d3a150ab402eda216d59c1d0f2d6ca60124d96cd40dfa35c
   languageName: node
   linkType: hard
 
