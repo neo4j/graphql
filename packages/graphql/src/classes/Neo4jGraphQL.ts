@@ -49,6 +49,7 @@ import { validateUserDefinition } from "../schema/validation/schema-validation";
 import { makeDocumentToAugment } from "../schema/make-document-to-augment";
 import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./Neo4jGraphQLSubscriptionsDefaultEngine";
+import { getDefinitionNodes } from "../schema/get-definition-nodes";
 
 export interface Neo4jGraphQLConstructor {
     typeDefs: TypeSource;
@@ -312,9 +313,25 @@ class Neo4jGraphQL {
         return new Promise((resolve) => {
             const initialDocument = this.getDocument(this.typeDefs);
 
-            if (this.validate) {
-                validateDocument({ document: initialDocument, features: this.features });
-            }
+            // if (this.validate) {
+            //     validateDocument({ document: initialDocument, features: this.features });
+            // }
+            const {
+                enumTypes: enums,
+                interfaceTypes: interfaces,
+                unionTypes: unions,
+                objectTypes: objects,
+            } = getDefinitionNodes(initialDocument);
+            const userCustomResolvers = asArray(this.resolvers);
+
+            validateDocument({
+                document: initialDocument,
+                features: this.features,
+                extra: { enums, interfaces, unions, objects },
+                callbacks: this.features?.populatedBy?.callbacks,
+                validateResolvers: this.validate,
+                userCustomResolvers,
+            });
 
             const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
             const { jwt } = typesExcludedFromGeneration;

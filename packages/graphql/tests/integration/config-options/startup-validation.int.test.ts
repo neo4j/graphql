@@ -20,12 +20,24 @@
 import type { Driver } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { GraphQLError } from "graphql";
 
 describe("Startup Validation", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
-    const invalidTypeDefsError = 'Type "Point" already exists in the schema.';
+    // const invalidTypeDefsError = 'Type "Point" already exists in the schema.';
+    const typePointAlreadyExistsErrors = [
+        new GraphQLError(
+            'Type "Point" already exists in the schema. It cannot also be defined in this type definition.'
+        ),
+        new GraphQLError(
+            'Field "Point.latitude" already exists in the schema. It cannot also be defined in this type extension.'
+        ),
+        new GraphQLError(
+            'Field "Point.longitude" already exists in the schema. It cannot also be defined in this type extension.'
+        ),
+    ];
     const missingCustomResolverError = "Custom resolver for fullName has not been provided";
     const duplicateRelationshipFieldsError =
         "Multiple relationship fields with the same type and direction may not have the same relationship type.";
@@ -119,7 +131,8 @@ describe("Startup Validation", () => {
             driver,
         });
 
-        await expect(neoSchema.getSchema()).rejects.toThrow(invalidTypeDefsError);
+        await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers(typePointAlreadyExistsErrors);
+        // .toThrow(invalidTypeDefsError);
     });
 
     test("should not throw an error for invalid type defs when validate is false", async () => {
@@ -139,7 +152,8 @@ describe("Startup Validation", () => {
             validate: true,
         });
 
-        await expect(neoSchema.getSchema()).rejects.toThrow(invalidTypeDefsError);
+        await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers(typePointAlreadyExistsErrors);
+        // .toThrow(invalidTypeDefsError);
     });
 
     describe("@customResolver", () => {
@@ -171,7 +185,7 @@ describe("Startup Validation", () => {
                 validate: true,
             });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow(invalidTypeDefsError);
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers(typePointAlreadyExistsErrors);
             expect(warn).not.toHaveBeenCalled();
         });
 

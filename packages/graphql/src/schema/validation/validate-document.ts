@@ -44,8 +44,6 @@ import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPoi
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import { isRootType } from "../../utils/is-root-type";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
-import type { ValidationConfig } from "../../classes/Neo4jGraphQL";
-import { defaultValidationConfig } from "../../classes/Neo4jGraphQL";
 import type { Neo4jFeaturesSettings, Neo4jGraphQLCallbacks } from "../../types";
 import { validateSDL } from "./validate-sdl";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
@@ -345,9 +343,12 @@ function validateDocument({
     const errors = validateSchema(schema);
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {
-        throw new Error(filteredErrors.join("\n"));
+        // throw new Error(filteredErrors.join("\n"));
+        throw filteredErrors;
     }
 
+    // TODO: how to improve this??
+    // validates `@customResolver`
     validateSchemaCustomizations({ document, schema });
 }
 

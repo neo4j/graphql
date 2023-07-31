@@ -44,6 +44,11 @@ import { getPathToNode } from "../utils/path-parser";
 function getValidationFunction(
     directiveName: string,
     relationshipTypeToDirectionAndFieldTypeMap: Map<string, [string, string][]>,
+    objectTypeToFieldNameDirectionAndFieldTypePerRelationshipTypeMap: Map<
+        string,
+        Map<string, [string, string, string][]>
+    >,
+    interfaceToImplementationsMap: Map<string, Set<string>>,
     extra?: {
         enums: EnumTypeDefinitionNode[];
         interfaces: InterfaceTypeDefinitionNode[];
@@ -65,7 +70,12 @@ function getValidationFunction(
         case "queryOptions":
             return verifyQueryOptions;
         case "relationship":
-            return verifyRelationshipArgumentValue(relationshipTypeToDirectionAndFieldTypeMap, extra);
+            return verifyRelationshipArgumentValue(
+                objectTypeToFieldNameDirectionAndFieldTypePerRelationshipTypeMap,
+                relationshipTypeToDirectionAndFieldTypeMap,
+                interfaceToImplementationsMap,
+                extra
+            );
         default:
             return;
     }
@@ -83,11 +93,18 @@ export function DirectiveIsValid(
 ) {
     return function (context: SDLValidationContext): ASTVisitor {
         const relationshipTypeToDirectionAndFieldTypeMap = new Map<string, [string, string][]>();
+        const objectTypeToFieldNameDirectionAndFieldTypePerRelationshipTypeMap = new Map<
+            string,
+            Map<string, [string, string, string][]>
+        >();
+        const interfaceToImplementationsMap = new Map<string, Set<string>>();
         return {
             Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
                 const validationFn = getValidationFunction(
                     directiveNode.name.value,
                     relationshipTypeToDirectionAndFieldTypeMap,
+                    objectTypeToFieldNameDirectionAndFieldTypePerRelationshipTypeMap,
+                    interfaceToImplementationsMap,
                     extra,
                     callbacks
                 );

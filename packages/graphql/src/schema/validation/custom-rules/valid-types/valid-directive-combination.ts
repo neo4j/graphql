@@ -20,9 +20,9 @@
 import type { ASTVisitor, DirectiveNode, ASTNode } from "graphql";
 import { Kind, GraphQLError, isTypeDefinitionNode, isTypeExtensionNode } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { invalidCombinations } from "../../utils/invalid-directive-combinations";
+import { invalidCombinations, isInvalidCombination } from "../../utils/invalid-directive-combinations";
 import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
-import { getPathToDirectiveNode } from "../utils/path-parser";
+import { getPathToNode } from "../utils/path-parser";
 
 export function DirectiveCombinationValid() {
     return function (context: SDLValidationContext): ASTVisitor {
@@ -31,19 +31,14 @@ export function DirectiveCombinationValid() {
                 if (!("directives" in node) || !node.directives) {
                     return;
                 }
-                const [temp, traversedDef] = getPathToDirectiveNode(path, ancestors);
+                const [temp, traversedDef] = getPathToNode(path, ancestors);
                 const currentNodeErrorPath =
                     isTypeDefinitionNode(node) || isTypeExtensionNode(node) ? [...temp, node.name.value] : temp;
 
-                const { isValid, errorMsg, errorPath } = assertValid([
-                    assertValidDirectives.bind(null, { directives: node.directives, invalidCombinations }),
-                ]);
+                const { isValid, errorMsg, errorPath } = assertValid(assertValidDirectives.bind(null, node.directives));
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [traversedDef || node],
-                        // extensions: {
-                        //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        // },
                         path: [...currentNodeErrorPath, ...errorPath],
                         source: undefined,
                         positions: undefined,
@@ -59,7 +54,6 @@ export function DirectiveCombinationValid() {
                             errorOpts.positions,
                             errorOpts.path,
                             errorOpts.originalError
-                            // errorOpts.extensions
                         )
                     );
                 }
@@ -93,21 +87,18 @@ export function SchemaOrTypeDirectives() {
                     return;
                 }
 
-                const { isValid, errorMsg } = assertValid([
+                const { isValid, errorMsg } = assertValid(
                     assertSchemaOrType.bind(null, {
                         directives: node.directives,
                         schemaLevelConfiguration,
                         typeLevelConfiguration,
                         isSchemaLevel,
                         isTypeLevel,
-                    }),
-                ]);
+                    })
+                );
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [node],
-                        // extensions: {
-                        //     exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        // },
                         path: undefined,
                         source: undefined,
                         positions: undefined,
@@ -123,7 +114,6 @@ export function SchemaOrTypeDirectives() {
                             errorOpts.positions,
                             errorOpts.path,
                             errorOpts.originalError
-                            // errorOpts.extensions
                         )
                     );
                 }
@@ -132,25 +122,26 @@ export function SchemaOrTypeDirectives() {
     };
 }
 
-function assertValidDirectives({
-    directives,
-    invalidCombinations,
-}: {
-    directives: readonly DirectiveNode[];
-    invalidCombinations: { [k: string]: string[] };
-}) {
-    directives.forEach((directive) => {
-        if (invalidCombinations[directive.name.value]) {
-            directives.forEach((d) => {
-                if (invalidCombinations[directive.name.value]?.includes(d.name.value)) {
-                    throw new DocumentValidationError(
-                        `Invalid directive usage: Directive @${directive.name.value} cannot be used in combination with @${d.name.value}`,
-                        []
-                    );
-                }
-            });
-        }
-    });
+function assertValidDirectives(directives: readonly DirectiveNode[]) {
+    // directives.forEach((directive) => {
+    //     if (invalidCombinations[directive.name.value]) {
+    //         directives.forEach((d) => {
+    //             if (invalidCombinations[directive.name.value]?.includes(d.name.value)) {
+    //                 throw new DocumentValidationError(
+    //                     `Invalid directive usage: Directive @${directive.name.value} cannot be used in combination with @${d.name.value}`,
+    //                     []
+    //                 );
+    //             }
+    //         });
+    //     }
+    // });
+    const res = isInvalidCombination(directives);
+    if (res) {
+        throw new DocumentValidationError(
+            `Invalid directive usage: Directive @${res[0]} cannot be used in combination with @${res[1]}`,
+            []
+        );
+    }
 }
 function assertSchemaOrType({
     directives,
