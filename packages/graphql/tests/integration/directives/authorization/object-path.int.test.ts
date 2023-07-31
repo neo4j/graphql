@@ -100,7 +100,7 @@ describe("auth/object-path", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -223,7 +223,7 @@ describe("auth/object-path", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -285,7 +285,7 @@ describe("auth/object-path", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             // Since we don't have a valid JWKS Endpoint, we will always get an error validating our JWKS

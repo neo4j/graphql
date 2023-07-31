@@ -33,11 +33,6 @@ import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
 
 export { Node } from "../classes";
 
-export type DriverConfig = {
-    database?: string;
-    bookmarks?: string | string[];
-};
-
 type AuthorizationContext = {
     jwt?: JwtPayload;
     jwtParam: Cypher.Param;
@@ -55,7 +50,6 @@ export interface Context extends Neo4jGraphQLContext {
     schemaModel: Neo4jGraphQLSchemaModel;
     schema: GraphQLSchema;
     callbacks?: Neo4jGraphQLCallbacks;
-    plugins?: Neo4jGraphQLPlugins;
     features: ContextFeatures;
     subscriptionsEnabled: boolean;
     executor: Executor;
@@ -307,35 +301,8 @@ export interface CypherQueryOptions {
     replan?: "default" | "force" | "skip";
 }
 
-/** The startup validation checks to run */
-export interface StartupValidationOptions {
-    typeDefs?: boolean;
-    resolvers?: boolean;
-    noDuplicateRelationshipFields?: boolean;
-}
-
-/**
- * Configure which startup validation checks should be run.
- * Optionally, a boolean can be passed to toggle all these options.
- */
-export type StartupValidationConfig = StartupValidationOptions | boolean;
-
 /** Input field for graphql-compose */
 export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
-
-export interface Neo4jGraphQLAuthPlugin {
-    rolesPath?: string;
-    isGlobalAuthenticationEnabled?: boolean;
-    bindPredicate?: "all" | "any";
-
-    decode<T>(token: string): Promise<T | undefined>;
-    /**
-     * This function tries to resolve public or secret keys.
-     * The implementation on how to resolve the keys by the `JWKSEndpoint` or by the `Secret` is set on when the plugin is being initiated.
-     * @param req
-     */
-    tryToResolveKeys(req: unknown): void;
-}
 
 /** Raw event metadata returned from queries */
 export type NodeSubscriptionMeta = {
@@ -440,17 +407,13 @@ export type RelationshipSubscriptionsEvent =
 export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
 
 /** Defines a custom mechanism to transport subscription events internally between servers */
-export interface Neo4jGraphQLSubscriptionsMechanism {
+export interface Neo4jGraphQLSubscriptionsEngine {
     events: EventEmitter;
 
     publish(eventMeta: SubscriptionsEvent): Promise<void> | void;
 
     /** To be called, if needed, in getSchema */
     init?(): Promise<void>;
-}
-
-export interface Neo4jGraphQLPlugins {
-    auth?: Neo4jGraphQLAuthPlugin;
 }
 
 export type CallbackReturnValue = string | number | boolean | undefined | null;
@@ -505,7 +468,7 @@ export type Neo4jFeaturesSettings = {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
-    subscriptions?: Neo4jGraphQLSubscriptionsMechanism | boolean;
+    subscriptions?: Neo4jGraphQLSubscriptionsEngine | boolean;
 };
 
 /** Parsed features used in context */
@@ -513,7 +476,7 @@ export type ContextFeatures = {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
-    subscriptions?: Neo4jGraphQLSubscriptionsMechanism;
+    subscriptions?: Neo4jGraphQLSubscriptionsEngine;
 };
 
 export type PredicateReturn = {

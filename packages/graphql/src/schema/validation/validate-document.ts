@@ -239,7 +239,6 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
 
 function getBaseSchema({
     document,
-    validateTypeDefs = true,
     features,
     additionalDirectives = [],
     additionalTypes = [],
@@ -249,7 +248,6 @@ function getBaseSchema({
     userCustomResolvers,
 }: {
     document: DocumentNode;
-    validateTypeDefs: boolean;
     features: Neo4jFeaturesSettings | undefined;
     additionalDirectives: Array<GraphQLDirective>;
     additionalTypes: Array<GraphQLNamedType>;
@@ -311,7 +309,6 @@ function getBaseSchema({
 
 function validateDocument({
     document,
-    validationConfig = defaultValidationConfig,
     features,
     additionalDirectives = [],
     additionalTypes = [],
@@ -321,8 +318,7 @@ function validateDocument({
     userCustomResolvers,
 }: {
     document: DocumentNode;
-    validationConfig?: ValidationConfig;
-    features?: Neo4jFeaturesSettings | undefined;
+    features: Neo4jFeaturesSettings | undefined;
     additionalDirectives?: Array<GraphQLDirective>;
     additionalTypes?: Array<GraphQLNamedType>;
     extra?: {
@@ -338,7 +334,6 @@ function validateDocument({
     const schema = getBaseSchema({
         document,
         features,
-        validateTypeDefs: validationConfig.validateTypeDefs,
         additionalDirectives,
         additionalTypes,
         extra,
@@ -346,17 +341,14 @@ function validateDocument({
         validateResolvers,
         userCustomResolvers,
     });
-    if (validationConfig.validateTypeDefs) {
-        const errors = validateSchema(schema);
-        const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
-        if (filteredErrors.length) {
-            throw filteredErrors;
-            // throw new Error(filteredErrors.join("\n"));
-        }
+
+    const errors = validateSchema(schema);
+    const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
+    if (filteredErrors.length) {
+        throw new Error(filteredErrors.join("\n"));
     }
-    // TODO: how to improve this??
-    // validates `@customResolver`
-    validateSchemaCustomizations({ document, schema, validationConfig });
+
+    validateSchemaCustomizations({ document, schema });
 }
 
 export default validateDocument;

@@ -147,7 +147,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { name: actorName },
         });
 
@@ -233,7 +233,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { name: actor.name },
         });
 
@@ -315,7 +315,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { name: actorName },
         });
 
@@ -380,7 +380,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { name: actorName, title: "Apple" },
         });
 
@@ -448,7 +448,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { name: actorName, title: "Apple" },
         });
 
@@ -515,7 +515,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { name: actorName, title: "Apple", movieTitle: "Pear" },
         });
 
@@ -572,7 +572,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

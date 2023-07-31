@@ -27,7 +27,6 @@ import { Neo4jGraphQL } from "../../../src/classes";
 describe("Relationship properties - update", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let bookmarks: string[];
     const typeDefs = gql`
         type Movie {
             title: String!
@@ -63,7 +62,6 @@ describe("Relationship properties - update", () => {
                     CREATE (m)<-[:ACTED_IN { screenTime: 100 }]-(:Actor { name: '${actor2}' })
                 `
             );
-            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }
@@ -118,7 +116,7 @@ describe("Relationship properties - update", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -191,7 +189,7 @@ describe("Relationship properties - update", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -263,7 +261,7 @@ describe("Relationship properties - update", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -339,7 +337,7 @@ describe("Relationship properties - update", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();

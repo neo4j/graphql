@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import type { Driver, Session, SessionConfig } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import Debug from "debug";
 import type Node from "../Node";
 import { DEBUG_EXECUTE } from "../../constants";
+import type { Neo4jGraphQLSessionConfig } from "../Executor";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -268,7 +269,7 @@ async function assertIndexesAndConstraints({
     options,
 }: {
     driver: Driver;
-    sessionConfig?: SessionConfig;
+    sessionConfig?: Neo4jGraphQLSessionConfig;
     nodes: Node[];
     options?: AssertIndexesAndConstraintsOptions;
 }): Promise<void> {

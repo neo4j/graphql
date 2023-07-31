@@ -89,7 +89,7 @@ describe("Single relationship (1-*) filtering", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeUndefined();
@@ -136,7 +136,7 @@ describe("Single relationship (1-*) filtering", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeUndefined();
@@ -170,7 +170,7 @@ describe("Single relationship (1-*) filtering", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeUndefined();

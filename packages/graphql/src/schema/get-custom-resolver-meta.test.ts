@@ -21,10 +21,9 @@ import type {
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
-    UnionTypeDefinitionNode} from "graphql";
-import {
-    Kind,
+    UnionTypeDefinitionNode,
 } from "graphql";
+import { Kind } from "graphql";
 import { generateResolveTree } from "../translate/utils/resolveTree";
 import { getCustomResolverMeta, INVALID_SELECTION_SET_ERROR } from "./get-custom-resolver-meta";
 
@@ -459,6 +458,16 @@ describe("getCustomResolverMeta", () => {
         [customResolverField]: () => 25,
     };
 
+    let warn: jest.SpyInstance;
+
+    beforeEach(() => {
+        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        warn.mockReset();
+    });
+
     test("should return undefined if no directive found", () => {
         // @ts-ignore
         const field: FieldDefinitionNode = {
@@ -490,11 +499,12 @@ describe("getCustomResolverMeta", () => {
             field,
             object,
             objects,
-            validateResolvers: true,
             interfaces,
             unions,
             customResolvers: resolvers,
         });
+
+        expect(warn).not.toHaveBeenCalled();
 
         expect(result).toBeUndefined();
     });
@@ -531,11 +541,12 @@ describe("getCustomResolverMeta", () => {
             field,
             object,
             objects,
-            validateResolvers: true,
             interfaces,
             unions,
             customResolvers: resolvers,
         });
+
+        expect(warn).not.toHaveBeenCalled();
 
         expect(result).toEqual({
             requiredFields: {},
@@ -586,11 +597,12 @@ describe("getCustomResolverMeta", () => {
             field,
             object,
             objects,
-            validateResolvers: true,
             interfaces,
             unions,
             customResolvers: resolvers,
         });
+
+        expect(warn).not.toHaveBeenCalled();
 
         expect(result).toEqual({
             requiredFields: generateResolveTree({ name: requiredFields }),
@@ -642,11 +654,12 @@ describe("getCustomResolverMeta", () => {
             field,
             object,
             objects,
-            validateResolvers: true,
             interfaces,
             unions,
             customResolvers: resolvers,
         });
+
+        expect(warn).not.toHaveBeenCalled();
 
         expect(result).toEqual({
             requiredFields: {
@@ -737,7 +750,6 @@ describe("getCustomResolverMeta", () => {
                 field,
                 object,
                 objects,
-                validateResolvers: true,
                 interfaces,
                 unions,
                 customResolvers: resolvers,
@@ -788,17 +800,16 @@ describe("getCustomResolverMeta", () => {
 
         const resolvers = {};
 
-        expect(() =>
-            getCustomResolverMeta({
-                field,
-                object,
-                objects,
-                validateResolvers: true,
-                interfaces,
-                unions,
-                customResolvers: resolvers,
-            })
-        ).toThrow(`Custom resolver for ${customResolverField} has not been provided`);
+        getCustomResolverMeta({
+            field,
+            object,
+            objects,
+            interfaces,
+            unions,
+            customResolvers: resolvers,
+        });
+
+        expect(warn).toHaveBeenCalledWith(`Custom resolver for ${customResolverField} has not been provided`);
     });
     test("Check throws error if customResolver defined on interface", () => {
         const requiredFields = "name";
@@ -847,76 +858,15 @@ describe("getCustomResolverMeta", () => {
             },
         };
 
-        expect(() =>
-            getCustomResolverMeta({
-                field,
-                object,
-                objects,
-                validateResolvers: true,
-                interfaces,
-                unions,
-                customResolvers: resolvers,
-            })
-        ).toThrow(`Custom resolver for ${customResolverField} has not been provided`);
-    });
+        getCustomResolverMeta({
+            field,
+            object,
+            objects,
+            interfaces,
+            unions,
+            customResolvers: resolvers,
+        });
 
-    test("Check does not throw error if validateResolvers false", () => {
-        const requiredFields = "name";
-        const field: FieldDefinitionNode = {
-            directives: [
-                {
-                    // @ts-ignore
-                    name: {
-                        value: "customResolver",
-                        // @ts-ignore
-                    },
-                    arguments: [
-                        {
-                            // @ts-ignore
-                            name: { value: "requires" },
-                            // @ts-ignore
-                            value: {
-                                kind: Kind.STRING,
-                                value: requiredFields,
-                            },
-                        },
-                    ],
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 2" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 3" },
-                },
-                {
-                    // @ts-ignore
-                    name: { value: "RANDOM 4" },
-                },
-            ],
-            name: {
-                kind: Kind.NAME,
-                value: customResolverField,
-            },
-        };
-
-        const resolvers = {
-            [publicationInterface]: {
-                [customResolverField]: () => "Hello World!",
-            },
-        };
-
-        expect(() =>
-            getCustomResolverMeta({
-                field,
-                object,
-                objects,
-                validateResolvers: false,
-                interfaces,
-                unions,
-                customResolvers: resolvers,
-            })
-        ).not.toThrow();
+        expect(warn).toHaveBeenCalledWith(`Custom resolver for ${customResolverField} has not been provided`);
     });
 });

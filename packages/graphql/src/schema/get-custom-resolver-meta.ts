@@ -46,7 +46,6 @@ export function getCustomResolverMeta({
     field,
     object,
     objects,
-    validateResolvers,
     interfaces,
     unions,
     customResolvers,
@@ -55,7 +54,6 @@ export function getCustomResolverMeta({
     field: FieldDefinitionNode;
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
-    validateResolvers: boolean | undefined;
     interfaces: InterfaceTypeDefinitionNode[];
     unions: UnionTypeDefinitionNode[];
     customResolvers?: IResolvers | IResolvers[];
@@ -69,8 +67,8 @@ export function getCustomResolverMeta({
         return undefined;
     }
 
-    if (validateResolvers && object.kind !== Kind.INTERFACE_TYPE_DEFINITION && !customResolvers?.[field.name.value]) {
-        throw new Error(`Custom resolver for ${field.name.value} has not been provided`);
+    if (object.kind !== Kind.INTERFACE_TYPE_DEFINITION && !customResolvers?.[field.name.value]) {
+        console.warn(`Custom resolver for ${field.name.value} has not been provided`);
     }
 
     const directiveRequiresArgument = directive?.arguments?.find((arg) => arg.name.value === "requires");

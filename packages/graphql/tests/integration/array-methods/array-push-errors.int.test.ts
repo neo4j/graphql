@@ -87,7 +87,7 @@ describe("array-push", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -139,7 +139,7 @@ describe("array-push", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValues({ req }),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -183,7 +183,7 @@ describe("array-push", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -231,7 +231,7 @@ describe("array-push", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         if (gqlResult.errors) {
@@ -319,7 +319,7 @@ describe("array-push", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, payIncrement },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         if (gqlResult.errors) {

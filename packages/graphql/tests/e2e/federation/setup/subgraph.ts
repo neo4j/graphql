@@ -30,6 +30,11 @@ export class TestSubgraph {
             typeDefs,
             resolvers,
             driver,
+            features: {
+                authorization: {
+                    key: "secret",
+                },
+            },
         });
     }
 

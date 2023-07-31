@@ -150,7 +150,6 @@ describe("makeAugmentedSchema", () => {
             `;
 
             const neoSchema = makeAugmentedSchema(typeDefs, {
-                validateResolvers: true,
                 features: {
                     filters: {
                         String: {
@@ -180,7 +179,6 @@ describe("makeAugmentedSchema", () => {
             `;
 
             const neoSchema = makeAugmentedSchema(typeDefs, {
-                validateResolvers: true,
                 features: {
                     filters: {
                         ID: {
@@ -210,7 +208,6 @@ describe("makeAugmentedSchema", () => {
             `;
 
             const neoSchema = makeAugmentedSchema(typeDefs, {
-                validateResolvers: true,
                 features: {
                     filters: {
                         String: {
@@ -247,7 +244,6 @@ describe("makeAugmentedSchema", () => {
             `;
 
             const neoSchema = makeAugmentedSchema(typeDefs, {
-                validateResolvers: true,
                 features: {
                     filters: {
                         String: {

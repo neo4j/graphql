@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/introspector",
-    "version": "1.0.3",
+    "version": "2.0.0-beta.0",
     "description": "Introspect a Neo4j database model/schema",
     "keywords": [
         "neo4j",
@@ -36,7 +36,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@neo4j/graphql": "^3.16.0",
+        "@neo4j/graphql": "^4.0.0-beta.0",
         "@types/jest": "29.5.3",
         "@types/node": "18.15.1",
         "@types/pluralize": "0.0.30",
@@ -50,6 +50,6 @@
         "pluralize": "^8.0.0"
     },
     "peerDependencies": {
-        "neo4j-driver": "^4.1.0 || ^5.0.0"
+        "neo4j-driver": "^5.8.0"
     }
 }

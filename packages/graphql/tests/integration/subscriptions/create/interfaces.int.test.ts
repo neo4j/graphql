@@ -24,14 +24,14 @@ import { gql } from "graphql-tag";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import Neo4j from "../../neo4j";
 
 describe("interface relationships", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
-    let subscriptionsPlugin: TestSubscriptionsMechanism;
+    let subscriptionsPlugin: TestSubscriptionsEngine;
     let typeDefs: DocumentNode;
     let session: Session;
 
@@ -74,7 +74,7 @@ describe("interface relationships", () => {
     });
 
     beforeEach(() => {
-        subscriptionsPlugin = new TestSubscriptionsMechanism();
+        subscriptionsPlugin = new TestSubscriptionsEngine();
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
@@ -188,7 +188,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 name1,
                 name2,

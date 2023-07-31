@@ -17,31 +17,28 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQL, Neo4jGraphQLConstructor } from "./classes";
+import { Neo4jGraphQLContext } from "./types/neo4j-graphql-context";
+
 import { CartesianPoint } from "./graphql/objects/CartesianPoint";
 import { Point } from "./graphql/objects/Point";
+import * as directives from "./graphql/directives";
+import * as scalars from "./graphql/scalars";
+const objects = { Point, CartesianPoint };
 
-export {
-    Neo4jGraphQL,
-    Neo4jGraphQLAuthenticationError,
-    Neo4jGraphQLConstructor,
-    Neo4jGraphQLForbiddenError,
-} from "./classes";
-export * as directives from "./graphql/directives";
-export * as scalars from "./graphql/scalars";
-export {
-    DeleteInfo,
-    DriverConfig,
-    EventMeta,
-    GraphQLOptionsArg,
-    GraphQLSortArg,
-    GraphQLWhereArg,
-    Neo4jGraphQLAuthPlugin,
-    Neo4jGraphQLSubscriptionsMechanism,
-    Node,
-    RelationField,
-    SubscriptionsEvent,
-} from "./types";
+import { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "./types";
 
-export { Neo4jGraphQLContext } from "./types/neo4j-graphql-context";
+/**
+ * Core library functionality.
+ */
+export { Neo4jGraphQL, Neo4jGraphQLConstructor, Neo4jGraphQLContext };
 
-export const objects = { Point, CartesianPoint };
+/**
+ * Library built-in GraphQL types.
+ */
+export { directives, scalars, objects };
+
+/**
+ * Allows for the implementation of custom subscriptions mechanisms.
+ */
+export { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent };

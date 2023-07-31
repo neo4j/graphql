@@ -74,7 +74,7 @@ describe("unwind-create", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, id2 },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -157,7 +157,7 @@ describe("unwind-create", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, id2, actor1Name, actor2Name },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -283,7 +283,7 @@ describe("unwind-create", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, id2, id3, id4, actor1Name, actor2Name },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -388,7 +388,7 @@ describe("unwind-create", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, id2, actor1Name, actor2Name },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -502,7 +502,7 @@ describe("unwind-create", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, id2, actorName, modelerName },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -661,7 +661,7 @@ describe("unwind-create", () => {
                     actor2Nickname,
                     actor2Pay,
                 },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -765,7 +765,7 @@ describe("unwind-create", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, movie2Title, actor2Name },
             });
 

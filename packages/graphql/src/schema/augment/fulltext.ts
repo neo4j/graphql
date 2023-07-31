@@ -25,12 +25,6 @@ import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
 import { upperFirst } from "../../utils/upper-first";
 import { fulltextResolver } from "../resolvers/query/fulltext";
 
-export const fulltextArgDeprecationMessage =
-    "This argument has been deprecated and will be removed in future versions of the library. " +
-    "Please use the top-level query that corresponds to the index you wish to query instead. " +
-    "More information about the changes to @fulltext can be found here: " +
-    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.";
-
 export function augmentFulltextSchema(
     node: Node,
     composer: SchemaComposer,

@@ -270,11 +270,11 @@ describe("array-push", () => {
 
             await session.run(cypher, { movieTitle });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-            });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: update,
+            contextValue: neo4j.getContextValues(),
+        });
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -352,12 +352,12 @@ describe("array-push", () => {
 
             await session.run(cypher, { movieTitle });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                variableValues: { inputValue },
-            });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: update,
+            contextValue: neo4j.getContextValues(),
+            variableValues: { inputValue },
+        });
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -433,12 +433,12 @@ describe("array-push", () => {
 
             await session.run(cypher, { movieTitle });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-                variableValues: { inputValue },
-            });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: update,
+            contextValue: neo4j.getContextValues(),
+            variableValues: { inputValue },
+        });
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -490,7 +490,7 @@ describe("array-push", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         if (gqlResult.errors) {
@@ -565,7 +565,7 @@ describe("array-push", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { value: [1, 2, 3, 4], id },
         });
 
@@ -646,7 +646,7 @@ describe("array-push", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, payIncrement },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -733,7 +733,7 @@ describe("array-push", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, location: [point] },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();

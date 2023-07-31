@@ -21,7 +21,7 @@ import type { ExecuteResult } from "../../utils/execute";
 import { serializeNeo4jValue } from "../../utils/neo4j-serializers";
 import type {
     EventMeta,
-    Neo4jGraphQLSubscriptionsMechanism,
+    Neo4jGraphQLSubscriptionsEngine,
     NodeSubscriptionMeta,
     RelationshipSubscriptionMeta,
     RelationshipSubscriptionMetaLabelsParameters,
@@ -32,7 +32,7 @@ import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSch
 
 export function publishEventsToSubscriptionMechanism(
     executeResult: ExecuteResult,
-    plugin: Neo4jGraphQLSubscriptionsMechanism | undefined,
+    plugin: Neo4jGraphQLSubscriptionsEngine | undefined,
     schemaModel: Neo4jGraphQLSchemaModel
 ): void {
     if (plugin) {
