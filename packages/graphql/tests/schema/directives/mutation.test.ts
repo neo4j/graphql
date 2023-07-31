@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import type { GraphQLFieldMap } from "graphql";
+import { GraphQLError, GraphQLFieldMap } from "graphql";
 
 describe("@mutation directive", () => {
     describe("on OBJECT", () => {
@@ -400,9 +400,14 @@ describe("@mutation directive", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
             await expect(async () => {
                 await neoSchema.getSchema();
-            }).rejects.toThrowErrorMatchingInlineSnapshot(
-                `"@mutation directive already defined at the schema location"`
-            );
+            }).rejects.toIncludeSameMembers([
+                new GraphQLError(
+                    "Invalid directive usage: Directive @mutation can only be used in one location: either schema or type."
+                ),
+            ]);
+            // .toThrowErrorMatchingInlineSnapshot(
+            //     `"@mutation directive already defined at the schema location"`
+            // );
         });
 
         test("should not throw an Error when is mixed with @query", async () => {

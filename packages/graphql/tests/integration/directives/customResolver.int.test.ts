@@ -2484,6 +2484,7 @@ describe("Related Fields", () => {
         });
     });
 
+    // TODO: after validate-document change
     test("should not throw an error for invalid type defs when startupValidation.typeDefs false", async () => {
         const typeDefs = gql`
             type ${Address} {

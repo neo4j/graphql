@@ -18,6 +18,7 @@
  */
 
 import gql from "graphql-tag";
+import { getError, NoErrorThrownError } from "../../../tests/utils/get-error";
 import validateDocument from "./validate-document";
 
 describe("validateDuplicateRelationshipFields", () => {
@@ -36,9 +37,18 @@ describe("validateDuplicateRelationshipFields", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: {} })).toThrow(
-            "Multiple relationship fields with the same type and direction may not have the same relationship type."
+        const errors = getError(() => validateDocument({ document: doc, features: {} }));
+        expect(errors).toHaveLength(1);
+        expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+        expect(errors[0]).toHaveProperty(
+            "message",
+            "@relationship invalid. Multiple fields of the same type cannot have a relationship with the same direction and type combination."
         );
+        expect(errors[0]).toHaveProperty("path", ["Team", "player2", "@relationship"]);
+
+        // expect(() => validateDocument({ document: doc, features: {} })).toThrow(
+        //     "Multiple relationship fields with the same type and direction may not have the same relationship type."
+        // );
     });
 
     test("should not throw an error if multiple relationship fields of different types have the same relationship type.", () => {

@@ -57,8 +57,8 @@ export function verifyFulltext({
         return false;
     });
     indexesValue.forEach((index) => {
-        const indexName = index.indexName;
-        const names = indexesValue.filter((i) => indexName === i.indexName);
+        const indexName = index.indexName || index.name;
+        const names = indexesValue.filter((i) => indexName === (i.indexName || i.name));
         if (names.length > 1) {
             throw new DocumentValidationError(`@fulltext.indexes invalid value for: ${indexName}. Duplicate name.`, [
                 "indexes",

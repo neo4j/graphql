@@ -63,18 +63,21 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                 return;
             }
 
+            let directiveName: string | undefined;
             let directiveDefinition: Maybe<GraphQLDirective>;
             if (oneOfAuthorizationDirectives) {
                 directiveDefinition = getSchemaFromDocument().getDirective(directiveNode.name.value);
+                directiveName = oneOfAuthorizationDirectives;
             } else {
                 directiveDefinition = context.getSchema()?.getDirective(directiveNode.name.value);
+                directiveName = directiveNode.name.value;
             }
 
             if (!directiveDefinition) {
                 // Do not report, delegate this report to KnownDirectivesRule
                 return;
             }
-            const pathToHere = [...getPathToNode(path, ancenstors)[0], `@${directiveNode.name.value}`];
+            const pathToHere = [...getPathToNode(path, ancenstors)[0], `@${directiveName}`];
             directiveNode.arguments?.forEach((argument) => {
                 const argumentDefinition = findArgumentDefinitionNodeByName(
                     (directiveDefinition as GraphQLDirective).args,
@@ -87,11 +90,11 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                 if (!isValid) {
                     const errorOpts = {
                         nodes: [argument, directiveNode],
-                        ...(oneOfAuthorizationDirectives && {
-                            extensions: {
-                                exception: { code: VALIDATION_ERROR_CODES[oneOfAuthorizationDirectives.toUpperCase()] },
-                            },
-                        }),
+
+                        extensions: {
+                            exception: { code: VALIDATION_ERROR_CODES[(directiveName as string).toUpperCase()] },
+                        },
+
                         path: [...pathToHere, argument.name.value, ...errorPath],
                         source: undefined,
                         positions: undefined,

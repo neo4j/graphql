@@ -1888,6 +1888,41 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "archivedPosts", "@relationship"]);
             });
 
+            test("@relationship duplicate [type, direction, fieldType] combination on interface", () => {
+                const interfaceDoc = gql`
+                    interface Site {
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceDoc}
+                    type SomeSite implements Site {
+                        name: String
+                        posts: [Post!]!
+                        archivedPosts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@relationship invalid. Multiple fields of the same type cannot have a relationship with the same direction and type combination."
+                );
+                expect(errors[0]).toHaveProperty("path", ["SomeSite", "archivedPosts", "@relationship"]);
+            });
+
             test("@relationship no relationshipProperties interface found", () => {
                 const doc = gql`
                     type User {
@@ -2007,6 +2042,61 @@ describe("validation 2.0", () => {
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@relationship correct usage with interface", () => {
+                const interfaceDoc = gql`
+                    interface Site {
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceDoc}
+                    type SomeSite implements Site {
+                        name: String
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@relationship correct usage when different type", () => {
+                const doc = gql`
+                    type SomeSite {
+                        name: String
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                    type OtherSite {
+                        name: String
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects } });
+                try {
+                    executeValidate();
+                } catch (err) {
+                    console.error(err);
+                }
                 expect(executeValidate).not.toThrow();
             });
         });

@@ -42,7 +42,7 @@ describe("@id directive", () => {
 
         const typeDefs = `
             type Movie {
-              id: ID! @id
+              id: ID! @id(global: true)
               name: String
             }
         `;
