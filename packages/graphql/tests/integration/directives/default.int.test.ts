@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLError } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
@@ -47,9 +48,12 @@ describe("@default directive", () => {
                 typeDefs,
             });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow(
-                "@default directive can only be used on primitive type fields"
-            );
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                new GraphQLError("@default is not supported by Spatial types at this time."),
+            ]);
+            // toThrow(
+            //     "@default directive can only be used on primitive type fields"
+            // );
         });
 
         test("with an argument with a type which doesn't match the field should throw an error", async () => {
@@ -63,9 +67,9 @@ describe("@default directive", () => {
                 typeDefs,
             });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow(
-                "Default value for User.name does not have matching type String"
-            );
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                new GraphQLError("@default.value on String fields must be of type String"),
+            ]);
         });
 
         test("on a DateTime with an invalid value should throw an error", async () => {
@@ -79,9 +83,9 @@ describe("@default directive", () => {
                 typeDefs,
             });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow(
-                "Default value for User.verifiedAt is not a valid DateTime"
-            );
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                new GraphQLError("@default.value is not a valid DateTime"),
+            ]);
         });
 
         test("on primitive field should not throw an error", async () => {
@@ -119,7 +123,9 @@ describe("@default directive", () => {
                 typeDefs,
             });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow('Enum "Location" cannot represent value: "DIFFERENT"');
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                new GraphQLError("@default.value on Location fields must be of type Location"),
+            ]);
         });
 
         test("on enum field with incorrect type should throw an error", async () => {
@@ -140,7 +146,9 @@ describe("@default directive", () => {
                 typeDefs,
             });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow("@default value on enum fields must be an enum value");
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                new GraphQLError("@default.value on Location fields must be of type Location"),
+            ]);
         });
 
         test("on enum field should not throw an error", async () => {

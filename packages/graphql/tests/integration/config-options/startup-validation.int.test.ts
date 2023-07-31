@@ -39,8 +39,6 @@ describe("Startup Validation", () => {
         ),
     ];
     const missingCustomResolverError = "Custom resolver for fullName has not been provided";
-    const duplicateRelationshipFieldsError =
-        "Multiple relationship fields with the same type and direction may not have the same relationship type.";
 
     const customResolverTypeDefs = `
         type User {
@@ -208,7 +206,11 @@ describe("Startup Validation", () => {
             validate: true,
         });
 
-        await expect(neoSchema.getSchema()).rejects.toThrow(duplicateRelationshipFieldsError);
+        await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+            new GraphQLError(
+                "@relationship invalid. Multiple fields of the same type cannot have a relationship with the same direction and type combination."
+            ),
+        ]);
     });
 
     test("should not throw an error for duplicate relationship fields validate is false", async () => {

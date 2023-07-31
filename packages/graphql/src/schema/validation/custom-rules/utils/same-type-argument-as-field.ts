@@ -18,7 +18,7 @@
  */
 import type { EnumTypeDefinitionNode, ArgumentNode, FieldDefinitionNode, ValueNode } from "graphql";
 import { Kind } from "graphql";
-import { fromValueKind, getInnerTypeName } from "./utils";
+import { fromValueKind, getInnerTypeName, isArrayType } from "./utils";
 import { isSpatial, isTemporal } from "../../../../constants";
 import { DocumentValidationError } from "./document-validation-error";
 
@@ -33,10 +33,9 @@ export function sameTypeArgumentAsField({
     argument: ArgumentNode;
     enums: EnumTypeDefinitionNode[];
 }) {
-    const isArray = traversedDef.type.kind === Kind.LIST_TYPE;
     const expectedType = getInnerTypeName(traversedDef.type);
 
-    if (isArray) {
+    if (isArrayType(traversedDef)) {
         if (argument.value.kind !== Kind.LIST) {
             throw new DocumentValidationError(
                 `${directiveName}.${argument.name.value} on ${expectedType} list fields must be a list of ${expectedType} values`,

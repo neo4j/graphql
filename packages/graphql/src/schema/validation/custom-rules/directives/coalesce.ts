@@ -25,7 +25,7 @@ import type {
 } from "graphql";
 import { Kind } from "graphql";
 import { sameTypeArgumentAsField } from "../utils/same-type-argument-as-field";
-import { getInnerTypeName } from "../utils/utils";
+import { getInnerTypeName, isArrayType } from "../utils/utils";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES, isSpatial, isTemporal } from "../../../../constants";
 import { DocumentValidationError } from "../utils/document-validation-error";
 
@@ -41,7 +41,6 @@ export function verifyCoalesce(enums?: EnumTypeDefinitionNode[]) {
             // delegate
             return;
         }
-        const isArray = traversedDef.type.kind === Kind.LIST_TYPE;
         const coalesceArg = directiveNode.arguments?.find((a) => a.name.value === "value");
         const expectedType = getInnerTypeName(traversedDef.type);
 
@@ -54,7 +53,7 @@ export function verifyCoalesce(enums?: EnumTypeDefinitionNode[]) {
             throw new Error("Missing data: Enums.");
         }
 
-        if (!isArray) {
+        if (!isArrayType(traversedDef)) {
             if (isSpatial(expectedType)) {
                 throw new DocumentValidationError(`@coalesce is not supported by Spatial types at this time.`, [
                     "value",

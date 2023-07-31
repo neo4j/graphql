@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { TypeNode, ValueNode, EnumTypeDefinitionNode, ObjectFieldNode } from "graphql";
+import type { TypeNode, ValueNode, EnumTypeDefinitionNode, ObjectFieldNode, FieldDefinitionNode } from "graphql";
 import { Kind } from "graphql";
 import * as neo4j from "neo4j-driver";
 import parseValueNode from "../../../../schema-model/parser/parse-value-node";
@@ -73,7 +73,12 @@ export function parseArgumentToInt(field: ObjectFieldNode | undefined): neo4j.In
     }
     return undefined;
 }
-
+export function isArrayType(traversedDef: FieldDefinitionNode) {
+    return (
+        traversedDef.type.kind === Kind.LIST_TYPE ||
+        (traversedDef.type.kind === Kind.NON_NULL_TYPE && traversedDef.type.type.kind === Kind.LIST_TYPE)
+    );
+}
 // TODO:
 // invalidCombinations to matrix?
 // prepare validate-document for merge

@@ -26,7 +26,7 @@ import type {
 } from "graphql";
 import { Kind } from "graphql";
 import { sameTypeArgumentAsField } from "../utils/same-type-argument-as-field";
-import { getInnerTypeName } from "../utils/utils";
+import { getInnerTypeName, isArrayType } from "../utils/utils";
 import { DocumentValidationError } from "../utils/document-validation-error";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES, isSpatial, isTemporal } from "../../../../constants";
 
@@ -44,7 +44,7 @@ export function verifyDefault(enums?: EnumTypeDefinitionNode[]) {
             // delegate
             return;
         }
-        const isArray = traversedDef.type.kind === Kind.LIST_TYPE;
+
         const defaultArg = directiveNode.arguments?.find((a) => a.name.value === "value");
         const expectedType = getInnerTypeName(traversedDef.type);
 
@@ -57,7 +57,7 @@ export function verifyDefault(enums?: EnumTypeDefinitionNode[]) {
             throw new Error("Missing data: Enums.");
         }
 
-        if (!isArray) {
+        if (!isArrayType(traversedDef)) {
             if (isSpatial(expectedType)) {
                 throw new DocumentValidationError(`@default is not supported by Spatial types at this time.`, [
                     "value",

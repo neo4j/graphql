@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLError } from "graphql";
 import gql from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
@@ -54,9 +55,14 @@ describe("Throw error if missing @relationshipProperties", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-        await expect(neoSchema.getSchema()).rejects.toThrow(
-            "The `@relationshipProperties` directive could not be found on the `ActedIn` interface"
-        );
+        await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+            new GraphQLError(
+                "@relationship.properties invalid. Properties interface ActedIn must use directive `@relationshipProperties`."
+            ),
+            new GraphQLError(
+                "@relationship.properties invalid. Properties interface ActedIn must use directive `@relationshipProperties`."
+            ),
+        ]);
     });
 
     test("should not throw error if the @relationshipProperties directive is used", async () => {
@@ -78,8 +84,6 @@ describe("Throw error if missing @relationshipProperties", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-        await expect(neoSchema.getSchema()).resolves.not.toThrow(
-            "The `@relationshipProperties` directive could not be found on the `ActedIn` interface"
-        );
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
 });
