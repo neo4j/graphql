@@ -20,8 +20,6 @@
 import { QueryASTNode } from "../QueryASTNode";
 import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
 import type Cypher from "@neo4j/cypher-builder";
-import type { CypherTreeSelection } from "../../../cypher-tree/Selection";
-import { CypherTreeFilter } from "../../../cypher-tree/Filter";
 
 export type NumericalWhereOperator = "GT" | "GTE" | "LT" | "LTE";
 export type SpatialWhereOperator = "DISTANCE";
@@ -55,11 +53,4 @@ export abstract class Filter extends QueryASTNode {
     }
 
     public abstract getPredicate(variable: Cypher.Variable): Cypher.Predicate | undefined;
-
-    public compileToCypher({ tree, target }: { tree: CypherTreeSelection; target: Cypher.Variable }): void {
-        const predicate = this.getPredicate(target);
-        if (predicate) {
-            tree.addFilter(new CypherTreeFilter(predicate));
-        }
-    }
 }

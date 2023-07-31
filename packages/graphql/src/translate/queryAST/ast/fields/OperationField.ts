@@ -17,11 +17,9 @@
  * limitations under the License.
  */
 
-import { CypherTreeProjectionField } from "../../../cypher-tree/ProjectionField";
-import type { CypherTreeSelection } from "../../../cypher-tree/Selection";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ConnectionReadOperation } from "../operations/ConnectionReadOperation";
-import { ReadOperation } from "../operations/ReadOperation";
+import type { ReadOperation } from "../operations/ReadOperation";
 import { Field } from "./Field";
 import Cypher from "@neo4j/cypher-builder";
 
@@ -37,26 +35,6 @@ export class OperationField extends Field {
 
     public get children(): QueryASTNode[] {
         return [this.operation];
-    }
-
-    public compileToCypher({ tree, target }: { tree: CypherTreeSelection; target: Cypher.Variable }): void {
-        // Tell operation about the pattern
-        const nestedTree = this.operation.getCypherTree({
-            parentNode: target,
-            returnVariable: this.projectionVariable,
-        });
-
-        // Hack for now
-        if (this.operation instanceof ReadOperation) {
-            nestedTree.projection.options.collect = true;
-        }
-
-        tree.addNestedSelection(nestedTree);
-
-        const projectionField = new CypherTreeProjectionField(this.alias, this.projectionVariable);
-
-        this.addProjectionToTree(tree, projectionField);
-        // tree.projection.addField(projectionField);
     }
 
     public getProjectionField(): Record<string, Cypher.Expr> {

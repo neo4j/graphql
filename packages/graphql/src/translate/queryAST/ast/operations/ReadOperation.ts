@@ -30,7 +30,6 @@ import type { PropertySort } from "../sort/PropertySort";
 import type { QueryASTNode } from "../QueryASTNode";
 import { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
-import { CypherTreeSelection } from "../../../cypher-tree/Selection";
 
 export class ReadOperation extends Operation {
     public readonly entity: ConcreteEntity | Relationship; // TODO: normal entities
@@ -47,48 +46,6 @@ export class ReadOperation extends Operation {
         super();
         this.entity = entity;
         this.directed = directed;
-    }
-
-    public getCypherTree({
-        parentNode,
-        returnVariable,
-    }: {
-        parentNode?: Cypher.Variable;
-        returnVariable: Cypher.Variable;
-    }): CypherTreeSelection {
-        let pattern: Cypher.Pattern;
-        let targetNode: Cypher.Node;
-        if (this.entity instanceof Relationship) {
-            if (!parentNode) throw new Error("No parent node found!");
-            const relVar = createRelationshipFromEntity(this.entity);
-            targetNode = createNodeFromEntity(this.entity.target as ConcreteEntity);
-            const relDirection = getRelationshipDirection(this.entity, this.directed);
-
-            pattern = new Cypher.Pattern(parentNode as Cypher.Node)
-                .withoutLabels()
-                .related(relVar)
-                .withDirection(relDirection)
-                .to(targetNode);
-        } else {
-            targetNode = createNodeFromEntity(this.entity, this.nodeAlias);
-            pattern = new Cypher.Pattern(targetNode);
-        }
-
-        const readSelection = new CypherTreeSelection({
-            pattern,
-            target: targetNode,
-            alias: returnVariable,
-        });
-
-        this.fields.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
-        this.filters.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
-        this.sortFields.forEach((f) => f.compileToCypher({ tree: readSelection, target: targetNode }));
-
-        this.pagination?.compileToCypher({ tree: readSelection, target: targetNode });
-
-        // const projectionFields = this.fields.map((f) => f.getCypherTree(node));
-
-        return readSelection;
     }
 
     public get children(): QueryASTNode[] {

@@ -18,8 +18,6 @@
  */
 
 import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
-import { CypherTreeProjectionField } from "../../../../cypher-tree/ProjectionField";
-import type { CypherTreeSelection } from "../../../../cypher-tree/Selection";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Field } from "../Field";
 import type Cypher from "@neo4j/cypher-builder";
@@ -34,18 +32,6 @@ export class AttributeField extends Field {
 
     public get children(): QueryASTNode[] {
         return [];
-    }
-
-    public compileToCypher({ tree, target }: { tree: CypherTreeSelection; target: Cypher.Variable }): void {
-        const targetExpr = this.getCypherExpr(target);
-
-        // if (this.alias !== this.attribute.name) {
-        const projection = new CypherTreeProjectionField(this.alias, targetExpr, this.attribute.name);
-        this.addProjectionToTree(tree, projection);
-        // } else {
-        //     const projection = new CypherTreeProjectionField(this.alias);
-        //     this.addProjectionToTree(tree, projection);
-        // }
     }
 
     protected getCypherExpr(target: Cypher.Variable): Cypher.Expr {

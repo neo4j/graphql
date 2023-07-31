@@ -21,9 +21,6 @@ import Cypher from "@neo4j/cypher-builder";
 import type { Integer } from "neo4j-driver";
 import { QueryASTNode } from "../QueryASTNode";
 import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
-import type { CypherTreeSelection } from "../../../cypher-tree/Selection";
-import { CypherTreeSkip } from "../../../cypher-tree/Skip";
-import { CypherTreeLimit } from "../../../cypher-tree/Limit";
 
 export type PaginationField = {
     skip: Cypher.Param<number | Integer> | undefined;
@@ -46,17 +43,6 @@ export class Pagination extends QueryASTNode {
 
     public accept(v: QueryASTVisitor): void {
         v.visitPagination(this);
-    }
-
-    public compileToCypher({ tree, target }: { tree: CypherTreeSelection; target: Cypher.Variable }): void {
-        if (this.skip) {
-            const skipParam = new Cypher.Param(this.skip);
-            tree.setSkip(new CypherTreeSkip(skipParam));
-        }
-        if (this.limit) {
-            const limitParam = new Cypher.Param(this.limit);
-            tree.setLimit(new CypherTreeLimit(limitParam));
-        }
     }
 
     public getPagination(): PaginationField | undefined {
