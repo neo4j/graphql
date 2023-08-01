@@ -20,7 +20,7 @@
 import type { ASTVisitor, DirectiveNode, ASTNode } from "graphql";
 import { Kind, GraphQLError, isTypeDefinitionNode, isTypeExtensionNode } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { invalidCombinations, isInvalidCombination } from "../../utils/invalid-directive-combinations";
+import { invalidCombinations } from "../../utils/invalid-directive-combinations";
 import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
 
@@ -123,25 +123,18 @@ export function SchemaOrTypeDirectives() {
 }
 
 function assertValidDirectives(directives: readonly DirectiveNode[]) {
-    // directives.forEach((directive) => {
-    //     if (invalidCombinations[directive.name.value]) {
-    //         directives.forEach((d) => {
-    //             if (invalidCombinations[directive.name.value]?.includes(d.name.value)) {
-    //                 throw new DocumentValidationError(
-    //                     `Invalid directive usage: Directive @${directive.name.value} cannot be used in combination with @${d.name.value}`,
-    //                     []
-    //                 );
-    //             }
-    //         });
-    //     }
-    // });
-    const res = isInvalidCombination(directives);
-    if (res) {
-        throw new DocumentValidationError(
-            `Invalid directive usage: Directive @${res[0]} cannot be used in combination with @${res[1]}`,
-            []
-        );
-    }
+    directives.forEach((directive) => {
+        if (invalidCombinations[directive.name.value]) {
+            directives.forEach((d) => {
+                if (invalidCombinations[directive.name.value]?.includes(d.name.value)) {
+                    throw new DocumentValidationError(
+                        `Invalid directive usage: Directive @${directive.name.value} cannot be used in combination with @${d.name.value}`,
+                        []
+                    );
+                }
+            });
+        }
+    });
 }
 function assertSchemaOrType({
     directives,
