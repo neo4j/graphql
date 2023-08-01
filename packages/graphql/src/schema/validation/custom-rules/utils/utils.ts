@@ -73,12 +73,10 @@ export function parseArgumentToInt(field: ObjectFieldNode | undefined): neo4j.In
     }
     return undefined;
 }
+
 export function isArrayType(traversedDef: FieldDefinitionNode) {
     return (
         traversedDef.type.kind === Kind.LIST_TYPE ||
         (traversedDef.type.kind === Kind.NON_NULL_TYPE && traversedDef.type.type.kind === Kind.LIST_TYPE)
     );
 }
-// TODO:
-// invalidCombinations to matrix?
-// prepare validate-document for merge

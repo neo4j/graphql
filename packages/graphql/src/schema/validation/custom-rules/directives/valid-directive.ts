@@ -21,16 +21,13 @@ import type {
     ASTVisitor,
     DirectiveNode,
     ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
     EnumTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import { Kind, parse, GraphQLError } from "graphql";
+import { GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import type { Neo4jGraphQLCallbacks } from "../../../../types";
-import type { IResolvers } from "@graphql-tools/utils";
-import { asArray } from "../../../../utils/utils";
 import { verifyCoalesce } from "./coalesce";
 import { verifyDefault } from "./default";
 import { verifyFulltext } from "./fulltext";
