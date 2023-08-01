@@ -17,13 +17,7 @@
  * limitations under the License.
  */
 
-import type {
-    ASTVisitor,
-    DirectiveNode,
-    ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
-} from "graphql";
+import type { ASTVisitor, DirectiveNode, ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
 import { Kind, GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
@@ -33,6 +27,15 @@ export function ValidGlobalID() {
     return function (context: SDLValidationContext): ASTVisitor {
         const typeNameToGlobalId = new Map<string, boolean>();
         const interfaceToImplementingTypes = new Map<string, string[]>();
+        const typeNameToAliasedFields = new Map<string, Set<string>>();
+        const addToAliasedFieldsMap = function (typeName: string, fieldName?: string) {
+            const x = typeNameToAliasedFields.get(typeName) || new Set<string>();
+            fieldName && x.add(fieldName);
+            typeNameToAliasedFields.set(typeName, x);
+        };
+        const getAliasedFieldsFromMap = function (typeName: string) {
+            return typeNameToAliasedFields.get(typeName);
+        };
         return {
             Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
                 const [temp, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
@@ -43,6 +46,10 @@ export function ValidGlobalID() {
                 if (!parentOfTraversedDef) {
                     console.error("No parent of last definition traversed");
                     return;
+                }
+
+                if (directiveNode.name.value === "alias") {
+                    addToAliasedFieldsMap(parentOfTraversedDef.name.value, traversedDef.name.value);
                 }
 
                 if (directiveNode.name.value !== "id") {
@@ -89,20 +96,27 @@ export function ValidGlobalID() {
             ObjectTypeDefinition: {
                 enter(objectType: ObjectTypeDefinitionNode) {
                     objectType.interfaces?.forEach((i) => {
-                        const x = interfaceToImplementingTypes.get(i.name.value) || [];
-                        interfaceToImplementingTypes.set(i.name.value, x?.concat(objectType.name.value));
+                        const implementedTypes = interfaceToImplementingTypes.get(i.name.value) || [];
+                        interfaceToImplementingTypes.set(i.name.value, implementedTypes.concat(objectType.name.value));
                     });
                 },
                 leave(objectType: ObjectTypeDefinitionNode) {
-                    const hasGlobalIDField = typeNameToGlobalId.get(objectType.name.value);
-                    const fieldNamedID = objectType.fields?.find((x) => x.name.value === "id");
+                    addToAliasedFieldsMap(objectType.name.value);
 
-                    if (!hasGlobalIDField || !fieldNamedID) {
+                    const fieldNamedID = getUnaliasedFieldNamedID(objectType);
+                    if (
+                        !fieldNamedID ||
+                        !hasGlobalIDField(objectType, typeNameToGlobalId, interfaceToImplementingTypes)
+                    ) {
                         return;
                     }
 
+                    const inheritedAliasedFields = (
+                        getInheritedTypeNames(objectType, interfaceToImplementingTypes) || []
+                    ).map(getAliasedFieldsFromMap);
+
                     const { isValid, errorMsg, errorPath } = assertValid(
-                        assertGlobalIDDoesNotClash.bind(null, fieldNamedID)
+                        assertGlobalIDDoesNotClash.bind(null, inheritedAliasedFields)
                     );
                     if (!isValid) {
                         const errorOpts = {
@@ -130,15 +144,21 @@ export function ValidGlobalID() {
 
             InterfaceTypeDefinition: {
                 leave(interfaceType: InterfaceTypeDefinitionNode) {
-                    const hasGlobalIDField = typeNameToGlobalId.get(interfaceType.name.value);
-                    const fieldNamedID = interfaceType.fields?.find((x) => x.name.value === "id");
-
-                    if (!hasGlobalIDField || !fieldNamedID) {
+                    addToAliasedFieldsMap(interfaceType.name.value);
+                    const fieldNamedID = getUnaliasedFieldNamedID(interfaceType);
+                    if (
+                        !fieldNamedID ||
+                        !hasGlobalIDField(interfaceType, typeNameToGlobalId, interfaceToImplementingTypes)
+                    ) {
                         return;
                     }
 
+                    const inheritedAliasedFields = (
+                        getInheritedTypeNames(interfaceType, interfaceToImplementingTypes) || []
+                    ).map(getAliasedFieldsFromMap);
+
                     const { isValid, errorMsg, errorPath } = assertValid(
-                        assertGlobalIDDoesNotClash.bind(null, fieldNamedID)
+                        assertGlobalIDDoesNotClash.bind(null, inheritedAliasedFields)
                     );
                     if (!isValid) {
                         const errorOpts = {
@@ -167,9 +187,57 @@ export function ValidGlobalID() {
     };
 }
 
-function assertGlobalIDDoesNotClash(fieldNamedID: FieldDefinitionNode) {
-    const hasAlias = fieldNamedID.directives?.find((x) => x.name.value === "alias");
-    if (!hasAlias) {
+function getUnaliasedFieldNamedID(mainType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode) {
+    const fieldNamedID = mainType.fields?.find((x) => x.name.value === "id");
+    if (!fieldNamedID) {
+        return;
+    }
+    const isFieldAliased = !!fieldNamedID.directives?.find((x) => x.name.value === "alias");
+    if (!isFieldAliased) {
+        return fieldNamedID;
+    }
+    return;
+}
+
+function getInheritedTypeNames(
+    mainType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    interfaceToImplementingTypes: Map<string, string[]>
+): string[] | undefined {
+    if (mainType.kind === Kind.INTERFACE_TYPE_DEFINITION) {
+        return interfaceToImplementingTypes.get(mainType.name.value);
+    }
+    if (mainType.kind === Kind.OBJECT_TYPE_DEFINITION) {
+        return mainType.interfaces?.map((i) => i.name.value);
+    }
+}
+
+function hasGlobalIDField(
+    mainType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    typeNameToGlobalId: Map<string, boolean>,
+    interfaceToImplementingTypes: Map<string, string[]>
+): boolean {
+    if (typeNameToGlobalId.get(mainType.name.value)) {
+        return true;
+    }
+    return !!getInheritedTypeNames(mainType, interfaceToImplementingTypes)?.find(
+        (typeName) => typeNameToGlobalId.get(typeName) === true
+    );
+}
+
+function assertGlobalIDDoesNotClash(aliasedFieldsFromInheritedTypes: (Set<string> | undefined)[]) {
+    let shouldDeferCheck: boolean | undefined = false;
+    let hasAlias: boolean | undefined = false;
+    for (const aliasedFields of aliasedFieldsFromInheritedTypes) {
+        if (!aliasedFields) {
+            shouldDeferCheck = true;
+        } else {
+            if (aliasedFields.has("id")) {
+                hasAlias = true;
+                return;
+            }
+        }
+    }
+    if (hasAlias === false && shouldDeferCheck === false) {
         throw new DocumentValidationError(
             'Invalid global id field: Types decorated with an `@id` directive with the global argument set to `true` cannot have a field named "id". Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field.',
             ["id"]
@@ -188,16 +256,7 @@ function assertValidGlobalID({
     typeNameToGlobalId: Map<string, boolean>;
     interfaceToImplementingTypes: Map<string, string[]>;
 }) {
-    const globalNodeStatus = typeNameToGlobalId.get(typeDef.name.value);
-    const globalNodeStatusFromInterface = typeDef.interfaces?.map((i) => typeNameToGlobalId.get(i.name.value));
-    const globalNodeStatusFromType = interfaceToImplementingTypes
-        .get(typeDef.name.value)
-        ?.map((typeName) => typeNameToGlobalId.get(typeName));
-    if (
-        globalNodeStatus === true ||
-        globalNodeStatusFromInterface?.some((s) => s === true) ||
-        globalNodeStatusFromType?.some((s) => s === true)
-    ) {
+    if (hasGlobalIDField(typeDef, typeNameToGlobalId, interfaceToImplementingTypes)) {
         throw new DocumentValidationError(
             "Invalid directive usage: Only one field may be decorated with an '@id' directive with the global argument set to `true`.",
             ["@id", "global"]

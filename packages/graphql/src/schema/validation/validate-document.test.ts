@@ -2816,6 +2816,35 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["Movie", "rottenid", "@id", "global"]);
         });
 
+        test("field named id already exists and not aliased on interface - multiple interfaces", () => {
+            const doc = gql`
+                interface ScorableInterface {
+                    id: ID!
+                }
+
+                interface MovieInterface implements ScorableInterface {
+                    id: ID!
+                }
+
+                type Movie implements MovieInterface & ScorableInterface {
+                    rottenid: ID! @id(global: true)
+                    id: ID!
+                    title: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                'Invalid global id field: Types decorated with an `@id` directive with the global argument set to `true` cannot have a field named "id". Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field.'
+            );
+            expect(errors[0]).toHaveProperty("path", ["Movie", "id"]);
+        });
+
         test("only one field can be global @id with interface implementing interface reverse order", () => {
             const doc = gql`
                 interface MovieInterface implements ScorableInterface {
@@ -2865,6 +2894,29 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["Movie", "id"]);
         });
 
+        test("field named id already exists and not aliased on interface", () => {
+            const doc = gql`
+                type Movie implements MovieInterface {
+                    rottenid: ID! @id(global: true)
+                    id: ID!
+                    title: String
+                }
+                interface MovieInterface {
+                    id: ID!
+                }
+            `;
+            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                'Invalid global id field: Types decorated with an `@id` directive with the global argument set to `true` cannot have a field named "id". Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field.'
+            );
+            expect(errors[0]).toHaveProperty("path", ["MovieInterface", "id"]);
+        });
+
         test("global @id must be unique", () => {
             const doc = gql`
                 type Movie {
@@ -2885,7 +2937,6 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["Movie", "imdbid", "@id", "unique"]);
         });
 
-        // TODO - is this intended?
         test("global @id must be unique even if same field", () => {
             const doc = gql`
                 type Movie {
@@ -2921,6 +2972,34 @@ describe("validation 2.0", () => {
                 }
             `;
 
+            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("field named id already exists but aliased", () => {
+            const doc = gql`
+                type Movie {
+                    id: ID! @alias(property: "somethingElse")
+                    imdbd: ID @id(global: true)
+                    title: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("field named id already exists but aliased on interface", () => {
+            const doc = gql`
+                type Movie implements MovieInterface {
+                    rottenid: ID! @id(global: true)
+                    id: ID!
+                    title: String
+                }
+                interface MovieInterface {
+                    id: ID! @alias(property: "somethingElse")
+                }
+            `;
             const executeValidate = () => validateDocument({ document: doc, features: {} });
             expect(executeValidate).not.toThrow();
         });
