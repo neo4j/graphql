@@ -41,14 +41,12 @@ import { PointInput } from "../../graphql/input-objects/PointInput";
 import { CartesianPointInput } from "../../graphql/input-objects/CartesianPointInput";
 import { PointDistance } from "../../graphql/input-objects/PointDistance";
 import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPointDistance";
-import { RESERVED_TYPE_NAMES } from "../../constants";
 import { isRootType } from "../../utils/is-root-type";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import type { Neo4jFeaturesSettings, Neo4jGraphQLCallbacks } from "../../types";
 import { validateSDL } from "./validate-sdl";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
-import type { IResolvers } from "@graphql-tools/utils";
 import {
     DirectiveCombinationValid,
     SchemaOrTypeDirectives,
@@ -65,21 +63,6 @@ import { ValidRelationshipProperties } from "./custom-rules/features/valid-relat
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
         .filter((definition) => {
-            // if (
-            //     definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
-            //     definition.kind === Kind.SCALAR_TYPE_DEFINITION ||
-            //     definition.kind === Kind.INTERFACE_TYPE_DEFINITION ||
-            //     definition.kind === Kind.UNION_TYPE_DEFINITION ||
-            //     definition.kind === Kind.ENUM_TYPE_DEFINITION ||
-            //     definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION
-            // ) {
-            //     RESERVED_TYPE_NAMES.forEach((reservedName) => {
-            //         if (reservedName.regex.test(definition.name.value)) {
-            //             throw new Error(reservedName.error);
-            //         }
-            //     });
-            // }
-
             if (definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
                 if (!isRootType(definition)) {
                     return true;
