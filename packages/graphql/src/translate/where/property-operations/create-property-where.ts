@@ -42,6 +42,7 @@ export function createPropertyWhere({
     targetElement,
     context,
     useExistExpr = true,
+    checkParameterExistence,
 }: {
     key: string;
     value: any;
@@ -49,6 +50,7 @@ export function createPropertyWhere({
     targetElement: Cypher.Variable;
     context: Context;
     useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     const match = whereRegEx.exec(key);
     if (!match) {
@@ -157,24 +159,26 @@ export function createPropertyWhere({
         (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
     );
 
+    const param =
+        value instanceof Cypher.Param || value instanceof Cypher.Property || value instanceof Cypher.Function
+            ? value
+            : new Cypher.Param(value);
+
     const comparisonOp = createComparisonOperation({
         propertyRefOrCoalesce: propertyRef,
         // When dealing with authorization input, references to JWT will already be a param
         // TODO: Pre-parse all where input in a manner similar to populateWhereParams, which substitutes all values for params
-        param:
-            value instanceof Cypher.Param || value instanceof Cypher.Property || value instanceof Cypher.Function
-                ? value
-                : new Cypher.Param(value),
+        param,
         operator,
         durationField,
         pointField,
         // Casting because this is definitely assigned in the wrapper
         neo4jDatabaseInfo: context.neo4jDatabaseInfo as Neo4jDatabaseInfo,
     });
-    if (isNot) {
-        return {
-            predicate: Cypher.not(comparisonOp),
-        };
-    }
-    return { predicate: comparisonOp };
+
+    const comparison = isNot ? Cypher.not(comparisonOp) : comparisonOp;
+
+    const predicate = checkParameterExistence ? Cypher.and(Cypher.isNotNull(param), comparison) : comparison;
+
+    return { predicate };
 }
