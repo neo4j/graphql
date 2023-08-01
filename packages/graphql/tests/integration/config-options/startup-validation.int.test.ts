@@ -26,7 +26,6 @@ describe("Startup Validation", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
-    // const invalidTypeDefsError = 'Type "Point" already exists in the schema.';
     const typePointAlreadyExistsErrors = [
         new GraphQLError(
             'Type "Point" already exists in the schema. It cannot also be defined in this type definition.'
@@ -130,7 +129,6 @@ describe("Startup Validation", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers(typePointAlreadyExistsErrors);
-        // .toThrow(invalidTypeDefsError);
     });
 
     test("should not throw an error for invalid type defs when validate is false", async () => {
@@ -151,7 +149,6 @@ describe("Startup Validation", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers(typePointAlreadyExistsErrors);
-        // .toThrow(invalidTypeDefsError);
     });
 
     describe("@customResolver", () => {

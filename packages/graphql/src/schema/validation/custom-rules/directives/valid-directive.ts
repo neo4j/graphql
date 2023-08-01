@@ -55,8 +55,7 @@ function getValidationFunction(
         unions: UnionTypeDefinitionNode[];
         objects: ObjectTypeDefinitionNode[];
     },
-    callbacks?: Neo4jGraphQLCallbacks,
-    validateResolvers = true
+    callbacks?: Neo4jGraphQLCallbacks
 ): VALIDATION_FN | undefined {
     switch (directiveName) {
         case "coalesce":
@@ -88,8 +87,7 @@ export function DirectiveIsValid(
         unions: UnionTypeDefinitionNode[];
         objects: ObjectTypeDefinitionNode[];
     },
-    callbacks?: Neo4jGraphQLCallbacks,
-    validateResolvers = true
+    callbacks?: Neo4jGraphQLCallbacks
 ) {
     return function (context: SDLValidationContext): ASTVisitor {
         const relationshipTypeToDirectionAndFieldTypeMap = new Map<string, [string, string][]>();
@@ -152,87 +150,3 @@ export function DirectiveIsValid(
         };
     };
 }
-
-// TODO: WIP
-function verifyCustomResolver(
-    fulltextDirective: DirectiveNode,
-    traversedDefinition: FieldDefinitionNode,
-    errorCallback: (err: Error) => void,
-    parentDef?: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    userCustomResolvers?: IResolvers | IResolvers[],
-    extra?: {
-        enums: EnumTypeDefinitionNode[];
-        interfaces: InterfaceTypeDefinitionNode[];
-        unions: UnionTypeDefinitionNode[];
-        objects: ObjectTypeDefinitionNode[];
-    },
-    validateResolvers = true
-) {
-    if (!parentDef) {
-        // delegate
-        return;
-    }
-    // TODO: maybe memoize?
-    const customResolvers = asArray(userCustomResolvers).find((r) => !!r[parentDef.name.value])?.[
-        parentDef.name.value
-    ] as IResolvers;
-    console.log("parent:", parentDef, "traversed", traversedDefinition);
-    try {
-        if (
-            validateResolvers &&
-            parentDef.kind !== Kind.INTERFACE_TYPE_DEFINITION &&
-            !customResolvers?.[traversedDefinition.name.value]
-        ) {
-            throw new Error(
-                `@customResolver needs a resolver for field \`${traversedDefinition.name.value}\` to be provided.`
-            );
-        }
-
-        const directiveRequiresArgument = fulltextDirective?.arguments?.find((arg) => arg.name.value === "requires");
-
-        if (!directiveRequiresArgument) {
-            // delegate to DirectiveArgumentOfCorrectType
-            return;
-        }
-
-        if (directiveRequiresArgument?.value.kind !== Kind.STRING) {
-            throw new Error("@customResolver.requires is invalid. Expected a String.");
-        }
-
-        if (!extra) {
-            throw new Error("NEED EXTRA!");
-        }
-
-        const selectionSetDocument = parse(`{ ${directiveRequiresArgument.value.value} }`);
-        // TODO: need a schema for this..
-        // validateSelectionSet(schema, parentDef, selectionSetDocument);
-    } catch (err) {
-        errorCallback(err as Error);
-    }
-}
-/*
-function validateSelectionSet(
-    baseSchema: GraphQLSchema,
-    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    selectionSetDocument: DocumentNode
-) {
-
-    const validationSchema = mergeSchemas({
-        schemas: [baseSchema],
-        typeDefs: `
-                schema {
-                    query: ${object.name.value}
-                }
-            `,
-        assumeValid: true,
-    });
-    const errors = validate(validationSchema, selectionSetDocument);
-    if (errors.length) {
-        throw new Error(
-            `@customResolver::: Invalid selection set provided to @customResolver on ${
-                object.name.value
-            }:\n${errors.join("\n")}`
-        );
-    }
-}
-*/

@@ -34,9 +34,6 @@ export function verifyPopulatedBy(callbacks?: Neo4jGraphQLCallbacks) {
                 "callback",
             ]);
         }
-        console.log("callbacks", callbacks);
-        console.log("for name", callbackName);
-        console.log("type is ", typeof (callbacks || {})[callbackName]);
         if (typeof (callbacks || {})[callbackName] !== "function") {
             throw new DocumentValidationError(`@populatedBy.callback \`${callbackName}\` must be of type Function.`, [
                 "callback",

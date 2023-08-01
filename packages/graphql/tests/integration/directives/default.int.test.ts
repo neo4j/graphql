@@ -51,9 +51,6 @@ describe("@default directive", () => {
             await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
                 new GraphQLError("@default is not supported by Spatial types at this time."),
             ]);
-            // toThrow(
-            //     "@default directive can only be used on primitive type fields"
-            // );
         });
 
         test("with an argument with a type which doesn't match the field should throw an error", async () => {

@@ -21,7 +21,7 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { GraphQLError, lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { getError, getErrorAsync, NoErrorThrownError } from "../../utils/get-error";
+import { getErrorAsync, NoErrorThrownError } from "../../utils/get-error";
 
 describe("@populatedBy tests", () => {
     describe("Node property tests", () => {
@@ -62,10 +62,6 @@ describe("@populatedBy tests", () => {
                         "Invalid directive usage: Directive @populatedBy cannot be used in combination with @default"
                     ),
                 ]);
-
-                // await expect(neoSchema.getSchema()).rejects.toThrow(
-                //     "Directive @populatedBy cannot be used in combination with @default"
-                // );
             });
 
             test("PopulatedBy and id directives", async () => {
@@ -102,10 +98,6 @@ describe("@populatedBy tests", () => {
                         "Invalid directive usage: Directive @populatedBy cannot be used in combination with @id"
                     ),
                 ]);
-
-                // await expect(neoSchema.getSchema()).rejects.toThrow(
-                //     "Directive @populatedBy cannot be used in combination with @id"
-                // );
             });
         });
 
@@ -584,10 +576,6 @@ describe("@populatedBy tests", () => {
                         "Invalid directive usage: Directive @populatedBy cannot be used in combination with @default"
                     ),
                 ]);
-
-                // await expect(neoSchema.getSchema()).rejects.toThrow(
-                //     "Directive @populatedBy cannot be used in combination with @default"
-                // );
             });
 
             test("PopulatedBy and id directives", async () => {
@@ -633,10 +621,6 @@ describe("@populatedBy tests", () => {
                         "Invalid directive usage: Directive @populatedBy cannot be used in combination with @id"
                     ),
                 ]);
-
-                // await expect(neoSchema.getSchema()).rejects.toThrow(
-                //     "Directive @populatedBy cannot be used in combination with @id"
-                // );
             });
         });
 
@@ -679,10 +663,6 @@ describe("@populatedBy tests", () => {
             await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
                 new GraphQLError("@populatedBy.callback needs to be provided in features option."),
             ]);
-
-            // await expect(neoSchema.getSchema()).rejects.toThrow(
-            //     "PopulatedBy callback 'callback4' must be of type function"
-            // );
         });
         test("PopulatedBy - String", async () => {
             const callback1 = () => "random-string";

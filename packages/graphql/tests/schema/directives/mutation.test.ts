@@ -19,7 +19,8 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { GraphQLError, GraphQLFieldMap } from "graphql";
+import type { GraphQLFieldMap } from "graphql";
+import { GraphQLError } from "graphql";
 
 describe("@mutation directive", () => {
     describe("on OBJECT", () => {
@@ -405,9 +406,6 @@ describe("@mutation directive", () => {
                     "Invalid directive usage: Directive @mutation can only be used in one location: either schema or type."
                 ),
             ]);
-            // .toThrowErrorMatchingInlineSnapshot(
-            //     `"@mutation directive already defined at the schema location"`
-            // );
         });
 
         test("should not throw an Error when is mixed with @query", async () => {

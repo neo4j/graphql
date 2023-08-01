@@ -330,7 +330,6 @@ describe("@query directive", () => {
                     "Invalid directive usage: Directive @query can only be used in one location: either schema or type."
                 ),
             ]);
-            // .toThrowErrorMatchingInlineSnapshot(`"@query directive already defined at the schema location"`);
         });
     });
 });

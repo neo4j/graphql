@@ -320,15 +320,12 @@ class Neo4jGraphQL {
                     unionTypes: unions,
                     objectTypes: objects,
                 } = getDefinitionNodes(initialDocument);
-                const userCustomResolvers = asArray(this.resolvers);
 
                 validateDocument({
                     document: initialDocument,
                     features: this.features,
                     extra: { enums, interfaces, unions, objects },
                     callbacks: this.features?.populatedBy?.callbacks,
-                    validateResolvers: this.validate,
-                    userCustomResolvers,
                 });
             }
 
