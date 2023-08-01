@@ -128,6 +128,7 @@ export function createPropertyWhere({
                 value,
                 isNot,
                 useExistExpr,
+                checkParameterExistence,
             });
         }
 
@@ -140,6 +141,7 @@ export function createPropertyWhere({
                 parentNode: targetElement as Cypher.Node,
                 operator,
                 useExistExpr,
+                checkParameterExistence,
             });
         }
 

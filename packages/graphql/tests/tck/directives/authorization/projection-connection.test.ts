@@ -87,7 +87,7 @@ describe("Cypher Auth Projection On Connections", () => {
                 OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:\`User\`)
                 WITH *, count(this2) AS creatorCount
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this2.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH { node: { content: this1.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -145,7 +145,7 @@ describe("Cypher Auth Projection On Connections", () => {
                 OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:\`User\`)
                 WITH *, count(this2) AS creatorCount
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this2.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this1
                     MATCH (this1:\`Post\`)<-[this3:HAS_POST]-(this4:\`User\`)
