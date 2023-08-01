@@ -235,20 +235,15 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
     };
 }
 
-function getBaseSchema({
+function runValidationRulesOnFilteredDocument({
+    schema,
     document,
-    features,
-    additionalDirectives = [],
-    additionalTypes = [],
     extra,
     callbacks,
-    validateResolvers = true,
-    userCustomResolvers,
+    validateResolvers,
 }: {
+    schema: GraphQLSchema;
     document: DocumentNode;
-    features: Neo4jFeaturesSettings | undefined;
-    additionalDirectives: Array<GraphQLDirective>;
-    additionalTypes: Array<GraphQLNamedType>;
     extra?: {
         enums: EnumTypeDefinitionNode[];
         interfaces: InterfaceTypeDefinitionNode[];
@@ -257,29 +252,10 @@ function getBaseSchema({
     };
     callbacks?: Neo4jGraphQLCallbacks;
     validateResolvers?: boolean;
-    userCustomResolvers?: IResolvers | IResolvers[];
-}): GraphQLSchema {
-    const doc = filterDocument(document, features);
-
-    const schemaToExtend = new GraphQLSchema({
-        directives: [...Object.values(directives), ...specifiedDirectives, ...additionalDirectives],
-        types: [
-            ...Object.values(scalars),
-            Point,
-            CartesianPoint,
-            PointInput,
-            PointDistance,
-            CartesianPointInput,
-            CartesianPointDistance,
-            SortDirection,
-            ...additionalTypes,
-        ],
-    });
-
+}) {
     // ==================== for rules testing ====
-    // TODO: fix error on DirectiveArgumentOfCorrectType to add it back
     const errors = validateSDL(
-        doc,
+        document,
         [
             ...specifiedSDLRules,
             DirectiveIsValid(extra, callbacks, validateResolvers),
@@ -294,15 +270,13 @@ function getBaseSchema({
             ValidDirectiveInheritance(),
             DirectiveArgumentOfCorrectType,
         ],
-        schemaToExtend
+        schema
     );
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {
-        console.log("Validate Document: END with ERRORS");
         throw filteredErrors;
     }
     // ===========================================
-    return extendSchema(schemaToExtend, doc);
 }
 
 function validateDocument({
@@ -329,21 +303,35 @@ function validateDocument({
     validateResolvers?: boolean;
     userCustomResolvers?: IResolvers | IResolvers[];
 }): void {
-    const schema = getBaseSchema({
-        document,
-        features,
-        additionalDirectives,
-        additionalTypes,
+    const filteredDocument = filterDocument(document, features);
+    const schemaToExtend = new GraphQLSchema({
+        directives: [...Object.values(directives), ...specifiedDirectives, ...additionalDirectives],
+        types: [
+            ...Object.values(scalars),
+            Point,
+            CartesianPoint,
+            PointInput,
+            PointDistance,
+            CartesianPointInput,
+            CartesianPointDistance,
+            SortDirection,
+            ...additionalTypes,
+        ],
+    });
+
+    runValidationRulesOnFilteredDocument({
+        schema: schemaToExtend,
+        document: filteredDocument,
         extra,
         callbacks,
         validateResolvers,
-        userCustomResolvers,
     });
+
+    const schema = extendSchema(schemaToExtend, filteredDocument);
 
     const errors = validateSchema(schema);
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {
-        // throw new Error(filteredErrors.join("\n"));
         throw filteredErrors;
     }
 

@@ -84,7 +84,7 @@ function isSpecializedASTNode(node: ASTNode): node is SpecializedASTNode {
             Kind.UNION_TYPE_DEFINITION,
             Kind.ENUM_TYPE_DEFINITION,
             Kind.INPUT_OBJECT_TYPE_DEFINITION,
-        ].includes(node.kind)
+        ].find((k) => k === node.kind)
     ) {
         return true;
     }
