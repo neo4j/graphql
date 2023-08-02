@@ -141,7 +141,7 @@ export class FilterFactory {
             const connectionWhereField = parseConnectionWhereFields(key);
             if (connectionWhereField.fieldName === "edge") {
                 console.log(connectionWhereField.fieldName, value);
-                const targetEdgeFilters = this.createEdgeFilters(relationship, value as any);
+                const targetEdgeFilters = this.createEdgeFilters(relationship, value);
                 const connectionEdgeFilter = new ConnectionEdgeFilter({
                     isNot: connectionWhereField.isNot,
                     filters: targetEdgeFilters,
