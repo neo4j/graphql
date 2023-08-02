@@ -100,7 +100,7 @@ describe("Auth projections for interface relationship fields", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this3:ACTED_IN]->(this4:\`Series\`)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this4.episodes = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.episodes = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this4 { __resolveType: \\"Series\\", __id: id(this), .episodes, .title } AS this4
                     RETURN this4 AS var2
                 }
@@ -116,8 +116,7 @@ describe("Auth projections for interface relationship fields", () => {
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"super_admin\\"
-                },
-                \\"jwtDefault\\": {}
+                }
             }"
         `);
     });

@@ -36,6 +36,7 @@ export function createRelationshipOperation({
     value,
     isNot,
     useExistExpr = true,
+    checkParameterExistence,
 }: {
     relationField: RelationField;
     context: Context;
@@ -44,6 +45,7 @@ export function createRelationshipOperation({
     value: GraphQLWhereArg;
     isNot: boolean;
     useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
@@ -83,6 +85,7 @@ export function createRelationshipOperation({
         whereInput: value,
         whereOperator: operator as WhereOperator,
         useExistExpr,
+        checkParameterExistence,
     });
 }
 
@@ -98,6 +101,7 @@ export function createRelationPredicate({
     whereOperator,
     refEdge,
     useExistExpr = true,
+    checkParameterExistence,
 }: {
     parentNode: Cypher.Node;
     targetNode: Cypher.Node;
@@ -110,6 +114,7 @@ export function createRelationPredicate({
     whereOperator: WhereOperator;
     refEdge?: Relationship;
     useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     let labelsOfNodesImplementingInterface: string[] | undefined;
     let labels = refNode.getLabels(context);
@@ -151,6 +156,7 @@ export function createRelationPredicate({
               targetNode,
               edgeRef: targetRelationship,
               useExistExpr,
+              checkParameterExistence,
           })
         : createWherePredicate({
               whereInput,
@@ -158,6 +164,7 @@ export function createRelationPredicate({
               element: refNode,
               context,
               useExistExpr,
+              checkParameterExistence,
           });
 
     if (orOperatorMultipleNodeLabels) {
@@ -181,6 +188,7 @@ export function createRelationPredicate({
             context,
             refNode,
             refEdge,
+            checkParameterExistence,
         });
     }
 
@@ -285,6 +293,7 @@ function createRelationPredicateWithSubqueries({
     context,
     whereInput,
     refEdge,
+    checkParameterExistence,
 }: {
     parentNode: Cypher.Node;
     targetNode: Cypher.Node;
@@ -297,6 +306,7 @@ function createRelationPredicateWithSubqueries({
     context: Context;
     whereInput: any;
     refEdge?: Relationship;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     const matchPattern = new Cypher.Match(targetPattern);
     const subqueryWith = new Cypher.With("*");
@@ -325,12 +335,14 @@ function createRelationPredicateWithSubqueries({
                       node: refNode,
                       targetNode,
                       edgeRef: targetRelationship,
+                      checkParameterExistence,
                   })
                 : createWherePredicate({
                       whereInput,
                       targetElement: targetNode,
                       element: refNode,
                       context,
+                      checkParameterExistence,
                   });
 
             if (notNoneInnerPredicates.predicate && notNoneInnerPredicates.preComputedSubqueries) {
@@ -347,6 +359,7 @@ function createRelationPredicateWithSubqueries({
                         refNode,
                         context,
                         refEdge,
+                        checkParameterExistence,
                     });
                 return {
                     predicate: Cypher.and(notExistsPredicate, Cypher.eq(returnVar, new Cypher.Literal(true))),

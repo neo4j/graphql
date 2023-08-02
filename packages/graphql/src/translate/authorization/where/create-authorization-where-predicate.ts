@@ -74,6 +74,7 @@ export function createAuthorizationWherePredicate({
                 whereInput: populateWhereParams({ where: value, context }),
                 targetElement: target,
                 useExistExpr,
+                checkParameterExistence: true,
             });
 
             if (predicate) {
