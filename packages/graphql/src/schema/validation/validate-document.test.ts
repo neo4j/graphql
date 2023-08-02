@@ -422,7 +422,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["User", "post", "@relationship", "type"]);
         });
 
-        test.skip("@customResolver.required property must be string", () => {
+        test("@customResolver.required property must be string", () => {
             const doc = gql`
                 type Query {
                     myStuff: String @customResolver(requires: 42)
@@ -2282,153 +2282,6 @@ describe("validation 2.0", () => {
         // needs a schema for graphql validation but then not running validators anymore for the logical validation
         // validate-custom-resolver-requires -> graphql validation
         // get-custom-resolver-meta -> logical validation
-        // describe.skip("@customResolver", () => {
-        //     test("@customResolver resolver not provided", () => {
-        //         const doc = gql`
-        //             type User {
-        //                 name: String @customResolver
-        //             }
-        //         `;
-
-        //         const executeValidate = () => validateDocument({ document: doc, features: {} });
-        //         const errors = getError(executeValidate);
-
-        //         expect(errors).toHaveLength(1);
-        //         expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-        //         expect(errors[0]).toHaveProperty(
-        //             "message",
-        //             "error: @customResolver needs a resolver for field `name` to be provided."
-        //         );
-        //         expect(errors[0]).toHaveProperty("path", ["User", "name", "@customResolver"]);
-        //     });
-
-        //     test("@customResolver.requires not a string", () => {
-        //         const doc = gql`
-        //             type User {
-        //                 name: String @customResolver(requires: 1)
-        //             }
-        //         `;
-
-        //         const executeValidate = () =>
-        //             validateDocument({
-        //                 document: doc,
-        //                 userCustomResolvers: { User: { name: () => "sweet" } },
-        //                 features: {},
-        //             });
-        //         const errors = getError(executeValidate);
-
-        //         expect(errors).toHaveLength(1);
-        //         expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-        //         expect(errors[0]).toHaveProperty(
-        //             "message",
-        //             "error: @customResolver.requires is invalid. Expected a String."
-        //         );
-        //         expect(errors[0]).toHaveProperty("path", ["User", "name", "@customResolver"]);
-        //     });
-
-        //     // TODO: validation for selection set needs a schema
-        //     test.skip("@customResolver not possible on Interface", () => {
-        //         const interfaceDoc = gql`
-        //             interface Employee {
-        //                 id: ID
-        //                 name: String @customResolver(requires: "id")
-        //             }
-        //         `;
-        //         const doc = gql`
-        //             type User {
-        //                 name: String
-        //             }
-        //         `;
-
-        //         const enums = [] as EnumTypeDefinitionNode[];
-        //         const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-        //         const unions = [] as UnionTypeDefinitionNode[];
-        //         const objects = [] as ObjectTypeDefinitionNode[];
-        //         const executeValidate = () =>
-        //             validateDocument({
-        //                 document: doc,
-        //                 userCustomResolvers: { Employee: { name: () => "sweet" } },
-        //                 extra: { enums, interfaces, unions, objects },
-        //                 features: {},
-        //             });
-        //         const errors = getError(executeValidate);
-
-        //         expect(errors).toHaveLength(1);
-        //         expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-        //         expect(errors[0]).toHaveProperty(
-        //             "message",
-        //             "error: @customResolver.requires is invalid. Expected a String."
-        //         );
-        //         expect(errors[0]).toHaveProperty("path", ["User", "name", "@customResolver"]);
-        //     });
-
-        //     test.skip("@customResolver.requires invalid selection set", () => {
-        //         const doc = gql`
-        //             type User {
-        //                 name: String @customResolver(requires: " doesNotExist ")
-        //             }
-        //         `;
-
-        //         const enums = [] as EnumTypeDefinitionNode[];
-        //         const interfaces = [] as InterfaceTypeDefinitionNode[];
-        //         const unions = [] as UnionTypeDefinitionNode[];
-        //         const objects = [] as ObjectTypeDefinitionNode[];
-        //         const executeValidate = () =>
-        //             validateDocument({
-        //                 document: doc,
-        //                 userCustomResolvers: { User: { name: () => "sweet" } },
-        //                 extra: { enums, interfaces, unions, objects },
-        //                 features: {},
-        //             });
-        //         const errors = getError(executeValidate);
-
-        //         expect(errors).toHaveLength(1);
-        //         expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-        //         expect(errors[0]).toHaveProperty(
-        //             "message",
-        //             "error: @customResolver.requires is invalid. Expected a String."
-        //         );
-        //         expect(errors[0]).toHaveProperty("path", ["User", "name", "@customResolver"]);
-        //     });
-
-        //     test("@customResolver.requires selection set correct", () => {
-        //         const doc = gql`
-        //             type User {
-        //                 id: ID
-        //                 name: String @customResolver(requires: " id ")
-        //             }
-        //         `;
-
-        //         const enums = [] as EnumTypeDefinitionNode[];
-        //         const interfaces = [] as InterfaceTypeDefinitionNode[];
-        //         const unions = [] as UnionTypeDefinitionNode[];
-        //         const objects = [] as ObjectTypeDefinitionNode[];
-        //         const executeValidate = () =>
-        //             validateDocument({
-        //                 document: doc,
-        //                 userCustomResolvers: { User: { name: () => "sweet" } },
-        //                 extra: { enums, interfaces, unions, objects },
-        //                 features: {},
-        //             });
-        //         expect(executeValidate).not.toThrow();
-        //     });
-
-        //     test("@customResolver resolver provided correct", () => {
-        //         const doc = gql`
-        //             type User {
-        //                 name: String @customResolver
-        //             }
-        //         `;
-
-        //         const executeValidate = () =>
-        //             validateDocument({
-        //                 document: doc,
-        //                 userCustomResolvers: { User: { name: () => "sweet" } },
-        //                 features: {},
-        //             });
-        //         expect(executeValidate).not.toThrow();
-        //     });
-        // });
     });
 
     describe("Directive Combination", () => {
@@ -3045,9 +2898,8 @@ describe("validation 2.0", () => {
         });
     });
 
-    // TODO: these never happen bc empty types are stripped
     describe("Objects and Interfaces must have one or more fields", () => {
-        test.skip("Objects must have one or more fields", () => {
+        test("Objects must have one or more fields", () => {
             const doc = gql`
                 type Movie
             `;
@@ -3057,7 +2909,7 @@ describe("validation 2.0", () => {
 
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty("message", "Union type Production must define one or more member types.");
+            expect(errors[0]).toHaveProperty("message", "Objects and Interfaces must have one or more fields.");
         });
 
         test("Interfaces must have one or more fields", () => {
@@ -3074,7 +2926,7 @@ describe("validation 2.0", () => {
 
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty("message", 'Unknown type "Production". Did you mean "Duration"?');
+            expect(errors[0]).toHaveProperty("message", "Objects and Interfaces must have one or more fields.");
         });
 
         test("valid", () => {
