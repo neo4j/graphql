@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 4.0.0-beta.1
+
+### Patch Changes
+
+-   [#3729](https://github.com/neo4j/graphql/pull/3729) [`be5dcdcde`](https://github.com/neo4j/graphql/commit/be5dcdcdec49adb6748dd8fc34b0b6f3e6d783fa) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Improve the checking for non-existent parameters when evaluating authorization rules
+
 ## 4.0.0-beta.0
 
 ### Major Changes
