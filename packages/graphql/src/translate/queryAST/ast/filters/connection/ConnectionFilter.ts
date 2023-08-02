@@ -10,8 +10,7 @@ import type { QueryASTNode } from "../../QueryASTNode";
 
 export class ConnectionFilter extends Filter {
     private targetNodeFilters: ConnectionNodeFilter[] = [];
-
-    private relationshipFilters: ConnectionEdgeFilter[] = [];
+    private targetEdgeFilters: ConnectionEdgeFilter[] = [];
 
     private relationship: Relationship;
     private operator: RelationshipWhereOperator;
@@ -34,11 +33,15 @@ export class ConnectionFilter extends Filter {
     }
 
     public get children(): QueryASTNode[] {
-        return [...this.targetNodeFilters, ...this.relationshipFilters];
+        return [...this.targetNodeFilters, ...this.targetEdgeFilters];
     }
 
     public addConnectionNodeFilter(nodeFilter: ConnectionNodeFilter): void {
         this.targetNodeFilters.push(nodeFilter);
+    }
+
+    public addConnectionEdgeFilter(edgeFilter: ConnectionEdgeFilter): void {
+        this.targetEdgeFilters.push(edgeFilter);
     }
 
     public getPredicate(parentNode: Cypher.Variable): Cypher.Predicate | undefined {
@@ -67,9 +70,9 @@ export class ConnectionFilter extends Filter {
         relatedNode: Cypher.Node,
         relationshipVar: Cypher.Relationship
     ): Cypher.Predicate | undefined {
-        const predicates = this.targetNodeFilters.map((c) => c.getPredicate(relatedNode));
-        const relationshipPredicates = this.relationshipFilters.map((c) => c.getPredicate(relationshipVar));
-        const innerPredicate = Cypher.and(...predicates, ...relationshipPredicates);
+        const relationshipPredicates = this.targetEdgeFilters.map((c) => c.getPredicate(relationshipVar));
+        const nodePredicates = this.targetNodeFilters.map((c) => c.getPredicate(relatedNode));
+        const innerPredicate = Cypher.and(...relationshipPredicates, ...nodePredicates);
 
         if (!innerPredicate) return undefined;
 
