@@ -28,7 +28,6 @@ import { AttributeType } from "../../../schema-model/attribute/Attribute";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
-import { RelationshipAggregationField } from "../ast/fields/aggregation-fields/RelationshipAggregationField";
 import type { AggregationField } from "../ast/fields/aggregation-fields/AggregationField";
 import { CountField } from "../ast/fields/aggregation-fields/CountField";
 import { filterTruthy } from "../../../utils/utils";
@@ -77,7 +76,7 @@ export class FieldFactory {
         relationship: Relationship,
         fieldName: string,
         resolveTree: ResolveTree
-    ): RelationshipAggregationField {
+    ): OperationField {
         // const operation = this.queryASTFactory.operationsFactory.createReadOperationAST(relationship, field);
         // console.log(fieldName, resolveTree, relationship.aggregationFieldTypename);
 
@@ -85,7 +84,7 @@ export class FieldFactory {
         // const fields = resolveTree.fieldsByTypeName[relationship.aggregationFieldTypename];
 
         const operation = this.queryASTFactory.operationsFactory.createAggregationOperation(relationship, resolveTree);
-        return new RelationshipAggregationField({
+        return new OperationField({
             alias: resolveTree.alias,
             operation,
         });

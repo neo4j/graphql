@@ -24,7 +24,7 @@ import { getRelationshipDirection } from "../../utils/get-relationship-direction
 import type { Field } from "../fields/Field";
 import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
-import type { OperationTranspileOptions } from "./operations";
+import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination, PaginationField } from "../pagination/Pagination";
 import type { Sort, SortField } from "../sort/Sort";
@@ -72,7 +72,7 @@ export class ConnectionReadOperation extends Operation {
         this.pagination = pagination;
     }
 
-    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause {
+    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
         if (!parentNode) throw new Error();
         const node = createNodeFromEntity(this.relationship.target as ConcreteEntity);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
@@ -156,7 +156,12 @@ export class ConnectionReadOperation extends Operation {
             }),
             returnVariable,
         ]);
-        return Cypher.concat(clause, extraWithOrder, projectionClauses, sortSubquery, returnClause);
+        const subClause = Cypher.concat(clause, extraWithOrder, projectionClauses, sortSubquery, returnClause);
+
+        return {
+            clauses: [subClause],
+            projectionExpr: returnVariable,
+        };
     }
 
     private getPaginationSubquery(

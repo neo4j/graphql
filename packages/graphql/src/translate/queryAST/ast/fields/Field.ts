@@ -30,7 +30,7 @@ export abstract class Field extends QueryASTNode {
 
     public abstract getProjectionField(variable: Cypher.Variable): string | Record<string, Cypher.Expr>;
 
-    public getSubquery(_node: Cypher.Node): Cypher.Clause[] | Cypher.Clause | undefined {
-        return undefined;
+    public getSubqueries(_node: Cypher.Node): Cypher.Clause[] {
+        return [];
     }
 }

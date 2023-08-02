@@ -22,7 +22,7 @@ import { asArray, filterTruthy } from "../../../../utils/utils";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
 import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
-import type { OperationTranspileOptions } from "./operations";
+import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
 import type { PropertySort } from "../sort/PropertySort";
@@ -155,17 +155,23 @@ export class AggregationOperation extends Operation {
 
     // TODO: remove
     public transpile2({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause[] {
+        // Return variable is not really used here
         return this.transpileNestedRelationship(this.entity as Relationship, { returnVariable, parentNode });
     }
 
-    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause {
-        return Cypher.concat(...this.transpile2({ returnVariable, parentNode }));
+    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
+        // return Cypher.concat(...this.transpile2({ returnVariable, parentNode }));
+        const clauses = this.transpileNestedRelationship(this.entity as Relationship, { returnVariable, parentNode });
+        return {
+            clauses,
+            projectionExpr: this.aggregationProjectionMap,
+        };
     }
 
     protected getFieldsSubqueries(node: Cypher.Node): Cypher.Clause[] {
         return filterTruthy(
             this.fields.map((f) => {
-                return f.getSubquery(node);
+                return f.getSubqueries(node);
             })
         ).map((sq) => {
             return new Cypher.Call(Cypher.concat(...asArray(sq))).innerWith(node);

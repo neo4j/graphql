@@ -20,7 +20,6 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
 import { Filter, type WhereOperator } from "../Filter";
-import type { QueryASTNode } from "../../QueryASTNode";
 
 type FilterOperator = WhereOperator | "EQ";
 

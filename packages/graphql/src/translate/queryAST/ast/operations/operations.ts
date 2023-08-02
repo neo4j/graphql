@@ -22,9 +22,14 @@ import { QueryASTNode } from "../QueryASTNode";
 
 export type OperationTranspileOptions = {
     parentNode?: Cypher.Node;
-    returnVariable: Cypher.Variable;
+    returnVariable: Cypher.Variable; // TODO: Remove
+};
+
+export type OperationTranspileResult = {
+    projectionExpr: Cypher.Expr;
+    clauses: Cypher.Clause[];
 };
 
 export abstract class Operation extends QueryASTNode {
-    abstract transpile(options: OperationTranspileOptions): Cypher.Clause;
+    abstract transpile(options: OperationTranspileOptions): OperationTranspileResult;
 }
