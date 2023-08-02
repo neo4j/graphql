@@ -17,31 +17,30 @@
  * limitations under the License.
  */
 
-import type { QueryASTNode } from "../QueryASTNode";
-import type { ConnectionReadOperation } from "../operations/ConnectionReadOperation";
-import type { ReadOperation } from "../operations/ReadOperation";
+import type { Operation } from "../operations/operations";
 import { Field } from "./Field";
 import Cypher from "@neo4j/cypher-builder";
 
 export class OperationField extends Field {
-    private operation: ReadOperation | ConnectionReadOperation;
+    private operation: Operation;
 
-    private projectionVariable = new Cypher.Variable();
+    private projectionExpr: Cypher.Expr | undefined;
 
-    constructor({ operation, alias }: { operation: ReadOperation | ConnectionReadOperation; alias: string }) {
+    constructor({ operation, alias }: { operation: Operation; alias: string }) {
         super(alias);
         this.operation = operation;
     }
 
-    public get children(): QueryASTNode[] {
-        return [this.operation];
-    }
-
     public getProjectionField(): Record<string, Cypher.Expr> {
-        return { [this.alias]: this.projectionVariable };
+        if (!this.projectionExpr) {
+            throw new Error("Projection expression of operation not availabe (has transpiled been called)?");
+        }
+        return { [this.alias]: this.projectionExpr };
     }
 
-    public getSubquery(node: Cypher.Node): Cypher.Clause {
-        return this.operation.transpile({ returnVariable: this.projectionVariable, parentNode: node });
+    public getSubqueries(node: Cypher.Node): Cypher.Clause[] {
+        const result = this.operation.transpile({ returnVariable: new Cypher.Variable(), parentNode: node });
+        this.projectionExpr = result.projectionExpr;
+        return result.clauses;
     }
 }

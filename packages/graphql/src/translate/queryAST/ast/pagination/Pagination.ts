@@ -20,7 +20,6 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Integer } from "neo4j-driver";
 import { QueryASTNode } from "../QueryASTNode";
-import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
 
 export type PaginationField = {
     skip: Cypher.Param<number | Integer> | undefined;
@@ -35,14 +34,6 @@ export class Pagination extends QueryASTNode {
         super();
         this.skip = skip;
         this.limit = limit;
-    }
-
-    public get children(): QueryASTNode[] {
-        return [];
-    }
-
-    public accept(v: QueryASTVisitor): void {
-        v.visitPagination(this);
     }
 
     public getPagination(): PaginationField | undefined {

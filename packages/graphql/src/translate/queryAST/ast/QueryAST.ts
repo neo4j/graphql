@@ -37,7 +37,9 @@ export class QueryAST {
         //         target: new Cypher.NamedVariable("this"),
         //     })
         // );
-        return this.operation.transpile({ returnVariable: new Cypher.NamedVariable("this") });
+
+        const result = this.operation.transpile({ returnVariable: new Cypher.NamedVariable("this") });
+        return result.clauses[0] as Cypher.Clause;
         // const visitor = new QueryASTVisitor();
         // visitor.visit(this.operation);
     }

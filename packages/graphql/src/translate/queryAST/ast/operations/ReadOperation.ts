@@ -23,11 +23,10 @@ import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/
 import type { Field } from "../fields/Field";
 import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
-import type { OperationTranspileOptions } from "./operations";
+import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
 import type { PropertySort } from "../sort/PropertySort";
-import type { QueryASTNode } from "../QueryASTNode";
 import { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 
@@ -46,10 +45,6 @@ export class ReadOperation extends Operation {
         super();
         this.entity = entity;
         this.directed = directed;
-    }
-
-    public get children(): QueryASTNode[] {
-        return filterTruthy([...this.fields, ...this.filters, ...this.sortFields, this.pagination]);
     }
 
     public setFields(fields: Field[]) {
@@ -71,7 +66,7 @@ export class ReadOperation extends Operation {
     private transpileNestedRelationship(
         entity: Relationship,
         { returnVariable, parentNode }: OperationTranspileOptions
-    ): Cypher.Clause {
+    ): OperationTranspileResult {
         //TODO: dupe from transpile
         if (!parentNode) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
@@ -106,7 +101,12 @@ export class ReadOperation extends Operation {
             sortClause = new Cypher.With("*");
             this.addSortToClause(targetNode, sortClause);
         }
-        return Cypher.concat(matchClause, subqueries, sortClause, ret);
+        const clause = Cypher.concat(matchClause, subqueries, sortClause, ret);
+
+        return {
+            clauses: [clause],
+            projectionExpr: returnVariable,
+        };
     }
 
     protected getProjectionClause(target: Cypher.Node, returnVariable: Cypher.Variable): Cypher.Return {
@@ -124,13 +124,15 @@ export class ReadOperation extends Operation {
         return Cypher.and(...this.filters.map((f) => f.getPredicate(target)));
     }
 
-    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause {
+    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
         if (this.entity instanceof Relationship) {
             return this.transpileNestedRelationship(this.entity, { returnVariable, parentNode });
         }
         const node = createNodeFromEntity(this.entity, this.nodeAlias);
 
         const filterPredicates = this.getPredicates(node);
+        const subqueries = Cypher.concat(...this.getFieldsSubqueries(node));
+
         const projectionFields = this.fields.map((f) => f.getProjectionField(node));
         const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField());
 
@@ -143,7 +145,6 @@ export class ReadOperation extends Operation {
         if (filterPredicates) {
             matchClause.where(filterPredicates);
         }
-        const subqueries = Cypher.concat(...this.getFieldsSubqueries(node));
 
         const ret = new Cypher.Return([projection, returnVariable]);
 
@@ -152,13 +153,18 @@ export class ReadOperation extends Operation {
             sortClause = new Cypher.With("*");
             this.addSortToClause(node, sortClause);
         }
-        return Cypher.concat(matchClause, subqueries, sortClause, ret);
+        const clause = Cypher.concat(matchClause, subqueries, sortClause, ret);
+
+        return {
+            clauses: [clause],
+            projectionExpr: returnVariable,
+        };
     }
 
     protected getFieldsSubqueries(node: Cypher.Node): Cypher.Clause[] {
         return filterTruthy(
             this.fields.flatMap((f) => {
-                return f.getSubquery(node);
+                return f.getSubqueries(node);
             })
         ).map((sq) => {
             return new Cypher.Call(sq).innerWith(node);

@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { QueryASTNode } from "../../QueryASTNode";
 import Cypher from "@neo4j/cypher-builder";
 import { AggregationField } from "./AggregationField";
 import type { Entity } from "../../../../../schema-model/entity/Entity";
@@ -28,10 +27,6 @@ export class CountField extends AggregationField {
     constructor({ alias, entity }: { alias: string; entity: Entity }) {
         super(alias);
         this.entity = entity;
-    }
-
-    public get children(): QueryASTNode[] {
-        return [];
     }
 
     public getProjectionField(variable: Cypher.Variable): Record<string, Cypher.Expr> {

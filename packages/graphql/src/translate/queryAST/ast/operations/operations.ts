@@ -19,17 +19,17 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import { QueryASTNode } from "../QueryASTNode";
-import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
 
 export type OperationTranspileOptions = {
     parentNode?: Cypher.Node;
-    returnVariable: Cypher.Variable;
+    returnVariable: Cypher.Variable; // TODO: Remove
+};
+
+export type OperationTranspileResult = {
+    projectionExpr: Cypher.Expr;
+    clauses: Cypher.Clause[];
 };
 
 export abstract class Operation extends QueryASTNode {
-    abstract transpile(options: OperationTranspileOptions): Cypher.Clause;
-
-    public accept(v: QueryASTVisitor): void {
-        return v.visitOperation(this);
-    }
+    abstract transpile(options: OperationTranspileOptions): OperationTranspileResult;
 }

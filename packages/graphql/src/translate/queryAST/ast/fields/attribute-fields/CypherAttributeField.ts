@@ -42,7 +42,8 @@ export class CypherAttributeField extends AttributeField {
     public getProjectionField(_variable: Cypher.Variable): string | Record<string, Cypher.Expr> {
         return { [this.alias]: this.customCypherVar };
     }
-    public getSubquery(node: Cypher.Node): Cypher.Clause[] | Cypher.Clause | undefined {
+
+    public getSubqueries(node: Cypher.Node): Cypher.Clause[] {
         const cypherAnnotation = this.attribute.annotations.cypher;
         if (!cypherAnnotation) throw new Error("Missing Cypher Annotation on Cypher field");
 
@@ -65,9 +66,11 @@ export class CypherAttributeField extends AttributeField {
             }
         }
 
-        return new Cypher.Call(Cypher.concat(innerAlias, cypherSubquery))
+        const subquery = new Cypher.Call(Cypher.concat(innerAlias, cypherSubquery))
             .innerWith(node)
             .with([returnVar, this.customCypherVar])
             .return([Cypher.head(Cypher.collect(projection)), this.customCypherVar]);
+
+        return [subquery];
     }
 }
