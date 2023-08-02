@@ -58,7 +58,6 @@ export class ContextBuilder extends Builder<Context, Context> {
                 jwtParam: new Cypher.Param({}),
                 isAuthenticated: true,
                 isAuthenticatedParam: new Cypher.Param(true),
-                jwtDefault: new Cypher.Param({}),
             },
             ...newOptions,
         });
