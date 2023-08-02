@@ -124,6 +124,12 @@
 
 -   [#3661](https://github.com/neo4j/graphql/pull/3661) [`ce84c47cc`](https://github.com/neo4j/graphql/commit/ce84c47cc610366def7d3abd9227ecb5244ef9d1) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The evaluation of authorization rules is now supported when using the Neo4j GraphQL Library as a Federation Subgraph.
 
+## 3.24.1
+
+### Patch Changes
+
+-   [#3729](https://github.com/neo4j/graphql/pull/3729) [`be5dcdcde`](https://github.com/neo4j/graphql/commit/be5dcdcdec49adb6748dd8fc34b0b6f3e6d783fa) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Improve the checking for non-existent parameters when evaluating authorization rules
+
 ## 3.24.0
 
 ### Minor Changes

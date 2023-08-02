@@ -2372,8 +2372,8 @@ __metadata:
   linkType: hard
 
 "@graphql-tools/delegate@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@graphql-tools/delegate@npm:10.0.0"
+  version: 10.0.1
+  resolution: "@graphql-tools/delegate@npm:10.0.1"
   dependencies:
     "@graphql-tools/batch-execute": ^9.0.0
     "@graphql-tools/executor": ^1.0.0
@@ -2384,7 +2384,7 @@ __metadata:
     value-or-promise: ^1.0.12
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: ef2708e6f11594158dd7ab08e8595ee21719bdbb2ef9d9570a0be5905ee40a1c5fb231d09924823851ad43da99e97d39e95725e1ee4bcd223896d8d85eecb881
+  checksum: 383b7b74c2ff6bbab957a082356df41368c745ebd3208552b90f99f8e25e57dfa0980442e90e333a3f4b990e97dc5886a875744d5ac4329063e579acf925a634
   languageName: node
   linkType: hard
 
@@ -12408,9 +12408,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.477":
-  version: 1.4.479
-  resolution: "electron-to-chromium@npm:1.4.479"
-  checksum: a22b70435e163bf413bfb8f4da015c3f099b64fc1eebb0c39829c5ce66ee13a23a2d42c91a33524eb4d1e86e28cc046be940e4b78d74e43b54d883100711f7cd
+  version: 1.4.480
+  resolution: "electron-to-chromium@npm:1.4.480"
+  checksum: 074b9d81dffa6ca182f604326c62a12d22139ae141d6ffabdb3b267f42fac88ba3e69d3614f9e939f65a0f03a343f0c81f702e24064bc54c4f138e02378b1e54
   languageName: node
   linkType: hard
 
@@ -13494,8 +13494,8 @@ __metadata:
   linkType: hard
 
 "fast-json-stringify@npm:^5.7.0":
-  version: 5.7.0
-  resolution: "fast-json-stringify@npm:5.7.0"
+  version: 5.8.0
+  resolution: "fast-json-stringify@npm:5.8.0"
   dependencies:
     "@fastify/deepmerge": ^1.0.0
     ajv: ^8.10.0
@@ -13503,7 +13503,7 @@ __metadata:
     fast-deep-equal: ^3.1.3
     fast-uri: ^2.1.0
     rfdc: ^1.2.0
-  checksum: ca834cd8afa654f50c8f14b8489ae74ccc1d2d695fd9eafc7b8eebe251e6d0305664e8dc9d50f3074a4a0572a34c2b96e8adb84096b813d7e6f1aafce34ecf9c
+  checksum: 04232ace5a5758e6a92b9a4518234a1c05e55ef9b788c80bf741ec6a64cf7273a9ef07938ca4b82a96ea470295b4c3e84a657a9bbaacee4bd97daa16595b1a9a
   languageName: node
   linkType: hard
 
