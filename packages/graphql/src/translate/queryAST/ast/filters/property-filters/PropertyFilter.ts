@@ -48,10 +48,6 @@ export class PropertyFilter extends Filter {
         this.isNot = isNot;
     }
 
-    public get children(): QueryASTNode[] {
-        return [];
-    }
-
     public getPredicate(target: Cypher.Variable): Cypher.Predicate {
         const prop = target.property(this.attribute.name);
 

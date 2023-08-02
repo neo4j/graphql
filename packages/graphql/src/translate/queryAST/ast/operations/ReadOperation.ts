@@ -27,7 +27,6 @@ import type { OperationTranspileOptions } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
 import type { PropertySort } from "../sort/PropertySort";
-import type { QueryASTNode } from "../QueryASTNode";
 import { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 
@@ -46,10 +45,6 @@ export class ReadOperation extends Operation {
         super();
         this.entity = entity;
         this.directed = directed;
-    }
-
-    public get children(): QueryASTNode[] {
-        return filterTruthy([...this.fields, ...this.filters, ...this.sortFields, this.pagination]);
     }
 
     public setFields(fields: Field[]) {

@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { QueryASTNode } from "../QueryASTNode";
 import type { ConnectionReadOperation } from "../operations/ConnectionReadOperation";
 import type { ReadOperation } from "../operations/ReadOperation";
 import { Field } from "./Field";
@@ -31,10 +30,6 @@ export class OperationField extends Field {
     constructor({ operation, alias }: { operation: ReadOperation | ConnectionReadOperation; alias: string }) {
         super(alias);
         this.operation = operation;
-    }
-
-    public get children(): QueryASTNode[] {
-        return [this.operation];
     }
 
     public getProjectionField(): Record<string, Cypher.Expr> {

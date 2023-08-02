@@ -23,7 +23,8 @@ import type { Field } from "../ast/fields/Field";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { Relationship } from "../../../schema-model/relationship/Relationship";
-import { Attribute, AttributeType } from "../../../schema-model/attribute/Attribute";
+import type { Attribute } from "../../../schema-model/attribute/Attribute";
+import { AttributeType } from "../../../schema-model/attribute/Attribute";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
@@ -34,7 +35,6 @@ import { filterTruthy } from "../../../utils/utils";
 import { AggregationAttributeField } from "../ast/fields/aggregation-fields/AggregationAttributeField";
 import { OperationField } from "../ast/fields/OperationField";
 import { CypherAttributeField } from "../ast/fields/attribute-fields/CypherAttributeField";
-import { CypherAnnotation } from "../../../schema-model/annotation/CypherAnnotation";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;

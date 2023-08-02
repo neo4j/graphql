@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { QueryASTNode } from "../../QueryASTNode";
 import type { AggregationOperation } from "../../operations/AggregationOperation";
 import { Field } from "../Field";
 import Cypher from "@neo4j/cypher-builder";
@@ -32,10 +31,6 @@ export class RelationshipAggregationField extends Field {
     constructor({ operation, alias }: { operation: AggregationOperation; alias: string }) {
         super(alias);
         this.operation = operation;
-    }
-
-    public get children(): QueryASTNode[] {
-        return [this.operation];
     }
 
     public getProjectionField(): Record<string, Cypher.Expr> {

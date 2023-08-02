@@ -23,7 +23,6 @@ import type { RelationshipWhereOperator } from "../../../where/types";
 import { Filter } from "./Filter";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
-import type { QueryASTNode } from "../QueryASTNode";
 
 export class RelationshipFilter extends Filter {
     private targetNodeFilters: Filter[] = [];
@@ -44,10 +43,6 @@ export class RelationshipFilter extends Filter {
         this.relationship = relationship;
         this.isNot = isNot;
         this.operator = operator;
-    }
-
-    public get children(): QueryASTNode[] {
-        return this.targetNodeFilters;
     }
 
     public addTargetNodeFilter(...filter: Filter[]): void {

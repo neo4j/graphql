@@ -18,15 +18,10 @@
  */
 
 import type Cypher from "@neo4j/cypher-builder";
-import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
 import { QueryASTNode } from "../QueryASTNode";
 
 export type SortField = [Cypher.Expr, Cypher.Order] | [Cypher.Expr];
 
 export abstract class Sort extends QueryASTNode {
-    public accept(v: QueryASTVisitor): void {
-        v.visitSort(this);
-    }
-
     public abstract getSortFields(variable: Cypher.Variable | Cypher.Property): SortField[];
 }

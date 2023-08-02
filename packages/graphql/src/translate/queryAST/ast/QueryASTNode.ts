@@ -20,13 +20,8 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { Relationship } from "../../../schema-model/relationship/Relationship";
-import type { QueryASTVisitor } from "../visitors/QueryASTVIsitor";
 
-export abstract class QueryASTNode {
-    public abstract children: QueryASTNode[];
-
-    public abstract accept(v: QueryASTVisitor): void;
-}
+export abstract class QueryASTNode {}
 
 export type SortField = [Cypher.Expr, Cypher.Order] | [Cypher.Expr];
 

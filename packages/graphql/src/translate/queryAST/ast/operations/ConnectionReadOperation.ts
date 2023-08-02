@@ -27,8 +27,6 @@ import Cypher from "@neo4j/cypher-builder";
 import type { OperationTranspileOptions } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination, PaginationField } from "../pagination/Pagination";
-import type { QueryASTNode } from "../QueryASTNode";
-import { filterTruthy } from "../../../../utils/utils";
 import type { Sort, SortField } from "../sort/Sort";
 
 export class ConnectionReadOperation extends Operation {
@@ -49,18 +47,6 @@ export class ConnectionReadOperation extends Operation {
         super();
         this.relationship = relationship;
         this.directed = directed;
-    }
-
-    public get children(): QueryASTNode[] {
-        return filterTruthy([
-            ...this.nodeFields,
-            ...this.edgeFields,
-            ...this.nodeFilters,
-            ...this.edgeFilters,
-            this.pagination,
-            // ...(this.sortFields?.edge || []), // TODO: add sort fields
-            // ...(this.sortFields?.node || []),
-        ]);
     }
 
     public setNodeFields(fields: Field[]) {

@@ -19,7 +19,6 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import { QueryASTNode } from "../QueryASTNode";
-import type { QueryASTVisitor } from "../../visitors/QueryASTVIsitor";
 
 export abstract class Field extends QueryASTNode {
     public alias: string;
@@ -33,9 +32,5 @@ export abstract class Field extends QueryASTNode {
 
     public getSubquery(_node: Cypher.Node): Cypher.Clause[] | Cypher.Clause | undefined {
         return undefined;
-    }
-
-    public accept(v: QueryASTVisitor) {
-        return v.visitField(this);
     }
 }
