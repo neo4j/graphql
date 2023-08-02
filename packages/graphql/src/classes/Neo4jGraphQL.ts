@@ -369,11 +369,20 @@ class Neo4jGraphQL {
         const { directives, types } = subgraph.getValidationDefinitions();
 
         if (this.validate) {
+            const {
+                enumTypes: enums,
+                interfaceTypes: interfaces,
+                unionTypes: unions,
+                objectTypes: objects,
+            } = getDefinitionNodes(initialDocument);
+
             validateDocument({
                 document: initialDocument,
                 features: this.features,
                 additionalDirectives: directives,
                 additionalTypes: types,
+                extra: { enums, interfaces, unions, objects },
+                callbacks: this.features?.populatedBy?.callbacks,
             });
         }
 
