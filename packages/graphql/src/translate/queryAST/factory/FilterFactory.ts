@@ -37,6 +37,7 @@ import { AttributeType } from "../../../schema-model/attribute/Attribute";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
 import { PointFilter } from "../ast/filters/property-filters/PointFilter";
 import { isInArray } from "../../../utils/is-in-array";
+import { ConnectionEdgeFilter } from "../ast/filters/connection/ConnectionEdgeFilter";
 
 export class FilterFactory {
     private queryASTFactory: QueryASTFactory;
@@ -45,54 +46,12 @@ export class FilterFactory {
         this.queryASTFactory = queryASTFactory;
     }
 
-    public createFilters(entity: ConcreteEntity, where: Record<string, unknown>): Array<Filter> {
-        return Object.entries(where).map(([key, value]): Filter => {
-            if (isInArray(["NOT", "OR", "AND"] as const, key)) {
-                return this.createLogicalFilter(key, value as any, entity);
-            }
-            const { fieldName, operator, isNot, isConnection } = parseWhereField(key);
-            const relationship = entity.findRelationship(fieldName);
-
-            if (isConnection) {
-                if (!relationship) throw new Error(`Relationship not found for connection ${fieldName}`);
-                if (operator && !isRelationshipOperator(operator)) {
-                    throw new Error(`Invalid operator ${operator} for relationship`);
-                }
-
-                return this.createConnectionFilter(value as ConnectionWhereArg, relationship, {
-                    isNot,
-                    operator,
-                });
-            }
-
-            if (relationship) {
-                if (operator && !isRelationshipOperator(operator)) {
-                    throw new Error(`Invalid operator ${operator} for relationship`);
-                }
-
-                return this.createRelationshipFilter(value as GraphQLWhereArg, relationship, {
-                    isNot,
-                    operator,
-                });
-            }
-
-            const attr = entity.findAttribute(fieldName);
-            if (!attr) throw new Error(`Attribute ${fieldName} not found`);
-            return this.createPropertyFilter({
-                attribute: attr,
-                comparisonValue: value,
-                isNot,
-                operator,
-            });
-        });
-    }
-
     public createRelationshipFilters(relationship: Relationship, where: Record<string, unknown>): Array<Filter> {
         return Object.entries(where).map(([key, value]): Filter => {
             if (["NOT", "OR", "AND"].includes(key)) {
                 return this.createEdgeLogicalFilter(key as "NOT" | "OR" | "AND", value as any, relationship);
             }
-            const { fieldName, operator, isNot, isConnection } = parseWhereField(key);
+            const { fieldName, operator, isNot } = parseWhereField(key);
             const attr = relationship.findAttribute(fieldName);
             if (!attr) throw new Error(`Attribute ${fieldName} not found`);
             return this.createPropertyFilter({
@@ -155,26 +114,14 @@ export class FilterFactory {
         });
 
         const targetNode = relationship.target as ConcreteEntity; // TODO: accept entities
-        const targetNodeFilters = this.createFilters(targetNode, where);
+        const targetNodeFilters = this.createNodeFilters(targetNode, where);
 
         relationshipFilter.addTargetNodeFilter(...targetNodeFilters);
 
         return relationshipFilter;
     }
 
-    private createLogicalFilter(
-        operation: "OR" | "AND" | "NOT",
-        where: GraphQLWhereArg[] | GraphQLWhereArg,
-        entity: ConcreteEntity
-    ): LogicalFilter {
-        const nestedFilters = asArray(where).flatMap((nestedWhere) => {
-            return this.createFilters(entity, nestedWhere);
-        });
-        return new LogicalFilter({
-            operation,
-            filters: nestedFilters,
-        });
-    }
+
 
     private createConnectionFilter(
         where: ConnectionWhereArg,
@@ -194,9 +141,15 @@ export class FilterFactory {
             const connectionWhereField = parseConnectionWhereFields(key);
             if (connectionWhereField.fieldName === "edge") {
                 console.log(connectionWhereField.fieldName, value);
+                const targetEdgeFilters = this.createEdgeFilters(relationship, value);
+                const connectionEdgeFilter = new ConnectionEdgeFilter({
+                    isNot: connectionWhereField.isNot,
+                    filters: targetEdgeFilters,
+                });
+                connectionFilter.addConnectionEdgeFilter(connectionEdgeFilter);
             }
             if (connectionWhereField.fieldName === "node") {
-                const targetNodeFilters = this.createFilters(targetNode, value as any);
+                const targetNodeFilters = this.createNodeFilters(targetNode, value as any);
                 const connectionNodeFilter = new ConnectionNodeFilter({
                     isNot: connectionWhereField.isNot,
                     filters: targetNodeFilters,
@@ -209,15 +162,57 @@ export class FilterFactory {
         return connectionFilter;
     }
 
+    public createNodeFilters(entity: ConcreteEntity, where: Record<string, unknown>): Array<Filter> {
+        return Object.entries(where).map(([key, value]): Filter => {
+            if (isInArray(["NOT", "OR", "AND"] as const, key)) {
+                return this.createLogicalFilter(key, value as any, entity);
+            }
+            const { fieldName, operator, isNot, isConnection } = parseWhereField(key);
+            const relationship = entity.findRelationship(fieldName);
+
+            if (isConnection) {
+                if (!relationship) throw new Error(`Relationship not found for connection ${fieldName}`);
+                if (operator && !isRelationshipOperator(operator)) {
+                    throw new Error(`Invalid operator ${operator} for relationship`);
+                }
+                
+                return this.createConnectionFilter(value as ConnectionWhereArg, relationship, {
+                    isNot,
+                    operator,
+                });
+            }
+
+            if (relationship) {
+                if (operator && !isRelationshipOperator(operator)) {
+                    throw new Error(`Invalid operator ${operator} for relationship`);
+                }
+
+                return this.createRelationshipFilter(value as GraphQLWhereArg, relationship, {
+                    isNot,
+                    operator,
+                });
+            }
+
+            const attr = entity.findAttribute(fieldName);
+            if (!attr) throw new Error(`Attribute ${fieldName} not found`);
+            return this.createPropertyFilter({
+                attribute: attr,
+                comparisonValue: value,
+                isNot,
+                operator,
+            });
+        });
+    }
+
     private createEdgeFilters(
-        where: GraphQLWhereArg,
-        relationship: Relationship
-    ): Array<LogicalFilter | PropertyFilter> {
-        const filterASTs = Object.entries(where).map(([prop, value]): LogicalFilter | PropertyFilter | undefined => {
+        relationship: Relationship,
+        where: GraphQLWhereArg
+    ): Array<Filter> {
+        const filterASTs = Object.entries(where).map(([prop, value]): Filter => {
             if (["NOT", "OR", "AND"].includes(prop)) {
                 return this.createEdgeLogicalFilter(prop as "NOT" | "OR" | "AND", value, relationship);
             }
-            const { fieldName, operator, isNot, isConnection } = parseWhereField(prop);
+            const { fieldName, operator, isNot } = parseWhereField(prop);
             const attribute = relationship.findAttribute(fieldName);
             if (!attribute) throw new Error(`no filter attribute ${prop}`);
 
@@ -232,13 +227,27 @@ export class FilterFactory {
         return filterTruthy(filterASTs);
     }
 
+    private createLogicalFilter(
+        operation: "OR" | "AND" | "NOT",
+        where: GraphQLWhereArg[] | GraphQLWhereArg,
+        entity: ConcreteEntity
+    ): LogicalFilter {
+        const nestedFilters = asArray(where).flatMap((nestedWhere) => {
+            return this.createNodeFilters(entity, nestedWhere);
+        });
+        return new LogicalFilter({
+            operation,
+            filters: nestedFilters,
+        });
+    }
+
     private createEdgeLogicalFilter(
         operation: "OR" | "AND" | "NOT",
         where: GraphQLWhereArg[] | GraphQLWhereArg,
         relationship: Relationship
     ): LogicalFilter {
         const nestedFilters = asArray(where).flatMap((nestedWhere) => {
-            return this.createEdgeFilters(nestedWhere, relationship);
+            return this.createEdgeFilters(relationship, nestedWhere);
         });
         return new LogicalFilter({
             operation,

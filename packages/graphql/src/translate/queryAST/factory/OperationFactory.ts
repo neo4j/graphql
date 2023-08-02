@@ -26,7 +26,7 @@ import { Relationship } from "../../../schema-model/relationship/Relationship";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
 import type { ConnectionSortArg, GraphQLOptionsArg } from "../../../types";
-import { SortAndPaginationFactory } from "./SortAndPagintationFactory";
+import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import type { Integer } from "neo4j-driver";
 import type { Filter } from "../ast/filters/Filter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
@@ -56,7 +56,7 @@ export class OperationsFactory {
         if (entityOrRel instanceof Relationship) {
             filters = this.filterFactory.createRelationshipFilters(entityOrRel, whereArgs);
         } else {
-            filters = this.filterFactory.createFilters(entityOrRel, whereArgs);
+            filters = this.filterFactory.createNodeFilters(entityOrRel, whereArgs);
         }
         operation.setFields(fields);
         operation.setFilters(filters);
@@ -95,7 +95,7 @@ export class OperationsFactory {
         const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
         const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
 
-        const filters = this.filterFactory.createFilters(relationship.target as ConcreteEntity, whereArgs); // Aggregation filters only apply to target node
+        const filters = this.filterFactory.createNodeFilters(relationship.target as ConcreteEntity, whereArgs); // Aggregation filters only apply to target node
 
         operation.setFields(fields);
         operation.setNodeFields(nodeFields);
@@ -154,7 +154,7 @@ export class OperationsFactory {
 
         const nodeFields = this.fieldFactory.createFields(relationship.target as ConcreteEntity, nodeRawFields);
         const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields);
-        const nodeFilters = this.filterFactory.createFilters(relationship.target as ConcreteEntity, nodeWhere);
+        const nodeFilters = this.filterFactory.createNodeFilters(relationship.target as ConcreteEntity, nodeWhere);
         const edgeFilters = this.filterFactory.createRelationshipFilters(relationship, edgeWhere);
         operation.setNodeFields(nodeFields);
         operation.setNodeFilters(nodeFilters);

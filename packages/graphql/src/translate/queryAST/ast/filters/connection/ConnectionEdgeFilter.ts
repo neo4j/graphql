@@ -1,14 +1,12 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { QueryASTNode } from "../../QueryASTNode";
-import type { LogicalFilter } from "../LogicalFilter";
-import type { PropertyFilter } from "../property-filters/PropertyFilter";
 import { Filter } from "../Filter";
 
 export class ConnectionEdgeFilter extends Filter {
-    private filters: Array<LogicalFilter | PropertyFilter> = [];
+    private filters: Filter[] = [];
     private isNot: boolean;
 
-    constructor({ isNot, filters }: { isNot: boolean; filters: Array<LogicalFilter | PropertyFilter> }) {
+    constructor({ isNot, filters }: { isNot: boolean; filters: Filter[] }) {
         super();
         this.isNot = isNot;
         this.filters = filters;
