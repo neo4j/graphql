@@ -164,8 +164,11 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
             }
 
             if (def.kind === Kind.OBJECT_TYPE_DEFINITION || def.kind === Kind.INTERFACE_TYPE_DEFINITION) {
-                const fields = filterFields(def.fields, features);
+                if (!def.fields?.length) {
+                    return [...res, def];
+                }
 
+                const fields = filterFields(def.fields, features);
                 if (!fields?.length) {
                     return res;
                 }
