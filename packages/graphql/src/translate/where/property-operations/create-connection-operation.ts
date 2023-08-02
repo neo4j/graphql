@@ -36,6 +36,7 @@ export function createConnectionOperation({
     parentNode,
     operator,
     useExistExpr = true,
+    checkParameterExistence,
 }: {
     connectionField: ConnectionField;
     value: any;
@@ -43,6 +44,7 @@ export function createConnectionOperation({
     parentNode: Cypher.Node;
     operator: string | undefined;
     useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     let nodeEntries: Record<string, any>;
 
@@ -99,6 +101,7 @@ export function createConnectionOperation({
             whereOperator: operator as WhereOperator,
             refEdge: contextRelationship,
             useExistExpr,
+            checkParameterExistence,
         });
 
         operations.push(predicate);
@@ -119,6 +122,7 @@ export function createConnectionWherePropertyOperation({
     node,
     edge,
     useExistExpr = true,
+    checkParameterExistence,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -127,6 +131,7 @@ export function createConnectionWherePropertyOperation({
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
     useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     const preComputedSubqueriesResult: (Cypher.CompositeClause | undefined)[] = [];
     const params: (Cypher.Predicate | undefined)[] = [];
@@ -142,6 +147,7 @@ export function createConnectionWherePropertyOperation({
                     node,
                     edge,
                     useExistExpr,
+                    checkParameterExistence,
                 });
                 subOperations.push(predicate);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
@@ -161,6 +167,7 @@ export function createConnectionWherePropertyOperation({
                 context,
                 element: edge,
                 useExistExpr,
+                checkParameterExistence,
             });
 
             params.push(result);
@@ -189,6 +196,7 @@ export function createConnectionWherePropertyOperation({
                 context,
                 element: node,
                 useExistExpr,
+                checkParameterExistence,
             });
 
             // NOTE: _NOT is handled by the size()=0
