@@ -48,3 +48,8 @@ This documentation covers the following topics:
 - xref::deprecations.adoc[Deprecations] - Overview and information regarding deprecated products and applications.
 
 This manual is primarily written for software engineers building an API using the Neo4j GraphQL Library.
+
+[NOTE]
+====
+If you are new to Neo4j and GraphQL, take the course https://graphacademy.neo4j.com/courses/graphql-basics/?ref=docs[Introduction to Neo4j & GraphQL] in GraphAcademy to learn the fundamentals, how to use the xref:toolbox.adoc[Neo4j GraphQL Toolbox] and the Neo4j GraphQL Library to create GraphQL APIs backed by a Neo4j graph database.
+====
