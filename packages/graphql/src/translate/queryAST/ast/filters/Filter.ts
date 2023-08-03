@@ -38,6 +38,8 @@ export type WhereOperator =
     | `NOT_${ArrayWhereOperator}`
     | RelationshipWhereOperator;
 
+export type FilterOperator = WhereOperator | "EQ";
+
 export type LogicalOperators = "NOT" | "AND" | "OR";
 
 const RELATIONSHIP_OPERATORS = ["ALL", "NONE", "SINGLE", "SOME"] as const;
@@ -48,4 +50,8 @@ export function isRelationshipOperator(operator: string): operator is Relationsh
 
 export abstract class Filter extends QueryASTNode {
     public abstract getPredicate(variable: Cypher.Variable): Cypher.Predicate | undefined;
+
+    public getSubqueries(_parentNode: Cypher.Node): Cypher.Clause[] {
+        return [];
+    }
 }
