@@ -318,6 +318,7 @@ export class FilterFactory {
                 attribute: attr,
                 comparisonValue: value,
                 logicalOperator: logicalOperator || "EQUAL",
+                aggregationOperator: aggregationOperator,
             });
         });
     }

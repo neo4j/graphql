@@ -6,12 +6,6 @@ import { getRelationshipDirection } from "../../../utils/get-relationship-direct
 import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
 import type { AggregationPropertyFilter } from "./AggregationPropertyFilter";
 
-type FiltersContructor = {
-    node: AggregationPropertyFilter[];
-    edge: AggregationPropertyFilter[];
-    filters: CountFilter[]; // Top filters
-};
-
 export class AggregationFilter extends Filter {
     private relationship: Relationship;
 
