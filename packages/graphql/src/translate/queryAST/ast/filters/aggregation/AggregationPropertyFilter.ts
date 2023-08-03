@@ -1,8 +1,9 @@
 import Cypher from "@neo4j/cypher-builder";
 import { AttributeType, type Attribute } from "../../../../../schema-model/attribute/Attribute";
 import type { AggregationLogicalOperator, AggregationOperator } from "../../../factory/parsers/parse-where-field";
+import { Filter } from "../Filter";
 
-export class AggregationPropertyFilter {
+export class AggregationPropertyFilter extends Filter {
     protected attribute: Attribute;
     protected comparisonValue: unknown;
 
@@ -20,6 +21,7 @@ export class AggregationPropertyFilter {
         comparisonValue: unknown;
         aggregationOperator: AggregationOperator | undefined;
     }) {
+        super();
         this.attribute = attribute;
         this.comparisonValue = comparisonValue;
         this.logicalOperator = logicalOperator;
@@ -31,7 +33,13 @@ export class AggregationPropertyFilter {
         const property = variable.property(this.attribute.name);
 
         if (this.aggregationOperator) {
-            const aggrOperation = this.getAggregateOperation(Cypher.size(property), this.aggregationOperator);
+            let propertyExpr: Cypher.Expr = property;
+
+            if (this.attribute.type === AttributeType.String) {
+                propertyExpr = Cypher.size(property);
+            }
+
+            const aggrOperation = this.getAggregateOperation(propertyExpr, this.aggregationOperator);
             return this.createBaseOperation({
                 operator: this.logicalOperator,
                 property: aggrOperation,

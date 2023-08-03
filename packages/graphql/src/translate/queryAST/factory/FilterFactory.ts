@@ -271,9 +271,17 @@ export class FilterFactory {
         const aggregationFilter = new AggregationFilter(relationship);
 
         Object.entries(where).forEach(([key, value]): CountFilter | undefined => {
-            // if (isInArray(["NOT", "OR", "AND"] as const, key)) {
-            //     return this.createLogicalFilter(key, value as any, entity);
-            // }
+            if (isInArray(["NOT", "OR", "AND"] as const, key)) {
+                const nestedFilters = asArray(value).flatMap((nestedWhere) => {
+                    return this.createAggregationFilters(nestedWhere, relationship);
+                });
+                const logicalFilter = new LogicalFilter({
+                    operation: key,
+                    filters: nestedFilters,
+                });
+
+                aggregationFilter.addFilter(logicalFilter);
+            }
             const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
 
             const filterOperator = operator || "EQ";
@@ -308,11 +316,15 @@ export class FilterFactory {
     private createAggregationNodeFilters(
         where: Record<string, any>,
         entity: ConcreteEntity | Relationship
-    ): AggregationPropertyFilter[] {
+    ): Array<AggregationPropertyFilter | LogicalFilter> {
         return Object.entries(where).map(([key, value]) => {
+            if (isInArray(["NOT", "OR", "AND"] as const, key)) {
+                return this.createAggregateLogicalFilter(key, value, entity);
+            }
             const { fieldName, logicalOperator, aggregationOperator } = parseAggregationWhereFields(key);
             const attr = entity.findAttribute(fieldName);
             if (!attr) throw new Error(`Attribute ${fieldName} not found`);
+
             // const filterOperator = operator || "EQ";
             return new AggregationPropertyFilter({
                 attribute: attr,
@@ -320,6 +332,20 @@ export class FilterFactory {
                 logicalOperator: logicalOperator || "EQUAL",
                 aggregationOperator: aggregationOperator,
             });
+        });
+    }
+
+    private createAggregateLogicalFilter(
+        operation: "OR" | "AND" | "NOT",
+        where: GraphQLWhereArg[] | GraphQLWhereArg,
+        entity: ConcreteEntity | Relationship
+    ): LogicalFilter {
+        const nestedFilters = asArray(where).flatMap((nestedWhere) => {
+            return this.createAggregationNodeFilters(nestedWhere, entity);
+        });
+        return new LogicalFilter({
+            operation,
+            filters: nestedFilters,
         });
     }
 }

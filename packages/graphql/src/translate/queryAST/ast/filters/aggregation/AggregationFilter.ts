@@ -5,13 +5,14 @@ import type { CountFilter } from "./CountFilter";
 import { getRelationshipDirection } from "../../../utils/get-relationship-direction";
 import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
 import type { AggregationPropertyFilter } from "./AggregationPropertyFilter";
+import type { LogicalFilter } from "../LogicalFilter";
 
 export class AggregationFilter extends Filter {
     private relationship: Relationship;
 
-    private filters: CountFilter[] = [];
-    private nodeFilters: AggregationPropertyFilter[] = [];
-    private edgeFilters: AggregationPropertyFilter[] = [];
+    private filters: Array<CountFilter | LogicalFilter> = [];
+    private nodeFilters: Array<AggregationPropertyFilter | LogicalFilter> = [];
+    private edgeFilters: Array<AggregationPropertyFilter | LogicalFilter> = [];
 
     private subqueryVariables: Array<Cypher.Variable> = [];
 
@@ -20,15 +21,15 @@ export class AggregationFilter extends Filter {
         this.relationship = relationship;
     }
 
-    public addFilter(filter: CountFilter) {
+    public addFilter(filter: CountFilter | LogicalFilter) {
         this.filters.push(filter);
     }
 
-    public addNodeFilters(filters: AggregationPropertyFilter[]) {
+    public addNodeFilters(filters: Array<AggregationPropertyFilter | LogicalFilter>) {
         this.nodeFilters.push(...filters);
     }
 
-    public addEdgeFilters(filters: AggregationPropertyFilter[]) {
+    public addEdgeFilters(filters: Array<AggregationPropertyFilter | LogicalFilter>) {
         this.edgeFilters.push(...filters);
     }
 
@@ -38,11 +39,19 @@ export class AggregationFilter extends Filter {
             labels: relatedEntity.labels,
         });
 
-        const pattern = this.createRelationshipPattern(parentNode, relatedNode);
+        const relationshipTarget = new Cypher.Relationship({
+            type: this.relationship.type,
+        });
+
+        const pattern = new Cypher.Pattern(parentNode)
+            .withoutLabels()
+            .related(relationshipTarget)
+            .withDirection(getRelationshipDirection(this.relationship))
+            .to(relatedNode);
 
         const predicates = Cypher.or(...this.filters.map((f) => f.getPredicate(relatedNode)));
         const nodePredicates = Cypher.or(...this.nodeFilters.map((f) => f.getPredicate(relatedNode)));
-        const edgePredicates = Cypher.or(...this.edgeFilters.map((f) => f.getPredicate(relatedNode)));
+        const edgePredicates = Cypher.or(...this.edgeFilters.map((f) => f.getPredicate(relationshipTarget)));
 
         const returnColumns: Cypher.ProjectionColumn[] = [];
 
@@ -73,18 +82,5 @@ export class AggregationFilter extends Filter {
         const trueLiteral = new Cypher.Literal(true);
         const subqueryPredicates = this.subqueryVariables.map((v) => Cypher.eq(v, trueLiteral));
         return Cypher.and(...subqueryPredicates);
-    }
-
-    // Duplicate from relationship filters
-    private createRelationshipPattern(parentNode: Cypher.Node, relatedNode: Cypher.Node): Cypher.Pattern {
-        return new Cypher.Pattern(parentNode)
-            .withoutLabels()
-            .related(
-                new Cypher.Relationship({
-                    type: this.relationship.type,
-                })
-            )
-            .withDirection(getRelationshipDirection(this.relationship))
-            .to(relatedNode);
     }
 }
