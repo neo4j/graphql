@@ -33,7 +33,7 @@ export class OperationField extends Field {
 
     public getProjectionField(): Record<string, Cypher.Expr> {
         if (!this.projectionExpr) {
-            throw new Error("Projection expression of operation not availabe (has transpiled been called)?");
+            throw new Error("Projection expression of operation not available (has transpiled been called)?");
         }
         return { [this.alias]: this.projectionExpr };
     }

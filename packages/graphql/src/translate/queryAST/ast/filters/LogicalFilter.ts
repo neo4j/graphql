@@ -32,6 +32,10 @@ export class LogicalFilter extends Filter {
         this.children = filters;
     }
 
+    public getSubqueries(parentNode: Cypher.Node): Cypher.Clause[] {
+        return this.children.flatMap((c) => c.getSubqueries(parentNode));
+    }
+
     public getPredicate(target: Cypher.Variable): Cypher.Predicate | undefined {
         const predicates = filterTruthy(this.children.map((f) => f.getPredicate(target)));
 

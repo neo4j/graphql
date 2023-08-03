@@ -153,14 +153,7 @@ export class AggregationOperation extends Operation {
         return Cypher.and(...this.filters.map((f) => f.getPredicate(target)));
     }
 
-    // TODO: remove
-    public transpile2({ returnVariable, parentNode }: OperationTranspileOptions): Cypher.Clause[] {
-        // Return variable is not really used here
-        return this.transpileNestedRelationship(this.entity as Relationship, { returnVariable, parentNode });
-    }
-
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
-        // return Cypher.concat(...this.transpile2({ returnVariable, parentNode }));
         const clauses = this.transpileNestedRelationship(this.entity as Relationship, { returnVariable, parentNode });
         return {
             clauses,
