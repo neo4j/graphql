@@ -93,4 +93,32 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
             }"
         `);
     });
+
+    test("OR between edge and node", async () => {
+        const query = gql`
+            {
+                movies(where: { actorsConnection: { OR: [{ node: { name: "Harry" } }, { edge: { role: "Tom" } }] } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE EXISTS {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WHERE (this1.name = $param0 OR this0.role = $param1)
+            }
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Harry\\",
+                \\"param1\\": \\"Tom\\"
+            }"
+        `);
+    });
 });

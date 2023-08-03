@@ -154,11 +154,17 @@ export class OperationsFactory {
 
         const nodeFields = this.fieldFactory.createFields(relationship.target as ConcreteEntity, nodeRawFields);
         const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields);
-        const nodeFilters = this.filterFactory.createNodeFilters(relationship.target as ConcreteEntity, nodeWhere);
-        const edgeFilters = this.filterFactory.createRelationshipFilters(relationship, edgeWhere);
+        //const nodeFilters = this.filterFactory.createNodeFilters(relationship.target as ConcreteEntity, nodeWhere);
+        //const edgeFilters = this.filterFactory.createRelationshipFilters(relationship, edgeWhere);
+        const connectionFilters = this.filterFactory.createConnectionFilter(relationship, whereArgs, {
+            isNot: false,
+            operator: undefined,
+        });
         operation.setNodeFields(nodeFields);
+        operation.addConnectionFilters(connectionFilters);
+        /* 
         operation.setNodeFilters(nodeFilters);
-        operation.setEdgeFilters(edgeFilters);
+        operation.setEdgeFilters(edgeFilters); */
         operation.setEdgeFields(edgeFields);
         return operation;
     }

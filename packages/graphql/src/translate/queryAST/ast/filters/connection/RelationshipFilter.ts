@@ -8,10 +8,9 @@ import { getRelationshipDirection } from "../../../utils/get-relationship-direct
 import { Filter } from "../Filter";
 import type { QueryASTNode } from "../../QueryASTNode";
 
-export class ConnectionFilter extends Filter {
+export class RelationshipFilter extends Filter {
     private targetNodeFilters: Filter[] = [];
     private targetEdgeFilters: Filter[] = [];
-    private targetConnectionFilters: Filter[] = [];
 
     private relationship: Relationship;
     private operator: RelationshipWhereOperator;

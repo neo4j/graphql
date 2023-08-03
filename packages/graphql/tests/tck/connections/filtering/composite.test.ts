@@ -162,4 +162,193 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             }"
         `);
     });
+
+    test.only("Composite OR (edge and node)", async () => {
+        const query = gql`
+            query {
+                movies(where: { title: "Forrest Gump" }) {
+                    title
+                    actorsConnection(
+                        where: {
+                            OR: [
+                                { node: { AND: [{ firstName: "Tom" }, { lastName: "Hanks" }] } }
+                                { edge: { AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }] } }
+                            ]
+                        }
+                    ) {
+                        edges {
+                            screenTime
+                            node {
+                                firstName
+                                lastName
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.title = $param0
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WHERE ((this1.firstName = $param1 AND this1.lastName = $param2) OR (this0.screenTime > $param3 AND this0.screenTime < $param4))
+                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var2
+            }
+            RETURN this { .title, actorsConnection: var2 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"param1\\": \\"Tom\\",
+                \\"param2\\": \\"Hanks\\",
+                \\"param3\\": {
+                    \\"low\\": 30,
+                    \\"high\\": 0
+                },
+                \\"param4\\": {
+                    \\"low\\": 90,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("Composite NOT with nested OR (edge and node)", async () => {
+        const query = gql`
+            query {
+                movies(where: { title: "Forrest Gump" }) {
+                    title
+                    actorsConnection(
+                        where: {
+                            NOT: {
+                                OR: [
+                                    { node: { AND: [{ firstName: "Tom" }, { lastName: "Hanks" }] } }
+                                    { edge: { AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }] } }
+                                ]
+                            }
+                        }
+                    ) {
+                        edges {
+                            screenTime
+                            node {
+                                firstName
+                                lastName
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.title = $param0
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WHERE NOT ((this1.firstName = $param1 AND this1.lastName = $param2) OR (this0.screenTime > $param3 AND this0.screenTime < $param4))
+                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var2
+            }
+            RETURN this { .title, actorsConnection: var2 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"param1\\": \\"Tom\\",
+                \\"param2\\": \\"Hanks\\",
+                \\"param3\\": {
+                    \\"low\\": 30,
+                    \\"high\\": 0
+                },
+                \\"param4\\": {
+                    \\"low\\": 90,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("Composite NOT with complex nested filters", async () => {
+        const query = gql`
+            query {
+                movies(where: { title: "Forrest Gump" }) {
+                    title
+                    actorsConnection(
+                        where: {
+                            NOT: {
+                                AND: [
+                                    {
+                                        OR: [
+                                            { node: { AND: [{ firstName: "Tom" }, { lastName: "Hanks" }] } }
+                                            { edge: { AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }] } }
+                                        ]
+                                    }
+                                    { node: { AND: [{ firstName: "Tommy" }, { lastName: "Ford" }] } }
+                                ]
+                            }
+                        }
+                    ) {
+                        edges {
+                            screenTime
+                            node {
+                                firstName
+                                lastName
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.title = $param0
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WHERE NOT (((this1.firstName = $param1 AND this1.lastName = $param2) OR (this0.screenTime > $param3 AND this0.screenTime < $param4)) AND (this1.firstName = $param5 AND this1.lastName = $param6))
+                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var2
+            }
+            RETURN this { .title, actorsConnection: var2 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"param1\\": \\"Tom\\",
+                \\"param2\\": \\"Hanks\\",
+                \\"param3\\": {
+                    \\"low\\": 30,
+                    \\"high\\": 0
+                },
+                \\"param4\\": {
+                    \\"low\\": 90,
+                    \\"high\\": 0
+                },
+                \\"param5\\": \\"Tommy\\",
+                \\"param6\\": \\"Ford\\"
+            }"
+        `);
+    });
+
 });

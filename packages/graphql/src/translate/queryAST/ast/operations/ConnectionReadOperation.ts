@@ -35,9 +35,11 @@ export class ConnectionReadOperation extends Operation {
 
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = [];
-
+/* 
     private nodeFilters: Filter[] = [];
-    private edgeFilters: Filter[] = [];
+    private edgeFilters: Filter[] = []; */
+
+    private connectionFilters: Filter[] = [];
 
     private pagination: Pagination | undefined;
 
@@ -52,13 +54,17 @@ export class ConnectionReadOperation extends Operation {
     public setNodeFields(fields: Field[]) {
         this.nodeFields = fields;
     }
-    public setNodeFilters(filters: Filter[]) {
+
+    public addConnectionFilters(filter: Filter) {
+        this.connectionFilters.push(filter);
+    }
+/*     public setNodeFilters(filters: Filter[]) {
         this.nodeFilters = filters;
     }
 
     public setEdgeFilters(filters: Filter[]) {
         this.edgeFilters = filters;
-    }
+    } */
 
     public setEdgeFields(fields: Field[]) {
         this.edgeFields = fields;
@@ -82,8 +88,10 @@ export class ConnectionReadOperation extends Operation {
             new Cypher.Pattern(parentNode).withoutLabels().related(relationship).withDirection(relDirection).to(node)
         );
 
-        const filterPredicates = Cypher.and(...this.nodeFilters.map((f) => f.getPredicate(node)));
-        const edgeFilterPredicates = Cypher.and(...this.edgeFilters.map((f) => (f as any).getPredicate(relationship))); // Any because of relationship predicates
+    /*     const filterPredicates = Cypher.and(...this.nodeFilters.map((f) => f.getPredicate(node)));
+        const edgeFilterPredicates = Cypher.and(...this.edgeFilters.map((f) => (f as any).getPredicate(relationship))); // Any because of relationship predicates */
+        const filters = Cypher.and(...this.connectionFilters.map((f) => f.getPredicate(parentNode)));
+
 
         const nodeProjectionMap = new Cypher.Map();
         this.nodeFields
@@ -121,12 +129,15 @@ export class ConnectionReadOperation extends Operation {
             });
 
         edgeProjectionMap.set("node", nodeProjectionMap);
+        if (filters) {
+            clause.where(filters);
+        }/* 
         if (edgeFilterPredicates) {
             clause.where(edgeFilterPredicates);
         }
         if (filterPredicates) {
             clause.where(filterPredicates);
-        }
+        } */
 
         let sortSubquery: Cypher.With | undefined;
         if (this.pagination || this.sortFields.length > 0) {
