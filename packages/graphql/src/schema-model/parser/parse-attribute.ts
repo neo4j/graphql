@@ -33,10 +33,14 @@ import {
     Neo4jGraphQLNumberType,
     Neo4jGraphQLTemporalType,
 } from "../attribute/AttributeType";
+import type { GraphQLDefaultValueType } from "../attribute/Attribute";
 import { Attribute } from "../attribute/Attribute";
 import { Field } from "../attribute/Field";
 import type { DefinitionCollection } from "./definition-collection";
 import { parseAnnotations } from "./parse-annotation";
+import { aliasDirective, defaultDirective, populatedByDirective } from "../../graphql/directives";
+import { parseArguments } from "./parse-arguments";
+import { findDirective } from "./utils";
 
 export function parseAttribute(
     field: FieldDefinitionNode,
@@ -45,12 +49,40 @@ export function parseAttribute(
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
     const annotations = parseAnnotations(field.directives || []);
-
+    const databaseName = getDatabaseName(field);
+    const defaultValue = getDefaultValue(field);
     return new Attribute({
         name,
         annotations,
         type,
+        databaseName,
+        defaultValue,
     });
+}
+
+function getDefaultValue(fieldDefinitionNode: FieldDefinitionNode): GraphQLDefaultValueType | undefined {
+    const defaultUsage = findDirective(fieldDefinitionNode.directives, defaultDirective.name);
+
+    if (defaultUsage) {
+        const { value } = parseArguments(defaultDirective, defaultUsage) as { value: string };
+        return { value };
+    }
+    const populatedByUsage = findDirective(fieldDefinitionNode.directives, populatedByDirective.name);
+    if (populatedByUsage) {
+        const { callback, operations: when } = parseArguments(populatedByDirective, populatedByUsage) as {
+            callback: string;
+            operations: ("CREATE" | "UPDATE")[];
+        };
+        return { populatedBy: { callback, when } };
+    }
+}
+
+function getDatabaseName(fieldDefinitionNode: FieldDefinitionNode): string | undefined {
+    const aliasUsage = findDirective(fieldDefinitionNode.directives, aliasDirective.name);
+    if (aliasUsage) {
+        const { property } = parseArguments(aliasDirective, aliasUsage) as { property: string };
+        return property;
+    }
 }
 
 // we may want to remove Fields from the schema model

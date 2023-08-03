@@ -591,4 +591,110 @@ describe("Attribute", () => {
             expect(attribute.mathModel.getDivide()).toMatchInlineSnapshot(`"test_DIVIDE"`);
         });
     });
+
+    describe("getGraphQLDefaultCallBack", () => {
+        test("getGraphQLDefaultCallBack should return default value wrapped as a callback", () => {
+            const attribute = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.Boolean, true),
+                    defaultValue: {
+                        value: false,
+                    },
+                })
+            );
+
+            const cb = attribute.getGraphQLDefaultCallBack();
+            expect(cb).toBeDefined();
+            expect(cb).toBeInstanceOf(Function);
+            expect((cb as () => any)()).toBe(false);
+        });
+
+        test("getGraphQLDefaultCallBack should return undefined if no default value is set", () => {
+            const attribute = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.Boolean, true),
+                })
+            );
+
+            const slugCB = () => {
+                return true;
+            };
+
+            expect(attribute.getGraphQLDefaultCallBack("CREATE", { slug: slugCB })).toBeUndefined();
+        });
+
+        test("getGraphQLDefaultCallBack should return undefined if a default value is set but for a different event", () => {
+            const attribute = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.Boolean, true),
+                    defaultValue: {
+                        populatedBy: {
+                            callback: "slug",
+                            when: ["CREATE"],
+                        },
+                    },
+                })
+            );
+
+            const slugCB = () => {
+                return true;
+            };
+
+            expect(attribute.getGraphQLDefaultCallBack("UPDATE", { slug: slugCB })).toBeUndefined();
+        });
+
+        test("getGraphQLDefaultCallBack should return a callback if a default value is set for the correct event", () => {
+            const attribute = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.Boolean, true),
+                    defaultValue: {
+                        populatedBy: {
+                            callback: "slug",
+                            when: ["CREATE"],
+                        },
+                    },
+                })
+            );
+
+            const slugCB = () => {
+                return true;
+            };
+            const cb = attribute.getGraphQLDefaultCallBack("CREATE", { slug: slugCB });
+            expect(cb).toBeDefined();
+            expect(cb).toBeInstanceOf(Function);
+            expect((cb as () => any)()).toBe(true);
+        });
+
+        test("getGraphQLDefaultCallBack should return undefined if the user callback is not defined", () => {
+            const attribute = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.Boolean, true),
+                    defaultValue: {
+                        populatedBy: {
+                            callback: "slug",
+                            when: ["CREATE"],
+                        },
+                    },
+                })
+            );
+
+            const slugCB = () => {
+                return true;
+            };
+
+            const cb = attribute.getGraphQLDefaultCallBack("CREATE", { notTheRightSlug: slugCB });
+            expect(cb).toBeUndefined();
+        });
+
+    });
 });

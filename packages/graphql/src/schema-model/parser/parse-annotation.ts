@@ -18,7 +18,6 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import { parseAliasAnnotation } from "./annotations-parser/alias-annotation";
 import { parseCoalesceAnnotation } from "./annotations-parser/coalesce-annotation";
 import { parseCypherAnnotation } from "./annotations-parser/cypher-annotation";
 import { parseCustomResolverAnnotation } from "./annotations-parser/custom-resolver-annotation";
@@ -50,8 +49,6 @@ export function parseAnnotations(directives: readonly DirectiveNode[]): Annotati
     return filterTruthy(
         directives.map((directive) => {
             switch (directive.name.value) {
-                case AnnotationsKey.alias:
-                    return parseAliasAnnotation(directive);
                 case AnnotationsKey.authentication:
                     return parseAuthenticationAnnotation(directive);
                 case AnnotationsKey.authorization:

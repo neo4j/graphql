@@ -163,7 +163,7 @@ function generateRelationshipField(
     definitionCollection: DefinitionCollection
 ): Relationship | undefined {
     const fieldTypeMeta = getFieldTypeMeta(field.type);
-    const relationshipUsage = findDirective(field.directives || [], "relationship");
+    const relationshipUsage = findDirective(field.directives, "relationship");
     if (!relationshipUsage) return undefined;
 
     const fieldName = field.name.value;
@@ -221,7 +221,7 @@ function generateConcreteEntity(
 }
 
 function getLabels(entityDefinition: ObjectTypeDefinitionNode): string[] {
-    const nodeDirectiveUsage = findDirective(entityDefinition.directives || [], "node");
+    const nodeDirectiveUsage = findDirective(entityDefinition.directives, nodeDirective.name);
     if (nodeDirectiveUsage) {
         const nodeArguments = parseArguments(nodeDirective, nodeDirectiveUsage) as { labels?: string[] };
         if (nodeArguments.labels?.length) {

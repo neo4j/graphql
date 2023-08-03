@@ -20,7 +20,7 @@
 
 import type { DirectiveNode } from "graphql";
 
-export function findDirective(directives: readonly DirectiveNode[], name: string): DirectiveNode | undefined {
+export function findDirective(directives: readonly DirectiveNode[] = [], name: string): DirectiveNode | undefined {
     return directives.find((d) => {
         return d.name.value === name;
     });

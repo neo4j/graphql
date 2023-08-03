@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { AliasAnnotation } from "./AliasAnnotation";
 import { AuthenticationAnnotation } from "./AuthenticationAnnotation";
 import { AuthorizationAnnotation } from "./AuthorizationAnnotation";
 import { CoalesceAnnotation } from "./CoalesceAnnotation";
@@ -49,7 +48,6 @@ export type Annotation =
     | AuthenticationAnnotation
     | KeyAnnotation
     | SubscriptionsAuthorizationAnnotation
-    | AliasAnnotation
     | QueryOptionsAnnotation
     | DefaultAnnotation
     | CoalesceAnnotation
@@ -72,7 +70,6 @@ export type Annotation =
 
 
 export enum AnnotationsKey {
-    alias = "alias",
     authentication = "authentication",
     authorization = "authorization",
     coalesce = "coalesce",
@@ -105,7 +102,6 @@ export type Annotations = {
     [AnnotationsKey.authentication]: AuthenticationAnnotation;
     [AnnotationsKey.key]: KeyAnnotation;
     [AnnotationsKey.subscriptionsAuthorization]: SubscriptionsAuthorizationAnnotation;
-    [AnnotationsKey.alias]: AliasAnnotation;
     [AnnotationsKey.queryOptions]: QueryOptionsAnnotation;
     [AnnotationsKey.default]: DefaultAnnotation;
     [AnnotationsKey.coalesce]: CoalesceAnnotation;
@@ -133,7 +129,6 @@ export function annotationToKey(ann: Annotation): keyof Annotations {
     if (ann instanceof AuthenticationAnnotation) return AnnotationsKey.authentication;
     if (ann instanceof KeyAnnotation) return AnnotationsKey.key;
     if (ann instanceof SubscriptionsAuthorizationAnnotation) return AnnotationsKey.subscriptionsAuthorization;
-    if (ann instanceof AliasAnnotation) return AnnotationsKey.alias;
     if (ann instanceof QueryOptionsAnnotation) return AnnotationsKey.queryOptions;
     if (ann instanceof DefaultAnnotation) return AnnotationsKey.default;
     if (ann instanceof CoalesceAnnotation) return AnnotationsKey.coalesce;

@@ -48,42 +48,6 @@ export class RelationshipAdapter {
         return `${this.source.name}${upperFirst(this.name)}Relationship`;
     }
 
-    /*  constructor({
-        name,
-        type,
-        attributes = new Map<string, Attribute>(),
-        source,
-        target,
-        direction,
-        queryDirection,
-        nestedOperations,
-        aggregate,
-    }: {
-        name: string;
-        type: string;
-        attributes?: Map<string, Attribute>;
-        source: ConcreteEntity | ConcreteEntityAdapter;
-        target: Entity;
-        direction: RelationshipDirection;
-        queryDirection: QueryDirection;
-        nestedOperations: NestedOperation[];
-        aggregate: boolean;
-    }) {
-        this.name = name;
-        this.type = type;
-        if (source instanceof ConcreteEntity) {
-            this.source = new ConcreteEntityAdapter(source);
-        } else {
-            this.source = source;
-        }
-        this.direction = direction;
-        this.queryDirection = queryDirection;
-        this.nestedOperations = nestedOperations;
-        this.aggregate = aggregate;
-        this.rawEntity = target;
-        this.initAttributes(attributes);
-    } */
-
     constructor(relationship: Relationship, sourceAdapter?: ConcreteEntityAdapter) {
         const {
             name,

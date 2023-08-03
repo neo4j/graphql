@@ -56,7 +56,7 @@ export function getDefinitionCollection(document: DocumentNode): DefinitionColle
                     definitionCollection.scalarTypes.set(definition.name.value, definition);
                     break;
                 case Kind.OBJECT_TYPE_DEFINITION:
-                    if (definition.directives && findDirective(definition.directives, jwt.name)) {
+                    if (findDirective(definition.directives, jwt.name)) {
                         definitionCollection.jwtPayload = definition;
                     } else if (!isRootType(definition)) {
                         definitionCollection.nodes.set(definition.name.value, definition);
@@ -69,7 +69,6 @@ export function getDefinitionCollection(document: DocumentNode): DefinitionColle
                     break;
                 case Kind.INTERFACE_TYPE_DEFINITION:
                     if (
-                        definition.directives &&
                         findDirective(definition.directives, relationshipPropertiesDirective.name)
                     ) {
                         definitionCollection.relationshipProperties.set(definition.name.value, definition);

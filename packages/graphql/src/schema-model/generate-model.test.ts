@@ -361,7 +361,7 @@ describe("Relationship", () => {
     });
 });
 
-describe("Annotations", () => {
+describe("Annotations & Attributes", () => {
     let schemaModel: Neo4jGraphQLSchemaModel;
     let userEntity: ConcreteEntity;
     let accountEntity: ConcreteEntity;
@@ -370,7 +370,9 @@ describe("Annotations", () => {
         const typeDefs = gql`
             type User @query @mutation @subscription {
                 id: ID!
-                name: String! @selectable(onAggregate: true)
+                name: String! @selectable(onAggregate: true) @alias(property: "dbName")
+                defaultName: String! @default(value: "John")
+                age: Int! @populatedBy(callback: "thisCallback" operations: [CREATE])
                 accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", direction: OUT)
             }
 
@@ -421,10 +423,29 @@ describe("Annotations", () => {
         expect(userName?.annotations[AnnotationsKey.selectable]?.onRead).toBe(true);
         expect(userName?.annotations[AnnotationsKey.selectable]?.onAggregate).toBe(true);
 
+        expect(userName?.databaseName).toBeDefined();
+        expect(userName?.databaseName).toBe("dbName");
+
+        const defaultName = userEntity?.attributes.get("defaultName");
+        expect(defaultName).toBeDefined();
+        expect(defaultName?.defaultValue).toBeDefined();
+        expect(defaultName?.defaultValue?.value).toBe("John");
+
+        const age = userEntity?.attributes.get("age");
+        expect(age).toBeDefined();
+        expect(age?.defaultValue).toBeDefined();
+        expect(age?.defaultValue?.populatedBy).toBeDefined();
+        expect(age?.defaultValue?.populatedBy?.callback).toBe("thisCallback");
+        expect(age?.defaultValue?.populatedBy?.when).toStrictEqual(["CREATE"]);
+
         const accountName = accountEntity?.attributes.get("accountName");
         expect(accountName?.annotations[AnnotationsKey.settable]).toBeDefined();
         expect(accountName?.annotations[AnnotationsKey.settable]?.onCreate).toBe(false);
         expect(accountName?.annotations[AnnotationsKey.settable]?.onUpdate).toBe(true);
+
+        expect(accountName?.databaseName).toBeDefined();
+        expect(accountName?.databaseName).toBe("accountName");
+
     });
 });
 
