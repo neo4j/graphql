@@ -228,6 +228,7 @@ function generateRelationshipField(
         const fields = (propertyInterface.fields || []).map((field) => generateAttribute(field));
         attributes = filterTruthy(fields);
     }
+
     return new Relationship({
         name: fieldName,
         type: type as string,
@@ -235,6 +236,7 @@ function generateRelationshipField(
         source,
         target: relatedToEntity,
         direction: direction as RelationshipDirection,
+        isArray: Boolean(fieldTypeMeta.array),
     });
 }
 
