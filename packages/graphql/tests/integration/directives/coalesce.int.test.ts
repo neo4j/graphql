@@ -50,7 +50,7 @@ describe("@coalesce directive", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
-            new GraphQLError("@coalesce is not supported by Spatial types at this time."),
+            new GraphQLError("@coalesce is not supported by Spatial types."),
         ]);
     });
 
@@ -67,7 +67,7 @@ describe("@coalesce directive", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
-            new GraphQLError("@coalesce is not supported by Temporal types at this time."),
+            new GraphQLError("@coalesce is not supported by Temporal types."),
         ]);
     });
 

@@ -54,15 +54,14 @@ export const RESERVED_INTERFACE_FIELDS = [
 
 export const GRAPHQL_BUILTIN_SCALAR_TYPES = ["Boolean", "ID", "String", "Int", "Float"];
 export const TEMPORAL_SCALAR_TYPES = ["DateTime", "LocalDateTime", "Time", "LocalTime", "Date"];
-export const SPATIAL_SCALAR_TYPES = ["Point", "CartesianPoint"];
-// TODO: add spatial types to scalar types?
 export const SCALAR_TYPES = [...GRAPHQL_BUILTIN_SCALAR_TYPES, ...TEMPORAL_SCALAR_TYPES, "BigInt", "Duration"];
+export const SPATIAL_TYPES = ["Point", "CartesianPoint"];
 
 export function isTemporal(typeName: string) {
     return TEMPORAL_SCALAR_TYPES.includes(typeName);
 }
 export function isSpatial(typeName: string) {
-    return SPATIAL_SCALAR_TYPES.includes(typeName);
+    return SPATIAL_TYPES.includes(typeName);
 }
 
 export const NODE_OR_EDGE_KEYS = ["node", "edge"];

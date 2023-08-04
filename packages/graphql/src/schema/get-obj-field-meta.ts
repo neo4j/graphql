@@ -39,7 +39,7 @@ import getFieldTypeMeta from "./get-field-type-meta";
 import { getCustomResolverMeta } from "./get-custom-resolver-meta";
 import getRelationshipMeta from "./get-relationship-meta";
 import getUniqueMeta from "./parse/get-unique-meta";
-import { SCALAR_TYPES, SPATIAL_SCALAR_TYPES, TEMPORAL_SCALAR_TYPES } from "../constants";
+import { SCALAR_TYPES, SPATIAL_TYPES, TEMPORAL_SCALAR_TYPES } from "../constants";
 import type {
     RelationField,
     CypherField,
@@ -154,7 +154,7 @@ function getObjFieldMeta({
             const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
             const fieldObject = objects.find((x) => x.name.value === typeMeta.name);
             const fieldTemporal = TEMPORAL_SCALAR_TYPES.includes(typeMeta.name);
-            const fieldPoint = SPATIAL_SCALAR_TYPES.includes(typeMeta.name);
+            const fieldPoint = SPATIAL_TYPES.includes(typeMeta.name);
 
             const selectableOptions = parseSelectableDirective(selectableDirective);
             const settableOptions = parseSettableDirective(settableDirective);

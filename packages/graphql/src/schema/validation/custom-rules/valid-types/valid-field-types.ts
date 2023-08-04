@@ -18,17 +18,17 @@
  */
 
 import type { ASTVisitor, DirectiveNode, FieldDefinitionNode } from "graphql";
-import { Kind, GraphQLError } from "graphql";
+import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { verifyId } from "../directives/id";
 import { verifyRelationshipFieldType } from "../directives/relationship";
 import { verifyTimestamp } from "../directives/timestamp";
 import { verifyUnique } from "../directives/unique";
-import type { VALIDATION_FN } from "../utils/document-validation-error";
-import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
+import type { ValidationFunction } from "../utils/document-validation-error";
+import { createGraphQLError, assertValid, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
 
-function getValidationFunction(directiveName: string): VALIDATION_FN | undefined {
+function getValidationFunction(directiveName: string): ValidationFunction | undefined {
     switch (directiveName) {
         case "id":
             return verifyId;
@@ -43,74 +43,48 @@ function getValidationFunction(directiveName: string): VALIDATION_FN | undefined
     }
 }
 
-export function ValidFieldTypes() {
-    return function (context: SDLValidationContext): ASTVisitor {
-        return {
-            FieldDefinition(field: FieldDefinitionNode, _key, _parent, path, ancestors) {
-                const [temp] = getPathToNode(path, ancestors);
-                const { isValid, errorMsg } = assertValid(isNotMatrixType.bind(null, field));
-                if (!isValid) {
-                    const errorOpts = {
+export function ValidFieldTypes(context: SDLValidationContext): ASTVisitor {
+    return {
+        FieldDefinition(field: FieldDefinitionNode, _key, _parent, path, ancestors) {
+            const [pathToNode] = getPathToNode(path, ancestors);
+            const { isValid, errorMsg } = assertValid(isNotMatrixType.bind(null, field));
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
                         nodes: [field],
-                        path: temp,
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
-
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                    context.reportError(
-                        new GraphQLError(
-                            errorMsg || "Error",
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError
-                        )
-                    );
-                }
-            },
-            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-                const [temp, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
-                const validationFn = getValidationFunction(directiveNode.name.value);
-                if (!validationFn) {
-                    return;
-                }
-                if (!traversedDef) {
-                    console.error("No last definition traversed");
-                    return;
-                }
-                const { isValid, errorMsg, errorPath } = assertValid(
-                    validationFn.bind(null, {
-                        directiveNode,
-                        traversedDef,
-                        parentDef: parentOfTraversedDef,
+                        path: pathToNode,
+                        errorMsg,
                     })
                 );
-                if (!isValid) {
-                    const errorOpts = {
+            }
+        },
+        Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
+            const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
+            const validationFn = getValidationFunction(directiveNode.name.value);
+            if (!validationFn) {
+                return;
+            }
+            if (!traversedDef) {
+                console.error("No last definition traversed");
+                return;
+            }
+            const { isValid, errorMsg, errorPath } = assertValid(
+                validationFn.bind(null, {
+                    directiveNode,
+                    traversedDef,
+                    parentDef: parentOfTraversedDef,
+                })
+            );
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
                         nodes: [traversedDef],
-                        path: [...temp, ...errorPath],
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
-
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                    context.reportError(
-                        new GraphQLError(
-                            errorMsg || "Error",
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError
-                        )
-                    );
-                }
-            },
-        };
+                        path: [...pathToNode, ...errorPath],
+                        errorMsg,
+                    })
+                );
+            }
+        },
     };
 }
 
@@ -118,11 +92,11 @@ function isNotMatrixType(field: FieldDefinitionNode) {
     const isListType = field.type.kind === Kind.LIST_TYPE;
     if (isListType) {
         const listNode = field.type;
-        const isMatrix = listNode.type.kind === Kind.LIST_TYPE;
+        const isListOfLists = listNode.type.kind === Kind.LIST_TYPE;
         // TODO: figure this out - seems to have no impact having this commented-out
         // && listNode.type.type.kind === Kind.LIST_TYPE;
-        if (isMatrix) {
-            throw new DocumentValidationError(`Invalid field type: Matrix arrays not supported.`, []);
+        if (isListOfLists) {
+            throw new DocumentValidationError(`Invalid field type: Lists of lists are not supported.`, []);
         }
     }
 }

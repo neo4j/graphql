@@ -18,63 +18,34 @@
  */
 
 import type { ASTVisitor, ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
-import { GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 
-export function ValidObjectType() {
-    return function (context: SDLValidationContext): ASTVisitor {
-        return {
-            ObjectTypeDefinition(objectType: ObjectTypeDefinitionNode) {
-                const { isValid, errorMsg } = assertValid(assertValidType.bind(null, objectType));
-                if (!isValid) {
-                    const errorOpts = {
+export function ValidObjectType(context: SDLValidationContext): ASTVisitor {
+    return {
+        ObjectTypeDefinition(objectType: ObjectTypeDefinitionNode) {
+            const { isValid, errorMsg } = assertValid(assertValidType.bind(null, objectType));
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
                         nodes: [objectType],
-                        path: undefined,
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
+                        errorMsg,
+                    })
+                );
+            }
+        },
+        InterfaceTypeDefinition(interfaceType: InterfaceTypeDefinitionNode) {
+            const { isValid, errorMsg } = assertValid(assertValidType.bind(null, interfaceType));
 
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                    context.reportError(
-                        new GraphQLError(
-                            errorMsg || "Error",
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError
-                        )
-                    );
-                }
-            },
-            InterfaceTypeDefinition(interfaceType: InterfaceTypeDefinitionNode) {
-                const { isValid, errorMsg } = assertValid(assertValidType.bind(null, interfaceType));
-
-                if (!isValid) {
-                    const errorOpts = {
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
                         nodes: [interfaceType],
-                        path: undefined,
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
-
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                    context.reportError(
-                        new GraphQLError(
-                            errorMsg || "Error",
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError
-                        )
-                    );
-                }
-            },
-        };
+                        errorMsg,
+                    })
+                );
+            }
+        },
     };
 }
 

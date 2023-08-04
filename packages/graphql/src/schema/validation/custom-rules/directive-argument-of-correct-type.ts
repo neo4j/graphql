@@ -25,11 +25,12 @@ import type {
     GraphQLDirective,
     GraphQLSchema,
 } from "graphql";
-import { GraphQLError, coerceInputValue, valueFromASTUntyped, buildASTSchema } from "graphql";
+import { coerceInputValue, valueFromASTUntyped, buildASTSchema } from "graphql";
 import type { Maybe } from "graphql/jsutils/Maybe";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { VALIDATION_ERROR_CODES } from "../utils/validation-error-codes";
 import type { AssertionResponse } from "./utils/document-validation-error";
+import { createGraphQLError } from "./utils/document-validation-error";
 import { getPathToNode } from "./utils/path-parser";
 
 export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): ASTVisitor {
@@ -45,15 +46,16 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
 
     return {
         Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
-            const oneOfAuthorizationDirectives = ["authorization", "authentication"].reduce<string | undefined>(
-                (genericDirective, oneOfAuthorizationDirectives) => {
-                    if (directiveNode.name.value.toLowerCase().includes(oneOfAuthorizationDirectives)) {
-                        genericDirective = oneOfAuthorizationDirectives;
-                    }
-                    return genericDirective;
-                },
-                undefined
-            );
+            const oneOfAuthorizationDirectives = [
+                "subscriptionsAuthorization",
+                "authorization",
+                "authentication",
+            ].reduce<string | undefined>((genericDirective, oneOfAuthorizationDirectives) => {
+                if (directiveNode.name.value.toLowerCase().includes(oneOfAuthorizationDirectives)) {
+                    genericDirective = oneOfAuthorizationDirectives;
+                }
+                return genericDirective;
+            }, undefined);
             const otherDirectives = ["fulltext", "relationship", "node", "customResolver", "cypher"].find(
                 (applicableDirectiveName) =>
                     directiveNode.name.value.toLowerCase() === applicableDirectiveName.toLowerCase()
@@ -88,30 +90,15 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                 }
                 const { isValid, errorMsg, errorPath } = assertArgumentType(argument, argumentDefinition);
                 if (!isValid) {
-                    const errorOpts = {
-                        nodes: [argument, directiveNode],
-
-                        extensions: {
-                            exception: { code: VALIDATION_ERROR_CODES[(directiveName as string).toUpperCase()] },
-                        },
-
-                        path: [...pathToHere, argument.name.value, ...errorPath],
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
-
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                     context.reportError(
-                        new GraphQLError(
-                            `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError,
-                            errorOpts.extensions
-                        )
+                        createGraphQLError({
+                            nodes: [argument, directiveNode],
+                            path: [...pathToHere, argument.name.value, ...errorPath],
+                            errorMsg: `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
+                            extensions: {
+                                exception: { code: VALIDATION_ERROR_CODES[(directiveName as string).toUpperCase()] },
+                            },
+                        })
                     );
                 }
             });

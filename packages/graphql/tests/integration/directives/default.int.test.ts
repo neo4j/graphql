@@ -49,7 +49,7 @@ describe("@default directive", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
-                new GraphQLError("@default is not supported by Spatial types at this time."),
+                new GraphQLError("@default is not supported by Spatial types."),
             ]);
         });
 

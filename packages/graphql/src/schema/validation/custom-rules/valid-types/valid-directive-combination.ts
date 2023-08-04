@@ -18,107 +18,78 @@
  */
 
 import type { ASTVisitor, DirectiveNode, ASTNode } from "graphql";
-import { Kind, GraphQLError, isTypeDefinitionNode, isTypeExtensionNode } from "graphql";
+import { Kind, isTypeDefinitionNode, isTypeExtensionNode } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { invalidCombinations } from "../../utils/invalid-directive-combinations";
-import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
 
-export function DirectiveCombinationValid() {
-    return function (context: SDLValidationContext): ASTVisitor {
-        return {
-            enter(node: ASTNode, _key, _parent, path, ancestors) {
-                if (!("directives" in node) || !node.directives) {
-                    return;
-                }
-                const [temp, traversedDef] = getPathToNode(path, ancestors);
-                const currentNodeErrorPath =
-                    isTypeDefinitionNode(node) || isTypeExtensionNode(node) ? [...temp, node.name.value] : temp;
+export function DirectiveCombinationValid(context: SDLValidationContext): ASTVisitor {
+    return {
+        enter(node: ASTNode, _key, _parent, path, ancestors) {
+            if (!("directives" in node) || !node.directives) {
+                return;
+            }
+            const [pathToNode, traversedDef] = getPathToNode(path, ancestors);
+            const currentNodeErrorPath =
+                isTypeDefinitionNode(node) || isTypeExtensionNode(node) ? [...pathToNode, node.name.value] : pathToNode;
 
-                const { isValid, errorMsg, errorPath } = assertValid(assertValidDirectives.bind(null, node.directives));
-                if (!isValid) {
-                    const errorOpts = {
+            const { isValid, errorMsg, errorPath } = assertValid(assertValidDirectives.bind(null, node.directives));
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
                         nodes: [traversedDef || node],
                         path: [...currentNodeErrorPath, ...errorPath],
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
-
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                    context.reportError(
-                        new GraphQLError(
-                            errorMsg || "Error",
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError
-                        )
-                    );
-                }
-            },
-        };
+                        errorMsg,
+                    })
+                );
+            }
+        },
     };
 }
 
-export function SchemaOrTypeDirectives() {
-    return function (context: SDLValidationContext): ASTVisitor {
-        const schemaLevelConfiguration = new Map<string, boolean>([
-            ["query", false],
-            ["mutation", false],
-            ["subscription", false],
-        ]);
-        const typeLevelConfiguration = new Map<string, boolean>([
-            ["query", false],
-            ["mutation", false],
-            ["subscription", false],
-        ]);
-        return {
-            enter(node: ASTNode) {
-                if (!("directives" in node) || !node.directives) {
-                    return;
-                }
+export function SchemaOrTypeDirectives(context: SDLValidationContext): ASTVisitor {
+    const schemaLevelConfiguration = new Map<string, boolean>([
+        ["query", false],
+        ["mutation", false],
+        ["subscription", false],
+    ]);
+    const typeLevelConfiguration = new Map<string, boolean>([
+        ["query", false],
+        ["mutation", false],
+        ["subscription", false],
+    ]);
+    return {
+        enter(node: ASTNode) {
+            if (!("directives" in node) || !node.directives) {
+                return;
+            }
 
-                const isSchemaLevel = node.kind === Kind.SCHEMA_DEFINITION || node.kind === Kind.SCHEMA_EXTENSION;
-                const isTypeLevel = isTypeDefinitionNode(node) || isTypeExtensionNode(node);
-                if (!isSchemaLevel && !isTypeLevel) {
-                    // only check combination of schema-level and type-level
-                    return;
-                }
+            const isSchemaLevel = node.kind === Kind.SCHEMA_DEFINITION || node.kind === Kind.SCHEMA_EXTENSION;
+            const isTypeLevel = isTypeDefinitionNode(node) || isTypeExtensionNode(node);
+            if (!isSchemaLevel && !isTypeLevel) {
+                // only check combination of schema-level and type-level
+                return;
+            }
 
-                const { isValid, errorMsg } = assertValid(
-                    assertSchemaOrType.bind(null, {
-                        directives: node.directives,
-                        schemaLevelConfiguration,
-                        typeLevelConfiguration,
-                        isSchemaLevel,
-                        isTypeLevel,
+            const { isValid, errorMsg } = assertValid(
+                assertSchemaOrType.bind(null, {
+                    directives: node.directives,
+                    schemaLevelConfiguration,
+                    typeLevelConfiguration,
+                    isSchemaLevel,
+                    isTypeLevel,
+                })
+            );
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [node],
+                        errorMsg,
                     })
                 );
-                if (!isValid) {
-                    const errorOpts = {
-                        nodes: [node],
-                        path: undefined,
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
-
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                    context.reportError(
-                        new GraphQLError(
-                            errorMsg || "Error",
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError
-                        )
-                    );
-                }
-            },
-        };
+            }
+        },
     };
 }
 

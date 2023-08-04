@@ -21,14 +21,17 @@ import type {
     ObjectTypeDefinitionNode,
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
+    ASTNode,
+    GraphQLErrorExtensions,
 } from "graphql";
+import { GraphQLError } from "graphql";
 
 export type AssertionResponse = {
     isValid: boolean;
     errorMsg?: string;
     errorPath: ReadonlyArray<string | number>;
 };
-export type VALIDATION_FN = ({
+export type ValidationFunction = ({
     directiveNode,
     traversedDef,
     parentDef,
@@ -59,4 +62,37 @@ export function assertValid(fn: () => void | undefined): AssertionResponse {
     }
 
     return { isValid, errorMsg, errorPath };
+}
+
+export function createGraphQLError({
+    nodes,
+    path,
+    errorMsg,
+    extensions,
+}: {
+    nodes?: ASTNode[] | readonly ASTNode[];
+    path?: (string | number)[] | readonly (string | number)[];
+    errorMsg?: string;
+    extensions?: GraphQLErrorExtensions;
+}) {
+    const errorOpts = {
+        nodes,
+        path,
+        source: undefined,
+        positions: undefined,
+        originalError: undefined,
+        extensions,
+    };
+
+    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
+
+    return new GraphQLError(
+        errorMsg || "Error",
+        errorOpts.nodes,
+        errorOpts.source,
+        errorOpts.positions,
+        errorOpts.path,
+        errorOpts.originalError,
+        errorOpts.extensions
+    );
 }

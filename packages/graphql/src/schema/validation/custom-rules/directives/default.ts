@@ -25,7 +25,7 @@ import type {
     InterfaceTypeDefinitionNode,
 } from "graphql";
 import { Kind } from "graphql";
-import { sameTypeArgumentAsField } from "../utils/same-type-argument-as-field";
+import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
 import { getInnerTypeName, isArrayType } from "../utils/utils";
 import { DocumentValidationError } from "../utils/document-validation-error";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES, isSpatial, isTemporal } from "../../../../constants";
@@ -59,9 +59,7 @@ export function verifyDefault(enums?: EnumTypeDefinitionNode[]) {
 
         if (!isArrayType(traversedDef)) {
             if (isSpatial(expectedType)) {
-                throw new DocumentValidationError(`@default is not supported by Spatial types at this time.`, [
-                    "value",
-                ]);
+                throw new DocumentValidationError(`@default is not supported by Spatial types.`, ["value"]);
             } else if (isTemporal(expectedType)) {
                 if (Number.isNaN(Date.parse((defaultArg?.value as StringValueNode).value))) {
                     throw new DocumentValidationError(
@@ -79,6 +77,6 @@ export function verifyDefault(enums?: EnumTypeDefinitionNode[]) {
                 );
             }
         }
-        sameTypeArgumentAsField({ directiveName: "@default", traversedDef, argument: defaultArg, enums });
+        assertArgumentHasSameTypeAsField({ directiveName: "@default", traversedDef, argument: defaultArg, enums });
     };
 }

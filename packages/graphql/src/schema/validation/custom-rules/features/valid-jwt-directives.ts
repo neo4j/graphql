@@ -24,64 +24,50 @@ import type {
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
 } from "graphql";
-import { Kind, GraphQLError } from "graphql";
+import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES } from "../../../../constants";
-import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
 import { getInnerTypeName } from "../utils/utils";
 
-export function ValidJwtDirectives() {
-    return function (context: SDLValidationContext): ASTVisitor {
-        let seenJwtType = false;
-        return {
-            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-                const isJwtDirective = directiveNode.name.value === "jwt";
-                const isJwtClaimDirective = directiveNode.name.value === "jwtClaim";
-                if (!isJwtDirective && !isJwtClaimDirective) {
-                    return;
-                }
+export function ValidJwtDirectives(context: SDLValidationContext): ASTVisitor {
+    let seenJwtType = false;
+    return {
+        Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
+            const isJwtDirective = directiveNode.name.value === "jwt";
+            const isJwtClaimDirective = directiveNode.name.value === "jwtClaim";
+            if (!isJwtDirective && !isJwtClaimDirective) {
+                return;
+            }
 
-                const [temp, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
-                if (!traversedDef) {
-                    console.error("No last definition traversed");
-                    return;
-                }
-                const pathToHere = [...temp, `@${directiveNode.name.value}`];
+            const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
+            if (!traversedDef) {
+                console.error("No last definition traversed");
+                return;
+            }
+            const pathToHere = [...pathToNode, `@${directiveNode.name.value}`];
 
-                let result;
-                if (isJwtDirective) {
-                    result = assertValid(assertJwtDirective.bind(null, traversedDef, seenJwtType));
-                    seenJwtType = true;
-                } else {
-                    result = assertValid(assertJwtClaimDirective.bind(null, traversedDef, parentOfTraversedDef));
-                }
+            let result;
+            if (isJwtDirective) {
+                result = assertValid(assertJwtDirective.bind(null, traversedDef, seenJwtType));
+                seenJwtType = true;
+            } else {
+                result = assertValid(assertJwtClaimDirective.bind(null, traversedDef, parentOfTraversedDef));
+            }
 
-                const { isValid, errorMsg } = result;
+            const { isValid, errorMsg } = result;
 
-                if (!isValid) {
-                    const errorOpts = {
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
                         nodes: [directiveNode, traversedDef],
                         path: pathToHere,
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
-
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                    context.reportError(
-                        new GraphQLError(
-                            errorMsg || "Error",
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError
-                        )
-                    );
-                }
-            },
-        };
+                        errorMsg,
+                    })
+                );
+            }
+        },
     };
 }
 

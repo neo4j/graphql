@@ -25,7 +25,6 @@ import type {
     InterfaceTypeDefinitionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import { GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import type { Neo4jGraphQLCallbacks } from "../../../../types";
 import { verifyCoalesce } from "./coalesce";
@@ -34,8 +33,8 @@ import { verifyFulltext } from "./fulltext";
 import { verifyPopulatedBy } from "./populatedBy";
 import { verifyQueryOptions } from "./queryOptions";
 import { verifyRelationshipArgumentValue } from "./relationship";
-import type { VALIDATION_FN } from "../utils/document-validation-error";
-import { assertValid } from "../utils/document-validation-error";
+import type { ValidationFunction } from "../utils/document-validation-error";
+import { createGraphQLError, assertValid } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
 
 function getValidationFunction(
@@ -53,7 +52,7 @@ function getValidationFunction(
         objects: ObjectTypeDefinitionNode[];
     },
     callbacks?: Neo4jGraphQLCallbacks
-): VALIDATION_FN | undefined {
+): ValidationFunction | undefined {
     switch (directiveName) {
         case "coalesce":
             return verifyCoalesce(extra?.enums);
@@ -77,7 +76,7 @@ function getValidationFunction(
     }
 }
 
-export function DirectiveIsValid(
+export function directiveIsValid(
     extra?: {
         enums: EnumTypeDefinitionNode[];
         interfaces: InterfaceTypeDefinitionNode[];
@@ -107,8 +106,8 @@ export function DirectiveIsValid(
                     return;
                 }
 
-                const [temp, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancenstors);
-                const pathToHere = [...temp, `@${directiveNode.name.value}`];
+                const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancenstors);
+                const pathToHere = [...pathToNode, `@${directiveNode.name.value}`];
 
                 if (!traversedDef) {
                     console.error("No last definition traversed");
@@ -123,24 +122,12 @@ export function DirectiveIsValid(
                     })
                 );
                 if (!isValid) {
-                    const errorOpts = {
-                        nodes: [directiveNode, traversedDef],
-                        path: [...pathToHere, ...errorPath],
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
-
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
                     context.reportError(
-                        new GraphQLError(
-                            errorMsg || "error",
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError
-                        )
+                        createGraphQLError({
+                            nodes: [directiveNode, traversedDef],
+                            path: [...pathToHere, ...errorPath],
+                            errorMsg,
+                        })
                     );
                 }
             },

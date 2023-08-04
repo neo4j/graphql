@@ -24,52 +24,36 @@ import type {
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
 } from "graphql";
-import { Kind, GraphQLError } from "graphql";
+import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { RESERVED_INTERFACE_FIELDS } from "../../../../constants";
-import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
 
-export function ValidRelationshipProperties() {
-    return function (context: SDLValidationContext): ASTVisitor {
-        return {
-            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-                if (directiveNode.name.value !== "relationshipProperties") {
-                    return;
-                }
+export function ValidRelationshipProperties(context: SDLValidationContext): ASTVisitor {
+    return {
+        Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
+            if (directiveNode.name.value !== "relationshipProperties") {
+                return;
+            }
 
-                const [temp, traversedDef] = getPathToNode(path, ancestors);
-                if (!traversedDef) {
-                    console.error("No last definition traversed");
-                    return;
-                }
+            const [pathToNode, traversedDef] = getPathToNode(path, ancestors);
+            if (!traversedDef) {
+                console.error("No last definition traversed");
+                return;
+            }
 
-                const { isValid, errorMsg, errorPath } = assertValid(
-                    assertRelationshipProperties.bind(null, traversedDef)
-                );
-                if (!isValid) {
-                    const errorOpts = {
+            const { isValid, errorMsg, errorPath } = assertValid(assertRelationshipProperties.bind(null, traversedDef));
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
                         nodes: [directiveNode, traversedDef],
-                        path: [...temp, ...errorPath],
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
-
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                    context.reportError(
-                        new GraphQLError(
-                            errorMsg || "Error",
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError
-                        )
-                    );
-                }
-            },
-        };
+                        path: [...pathToNode, ...errorPath],
+                        errorMsg,
+                    })
+                );
+            }
+        },
     };
 }
 
@@ -89,7 +73,7 @@ function assertRelationshipProperties(
         });
 
         if (field.directives) {
-            const forbiddenDirectives = ["auth", "authorization", "authentication", "relationship", "cypher"];
+            const forbiddenDirectives = ["authorization", "authentication", "relationship", "cypher"];
             const foundForbiddenDirective = field.directives.find((d) => forbiddenDirectives.includes(d.name.value));
             if (foundForbiddenDirective) {
                 throw new DocumentValidationError(

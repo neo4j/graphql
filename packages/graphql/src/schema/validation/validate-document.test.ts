@@ -251,7 +251,10 @@ describe("validation 2.0", () => {
                 `;
 
                 const executeValidate = () =>
-                    validateDocument({ document: doc, callbacks: { myCallback: () => "hello" }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
+                    });
                 expect(executeValidate).toThrow(
                     'Directive "@populatedBy" argument "callback" of type "String!" is required, but it was not provided.'
                 );
@@ -266,8 +269,7 @@ describe("validation 2.0", () => {
                 expect(() =>
                     validateDocument({
                         document: doc,
-                        callbacks: { myCallback: () => "hello" },
-                        features: {},
+                        features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
                     })
                 ).not.toThrow();
             });
@@ -1068,7 +1070,7 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test("@default not supported on Spatial types at this time", () => {
+            test("@default not supported on Spatial types", () => {
                 const doc = gql`
                     type User {
                         updatedAt: Point @default(value: "test")
@@ -1085,7 +1087,7 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default is not supported by Spatial types at this time.");
+                expect(errors[0]).toHaveProperty("message", "@default is not supported by Spatial types.");
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default", "value"]);
             });
 
@@ -1649,7 +1651,7 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test("@coalesce not supported on Spatial types at this time", () => {
+            test("@coalesce not supported on Spatial types", () => {
                 const doc = gql`
                     type User {
                         updatedAt: Point @coalesce(value: "test")
@@ -1666,14 +1668,11 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "@coalesce is not supported by Spatial types at this time."
-                );
+                expect(errors[0]).toHaveProperty("message", "@coalesce is not supported by Spatial types.");
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@coalesce", "value"]);
             });
 
-            test("@coalesce not supported on Temporal types at this time", () => {
+            test("@coalesce not supported on Temporal types", () => {
                 const doc = gql`
                     type User {
                         updatedAt: DateTime @coalesce(value: "test")
@@ -1690,10 +1689,7 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "@coalesce is not supported by Temporal types at this time."
-                );
+                expect(errors[0]).toHaveProperty("message", "@coalesce is not supported by Temporal types.");
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@coalesce", "value"]);
             });
 
@@ -2131,8 +2127,13 @@ describe("validation 2.0", () => {
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        callbacks: { getUName: "i should really be a Function.." as unknown as Neo4jGraphQLCallback },
-                        features: {},
+                        features: {
+                            populatedBy: {
+                                callbacks: {
+                                    getUName: "i should really be a Function.." as unknown as Neo4jGraphQLCallback,
+                                },
+                            },
+                        },
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -2154,8 +2155,7 @@ describe("validation 2.0", () => {
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        callbacks: { getUName: () => "myUserName" },
-                        features: {},
+                        features: { populatedBy: { callbacks: { getUName: () => "myUserName" } } },
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -3118,7 +3118,7 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "Invalid field type: Matrix arrays not supported.");
+                expect(errors[0]).toHaveProperty("message", "Invalid field type: Lists of lists are not supported.");
                 expect(errors[0]).toHaveProperty("path", ["Post", "titles"]);
             });
 
@@ -3133,7 +3133,7 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "Invalid field type: Matrix arrays not supported.");
+                expect(errors[0]).toHaveProperty("message", "Invalid field type: Lists of lists are not supported.");
                 expect(errors[0]).toHaveProperty("path", ["Post", "titles"]);
             });
 

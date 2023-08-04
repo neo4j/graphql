@@ -22,7 +22,7 @@ import { fromValueKind, getInnerTypeName, isArrayType } from "./utils";
 import { isSpatial, isTemporal } from "../../../../constants";
 import { DocumentValidationError } from "./document-validation-error";
 
-export function sameTypeArgumentAsField({
+export function assertArgumentHasSameTypeAsField({
     directiveName,
     traversedDef,
     argument,

@@ -24,7 +24,7 @@ import type {
     InterfaceTypeDefinitionNode,
 } from "graphql";
 import { Kind } from "graphql";
-import { sameTypeArgumentAsField } from "../utils/same-type-argument-as-field";
+import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
 import { getInnerTypeName, isArrayType } from "../utils/utils";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES, isSpatial, isTemporal } from "../../../../constants";
 import { DocumentValidationError } from "../utils/document-validation-error";
@@ -55,14 +55,10 @@ export function verifyCoalesce(enums?: EnumTypeDefinitionNode[]) {
 
         if (!isArrayType(traversedDef)) {
             if (isSpatial(expectedType)) {
-                throw new DocumentValidationError(`@coalesce is not supported by Spatial types at this time.`, [
-                    "value",
-                ]);
+                throw new DocumentValidationError(`@coalesce is not supported by Spatial types.`, ["value"]);
             }
             if (isTemporal(expectedType)) {
-                throw new DocumentValidationError(`@coalesce is not supported by Temporal types at this time.`, [
-                    "value",
-                ]);
+                throw new DocumentValidationError(`@coalesce is not supported by Temporal types.`, ["value"]);
             }
             if (
                 !GRAPHQL_BUILTIN_SCALAR_TYPES.includes(expectedType) &&
@@ -74,6 +70,6 @@ export function verifyCoalesce(enums?: EnumTypeDefinitionNode[]) {
                 );
             }
         }
-        sameTypeArgumentAsField({ directiveName: "@coalesce", traversedDef, argument: coalesceArg, enums });
+        assertArgumentHasSameTypeAsField({ directiveName: "@coalesce", traversedDef, argument: coalesceArg, enums });
     };
 }

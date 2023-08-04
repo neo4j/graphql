@@ -18,172 +18,131 @@
  */
 
 import type { ASTVisitor, DirectiveNode, ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
-import { Kind, GraphQLError } from "graphql";
+import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
 
-export function ValidGlobalID() {
-    return function (context: SDLValidationContext): ASTVisitor {
-        const typeNameToGlobalId = new Map<string, boolean>();
-        const interfaceToImplementingTypes = new Map<string, string[]>();
-        const typeNameToAliasedFields = new Map<string, Set<string>>();
-        const addToAliasedFieldsMap = function (typeName: string, fieldName?: string) {
-            const x = typeNameToAliasedFields.get(typeName) || new Set<string>();
-            fieldName && x.add(fieldName);
-            typeNameToAliasedFields.set(typeName, x);
-        };
-        const getAliasedFieldsFromMap = function (typeName: string) {
-            return typeNameToAliasedFields.get(typeName);
-        };
-        return {
-            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-                const [temp, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
-                if (!traversedDef) {
-                    console.error("No last definition traversed");
-                    return;
-                }
-                if (!parentOfTraversedDef) {
-                    console.error("No parent of last definition traversed");
-                    return;
-                }
+export function ValidGlobalID(context: SDLValidationContext): ASTVisitor {
+    const typeNameToGlobalId = new Map<string, boolean>();
+    const interfaceToImplementingTypes = new Map<string, string[]>();
+    const typeNameToAliasedFields = new Map<string, Set<string>>();
+    const addToAliasedFieldsMap = function (typeName: string, fieldName?: string) {
+        const x = typeNameToAliasedFields.get(typeName) || new Set<string>();
+        fieldName && x.add(fieldName);
+        typeNameToAliasedFields.set(typeName, x);
+    };
+    const getAliasedFieldsFromMap = function (typeName: string) {
+        return typeNameToAliasedFields.get(typeName);
+    };
+    return {
+        Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
+            const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
+            if (!traversedDef) {
+                console.error("No last definition traversed");
+                return;
+            }
+            if (!parentOfTraversedDef) {
+                console.error("No parent of last definition traversed");
+                return;
+            }
 
-                if (directiveNode.name.value === "alias") {
-                    addToAliasedFieldsMap(parentOfTraversedDef.name.value, traversedDef.name.value);
-                }
+            if (directiveNode.name.value === "alias") {
+                addToAliasedFieldsMap(parentOfTraversedDef.name.value, traversedDef.name.value);
+            }
 
-                if (directiveNode.name.value !== "id") {
-                    return;
-                }
-                const isGlobalID = directiveNode.arguments?.find(
-                    (a) => a.name.value === "global" && a.value.kind === Kind.BOOLEAN && a.value.value === true
-                );
-                if (!isGlobalID) {
-                    return;
-                }
+            if (directiveNode.name.value !== "id") {
+                return;
+            }
+            const isGlobalID = directiveNode.arguments?.find(
+                (a) => a.name.value === "global" && a.value.kind === Kind.BOOLEAN && a.value.value === true
+            );
+            if (!isGlobalID) {
+                return;
+            }
 
-                const { isValid, errorMsg, errorPath } = assertValid(
-                    assertValidGlobalID.bind(null, {
-                        directiveNode,
-                        typeDef: parentOfTraversedDef,
-                        typeNameToGlobalId,
-                        interfaceToImplementingTypes,
+            const { isValid, errorMsg, errorPath } = assertValid(
+                assertValidGlobalID.bind(null, {
+                    directiveNode,
+                    typeDef: parentOfTraversedDef,
+                    typeNameToGlobalId,
+                    interfaceToImplementingTypes,
+                })
+            );
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [directiveNode, traversedDef],
+                        path: [...pathToNode, ...errorPath],
+                        errorMsg,
                     })
                 );
-                if (!isValid) {
-                    const errorOpts = {
-                        nodes: [directiveNode, traversedDef],
-                        path: [...temp, ...errorPath],
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
+            }
+        },
 
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
+        ObjectTypeDefinition: {
+            enter(objectType: ObjectTypeDefinitionNode) {
+                objectType.interfaces?.forEach((i) => {
+                    const implementedTypes = interfaceToImplementingTypes.get(i.name.value) || [];
+                    interfaceToImplementingTypes.set(i.name.value, implementedTypes.concat(objectType.name.value));
+                });
+            },
+            leave(objectType: ObjectTypeDefinitionNode) {
+                addToAliasedFieldsMap(objectType.name.value);
+
+                const fieldNamedID = getUnaliasedFieldNamedID(objectType);
+                if (!fieldNamedID || !hasGlobalIDField(objectType, typeNameToGlobalId, interfaceToImplementingTypes)) {
+                    return;
+                }
+
+                const inheritedAliasedFields = (
+                    getInheritedTypeNames(objectType, interfaceToImplementingTypes) || []
+                ).map(getAliasedFieldsFromMap);
+
+                const { isValid, errorMsg, errorPath } = assertValid(
+                    assertGlobalIDDoesNotClash.bind(null, inheritedAliasedFields)
+                );
+                if (!isValid) {
                     context.reportError(
-                        new GraphQLError(
-                            errorMsg || "Error",
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError
-                        )
+                        createGraphQLError({
+                            nodes: [objectType, fieldNamedID],
+                            path: [objectType.name.value, ...errorPath],
+                            errorMsg,
+                        })
                     );
                 }
             },
+        },
 
-            ObjectTypeDefinition: {
-                enter(objectType: ObjectTypeDefinitionNode) {
-                    objectType.interfaces?.forEach((i) => {
-                        const implementedTypes = interfaceToImplementingTypes.get(i.name.value) || [];
-                        interfaceToImplementingTypes.set(i.name.value, implementedTypes.concat(objectType.name.value));
-                    });
-                },
-                leave(objectType: ObjectTypeDefinitionNode) {
-                    addToAliasedFieldsMap(objectType.name.value);
+        InterfaceTypeDefinition: {
+            leave(interfaceType: InterfaceTypeDefinitionNode) {
+                addToAliasedFieldsMap(interfaceType.name.value);
+                const fieldNamedID = getUnaliasedFieldNamedID(interfaceType);
+                if (
+                    !fieldNamedID ||
+                    !hasGlobalIDField(interfaceType, typeNameToGlobalId, interfaceToImplementingTypes)
+                ) {
+                    return;
+                }
 
-                    const fieldNamedID = getUnaliasedFieldNamedID(objectType);
-                    if (
-                        !fieldNamedID ||
-                        !hasGlobalIDField(objectType, typeNameToGlobalId, interfaceToImplementingTypes)
-                    ) {
-                        return;
-                    }
+                const inheritedAliasedFields = (
+                    getInheritedTypeNames(interfaceType, interfaceToImplementingTypes) || []
+                ).map(getAliasedFieldsFromMap);
 
-                    const inheritedAliasedFields = (
-                        getInheritedTypeNames(objectType, interfaceToImplementingTypes) || []
-                    ).map(getAliasedFieldsFromMap);
-
-                    const { isValid, errorMsg, errorPath } = assertValid(
-                        assertGlobalIDDoesNotClash.bind(null, inheritedAliasedFields)
-                    );
-                    if (!isValid) {
-                        const errorOpts = {
-                            nodes: [objectType, fieldNamedID],
-                            path: [objectType.name.value, ...errorPath],
-                            source: undefined,
-                            positions: undefined,
-                            originalError: undefined,
-                        };
-
-                        // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                        context.reportError(
-                            new GraphQLError(
-                                errorMsg || "Error",
-                                errorOpts.nodes,
-                                errorOpts.source,
-                                errorOpts.positions,
-                                errorOpts.path,
-                                errorOpts.originalError
-                            )
-                        );
-                    }
-                },
-            },
-
-            InterfaceTypeDefinition: {
-                leave(interfaceType: InterfaceTypeDefinitionNode) {
-                    addToAliasedFieldsMap(interfaceType.name.value);
-                    const fieldNamedID = getUnaliasedFieldNamedID(interfaceType);
-                    if (
-                        !fieldNamedID ||
-                        !hasGlobalIDField(interfaceType, typeNameToGlobalId, interfaceToImplementingTypes)
-                    ) {
-                        return;
-                    }
-
-                    const inheritedAliasedFields = (
-                        getInheritedTypeNames(interfaceType, interfaceToImplementingTypes) || []
-                    ).map(getAliasedFieldsFromMap);
-
-                    const { isValid, errorMsg, errorPath } = assertValid(
-                        assertGlobalIDDoesNotClash.bind(null, inheritedAliasedFields)
-                    );
-                    if (!isValid) {
-                        const errorOpts = {
+                const { isValid, errorMsg, errorPath } = assertValid(
+                    assertGlobalIDDoesNotClash.bind(null, inheritedAliasedFields)
+                );
+                if (!isValid) {
+                    context.reportError(
+                        createGraphQLError({
                             nodes: [interfaceType],
                             path: [interfaceType.name.value, ...errorPath],
-                            source: undefined,
-                            positions: undefined,
-                            originalError: undefined,
-                        };
-
-                        // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                        context.reportError(
-                            new GraphQLError(
-                                errorMsg || "Error",
-                                errorOpts.nodes,
-                                errorOpts.source,
-                                errorOpts.positions,
-                                errorOpts.path,
-                                errorOpts.originalError
-                            )
-                        );
-                    }
-                },
+                            errorMsg,
+                        })
+                    );
+                }
             },
-        };
+        },
     };
 }
 

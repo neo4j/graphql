@@ -27,12 +27,12 @@ import type {
     EnumTypeDefinitionNode,
     InputObjectTypeDefinitionNode,
 } from "graphql";
-import { Kind, GraphQLError } from "graphql";
+import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { RESERVED_TYPE_NAMES } from "../../../../constants";
-import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 
-type SpecializedASTNode =
+type ReservableASTNode =
     | ObjectTypeDefinitionNode
     | ScalarTypeDefinitionNode
     | InterfaceTypeDefinitionNode
@@ -40,42 +40,27 @@ type SpecializedASTNode =
     | EnumTypeDefinitionNode
     | InputObjectTypeDefinitionNode;
 
-export function ReservedTypeNames() {
-    return function (context: SDLValidationContext): ASTVisitor {
-        return {
-            enter(node: ASTNode) {
-                if (!isSpecializedASTNode(node)) {
-                    return;
-                }
+export function ReservedTypeNames(context: SDLValidationContext): ASTVisitor {
+    return {
+        enter(node: ASTNode) {
+            if (!isReservableASTNode(node)) {
+                return;
+            }
 
-                const { isValid, errorMsg } = assertValid(assertTypeNameIsReserved.bind(null, node));
-                if (!isValid) {
-                    const errorOpts = {
+            const { isValid, errorMsg } = assertValid(assertTypeNameIsReserved.bind(null, node));
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
                         nodes: [node],
-                        path: undefined,
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
-
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                    context.reportError(
-                        new GraphQLError(
-                            errorMsg || "Error",
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError
-                        )
-                    );
-                }
-            },
-        };
+                        errorMsg,
+                    })
+                );
+            }
+        },
     };
 }
 
-function isSpecializedASTNode(node: ASTNode): node is SpecializedASTNode {
+function isReservableASTNode(node: ASTNode): node is ReservableASTNode {
     if (
         [
             Kind.OBJECT_TYPE_DEFINITION,
@@ -90,7 +75,7 @@ function isSpecializedASTNode(node: ASTNode): node is SpecializedASTNode {
     }
     return false;
 }
-function assertTypeNameIsReserved(node: SpecializedASTNode) {
+function assertTypeNameIsReserved(node: ReservableASTNode) {
     RESERVED_TYPE_NAMES.forEach((reservedName) => {
         if (reservedName.regex.test(node.name.value)) {
             throw new DocumentValidationError(reservedName.error, []);

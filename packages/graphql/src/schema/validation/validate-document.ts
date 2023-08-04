@@ -57,7 +57,7 @@ import { ReservedTypeNames } from "./custom-rules/valid-types/reserved-type-name
 import { ValidGlobalID } from "./custom-rules/features/valid-global-id";
 import { ValidObjectType } from "./custom-rules/valid-types/valid-object-type";
 import { ValidDirectiveInheritance } from "./custom-rules/valid-types/directive-multiple-inheritance";
-import { DirectiveIsValid } from "./custom-rules/directives/valid-directive";
+import { directiveIsValid } from "./custom-rules/directives/valid-directive";
 import { ValidRelationshipProperties } from "./custom-rules/features/valid-relationship-properties";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
@@ -237,21 +237,20 @@ function runValidationRulesOnFilteredDocument({
     };
     callbacks?: Neo4jGraphQLCallbacks;
 }) {
-    // ==================== for rules testing ====
     const errors = validateSDL(
         document,
         [
             ...specifiedSDLRules,
-            DirectiveIsValid(extra, callbacks),
-            DirectiveCombinationValid(),
-            SchemaOrTypeDirectives(),
-            ValidJwtDirectives(),
-            ValidGlobalID(),
-            ValidRelationshipProperties(),
-            ValidFieldTypes(),
-            ReservedTypeNames(),
-            ValidObjectType(),
-            ValidDirectiveInheritance(),
+            directiveIsValid(extra, callbacks),
+            DirectiveCombinationValid,
+            SchemaOrTypeDirectives,
+            ValidJwtDirectives,
+            ValidGlobalID,
+            ValidRelationshipProperties,
+            ValidFieldTypes,
+            ReservedTypeNames,
+            ValidObjectType,
+            ValidDirectiveInheritance,
             DirectiveArgumentOfCorrectType,
         ],
         schema
@@ -260,7 +259,6 @@ function runValidationRulesOnFilteredDocument({
     if (filteredErrors.length) {
         throw filteredErrors;
     }
-    // ===========================================
 }
 
 function validateDocument({
@@ -269,7 +267,6 @@ function validateDocument({
     additionalDirectives = [],
     additionalTypes = [],
     extra,
-    callbacks,
 }: {
     document: DocumentNode;
     features: Neo4jFeaturesSettings | undefined;
@@ -281,7 +278,6 @@ function validateDocument({
         unions: UnionTypeDefinitionNode[];
         objects: ObjectTypeDefinitionNode[];
     };
-    callbacks?: Neo4jGraphQLCallbacks;
 }): void {
     const filteredDocument = filterDocument(document, features);
     const schemaToExtend = new GraphQLSchema({
@@ -303,7 +299,7 @@ function validateDocument({
         schema: schemaToExtend,
         document: filteredDocument,
         extra,
-        callbacks,
+        callbacks: features?.populatedBy?.callbacks,
     });
 
     const schema = extendSchema(schemaToExtend, filteredDocument);

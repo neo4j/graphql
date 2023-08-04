@@ -325,7 +325,6 @@ class Neo4jGraphQL {
                     document: initialDocument,
                     features: this.features,
                     extra: { enums, interfaces, unions, objects },
-                    callbacks: this.features?.populatedBy?.callbacks,
                 });
             }
 
@@ -382,7 +381,6 @@ class Neo4jGraphQL {
                 additionalDirectives: directives,
                 additionalTypes: types,
                 extra: { enums, interfaces, unions, objects },
-                callbacks: this.features?.populatedBy?.callbacks,
             });
         }
 

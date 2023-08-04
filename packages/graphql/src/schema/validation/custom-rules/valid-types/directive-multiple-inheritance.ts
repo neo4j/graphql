@@ -18,63 +18,48 @@
  */
 
 import type { ASTVisitor, ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
-import { GraphQLError } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { assertValid, DocumentValidationError } from "../utils/document-validation-error";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 
-export function ValidDirectiveInheritance() {
-    return function (context: SDLValidationContext): ASTVisitor {
-        // TODO: maybe make ts understand Map1.string and Map2.string[] refer to the same category
-        const interfacesToExludeDirectiveMap = new Map<string, boolean>();
-        const multipleInheritedInterfaces = new Map<string, string[]>();
+export function ValidDirectiveInheritance(context: SDLValidationContext): ASTVisitor {
+    // TODO: maybe make ts understand Map1.string and Map2.string[] refer to the same category
+    const interfacesToExludeDirectiveMap = new Map<string, boolean>();
+    const multipleInheritedInterfaces = new Map<string, string[]>();
 
-        return {
-            ObjectTypeDefinition(objectType: ObjectTypeDefinitionNode) {
-                if (objectType.interfaces && objectType.interfaces.length > 1) {
-                    multipleInheritedInterfaces.set(
-                        objectType.name.value,
-                        objectType.interfaces.map((i) => i.name.value)
-                    );
-                }
-            },
-            InterfaceTypeDefinition(interfaceType: InterfaceTypeDefinitionNode) {
-                if (!interfaceType.directives) {
-                    return;
-                }
-                const excludeDirective = interfaceType.directives.find((d) => d.name.value === "exclude");
-                interfacesToExludeDirectiveMap.set(interfaceType.name.value, !!excludeDirective);
-
-                if (!!excludeDirective === false) {
-                    return;
-                }
-
-                const { isValid, errorMsg, errorPath } = assertValid(
-                    assertMultipleInheritance.bind(null, interfacesToExludeDirectiveMap, multipleInheritedInterfaces)
+    return {
+        ObjectTypeDefinition(objectType: ObjectTypeDefinitionNode) {
+            if (objectType.interfaces && objectType.interfaces.length > 1) {
+                multipleInheritedInterfaces.set(
+                    objectType.name.value,
+                    objectType.interfaces.map((i) => i.name.value)
                 );
+            }
+        },
+        InterfaceTypeDefinition(interfaceType: InterfaceTypeDefinitionNode) {
+            if (!interfaceType.directives) {
+                return;
+            }
+            const excludeDirective = interfaceType.directives.find((d) => d.name.value === "exclude");
+            interfacesToExludeDirectiveMap.set(interfaceType.name.value, !!excludeDirective);
 
-                if (!isValid) {
-                    const errorOpts = {
+            if (!!excludeDirective === false) {
+                return;
+            }
+
+            const { isValid, errorMsg, errorPath } = assertValid(
+                assertMultipleInheritance.bind(null, interfacesToExludeDirectiveMap, multipleInheritedInterfaces)
+            );
+
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
                         nodes: [interfaceType],
                         path: errorPath,
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
-
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                    context.reportError(
-                        new GraphQLError(
-                            errorMsg || "Error",
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError
-                        )
-                    );
-                }
-            },
-        };
+                        errorMsg,
+                    })
+                );
+            }
+        },
     };
 }
 
