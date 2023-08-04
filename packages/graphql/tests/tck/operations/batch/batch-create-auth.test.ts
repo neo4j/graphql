@@ -146,7 +146,7 @@ describe("Batch Create, Auth", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param3 AS create_var4
+            "UNWIND $create_param2 AS create_var4
             CALL {
                 WITH create_var4
                 CREATE (create_this0:Movie)
@@ -175,7 +175,7 @@ describe("Batch Create, Auth", () => {
                     RETURN collect(NULL) AS create_var10
                 }
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $create_param4 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $create_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this0
                 CALL {
                 	WITH create_this0
@@ -189,7 +189,7 @@ describe("Batch Create, Auth", () => {
             CALL {
                 WITH create_this0
                 MATCH (create_this0)<-[create_this1:ACTED_IN]-(create_this2:Actor)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this2.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this2.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this2 { .name } AS create_this2
                 RETURN collect(create_this2) AS create_var3
             }
@@ -203,8 +203,7 @@ describe("Batch Create, Auth", () => {
                     \\"roles\\": [],
                     \\"sub\\": \\"1\\"
                 },
-                \\"jwtDefault\\": {},
-                \\"create_param3\\": [
+                \\"create_param2\\": [
                     {
                         \\"id\\": \\"1\\",
                         \\"actors\\": {
@@ -242,7 +241,7 @@ describe("Batch Create, Auth", () => {
                         }
                     }
                 ],
-                \\"create_param4\\": \\"admin\\",
+                \\"create_param3\\": \\"admin\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -369,7 +368,7 @@ describe("Batch Create, Auth", () => {
             CALL {
             	WITH this3
             	OPTIONAL MATCH (this3_actors_connect0_node:Actor)
-            	WHERE this3_actors_connect0_node.id = $this3_actors_connect0_node_param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this3_actors_connect0_node.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE this3_actors_connect0_node.id = $this3_actors_connect0_node_param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this3_actors_connect0_node.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	CALL {
             		WITH *
             		WITH collect(this3_actors_connect0_node) as connectedNodes, collect(this3) as parentNodes
@@ -428,7 +427,7 @@ describe("Batch Create, Auth", () => {
             CALL {
                 WITH this0
                 MATCH (this0)<-[create_this3:ACTED_IN]-(create_this4:Actor)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this4.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this4.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this4 { .name } AS create_this4
                 RETURN collect(create_this4) AS create_var5
             }
@@ -441,7 +440,7 @@ describe("Batch Create, Auth", () => {
             CALL {
                 WITH this1
                 MATCH (this1)<-[create_this9:ACTED_IN]-(create_this10:Actor)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this10.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this10.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this10 { .name } AS create_this10
                 RETURN collect(create_this10) AS create_var11
             }
@@ -454,7 +453,7 @@ describe("Batch Create, Auth", () => {
             CALL {
                 WITH this2
                 MATCH (this2)<-[create_this15:ACTED_IN]-(create_this16:Actor)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this16.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this16.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this16 { .name } AS create_this16
                 RETURN collect(create_this16) AS create_var17
             }
@@ -467,7 +466,7 @@ describe("Batch Create, Auth", () => {
             CALL {
                 WITH this3
                 MATCH (this3)<-[create_this21:ACTED_IN]-(create_this22:Actor)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this22.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this22.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this22 { .name } AS create_this22
                 RETURN collect(create_this22) AS create_var23
             }
@@ -480,7 +479,7 @@ describe("Batch Create, Auth", () => {
             CALL {
                 WITH this4
                 MATCH (this4)<-[create_this27:ACTED_IN]-(create_this28:Actor)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_this28.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this28.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this28 { .name } AS create_this28
                 RETURN collect(create_this28) AS create_var29
             }
@@ -494,7 +493,6 @@ describe("Batch Create, Auth", () => {
                     \\"roles\\": [],
                     \\"sub\\": \\"1\\"
                 },
-                \\"jwtDefault\\": {},
                 \\"this0_id\\": \\"1\\",
                 \\"this0_actors0_node_name\\": \\"actor 1\\",
                 \\"this0_actors0_relationship_year\\": {

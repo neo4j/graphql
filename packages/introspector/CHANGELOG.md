@@ -1,5 +1,11 @@
 # @neo4j/introspector
 
+## 2.0.0-beta.0
+
+### Major Changes
+
+-   [#2834](https://github.com/neo4j/graphql/pull/2834) [`8d3aff007`](https://github.com/neo4j/graphql/commit/8d3aff007c0d5428313cef23602e9a4ef5ef3792) Thanks [@a-alle](https://github.com/a-alle)! - Deprecated @node directive arguments `label` and `additionalLabels` have been removed. Please use the `labels` argument.
+
 ## 1.0.3
 
 ### Patch Changes

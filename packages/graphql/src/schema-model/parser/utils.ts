@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
-import parseValueNode from "./parse-value-node";
 
-export function parseArguments(directive: DirectiveNode): Record<string, unknown> {
-    return (directive.arguments || [])?.reduce((acc, argument) => {
-        acc[argument.name.value] = parseValueNode(argument.value);
-        return acc;
-    }, {});
+
+import type { DirectiveNode } from "graphql";
+
+export function findDirective(directives: readonly DirectiveNode[] = [], name: string): DirectiveNode | undefined {
+    return directives.find((d) => {
+        return d.name.value === name;
+    });
 }

@@ -18,7 +18,7 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import { getArgumentValues } from "../utils/get-argument-values";
+import { parseArguments } from "../schema-model/parser/parse-arguments";
 import { QueryDirective } from "../classes/QueryDirective";
 import { queryDirective as queryDirectiveDefinition } from "../graphql/directives/query";
 
@@ -26,7 +26,7 @@ function parseQueryDirective(directiveNode: DirectiveNode | undefined) {
     if (!directiveNode || directiveNode.name.value !== queryDirectiveDefinition.name) {
         throw new Error("Undefined or incorrect directive passed into parseQueryDirective function");
     }
-    const arg = getArgumentValues(queryDirectiveDefinition, directiveNode) as ConstructorParameters<
+    const arg = parseArguments(queryDirectiveDefinition, directiveNode) as ConstructorParameters<
         typeof QueryDirective
     >[0];
 

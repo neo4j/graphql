@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-
 export class CypherAnnotation {
     public statement: string;
+    public columnName: string;
 
-    constructor({ statement }: { statement: string }) {
+    constructor({ statement, columnName }: { statement: string, columnName: string }) {
         this.statement = statement;
+        this.columnName = columnName;
     }
 }
