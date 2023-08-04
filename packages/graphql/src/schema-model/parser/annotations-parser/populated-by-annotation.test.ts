@@ -16,17 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import { CypherAnnotation } from "../annotation/CypherAnnotation";
-import { parseArguments } from "./utils";
 
-export function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
-    const { statement } = parseArguments(directive);
-    if (!statement || typeof statement !== "string") {
-        throw new Neo4jGraphQLSchemaValidationError("@cypher statement required");
-    }
-    return new CypherAnnotation({
-        statement: statement,
+import { makeDirectiveNode } from "@graphql-tools/utils";
+import type { DirectiveNode } from "graphql";
+import { parsePopulatedByAnnotation } from "./populated-by-annotation";
+import { populatedByDirective } from "../../../graphql/directives";
+
+describe("parsePopulatedByAnnotation", () => {
+    it("should parse correctly", () => {
+        const directive: DirectiveNode = makeDirectiveNode("populatedBy", {
+            callback: "callback",
+            operations: ["CREATE", "UPDATE"],
+        }, populatedByDirective);
+        const populatedByAnnotation = parsePopulatedByAnnotation(directive);
+        expect(populatedByAnnotation.callback).toBe("callback");
+        expect(populatedByAnnotation.operations).toEqual(["CREATE", "UPDATE"]);
     });
-}
+});

@@ -68,7 +68,7 @@ describe("Federation and authorization", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
             WITH *
-            WHERE (this.id = $param0 AND ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)))
+            WHERE (this.id = $param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             RETURN this { .id, .name } AS this"
         `);
 
@@ -79,8 +79,7 @@ describe("Federation and authorization", () => {
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"user\\"
-                },
-                \\"jwtDefault\\": {}
+                }
             }"
         `);
     });
@@ -132,7 +131,7 @@ describe("Federation and authorization", () => {
             "MATCH (this:User)
             WHERE this.id = $param0
             WITH *
-            WHERE ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault))
+            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             RETURN this { .id, .name, .password } AS this"
         `);
 
@@ -143,8 +142,7 @@ describe("Federation and authorization", () => {
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"user\\"
-                },
-                \\"jwtDefault\\": {}
+                }
             }"
         `);
     });

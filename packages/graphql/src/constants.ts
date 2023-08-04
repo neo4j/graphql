@@ -69,7 +69,7 @@ export const NODE_OR_EDGE_KEYS = ["node", "edge"];
 export const LOGICAL_OPERATORS = ["AND", "OR", "NOT"] as const;
 
 // aggregation
-export const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+export const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"] as const;
 export const AGGREGATION_AGGREGATE_COUNT_OPERATORS = ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"];
 
 export const WHERE_AGGREGATION_TYPES = [

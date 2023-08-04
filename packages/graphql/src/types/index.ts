@@ -39,7 +39,6 @@ type AuthorizationContext = {
     isAuthenticated: boolean;
     isAuthenticatedParam: Cypher.Param;
     claims?: Map<string, string>;
-    jwtDefault: Cypher.Param;
 };
 
 export interface Context extends Neo4jGraphQLContext {
