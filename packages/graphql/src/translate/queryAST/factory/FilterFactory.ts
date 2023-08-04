@@ -22,7 +22,7 @@ import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
 import type { Filter } from "../ast/filters/Filter";
 import { isRelationshipOperator } from "../ast/filters/Filter";
 import type { QueryASTFactory } from "./QueryASTFactory";
-import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import { Relationship } from "../../../schema-model/relationship/Relationship";
 import { parseAggregationWhereFields, parseConnectionWhereFields, parseWhereField } from "./parsers/parse-where-field";
 import type { ConnectionWhereArg, GraphQLWhereArg } from "../../../types";
 import { RelationshipFilter } from "../ast/filters/RelationshipFilter";
@@ -380,11 +380,14 @@ export class FilterFactory {
             if (!attr) throw new Error(`Attribute ${fieldName} not found`);
 
             // const filterOperator = operator || "EQ";
+            const attachedTo = entity instanceof Relationship ? "relationship" : "node";
+            
             return new AggregationPropertyFilter({
                 attribute: attr,
                 comparisonValue: value,
                 logicalOperator: logicalOperator || "EQUAL",
                 aggregationOperator: aggregationOperator,
+                attachedTo,
             });
         });
     }
