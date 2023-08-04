@@ -210,6 +210,8 @@ class Neo4jGraphQL {
     }
 
     /**
+     * Currently just merges all type definitions into a document. Eventual intention described below:
+     *
      * Normalizes the user's type definitions using the method with the lowest risk of side effects:
      * - Type definitions of type `string` are parsed using the `parse` function from the reference GraphQL implementation.
      * - Type definitions of type `DocumentNode` are returned as they are.
