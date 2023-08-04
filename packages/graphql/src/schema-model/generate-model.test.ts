@@ -428,15 +428,14 @@ describe("Annotations & Attributes", () => {
 
         const defaultName = userEntity?.attributes.get("defaultName");
         expect(defaultName).toBeDefined();
-        expect(defaultName?.defaultValue).toBeDefined();
-        expect(defaultName?.defaultValue?.value).toBe("John");
+        expect(defaultName?.annotations[AnnotationsKey.default]).toBeDefined();
+        expect(defaultName?.annotations[AnnotationsKey.default]?.value).toBe("John");
 
         const age = userEntity?.attributes.get("age");
         expect(age).toBeDefined();
-        expect(age?.defaultValue).toBeDefined();
-        expect(age?.defaultValue?.populatedBy).toBeDefined();
-        expect(age?.defaultValue?.populatedBy?.callback).toBe("thisCallback");
-        expect(age?.defaultValue?.populatedBy?.when).toStrictEqual(["CREATE"]);
+        expect(age?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
+        expect(age?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisCallback");
+        expect(age?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
 
         const accountName = accountEntity?.attributes.get("accountName");
         expect(accountName?.annotations[AnnotationsKey.settable]).toBeDefined();

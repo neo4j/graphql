@@ -20,7 +20,7 @@
 import { MathAdapter } from "./MathAdapter";
 import { AggregationAdapter } from "./AggregationAdapter";
 import { ListAdapter } from "./ListAdapter";
-import type { Attribute, GraphQLDefaultValueType } from "../Attribute";
+import type { Attribute } from "../Attribute";
 import type { Annotations } from "../../annotation/Annotation";
 import {
     EnumType,
@@ -37,7 +37,6 @@ import {
     UserScalarType,
 } from "../AttributeType";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../AttributeType";
-import type { Neo4jGraphQLCallback, Neo4jGraphQLCallbacks } from "../../../types";
 
 export class AttributeAdapter {
     private _listModel: ListAdapter | undefined;
@@ -47,14 +46,12 @@ export class AttributeAdapter {
     public annotations: Partial<Annotations>;
     public type: AttributeType;
     public databaseName: string;
-    private defaultValue?: GraphQLDefaultValueType;
 
     constructor(attribute: Attribute) {
         this.name = attribute.name;
         this.type = attribute.type;
         this.annotations = attribute.annotations;
         this.databaseName = attribute.databaseName;
-        this.defaultValue = attribute.defaultValue;
     }
 
     /**
@@ -271,25 +268,5 @@ export class AttributeAdapter {
 
     isCypher(): boolean {
         return this.annotations.cypher ? true : false;
-    }
-    /**
-     *  Returns a callback function that returns the default value for the attribute if the user has provided one by using the populatedBy or default directives,
-     *  if the user has not provided a default value or the trigger event does not match then returns undefined.
-     */
-    getGraphQLDefaultCallBack(
-        when?: "CREATE" | "UPDATE",
-        callbacks?: Neo4jGraphQLCallbacks
-    ): Neo4jGraphQLCallback | (() => GraphQLDefaultValueType["value"]) | undefined {
-        if (this.defaultValue?.value !== undefined) {
-            return () => this.defaultValue?.value;
-        }
-        if (
-            when &&
-            callbacks &&
-            this.defaultValue?.populatedBy &&
-            this.defaultValue?.populatedBy.when.some((w) => w === when)
-        ) {
-            return callbacks[this.defaultValue.populatedBy.callback];
-        }
     }
 }

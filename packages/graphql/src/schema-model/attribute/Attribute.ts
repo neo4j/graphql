@@ -17,55 +17,30 @@
  * limitations under the License.
  */
 
-import type { DateTime, Duration, Integer, LocalDateTime, LocalTime, Time } from "neo4j-driver";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes/Error";
 import { annotationToKey, type Annotation, type Annotations } from "../annotation/Annotation";
 import type { AttributeType } from "./AttributeType";
-
-export type PopulatedBy = {
-    callback: string;
-    when: ("CREATE" | "UPDATE")[];
-};
-
-export type GraphQLDefaultValueType = {
-    value?:
-        | string
-        | number
-        | boolean
-        | Time<number>
-        | LocalTime<number>
-        | LocalDateTime<number>
-        | Duration
-        | DateTime<number>
-        | Date
-        | Integer;
-    populatedBy?: PopulatedBy;
-};
 
 export class Attribute {
     public readonly name: string;
     public readonly annotations: Partial<Annotations> = {};
     public readonly type: AttributeType;
     public readonly databaseName: string;
-    public readonly defaultValue?: GraphQLDefaultValueType;
 
     constructor({
         name,
         annotations = [],
         type,
         databaseName,
-        defaultValue,
     }: {
         name: string;
         annotations: Annotation[];
         type: AttributeType;
         databaseName?: string;
-        defaultValue?: GraphQLDefaultValueType;
     }) {
         this.name = name;
         this.type = type;
         this.databaseName = databaseName ?? name;
-        this.defaultValue = defaultValue;
 
         for (const annotation of annotations) {
             this.addAnnotation(annotation);
@@ -78,7 +53,6 @@ export class Attribute {
             annotations: Object.values(this.annotations),
             type: this.type,
             databaseName: this.databaseName,
-            defaultValue: this.defaultValue,
         });
     }
 
