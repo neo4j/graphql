@@ -18,7 +18,7 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import { getArgumentValues } from "../utils/get-argument-values";
+import { parseArguments } from "../schema-model/parser/parse-arguments";
 import { SubscriptionDirective } from "../classes/SubscriptionDirective";
 import { subscriptionDirective as subscriptionDirectiveDefinition } from "../graphql/directives/subscription";
 
@@ -26,7 +26,7 @@ function parseSubscriptionDirective(directiveNode: DirectiveNode | undefined) {
     if (!directiveNode || directiveNode.name.value !== subscriptionDirectiveDefinition.name) {
         throw new Error("Undefined or incorrect directive passed into parseSubscriptionDirective function");
     }
-    const arg = getArgumentValues(subscriptionDirectiveDefinition, directiveNode) as {
+    const arg = parseArguments(subscriptionDirectiveDefinition, directiveNode) as {
         operations: ConstructorParameters<typeof SubscriptionDirective>[0];
     };
 

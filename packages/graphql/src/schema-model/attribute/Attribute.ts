@@ -18,46 +18,29 @@
  */
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes/Error";
-import type { Annotation, Annotations } from "../annotation/Annotation";
-import { annotationToKey } from "../annotation/Annotation";
-
-export enum AttributeType {
-    Boolean = "Boolean",
-    ID = "ID",
-    String = "String",
-    Int = "Int",
-    BigInt = "BigInt",
-    Float = "Float",
-    DateTime = "DateTime",
-    LocalDateTime = "LocalDateTime",
-    Time = "Time",
-    LocalTime = "LocalTime",
-    Date = "Date",
-    Duration = "Duration",
-    Point = "Point",
-    ObjectType = "ObjectType",
-}
+import { annotationToKey, type Annotation, type Annotations } from "../annotation/Annotation";
+import type { AttributeType } from "./AttributeType";
 
 export class Attribute {
     public readonly name: string;
     public readonly annotations: Partial<Annotations> = {};
     public readonly type: AttributeType;
-    public readonly isArray: boolean;
+    public readonly databaseName: string;
 
     constructor({
         name,
-        annotations,
+        annotations = [],
         type,
-        isArray,
+        databaseName,
     }: {
         name: string;
         annotations: Annotation[];
         type: AttributeType;
-        isArray: boolean;
+        databaseName?: string;
     }) {
         this.name = name;
         this.type = type;
-        this.isArray = isArray;
+        this.databaseName = databaseName ?? name;
 
         for (const annotation of annotations) {
             this.addAnnotation(annotation);
@@ -69,7 +52,7 @@ export class Attribute {
             name: this.name,
             annotations: Object.values(this.annotations),
             type: this.type,
-            isArray: this.isArray,
+            databaseName: this.databaseName,
         });
     }
 

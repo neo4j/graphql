@@ -17,21 +17,21 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../classes";
+import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
 import type {
     AuthorizationFilterRuleConstructor,
     AuthorizationValidateRuleConstructor,
-} from "../annotation/AuthorizationAnnotation";
+} from "../../annotation/AuthorizationAnnotation";
 import {
     AuthorizationAnnotation,
     AuthorizationAnnotationArguments,
     AuthorizationFilterRule,
     AuthorizationValidateRule,
-} from "../annotation/AuthorizationAnnotation";
-import { parseArguments } from "./utils";
+} from "../../annotation/AuthorizationAnnotation";
+import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 
 export function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAnnotation {
-    const { filter, validate, ...unrecognizedArguments } = parseArguments(directive) as {
+    const { filter, validate, ...unrecognizedArguments } = parseArgumentsFromUnknownDirective(directive) as {
         filter?: Record<string, any>[];
         validate?: Record<string, any>[];
     };

@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -19,12 +20,20 @@
 
 import { inspect } from "@graphql-tools/utils";
 import type { Maybe } from "@graphql-tools/utils/typings/types";
-import type { DirectiveNode, FieldNode, GraphQLDirective, GraphQLField } from "graphql";
 import { isNonNullType, Kind, valueFromAST, print } from "graphql";
 import type { ObjMap } from "graphql/jsutils/ObjMap";
+import { parseValueNode } from "./parse-value-node";
+import type { DirectiveNode, FieldNode, GraphQLDirective, GraphQLField } from "graphql";
+
+export function parseArgumentsFromUnknownDirective(directive: DirectiveNode): Record<string, unknown> {
+    return (directive.arguments || [])?.reduce((acc, argument) => {
+        acc[argument.name.value] = parseValueNode(argument.value);
+        return acc;
+    }, {});
+}
 
 /**
- * Polyfill of GraphQL-JS getArgumentValues, remove it after dropping the support of GraphQL-JS 15.0
+ * Polyfill of GraphQL-JS parseArguments, remove it after dropping the support of GraphQL-JS 15.0
  *
  * Prepares an object map of argument values given a list of argument
  * definitions and list of argument AST nodes.
@@ -33,7 +42,7 @@ import type { ObjMap } from "graphql/jsutils/ObjMap";
  * exposed to user code. Care should be taken to not pull values from the
  * Object prototype.
  */
-export function getArgumentValues(
+export function parseArguments(
     def: GraphQLField<unknown, unknown> | GraphQLDirective,
     node: FieldNode | DirectiveNode,
     variableValues?: Maybe<ObjMap<unknown>>

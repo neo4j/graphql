@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+
 export interface Entity {
     readonly name: string;
 
