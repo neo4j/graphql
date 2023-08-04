@@ -13,7 +13,6 @@ export class ConnectionFilter extends Filter {/*
     private targetNodeFilters: Filter[] = [];
     private targetEdgeFilters: Filter[] = []; */
     private innerFilters: Filter[] = [];
-    //   private logicalFilters: ConnectionLogicalFilter[] = [];
     private relationship: Relationship;
     private operator: RelationshipWhereOperator;
     private isNot: boolean;
@@ -40,8 +39,8 @@ export class ConnectionFilter extends Filter {/*
         this.targetEdgeFilters.push(edgeFilter);
     }
  */
-    public addFilter(filter: Filter): void {
-        this.innerFilters.push(filter);
+    public addFilters(filters: Filter[]): void {
+        this.innerFilters.push(...filters);
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {

@@ -59,8 +59,58 @@ export class FilterFactory {
                 comparisonValue: value,
                 isNot,
                 operator,
+                attachedTo: "relationship",
             });
         });
+    }
+
+    public createConnectionFilter(
+        relationship: Relationship,
+        where: ConnectionWhereArg,
+        filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
+    ): ConnectionFilter {
+        const connectionFilter = new ConnectionFilter({
+            relationship: relationship,
+            isNot: filterOps.isNot,
+            operator: filterOps.operator,
+        });
+
+        const filters = this.createConnectionPredicates(relationship, where);
+        connectionFilter.addFilters(filters);
+        return connectionFilter;
+    }
+
+    public createConnectionPredicates(rel: Relationship, where: GraphQLWhereArg | GraphQLWhereArg[]): Filter[] {
+        const filters = asArray(where).flatMap((nestedWhere) => {
+            return Object.entries(nestedWhere).map(([key, value]: [string, GraphQLWhereArg]) => {
+                if (isInArray(["NOT", "OR", "AND"] as const, key)) {
+                    const nestedFilters = this.createConnectionPredicates(rel, value);
+                    return new LogicalFilter({
+                        operation: key,
+                        filters: filterTruthy(nestedFilters),
+                    });
+                }
+
+                const connectionWhereField = parseConnectionWhereFields(key);
+                if (connectionWhereField.fieldName === "edge") {
+                    const targetEdgeFilters = this.createEdgeFilters(rel, value);
+                    const connectionEdgeFilter = new ConnectionEdgeFilter({
+                        isNot: connectionWhereField.isNot,
+                        filters: targetEdgeFilters,
+                    });
+                    return connectionEdgeFilter as Filter;
+                }
+                if (connectionWhereField.fieldName === "node") {
+                    const targetNodeFilters = this.createNodeFilters(rel.target as ConcreteEntity, value as any);
+                    const connectionNodeFilter = new ConnectionNodeFilter({
+                        isNot: connectionWhereField.isNot,
+                        filters: targetNodeFilters,
+                    });
+                    return connectionNodeFilter as Filter;
+                }
+            });
+        });
+        return filterTruthy(filters);
     }
 
     private createPropertyFilter({
@@ -124,45 +174,6 @@ export class FilterFactory {
         return relationshipFilter;
     }
 
-    public createConnectionFilter(
-        relationship: Relationship,
-        where: ConnectionWhereArg,
-        filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
-    ): ConnectionFilter {
-        const connectionFilter = new ConnectionFilter({
-            relationship: relationship,
-            isNot: filterOps.isNot,
-            operator: filterOps.operator,
-        });
-
-        const targetNode = relationship.target as ConcreteEntity; // TODO: accept entities
-
-        Object.entries(where).forEach(([key, value]: [string, GraphQLWhereArg | GraphQLWhereArg[]]) => {
-            if (isInArray(["NOT", "OR", "AND"] as const, key)) {
-                connectionFilter.addFilter(this.createConnectionLogicalFilter(key, value, relationship));
-            }
-            const connectionWhereField = parseConnectionWhereFields(key);
-            if (connectionWhereField.fieldName === "edge") {
-                const targetEdgeFilters = this.createEdgeFilters(relationship, value);
-                const connectionEdgeFilter = new ConnectionEdgeFilter({
-                    isNot: connectionWhereField.isNot,
-                    filters: targetEdgeFilters,
-                });
-                connectionFilter.addFilter(connectionEdgeFilter);
-            }
-            if (connectionWhereField.fieldName === "node") {
-                const targetNodeFilters = this.createNodeFilters(targetNode, value as any);
-                const connectionNodeFilter = new ConnectionNodeFilter({
-                    isNot: connectionWhereField.isNot,
-                    filters: targetNodeFilters,
-                });
-                connectionFilter.addFilter(connectionNodeFilter);
-            }
-        });
-
-        return connectionFilter;
-    }
-
     public createNodeFilters(entity: ConcreteEntity, where: Record<string, unknown>): Array<Filter> {
         return Object.entries(where).map(([key, value]): Filter => {
             if (isInArray(["NOT", "OR", "AND"] as const, key)) {
@@ -205,7 +216,7 @@ export class FilterFactory {
         });
     }
 
-    private createEdgeFilters(relationship: Relationship, where: GraphQLWhereArg): Array<Filter> {
+    private createEdgeFilters(relationship: Relationship, where: GraphQLWhereArg): Filter[] {
         const filterASTs = Object.entries(where).map(([prop, value]): Filter => {
             if (["NOT", "OR", "AND"].includes(prop)) {
                 return this.createEdgeLogicalFilter(prop as "NOT" | "OR" | "AND", value, relationship);
@@ -224,41 +235,6 @@ export class FilterFactory {
         });
 
         return filterTruthy(filterASTs);
-    }
-
-    private createConnectionLogicalFilter(
-        operation: "OR" | "AND" | "NOT",
-        where: GraphQLWhereArg[] | GraphQLWhereArg,
-        entity: Relationship
-    ): Filter {
-        const nestedFilters = asArray(where).flatMap((nestedWhere) => {
-            return Object.entries(nestedWhere).map(([key, value]: [string, GraphQLWhereArg | GraphQLWhereArg[]]) => {
-                if (isInArray(["NOT", "OR", "AND"] as const, key)) {
-                    return this.createConnectionLogicalFilter(key, value, entity);
-                }
-                const connectionWhereField = parseConnectionWhereFields(key);
-                if (connectionWhereField.fieldName === "edge") {
-                    const targetEdgeFilters = this.createEdgeFilters(entity, value);
-                    const connectionEdgeFilter = new ConnectionEdgeFilter({
-                        isNot: connectionWhereField.isNot,
-                        filters: targetEdgeFilters,
-                    });
-                    return connectionEdgeFilter as Filter;
-                }
-                if (connectionWhereField.fieldName === "node") {
-                    const targetNodeFilters = this.createNodeFilters(entity.target as ConcreteEntity, value as any);
-                    const connectionNodeFilter = new ConnectionNodeFilter({
-                        isNot: connectionWhereField.isNot,
-                        filters: targetNodeFilters,
-                    });
-                    return connectionNodeFilter as Filter;
-                }
-            });
-        });
-        return new LogicalFilter({
-            operation,
-            filters: filterTruthy(nestedFilters),
-        });
     }
 
     private createNodeLogicalFilter(

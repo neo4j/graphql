@@ -163,7 +163,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
         `);
     });
 
-    test.only("Composite OR (edge and node)", async () => {
+    test("Composite OR (edge and node)", async () => {
         const query = gql`
             query {
                 movies(where: { title: "Forrest Gump" }) {
