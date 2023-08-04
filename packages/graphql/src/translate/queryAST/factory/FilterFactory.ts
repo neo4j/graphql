@@ -68,11 +68,13 @@ export class FilterFactory {
         comparisonValue,
         operator,
         isNot,
+        attachedTo,
     }: {
         attribute: Attribute;
         comparisonValue: unknown;
         operator: WhereOperator | undefined;
         isNot: boolean;
+        attachedTo?: "node" | "relationship";
     }): PropertyFilter {
         const filterOperator = operator || "EQ";
         switch (attribute.type) {
@@ -99,6 +101,7 @@ export class FilterFactory {
             comparisonValue,
             isNot,
             operator: filterOperator,
+            attachedTo,
         });
     }
 
@@ -136,7 +139,7 @@ export class FilterFactory {
 
         Object.entries(where).forEach(([key, value]: [string, GraphQLWhereArg | GraphQLWhereArg[]]) => {
             if (isInArray(["NOT", "OR", "AND"] as const, key)) {
-                connectionFilter.addConnectionFilter(this.createConnectionLogicalFilter(key, value, relationship));
+                connectionFilter.addFilter(this.createConnectionLogicalFilter(key, value, relationship));
             }
             const connectionWhereField = parseConnectionWhereFields(key);
             if (connectionWhereField.fieldName === "edge") {
@@ -145,7 +148,7 @@ export class FilterFactory {
                     isNot: connectionWhereField.isNot,
                     filters: targetEdgeFilters,
                 });
-                connectionFilter.addConnectionEdgeFilter(connectionEdgeFilter);
+                connectionFilter.addFilter(connectionEdgeFilter);
             }
             if (connectionWhereField.fieldName === "node") {
                 const targetNodeFilters = this.createNodeFilters(targetNode, value as any);
@@ -153,7 +156,7 @@ export class FilterFactory {
                     isNot: connectionWhereField.isNot,
                     filters: targetNodeFilters,
                 });
-                connectionFilter.addConnectionNodeFilter(connectionNodeFilter);
+                connectionFilter.addFilter(connectionNodeFilter);
             }
         });
 
@@ -216,6 +219,7 @@ export class FilterFactory {
                 comparisonValue: value,
                 isNot,
                 operator,
+                attachedTo: "relationship",
             });
         });
 

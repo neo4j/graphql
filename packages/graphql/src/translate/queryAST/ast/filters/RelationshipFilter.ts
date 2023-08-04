@@ -23,6 +23,7 @@ import type { RelationshipWhereOperator } from "../../../where/types";
 import { Filter } from "./Filter";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
+import { QueryASTContext } from "../QueryASTContext";
 
 export class RelationshipFilter extends Filter {
     private targetNodeFilters: Filter[] = [];
@@ -49,38 +50,41 @@ export class RelationshipFilter extends Filter {
         this.targetNodeFilters.push(...filter);
     }
 
-    public getPredicate(parentNode: Cypher.Variable): Cypher.Predicate | undefined {
+    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         //TODO: not concrete entities
         const relatedEntity = this.relationship.target as ConcreteEntity;
         const relatedNode = new Cypher.Node({
             labels: relatedEntity.labels,
         });
+        const relVar = new Cypher.Relationship({
+            type: this.relationship.type,
+        });
 
-        const pattern = this.createRelationshipPattern(parentNode as Cypher.Node, relatedNode);
+        const nestedContext = new QueryASTContext({
+            target: relatedNode,
+            relationship: relVar,
+            source: queryASTContext.target,
+        });
 
-        const predicate = this.createRelationshipOperation(pattern, relatedNode);
+        const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
+            .withoutLabels()
+            .related(nestedContext.relationship)
+            .withDirection(getRelationshipDirection(this.relationship))
+            .withoutVariable()
+            .to(nestedContext.target);
+
+        //const pattern = this.createRelationshipPattern(queryASTContext.target, relatedNode);
+        
+        const predicate = this.createRelationshipOperation(pattern, nestedContext);
         if (!predicate) return undefined;
         return this.wrapInNotIfNeeded(predicate);
     }
 
-    private createRelationshipPattern(parentNode: Cypher.Node, relatedNode: Cypher.Node): Cypher.Pattern {
-        return new Cypher.Pattern(parentNode)
-            .withoutLabels()
-            .related(
-                new Cypher.Relationship({
-                    type: this.relationship.type,
-                })
-            )
-            .withDirection(getRelationshipDirection(this.relationship))
-            .withoutVariable()
-            .to(relatedNode);
-    }
-
     private createRelationshipOperation(
         pattern: Cypher.Pattern,
-        relatedNode: Cypher.Node
+        queryASTContext: QueryASTContext,
     ): Cypher.Predicate | undefined {
-        const predicates = this.targetNodeFilters.map((c) => c.getPredicate(relatedNode));
+        const predicates = this.targetNodeFilters.map((c) => c.getPredicate(queryASTContext));
         const innerPredicate = Cypher.and(...predicates);
 
         if (!innerPredicate) return undefined;
@@ -96,7 +100,7 @@ export class RelationshipFilter extends Filter {
                 const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1)).where(
                     innerPredicate
                 );
-                return Cypher.single(relatedNode, patternComprehension, new Cypher.Literal(true));
+                return Cypher.single(queryASTContext.target, patternComprehension, new Cypher.Literal(true));
                 // const isArray = relationField.typeMeta.array;
                 // const isRequired = relationField.typeMeta.required;
 

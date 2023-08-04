@@ -28,6 +28,7 @@ import type { OperationTranspileOptions, OperationTranspileResult } from "./oper
 import { Operation } from "./operations";
 import type { Pagination, PaginationField } from "../pagination/Pagination";
 import type { Sort, SortField } from "../sort/Sort";
+import { QueryASTContext } from "../QueryASTContext";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: Relationship;
@@ -88,9 +89,11 @@ export class ConnectionReadOperation extends Operation {
             new Cypher.Pattern(parentNode).withoutLabels().related(relationship).withDirection(relDirection).to(node)
         );
 
+        const nestedContext = new QueryASTContext({ target: node, relationship, source: parentNode });
+
     /*     const filterPredicates = Cypher.and(...this.nodeFilters.map((f) => f.getPredicate(node)));
         const edgeFilterPredicates = Cypher.and(...this.edgeFilters.map((f) => (f as any).getPredicate(relationship))); // Any because of relationship predicates */
-        const filters = Cypher.and(...this.connectionFilters.map((f) => f.getPredicate(parentNode)));
+        const filters = Cypher.and(...this.connectionFilters.map((f) => f.getPredicate(nestedContext)));
 
 
         const nodeProjectionMap = new Cypher.Map();

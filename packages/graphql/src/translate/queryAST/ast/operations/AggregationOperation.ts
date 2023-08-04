@@ -29,6 +29,7 @@ import type { PropertySort } from "../sort/PropertySort";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
 import type { Relationship } from "../../../../schema-model/relationship/Relationship";
+import { QueryASTContext } from "../QueryASTContext";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
@@ -74,10 +75,11 @@ export class AggregationOperation extends Operation {
         field: AggregationField,
         pattern: Cypher.Pattern,
         target: Cypher.Variable,
-        { returnVariable, parentNode }: OperationTranspileOptions
+        { returnVariable, parentNode }: OperationTranspileOptions,
+        queryASTContext: QueryASTContext
     ): Cypher.Clause {
         const matchClause = new Cypher.Match(pattern);
-        const filterPredicates = this.getPredicates(target);
+        const filterPredicates = this.getPredicates(queryASTContext);
 
         if (filterPredicates) {
             matchClause.where(filterPredicates);
@@ -112,10 +114,11 @@ export class AggregationOperation extends Operation {
             .withDirection(relDirection)
             .to(targetNode);
 
+        const nestedContext = new QueryASTContext({ target: targetNode, relationship: relVar, source: parentNode });
         const fieldSubqueries = this.fields.map((f) => {
             const returnVariable = new Cypher.Variable();
             this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(entity, f, pattern, targetNode, { returnVariable, parentNode });
+            return this.createSubquery(entity, f, pattern, targetNode, { returnVariable, parentNode }, nestedContext);
         });
 
         const nodeMap = new Cypher.Map();
@@ -123,12 +126,12 @@ export class AggregationOperation extends Operation {
         const nodeFieldSubqueries = this.nodeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
             nodeMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(entity, f, pattern, targetNode, { returnVariable, parentNode });
+            return this.createSubquery(entity, f, pattern, targetNode, { returnVariable, parentNode }, nestedContext);
         });
         const edgeFieldSubqueries = this.edgeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
             edgeMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(entity, f, pattern, relVar, { returnVariable, parentNode });
+            return this.createSubquery(entity, f, pattern, relVar, { returnVariable, parentNode }, nestedContext);
         });
 
         if (nodeMap.size > 0) {
@@ -149,8 +152,8 @@ export class AggregationOperation extends Operation {
         return field.getAggregationProjection(target, returnVariable);
     }
 
-    private getPredicates(target: Cypher.Variable): Cypher.Predicate | undefined {
-        return Cypher.and(...this.filters.map((f) => f.getPredicate(target)));
+    private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)));
     }
 
     // TODO: remove

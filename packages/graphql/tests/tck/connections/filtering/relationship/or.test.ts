@@ -49,7 +49,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
         });
     });
 
-    test("OR", async () => {
+    test.only("OR", async () => {
         const query = gql`
             query {
                 movies {

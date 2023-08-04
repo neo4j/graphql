@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
 import { Filter, type WhereOperator } from "../Filter";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 type FilterOperator = WhereOperator | "EQ";
 
@@ -28,27 +29,32 @@ export class PropertyFilter extends Filter {
     protected comparisonValue: unknown;
     protected operator: FilterOperator;
     protected isNot: boolean; // _NOT is deprecated
+    protected attachedTo: "node" | "relationship";
 
     constructor({
         attribute,
         comparisonValue,
         operator,
         isNot,
+        attachedTo,
     }: {
         attribute: Attribute;
         comparisonValue: unknown;
         operator: FilterOperator;
         isNot: boolean;
+        attachedTo?: "node" | "relationship";
     }) {
         super();
         this.attribute = attribute;
         this.comparisonValue = comparisonValue;
         this.operator = operator;
         this.isNot = isNot;
+        this.attachedTo = attachedTo ?? "node";
     }
 
-    public getPredicate(target: Cypher.Variable): Cypher.Predicate {
-        const prop = target.property(this.attribute.name);
+    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {
+        //const prop = target.property(this.attribute.name);
+        const prop = this.getPropertyRef(queryASTContext);
 
         if (this.comparisonValue === null) {
             return this.getNullPredicate(prop);
@@ -59,8 +65,18 @@ export class PropertyFilter extends Filter {
         return this.wrapInNotIfNeeded(baseOperation);
     }
 
+    private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
+        if (this.attachedTo === "node") {
+            return queryASTContext.target.property(this.attribute.name);
+        } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
+            return queryASTContext.relationship.property(this.attribute.name);
+        } else {
+            throw new Error("Transpilation error");
+        }
+    }
+
     /** Returns the operation for a given filter.
-     * To be overriden by subclasses
+     * To be overridden by subclasses
      */
     protected getOperation(prop: Cypher.Property): Cypher.ComparisonOp {
         return this.createBaseOperation({
