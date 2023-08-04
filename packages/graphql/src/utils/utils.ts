@@ -63,7 +63,7 @@ export function asArray<T>(raw: T | Array<T> | undefined | null): Array<T> {
 }
 
 /** Filter all elements in an array, only leaving truthy values */
-export function filterTruthy<T>(arr: Array<T | null | undefined>): Array<T> {
+export function filterTruthy<T>(arr: Array<T | null | undefined | void>): Array<T> {
     return arr.filter((v): v is T => !!v);
 }
 

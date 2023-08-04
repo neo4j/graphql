@@ -95,7 +95,8 @@ export class ReadOperation extends Operation {
             matchClause.where(filterPredicates);
         }
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(targetNode));
-        const ret = this.getProjectionClause(targetNode, returnVariable);
+
+        const ret = this.getProjectionClause(targetNode, returnVariable, entity.isArray);
         // const ret = new Cypher.With([projection, targetNode]).return([Cypher.collect(targetNode), returnVariable]);
 
         let sortClause: Cypher.With | undefined;
@@ -111,7 +112,11 @@ export class ReadOperation extends Operation {
         };
     }
 
-    protected getProjectionClause(target: Cypher.Node, returnVariable: Cypher.Variable): Cypher.Return {
+    protected getProjectionClause(
+        target: Cypher.Node,
+        returnVariable: Cypher.Variable,
+        isArray: boolean
+    ): Cypher.Return {
         const projectionFields = this.fields.map((f) => f.getProjectionField(target));
         const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField());
 
@@ -119,7 +124,12 @@ export class ReadOperation extends Operation {
             target,
             Array.from(new Set([...projectionFields, ...sortProjectionFields])) // TODO remove duplicates
         );
-        return new Cypher.With([projection, target]).return([Cypher.collect(target), returnVariable]);
+
+        let aggregationExpr: Cypher.Expr = Cypher.collect(target);
+        if (!isArray) {
+            aggregationExpr = Cypher.head(aggregationExpr);
+        }
+        return new Cypher.With([projection, target]).return([aggregationExpr, returnVariable]);
     }
 
     private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
@@ -132,6 +142,9 @@ export class ReadOperation extends Operation {
         }
         const node = createNodeFromEntity(this.entity, this.nodeAlias);
         const context = new QueryASTContext({ target: node });
+        const filterSubqueries = this.filters
+            .flatMap((f) => f.getSubqueries(node))
+            .map((sq) => new Cypher.Call(sq).innerWith(node));
         const filterPredicates = this.getPredicates(context);
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(node));
 
@@ -144,10 +157,22 @@ export class ReadOperation extends Operation {
         );
 
         const matchClause = new Cypher.Match(node);
-        if (filterPredicates) {
-            matchClause.where(filterPredicates);
+
+        let filterSubqueryWith: Cypher.With | undefined;
+        let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
+
+        if (filterSubqueries.length > 0) {
+            filterSubqueriesClause = Cypher.concat(...filterSubqueries);
+            filterSubqueryWith = new Cypher.With("*");
         }
 
+        if (filterPredicates) {
+            if (filterSubqueryWith) {
+                filterSubqueryWith.where(filterPredicates); // TODO: should this only be for aggregation filters?
+            } else {
+                matchClause.where(filterPredicates);
+            }
+        }
         const ret = new Cypher.Return([projection, returnVariable]);
 
         let sortClause: Cypher.With | undefined;
@@ -155,7 +180,14 @@ export class ReadOperation extends Operation {
             sortClause = new Cypher.With("*");
             this.addSortToClause(node, sortClause);
         }
-        const clause = Cypher.concat(matchClause, subqueries, sortClause, ret);
+        const clause = Cypher.concat(
+            matchClause,
+            filterSubqueriesClause,
+            filterSubqueryWith,
+            subqueries,
+            sortClause,
+            ret
+        );
 
         return {
             clauses: [clause],

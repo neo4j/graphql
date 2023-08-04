@@ -61,3 +61,31 @@ export function parseConnectionWhereFields(key: string): ConnectionWhereArgField
         isNot,
     };
 }
+
+export const aggregationFieldRegEx =
+    /(?<fieldName>[_A-Za-z]\w*?)(?:_(?<aggregationOperator>AVERAGE|MAX|MIN|SUM|SHORTEST|LONGEST))?(?:_LENGTH)?(?:_(?<logicalOperator>EQUAL|GT|GTE|LT|LTE))?$/;
+
+export type AggregationOperator = "AVERAGE" | "SHORTEST" | "LONGEST" | "MIN" | "MAX" | "SUM";
+export type AggregationLogicalOperator = "EQUAL" | "GT" | "GTE" | "LT" | "LTE";
+
+export type AggregationFieldRegexGroups = {
+    fieldName: string;
+    aggregationOperator?: AggregationOperator;
+    logicalOperator?: AggregationLogicalOperator;
+};
+
+export function parseAggregationWhereFields(field: string): AggregationFieldRegexGroups {
+    const match = aggregationFieldRegEx.exec(field);
+
+    const matchGroups = match?.groups as {
+        fieldName: string;
+        aggregationOperator?: string;
+        logicalOperator?: string;
+    };
+
+    return {
+        fieldName: matchGroups.fieldName,
+        aggregationOperator: matchGroups.aggregationOperator as AggregationOperator | undefined,
+        logicalOperator: matchGroups.logicalOperator as AggregationLogicalOperator | undefined,
+    };
+}

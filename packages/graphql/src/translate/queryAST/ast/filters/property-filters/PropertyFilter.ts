@@ -19,10 +19,9 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
-import { Filter, type WhereOperator } from "../Filter";
+import type { FilterOperator } from "../Filter";
+import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
-
-type FilterOperator = WhereOperator | "EQ";
 
 export class PropertyFilter extends Filter {
     protected attribute: Attribute;
