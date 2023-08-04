@@ -112,14 +112,11 @@ describe("validation 2.0", () => {
                     }
                 `;
                 // TODO: is "ScalarOrEnum" type exposed to the user?
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
+
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
                 expect(executeValidate).toThrow(
@@ -132,14 +129,11 @@ describe("validation 2.0", () => {
                         name: String @coalesce(value: "dummy")
                     }
                 `;
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
+
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
                 expect(executeValidate).not.toThrow();
@@ -153,14 +147,11 @@ describe("validation 2.0", () => {
                     }
                 `;
                 // TODO: is "ScalarOrEnum" type exposed to the user?
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
+
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
                 expect(executeValidate).toThrow(
@@ -174,14 +165,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
                 expect(executeValidate).not.toThrow();
@@ -308,14 +295,11 @@ describe("validation 2.0", () => {
                         title: String
                     }
                 `;
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
+
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
                 expect(executeValidate).toThrow(
@@ -331,14 +315,11 @@ describe("validation 2.0", () => {
                         title: String
                     }
                 `;
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
+
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
                 expect(executeValidate).toThrow(
@@ -354,14 +335,11 @@ describe("validation 2.0", () => {
                         title: String
                     }
                 `;
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
+
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
                 expect(executeValidate).toThrow(
@@ -378,14 +356,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
                 expect(executeValidate).not.toThrow();
@@ -422,14 +396,10 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const enums = [] as EnumTypeDefinitionNode[];
-            const interfaces = [] as InterfaceTypeDefinitionNode[];
-            const unions = [] as UnionTypeDefinitionNode[];
-            const objects = [] as ObjectTypeDefinitionNode[];
             const executeValidate = () =>
                 validateDocument({
                     document: doc,
-                    additionalDefinitions: { enums, interfaces, unions, objects },
+                    additionalDefinitions,
                     features: {},
                 });
             const errors = getError(executeValidate);
@@ -452,14 +422,10 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const enums = [] as EnumTypeDefinitionNode[];
-            const interfaces = [] as InterfaceTypeDefinitionNode[];
-            const unions = [] as UnionTypeDefinitionNode[];
-            const objects = [] as ObjectTypeDefinitionNode[];
             const executeValidate = () =>
                 validateDocument({
                     document: doc,
-                    additionalDefinitions: { enums, interfaces, unions, objects },
+                    additionalDefinitions,
                     features: {},
                 });
             const errors = getError(executeValidate);
@@ -558,14 +524,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -585,14 +547,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -758,14 +716,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -783,14 +737,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -804,14 +754,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -832,14 +778,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -853,14 +795,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -878,14 +816,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -899,14 +833,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -927,14 +857,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -948,14 +874,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -973,14 +895,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -994,14 +912,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1022,14 +936,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1043,14 +953,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1068,14 +974,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1089,14 +991,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1117,14 +1015,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1138,14 +1032,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1163,14 +1053,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1191,14 +1077,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1212,14 +1094,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1233,14 +1111,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1261,14 +1135,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1444,14 +1314,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1469,14 +1335,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1490,14 +1352,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1518,14 +1376,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1539,14 +1393,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1564,14 +1414,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1585,14 +1431,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1613,14 +1455,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1634,14 +1472,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1662,14 +1496,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1683,14 +1513,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1711,14 +1537,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1732,14 +1554,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1757,14 +1575,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1778,14 +1592,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1806,14 +1616,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1827,14 +1633,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1852,14 +1654,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1880,14 +1678,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1901,14 +1695,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1922,14 +1712,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1947,14 +1733,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -1975,14 +1757,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -2144,14 +1922,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -2183,14 +1957,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -2215,14 +1985,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
                 const errors = getError(executeValidate);
@@ -2387,14 +2153,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
                 try {
@@ -2659,14 +2421,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -3473,14 +3231,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -3504,14 +3258,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
@@ -3548,14 +3298,10 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = [] as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions,
                         features: {},
                     });
 
