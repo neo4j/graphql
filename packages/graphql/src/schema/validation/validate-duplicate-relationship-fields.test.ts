@@ -17,11 +17,23 @@
  * limitations under the License.
  */
 
+import type {
+    EnumTypeDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
+    UnionTypeDefinitionNode,
+} from "graphql";
 import gql from "graphql-tag";
 import { getError, NoErrorThrownError } from "../../../tests/utils/get-error";
 import validateDocument from "./validate-document";
 
 describe("validateDuplicateRelationshipFields", () => {
+    const additionalDefinitions = {
+        enums: [] as EnumTypeDefinitionNode[],
+        interfaces: [] as InterfaceTypeDefinitionNode[],
+        unions: [] as UnionTypeDefinitionNode[],
+        objects: [] as ObjectTypeDefinitionNode[],
+    };
     test("should throw an error if multiple relationship fields in the same type have the same relationship type.", () => {
         const doc = gql`
             type Team {
@@ -37,7 +49,13 @@ describe("validateDuplicateRelationshipFields", () => {
             }
         `;
 
-        const errors = getError(() => validateDocument({ document: doc, features: {} }));
+        const errors = getError(() =>
+            validateDocument({
+                document: doc,
+                features: {},
+                additionalDefinitions,
+            })
+        );
         expect(errors).toHaveLength(1);
         expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
         expect(errors[0]).toHaveProperty(
@@ -65,7 +83,7 @@ describe("validateDuplicateRelationshipFields", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: {} })).not.toThrow();
+        expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
     });
 
     test("should not throw an error if multiple relationship fields in the same type have the same relationship type but have different directions.", () => {
@@ -77,6 +95,6 @@ describe("validateDuplicateRelationshipFields", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: {} })).not.toThrow();
+        expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
     });
 });

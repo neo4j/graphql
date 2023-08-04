@@ -45,7 +45,7 @@ function getValidationFunction(
         Map<string, [string, string, string][]>
     >,
     interfaceToImplementationsMap: Map<string, Set<string>>,
-    extra?: {
+    extra: {
         enums: EnumTypeDefinitionNode[];
         interfaces: InterfaceTypeDefinitionNode[];
         unions: UnionTypeDefinitionNode[];
@@ -55,9 +55,9 @@ function getValidationFunction(
 ): ValidationFunction | undefined {
     switch (directiveName) {
         case "coalesce":
-            return verifyCoalesce(extra?.enums);
+            return verifyCoalesce(extra.enums);
         case "default":
-            return verifyDefault(extra?.enums);
+            return verifyDefault(extra.enums);
         case "fulltext":
             return verifyFulltext;
         case "populatedBy":
@@ -76,15 +76,35 @@ function getValidationFunction(
     }
 }
 
+function extraDefinitionsProvided(extra: {
+    enums?: EnumTypeDefinitionNode[];
+    interfaces?: InterfaceTypeDefinitionNode[];
+    unions?: UnionTypeDefinitionNode[];
+    objects?: ObjectTypeDefinitionNode[];
+}): extra is {
+    enums: EnumTypeDefinitionNode[];
+    interfaces: InterfaceTypeDefinitionNode[];
+    unions: UnionTypeDefinitionNode[];
+    objects: ObjectTypeDefinitionNode[];
+} {
+    if (!extra.enums || !extra.interfaces || !extra.unions || !extra.objects) {
+        return false;
+    }
+    return true;
+}
+
 export function directiveIsValid(
-    extra?: {
-        enums: EnumTypeDefinitionNode[];
-        interfaces: InterfaceTypeDefinitionNode[];
-        unions: UnionTypeDefinitionNode[];
-        objects: ObjectTypeDefinitionNode[];
+    extra: {
+        enums?: EnumTypeDefinitionNode[];
+        interfaces?: InterfaceTypeDefinitionNode[];
+        unions?: UnionTypeDefinitionNode[];
+        objects?: ObjectTypeDefinitionNode[];
     },
     callbacks?: Neo4jGraphQLCallbacks
 ) {
+    if (!extraDefinitionsProvided(extra)) {
+        throw new Error("Missing data.");
+    }
     return function (context: SDLValidationContext): ASTVisitor {
         const relationshipTypeToDirectionAndFieldTypeMap = new Map<string, [string, string][]>();
         const objectTypeToFieldNameDirectionAndFieldTypePerRelationshipTypeMap = new Map<

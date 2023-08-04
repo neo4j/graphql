@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import parseValueNode from "../../../../schema-model/parser/parse-value-node";
+import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import type { Neo4jGraphQLCallbacks } from "../../../../types";
 import { DocumentValidationError } from "../utils/document-validation-error";
 

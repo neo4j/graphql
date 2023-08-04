@@ -23,7 +23,7 @@ import type {
     InterfaceTypeDefinitionNode,
 } from "graphql";
 import { Kind } from "graphql";
-import parseValueNode from "../../../../schema-model/parser/parse-value-node";
+import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import type { FulltextIndex } from "../../../../types";
 import { DocumentValidationError } from "../utils/document-validation-error";
 

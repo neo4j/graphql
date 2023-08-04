@@ -229,11 +229,11 @@ function runValidationRulesOnFilteredDocument({
 }: {
     schema: GraphQLSchema;
     document: DocumentNode;
-    extra?: {
-        enums: EnumTypeDefinitionNode[];
-        interfaces: InterfaceTypeDefinitionNode[];
-        unions: UnionTypeDefinitionNode[];
-        objects: ObjectTypeDefinitionNode[];
+    extra: {
+        enums?: EnumTypeDefinitionNode[];
+        interfaces?: InterfaceTypeDefinitionNode[];
+        unions?: UnionTypeDefinitionNode[];
+        objects?: ObjectTypeDefinitionNode[];
     };
     callbacks?: Neo4jGraphQLCallbacks;
 }) {
@@ -264,24 +264,23 @@ function runValidationRulesOnFilteredDocument({
 function validateDocument({
     document,
     features,
-    additionalDirectives = [],
-    additionalTypes = [],
-    extra,
+    additionalDefinitions,
 }: {
     document: DocumentNode;
     features: Neo4jFeaturesSettings | undefined;
-    additionalDirectives?: Array<GraphQLDirective>;
-    additionalTypes?: Array<GraphQLNamedType>;
-    extra?: {
-        enums: EnumTypeDefinitionNode[];
-        interfaces: InterfaceTypeDefinitionNode[];
-        unions: UnionTypeDefinitionNode[];
-        objects: ObjectTypeDefinitionNode[];
+    additionalDefinitions: {
+        additionalDirectives?: Array<GraphQLDirective>;
+        additionalTypes?: Array<GraphQLNamedType>;
+        enums?: EnumTypeDefinitionNode[];
+        interfaces?: InterfaceTypeDefinitionNode[];
+        unions?: UnionTypeDefinitionNode[];
+        objects?: ObjectTypeDefinitionNode[];
     };
 }): void {
     const filteredDocument = filterDocument(document, features);
+    const { additionalDirectives, additionalTypes, ...extra } = additionalDefinitions;
     const schemaToExtend = new GraphQLSchema({
-        directives: [...Object.values(directives), ...specifiedDirectives, ...additionalDirectives],
+        directives: [...Object.values(directives), ...specifiedDirectives, ...(additionalDirectives || [])],
         types: [
             ...Object.values(scalars),
             Point,
@@ -291,7 +290,7 @@ function validateDocument({
             CartesianPointInput,
             CartesianPointDistance,
             SortDirection,
-            ...additionalTypes,
+            ...(additionalTypes || []),
         ],
     });
 

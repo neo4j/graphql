@@ -324,7 +324,7 @@ class Neo4jGraphQL {
                 validateDocument({
                     document: initialDocument,
                     features: this.features,
-                    extra: { enums, interfaces, unions, objects },
+                    additionalDefinitions: { enums, interfaces, unions, objects },
                 });
             }
 
@@ -378,9 +378,14 @@ class Neo4jGraphQL {
             validateDocument({
                 document: initialDocument,
                 features: this.features,
-                additionalDirectives: directives,
-                additionalTypes: types,
-                extra: { enums, interfaces, unions, objects },
+                additionalDefinitions: {
+                    additionalDirectives: directives,
+                    additionalTypes: types,
+                    enums,
+                    interfaces,
+                    unions,
+                    objects,
+                },
             });
         }
 

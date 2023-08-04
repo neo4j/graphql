@@ -29,9 +29,15 @@ import { RESERVED_TYPE_NAMES } from "../../constants";
 import type { Neo4jGraphQLCallback } from "../../types";
 import validateDocument from "./validate-document";
 
+const additionalDefinitions = {
+    enums: [] as EnumTypeDefinitionNode[],
+    interfaces: [] as InterfaceTypeDefinitionNode[],
+    unions: [] as UnionTypeDefinitionNode[],
+    objects: [] as ObjectTypeDefinitionNode[],
+};
+
 describe("validation 2.0", () => {
     describe("Directive Argument (existence)", () => {
-        // TODO: @exclude?
         describe("@cypher", () => {
             test("@cypher columnName required", () => {
                 const doc = gql`
@@ -45,7 +51,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: {} })).toThrow(
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
                     'Directive "@cypher" argument "columnName" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -56,7 +62,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: {} })).toThrow(
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
                     'Directive "@cypher" argument "statement" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -73,7 +79,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: {} })).not.toThrow();
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
             });
         });
         describe("@alias", () => {
@@ -84,7 +90,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: {} })).toThrow(
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
                     'Directive "@alias" argument "property" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -95,7 +101,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: {} })).not.toThrow();
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
             });
         });
         describe("@coalesce", () => {
@@ -111,7 +117,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).toThrow(
                     'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
                 );
@@ -127,7 +137,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -144,7 +158,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).toThrow(
                     'Directive "@default" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
                 );
@@ -161,7 +179,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -173,7 +195,7 @@ describe("validation 2.0", () => {
                     }
                 `;
                 // TODO: is "[FullTextInput]!" type exposed to the user?
-                expect(() => validateDocument({ document: doc, features: {} })).toThrow(
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
                     'Directive "@fulltext" argument "indexes" of type "[FullTextInput]!" is required, but it was not provided.'
                 );
             });
@@ -184,7 +206,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: {} })).not.toThrow();
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
             });
         });
         describe("@jwtClaim", () => {
@@ -195,7 +217,7 @@ describe("validation 2.0", () => {
                     }
                 `;
                 // TODO: is "ScalarOrEnum" type exposed to the user?
-                expect(() => validateDocument({ document: doc, features: {} })).toThrow(
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
                     'Directive "@jwtClaim" argument "path" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -206,7 +228,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: {} })).not.toThrow();
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
             });
         });
         describe("@node", () => {
@@ -217,7 +239,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: {} })).not.toThrow();
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
             });
         });
         describe("@plural", () => {
@@ -228,7 +250,7 @@ describe("validation 2.0", () => {
                     }
                 `;
                 // TODO: is "ScalarOrEnum" type exposed to the user?
-                expect(() => validateDocument({ document: doc, features: {} })).toThrow(
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
                     'Directive "@plural" argument "value" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -239,7 +261,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: {} })).not.toThrow();
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
             });
         });
         describe("@populatedBy", () => {
@@ -254,6 +276,7 @@ describe("validation 2.0", () => {
                     validateDocument({
                         document: doc,
                         features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
+                        additionalDefinitions,
                     });
                 expect(executeValidate).toThrow(
                     'Directive "@populatedBy" argument "callback" of type "String!" is required, but it was not provided.'
@@ -270,6 +293,7 @@ describe("validation 2.0", () => {
                     validateDocument({
                         document: doc,
                         features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
+                        additionalDefinitions,
                     })
                 ).not.toThrow();
             });
@@ -289,7 +313,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).toThrow(
                     'Directive "@relationship" argument "type" of type "String!" is required, but it was not provided.'
                 );
@@ -308,7 +336,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).toThrow(
                     'Directive "@relationship" argument "type" of type "String!" is required, but it was not provided.'
                 );
@@ -327,7 +359,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).toThrow(
                     'Directive "@relationship" argument "direction" of type "RelationshipDirection!" is required, but it was not provided.'
                 );
@@ -347,7 +383,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -361,7 +401,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -387,7 +427,11 @@ describe("validation 2.0", () => {
             const unions = [] as UnionTypeDefinitionNode[];
             const objects = [] as ObjectTypeDefinitionNode[];
             const executeValidate = () =>
-                validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions: { enums, interfaces, unions, objects },
+                    features: {},
+                });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -413,7 +457,11 @@ describe("validation 2.0", () => {
             const unions = [] as UnionTypeDefinitionNode[];
             const objects = [] as ObjectTypeDefinitionNode[];
             const executeValidate = () =>
-                validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions: { enums, interfaces, unions, objects },
+                    features: {},
+                });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -430,7 +478,7 @@ describe("validation 2.0", () => {
                     myStuff: String @customResolver(requires: 42)
                 }
             `;
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -448,7 +496,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -471,7 +519,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -488,7 +536,7 @@ describe("validation 2.0", () => {
                     name: String
                 }
             `;
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -515,7 +563,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
 
@@ -538,7 +590,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -562,7 +618,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -589,7 +649,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -612,7 +676,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -642,7 +710,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -671,7 +743,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -687,7 +763,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -708,7 +788,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -725,7 +809,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -749,7 +837,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -766,7 +858,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -787,7 +883,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -804,7 +904,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -828,7 +932,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -845,7 +953,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -866,7 +978,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -883,7 +999,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -907,7 +1027,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -924,7 +1048,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -945,7 +1073,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -962,7 +1094,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -986,7 +1122,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1003,7 +1143,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1024,7 +1168,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1048,7 +1196,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1065,7 +1217,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1082,7 +1238,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1106,7 +1266,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1139,7 +1303,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -1166,7 +1334,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1189,7 +1361,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -1219,7 +1395,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -1249,7 +1429,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1265,7 +1449,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1286,7 +1474,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1303,7 +1495,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1327,7 +1523,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1344,7 +1544,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1365,7 +1569,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1382,7 +1590,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1406,7 +1618,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1423,7 +1639,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1447,7 +1667,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1464,7 +1688,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1488,7 +1716,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1505,7 +1737,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1526,7 +1762,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1543,7 +1783,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1567,7 +1811,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1584,7 +1832,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1605,7 +1857,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1629,7 +1885,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1646,7 +1906,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -1663,7 +1927,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1684,7 +1952,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1708,7 +1980,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1729,7 +2005,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -1748,7 +2024,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -1767,7 +2043,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -1786,7 +2062,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -1797,7 +2073,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -1812,7 +2088,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -1828,7 +2104,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -1849,7 +2125,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -1873,7 +2149,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1908,7 +2188,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -1936,7 +2220,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -1971,7 +2259,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -2003,7 +2295,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -2038,7 +2334,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -2064,7 +2364,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -2088,7 +2392,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
                 try {
                     executeValidate();
                 } catch (err) {
@@ -2106,7 +2414,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -2134,6 +2442,7 @@ describe("validation 2.0", () => {
                                 },
                             },
                         },
+                        additionalDefinitions,
                     });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -2156,6 +2465,7 @@ describe("validation 2.0", () => {
                     validateDocument({
                         document: doc,
                         features: { populatedBy: { callbacks: { getUName: () => "myUserName" } } },
+                        additionalDefinitions,
                     });
                 expect(executeValidate).not.toThrow();
             });
@@ -2169,7 +2479,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
             test("@unique cannot be used on fields of Interface types", () => {
@@ -2179,7 +2489,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2197,7 +2507,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
             test("@timestamp cannot autogenerate array", () => {
@@ -2207,7 +2517,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2222,7 +2532,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2243,7 +2553,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
             test("@id autogenerate cannot autogenerate array", () => {
@@ -2253,7 +2563,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2268,7 +2578,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2301,7 +2611,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -2313,7 +2623,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -2326,7 +2636,7 @@ describe("validation 2.0", () => {
                     extend schema @mutation(operations: [])
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -2354,7 +2664,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
 
@@ -2390,7 +2704,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2410,7 +2724,7 @@ describe("validation 2.0", () => {
                     extend type User @query(read: false)
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2430,7 +2744,7 @@ describe("validation 2.0", () => {
                     extend schema @query(read: false)
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2452,7 +2766,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2478,7 +2792,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2497,7 +2811,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2520,7 +2834,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2542,7 +2856,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
@@ -2563,7 +2877,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
         });
@@ -2579,7 +2893,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2604,7 +2918,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2628,7 +2942,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2657,7 +2971,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2686,7 +3000,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2714,7 +3028,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2735,7 +3049,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2758,7 +3072,7 @@ describe("validation 2.0", () => {
                     id: ID!
                 }
             `;
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2778,7 +3092,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2798,7 +3112,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(2);
@@ -2825,7 +3139,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -2838,7 +3152,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -2853,7 +3167,7 @@ describe("validation 2.0", () => {
                     id: ID! @alias(property: "somethingElse")
                 }
             `;
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
     });
@@ -2872,7 +3186,7 @@ describe("validation 2.0", () => {
                 union Production
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2893,7 +3207,7 @@ describe("validation 2.0", () => {
                 union Production = Movie | Series
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
     });
@@ -2904,7 +3218,7 @@ describe("validation 2.0", () => {
                 type Movie
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2921,7 +3235,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2941,7 +3255,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
     });
@@ -2963,7 +3277,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -2991,7 +3305,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
     });
@@ -3020,7 +3334,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
 
@@ -3061,7 +3379,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
 
@@ -3098,7 +3420,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -3114,7 +3440,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -3129,7 +3455,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
@@ -3152,7 +3478,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -3179,7 +3509,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
@@ -3200,7 +3534,7 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {} });
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -3219,7 +3553,11 @@ describe("validation 2.0", () => {
                 const unions = [] as UnionTypeDefinitionNode[];
                 const objects = [] as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
-                    validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: {} });
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
 
                 expect(executeValidate).not.toThrow();
             });
@@ -3234,7 +3572,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3252,7 +3590,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3271,7 +3609,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3290,7 +3628,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3306,7 +3644,7 @@ describe("validation 2.0", () => {
                 scalar PageInfo
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3324,7 +3662,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3342,7 +3680,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3360,7 +3698,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3379,7 +3717,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3398,7 +3736,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3414,7 +3752,7 @@ describe("validation 2.0", () => {
                 scalar Node
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {} });
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             const errors = getError(executeValidate);
 
             expect(errors).toHaveLength(1);
@@ -3440,7 +3778,11 @@ describe("validateDocument", () => {
         const unions = [] as UnionTypeDefinitionNode[];
         const objects = [] as ObjectTypeDefinitionNode[];
         const executeValidate = () =>
-            validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: undefined });
+            validateDocument({
+                document: doc,
+                additionalDefinitions: { enums, interfaces, unions, objects },
+                features: undefined,
+            });
 
         expect(executeValidate).toThrow('Directive "@coalesce" may not be used on OBJECT.');
     });
@@ -3457,7 +3799,11 @@ describe("validateDocument", () => {
         const unions = [] as UnionTypeDefinitionNode[];
         const objects = [] as ObjectTypeDefinitionNode[];
         const executeValidate = () =>
-            validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: undefined });
+            validateDocument({
+                document: doc,
+                additionalDefinitions: { enums, interfaces, unions, objects },
+                features: undefined,
+            });
 
         expect(executeValidate).toThrow(
             'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
@@ -3471,7 +3817,9 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: undefined })).toThrow('Unknown type "Unknown".');
+        expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+            'Unknown type "Unknown".'
+        );
     });
 
     test("should throw an error if a user tries to pass in their own Point definition", () => {
@@ -3486,7 +3834,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
             'Type "Point" already exists in the schema. It cannot also be defined in this type definition.'
         );
     });
@@ -3500,7 +3848,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
             'Type "DateTime" already exists in the schema. It cannot also be defined in this type definition.'
         );
     });
@@ -3514,7 +3862,7 @@ describe("validateDocument", () => {
             extend type User @fulltext
         `;
 
-        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
             'Directive "@fulltext" argument "indexes" of type "[FullTextInput]!" is required, but it was not provided.'
         );
     });
@@ -3531,7 +3879,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
             'Type "PointInput" already exists in the schema. It cannot also be defined in this type definition.'
         );
     });
@@ -3547,7 +3895,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
             "Interface field UserInterface.age expected but User does not provide it."
         );
     });
@@ -3561,7 +3909,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+        expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
             'Directive "@relationship" already exists in the schema. It cannot be redefined.'
         );
     });
@@ -3573,7 +3921,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        const res = validateDocument({ document: doc, features: undefined });
+        const res = validateDocument({ document: doc, features: undefined, additionalDefinitions });
         expect(res).toBeUndefined();
     });
 
@@ -3602,7 +3950,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        const res = validateDocument({ document: doc, features: undefined });
+        const res = validateDocument({ document: doc, features: undefined, additionalDefinitions });
         expect(res).toBeUndefined();
     });
 
@@ -3632,7 +3980,11 @@ describe("validateDocument", () => {
             const unions = [] as UnionTypeDefinitionNode[];
             const objects = [] as ObjectTypeDefinitionNode[];
             const executeValidate = () =>
-                validateDocument({ document: doc, extra: { enums, interfaces, unions, objects }, features: undefined });
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions: { enums, interfaces, unions, objects },
+                    features: undefined,
+                });
 
             expect(executeValidate).not.toThrow();
         });
@@ -3644,7 +3996,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                 'Directive "@relationshipProperties" may not be used on OBJECT.'
             );
         });
@@ -3656,7 +4008,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                 'Directive "@relationshipProperties" may not be used on FIELD_DEFINITION.'
             );
         });
@@ -3739,7 +4091,7 @@ describe("validateDocument", () => {
             }
         `;
 
-        const res = validateDocument({ document: doc, features: undefined });
+        const res = validateDocument({ document: doc, features: undefined, additionalDefinitions });
         expect(res).toBeUndefined();
     });
 
@@ -3755,7 +4107,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument({ document: doc, features: undefined });
+            const res = validateDocument({ document: doc, features: undefined, additionalDefinitions });
             expect(res).toBeUndefined();
         });
     });
@@ -3773,7 +4125,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument({ document: doc, features: undefined });
+            const res = validateDocument({ document: doc, features: undefined, additionalDefinitions });
             expect(res).toBeUndefined();
         });
 
@@ -3789,7 +4141,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument({ document: doc, features: undefined });
+            const res = validateDocument({ document: doc, features: undefined, additionalDefinitions });
             expect(res).toBeUndefined();
         });
     });
@@ -3923,7 +4275,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument({ document: doc, features: undefined });
+            const res = validateDocument({ document: doc, features: undefined, additionalDefinitions });
             expect(res).toBeUndefined();
         });
     });
@@ -3946,7 +4298,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument({ document: doc, features: undefined });
+            const res = validateDocument({ document: doc, features: undefined, additionalDefinitions });
             expect(res).toBeUndefined();
         });
     });
@@ -3958,7 +4310,7 @@ describe("validateDocument", () => {
                     name: String @alias
                 }
             `;
-            expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                 'Directive "@alias" argument "property" of type "String!" is required, but it was not provided.'
             );
         });
@@ -3968,7 +4320,7 @@ describe("validateDocument", () => {
                     name: String
                 }
             `;
-            expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                 'Directive "@alias" may not be used on OBJECT.'
             );
         });
@@ -3978,7 +4330,7 @@ describe("validateDocument", () => {
                     name: String @alias(property: "dbName")
                 }
             `;
-            const res = validateDocument({ document: doc, features: undefined });
+            const res = validateDocument({ document: doc, features: undefined, additionalDefinitions });
             expect(res).toBeUndefined();
         });
     });
@@ -3992,7 +4344,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error
                 );
             });
@@ -4004,7 +4356,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error
                 );
             });
@@ -4016,7 +4368,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error
                 );
             });
@@ -4039,7 +4391,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error
                 );
             });
@@ -4060,7 +4412,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error
                 );
             });
@@ -4081,7 +4433,7 @@ describe("validateDocument", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: undefined })).toThrow(
+                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
                     RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error
                 );
             });
@@ -4096,7 +4448,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument({ document: doc, features: undefined });
+            const res = validateDocument({ document: doc, features: undefined, additionalDefinitions });
             expect(res).toBeUndefined();
         });
     });
@@ -4117,7 +4469,7 @@ describe("validateDocument", () => {
                 }
             `;
 
-            const res = validateDocument({ document: doc, features: undefined });
+            const res = validateDocument({ document: doc, features: undefined, additionalDefinitions });
             expect(res).toBeUndefined();
         });
     });

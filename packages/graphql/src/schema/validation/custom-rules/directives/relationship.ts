@@ -25,7 +25,7 @@ import type {
     UnionTypeDefinitionNode,
 } from "graphql";
 import { Kind } from "graphql";
-import parseValueNode from "../../../../schema-model/parser/parse-value-node";
+import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import { getInnerTypeName, getPrettyName } from "../utils/utils";
 import { DocumentValidationError } from "../utils/document-validation-error";
 
