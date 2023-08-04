@@ -19,29 +19,6 @@ export class CountFilter {
         this.operator = operator;
         this.isNot = isNot;
     }
-    // private targetNodeFilters: ConnectionNodeFilter[] = [];
-
-    // private relationshipFilters: ConnectionEdgeFilter[] = [];
-
-    // private relationship: Relationship;
-    // private operator: RelationshipWhereOperator;
-
-    // private isNot: boolean;
-
-    // constructor({
-    //     relationship,
-    //     operator,
-    //     isNot,
-    // }: {
-    //     relationship: Relationship;
-    //     operator: RelationshipWhereOperator | undefined;
-    //     isNot: boolean;
-    // }) {
-    //     super();
-    //     this.relationship = relationship;
-    //     this.isNot = isNot;
-    //     this.operator = operator || "SOME";
-    // }
 
     public getPredicate(variable: Cypher.Variable): Cypher.Predicate | undefined {
         return this.createBaseOperation({
