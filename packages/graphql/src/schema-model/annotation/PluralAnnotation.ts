@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+// TODO: maybe this can be a field on the concrete entity
 export class PluralAnnotation {
     public readonly value: string;
 
